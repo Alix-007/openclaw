@@ -12,7 +12,7 @@ import { createSubsystemLogger } from "../../logging/subsystem.js";
 import { CONFIG_DIR, resolveUserPath } from "../../utils.js";
 import { resolveSandboxPath } from "../sandbox-paths.js";
 import { resolveBundledSkillsDir } from "./bundled-dir.js";
-import { shouldIncludeSkill } from "./config.js";
+import { shouldIncludeSkill, shouldIncludeSkillByConfig } from "./config.js";
 import { normalizeSkillFilter } from "./filter.js";
 import {
   parseFrontmatter,
@@ -728,7 +728,12 @@ export async function syncSkillsToWorkspace(params: {
       managedSkillsDir: params.managedSkillsDir,
       bundledSkillsDir: params.bundledSkillsDir,
     });
-    const entries = filterSkillEntries(loadedEntries, params.config);
+    const entries = loadedEntries.filter((entry) =>
+      shouldIncludeSkillByConfig({
+        entry,
+        config: params.config,
+      }),
+    );
 
     await fsp.rm(targetSkillsDir, { recursive: true, force: true });
     await fsp.mkdir(targetSkillsDir, { recursive: true });

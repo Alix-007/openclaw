@@ -68,6 +68,21 @@ export function isBundledSkillAllowed(entry: SkillEntry, allowlist?: string[]): 
   return allowlist.includes(key) || allowlist.includes(entry.skill.name);
 }
 
+export function shouldIncludeSkillByConfig(params: {
+  entry: SkillEntry;
+  config?: OpenClawConfig;
+}): boolean {
+  const { entry, config } = params;
+  const skillKey = resolveSkillKey(entry.skill, entry);
+  const skillConfig = resolveSkillConfig(config, skillKey);
+  const allowBundled = normalizeAllowlist(config?.skills?.allowBundled);
+
+  if (skillConfig?.enabled === false) {
+    return false;
+  }
+  return isBundledSkillAllowed(entry, allowBundled);
+}
+
 export function shouldIncludeSkill(params: {
   entry: SkillEntry;
   config?: OpenClawConfig;
@@ -76,12 +91,8 @@ export function shouldIncludeSkill(params: {
   const { entry, config, eligibility } = params;
   const skillKey = resolveSkillKey(entry.skill, entry);
   const skillConfig = resolveSkillConfig(config, skillKey);
-  const allowBundled = normalizeAllowlist(config?.skills?.allowBundled);
 
-  if (skillConfig?.enabled === false) {
-    return false;
-  }
-  if (!isBundledSkillAllowed(entry, allowBundled)) {
+  if (!shouldIncludeSkillByConfig({ entry, config })) {
     return false;
   }
   return evaluateRuntimeEligibility({

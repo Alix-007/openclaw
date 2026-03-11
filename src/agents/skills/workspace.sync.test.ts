@@ -27,6 +27,7 @@ describe("syncSkillsToWorkspace", () => {
       dir: path.join(bundledSkillsDir, "frontend-design"),
       name: "frontend-design",
       description: "allowed bundled skill",
+      metadata: "{ openclaw: { requires: { env: ['NEVER_SET_ON_HOST'] } } }",
     });
     await writeSkill({
       dir: path.join(bundledSkillsDir, "ops-debug"),
@@ -47,5 +48,36 @@ describe("syncSkillsToWorkspace", () => {
 
     const syncedEntries = await fs.readdir(path.join(targetWorkspaceDir, "skills"));
     expect(syncedEntries).toEqual(["frontend-design"]);
+  });
+
+  it("still skips skills disabled in config during sandbox sync", async () => {
+    const sourceWorkspaceDir = await makeTempDir("openclaw-skills-source-");
+    const targetWorkspaceDir = await makeTempDir("openclaw-skills-target-");
+    const bundledSkillsDir = await makeTempDir("openclaw-skills-bundled-");
+
+    await writeSkill({
+      dir: path.join(bundledSkillsDir, "frontend-design"),
+      name: "frontend-design",
+      description: "disabled bundled skill",
+    });
+
+    await syncSkillsToWorkspace({
+      sourceWorkspaceDir,
+      targetWorkspaceDir,
+      bundledSkillsDir,
+      config: {
+        skills: {
+          allowBundled: ["frontend-design"],
+          entries: {
+            "frontend-design": {
+              enabled: false,
+            },
+          },
+        },
+      },
+    });
+
+    const syncedEntries = await fs.readdir(path.join(targetWorkspaceDir, "skills"));
+    expect(syncedEntries).toEqual([]);
   });
 });
