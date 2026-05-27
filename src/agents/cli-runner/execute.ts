@@ -24,6 +24,7 @@ import { applyPluginTextReplacements } from "../plugin-text-transforms.js";
 import { applySkillEnvOverridesFromSnapshot } from "../skills.js";
 import { runClaudeLiveSessionTurn, shouldUseClaudeLiveSession } from "./claude-live-session.js";
 import { prepareClaudeCliSkillsPlugin } from "./claude-skills-plugin.js";
+import { stripOpenClawSkillsPromptSection } from "./claude-skills-system-prompt.js";
 import {
   buildCliSupervisorScopeKey,
   buildCliArgs,
@@ -279,19 +280,6 @@ export async function executePreparedCliRun(
   const useResume = Boolean(
     cliSessionIdToUse && resolvedSessionId && backend.resumeArgs && backend.resumeArgs.length > 0,
   );
-  const systemPromptArg = resolveSystemPromptUsage({
-    backend,
-    isNewSession: isNew,
-    systemPrompt: context.systemPrompt,
-  });
-  const systemPromptFile =
-    systemPromptArg && (!useResume || backend.systemPromptWhen === "always")
-      ? await writeCliSystemPromptFile({
-          backend,
-          systemPrompt: systemPromptArg,
-        })
-      : undefined;
-
   const basePrompt = cliSessionIdToUse
     ? params.prompt
     : (context.openClawHistoryPrompt ?? params.prompt);
@@ -332,6 +320,22 @@ export async function executePreparedCliRun(
   let fallbackClaudeSkillsPluginCleanupOwned = false;
   const claudeSkillsPluginArgs =
     context.claudeSkillsPluginArgs ?? fallbackClaudeSkillsPlugin?.args ?? [];
+  const systemPromptForRun =
+    claudeSkillsPluginArgs.length > 0
+      ? stripOpenClawSkillsPromptSection(context.systemPrompt)
+      : context.systemPrompt;
+  const systemPromptArg = resolveSystemPromptUsage({
+    backend,
+    isNewSession: isNew,
+    systemPrompt: systemPromptForRun,
+  });
+  const systemPromptFile =
+    systemPromptArg && (!useResume || backend.systemPromptWhen === "always")
+      ? await writeCliSystemPromptFile({
+          backend,
+          systemPrompt: systemPromptArg,
+        })
+      : undefined;
   const baseArgsWithSkills =
     claudeSkillsPluginArgs.length > 0 ? [...resolvedArgs, ...claudeSkillsPluginArgs] : resolvedArgs;
   const executionBaseArgs =
