@@ -41,16 +41,17 @@
 
 ## Project Structure & Module Organization
 
-- Source code: `src/` (CLI wiring in `src/cli`, commands in `src/commands`, web provider in `src/provider-web.ts`, infra in `src/infra`, media pipeline in `src/media`).
-- Tests: colocated `*.test.ts`.
+- Source code: `src/` (CLI wiring in `src/cli`, commands in `src/commands`, gateway/daemon in `src/gateway` + `src/daemon`, web/WhatsApp channel entry in `src/channel-web.ts` + `src/web`, agents runtime in `src/agents`, infra in `src/infra`, media pipeline in `src/media`).
+- Other workspaces: web UI in `ui/` (Vite), helper packages in `packages/*` (`clawdbot`, `moltbot`), native apps in `apps/*` (`android`, `ios`, `macos`, `shared`), bundled agent skills in `skills/*`.
+- Tests: colocated `*.test.ts`; e2e in `*.e2e.test.ts`. Vitest is split across multiple configs (`vitest.config.ts`, `vitest.unit.config.ts`, `vitest.channels.config.ts`, `vitest.gateway.config.ts`, `vitest.extensions.config.ts`, `vitest.e2e.config.ts`, `vitest.live.config.ts`).
 - Docs: `docs/` (images, queue, Pi config). Built output lives in `dist/`.
 - Plugins/extensions: live under `extensions/*` (workspace packages). Keep plugin-only deps in the extension `package.json`; do not add them to the root `package.json` unless core uses them.
 - Plugins: install runs `npm install --omit=dev` in plugin dir; runtime deps must live in `dependencies`. Avoid `workspace:*` in `dependencies` (npm install breaks); put `openclaw` in `devDependencies` or `peerDependencies` instead (runtime resolves `openclaw/plugin-sdk` via jiti alias).
 - Installers served from `https://openclaw.ai/*`: live in the sibling repo `../openclaw.ai` (`public/install.sh`, `public/install-cli.sh`, `public/install.ps1`).
 - Messaging channels: always consider **all** built-in + extension channels when refactoring shared logic (routing, allowlists, pairing, command gating, onboarding, docs).
   - Core channel docs: `docs/channels/`
-  - Core channel code: `src/telegram`, `src/discord`, `src/slack`, `src/signal`, `src/imessage`, `src/web` (WhatsApp web), `src/channels`, `src/routing`
-  - Extensions (channel plugins): `extensions/*` (e.g. `extensions/msteams`, `extensions/matrix`, `extensions/zalo`, `extensions/zalouser`, `extensions/voice-call`)
+  - Core channel code: `src/telegram`, `src/discord`, `src/slack`, `src/signal`, `src/imessage`, `src/web` (WhatsApp web), `src/line`, `src/channels`, `src/routing`
+  - Extensions (channel plugins): `extensions/*` — e.g. `bluebubbles`, `discord`, `feishu`, `googlechat`, `imessage`, `irc`, `line`, `matrix`, `mattermost`, `msteams`, `nextcloud-talk`, `nostr`, `signal`, `slack`, `synology-chat`, `telegram`, `tlon`, `twitch`, `whatsapp`, `zalo`, `zalouser`, plus voice (`voice-call`, `talk-voice`) and non-channel plugins (`memory-core`, `memory-lancedb`, `phone-control`, `llm-task`, `diffs`, `lobster`, `*-auth` provider helpers)
 - When adding channels/extensions/apps/docs, update `.github/labeler.yml` and create matching GitHub labels (use existing channel/extension label colors).
 
 ## Docs Linking (Mintlify)
@@ -133,7 +134,7 @@
 - Do not set test workers above 16; tried already.
 - If local Vitest runs cause memory pressure (common on non-Mac-Studio hosts), use `OPENCLAW_TEST_PROFILE=low OPENCLAW_TEST_SERIAL_GATEWAY=1 pnpm test` for land/gate runs.
 - Live tests (real keys): `CLAWDBOT_LIVE_TEST=1 pnpm test:live` (OpenClaw-only) or `LIVE=1 pnpm test:live` (includes provider live tests). Docker: `pnpm test:docker:live-models`, `pnpm test:docker:live-gateway`. Onboarding Docker E2E: `pnpm test:docker:onboard`.
-- Full kit + what’s covered: `docs/testing.md`.
+- Full kit + what’s covered: `docs/help/testing.md`.
 - Changelog: user-facing changes only; no internal/meta notes (version alignment, appcast reminders, release process).
 - Changelog placement: in the active version block, append new entries to the end of the target section (`### Changes` or `### Fixes`); do not insert new entries at the top of a section.
 - Changelog attribution: use at most one contributor mention per line; prefer `Thanks @author` and do not also add `by @author` on the same entry.
