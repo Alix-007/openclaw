@@ -27,6 +27,7 @@
 import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
 import type { MSTeamsAccessTokenProvider } from "./attachments/types.js";
 import { readMSTeamsHttpErrorDetail } from "./http-error.js";
+import { resolveMSTeamsRequestTimeoutMs } from "./request-timeout.js";
 import type { MSTeamsSsoTokenStore } from "./sso-token-store.js";
 import { buildUserAgent } from "./user-agent.js";
 
@@ -127,6 +128,7 @@ async function callUserTokenService(
     method: params.method,
     headers,
     body: params.body === undefined ? undefined : JSON.stringify(params.body),
+    signal: AbortSignal.timeout(resolveMSTeamsRequestTimeoutMs()),
   });
   if (!response.ok) {
     const error = await readMSTeamsHttpErrorDetail(response, `HTTP ${response.status}`);

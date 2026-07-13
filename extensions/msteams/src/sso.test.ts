@@ -12,6 +12,7 @@ import {
   type MSTeamsSsoStoredToken,
   type MSTeamsSsoTokenStore,
 } from "./sso-token-store.js";
+import { resolveMSTeamsRequestTimeoutMs } from "./request-timeout.js";
 import { type MSTeamsSsoFetch, handleSigninTokenExchangeInvoke } from "./sso.js";
 
 // ---------------------------------------------------------------------------
@@ -22,6 +23,11 @@ type FakeServer = {
   url: string;
   close: () => Promise<void>;
 };
+
+type ObservedPromiseState =
+  | { type: "pending" }
+  | { type: "fulfilled" }
+  | { type: "rejected"; reason: unknown };
 
 function createMemorySsoTokenStore(): MSTeamsSsoTokenStore {
   const tokens = new Map<string, MSTeamsSsoStoredToken>();
@@ -61,6 +67,57 @@ function startFakeServer(
   });
 }
 
+function observePromiseState<T>(promise: Promise<T>): () => Promise<ObservedPromiseState> {
+  let state: ObservedPromiseState = { type: "pending" };
+  void promise.then(
+    () => {
+      state = { type: "fulfilled" };
+    },
+    (reason: unknown) => {
+      state = { type: "rejected", reason };
+    },
+  );
+  return async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    return state;
+  };
+}
+
+function installFakeAbortSignalTimeout(options?: { autoAbort?: boolean }) {
+  const controllers: AbortController[] = [];
+  const spy = vi.spyOn(AbortSignal, "timeout").mockImplementation((timeoutMs: number) => {
+    const controller = new AbortController();
+    controllers.push(controller);
+    if (options?.autoAbort ?? true) {
+      setTimeout(() => {
+        controller.abort(new DOMException("The operation timed out", "TimeoutError"));
+      }, timeoutMs);
+    }
+    return controller.signal;
+  });
+  return { controllers, spy };
+}
+
+function createNeverResolvingFetch() {
+  return vi.fn<MSTeamsSsoFetch>((_url, init) => {
+    const signal = init?.signal;
+    return new Promise<Response>((_resolve, reject) => {
+      if (!signal) {
+        return;
+      }
+      const rejectWithAbortReason = () => {
+        reject(signal.reason ?? new DOMException("The operation was aborted", "AbortError"));
+      };
+      if (signal.aborted) {
+        rejectWithAbortReason();
+        return;
+      }
+      signal.addEventListener("abort", rejectWithAbortReason, { once: true });
+    });
+  });
+}
+
 function createSsoDepsForServer(baseUrl: string) {
   const tokenStore = createMemorySsoTokenStore();
   const tokenProvider = {
@@ -77,6 +134,118 @@ function createSsoDepsForServer(baseUrl: string) {
     tokenStore,
   };
 }
+
+// ---------------------------------------------------------------------------
+// request timeout: stalled User Token service calls must abort
+// ---------------------------------------------------------------------------
+
+describe("sso callUserTokenService — request timeout", () => {
+  it("aborts a stalled User Token service request at the shared Teams timeout", async () => {
+    vi.useFakeTimers();
+    const { spy: timeoutSpy } = installFakeAbortSignalTimeout();
+    try {
+      const fetchImpl = createNeverResolvingFetch();
+      const tokenStore = createMemorySsoTokenStore();
+      const resultPromise = handleSigninTokenExchangeInvoke({
+        value: { id: "flow-timeout", connectionName: "TestConn", token: "x" },
+        user: { userId: "uid-timeout", channelId: "msteams" },
+        deps: {
+          tokenProvider: { getAccessToken: vi.fn(async () => "svc") },
+          tokenStore,
+          connectionName: "TestConn",
+          fetchImpl,
+          userTokenBaseUrl: "https://botframework.example.test",
+        },
+      });
+      const readState = observePromiseState(resultPromise);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const timeoutMs = resolveMSTeamsRequestTimeoutMs();
+      expect(fetchImpl).toHaveBeenCalledTimes(1);
+      expect(timeoutSpy).toHaveBeenCalledWith(timeoutMs);
+      expect(fetchImpl.mock.calls[0]?.[1]?.signal).toBeInstanceOf(AbortSignal);
+      expect(await readState()).toEqual({ type: "pending" });
+
+      await vi.advanceTimersByTimeAsync(timeoutMs - 1);
+      expect(await readState()).toEqual({ type: "pending" });
+
+      await vi.advanceTimersByTimeAsync(1);
+      const finalState = await readState();
+      expect(finalState.type).toBe("rejected");
+      if (finalState.type === "rejected") {
+        expect(finalState.reason).toBeInstanceOf(DOMException);
+        if (finalState.reason instanceof DOMException) {
+          expect(finalState.reason.name).toBe("TimeoutError");
+        }
+      }
+    } finally {
+      timeoutSpy.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it("keeps the timeout signal live while reading a stalled User Token response body", async () => {
+    const { controllers, spy: timeoutSpy } = installFakeAbortSignalTimeout({ autoAbort: false });
+    let server: FakeServer | undefined;
+    let stalledResponse: http.ServerResponse | undefined;
+    let markBodyStarted!: () => void;
+    const bodyStarted = new Promise<void>((resolve) => {
+      markBodyStarted = resolve;
+    });
+    let markHeadersReady!: () => void;
+    const headersReady = new Promise<void>((resolve) => {
+      markHeadersReady = resolve;
+    });
+    try {
+      server = await startFakeServer((_req, res) => {
+        stalledResponse = res;
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.write("{");
+        markBodyStarted();
+      });
+      const tokenStore = createMemorySsoTokenStore();
+      const fetchImpl = vi.fn<MSTeamsSsoFetch>(async (url, init) => {
+        const response = await fetch(url, init);
+        markHeadersReady();
+        return response;
+      });
+      const resultPromise = handleSigninTokenExchangeInvoke({
+        value: { id: "flow-body-timeout", connectionName: "TestConn", token: "x" },
+        user: { userId: "uid-body-timeout", channelId: "msteams" },
+        deps: {
+          tokenProvider: { getAccessToken: vi.fn(async () => "svc") },
+          tokenStore,
+          connectionName: "TestConn",
+          fetchImpl,
+          userTokenBaseUrl: server.url,
+        },
+      });
+      const readState = observePromiseState(resultPromise);
+      await bodyStarted;
+      await headersReady;
+      await Promise.resolve();
+      const timeoutMs = resolveMSTeamsRequestTimeoutMs();
+      expect(fetchImpl).toHaveBeenCalledTimes(1);
+      expect(timeoutSpy).toHaveBeenCalledWith(timeoutMs);
+      expect(controllers).toHaveLength(1);
+      expect(controllers[0]?.signal.aborted).toBe(false);
+      expect(await readState()).toEqual({ type: "pending" });
+
+      controllers[0]?.abort(new DOMException("The operation timed out", "TimeoutError"));
+
+      const result = await resultPromise;
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.status).toBe(200);
+      }
+    } finally {
+      timeoutSpy.mockRestore();
+      stalledResponse?.destroy();
+      await server?.close();
+    }
+  });
+});
 
 // ---------------------------------------------------------------------------
 // over-cap: >16 MiB body without Content-Length must be rejected
