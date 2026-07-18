@@ -177,5 +177,5 @@ jobs:
           };
           await runTrace();
           EOF
-          TRACE_ROOT="$PWD/before-main" TRACE_LABEL=before-main MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs"
-          TRACE_ROOT="$PWD/after-pr" TRACE_LABEL=after-pr MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs"
+          (cd before-main && TRACE_ROOT="$PWD" TRACE_LABEL=before-main MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs")
+          (cd after-pr && TRACE_ROOT="$PWD" TRACE_LABEL=after-pr MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs")
