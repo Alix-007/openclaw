@@ -61,7 +61,6 @@ jobs:
         uses: ./.github/actions/setup-node-env
         with:
           install-bun: "false"
-          install-deps: "false"
 
       - name: Install iOS Swift tooling
         shell: bash
