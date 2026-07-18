@@ -1,0 +1,172 @@
+name: Proof Microsoft voice schema handling
+
+on:
+  push:
+    branches:
+      - proof/t2-microsoft-voice-schema-91754ce
+
+permissions: {}
+
+jobs:
+  runtime-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BEFORE_SHA: 88e5af7097de5fdbc897e1ca622116fc289a1ee1
+      AFTER_SHA: 91754ce399fed35ed90057559fc6b26983604476
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Setup public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Fetch and verify immutable revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/openclaw/openclaw.git
+          git fetch --no-tags upstream main
+          git fetch --no-tags origin alix/t2-microsoft-voice-schema
+          test "$(git rev-parse "${BEFORE_SHA}^{commit}")" = "$BEFORE_SHA"
+          test "$(git rev-parse "${AFTER_SHA}^{commit}")" = "$AFTER_SHA"
+          echo "PROOF_REFS before=$BEFORE_SHA after=$AFTER_SHA"
+
+      - name: Write runtime proof driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/microsoft-voice-proof.mjs" <<'NODE'
+          import assert from "node:assert/strict";
+          import path from "node:path";
+          import { pathToFileURL } from "node:url";
+
+          const mode = process.argv[2];
+          const providerUrl = pathToFileURL(
+            path.join(process.cwd(), "extensions/microsoft/speech-provider.ts"),
+          ).href;
+          const { buildMicrosoftSpeechProvider } = await import(providerUrl);
+          const listVoices = buildMicrosoftSpeechProvider().listVoices;
+          assert.equal(typeof listVoices, "function");
+
+          const validVoice = {
+            ShortName: "en-US-AvaNeural",
+            FriendlyName: "Microsoft Ava Online (Natural) - English (United States)",
+            Locale: "en-US",
+            Gender: "Female",
+            VoiceTag: {
+              ContentCategories: [null, "General"],
+              VoicePersonalities: [false, "Friendly", "Positive"],
+            },
+          };
+
+          if (mode === "before" || mode === "after") {
+            const injectedFetch = Object.assign(
+              async () =>
+                new Response(JSON.stringify([null, validVoice]), {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                }),
+              { mock: {} },
+            );
+            globalThis.fetch = injectedFetch;
+
+            if (mode === "before") {
+              let observed;
+              try {
+                await listVoices({ providerConfig: {} });
+              } catch (error) {
+                observed = error;
+              }
+              assert.ok(observed instanceof TypeError, "before ref must reproduce the TypeError");
+              console.log(
+                `BEFORE_RESULT error_name=${observed.name} error_message=${JSON.stringify(observed.message)}`,
+              );
+              process.exit(0);
+            }
+
+            const voices = await listVoices({ providerConfig: {} });
+            const projection = voices.map(({ id, category, personalities }) => ({
+              id,
+              category,
+              personalities,
+            }));
+            assert.deepEqual(projection, [
+              {
+                id: "en-US-AvaNeural",
+                category: "General",
+                personalities: ["Friendly", "Positive"],
+              },
+            ]);
+            console.log(`AFTER_RESULT voices=${voices.length} projection=${JSON.stringify(projection)}`);
+            process.exit(0);
+          }
+
+          assert.equal(mode, "live");
+          const {
+            CHROMIUM_FULL_VERSION,
+            TRUSTED_CLIENT_TOKEN,
+            generateSecMsGecToken,
+          } = await import("node-edge-tts/dist/drm.js");
+          const major = CHROMIUM_FULL_VERSION.split(".")[0] || "0";
+          const endpoint =
+            "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list" +
+            `?trustedclienttoken=${TRUSTED_CLIENT_TOKEN}`;
+          const response = await fetch(endpoint, {
+            headers: {
+              Authority: "speech.platform.bing.com",
+              Origin: "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
+              Accept: "*/*",
+              "User-Agent":
+                `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ` +
+                `(KHTML, like Gecko) Chrome/${major}.0.0.0 Safari/537.36 Edg/${major}.0.0.0`,
+              "Sec-MS-GEC": generateSecMsGecToken(),
+              "Sec-MS-GEC-Version": `1-${CHROMIUM_FULL_VERSION}`,
+            },
+          });
+          const payload = await response.json();
+          assert.equal(response.status, 200);
+          assert.ok(Array.isArray(payload));
+          console.log(`LIVE_HTTP status=${response.status} rows=${payload.length}`);
+
+          const voices = await listVoices({ providerConfig: {}, timeoutMs: 30_000 });
+          assert.ok(voices.length > 0);
+          console.log(
+            `LIVE_RUNTIME voices=${voices.length} first_id=${JSON.stringify(voices[0]?.id ?? null)}`,
+          );
+          NODE
+
+      - name: Reproduce current-main failure
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$BEFORE_SHA"
+          test "$(git rev-parse HEAD)" = "$BEFORE_SHA"
+          node --import tsx "$RUNNER_TEMP/microsoft-voice-proof.mjs" before
+
+      - name: Verify fixed runtime behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node --import tsx "$RUNNER_TEMP/microsoft-voice-proof.mjs" after
+
+      - name: Verify live public endpoint control
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node --import tsx "$RUNNER_TEMP/microsoft-voice-proof.mjs" live
