@@ -115,34 +115,21 @@ jobs:
           }
 
           assert.equal(mode, "live");
-          const {
-            CHROMIUM_FULL_VERSION,
-            TRUSTED_CLIENT_TOKEN,
-            generateSecMsGecToken,
-          } = await import("node-edge-tts/dist/drm.js");
-          const major = CHROMIUM_FULL_VERSION.split(".")[0] || "0";
-          const endpoint =
-            "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list" +
-            `?trustedclienttoken=${TRUSTED_CLIENT_TOKEN}`;
-          const response = await fetch(endpoint, {
-            headers: {
-              Authority: "speech.platform.bing.com",
-              Origin: "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
-              Accept: "*/*",
-              "User-Agent":
-                `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ` +
-                `(KHTML, like Gecko) Chrome/${major}.0.0.0 Safari/537.36 Edg/${major}.0.0.0`,
-              "Sec-MS-GEC": generateSecMsGecToken(),
-              "Sec-MS-GEC-Version": `1-${CHROMIUM_FULL_VERSION}`,
+          const realFetch = globalThis.fetch;
+          let observedStatus;
+          const observingFetch = Object.assign(
+            async (...args) => {
+              const response = await realFetch(...args);
+              observedStatus = response.status;
+              return response;
             },
-          });
-          const payload = await response.json();
-          assert.equal(response.status, 200);
-          assert.ok(Array.isArray(payload));
-          console.log(`LIVE_HTTP status=${response.status} rows=${payload.length}`);
-
+            { mock: {} },
+          );
+          globalThis.fetch = observingFetch;
           const voices = await listVoices({ providerConfig: {}, timeoutMs: 30_000 });
+          assert.equal(observedStatus, 200);
           assert.ok(voices.length > 0);
+          console.log(`LIVE_HTTP status=${observedStatus}`);
           console.log(
             `LIVE_RUNTIME voices=${voices.length} first_id=${JSON.stringify(voices[0]?.id ?? null)}`,
           );
