@@ -113,7 +113,7 @@ let handlerGeneration = 0;
 // One bounded group per target owns every pending/retry class for that agent/session.
 const pendingWakes = new Map<string, PendingWakeGroup>();
 let scheduled = false;
-let running = false;
+let runningGeneration: number | null = null;
 let timer: NodeJS.Timeout | null = null;
 let timerDueAt: number | null = null;
 
@@ -357,20 +357,54 @@ function schedule(coalesceMs: number) {
       timer = null;
       timerDueAt = null;
       scheduled = false;
+      const runGeneration = handlerGeneration;
       const active = handler;
       if (!active) {
         return;
       }
-      if (running) {
+      if (runningGeneration === runGeneration) {
         scheduled = true;
         schedule(delay);
         return;
       }
 
       const pendingBatch = takePendingWakeBatch();
-      running = true;
+      runningGeneration = runGeneration;
+      const ownsCurrentRun = () =>
+        handlerGeneration === runGeneration && runningGeneration === runGeneration;
+      const handOffPendingBatch = (startIndex: number) => {
+        const remaining = pendingBatch.slice(startIndex);
+        for (const pendingWake of remaining) {
+          queuePendingWakeReason({
+            source: pendingWake.source,
+            intent: pendingWake.intent,
+            reason: pendingWake.reason,
+            requestedAt: pendingWake.requestedAt,
+            agentId: pendingWake.agentId,
+            sessionKey: pendingWake.sessionKey,
+            heartbeat: pendingWake.heartbeat,
+            scheduledEveryMs: pendingWake.scheduledEveryMs,
+            scheduledAnchorMs: pendingWake.scheduledAnchorMs,
+            tasks: pendingWake.tasks,
+            notBeforeMs: pendingWake.notBeforeMs,
+            guardRetry: pendingWake.guardRetry,
+          });
+        }
+        if (handler && remaining.length > 0) {
+          schedulePendingWakes(DEFAULT_COALESCE_MS);
+        }
+      };
+      let pendingIndex = 0;
       try {
-        for (const pendingWake of pendingBatch) {
+        for (pendingIndex = 0; pendingIndex < pendingBatch.length; pendingIndex += 1) {
+          if (!ownsCurrentRun()) {
+            handOffPendingBatch(pendingIndex);
+            return;
+          }
+          const pendingWake = pendingBatch[pendingIndex];
+          if (!pendingWake) {
+            continue;
+          }
           const wakeOpts = {
             source: pendingWake.source,
             intent: pendingWake.intent,
@@ -392,6 +426,12 @@ function schedule(coalesceMs: number) {
           const res = await runWithGatewayIndependentRootWorkAdmission(async () =>
             active(wakeOpts),
           );
+          if (!ownsCurrentRun()) {
+            // The current wake already ran on the retired handler. Only wakes
+            // that were never attempted transfer to the replacement lifecycle.
+            handOffPendingBatch(pendingIndex + 1);
+            return;
+          }
           if (res.status === "skipped" && isRetryableHeartbeatBusySkipReason(res.reason)) {
             // The target runtime is busy; retry this wake target soon.
             queuePendingWakeReason({
@@ -438,27 +478,35 @@ function schedule(coalesceMs: number) {
           }
         }
       } catch {
-        // Error is already logged by the heartbeat runner; schedule a retry.
-        for (const pendingWake of pendingBatch) {
-          queuePendingWakeReason({
-            source: pendingWake.source,
-            intent: pendingWake.intent,
-            reason: pendingWake.reason ?? "retry",
-            agentId: pendingWake.agentId,
-            sessionKey: pendingWake.sessionKey,
-            heartbeat: pendingWake.heartbeat,
-            scheduledEveryMs: pendingWake.scheduledEveryMs,
-            scheduledAnchorMs: pendingWake.scheduledAnchorMs,
-            tasks: pendingWake.tasks,
-            requestedAt: pendingWake.requestedAt,
-            blockTargetUntilMs: Date.now() + DEFAULT_RETRY_MS,
-          });
+        if (ownsCurrentRun()) {
+          // Error is already logged by the heartbeat runner; schedule a retry.
+          for (const pendingWake of pendingBatch) {
+            queuePendingWakeReason({
+              source: pendingWake.source,
+              intent: pendingWake.intent,
+              reason: pendingWake.reason ?? "retry",
+              agentId: pendingWake.agentId,
+              sessionKey: pendingWake.sessionKey,
+              heartbeat: pendingWake.heartbeat,
+              scheduledEveryMs: pendingWake.scheduledEveryMs,
+              scheduledAnchorMs: pendingWake.scheduledAnchorMs,
+              tasks: pendingWake.tasks,
+              requestedAt: pendingWake.requestedAt,
+              blockTargetUntilMs: Date.now() + DEFAULT_RETRY_MS,
+            });
+          }
+          schedule(DEFAULT_RETRY_MS);
+        } else {
+          handOffPendingBatch(pendingIndex + 1);
         }
-        schedule(DEFAULT_RETRY_MS);
       } finally {
-        running = false;
-        if (pendingWakes.size > 0 || scheduled) {
-          schedulePendingWakes(delay);
+        // Handler replacement retires this generation while its async work may
+        // still settle. A stale completion must not release or rearm the new one.
+        if (ownsCurrentRun()) {
+          runningGeneration = null;
+          if (pendingWakes.size > 0 || scheduled) {
+            schedulePendingWakes(delay);
+          }
         }
       }
     })();
@@ -525,11 +573,8 @@ export function setHeartbeatWakeHandler(next: HeartbeatWakeHandler | null): () =
     }
     timer = null;
     timerDueAt = null;
-    // Reset module-level execution state that may be stale from interrupted
-    // runs in the previous lifecycle. Without this, `running === true` from
-    // an interrupted heartbeat blocks all future schedule() attempts, and
-    // `scheduled === true` can cause spurious immediate re-runs.
-    running = false;
+    // Retire the previous lifecycle's scheduling marker. In-flight work keeps
+    // its generation token, so its finally path cannot release this lifecycle.
     scheduled = false;
     clearPendingWakeRetryState();
   }
