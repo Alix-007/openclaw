@@ -84,6 +84,8 @@ jobs:
 
             let resolveA;
             const holdA = new Promise((resolve) => { resolveA = resolve; });
+            let resolveB;
+            const holdB = new Promise((resolve) => { resolveB = resolve; });
             const slotA = [];
             const slotB = [];
             const handlerA = async (request) => {
@@ -93,6 +95,9 @@ jobs:
             };
             const handlerB = async (request) => {
               slotB.push(compact(request));
+              if (request.agentId === "slot-b") {
+                await holdB;
+              }
               return ran();
             };
             mod.setHeartbeatWakeHandler(handlerA);
@@ -100,12 +105,25 @@ jobs:
             await waitFor(() => slotA.length === 1, "original handler entry");
             mod.setHeartbeatWakeHandler(handlerB);
             mod.requestHeartbeat(wake("manual", "slot-b"));
-            await sleep(80);
-            const slotWhileOriginalPending = slotB.length;
-            resolveA();
             await waitFor(() => slotB.length === 1, "replacement handler entry");
+            const replacementCallsWhileOriginalPending = slotB.length;
+            resolveA();
+            await sleep(40);
+            mod.requestHeartbeat(wake("cron:after-restart", "slot-c"));
+            await sleep(80);
+            const replacementCallsWhileFirstReplacementPending = slotB.length;
+            const concurrentFollowupCalls = slotB.filter((request) => request.agentId === "slot-c").length;
+            resolveB();
+            await waitFor(
+              () => slotB.filter((request) => request.agentId === "slot-c").length === 1,
+              "single follow-up entry",
+            );
+            await sleep(40);
             const slotTrace = {
-              replacementCallsWhileOriginalPending: slotWhileOriginalPending,
+              replacementCallsWhileOriginalPending,
+              replacementCallsWhileFirstReplacementPending,
+              concurrentFollowupCalls,
+              finalFollowupCalls: slotB.filter((request) => request.agentId === "slot-c").length,
               originalCalls: slotA,
               replacementCalls: slotB,
             };
@@ -160,16 +178,19 @@ jobs:
             mod.requestHeartbeat(wake("cron:second", "batch-second", { coalesceMs: 20 }));
             await waitFor(() => batchA.length === 1, "first batch entry");
             mod.setHeartbeatWakeHandler(batchHandlerB);
-            mod.requestHeartbeat(wake("manual", "batch-second"));
             await sleep(40);
-            const duplicateBeforeOriginalSettles = batchA.length;
+            const replacementCallsBeforeOriginalSettles = batchB.length;
             resolveBatchA();
-            await waitFor(() => batchB.length === 1, "replacement remainder entry", 4000);
+            await sleep(400);
+            const originalRemainderCalls = batchA.filter((request) => request.agentId === "batch-second").length;
+            const replacementRemainderCalls = batchB.filter((request) => request.agentId === "batch-second").length;
             const remainderTrace = {
-              duplicateBeforeOriginalSettles,
+              replacementCallsBeforeOriginalSettles,
+              originalRemainderCalls,
+              replacementRemainderCalls,
               originalCalls: batchA,
               replacementCalls: batchB,
-              replacementDuplicateCount: Math.max(0, batchB.length - 1),
+              remainderDuplicateCount: Math.max(0, originalRemainderCalls + replacementRemainderCalls - 1),
             };
             mod.setHeartbeatWakeHandler(null);
 
