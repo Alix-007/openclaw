@@ -1,6 +1,9 @@
 name: T22-10 heartbeat lifecycle trace
 
 on:
+  push:
+    branches:
+      - proof/t22-10-runtime-20260719
   workflow_dispatch:
     inputs:
       main_sha:
@@ -21,8 +24,8 @@ jobs:
     steps:
       - name: Fetch immutable public refs
         env:
-          MAIN_SHA: ${{ inputs.main_sha }}
-          HEAD_SHA: ${{ inputs.head_sha }}
+          MAIN_SHA: ${{ inputs.main_sha || 'd411559dfbb3af4cb8549ab1dca2dd575a777a37' }}
+          HEAD_SHA: ${{ inputs.head_sha || 'c4640ce77a4525c021a2fecc03ad1e479e30860c' }}
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/openclaw/openclaw.git before-main
@@ -43,8 +46,8 @@ jobs:
 
       - name: Run production heartbeat lifecycle traces
         env:
-          MAIN_SHA: ${{ inputs.main_sha }}
-          HEAD_SHA: ${{ inputs.head_sha }}
+          MAIN_SHA: ${{ inputs.main_sha || 'd411559dfbb3af4cb8549ab1dca2dd575a777a37' }}
+          HEAD_SHA: ${{ inputs.head_sha || 'c4640ce77a4525c021a2fecc03ad1e479e30860c' }}
         run: |
           set -euo pipefail
           cat > "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs" <<'EOF'
