@@ -1,0 +1,254 @@
+name: Proof Signal release schema handling
+
+on:
+  push:
+    branches:
+      - proof/t2-signal-release-schema-6413ec0
+
+permissions: {}
+
+jobs:
+  runtime-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BEFORE_SHA: 837db49ebb2446ab62be27741d1ffabcad93189a
+      AFTER_SHA: 6413ec041534f436a2ad6a2671f58e1d63a28a27
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Setup public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Fetch and verify immutable revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/openclaw/openclaw.git
+          git fetch --no-tags upstream main
+          git fetch --no-tags origin alix/t2-signal-release-schema
+          test "$(git rev-parse "${BEFORE_SHA}^{commit}")" = "$BEFORE_SHA"
+          test "$(git rev-parse "${AFTER_SHA}^{commit}")" = "$AFTER_SHA"
+          echo "PROOF_REFS before=$BEFORE_SHA after=$AFTER_SHA"
+
+      - name: Write production-entry runtime proof driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/signal-release-proof.mjs" <<'NODE'
+          import assert from "node:assert/strict";
+          import fs from "node:fs/promises";
+          import path from "node:path";
+          import { pathToFileURL } from "node:url";
+
+          const mode = process.argv[2];
+          const runtimeDir = path.join(process.cwd(), ".proof-runtime");
+          const sourcePath = path.join(
+            process.cwd(),
+            "extensions/signal/src/install-signal-cli.ts",
+          );
+          const stubPath = path.join(runtimeDir, "signal-fetch-stub.ts");
+          const modulePath = path.join(runtimeDir, "install-signal-cli.ts");
+          await fs.rm(runtimeDir, { recursive: true, force: true });
+          await fs.mkdir(runtimeDir, { recursive: true });
+
+          await fs.writeFile(
+            stubPath,
+            `const state = { queue: [], urls: [], releaseCalls: 0 };
+          export function resetSignalFetchProof(queue) {
+            state.queue = [...queue];
+            state.urls = [];
+            state.releaseCalls = 0;
+          }
+          export function readSignalFetchProof() {
+            return { urls: [...state.urls], releaseCalls: state.releaseCalls };
+          }
+          export async function fetchWithSsrFGuard(params) {
+            state.urls.push(params.url);
+            const next = state.queue.shift();
+            if (!next) throw new Error("UNPLANNED_GUARDED_FETCH");
+            if (next.error) throw new Error(next.error);
+            return {
+              response: next.response,
+              release: async () => { state.releaseCalls += 1; },
+            };
+          }
+          `,
+            "utf8",
+          );
+
+          const original = await fs.readFile(sourcePath, "utf8");
+          const transportSpecifier = '"openclaw/plugin-sdk/ssrf-runtime"';
+          const occurrences = original.split(transportSpecifier).length - 1;
+          assert.equal(occurrences, 1, "proof may replace only the production transport import");
+          const instrumented = original.replace(
+            transportSpecifier,
+            JSON.stringify(pathToFileURL(stubPath).href),
+          );
+          await fs.writeFile(modulePath, instrumented, "utf8");
+
+          const stub = await import(pathToFileURL(stubPath).href);
+          const { installSignalCli } = await import(pathToFileURL(modulePath).href);
+          assert.equal(typeof installSignalCli, "function");
+          const runtime = { log: (message) => console.log(`RUNTIME_LOG ${message}`) };
+          const releaseUrl = "https://api.github.com/repos/AsamK/signal-cli/releases/latest";
+
+          if (mode === "before") {
+            stub.resetSignalFetchProof([
+              {
+                response: new Response("null", {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                }),
+              },
+            ]);
+            let observed;
+            try {
+              await installSignalCli(runtime);
+            } catch (error) {
+              observed = error;
+            }
+            const state = stub.readSignalFetchProof();
+            assert.ok(observed instanceof TypeError, "current main must reproduce the TypeError");
+            assert.deepEqual(state.urls, [releaseUrl]);
+            assert.equal(state.releaseCalls, 1);
+            console.log(
+              `BEFORE_RESULT error_name=${observed.name} release_calls=${state.releaseCalls} ` +
+                `url=${JSON.stringify(state.urls[0])}`,
+            );
+            process.exit(0);
+          }
+
+          if (mode === "after-malformed") {
+            stub.resetSignalFetchProof([
+              {
+                response: new Response("null", {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                }),
+              },
+            ]);
+            const result = await installSignalCli(runtime);
+            const state = stub.readSignalFetchProof();
+            assert.deepEqual(result, {
+              ok: false,
+              error: "Failed to parse signal-cli release info.",
+            });
+            assert.deepEqual(state.urls, [releaseUrl]);
+            assert.equal(state.releaseCalls, 1);
+            console.log(
+              `AFTER_MALFORMED result=${JSON.stringify(result)} ` +
+                `release_calls=${state.releaseCalls}`,
+            );
+            process.exit(0);
+          }
+
+          if (mode === "after-mixed") {
+            const validUrl = "https://downloads.example.test/signal-cli-Linux-native.tar.gz";
+            stub.resetSignalFetchProof([
+              {
+                response: new Response(
+                  JSON.stringify({
+                    tag_name: "v0.14.6",
+                    assets: [
+                      null,
+                      { name: 42, browser_download_url: "https://wrong.example.test/name.tgz" },
+                      { name: "wrong-url.tgz", browser_download_url: false },
+                      {
+                        name: "signal-cli-0.14.6-Linux-native.tar.gz",
+                        browser_download_url: validUrl,
+                      },
+                    ],
+                  }),
+                  { status: 200, headers: { "content-type": "application/json" } },
+                ),
+              },
+              { error: "DOWNLOAD_BOUNDARY_SENTINEL" },
+            ]);
+            let observed;
+            try {
+              await installSignalCli(runtime);
+            } catch (error) {
+              observed = error;
+            }
+            const state = stub.readSignalFetchProof();
+            assert.equal(observed?.message, "DOWNLOAD_BOUNDARY_SENTINEL");
+            assert.deepEqual(state.urls, [releaseUrl, validUrl]);
+            assert.equal(state.releaseCalls, 1);
+            console.log(
+              `AFTER_MIXED selected_url=${JSON.stringify(state.urls[1])} ` +
+                `release_calls=${state.releaseCalls} boundary=${observed.message}`,
+            );
+            process.exit(0);
+          }
+
+          assert.equal(mode, "live");
+          const response = await fetch(releaseUrl, {
+            headers: {
+              "User-Agent": "openclaw-signal-proof",
+              Accept: "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+            signal: AbortSignal.timeout(30_000),
+          });
+          const payload = await response.json();
+          assert.equal(response.status, 200);
+          assert.equal(typeof payload.tag_name, "string");
+          assert.ok(Array.isArray(payload.assets));
+          assert.ok(payload.assets.length > 0);
+          assert.ok(
+            payload.assets.every(
+              (asset) =>
+                asset &&
+                typeof asset.name === "string" &&
+                typeof asset.browser_download_url === "string",
+            ),
+          );
+          console.log(
+            `LIVE_GITHUB status=${response.status} tag=${JSON.stringify(payload.tag_name)} ` +
+              `assets=${payload.assets.length}`,
+          );
+          NODE
+
+      - name: Reproduce current-main failure
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$BEFORE_SHA"
+          test "$(git rev-parse HEAD)" = "$BEFORE_SHA"
+          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" before
+
+      - name: Verify fixed malformed-response behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" after-malformed
+
+      - name: Verify mixed assets retain the valid download URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" after-mixed
+
+      - name: Verify live GitHub release contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" live
