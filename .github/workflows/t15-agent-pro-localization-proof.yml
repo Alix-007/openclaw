@@ -1,0 +1,143 @@
+name: T15 Agent Pro localization proof
+
+on:
+  push:
+    branches:
+      - alix/t15-agent-pro-proof
+
+concurrency:
+  group: t15-agent-pro-localization-proof-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions:
+  contents: read
+
+jobs:
+  simulator:
+    name: French Simulator (${{ matrix.label }})
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: before
+            repository: openclaw/openclaw
+            ref: faf3dbdda833b36d4cccf465a40aabe2d1675d3d
+          - label: after
+            repository: Alix-007/openclaw
+            ref: ${{ github.sha }}
+
+    steps:
+      - name: Checkout exact proof ref
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: ${{ matrix.repository }}
+          ref: ${{ matrix.ref }}
+          fetch-depth: 1
+          fetch-tags: false
+          persist-credentials: false
+          submodules: false
+
+      - name: Verify Xcode
+        shell: bash
+        run: |
+          set -euo pipefail
+          for xcode_app in /Applications/Xcode_26.5.app /Applications/Xcode-26.5.0.app; do
+            if [[ -d "$xcode_app/Contents/Developer" ]]; then
+              sudo xcode-select -s "$xcode_app/Contents/Developer"
+              break
+            fi
+          done
+          xcodebuild -version
+          xcode_version="$(xcodebuild -version | awk 'NR == 1 { print $2 }')"
+          [[ "$xcode_version" == 26.* ]]
+          swift --version
+
+      - name: Setup Node environment
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          install-deps: "false"
+
+      - name: Install iOS Swift tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift_tools_dir="$RUNNER_TEMP/openclaw-swift-tools"
+          ./scripts/install-xcodegen.sh "$swift_tools_dir"
+          ./scripts/install-swift-tools.sh "$swift_tools_dir"
+          echo "$swift_tools_dir" >> "$GITHUB_PATH"
+          "$swift_tools_dir/xcodegen" --version
+          "$swift_tools_dir/swiftformat" --version
+          "$swift_tools_dir/swiftlint" version
+
+      - name: Build, launch, and capture the fixture
+        shell: bash
+        env:
+          IOS_DERIVED_DATA_DIR: ${{ runner.temp }}/OpenClawDerivedData
+          IOS_DEST: platform=iOS Simulator,name=iPhone 17
+          IOS_SIM: iPhone 17
+        run: |
+          set -euo pipefail
+          ./scripts/ios-run.sh
+
+          app_path="$IOS_DERIVED_DATA_DIR/Build/Products/Debug-iphonesimulator/OpenClaw.app"
+          test -d "$app_path"
+          bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_path/Info.plist")"
+
+          xcrun simctl terminate "$IOS_SIM" "$bundle_id" >/dev/null 2>&1 || true
+          xcrun simctl launch "$IOS_SIM" "$bundle_id" \
+            --openclaw-screenshot-mode \
+            --openclaw-initial-tab control \
+            --openclaw-initial-destination usage \
+            --openclaw-sidebar-visibility hidden \
+            --openclaw-appearance light \
+            -AppleLanguages "(fr)" \
+            -AppleLocale fr_FR
+          sleep 8
+
+          output="agent-pro-${{ matrix.label }}-fr.png"
+          xcrun simctl io "$IOS_SIM" screenshot "$output"
+          test -s "$output"
+          [[ "$(stat -f%z "$output")" -gt 10000 ]]
+          sips -g pixelWidth -g pixelHeight "$output"
+          shasum -a 256 "$output"
+
+      - name: Upload French Simulator screenshot
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: agent-pro-${{ matrix.label }}-fr
+          path: agent-pro-${{ matrix.label }}-fr.png
+          if-no-files-found: error
+          retention-days: 7
+
+  compare:
+    name: Compare proof artifacts
+    needs: simulator
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Download screenshots
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: agent-pro-*-fr
+          path: proof
+          merge-multiple: true
+
+      - name: Verify both rendered surfaces differ
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="proof/agent-pro-before-fr.png"
+          after="proof/agent-pro-after-fr.png"
+          test -s "$before"
+          test -s "$after"
+          before_hash="$(sha256sum "$before" | awk '{ print $1 }')"
+          after_hash="$(sha256sum "$after" | awk '{ print $1 }')"
+          [[ "$before_hash" != "$after_hash" ]]
+          file "$before" "$after"
+          printf 'before=%s\nafter=%s\n' "$before_hash" "$after_hash"
