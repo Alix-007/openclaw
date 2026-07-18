@@ -1,0 +1,178 @@
+name: T22-10 heartbeat lifecycle trace
+
+on:
+  workflow_dispatch:
+    inputs:
+      main_sha:
+        description: Immutable upstream main SHA for the before trace
+        required: true
+        type: string
+      head_sha:
+        description: Immutable contributor head SHA for the after trace
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fetch immutable public refs
+        env:
+          MAIN_SHA: ${{ inputs.main_sha }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/openclaw/openclaw.git before-main
+          git -C before-main fetch --depth 1 origin "$MAIN_SHA"
+          git -C before-main checkout --detach "$MAIN_SHA"
+          git clone --depth 1 https://github.com/Alix-007/openclaw.git after-pr
+          git -C after-pr fetch --depth 1 origin "$HEAD_SHA"
+          git -C after-pr checkout --detach "$HEAD_SHA"
+          test "$(git -C before-main rev-parse HEAD)" = "$MAIN_SHA"
+          test "$(git -C after-pr rev-parse HEAD)" = "$HEAD_SHA"
+
+      - name: Install dependencies without lifecycle scripts
+        run: |
+          set -euo pipefail
+          corepack enable
+          (cd before-main && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd after-pr && pnpm install --frozen-lockfile --ignore-scripts)
+
+      - name: Run production heartbeat lifecycle traces
+        env:
+          MAIN_SHA: ${{ inputs.main_sha }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        run: |
+          set -euo pipefail
+          cat > "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs" <<'EOF'
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          const waitFor = async (predicate, label, timeoutMs = 4000) => {
+            const started = Date.now();
+            while (!predicate()) {
+              if (Date.now() - started > timeoutMs) {
+                throw new Error(`timed out waiting for ${label}`);
+              }
+              await sleep(5);
+            }
+          };
+          const compact = (request) => ({
+            source: request.source,
+            intent: request.intent,
+            reason: request.reason,
+            agentId: request.agentId,
+          });
+          const wake = (reason, agentId, extra = {}) => ({
+            source: reason.startsWith("cron:") ? "cron" : reason === "manual" ? "manual" : "interval",
+            intent: reason === "manual" ? "manual" : reason === "interval" ? "scheduled" : "event",
+            reason,
+            agentId,
+            coalesceMs: 0,
+            ...extra,
+          });
+          const ran = () => ({ status: "ran", durationMs: 1 });
+
+          const runTrace = async () => {
+            const root = process.env.TRACE_ROOT;
+            const mod = await import(`${root}/src/infra/heartbeat-wake.ts`);
+            const trace = { label: process.env.TRACE_LABEL, mainSha: process.env.MAIN_SHA, headSha: process.env.HEAD_SHA };
+
+            let resolveA;
+            const holdA = new Promise((resolve) => { resolveA = resolve; });
+            const slotA = [];
+            const slotB = [];
+            const handlerA = async (request) => {
+              slotA.push(compact(request));
+              await holdA;
+              return ran();
+            };
+            const handlerB = async (request) => {
+              slotB.push(compact(request));
+              return ran();
+            };
+            mod.setHeartbeatWakeHandler(handlerA);
+            mod.requestHeartbeat(wake("interval", "slot-a"));
+            await waitFor(() => slotA.length === 1, "original handler entry");
+            mod.setHeartbeatWakeHandler(handlerB);
+            mod.requestHeartbeat(wake("manual", "slot-b"));
+            await sleep(80);
+            const slotWhileOriginalPending = slotB.length;
+            resolveA();
+            await waitFor(() => slotB.length === 1, "replacement handler entry");
+            const slotTrace = {
+              replacementCallsWhileOriginalPending: slotWhileOriginalPending,
+              originalCalls: slotA,
+              replacementCalls: slotB,
+            };
+            mod.setHeartbeatWakeHandler(null);
+
+            let resolveTimerA;
+            const holdTimerA = new Promise((resolve) => { resolveTimerA = resolve; });
+            const timerA = [];
+            const timerB = [];
+            const timerHandlerA = async (request) => {
+              timerA.push(compact(request));
+              await holdTimerA;
+              return ran();
+            };
+            const timerHandlerB = async (request) => {
+              timerB.push(compact(request));
+              return ran();
+            };
+            mod.setHeartbeatWakeHandler(timerHandlerA);
+            mod.requestHeartbeat(wake("interval", "timer-a"));
+            await waitFor(() => timerA.length === 1, "timer original handler entry");
+            mod.setHeartbeatWakeHandler(timerHandlerB);
+            mod.requestHeartbeat(wake("manual", "timer-b", { coalesceMs: 180 }));
+            resolveTimerA();
+            await sleep(40);
+            const replacementCallsBeforeDue = timerB.length;
+            await waitFor(() => timerB.length === 1, "replacement timer due", 4000);
+            const timerTrace = {
+              replacementCallsBeforeDue,
+              originalCalls: timerA,
+              replacementCalls: timerB,
+            };
+            mod.setHeartbeatWakeHandler(null);
+
+            let resolveBatchA;
+            const holdBatchA = new Promise((resolve) => { resolveBatchA = resolve; });
+            const batchA = [];
+            const batchB = [];
+            const batchHandlerA = async (request) => {
+              batchA.push(compact(request));
+              if (request.agentId === "batch-first") {
+                await holdBatchA;
+              }
+              return ran();
+            };
+            const batchHandlerB = async (request) => {
+              batchB.push(compact(request));
+              return ran();
+            };
+            mod.setHeartbeatWakeHandler(batchHandlerA);
+            mod.requestHeartbeat(wake("cron:first", "batch-first", { coalesceMs: 20 }));
+            mod.requestHeartbeat(wake("cron:second", "batch-second", { coalesceMs: 20 }));
+            await waitFor(() => batchA.length === 1, "first batch entry");
+            mod.setHeartbeatWakeHandler(batchHandlerB);
+            mod.requestHeartbeat(wake("manual", "batch-second"));
+            await sleep(40);
+            const duplicateBeforeOriginalSettles = batchA.length;
+            resolveBatchA();
+            await waitFor(() => batchB.length === 1, "replacement remainder entry", 4000);
+            const remainderTrace = {
+              duplicateBeforeOriginalSettles,
+              originalCalls: batchA,
+              replacementCalls: batchB,
+              replacementDuplicateCount: Math.max(0, batchB.length - 1),
+            };
+            mod.setHeartbeatWakeHandler(null);
+
+            console.log(`HEARTBEAT_TRACE ${JSON.stringify({ ...trace, slotTrace, timerTrace, remainderTrace })}`);
+          };
+          await runTrace();
+          EOF
+          TRACE_ROOT="$PWD/before-main" TRACE_LABEL=before-main MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs"
+          TRACE_ROOT="$PWD/after-pr" TRACE_LABEL=after-pr MAIN_SHA="$MAIN_SHA" HEAD_SHA="$HEAD_SHA" node --import tsx "$GITHUB_WORKSPACE/heartbeat-lifecycle-trace.mjs"
