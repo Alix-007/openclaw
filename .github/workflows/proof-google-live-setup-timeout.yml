@@ -1,0 +1,118 @@
+name: Google Live Setup Timeout Proof
+
+run-name: Google Live setup timeout before/after proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Proof branch marker
+        required: true
+        default: proof/109020-google-live-setup-timeout
+        type: string
+      expected_sha:
+        description: Candidate SHA marker
+        required: false
+        default: ""
+        type: string
+      qa_profile:
+        description: Proof marker
+        required: true
+        default: google-live-setup-timeout
+        type: string
+
+permissions: {}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  browser-proof:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Baseline remains stalled after 30s
+            sha: 047232bd16e407cf53762eb6ffa80d400b1d249e
+            expected: stalled
+          - name: Candidate cleans up after 30s
+            sha: 50b8114a49af3409d82994041bf5f43dcb2b5db9
+            expected: recovered
+    steps:
+      - name: Checkout proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout immutable product revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ matrix.sha }}
+          path: target
+          persist-credentials: false
+
+      - name: Install proof-only browser test
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp ui/src/e2e/google-live-setup-timeout-proof.e2e.test.ts \
+            target/ui/src/e2e/google-live-setup-timeout-proof.e2e.test.ts
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "false"
+          use-actions-cache: "false"
+
+      - name: Install dependencies and Chromium
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          node scripts/ensure-playwright-chromium.mjs
+
+      - name: Run immutable browser proof
+        working-directory: target
+        env:
+          GOOGLE_LIVE_PROOF_EXPECT: ${{ matrix.expected }}
+          GOOGLE_LIVE_PRODUCT_SHA: ${{ matrix.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-vitest.mjs ui/src/e2e/google-live-setup-timeout-proof.e2e.test.ts
+
+      - name: Record immutable revisions
+        if: always()
+        working-directory: target
+        env:
+          EXPECTED_SHA: ${{ matrix.sha }}
+          EXPECTED_OUTCOME: ${{ matrix.expected }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$EXPECTED_SHA"
+          {
+            echo "### Google Live setup timeout proof"
+            echo
+            echo "- Product SHA: \`$actual_sha\`"
+            echo "- Expected outcome: \`$EXPECTED_OUTCOME\`"
+            echo "- Browser: Playwright Chromium with fake microphone"
+            echo "- Elapsed browser clock: \`30000 ms\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload screenshots and resource diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: google-live-setup-timeout-${{ matrix.expected }}-${{ matrix.sha }}
+          path: target/.artifacts/control-ui-e2e/google-live-setup-timeout/
+          if-no-files-found: error
+          retention-days: 30
