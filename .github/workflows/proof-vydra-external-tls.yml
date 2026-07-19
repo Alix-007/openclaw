@@ -1,0 +1,356 @@
+name: Proof Vydra external TLS request policy
+
+on:
+  push:
+    branches:
+      - proof/105884-vydra-external-tls
+
+permissions: {}
+
+jobs:
+  external-tls-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      AFTER_SHA: c91a9cc649653484a77923dc224f6d376e0ddc8c
+      CLOUDFLARED_VERSION: 2026.7.2
+      CLOUDFLARED_SHA256: ec905ea7b7e327ff8abdde8cb64697a2152de74dbcdbf6aec9db8364eb3886cd
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Set up public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Verify immutable candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin alix/vydra-request-policy
+          test "$(git rev-parse FETCH_HEAD)" = "$AFTER_SHA"
+          test "$(git rev-parse "${AFTER_SHA}^{commit}")" = "$AFTER_SHA"
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          echo "PROOF_REF exact_head=$AFTER_SHA"
+
+      - name: Download and verify official cloudflared release
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset_url="https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64"
+          binary="$RUNNER_TEMP/cloudflared"
+          curl --fail --location --silent --show-error \
+            --retry 3 --connect-timeout 15 --max-time 120 \
+            "$asset_url" -o "$binary"
+          echo "${CLOUDFLARED_SHA256}  ${binary}" | sha256sum --check --strict
+          chmod 0755 "$binary"
+          "$binary" --version
+          echo "CLOUDFLARED_ASSET version=$CLOUDFLARED_VERSION sha256=$CLOUDFLARED_SHA256"
+          echo "CLOUDFLARED_SOURCE $asset_url"
+          echo "QUICK_TUNNEL_CONTRACT testing_only=true sequential_requests=true sse=false"
+
+      - name: Write redacted external TLS proof driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/vydra-external-tls-proof.mjs" <<'NODE'
+          import assert from "node:assert/strict";
+          import { spawn } from "node:child_process";
+          import { mkdir } from "node:fs/promises";
+          import http from "node:http";
+          import path from "node:path";
+          import { pathToFileURL } from "node:url";
+
+          const cloudflared = path.join(process.env.RUNNER_TEMP, "cloudflared");
+          const proofToken = "proof-only-vydra-token";
+          const expectedAuthorization = `Bearer ${proofToken}`;
+          const expectedPolicy = "external-tls-proof";
+          const tunnelProcesses = [];
+          const servers = [];
+          const records = [];
+          let originA;
+          let originB;
+
+          function redact(value) {
+            return String(value)
+              .replace(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/giu, "https://[REDACTED].trycloudflare.com")
+              .replaceAll(expectedAuthorization, "[REDACTED_AUTH]")
+              .replaceAll(proofToken, "[REDACTED_TOKEN]");
+          }
+
+          function recordRequest(originClass, req) {
+            records.push({
+              originClass,
+              method: req.method,
+              path: req.url,
+              authorization: req.headers.authorization === expectedAuthorization,
+              policy: req.headers["x-vydra-policy"] === expectedPolicy,
+            });
+          }
+
+          function sendJson(res, payload) {
+            res.writeHead(200, { "content-type": "application/json" });
+            res.end(JSON.stringify(payload));
+          }
+
+          async function readBody(req) {
+            const chunks = [];
+            for await (const chunk of req) {
+              chunks.push(chunk);
+            }
+            return Buffer.concat(chunks).toString("utf8");
+          }
+
+          async function listen(handler) {
+            const server = http.createServer((req, res) => {
+              Promise.resolve(handler(req, res)).catch((error) => {
+                res.writeHead(500, { "content-type": "text/plain" });
+                res.end("proof origin error");
+                console.error(`ORIGIN_ERROR ${redact(error?.stack ?? error)}`);
+              });
+            });
+            servers.push(server);
+            await new Promise((resolve, reject) => {
+              server.once("error", reject);
+              server.listen(0, "127.0.0.1", resolve);
+            });
+            const address = server.address();
+            assert.ok(address && typeof address === "object");
+            return address.port;
+          }
+
+          async function startQuickTunnel(port, label) {
+            const home = path.join(process.env.RUNNER_TEMP, `cloudflared-${label}`);
+            await mkdir(home, { recursive: true });
+            const child = spawn(
+              cloudflared,
+              ["tunnel", "--no-autoupdate", "--url", `http://127.0.0.1:${port}`],
+              {
+                env: { ...process.env, HOME: home },
+                stdio: ["ignore", "pipe", "pipe"],
+              },
+            );
+            tunnelProcesses.push(child);
+            let buffered = "";
+            const tunnelUrl = await new Promise((resolve, reject) => {
+              const timer = setTimeout(() => reject(new Error(`quick tunnel ${label} startup timed out`)), 60_000);
+              const inspect = (chunk) => {
+                buffered += chunk.toString("utf8");
+                const match = buffered.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/iu);
+                if (match) {
+                  clearTimeout(timer);
+                  resolve(match[0]);
+                }
+                buffered = buffered.slice(-16_384);
+              };
+              child.stdout.on("data", inspect);
+              child.stderr.on("data", inspect);
+              child.once("exit", (code) => {
+                clearTimeout(timer);
+                reject(new Error(`quick tunnel ${label} exited early code=${code} log=${redact(buffered)}`));
+              });
+              child.once("error", (error) => {
+                clearTimeout(timer);
+                reject(error);
+              });
+            });
+            assert.match(tunnelUrl, /^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/iu);
+            return tunnelUrl;
+          }
+
+          async function waitUntilReady(url) {
+            let lastError;
+            for (let attempt = 0; attempt < 30; attempt += 1) {
+              try {
+                const response = await fetch(`${url}/ready`, { signal: AbortSignal.timeout(5_000) });
+                if (response.ok && (await response.text()) === "ready") {
+                  return;
+                }
+                lastError = new Error(`readiness status=${response.status}`);
+              } catch (error) {
+                lastError = error;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 1_000));
+            }
+            throw new Error(`quick tunnel readiness failed: ${redact(lastError?.message ?? lastError)}`);
+          }
+
+          async function stopChild(child) {
+            if (child.exitCode !== null || child.signalCode !== null) {
+              return;
+            }
+            child.kill("SIGTERM");
+            await Promise.race([
+              new Promise((resolve) => child.once("exit", resolve)),
+              new Promise((resolve) => setTimeout(resolve, 5_000)),
+            ]);
+            if (child.exitCode === null && child.signalCode === null) {
+              child.kill("SIGKILL");
+              await Promise.race([
+                new Promise((resolve) => child.once("exit", resolve)),
+                new Promise((resolve) => setTimeout(resolve, 2_000)),
+              ]);
+            }
+          }
+
+          async function cleanup() {
+            await Promise.allSettled(tunnelProcesses.map(stopChild));
+            await Promise.allSettled(
+              servers.map((server) => new Promise((resolve) => server.close(resolve))),
+            );
+          }
+
+          async function main() {
+            const portA = await listen(async (req, res) => {
+              if (req.url === "/ready") {
+                res.end("ready");
+                return;
+              }
+              recordRequest("provider", req);
+              if (req.method === "POST" && req.url === "/api/v1/models/veo3") {
+                const body = JSON.parse(await readBody(req));
+                const jobId = body.prompt === "same-origin proof" ? "job-same" : "job-cross";
+                sendJson(res, { jobId, status: "processing" });
+                return;
+              }
+              if (req.method === "GET" && req.url === "/api/v1/jobs/job-same") {
+                sendJson(res, {
+                  jobId: "job-same",
+                  status: "completed",
+                  videoUrl: `${originA}/generated/same.mp4`,
+                });
+                return;
+              }
+              if (req.method === "GET" && req.url === "/api/v1/jobs/job-cross") {
+                sendJson(res, {
+                  jobId: "job-cross",
+                  status: "completed",
+                  videoUrl: `${originB}/generated/cross.mp4`,
+                });
+                return;
+              }
+              if (req.method === "GET" && req.url === "/generated/same.mp4") {
+                res.writeHead(200, { "content-type": "video/mp4" });
+                res.end("same-origin-video");
+                return;
+              }
+              res.writeHead(404).end();
+            });
+            const portB = await listen(async (req, res) => {
+              if (req.url === "/ready") {
+                res.end("ready");
+                return;
+              }
+              recordRequest("asset", req);
+              if (req.method === "GET" && req.url === "/generated/cross.mp4") {
+                res.writeHead(200, { "content-type": "video/mp4" });
+                res.end("cross-origin-video");
+                return;
+              }
+              res.writeHead(404).end();
+            });
+
+            [originA, originB] = await Promise.all([
+              startQuickTunnel(portA, "provider"),
+              startQuickTunnel(portB, "asset"),
+            ]);
+            assert.notEqual(new URL(originA).origin, new URL(originB).origin);
+            await Promise.all([waitUntilReady(originA), waitUntilReady(originB)]);
+
+            const providerUrl = pathToFileURL(
+              path.join(process.cwd(), "extensions/vydra/video-generation-provider.ts"),
+            ).href;
+            const { buildVydraVideoGenerationProvider } = await import(providerUrl);
+            const provider = buildVydraVideoGenerationProvider();
+            const cfg = {
+              models: {
+                providers: {
+                  vydra: {
+                    apiKey: proofToken,
+                    baseUrl: `${originA}/api/v1`,
+                    models: [],
+                    request: { headers: { "X-Vydra-Policy": expectedPolicy } },
+                  },
+                },
+              },
+            };
+            const authStore = { version: 1, profiles: {} };
+            const common = {
+              provider: "vydra",
+              model: "veo3",
+              cfg,
+              authStore,
+              timeoutMs: 60_000,
+            };
+            const same = await provider.generateVideo({ ...common, prompt: "same-origin proof" });
+            const cross = await provider.generateVideo({ ...common, prompt: "cross-origin proof" });
+            assert.equal(same.videos[0]?.buffer.toString(), "same-origin-video");
+            assert.equal(cross.videos[0]?.buffer.toString(), "cross-origin-video");
+
+            const relevant = records.filter((entry) => entry.path !== "/ready");
+            assert.deepEqual(relevant, [
+              { originClass: "provider", method: "POST", path: "/api/v1/models/veo3", authorization: true, policy: true },
+              { originClass: "provider", method: "GET", path: "/api/v1/jobs/job-same", authorization: true, policy: true },
+              { originClass: "provider", method: "GET", path: "/generated/same.mp4", authorization: true, policy: true },
+              { originClass: "provider", method: "POST", path: "/api/v1/models/veo3", authorization: true, policy: true },
+              { originClass: "provider", method: "GET", path: "/api/v1/jobs/job-cross", authorization: true, policy: true },
+              { originClass: "asset", method: "GET", path: "/generated/cross.mp4", authorization: false, policy: false },
+            ]);
+            console.log("EXTERNAL_TLS endpoint_class=two-independent-trycloudflare-origins protocol=https");
+            console.log("SAME_ORIGIN stages=submit,poll,download authorization=present policy_header=present");
+            console.log("CROSS_ORIGIN stages=submit,poll,download provider_headers=present,present,absent");
+            console.log("PROOF_RESULT flows=2 status=passed full_hostnames=redacted authorization_values=redacted");
+          }
+
+          let terminating = false;
+          for (const signal of ["SIGINT", "SIGTERM"]) {
+            process.on(signal, () => {
+              if (terminating) {
+                return;
+              }
+              terminating = true;
+              void cleanup().finally(() => process.exit(128));
+            });
+          }
+
+          try {
+            await main();
+          } catch (error) {
+            console.error(`PROOF_ERROR ${redact(error?.stack ?? error)}`);
+            process.exitCode = 1;
+          } finally {
+            await cleanup();
+            console.log("PROOF_CLEANUP tunnels=stopped origins=closed");
+          }
+          NODE
+
+      - name: Run exact-head focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          node scripts/run-vitest.mjs \
+            extensions/vydra/image-generation-provider.test.ts \
+            extensions/vydra/video-generation-provider.test.ts \
+            extensions/vydra/shared.test.ts \
+            extensions/vydra/speech-provider.test.ts
+
+      - name: Run external TLS submit poll download proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          timeout --signal=TERM --kill-after=15s 12m \
+            node --import tsx "$RUNNER_TEMP/vydra-external-tls-proof.mjs"
