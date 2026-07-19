@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { chmod, mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { access, chmod, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -51,6 +51,15 @@ async function command(command: string, args: string[]): Promise<{ stdout: strin
 async function commandOk(commandName: string, args: string[]): Promise<boolean> {
   try {
     await command(commandName, args);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await access(filePath);
     return true;
   } catch {
     return false;
@@ -240,9 +249,18 @@ async function runScenario(
       makePrompter(),
     );
     const durationMs = Date.now() - startedAt;
-    plistAfter = await commandOk("/usr/bin/test", ["-e", plistPath]);
+    plistAfter = await fileExists(plistPath);
     moved = await trashEntries(label);
     loadedAfter = await isLoaded(label);
+
+    const observation = {
+      loadedAfter,
+      mode,
+      plistAfter,
+      plistPath,
+      trashEntries: moved,
+    };
+    console.log(`LAUNCHD_CLEANUP_OBSERVATION=${JSON.stringify(observation)}`);
 
     if (mode === "success") {
       assert(!plistAfter, "success: plist was not removed from LaunchAgents");
@@ -260,6 +278,7 @@ async function runScenario(
       events,
       label,
       loadedAfter,
+      plistPath,
       mode,
       plistAfter,
       trashEntries: moved,
