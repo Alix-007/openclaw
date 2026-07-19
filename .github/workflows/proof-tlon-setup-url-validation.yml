@@ -106,6 +106,7 @@ jobs:
             echo "- Expected outcome: \`$EXPECTED_OUTCOME\`"
             echo "- Browser: Playwright Chromium with fake microphone"
             echo "- Elapsed browser clock: \`30000 ms\`"
+            echo "- Healthy control: Google \`setupComplete\`, fake camera, and manual cleanup"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload screenshots and resource diagnostics

@@ -237,6 +237,23 @@ async function captureScreenshot(page: Page, name: string) {
   });
 }
 
+function googleLiveSession() {
+  return {
+    provider: "google",
+    transport: "provider-websocket",
+    protocol: "google-live-bidi",
+    clientSecret: ["auth_tokens", "google-live-timeout-proof"].join("/"),
+    websocketUrl:
+      "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained",
+    audio: {
+      inputEncoding: "pcm16",
+      inputSampleRateHz: 16_000,
+      outputEncoding: "pcm16",
+      outputSampleRateHz: 24_000,
+    },
+  };
+}
+
 describe("Google Live setup timeout browser proof", () => {
   beforeAll(async () => {
     if (!canRunPlaywrightChromium(chromiumExecutablePath)) {
@@ -304,20 +321,7 @@ describe("Google Live setup timeout browser proof", () => {
       // the deferred session response makes the 30s product timer start at zero.
       await page.clock.install({ time: new Date("2026-07-19T00:00:00.000Z") });
       await installMeterTimerProbe(page);
-      await gateway.resolveDeferred("talk.client.create", {
-        provider: "google",
-        transport: "provider-websocket",
-        protocol: "google-live-bidi",
-        clientSecret: ["auth_tokens", "google-live-timeout-proof"].join("/"),
-        websocketUrl:
-          "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained",
-        audio: {
-          inputEncoding: "pcm16",
-          inputSampleRateHz: 16_000,
-          outputEncoding: "pcm16",
-          outputSampleRateHz: 24_000,
-        },
-      });
+      await gateway.resolveDeferred("talk.client.create", googleLiveSession());
 
       await expect
         .poll(() => socketMessages.some((message) => JSON.stringify(message).includes('"setup"')))
@@ -386,6 +390,113 @@ describe("Google Live setup timeout browser proof", () => {
             socket: { closed: socketClosed, messageCount: socketMessages.length, url: socketUrl },
             before,
             after,
+          },
+          null,
+          2,
+        )}\n`,
+      );
+    } finally {
+      await context.close();
+    }
+  });
+
+  it("keeps a healthy setup alive and releases microphone and camera on stop", async () => {
+    const context = await browser.newContext({
+      colorScheme: "dark",
+      locale: "en-US",
+      permissions: ["camera", "microphone"],
+      serviceWorkers: "block",
+      viewport: { height: 1000, width: 1440 },
+    });
+    const page = await context.newPage();
+    const gateway = await installMockGateway(page, {
+      deferredMethods: ["talk.client.create"],
+      methodResponses: {
+        "talk.catalog": {
+          realtime: {
+            activeProvider: "google",
+            providers: [{ id: "google", label: "Google", supportsVideoFrames: true }],
+          },
+        },
+      },
+    });
+    let setupMessages = 0;
+    let socketClosed = false;
+    await installResourceProbe(page);
+    await page.routeWebSocket("wss://generativelanguage.googleapis.com/**", (ws) => {
+      ws.onMessage((message) => {
+        const parsed = JSON.parse(
+          typeof message === "string" ? message : message.toString(),
+        ) as { setup?: unknown };
+        if (parsed.setup) {
+          setupMessages += 1;
+          ws.send(JSON.stringify({ setupComplete: {} }));
+        }
+      });
+      ws.onClose(() => {
+        socketClosed = true;
+      });
+    });
+
+    try {
+      const response = await page.goto(`${server.baseUrl}chat`);
+      expect(response?.status()).toBe(200);
+      await page.getByRole("button", { name: "Start voice input" }).click();
+      await gateway.waitForRequest("talk.client.create");
+      await page.clock.install({ time: new Date("2026-07-19T01:00:00.000Z") });
+      await installMeterTimerProbe(page);
+      await gateway.resolveDeferred("talk.client.create", googleLiveSession());
+
+      await expect
+        .poll(() => page.locator('.agent-chat__voice-activity[data-status="listening"]').count())
+        .toBe(1);
+      expect(setupMessages).toBe(1);
+      const cameraButton = page.getByRole("button", { name: "Turn camera on" });
+      await expect.poll(() => cameraButton.isEnabled()).toBe(true);
+      await cameraButton.click();
+      const preview = page.locator('video[aria-label="Camera preview"]');
+      await expect.poll(() => preview.isVisible()).toBe(true);
+      await expect.poll(async () => (await readResourceSnapshot(page)).tracks.length).toBe(2);
+
+      const active = await readResourceSnapshot(page);
+      expect(active.tracks.map((track) => track.kind).sort()).toEqual(["audio", "video"]);
+      expect(active.tracks.every((track) => track.readyState === "live")).toBe(true);
+      await captureScreenshot(page, `${expectedOutcome}-03-healthy-listening-camera.png`);
+
+      await page.clock.runFor(30_001);
+      await page.evaluate(() => Promise.resolve());
+      await expect
+        .poll(() => page.locator('.agent-chat__voice-activity[data-status="listening"]').count())
+        .toBe(1);
+      await expect
+        .poll(() => page.getByText("Realtime connection timed out after 30000ms").count())
+        .toBe(0);
+
+      await page.getByRole("button", { name: "Stop voice input" }).click();
+      await expect
+        .poll(() => page.getByRole("button", { name: "Start voice input" }).isVisible())
+        .toBe(true);
+      await expect.poll(() => preview.count()).toBe(0);
+      await expect.poll(() => socketClosed).toBe(true);
+      const stopped = await readResourceSnapshot(page);
+      expect(stopped.tracks.map((track) => track.kind).sort()).toEqual(["audio", "video"]);
+      expect(stopped.tracks.every((track) => track.readyState === "ended")).toBe(true);
+      expect(stopped.trackStopCalls).toBe(2);
+      expect(stopped.audioContexts.map((audioContext) => audioContext.closeCalls)).toEqual([1, 1]);
+      expect(stopped.audioNodes.every((node) => node.disconnectCalls === 1)).toBe(true);
+      expect(stopped.meterIntervals).toEqual([{ cleared: true, delay: 100 }]);
+      await captureScreenshot(page, `${expectedOutcome}-04-healthy-stopped.png`);
+      await writeFile(
+        path.join(artifactDir, `${expectedOutcome}-healthy-resources.json`),
+        `${JSON.stringify(
+          {
+            expectedOutcome,
+            productSha,
+            elapsedBrowserClockMs: 30_001,
+            setupMessages,
+            socketClosed,
+            active,
+            stopped,
           },
           null,
           2,
