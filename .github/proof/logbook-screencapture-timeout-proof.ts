@@ -186,6 +186,7 @@ try {
   const jpeg = Buffer.from(normal.base64, "base64");
   assert(jpeg.length > 1_000, `normal snapshot was unexpectedly small: ${jpeg.length}`);
   assert(jpeg[0] === 0xff && jpeg[1] === 0xd8, "normal snapshot was not a JPEG");
+  await writeFile(path.join(artifactDir, "normal.jpg"), jpeg);
   const filesAfterNormal = await snapshotFiles(captureDir);
   assert(sameFiles(filesAfterNormal, initialFiles), "normal snapshot left a temp capture behind");
   proof.normal = { durationMs: normalDurationMs, jpegBytes: jpeg.length, tempClean: true };
