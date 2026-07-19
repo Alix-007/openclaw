@@ -1,11 +1,15 @@
 name: Doctor legacy launchd cleanup proof
 
-run-name: Doctor legacy launchd cleanup proof (${{ inputs.product_sha }})
+run-name: Doctor legacy launchd cleanup proof (${{ inputs.after_sha }})
 
 on:
   workflow_dispatch:
     inputs:
-      product_sha:
+      before_sha:
+        description: Immutable source SHA (kept for the registered workflow contract)
+        required: true
+        type: string
+      after_sha:
         description: Immutable OpenClaw product SHA to prove
         required: true
         type: string
@@ -30,7 +34,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: Alix-007/openclaw
-          ref: ${{ inputs.product_sha }}
+          ref: ${{ inputs.after_sha }}
           path: target
           persist-credentials: false
 
@@ -67,7 +71,7 @@ jobs:
       - name: Run real launchd cleanup proof
         working-directory: target
         env:
-          DOCTOR_LAUNCHD_PROOF_SHA: ${{ inputs.product_sha }}
+          DOCTOR_LAUNCHD_PROOF_SHA: ${{ inputs.after_sha }}
         shell: bash
         run: |
           set -euo pipefail
@@ -79,7 +83,7 @@ jobs:
         if: always()
         working-directory: target
         env:
-          EXPECTED_SHA: ${{ inputs.product_sha }}
+          EXPECTED_SHA: ${{ inputs.after_sha }}
         shell: bash
         run: |
           set -euo pipefail
@@ -99,7 +103,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: doctor-launchd-cleanup-${{ inputs.product_sha }}
+          name: doctor-launchd-cleanup-${{ inputs.after_sha }}
           path: target/.artifacts/doctor-launchd-cleanup/
           if-no-files-found: error
           retention-days: 30
