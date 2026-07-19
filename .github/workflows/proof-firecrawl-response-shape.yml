@@ -1,0 +1,168 @@
+name: Proof Firecrawl response shape
+
+on:
+  push:
+    branches:
+      - proof/111210-firecrawl-response-shape
+
+permissions: {}
+
+jobs:
+  firecrawl-response-shape:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      AFTER_SHA: e48d9f1247446226a5b96d5396b338f4d0ded99f
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Set up public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Verify immutable candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin alix/firecrawl-response-shape
+          test "$(git rev-parse FETCH_HEAD)" = "$AFTER_SHA"
+          test "$(git rev-parse "${AFTER_SHA}^{commit}")" = "$AFTER_SHA"
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          echo "PROOF_REF exact_head=$AFTER_SHA"
+
+      - name: Run focused Firecrawl tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm test \
+            extensions/firecrawl/src/firecrawl-tools.test.ts \
+            extensions/firecrawl/src/firecrawl-client.test.ts \
+            --run
+
+      - name: Run malformed-shape and keyless live proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/firecrawl-response-shape-proof.mjs" <<'NODE'
+          import assert from "node:assert/strict";
+          import http from "node:http";
+          import { pathToFileURL } from "node:url";
+
+          const { runFirecrawlSearch, runFirecrawlScrape } = await import(
+            pathToFileURL(`${process.env.GITHUB_WORKSPACE}/extensions/firecrawl/src/firecrawl-client.ts`).href
+          );
+          const server = http.createServer((req, res) => {
+            res.writeHead(200, { "content-type": "application/json" });
+            if (req.url === "/v2/search") {
+              res.end("null");
+              return;
+            }
+            if (req.url === "/v2/scrape") {
+              res.end("[]");
+              return;
+            }
+            res.writeHead(404);
+            res.end();
+          });
+
+          await new Promise((resolve, reject) => {
+            server.once("error", reject);
+            server.listen(0, "127.0.0.1", resolve);
+          });
+          const address = server.address();
+          assert.ok(address && typeof address === "object");
+          const baseUrl = `http://127.0.0.1:${address.port}`;
+          const cfg = {
+            plugins: {
+              entries: {
+                firecrawl: {
+                  config: {
+                    webSearch: { baseUrl },
+                    webFetch: { baseUrl },
+                  },
+                },
+              },
+            },
+          };
+
+          async function expectError(label, operation, expected) {
+            try {
+              await operation();
+              throw new Error(`${label}: expected an error`);
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
+              assert.equal(message, expected, `${label}: unexpected error`);
+              console.log(`MALFORMED_SHAPE ${label} error=${JSON.stringify(message)}`);
+            }
+          }
+
+          try {
+            await expectError(
+              "search-null",
+              () => runFirecrawlSearch({ cfg, query: "proof-search-null", access: "keyless" }),
+              "Firecrawl Search API error: malformed JSON response",
+            );
+            await expectError(
+              "scrape-array",
+              () =>
+                runFirecrawlScrape({
+                  cfg,
+                  url: "https://example.com/proof-scrape-array",
+                  extractMode: "markdown",
+                  access: "keyless",
+                  storeInCache: false,
+                }),
+              "Firecrawl fetch failed: malformed JSON response",
+            );
+
+            const rawResponse = await fetch("https://api.firecrawl.dev/v2/scrape", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({
+                url: "https://example.com",
+                formats: ["markdown"],
+                onlyMainContent: true,
+              }),
+              signal: AbortSignal.timeout(90_000),
+            });
+            assert.equal(rawResponse.status, 200);
+            const rawPayload = await rawResponse.json();
+            assert.equal(typeof rawPayload, "object");
+            assert.equal(typeof rawPayload.success, "boolean");
+            assert.equal(typeof rawPayload.data, "object");
+            console.log(
+              `LIVE_API status=${rawResponse.status} topLevel=object successType=${typeof rawPayload.success} dataType=${typeof rawPayload.data}`,
+            );
+
+            const result = await runFirecrawlScrape({
+              access: "keyless",
+              url: "https://example.com",
+              extractMode: "markdown",
+              storeInCache: false,
+              timeoutSeconds: 60,
+            });
+            const text = typeof result.text === "string" ? result.text : "";
+            assert.equal(result.extractor, "firecrawl");
+            assert.equal(result.extractMode, "markdown");
+            assert.ok(text.includes("Example Domain"));
+            console.log(
+              `LIVE_PRODUCTION resultType=${typeof result} extractor=${result.extractor} extractMode=${result.extractMode} textLength=${text.length} exampleDomain=${text.includes("Example Domain")}`,
+            );
+          } finally {
+            await new Promise((resolve) => server.close(resolve));
+          }
+          NODE
+          node --import tsx "$RUNNER_TEMP/firecrawl-response-shape-proof.mjs"
