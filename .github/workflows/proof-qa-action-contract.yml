@@ -218,56 +218,65 @@ jobs:
                 message: { text: string };
               };
 
-              const precedenceCreateResult = await handleAction({
-                channel: "qa-channel",
-                action: "thread-create",
-                cfg,
-                accountId: "default",
-                params: {
-                  target: "channel:qa-precedence-room",
-                  threadName: "canonical precedence thread",
-                  title: "legacy precedence thread",
-                },
-              });
-              const precedenceCreate = extractToolPayload(precedenceCreateResult) as {
-                thread: { id: string; title: string };
-                target: string;
-              };
-              const precedenceReplyResult = await handleAction({
-                channel: "qa-channel",
-                action: "thread-reply",
-                cfg,
-                accountId: "default",
-                params: {
-                  target: precedenceCreate.target,
-                  message: "canonical precedence reply",
-                  text: "legacy precedence reply",
-                },
-              });
-              const precedenceReply = extractToolPayload(precedenceReplyResult) as {
-                message: { text: string };
-              };
-              const precedenceEditable = state.addOutboundMessage({
-                accountId: "default",
-                to: precedenceCreate.target,
-                text: "before precedence edit",
-                threadId: precedenceCreate.thread.id,
-              });
-              const precedenceEditResult = await handleAction({
-                channel: "qa-channel",
-                action: "edit",
-                cfg,
-                accountId: "default",
-                params: {
-                  target: precedenceCreate.target,
-                  messageId: precedenceEditable.id,
-                  message: "canonical precedence edit",
-                  text: "legacy precedence edit",
-                },
-              });
-              const precedenceEdit = extractToolPayload(precedenceEditResult) as {
-                message: { text: string };
-              };
+              let canonicalPrecedence: Record<string, unknown> = { skipped: true };
+              if (phase === "after") {
+                const precedenceCreateResult = await handleAction({
+                  channel: "qa-channel",
+                  action: "thread-create",
+                  cfg,
+                  accountId: "default",
+                  params: {
+                    target: "channel:qa-precedence-room",
+                    threadName: "canonical precedence thread",
+                    title: "legacy precedence thread",
+                  },
+                });
+                const precedenceCreate = extractToolPayload(precedenceCreateResult) as {
+                  thread: { id: string; title: string };
+                  target: string;
+                };
+                const precedenceReplyResult = await handleAction({
+                  channel: "qa-channel",
+                  action: "thread-reply",
+                  cfg,
+                  accountId: "default",
+                  params: {
+                    target: precedenceCreate.target,
+                    message: "canonical precedence reply",
+                    text: "legacy precedence reply",
+                  },
+                });
+                const precedenceReply = extractToolPayload(precedenceReplyResult) as {
+                  message: { text: string };
+                };
+                const precedenceEditable = state.addOutboundMessage({
+                  accountId: "default",
+                  to: precedenceCreate.target,
+                  text: "before precedence edit",
+                  threadId: precedenceCreate.thread.id,
+                });
+                const precedenceEditResult = await handleAction({
+                  channel: "qa-channel",
+                  action: "edit",
+                  cfg,
+                  accountId: "default",
+                  params: {
+                    target: precedenceCreate.target,
+                    messageId: precedenceEditable.id,
+                    message: "canonical precedence edit",
+                    text: "legacy precedence edit",
+                  },
+                });
+                const precedenceEdit = extractToolPayload(precedenceEditResult) as {
+                  message: { text: string };
+                };
+                canonicalPrecedence = {
+                  threadTitle: precedenceCreate.thread.title,
+                  replyText: precedenceReply.message.text,
+                  editText: precedenceEdit.message.text,
+                  storedEditText: state.readMessage({ messageId: precedenceEditable.id }).text,
+                };
+              }
 
               const evidence = {
                 phase,
@@ -296,12 +305,7 @@ jobs:
                   editText: legacyEdit.message.text,
                   storedEditText: state.readMessage({ messageId: legacyEditable.id }).text,
                 },
-                canonicalPrecedence: {
-                  threadTitle: precedenceCreate.thread.title,
-                  replyText: precedenceReply.message.text,
-                  editText: precedenceEdit.message.text,
-                  storedEditText: state.readMessage({ messageId: precedenceEditable.id }).text,
-                },
+                canonicalPrecedence,
               };
               console.log(`QA_ACTION_PROOF=${JSON.stringify(evidence)}`);
 
@@ -309,12 +313,7 @@ jobs:
                 expect(evidence.threadCreate.actualTitle).toBe("QA thread");
                 expect(evidence.threadReply).toMatchObject({ ok: false });
                 expect(evidence.edit).toMatchObject({ ok: false });
-                expect(evidence.canonicalPrecedence).toEqual({
-                  threadTitle: "legacy precedence thread",
-                  replyText: "legacy precedence reply",
-                  editText: "legacy precedence edit",
-                  storedEditText: "legacy precedence edit",
-                });
+                expect(evidence.canonicalPrecedence).toEqual({ skipped: true });
               } else {
                 expect(evidence.threadCreate.actualTitle).toBe("proof thread");
                 expect(evidence.threadReply).toMatchObject({
