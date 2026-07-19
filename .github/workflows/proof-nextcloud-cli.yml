@@ -1,0 +1,148 @@
+name: Proof Nextcloud non-interactive URL validation
+
+on:
+  push:
+    branches:
+      - proof/t3-nextcloud-cli-20260719
+
+permissions: {}
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BEFORE_SHA: b550c2cf9a8afff68958f98d71aa7e3c939f3e39
+      AFTER_SHA: 83cfd652f668f2f73ecc6ead86d68b0112203b37
+      CI: "true"
+      OPENCLAW_SKIP_UPDATE_CHECK: "1"
+    steps:
+      - name: Set up supported Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 22.22.3
+
+      - name: Fetch immutable public source refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir="$RUNNER_TEMP/nextcloud-proof-source"
+          mkdir -p "$source_dir"
+          cd "$source_dir"
+          git init
+          git remote add origin https://github.com/openclaw/openclaw.git
+          git fetch --depth=1 origin "$BEFORE_SHA"
+          git fetch --depth=1 origin "$AFTER_SHA"
+          git checkout --detach "$BEFORE_SHA"
+          test "$(git rev-parse HEAD)" = "$BEFORE_SHA"
+
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/nextcloud-proof-source"
+          corepack enable
+          pnpm install --frozen-lockfile --config.engine-strict=false
+
+      - name: Prove current main accepts and persists an unsupported scheme
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/nextcloud-proof-source"
+          test "$(git rev-parse HEAD)" = "$BEFORE_SHA"
+          proof_root="$RUNNER_TEMP/nextcloud-proof/before"
+          export HOME="$proof_root/home"
+          export OPENCLAW_STATE_DIR="$proof_root/state"
+          export OPENCLAW_CONFIG_PATH="$proof_root/openclaw.json"
+          mkdir -p "$HOME" "$OPENCLAW_STATE_DIR"
+          printf '{}\n' > "$OPENCLAW_CONFIG_PATH"
+          DUMMY_SECRET="$(printf 'proof-only-%s' "$GITHUB_RUN_ID" | sha256sum | cut -d' ' -f1)"
+          export DUMMY_SECRET
+          echo "::add-mask::$DUMMY_SECRET"
+          set +e
+          pnpm openclaw channels add --channel nextcloud-talk \
+            --base-url ftp://cloud.example.invalid/talk \
+            --secret "$DUMMY_SECRET" > "$proof_root/cli.log" 2>&1
+          rc=$?
+          set -e
+          sed "s/$DUMMY_SECRET/[REDACTED]/g" "$proof_root/cli.log"
+          test "$rc" -eq 0
+          node <<'NODE'
+          const fs = require("node:fs");
+          const config = JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH, "utf8"));
+          const account = config.channels?.["nextcloud-talk"];
+          if (account?.baseUrl !== "ftp://cloud.example.invalid/talk") {
+            throw new Error("current main did not persist the unsupported URL");
+          }
+          if (account?.botSecret !== process.env.DUMMY_SECRET) {
+            throw new Error("current main did not persist the dummy credential");
+          }
+          console.log("BEFORE invalid exit=0 baseUrl=ftp://cloud.example.invalid/talk account=[written] credential=[REDACTED]");
+          NODE
+
+      - name: Prove the PR rejects invalid input without a config write
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/nextcloud-proof-source"
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          proof_root="$RUNNER_TEMP/nextcloud-proof/after-invalid"
+          export HOME="$proof_root/home"
+          export OPENCLAW_STATE_DIR="$proof_root/state"
+          export OPENCLAW_CONFIG_PATH="$proof_root/openclaw.json"
+          mkdir -p "$HOME" "$OPENCLAW_STATE_DIR"
+          printf '{}\n' > "$OPENCLAW_CONFIG_PATH"
+          before_hash="$(sha256sum "$OPENCLAW_CONFIG_PATH" | cut -d' ' -f1)"
+          DUMMY_SECRET="$(printf 'proof-only-%s' "$GITHUB_RUN_ID" | sha256sum | cut -d' ' -f1)"
+          echo "::add-mask::$DUMMY_SECRET"
+          set +e
+          pnpm openclaw channels add --channel nextcloud-talk \
+            --base-url ftp://cloud.example.invalid/talk \
+            --secret "$DUMMY_SECRET" > "$proof_root/cli.log" 2>&1
+          rc=$?
+          set -e
+          sed "s/$DUMMY_SECRET/[REDACTED]/g" "$proof_root/cli.log"
+          after_hash="$(sha256sum "$OPENCLAW_CONFIG_PATH" | cut -d' ' -f1)"
+          test "$rc" -ne 0
+          test "$after_hash" = "$before_hash"
+          node <<'NODE'
+          const fs = require("node:fs");
+          const config = JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH, "utf8"));
+          if (config.channels?.["nextcloud-talk"] !== undefined) {
+            throw new Error("invalid input wrote a Nextcloud Talk account");
+          }
+          console.log("AFTER invalid exit=nonzero configHash=[unchanged] account=[absent]");
+          NODE
+
+      - name: Prove the PR persists a normalized valid subpath
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/nextcloud-proof-source"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          proof_root="$RUNNER_TEMP/nextcloud-proof/after-valid"
+          export HOME="$proof_root/home"
+          export OPENCLAW_STATE_DIR="$proof_root/state"
+          export OPENCLAW_CONFIG_PATH="$proof_root/openclaw.json"
+          mkdir -p "$HOME" "$OPENCLAW_STATE_DIR"
+          printf '{}\n' > "$OPENCLAW_CONFIG_PATH"
+          DUMMY_SECRET="$(printf 'proof-only-%s' "$GITHUB_RUN_ID" | sha256sum | cut -d' ' -f1)"
+          export DUMMY_SECRET
+          echo "::add-mask::$DUMMY_SECRET"
+          pnpm openclaw channels add --channel nextcloud-talk \
+            --base-url ' https://cloud.example.invalid/talk/// ' \
+            --secret "$DUMMY_SECRET" > "$proof_root/cli.log" 2>&1
+          sed "s/$DUMMY_SECRET/[REDACTED]/g" "$proof_root/cli.log"
+          node <<'NODE'
+          const fs = require("node:fs");
+          const config = JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH, "utf8"));
+          const account = config.channels?.["nextcloud-talk"];
+          if (account?.baseUrl !== "https://cloud.example.invalid/talk") {
+            throw new Error(`unexpected normalized URL: ${String(account?.baseUrl)}`);
+          }
+          if (account?.botSecret !== process.env.DUMMY_SECRET) {
+            throw new Error("valid setup did not persist the dummy credential");
+          }
+          console.log("AFTER valid exit=0 baseUrl=https://cloud.example.invalid/talk account=[written] credential=[REDACTED]");
+          NODE
