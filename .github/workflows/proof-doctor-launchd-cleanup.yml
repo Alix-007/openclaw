@@ -1,0 +1,105 @@
+name: Doctor legacy launchd cleanup proof
+
+run-name: Doctor legacy launchd cleanup proof (${{ inputs.product_sha }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_sha:
+        description: Immutable OpenClaw product SHA to prove
+        required: true
+        type: string
+
+permissions: {}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  macos-proof:
+    name: Real macOS launchd cleanup
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - name: Checkout proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout immutable product revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.product_sha }}
+          path: target
+          persist-credentials: false
+
+      - name: Install proof harness into immutable checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/.github/proof
+          cp .github/proof/doctor-launchd-cleanup-proof.ts \
+            target/.github/proof/doctor-launchd-cleanup-proof.ts
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "false"
+          use-actions-cache: "false"
+
+      - name: Install immutable product dependencies
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Build immutable product revision
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm build
+
+      - name: Run real launchd cleanup proof
+        working-directory: target
+        env:
+          DOCTOR_LAUNCHD_PROOF_SHA: ${{ inputs.product_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/doctor-launchd-cleanup
+          node --import tsx .github/proof/doctor-launchd-cleanup-proof.ts \
+            2>&1 | tee .artifacts/doctor-launchd-cleanup/run.log
+
+      - name: Record immutable revision
+        if: always()
+        working-directory: target
+        env:
+          EXPECTED_SHA: ${{ inputs.product_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$EXPECTED_SHA"
+          {
+            echo "### Doctor legacy launchd cleanup proof"
+            echo
+            echo "- Product SHA: \`$actual_sha\`"
+            echo "- Host: \`$(sw_vers -productVersion)\`"
+            echo "- Entry: real \`maybeScanExtraGatewayServices\` repair path"
+            echo "- LaunchAgent: real \`/bin/launchctl bootstrap/print/bootout\`"
+            echo "- Fault injection: PATH-only launchctl shim; no product mocks"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload proof diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: doctor-launchd-cleanup-${{ inputs.product_sha }}
+          path: target/.artifacts/doctor-launchd-cleanup/
+          if-no-files-found: error
+          retention-days: 30
