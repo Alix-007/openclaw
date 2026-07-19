@@ -1,0 +1,342 @@
+name: Proof sidebar attention latest-wins
+
+on:
+  push:
+    branches:
+      - proof/t10-sidebar-latest-wins-32acfbf
+
+permissions: {}
+
+jobs:
+  browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      BEFORE_SHA: b550c2cf9a8afff68958f98d71aa7e3c939f3e39
+      AFTER_SHA: 32acfbf7d2e68795593a68fb7e38be037d9fa082
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Setup public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Install Chromium
+        shell: bash
+        run: pnpm --dir ui exec playwright install --with-deps chromium
+
+      - name: Verify immutable revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/openclaw/openclaw.git
+          git fetch --no-tags upstream "$BEFORE_SHA"
+          git fetch --no-tags origin alix/t10-sidebar-attention-latest-wins
+          test "$(git rev-parse "${BEFORE_SHA}^{commit}")" = "$BEFORE_SHA"
+          test "$(git rev-parse "${AFTER_SHA}^{commit}")" = "$AFTER_SHA"
+          echo "PROOF_REFS before=$BEFORE_SHA after=$AFTER_SHA"
+
+      - name: Write browser proof scenario
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ui/src/e2e
+          cat > ui/src/e2e/sidebar-attention-latest-wins-proof.e2e.test.ts <<'PROOF'
+          import { mkdir } from "node:fs/promises";
+          import path from "node:path";
+          import { chromium, type Browser } from "playwright";
+          import { afterAll, beforeAll, describe, expect, it } from "vitest";
+          import {
+            canRunPlaywrightChromium,
+            resolvePlaywrightChromiumExecutablePath,
+            startControlUiE2eServer,
+            type ControlUiE2eServer,
+          } from "../test-helpers/control-ui-e2e.ts";
+
+          const mode = process.env.SIDEBAR_PROOF_MODE;
+          if (mode !== "before" && mode !== "after") {
+            throw new Error(`Expected SIDEBAR_PROOF_MODE=before|after, got ${mode ?? "unset"}`);
+          }
+
+          const chromiumExecutablePath = resolvePlaywrightChromiumExecutablePath(
+            chromium.executablePath(),
+          );
+          const artifactDir = path.join(
+            process.cwd(),
+            ".artifacts",
+            "control-ui-e2e",
+            "sidebar-attention-latest-wins",
+          );
+          let browser: Browser;
+          let server: ControlUiE2eServer;
+
+          beforeAll(async () => {
+            if (!canRunPlaywrightChromium(chromiumExecutablePath)) {
+              throw new Error(`Chromium unavailable at ${chromiumExecutablePath}`);
+            }
+            server = await startControlUiE2eServer();
+            browser = await chromium.launch({ executablePath: chromiumExecutablePath });
+          });
+
+          afterAll(async () => {
+            await browser?.close();
+            await server?.close();
+          });
+
+          describe("sidebar attention latest-wins browser proof", () => {
+            it(`demonstrates ${mode} behavior with overlapping real component refreshes`, async () => {
+              await mkdir(artifactDir, { recursive: true });
+              const context = await browser.newContext({
+                locale: "en-US",
+                recordVideo: { dir: artifactDir, size: { height: 720, width: 1280 } },
+                serviceWorkers: "block",
+                viewport: { height: 720, width: 1280 },
+              });
+              const page = await context.newPage();
+              const video = page.video();
+              page.on("pageerror", (error) => {
+                console.error(`BROWSER_PAGE_ERROR ${error.stack ?? error.message}`);
+              });
+
+              try {
+                const response = await page.goto(server.baseUrl);
+                expect(response?.status()).toBe(200);
+                await page.addScriptTag({
+                  type: "module",
+                  content: String.raw`
+                    import { createApplicationContextProvider } from "/src/test-helpers/application-context.ts";
+                    import { dismissalStoreKey } from "/src/components/sidebar-attention-dismissals.ts";
+                    import "/src/components/sidebar-attention.ts";
+
+                    const deferred = () => {
+                      let resolve;
+                      const promise = new Promise((next) => {
+                        resolve = next;
+                      });
+                      return { promise, resolve };
+                    };
+                    const cronJob = (id) => ({
+                      id,
+                      name: id,
+                      enabled: true,
+                      createdAtMs: 0,
+                      updatedAtMs: 0,
+                      schedule: { kind: "every", everyMs: 60_000 },
+                      sessionTarget: "isolated",
+                      wakeMode: "now",
+                      payload: { kind: "agentTurn", message: "proof" },
+                      state: { lastRunStatus: "error" },
+                    });
+                    const firstCron = deferred();
+                    const firstAuth = deferred();
+                    const secondCron = deferred();
+                    const secondAuth = deferred();
+                    const responses = {
+                      "cron.list": [firstCron, secondCron],
+                      "models.authStatus": [firstAuth, secondAuth],
+                    };
+                    const state = { requestCount: 0, settledCount: 0 };
+                    const client = {
+                      request(method) {
+                        const pending = responses[method]?.shift();
+                        if (!pending) {
+                          throw new Error("Unexpected request: " + method);
+                        }
+                        state.requestCount += 1;
+                        return pending.promise.finally(() => {
+                          state.settledCount += 1;
+                        });
+                      },
+                    };
+                    const gateway = {
+                      snapshot: {
+                        client,
+                        connected: true,
+                        reconnecting: false,
+                        hello: null,
+                        assistantAgentId: "main",
+                        sessionKey: "agent:main:main",
+                        lastError: null,
+                        lastErrorCode: null,
+                      },
+                      connection: {
+                        gatewayUrl: "ws://redacted-proof.invalid",
+                        token: "",
+                        bootstrapToken: "",
+                        password: "",
+                      },
+                      subscribe: () => () => undefined,
+                    };
+                    const overlays = {
+                      snapshot: { approvalQueue: [] },
+                      subscribe: () => () => undefined,
+                    };
+                    const key = dismissalStoreKey(gateway.connection.gatewayUrl);
+                    localStorage.setItem(key, JSON.stringify({ cronFailed: "current" }));
+
+                    document.body.innerHTML = '<main style="font: 16px/1.45 system-ui; max-width: 960px; margin: 48px auto; color: #172026"><h1 style="font-size: 26px">Sidebar attention overlapping-refresh proof</h1><p>Real Lit component, one gateway client, request B completes before request A.</p><section style="border: 2px solid #7b8794; padding: 20px; min-height: 96px"><strong>Actual openclaw-sidebar-attention output</strong><div id="component-surface" style="margin-top: 16px"></div></section><pre id="proof-summary" style="background: #f1f5f7; padding: 18px; white-space: pre-wrap"></pre></main>';
+                    const provider = createApplicationContextProvider({ gateway, overlays });
+                    const element = document.createElement("openclaw-sidebar-attention");
+                    provider.append(element);
+                    document.querySelector("#component-surface")?.append(provider);
+
+                    globalThis.__sidebarAttentionProof = {
+                      element,
+                      key,
+                      state,
+                      resolveSecond() {
+                        secondCron.resolve({ jobs: [cronJob("current")] });
+                        secondAuth.resolve({ ts: 2, providers: [] });
+                      },
+                      resolveFirst() {
+                        firstCron.resolve({ jobs: [cronJob("stale")] });
+                        firstAuth.resolve({ ts: 1, providers: [] });
+                      },
+                    };
+                  `,
+                });
+
+                await page.waitForFunction(
+                  () =>
+                    (
+                      globalThis as unknown as {
+                        __sidebarAttentionProof?: { state: { requestCount: number } };
+                      }
+                    ).__sidebarAttentionProof?.state.requestCount === 2,
+                );
+                await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+                await page.waitForFunction(
+                  () =>
+                    (globalThis as unknown as { __sidebarAttentionProof: { state: { requestCount: number } } })
+                      .__sidebarAttentionProof.state.requestCount === 4,
+                );
+                await page.evaluate(() =>
+                  (globalThis as unknown as { __sidebarAttentionProof: { resolveSecond: () => void } })
+                    .__sidebarAttentionProof.resolveSecond(),
+                );
+                await page.waitForFunction(
+                  () =>
+                    (globalThis as unknown as { __sidebarAttentionProof: { element: { loadedAtMs: number } } })
+                      .__sidebarAttentionProof.element.loadedAtMs > 0,
+                );
+                const currentLoadedAt = await page.evaluate(
+                  () =>
+                    (globalThis as unknown as { __sidebarAttentionProof: { element: { loadedAtMs: number } } })
+                      .__sidebarAttentionProof.element.loadedAtMs,
+                );
+                await page.waitForTimeout(150);
+                await page.evaluate(() =>
+                  (globalThis as unknown as { __sidebarAttentionProof: { resolveFirst: () => void } })
+                    .__sidebarAttentionProof.resolveFirst(),
+                );
+                await page.waitForFunction(
+                  () =>
+                    (globalThis as unknown as { __sidebarAttentionProof: { state: { settledCount: number } } })
+                      .__sidebarAttentionProof.state.settledCount === 4,
+                );
+                await page.evaluate(
+                  () =>
+                    new Promise<void>((resolve) => {
+                      globalThis.setTimeout(resolve, 0);
+                    }),
+                );
+
+                const result = await page.evaluate((proofMode) => {
+                  const proof = (
+                    globalThis as unknown as {
+                      __sidebarAttentionProof: {
+                        element: {
+                          cronJobs: Array<{ id: string }>;
+                          modelAuthStatus: { ts: number } | null;
+                          loadedAtMs: number;
+                        };
+                        key: string;
+                      };
+                    }
+                  ).__sidebarAttentionProof;
+                  const value = {
+                    mode: proofMode,
+                    cronIds: proof.element.cronJobs.map((job) => job.id),
+                    authTs: proof.element.modelAuthStatus?.ts ?? null,
+                    loadedAtMs: proof.element.loadedAtMs,
+                    dismissal: localStorage.getItem(proof.key),
+                    chipText:
+                      document.querySelector("openclaw-sidebar-attention")?.textContent?.trim() ?? "",
+                  };
+                  const summary = document.querySelector("#proof-summary");
+                  if (summary) {
+                    summary.textContent = JSON.stringify(value, null, 2);
+                  }
+                  return value;
+                }, mode);
+
+                if (mode === "before") {
+                  expect(result.cronIds).toEqual(["stale"]);
+                  expect(result.authTs).toBe(1);
+                  expect(result.loadedAtMs).toBeGreaterThan(currentLoadedAt);
+                  expect(result.dismissal).toBeNull();
+                  expect(result.chipText).not.toBe("");
+                } else {
+                  expect(result.cronIds).toEqual(["current"]);
+                  expect(result.authTs).toBe(2);
+                  expect(result.loadedAtMs).toBe(currentLoadedAt);
+                  expect(result.dismissal).toContain('"cronFailed":"current"');
+                  expect(result.chipText).toBe("");
+                }
+
+                console.log(`${mode.toUpperCase()}_RESULT ${JSON.stringify(result)}`);
+                await page.screenshot({
+                  animations: "disabled",
+                  fullPage: true,
+                  path: path.join(artifactDir, `${mode}.png`),
+                });
+              } finally {
+                await context.close();
+                await video?.saveAs(path.join(artifactDir, `${mode}.webm`));
+              }
+            });
+          });
+          PROOF
+
+      - name: Reproduce stale overwrite on current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$BEFORE_SHA"
+          test "$(git rev-parse HEAD)" = "$BEFORE_SHA"
+          SIDEBAR_PROOF_MODE=before node scripts/run-vitest.mjs run \
+            --config test/vitest/vitest.ui-e2e.config.ts \
+            --configLoader runner \
+            ui/src/e2e/sidebar-attention-latest-wins-proof.e2e.test.ts
+
+      - name: Verify latest refresh remains authoritative
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          rm -rf .artifacts/control-ui-e2e-vite
+          SIDEBAR_PROOF_MODE=after node scripts/run-vitest.mjs run \
+            --config test/vitest/vitest.ui-e2e.config.ts \
+            --configLoader runner \
+            ui/src/e2e/sidebar-attention-latest-wins-proof.e2e.test.ts
+
+      - name: Upload browser proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sidebar-attention-latest-wins-proof
+          path: .artifacts/control-ui-e2e/sidebar-attention-latest-wins/
+          if-no-files-found: error
