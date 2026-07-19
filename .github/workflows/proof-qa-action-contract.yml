@@ -48,6 +48,7 @@ jobs:
           import { afterEach, expect, it } from "vitest";
           import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
           import type { OpenClawConfig } from "../../config/config.js";
+          import { extractToolPayload } from "../../plugin-sdk/tool-payload.js";
           import { setActivePluginRegistry } from "../../plugins/runtime.js";
           import { loadBundledPluginPublicSurface } from "../../test-utils/bundled-plugin-public-surface.js";
           import { createTestRegistry } from "../../test-utils/channel-plugins.js";
@@ -108,6 +109,10 @@ jobs:
                   },
                 },
               } as OpenClawConfig;
+              const handleAction = channelSurface.qaChannelPlugin.actions?.handleAction;
+              if (!handleAction) {
+                throw new Error("expected QA action handler");
+              }
               const createResult = await runMessageAction({
                 cfg,
                 action: "thread-create",
@@ -164,6 +169,106 @@ jobs:
                 editError = error instanceof Error ? error.message : String(error);
               }
 
+              const legacyCreateResult = await handleAction({
+                channel: "qa-channel",
+                action: "thread-create",
+                cfg,
+                accountId: "default",
+                params: {
+                  channelId: "qa-legacy-room",
+                  title: "legacy thread",
+                },
+              });
+              const legacyCreate = extractToolPayload(legacyCreateResult) as {
+                thread: { id: string; title: string };
+                target: string;
+              };
+              const legacyReplyResult = await handleAction({
+                channel: "qa-channel",
+                action: "thread-reply",
+                cfg,
+                accountId: "default",
+                params: {
+                  channelId: "qa-legacy-room",
+                  threadId: legacyCreate.thread.id,
+                  text: "legacy reply",
+                },
+              });
+              const legacyReply = extractToolPayload(legacyReplyResult) as {
+                message: { text: string; threadId: string };
+              };
+              const legacyEditable = state.addOutboundMessage({
+                accountId: "default",
+                to: legacyCreate.target,
+                text: "before legacy edit",
+                threadId: legacyCreate.thread.id,
+              });
+              const legacyEditResult = await handleAction({
+                channel: "qa-channel",
+                action: "edit",
+                cfg,
+                accountId: "default",
+                params: {
+                  to: legacyCreate.target,
+                  messageId: legacyEditable.id,
+                  text: "legacy edit",
+                },
+              });
+              const legacyEdit = extractToolPayload(legacyEditResult) as {
+                message: { text: string };
+              };
+
+              const precedenceCreateResult = await handleAction({
+                channel: "qa-channel",
+                action: "thread-create",
+                cfg,
+                accountId: "default",
+                params: {
+                  target: "channel:qa-precedence-room",
+                  threadName: "canonical precedence thread",
+                  title: "legacy precedence thread",
+                },
+              });
+              const precedenceCreate = extractToolPayload(precedenceCreateResult) as {
+                thread: { id: string; title: string };
+                target: string;
+              };
+              const precedenceReplyResult = await handleAction({
+                channel: "qa-channel",
+                action: "thread-reply",
+                cfg,
+                accountId: "default",
+                params: {
+                  target: precedenceCreate.target,
+                  message: "canonical precedence reply",
+                  text: "legacy precedence reply",
+                },
+              });
+              const precedenceReply = extractToolPayload(precedenceReplyResult) as {
+                message: { text: string };
+              };
+              const precedenceEditable = state.addOutboundMessage({
+                accountId: "default",
+                to: precedenceCreate.target,
+                text: "before precedence edit",
+                threadId: precedenceCreate.thread.id,
+              });
+              const precedenceEditResult = await handleAction({
+                channel: "qa-channel",
+                action: "edit",
+                cfg,
+                accountId: "default",
+                params: {
+                  target: precedenceCreate.target,
+                  messageId: precedenceEditable.id,
+                  message: "canonical precedence edit",
+                  text: "legacy precedence edit",
+                },
+              });
+              const precedenceEdit = extractToolPayload(precedenceEditResult) as {
+                message: { text: string };
+              };
+
               const evidence = {
                 phase,
                 threadCreate: {
@@ -185,6 +290,18 @@ jobs:
                       storedText: state.readMessage({ messageId: editable.id }).text,
                     }
                   : { ok: false, error: editError },
+                legacyCompatibility: {
+                  threadTitle: legacyCreate.thread.title,
+                  replyText: legacyReply.message.text,
+                  editText: legacyEdit.message.text,
+                  storedEditText: state.readMessage({ messageId: legacyEditable.id }).text,
+                },
+                canonicalPrecedence: {
+                  threadTitle: precedenceCreate.thread.title,
+                  replyText: precedenceReply.message.text,
+                  editText: precedenceEdit.message.text,
+                  storedEditText: state.readMessage({ messageId: precedenceEditable.id }).text,
+                },
               };
               console.log(`QA_ACTION_PROOF=${JSON.stringify(evidence)}`);
 
@@ -192,6 +309,12 @@ jobs:
                 expect(evidence.threadCreate.actualTitle).toBe("QA thread");
                 expect(evidence.threadReply).toMatchObject({ ok: false });
                 expect(evidence.edit).toMatchObject({ ok: false });
+                expect(evidence.canonicalPrecedence).toEqual({
+                  threadTitle: "legacy precedence thread",
+                  replyText: "legacy precedence reply",
+                  editText: "legacy precedence edit",
+                  storedEditText: "legacy precedence edit",
+                });
               } else {
                 expect(evidence.threadCreate.actualTitle).toBe("proof thread");
                 expect(evidence.threadReply).toMatchObject({
@@ -204,7 +327,19 @@ jobs:
                   payloadText: "after edit",
                   storedText: "after edit",
                 });
+                expect(evidence.canonicalPrecedence).toEqual({
+                  threadTitle: "canonical precedence thread",
+                  replyText: "canonical precedence reply",
+                  editText: "canonical precedence edit",
+                  storedEditText: "canonical precedence edit",
+                });
               }
+              expect(evidence.legacyCompatibility).toEqual({
+                threadTitle: "legacy thread",
+                replyText: "legacy reply",
+                editText: "legacy edit",
+                storedEditText: "legacy edit",
+              });
             } finally {
               await bus.stop();
             }
