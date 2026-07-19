@@ -44,7 +44,10 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function command(command: string, args: string[]): Promise<{ stdout: string; stderr: string }> {
+async function command(
+  command: string,
+  args: string[],
+): Promise<{ stdout: string; stderr: string }> {
   return await execFileAsync(command, args, { encoding: "utf8" });
 }
 
@@ -139,10 +142,12 @@ async function writeLaunchAgent(label: string): Promise<string> {
 }
 
 async function bootstrapLaunchAgent(label: string, plistPath: string): Promise<void> {
-  const result = await command("/bin/launchctl", ["bootstrap", DOMAIN, plistPath]).catch((error) => {
-    const detail = error instanceof Error ? error.message : String(error);
-    throw new Error(`launchctl bootstrap failed for ${label}: ${detail}`);
-  });
+  const result = await command("/bin/launchctl", ["bootstrap", DOMAIN, plistPath]).catch(
+    (error) => {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`launchctl bootstrap failed for ${label}: ${detail}`);
+    },
+  );
   void result;
   await waitForLoaded(label);
 }
@@ -193,7 +198,9 @@ esac
 }
 
 async function trashEntries(label: string): Promise<string[]> {
-  return (await readdir(TRASH)).filter((entry) => entry.startsWith(`${label}-`) && entry.endsWith(".plist"));
+  return (await readdir(TRASH)).filter(
+    (entry) => entry.startsWith(`${label}-`) && entry.endsWith(".plist"),
+  );
 }
 
 function makeRuntime(events: string[]): RuntimeEnv {
@@ -243,11 +250,7 @@ async function runScenario(
     assert(await isLoaded(label), `${mode}: healthy LaunchAgent was not loaded`);
     await writeLaunchctlShim(mode);
     const before = await trashEntries(label);
-    await maybeScanExtraGatewayServices(
-      { deep: false },
-      makeRuntime(events),
-      makePrompter(),
-    );
+    await maybeScanExtraGatewayServices({ deep: false }, makeRuntime(events), makePrompter());
     const durationMs = Date.now() - startedAt;
     plistAfter = await fileExists(plistPath);
     moved = await trashEntries(label);
@@ -270,7 +273,10 @@ async function runScenario(
       assert(plistAfter, `${mode}: plist was removed despite unconfirmed cleanup`);
       assert(moved.length === before.length, `${mode}: plist unexpectedly moved to Trash`);
       assert(loadedAfter, `${mode}: real LaunchAgent was not retained for retry`);
-      assert(durationMs < 22_000, `${mode}: doctor exceeded bounded cleanup window: ${durationMs}ms`);
+      assert(
+        durationMs < 22_000,
+        `${mode}: doctor exceeded bounded cleanup window: ${durationMs}ms`,
+      );
     }
 
     return {
@@ -282,6 +288,89 @@ async function runScenario(
       mode,
       plistAfter,
       trashEntries: moved,
+    };
+  } catch (error) {
+    failure = error instanceof Error ? error.message : String(error);
+    throw error;
+  } finally {
+    await removeLaunchAgent(label, plistPath);
+    for (const entry of await trashEntries(label)) {
+      await rm(path.join(TRASH, entry), { force: true });
+    }
+    if (failure) {
+      events.push(`failure: ${failure}`);
+    }
+  }
+}
+
+async function runRetryScenario(
+  maybeScanExtraGatewayServices: typeof import("../../src/commands/doctor-gateway-services.ts").maybeScanExtraGatewayServices,
+): Promise<Record<string, unknown>> {
+  const mode = "retry";
+  const label = `com.clawdbot.doctor-proof-${mode}`;
+  const plistPath = await writeLaunchAgent(label);
+  const events: string[] = [];
+  let failure: string | undefined;
+  try {
+    await bootstrapLaunchAgent(label, plistPath);
+    assert(await isLoaded(label), `${mode}: healthy LaunchAgent was not loaded`);
+    const before = await trashEntries(label);
+
+    await writeLaunchctlShim("timeout-loaded");
+    const firstStartedAt = Date.now();
+    await maybeScanExtraGatewayServices({ deep: false }, makeRuntime(events), makePrompter());
+    const firstDurationMs = Date.now() - firstStartedAt;
+    const firstPlistAfter = await fileExists(plistPath);
+    const firstTrashEntries = await trashEntries(label);
+    const firstLoadedAfter = await isLoaded(label);
+    const firstObservation = {
+      durationMs: firstDurationMs,
+      loadedAfter: firstLoadedAfter,
+      phase: "first-timeout",
+      plistAfter: firstPlistAfter,
+      plistPath,
+      trashEntries: firstTrashEntries,
+    };
+    console.log(`LAUNCHD_CLEANUP_RETRY_OBSERVATION=${JSON.stringify(firstObservation)}`);
+    assert(firstPlistAfter, "retry: first timeout removed the plist");
+    assert(firstTrashEntries.length === before.length, "retry: first timeout moved the plist");
+    assert(firstLoadedAfter, "retry: first timeout unloaded the LaunchAgent");
+    assert(
+      firstDurationMs < 22_000,
+      `retry: first doctor pass exceeded bound: ${firstDurationMs}ms`,
+    );
+
+    // Let any timed-out shim children finish before the second pass switches to real launchctl.
+    await sleep(1_000);
+    await writeLaunchctlShim("success");
+    const secondStartedAt = Date.now();
+    await maybeScanExtraGatewayServices({ deep: false }, makeRuntime(events), makePrompter());
+    const secondDurationMs = Date.now() - secondStartedAt;
+    const secondPlistAfter = await fileExists(plistPath);
+    const secondTrashEntries = await trashEntries(label);
+    const secondLoadedAfter = await isLoaded(label);
+    const secondObservation = {
+      durationMs: secondDurationMs,
+      loadedAfter: secondLoadedAfter,
+      phase: "second-success",
+      plistAfter: secondPlistAfter,
+      plistPath,
+      trashEntries: secondTrashEntries,
+    };
+    console.log(`LAUNCHD_CLEANUP_RETRY_OBSERVATION=${JSON.stringify(secondObservation)}`);
+    assert(!secondPlistAfter, "retry: second pass did not move the plist");
+    assert(
+      secondTrashEntries.length === before.length + 1,
+      `retry: expected one moved plist after retry, got ${secondTrashEntries}`,
+    );
+    assert(!secondLoadedAfter, "retry: second pass left the LaunchAgent loaded");
+
+    return {
+      events,
+      first: firstObservation,
+      label,
+      plistPath,
+      second: secondObservation,
     };
   } catch (error) {
     failure = error instanceof Error ? error.message : String(error);
@@ -325,7 +414,8 @@ const productSha = (await command("/usr/bin/git", ["rev-parse", "HEAD"])).stdout
 assert(productSha === PRODUCT_SHA, `product SHA mismatch: ${productSha}`);
 assert(os.homedir() === PROOF_HOME, `HOME was not isolated: ${os.homedir()}`);
 
-const { maybeScanExtraGatewayServices } = await import("../../src/commands/doctor-gateway-services.ts");
+const { maybeScanExtraGatewayServices } =
+  await import("../../src/commands/doctor-gateway-services.ts");
 const proof: Record<string, unknown> = {
   domain: DOMAIN,
   home: PROOF_HOME,
@@ -340,9 +430,13 @@ try {
     (proof.scenarios as unknown[]).push(result);
     console.log(JSON.stringify(result));
   }
+  const retryResult = await runRetryScenario(maybeScanExtraGatewayServices);
+  (proof.scenarios as unknown[]).push(retryResult);
+  console.log(JSON.stringify(retryResult));
 } catch (error) {
   failure = error;
-  proof.failure = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
+  proof.failure =
+    error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
 } finally {
   process.env.HOME = previousEnv.HOME;
   process.env.USERPROFILE = previousEnv.USERPROFILE;
