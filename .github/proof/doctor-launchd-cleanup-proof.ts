@@ -308,12 +308,17 @@ const previousEnv = {
   USERPROFILE: process.env.USERPROFILE,
   OPENCLAW_STATE_DIR: process.env.OPENCLAW_STATE_DIR,
   OPENCLAW_PROFILE: process.env.OPENCLAW_PROFILE,
+  OPENCLAW_SERVICE_REPAIR_POLICY: process.env.OPENCLAW_SERVICE_REPAIR_POLICY,
+  OPENCLAW_UPDATE_PARENT_ALLOWS_GATEWAY_SERVICE_REPAIR:
+    process.env.OPENCLAW_UPDATE_PARENT_ALLOWS_GATEWAY_SERVICE_REPAIR,
   PATH: process.env.PATH,
 };
 process.env.HOME = PROOF_HOME;
 process.env.USERPROFILE = PROOF_HOME;
 process.env.OPENCLAW_STATE_DIR = STATE_DIR;
 delete process.env.OPENCLAW_PROFILE;
+delete process.env.OPENCLAW_SERVICE_REPAIR_POLICY;
+delete process.env.OPENCLAW_UPDATE_PARENT_ALLOWS_GATEWAY_SERVICE_REPAIR;
 process.env.PATH = `${SHIM_DIR}:${ORIGINAL_PATH}`;
 
 const productSha = (await command("/usr/bin/git", ["rev-parse", "HEAD"])).stdout.trim();
@@ -343,6 +348,9 @@ try {
   process.env.USERPROFILE = previousEnv.USERPROFILE;
   process.env.OPENCLAW_STATE_DIR = previousEnv.OPENCLAW_STATE_DIR;
   process.env.OPENCLAW_PROFILE = previousEnv.OPENCLAW_PROFILE;
+  process.env.OPENCLAW_SERVICE_REPAIR_POLICY = previousEnv.OPENCLAW_SERVICE_REPAIR_POLICY;
+  process.env.OPENCLAW_UPDATE_PARENT_ALLOWS_GATEWAY_SERVICE_REPAIR =
+    previousEnv.OPENCLAW_UPDATE_PARENT_ALLOWS_GATEWAY_SERVICE_REPAIR;
   process.env.PATH = previousEnv.PATH;
   await mkdir(ARTIFACT_DIR, { recursive: true });
   await writeFile(path.join(ARTIFACT_DIR, "proof.json"), `${JSON.stringify(proof, null, 2)}\n`);
