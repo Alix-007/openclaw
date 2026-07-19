@@ -1,0 +1,229 @@
+name: T11 QA action contract proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      before_sha:
+        description: Immutable upstream base SHA
+        required: true
+        type: string
+      after_sha:
+        description: Immutable fork head SHA
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  proof:
+    name: ${{ matrix.phase }} runner to QA bus proof
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [before, after]
+    steps:
+      - name: Check out immutable source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: ${{ matrix.phase == 'before' && 'openclaw/openclaw' || 'Alix-007/openclaw' }}
+          ref: ${{ matrix.phase == 'before' && inputs.before_sha || inputs.after_sha }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install pinned dependencies
+        run: |
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Write immutable runner proof
+        shell: bash
+        run: |
+          cat > src/infra/outbound/message-action-runner.qa-channel.proof.test.ts <<'PROOF'
+          import { afterEach, expect, it } from "vitest";
+          import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
+          import type { OpenClawConfig } from "../../config/config.js";
+          import { setActivePluginRegistry } from "../../plugins/runtime.js";
+          import { loadBundledPluginPublicSurface } from "../../test-utils/bundled-plugin-public-surface.js";
+          import { createTestRegistry } from "../../test-utils/channel-plugins.js";
+          import { runMessageAction } from "./message-action-runner.js";
+
+          type QaBusState = {
+            addOutboundMessage(input: {
+              accountId?: string;
+              to: string;
+              text: string;
+              threadId?: string;
+            }): { id: string };
+            readMessage(input: { messageId: string }): { text: string };
+          };
+
+          type QaLabBusSurface = {
+            createQaBusState(): QaBusState;
+            startQaBusServer(input: { state: QaBusState }): Promise<{
+              baseUrl: string;
+              stop(): Promise<void>;
+            }>;
+          };
+
+          afterEach(() => setActivePluginRegistry(createTestRegistry([])));
+
+          it("prints immutable before or after QA action behavior", async () => {
+            const phase = process.env.PROOF_PHASE;
+            expect(["before", "after"]).toContain(phase);
+            const [channelSurface, busSurface] = await Promise.all([
+              loadBundledPluginPublicSurface<{ qaChannelPlugin: ChannelPlugin }>({
+                pluginId: "qa-channel",
+                artifactBasename: "api.js",
+              }),
+              loadBundledPluginPublicSurface<QaLabBusSurface>({
+                pluginId: "qa-lab",
+                artifactBasename: "bus-api.js",
+              }),
+            ]);
+            setActivePluginRegistry(
+              createTestRegistry([
+                {
+                  pluginId: "qa-channel",
+                  plugin: channelSurface.qaChannelPlugin,
+                  source: "test",
+                },
+              ]),
+            );
+            const state = busSurface.createQaBusState();
+            const bus = await busSurface.startQaBusServer({ state });
+
+            try {
+              const cfg = {
+                channels: {
+                  "qa-channel": {
+                    baseUrl: bus.baseUrl,
+                    botUserId: "openclaw",
+                    botDisplayName: "OpenClaw QA",
+                  },
+                },
+              } as OpenClawConfig;
+              const createResult = await runMessageAction({
+                cfg,
+                action: "thread-create",
+                params: {
+                  channel: "qa-channel",
+                  target: "channel:qa-room",
+                  threadName: "proof thread",
+                },
+              });
+              const createPayload = createResult.payload as {
+                thread: { id: string; title: string };
+                target: string;
+              };
+
+              let replyPayload: { message: { text: string; threadId: string } } | undefined;
+              let replyError: string | undefined;
+              try {
+                const replyResult = await runMessageAction({
+                  cfg,
+                  action: "thread-reply",
+                  params: {
+                    channel: "qa-channel",
+                    target: createPayload.target,
+                    message: "proof reply",
+                  },
+                });
+                replyPayload = replyResult.payload as typeof replyPayload;
+              } catch (error) {
+                replyError = error instanceof Error ? error.message : String(error);
+              }
+
+              const editable = state.addOutboundMessage({
+                accountId: "default",
+                to: createPayload.target,
+                text: "before edit",
+                threadId: createPayload.thread.id,
+              });
+              let editPayload: { message: { text: string } } | undefined;
+              let editError: string | undefined;
+              try {
+                const editResult = await runMessageAction({
+                  cfg,
+                  action: "edit",
+                  conversationReadOrigin: "direct-operator",
+                  params: {
+                    channel: "qa-channel",
+                    target: createPayload.target,
+                    messageId: editable.id,
+                    message: "after edit",
+                  },
+                });
+                editPayload = editResult.payload as typeof editPayload;
+              } catch (error) {
+                editError = error instanceof Error ? error.message : String(error);
+              }
+
+              const evidence = {
+                phase,
+                threadCreate: {
+                  requestedTitle: "proof thread",
+                  actualTitle: createPayload.thread.title,
+                  target: createPayload.target,
+                },
+                threadReply: replyPayload
+                  ? {
+                      ok: true,
+                      text: replyPayload.message.text,
+                      threadId: replyPayload.message.threadId,
+                    }
+                  : { ok: false, error: replyError },
+                edit: editPayload
+                  ? {
+                      ok: true,
+                      payloadText: editPayload.message.text,
+                      storedText: state.readMessage({ messageId: editable.id }).text,
+                    }
+                  : { ok: false, error: editError },
+              };
+              console.log(`QA_ACTION_PROOF=${JSON.stringify(evidence)}`);
+
+              if (phase === "before") {
+                expect(evidence.threadCreate.actualTitle).toBe("QA thread");
+                expect(evidence.threadReply).toMatchObject({ ok: false });
+                expect(evidence.edit).toMatchObject({ ok: false });
+              } else {
+                expect(evidence.threadCreate.actualTitle).toBe("proof thread");
+                expect(evidence.threadReply).toMatchObject({
+                  ok: true,
+                  text: "proof reply",
+                  threadId: createPayload.thread.id,
+                });
+                expect(evidence.edit).toEqual({
+                  ok: true,
+                  payloadText: "after edit",
+                  storedText: "after edit",
+                });
+              }
+            } finally {
+              await bus.stop();
+            }
+          });
+          PROOF
+
+      - name: Run real runner to QA bus proof
+        shell: bash
+        env:
+          PROOF_PHASE: ${{ matrix.phase }}
+        run: |
+          set -euo pipefail
+          echo "checked_sha=$(git rev-parse HEAD)"
+          node scripts/run-vitest.mjs src/infra/outbound/message-action-runner.qa-channel.proof.test.ts --reporter=verbose 2>&1 | tee "qa-action-${PROOF_PHASE}.log"
+
+      - name: Upload terminal proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: qa-action-${{ matrix.phase }}-${{ matrix.phase == 'before' && inputs.before_sha || inputs.after_sha }}
+          path: qa-action-${{ matrix.phase }}.log
+          if-no-files-found: error
