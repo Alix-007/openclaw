@@ -1,0 +1,118 @@
+name: Computer Use Process Timeout Proof
+
+run-name: Computer Use /bin/ps timeout before/after proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Proof branch marker
+        required: true
+        default: proof/109091-computer-use-process-timeout
+        type: string
+      expected_sha:
+        description: Candidate SHA marker
+        required: false
+        default: ""
+        type: string
+      qa_profile:
+        description: Proof marker
+        required: true
+        default: computer-use-process-timeout
+        type: string
+
+permissions: {}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  macos-proof:
+    name: ${{ matrix.name }}
+    runs-on: macos-15
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Baseline needs outer watchdog
+            sha: f3fcea0cde3df7d17b17769b965a634d1c9451e5
+            expected: stalled
+          - name: Candidate recovers and retries
+            sha: 615c816133b6c897eee27530c02e6808593a3465
+            expected: recovered
+    steps:
+      - name: Checkout proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout immutable product revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ matrix.sha }}
+          path: target
+          persist-credentials: false
+
+      - name: Install proof harness into immutable checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/.github/proof
+          cp .github/proof/computer-use-process-timeout-proof.ts \
+            target/.github/proof/computer-use-process-timeout-proof.ts
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "false"
+          use-actions-cache: "false"
+
+      - name: Install immutable product dependencies
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Run real macOS process proof
+        working-directory: target
+        env:
+          COMPUTER_USE_PROOF_EXPECT: ${{ matrix.expected }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import tsx .github/proof/computer-use-process-timeout-proof.ts
+
+      - name: Record immutable revisions
+        if: always()
+        working-directory: target
+        env:
+          EXPECTED_SHA: ${{ matrix.sha }}
+          EXPECTED_OUTCOME: ${{ matrix.expected }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$EXPECTED_SHA"
+          {
+            echo "### Computer Use process inspection proof"
+            echo
+            echo "- Product SHA: \`$actual_sha\`"
+            echo "- Expected outcome: \`$EXPECTED_OUTCOME\`"
+            echo "- Host: \`$(sw_vers -productVersion)\`"
+            echo "- Process command: real \`/bin/ps -axo pid=,ppid=,command=\`"
+            echo "- Stall mechanism: targeted \`SIGSTOP\` of the observed child \`/bin/ps\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload proof diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: computer-use-process-timeout-${{ matrix.expected }}-${{ matrix.sha }}
+          path: target/.artifacts/computer-use-process-timeout/
+          if-no-files-found: error
+          retention-days: 30
