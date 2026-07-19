@@ -341,7 +341,7 @@ async function runRetryScenario(
     );
 
     // Let any timed-out shim children finish before the second pass switches to real launchctl.
-    await sleep(1_000);
+    await sleep(8_000);
     await writeLaunchctlShim("success");
     const secondStartedAt = Date.now();
     await maybeScanExtraGatewayServices({ deep: false }, makeRuntime(events), makePrompter());
