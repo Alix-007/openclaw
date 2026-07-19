@@ -1,6 +1,6 @@
-name: Logbook screencapture preflight
+name: Logbook Snapshot Timeout Proof
 
-run-name: Real macOS screencapture hosted-runner preflight
+run-name: Logbook real macOS snapshot timeout before/after proof
 
 on:
   workflow_dispatch:
@@ -11,14 +11,14 @@ on:
         default: proof/109042-screencapture-preflight
         type: string
       expected_sha:
-        description: Product SHA marker (not executed)
-        required: true
-        default: aa7f5b03b8b03c515e28ea7a954cd1d509a9436d
+        description: Candidate SHA marker
+        required: false
+        default: ""
         type: string
       qa_profile:
         description: Proof marker
         required: true
-        default: logbook-screencapture-preflight
+        default: logbook-snapshot-timeout
         type: string
 
 permissions: {}
@@ -27,95 +27,101 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  macos-preflight:
-    name: Real /usr/sbin/screencapture
+  macos-proof:
+    name: ${{ matrix.name }}
     runs-on: macos-15
-    timeout-minutes: 10
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Baseline needs outer watchdog
+            sha: 1b2598276ac1ceac826f2f7ba1172c157b66f30f
+            expected: baseline
+          - name: Candidate reaps stalled capture
+            sha: aa7f5b03b8b03c515e28ea7a954cd1d509a9436d
+            expected: candidate
     steps:
-      - name: Record runner session and invoke system screencapture
-        env:
-          EXPECTED_PRODUCT_SHA: ${{ inputs.expected_sha }}
-        shell: bash
-        run: |
-          set -uo pipefail
-          proof_dir="$RUNNER_TEMP/logbook-screencapture-preflight"
-          mkdir -p "$proof_dir"
-
-          {
-            echo "product_sha_marker=$EXPECTED_PRODUCT_SHA"
-            echo "product_code_executed=false"
-            echo "runner_os=$RUNNER_OS"
-            echo "runner_arch=$RUNNER_ARCH"
-            echo "macos_version=$(sw_vers -productVersion)"
-            echo "kernel=$(uname -a)"
-            echo "uid=$(id -u)"
-            echo "user=$(id -un)"
-            echo "console_user=$(stat -f '%Su' /dev/console)"
-            echo "session_id=${SECURITYSESSIONID:-unset}"
-            echo "shell_process=$(ps -p $$ -o pid=,ppid=,tty=,command=)"
-            echo "executable=/usr/sbin/screencapture"
-          } > "$proof_dir/session.txt"
-
-          set +e
-          /usr/sbin/screencapture -x -t png "$proof_dir/capture.png" \
-            > "$proof_dir/screencapture.stdout.txt" \
-            2> "$proof_dir/screencapture.stderr.txt" &
-          capture_pid=$!
-          timed_out=true
-          for _ in {1..150}; do
-            if ! kill -0 "$capture_pid" 2>/dev/null; then
-              timed_out=false
-              break
-            fi
-            sleep 0.1
-          done
-          if [[ "$timed_out" == "true" ]]; then
-            kill -TERM "$capture_pid" 2>/dev/null || true
-            sleep 1
-            kill -KILL "$capture_pid" 2>/dev/null || true
-          fi
-          wait "$capture_pid"
-          capture_exit=$?
-          set -e
-
-          capture_bytes=0
-          if [[ -f "$proof_dir/capture.png" ]]; then
-            capture_bytes=$(stat -f '%z' "$proof_dir/capture.png")
-          fi
-          {
-            echo "exit_code=$capture_exit"
-            echo "outer_watchdog=$timed_out"
-            echo "capture_exists=$([[ -f "$proof_dir/capture.png" ]] && echo true || echo false)"
-            echo "capture_bytes=$capture_bytes"
-          } | tee "$proof_dir/result.txt"
-
-          {
-            echo "### Real macOS screencapture preflight"
-            echo
-            echo "- Product SHA marker (not executed): \`$EXPECTED_PRODUCT_SHA\`"
-            echo "- Executable: \`/usr/sbin/screencapture\`"
-            echo "- macOS: \`$(sw_vers -productVersion)\`"
-            echo "- User / console user: \`$(id -un)\` / \`$(stat -f '%Su' /dev/console)\`"
-            echo "- Exit: \`$capture_exit\`"
-            echo "- Outer watchdog intervened: \`$timed_out\`"
-            echo "- PNG bytes: \`$capture_bytes\`"
-            echo "- stderr: \`$(tr '\n' ' ' < "$proof_dir/screencapture.stderr.txt")\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload preflight diagnostics
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - name: Checkout proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
-          name: logbook-screencapture-preflight
-          path: ${{ runner.temp }}/logbook-screencapture-preflight/
-          if-no-files-found: error
-          retention-days: 30
+          persist-credentials: false
 
-      - name: Require a real captured image
+      - name: Checkout immutable product revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ matrix.sha }}
+          path: target
+          persist-credentials: false
+
+      - name: Install proof harness into immutable checkout
         shell: bash
         run: |
           set -euo pipefail
-          proof_dir="$RUNNER_TEMP/logbook-screencapture-preflight"
-          grep -qx 'exit_code=0' "$proof_dir/result.txt"
-          grep -qx 'outer_watchdog=false' "$proof_dir/result.txt"
-          test -s "$proof_dir/capture.png"
+          mkdir -p target/.github/proof
+          cp .github/proof/logbook-screencapture-timeout-proof.ts \
+            target/.github/proof/logbook-screencapture-timeout-proof.ts
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "false"
+          use-actions-cache: "false"
+
+      - name: Install immutable product dependencies
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Build immutable product revision
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm build
+
+      - name: Run real Logbook node-host proof
+        working-directory: target
+        env:
+          LOGBOOK_PROOF_EXPECT: ${{ matrix.expected }}
+          LOGBOOK_PROOF_SHA: ${{ matrix.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import tsx .github/proof/logbook-screencapture-timeout-proof.ts
+
+      - name: Record immutable revision
+        if: always()
+        working-directory: target
+        env:
+          EXPECTED_SHA: ${{ matrix.sha }}
+          EXPECTED_OUTCOME: ${{ matrix.expected }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$EXPECTED_SHA"
+          {
+            echo "### Logbook snapshot timeout proof"
+            echo
+            echo "- Product SHA: \`$actual_sha\`"
+            echo "- Expected lane: \`$EXPECTED_OUTCOME\`"
+            echo "- Host: \`$(sw_vers -productVersion)\`"
+            echo "- Entry: real \`logbook.snapshot\` plugin node-host command handler"
+            echo "- Capture executable: \`/usr/sbin/screencapture\`"
+            echo "- Fault injection: targeted \`SIGSTOP\` of the observed direct capture child"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload proof diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: logbook-snapshot-timeout-${{ matrix.expected }}-${{ matrix.sha }}
+          path: target/.artifacts/logbook-snapshot-timeout/
+          if-no-files-found: error
+          retention-days: 30
