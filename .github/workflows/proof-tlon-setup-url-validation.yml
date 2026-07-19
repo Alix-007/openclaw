@@ -1,0 +1,96 @@
+name: Proof Tlon setup URL validation
+
+on:
+  push:
+    branches:
+      - proof/tlon-url-validation
+
+permissions: {}
+
+jobs:
+  cli-proof:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: before
+            sha: d96a87e8e9b567fe57afde34c1438b8af27ca14a
+          - label: after
+            sha: 3fe59c2524231f25f4176f3f3a03baa32b30c71a
+    steps:
+      - name: Checkout immutable product revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.sha }}
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Record immutable revision
+        run: |
+          mkdir -p "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}"
+          git rev-parse HEAD | tee "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/head.txt"
+          test "$(git rev-parse HEAD)" = "${{ matrix.sha }}"
+
+      - name: Run real channels add proof
+        env:
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/tlon-proof/${{ matrix.label }}/openclaw.json
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/tlon-proof/${{ matrix.label }}/state
+        run: |
+          set +e
+          pnpm openclaw channels add \
+            --channel tlon \
+            --ship '~sampel-palnet' \
+            --url 'file:///etc/passwd' \
+            --code 'lidlut-tabwed-pillex-ridrup' \
+            > "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/invalid-url.log" 2>&1
+          status=$?
+          set -e
+          cat "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/invalid-url.log"
+          printf '%s\n' "$status" > "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/invalid-url.status"
+
+          if [ "${{ matrix.label }}" = before ]; then
+            test "$status" -eq 0
+            node -e 'const fs=require("node:fs");const cfg=JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH,"utf8"));if(cfg.channels?.tlon?.url!=="file:///etc/passwd")throw new Error(`unexpected before URL: ${cfg.channels?.tlon?.url}`);'
+            cp "$OPENCLAW_CONFIG_PATH" "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/after-invalid.json"
+            exit 0
+          fi
+
+          test "$status" -eq 1
+          grep -F 'Invalid URL: URL must use http:// or https://' "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/invalid-url.log"
+          if [ -f "$OPENCLAW_CONFIG_PATH" ]; then
+            node -e 'const fs=require("node:fs");const cfg=JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH,"utf8"));if(cfg.channels?.tlon)throw new Error("invalid URL was persisted");'
+          fi
+
+          pnpm openclaw channels add \
+            --channel tlon \
+            --ship '~sampel-palnet' \
+            --url 'urbit.example.com/~/login?redirect=1' \
+            --code 'lidlut-tabwed-pillex-ridrup' \
+            > "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/valid-bare-url.log" 2>&1
+          cat "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/valid-bare-url.log"
+          node -e 'const fs=require("node:fs");const cfg=JSON.parse(fs.readFileSync(process.env.OPENCLAW_CONFIG_PATH,"utf8"));if(cfg.channels?.tlon?.url!=="https://urbit.example.com")throw new Error(`unexpected normalized URL: ${cfg.channels?.tlon?.url}`);'
+          cp "$OPENCLAW_CONFIG_PATH" "$RUNNER_TEMP/tlon-proof/${{ matrix.label }}/after-valid.json"
+
+      - name: Run focused adapter tests on fixed revision
+        if: matrix.label == 'after'
+        run: node scripts/run-vitest.mjs extensions/tlon/src/setup-core.test.ts
+
+      - name: Upload proof artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlon-setup-url-${{ matrix.label }}-${{ matrix.sha }}
+          path: ${{ runner.temp }}/tlon-proof/${{ matrix.label }}
+          if-no-files-found: error
