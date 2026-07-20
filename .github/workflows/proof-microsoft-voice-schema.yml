@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 20
     env:
       BEFORE_SHA: 88e5af7097de5fdbc897e1ca622116fc289a1ee1
-      AFTER_SHA: 91754ce399fed35ed90057559fc6b26983604476
+      AFTER_SHA: 36e9d6ba84f657a4dc4672d4f41f97a0f311fbcd
     steps:
       - name: Checkout proof branch without credentials
         shell: bash
