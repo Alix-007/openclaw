@@ -50,8 +50,11 @@ jobs:
           set -euo pipefail
           before_dir="$RUNNER_TEMP/nextcloud-proof-source"
           after_dir="$RUNNER_TEMP/nextcloud-proof-after"
-          git clone --no-checkout "$before_dir" "$after_dir"
+          mkdir -p "$after_dir"
           cd "$after_dir"
+          git init
+          git remote add origin https://github.com/openclaw/openclaw.git
+          git fetch --depth=1 origin "$AFTER_SHA"
           git checkout --detach "$AFTER_SHA"
           test "$(git rev-parse HEAD)" = "$AFTER_SHA"
           corepack enable
