@@ -1,0 +1,442 @@
+name: Exact-head timeout runtime proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: Runtime proof scenario
+        required: true
+        type: choice
+        options:
+          - gateway-tls
+          - proxy-ca
+          - proxy-connect
+      head_sha:
+        description: Immutable Alix-007/openclaw product SHA
+        required: true
+        type: string
+
+permissions: {}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  proof:
+    name: ${{ inputs.scenario }} exact-head proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout trusted proof carrier
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout immutable product revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.head_sha }}
+          path: target
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install immutable product dependencies
+        working-directory: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Run exact-head production proof
+        env:
+          SCENARIO: ${{ inputs.scenario }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          TARGET_ROOT: ${{ github.workspace }}/target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C "$TARGET_ROOT" rev-parse HEAD)" = "$HEAD_SHA"
+          artifact_dir="$RUNNER_TEMP/openclaw-proof-$SCENARIO"
+          mkdir -p "$artifact_dir"
+
+          write_gateway_tls_script() {
+            cat > "$RUNNER_TEMP/proof.mts" <<'EOF'
+          import fs from "node:fs/promises";
+          import path from "node:path";
+          import { createPrivateKey, X509Certificate } from "node:crypto";
+          import { pathToFileURL } from "node:url";
+
+          const targetRoot = process.env.TARGET_ROOT!;
+          const { loadGatewayTlsRuntime } = await import(
+            pathToFileURL(path.join(targetRoot, "src/infra/tls/gateway.ts")).href,
+          );
+          const root = await fs.mkdtemp(path.join(process.env.RUNNER_TEMP!, "gateway-tls-"));
+          const certPath = path.join(root, "gateway-cert.pem");
+          const keyPath = path.join(root, "gateway-key.pem");
+
+          const processes = async (): Promise<string[]> => {
+            const entries = await fs.readdir("/proc", { withFileTypes: true });
+            const matches: string[] = [];
+            for (const entry of entries) {
+              if (!entry.isDirectory() || !/^\\d+$/.test(entry.name) || Number(entry.name) === process.pid) {
+                continue;
+              }
+              const raw = await fs.readFile(`/proc/${entry.name}/cmdline`, "utf8").catch(() => "");
+              const argv = raw.split("\\0").filter(Boolean);
+              if (path.basename(argv[0] ?? "").includes("openssl")) matches.push(argv.join(" "));
+            }
+            return matches;
+          };
+
+          const firstStarted = Date.now();
+          process.env.OPENCLAW_TLS_PROOF_MODE = "stall";
+          const first = await loadGatewayTlsRuntime({ enabled: true, certPath, keyPath });
+          const firstElapsedMs = Date.now() - firstStarted;
+          const firstEntries = await fs.readdir(root);
+          const orphanOpenSslProcesses = await processes();
+
+          process.env.OPENCLAW_TLS_PROOF_MODE = "pass";
+          const secondStarted = Date.now();
+          const second = await loadGatewayTlsRuntime({ enabled: true, certPath, keyPath });
+          const secondElapsedMs = Date.now() - secondStarted;
+          const secondEntries = (await fs.readdir(root)).toSorted();
+          const keyMode = (await fs.stat(keyPath)).mode & 0o777;
+          const cert = new X509Certificate(await fs.readFile(certPath));
+          const key = createPrivateKey(await fs.readFile(keyPath));
+          const output = {
+            head: process.env.HEAD_SHA,
+            node: process.version,
+            platform: `${process.platform}/${process.arch}`,
+            first: {
+              elapsedMs: firstElapsedMs,
+              enabled: first.enabled,
+              timeoutObserved: /timed out|timeout/i.test(first.error ?? ""),
+              finalEntries: firstEntries,
+              orphanOpenSslProcesses: orphanOpenSslProcesses.length,
+            },
+            second: {
+              elapsedMs: secondElapsedMs,
+              enabled: second.enabled,
+              finalEntries: secondEntries,
+              certificateIsCa: cert.ca,
+              privateKeyMatches: cert.checkPrivateKey(key),
+              keyMode,
+            },
+          };
+          console.log(JSON.stringify(output));
+          if (
+            first.enabled ||
+            firstEntries.length !== 0 ||
+            orphanOpenSslProcesses.length !== 0 ||
+            !output.first.timeoutObserved ||
+            !second.enabled ||
+            secondEntries.join(",") !== "gateway-cert.pem,gateway-key.pem" ||
+            !cert.ca ||
+            !cert.checkPrivateKey(key) ||
+            keyMode !== 0o600
+          ) {
+            throw new Error("gateway TLS exact-head proof failed");
+          }
+          await fs.rm(root, { recursive: true, force: true });
+          EOF
+          }
+
+          write_proxy_ca_script() {
+            cat > "$RUNNER_TEMP/proof.mts" <<'EOF'
+          import fs from "node:fs/promises";
+          import path from "node:path";
+          import { createPrivateKey, X509Certificate } from "node:crypto";
+          import { pathToFileURL } from "node:url";
+
+          const targetRoot = process.env.TARGET_ROOT!;
+          const { ensureDebugProxyCa } = await import(
+            pathToFileURL(path.join(targetRoot, "src/proxy-capture/ca.ts")).href,
+          );
+          const root = await fs.mkdtemp(path.join(process.env.RUNNER_TEMP!, "proxy-ca-"));
+          const processes = async (): Promise<string[]> => {
+            const entries = await fs.readdir("/proc", { withFileTypes: true });
+            const matches: string[] = [];
+            for (const entry of entries) {
+              if (!entry.isDirectory() || !/^\\d+$/.test(entry.name) || Number(entry.name) === process.pid) {
+                continue;
+              }
+              const raw = await fs.readFile(`/proc/${entry.name}/cmdline`, "utf8").catch(() => "");
+              const argv = raw.split("\\0").filter(Boolean);
+              if (path.basename(argv[0] ?? "").includes("openssl")) matches.push(argv.join(" "));
+            }
+            return matches;
+          };
+
+          const firstStarted = Date.now();
+          process.env.OPENCLAW_CA_PROOF_MODE = "stall";
+          let firstError = "";
+          try {
+            await ensureDebugProxyCa(root);
+          } catch (error) {
+            firstError = error instanceof Error ? error.message : String(error);
+          }
+          const firstElapsedMs = Date.now() - firstStarted;
+          const firstEntries = await fs.readdir(root);
+          const orphanOpenSslProcesses = await processes();
+
+          process.env.OPENCLAW_CA_PROOF_MODE = "pass";
+          const secondStarted = Date.now();
+          const pair = await ensureDebugProxyCa(root);
+          const secondElapsedMs = Date.now() - secondStarted;
+          const secondEntries = (await fs.readdir(root)).toSorted();
+          const cert = new X509Certificate(await fs.readFile(pair.certPath));
+          const key = createPrivateKey(await fs.readFile(pair.keyPath));
+          const certMode = (await fs.stat(pair.certPath)).mode & 0o777;
+          const keyMode = (await fs.stat(pair.keyPath)).mode & 0o777;
+          const output = {
+            head: process.env.HEAD_SHA,
+            node: process.version,
+            platform: `${process.platform}/${process.arch}`,
+            first: {
+              elapsedMs: firstElapsedMs,
+              timeoutObserved: /timed out|timeout/i.test(firstError),
+              finalEntries: firstEntries,
+              orphanOpenSslProcesses: orphanOpenSslProcesses.length,
+            },
+            second: {
+              elapsedMs: secondElapsedMs,
+              finalEntries: secondEntries,
+              certificateIsCa: cert.ca,
+              privateKeyMatches: cert.checkPrivateKey(key),
+              certMode,
+              keyMode,
+            },
+          };
+          console.log(JSON.stringify(output));
+          if (
+            !output.first.timeoutObserved ||
+            firstEntries.length !== 0 ||
+            orphanOpenSslProcesses.length !== 0 ||
+            secondEntries.join(",") !== "root-ca-key.pem,root-ca.pem" ||
+            !cert.ca ||
+            !cert.checkPrivateKey(key) ||
+            certMode !== 0o644 ||
+            keyMode !== 0o600
+          ) {
+            throw new Error("debug proxy CA exact-head proof failed");
+          }
+          await fs.rm(root, { recursive: true, force: true });
+          EOF
+          }
+
+          write_proxy_connect_script() {
+            cat > "$RUNNER_TEMP/proof.mts" <<'EOF'
+          import fs from "node:fs/promises";
+          import net from "node:net";
+          import path from "node:path";
+          import { pathToFileURL } from "node:url";
+
+          const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+          const targetRoot = process.env.TARGET_ROOT!;
+          const serverModule = await import(
+            pathToFileURL(path.join(targetRoot, "src/proxy-capture/proxy-server.ts")).href,
+          );
+          const storeModule = await import(
+            pathToFileURL(path.join(targetRoot, "src/proxy-capture/store.sqlite.ts")).href,
+          );
+          const root = await fs.mkdtemp(path.join(process.env.RUNNER_TEMP!, "proxy-connect-"));
+          process.env.OPENCLAW_STATE_DIR = root;
+          delete process.env.OPENCLAW_PROXY_ACTIVE;
+          const settings = {
+            enabled: true,
+            required: false,
+            dbPath: path.join(root, "capture.sqlite"),
+            blobDir: path.join(root, "blobs"),
+            certDir: path.join(root, "certs"),
+            sessionId: "exact-head-connect-proof",
+            sourceProcess: "proof",
+          };
+          const proxy = await serverModule.startDebugProxyServer({ settings });
+
+          const readHeaders = async (socket: net.Socket): Promise<{ header: string; rest: Buffer }> => {
+            let buffer = Buffer.alloc(0);
+            return await new Promise((resolve, reject) => {
+              const onData = (chunk: Buffer) => {
+                buffer = Buffer.concat([buffer, chunk]);
+                const index = buffer.indexOf("\\r\\n\\r\\n");
+                if (index >= 0) {
+                  socket.off("data", onData);
+                  socket.off("error", onError);
+                  resolve({
+                    header: buffer.subarray(0, index + 4).toString("utf8"),
+                    rest: buffer.subarray(index + 4),
+                  });
+                }
+              };
+              const onError = (error: Error) => {
+                socket.off("data", onData);
+                reject(error);
+              };
+              socket.on("data", onData);
+              socket.once("error", onError);
+            });
+          };
+
+          const openConnect = async (target: string) => {
+            const parsed = new URL(proxy.proxyUrl);
+            const socket = net.createConnection({ host: parsed.hostname, port: Number(parsed.port) });
+            socket.on("error", () => {});
+            await new Promise<void>((resolve, reject) => {
+              const onError = (error: Error) => { socket.off("connect", onConnect); reject(error); };
+              const onConnect = () => { socket.off("error", onError); resolve(); };
+              socket.once("error", onError);
+              socket.once("connect", onConnect);
+            });
+            socket.write(`CONNECT ${target} HTTP/1.1\\r\\nHost: ${target}\\r\\nConnection: keep-alive\\r\\n\\r\\n`);
+            const response = await readHeaders(socket);
+            return { socket, ...response };
+          };
+
+          const collectClose = (socket: net.Socket, initial: Buffer, timeoutMs: number): Promise<Buffer> =>
+            new Promise((resolve, reject) => {
+              let data = initial;
+              const timer = setTimeout(() => { socket.destroy(); reject(new Error("socket close timeout")); }, timeoutMs);
+              socket.on("data", (chunk) => { data = Buffer.concat([data, chunk]); });
+              socket.once("close", () => { clearTimeout(timer); resolve(data); });
+              socket.once("error", (error) => { clearTimeout(timer); reject(error); });
+            });
+
+          const blackholeStarted = Date.now();
+          const blackhole = await openConnect("198.51.100.1:443");
+          const blackholeResponse = await collectClose(blackhole.socket, Buffer.from(blackhole.rest), 45_000);
+          const blackholeElapsedMs = Date.now() - blackholeStarted;
+
+          const echo = net.createServer((socket) => socket.pipe(socket));
+          await new Promise<void>((resolve, reject) => {
+            echo.once("error", reject);
+            echo.listen(0, "127.0.0.1", () => { echo.off("error", reject); resolve(); });
+          });
+          const echoPort = (echo.address() as net.AddressInfo).port;
+          const tunnel = await openConnect(`127.0.0.1:${echoPort}`);
+          if (!tunnel.header.includes("200 Connection Established")) throw new Error("CONNECT tunnel did not establish");
+          await delay(30_500);
+          const payload = Buffer.from("openclaw-connect-proof\\n");
+          tunnel.socket.write(payload);
+          let echoed = tunnel.rest;
+          await new Promise<void>((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("echo deadline exceeded")), 5_000);
+            const onData = (chunk: Buffer) => {
+              echoed = Buffer.concat([echoed, chunk]);
+              if (echoed.includes(payload)) { clearTimeout(timer); tunnel.socket.off("data", onData); resolve(); }
+            };
+            tunnel.socket.on("data", onData);
+          });
+
+          const events = storeModule.getDebugProxyCaptureStore().getSessionEvents(settings.sessionId, 50);
+          const timeoutEvent = events.find((event: { errorText?: string }) => event.errorText?.includes("CONNECT upstream timed out"));
+          const output = {
+            head: process.env.HEAD_SHA,
+            node: process.version,
+            platform: `${process.platform}/${process.arch}`,
+            blackholedConnect: {
+              elapsedMs: blackholeElapsedMs,
+              statusLine: blackholeResponse.toString("utf8").split("\\r\\n", 1)[0],
+              complete: blackholeResponse.toString("utf8").includes("Gateway Timeout\\n"),
+              captureEventObserved: Boolean(timeoutEvent),
+            },
+            establishedTunnel: {
+              heldOpenMs: 30_500,
+              statusLine: tunnel.header.split("\\r\\n", 1)[0],
+              echoedAfterDeadline: echoed.includes(payload),
+            },
+          };
+          console.log(JSON.stringify(output));
+          tunnel.socket.destroy();
+          echo.close();
+          await proxy.stop();
+          storeModule.closeDebugProxyCaptureStore();
+          await fs.rm(root, { recursive: true, force: true });
+          if (
+            blackholeElapsedMs < 29_000 ||
+            !output.blackholedConnect.statusLine.includes("504 Gateway Timeout") ||
+            !output.blackholedConnect.complete ||
+            !output.blackholedConnect.captureEventObserved ||
+            !output.establishedTunnel.echoedAfterDeadline
+          ) throw new Error("debug proxy CONNECT exact-head proof failed");
+          EOF
+          }
+
+          case "$SCENARIO" in
+            gateway-tls)
+              write_gateway_tls_script
+              proof_dir="$RUNNER_TEMP/gateway-tls-wrapper"
+              ;;
+            proxy-ca)
+              write_proxy_ca_script
+              proof_dir="$RUNNER_TEMP/proxy-ca-wrapper"
+              ;;
+            proxy-connect)
+              write_proxy_connect_script
+              ;;
+            *)
+              echo "unknown scenario: $SCENARIO" >&2
+              exit 2
+              ;;
+          esac
+
+          if [[ "$SCENARIO" == proxy-connect ]]; then
+            rule="-p tcp -d 198.51.100.1 --dport 443 -j DROP"
+            sudo iptables -I OUTPUT 1 $rule
+            cleanup_network() { sudo iptables -D OUTPUT $rule || true; }
+            trap cleanup_network EXIT
+            node --import tsx "$RUNNER_TEMP/proof.mts" 2>&1 | tee "$artifact_dir/run.log"
+          else
+            mkdir -p "$proof_dir"
+            real="$proof_dir/openssl.real"
+            cp /usr/bin/openssl "$real"
+            wrapper="$proof_dir/openssl"
+            cat > "$wrapper" <<'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          real="${OPENCLAW_PROOF_REAL_OPENSSL:?}"
+          if [[ ${OPENCLAW_TLS_PROOF_MODE:-${OPENCLAW_CA_PROOF_MODE:-stall}} == pass ]]; then
+            exec "$real" "$@"
+          fi
+          args=("$@")
+          output=""
+          for ((index = 0; index < ${#args[@]} - 1; index += 1)); do
+            if [[ ${args[index]} == -out ]]; then
+              output=${args[index + 1]}
+              break
+            fi
+          done
+          if [[ -z $output ]]; then exec "$real" "$@"; fi
+          rm -f -- "$output"
+          mkfifo -- "$output"
+          exec "$real" "$@"
+          EOF
+            chmod +x "$wrapper"
+            sudo mount --bind "$wrapper" /usr/bin/openssl
+            cleanup_mount() { sudo umount /usr/bin/openssl || true; }
+            trap cleanup_mount EXIT
+            OPENCLAW_PROOF_REAL_OPENSSL="$real" node --import tsx "$RUNNER_TEMP/proof.mts" 2>&1 | tee "$artifact_dir/run.log"
+          fi
+
+          {
+            echo "### Exact-head timeout runtime proof"
+            echo
+            echo "- Scenario: \`$SCENARIO\`"
+            echo "- Product SHA: \`$HEAD_SHA\`"
+            echo "- Runner: \`$(uname -srm)\`, Node \`$(node --version)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload redacted proof artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: exact-head-timeout-${{ inputs.scenario }}-${{ inputs.head_sha }}
+          path: ${{ runner.temp }}/openclaw-proof-${{ inputs.scenario }}/
+          if-no-files-found: warn
+          retention-days: 30
