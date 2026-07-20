@@ -29,7 +29,7 @@ jobs:
             ref: faf3dbdda833b36d4cccf465a40aabe2d1675d3d
           - label: after
             repository: Alix-007/openclaw
-            ref: ${{ github.sha }}
+            ref: 15b601e2217cdee90fedfc48f02f9d37dbeb30b0
 
     steps:
       - name: Checkout exact proof ref
