@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 30
     env:
       BEFORE_SHA: b550c2cf9a8afff68958f98d71aa7e3c939f3e39
-      AFTER_SHA: 83cfd652f668f2f73ecc6ead86d68b0112203b37
+      AFTER_SHA: 6ddcf83df4fb0a5b2790fb8e27cec6392d8b612d
       CI: "true"
       OPENCLAW_SKIP_UPDATE_CHECK: "1"
     steps:
