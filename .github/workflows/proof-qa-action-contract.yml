@@ -3,15 +3,11 @@ name: Exact-head timeout runtime proof
 on:
   workflow_dispatch:
     inputs:
-      scenario:
-        description: Runtime proof scenario
+      before_sha:
+        description: Runtime proof scenario (gateway-tls, proxy-ca, or proxy-connect)
         required: true
-        type: choice
-        options:
-          - gateway-tls
-          - proxy-ca
-          - proxy-connect
-      head_sha:
+        type: string
+      after_sha:
         description: Immutable Alix-007/openclaw product SHA
         required: true
         type: string
@@ -23,7 +19,7 @@ env:
 
 jobs:
   proof:
-    name: ${{ inputs.scenario }} exact-head proof
+    name: ${{ inputs.before_sha }} exact-head proof
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -36,7 +32,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: Alix-007/openclaw
-          ref: ${{ inputs.head_sha }}
+          ref: ${{ inputs.after_sha }}
           path: target
           persist-credentials: false
 
@@ -56,8 +52,8 @@ jobs:
 
       - name: Run exact-head production proof
         env:
-          SCENARIO: ${{ inputs.scenario }}
-          HEAD_SHA: ${{ inputs.head_sha }}
+          SCENARIO: ${{ inputs.before_sha }}
+          HEAD_SHA: ${{ inputs.after_sha }}
           TARGET_ROOT: ${{ github.workspace }}/target
         shell: bash
         run: |
@@ -436,7 +432,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: exact-head-timeout-${{ inputs.scenario }}-${{ inputs.head_sha }}
-          path: ${{ runner.temp }}/openclaw-proof-${{ inputs.scenario }}/
+          name: exact-head-timeout-${{ inputs.before_sha }}-${{ inputs.after_sha }}
+          path: ${{ runner.temp }}/openclaw-proof-${{ inputs.before_sha }}/
           if-no-files-found: warn
           retention-days: 30
+
