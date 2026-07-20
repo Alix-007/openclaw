@@ -1,0 +1,237 @@
+name: Proof MSTeams OAuth token envelope
+
+on:
+  push:
+    branches:
+      - proof/111638-msteams-oauth-envelope
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions: {}
+
+jobs:
+  msteams-oauth-token-envelope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PARENT_SHA: 25d6f13a1ff864e241d28f4540494ecba43a6421
+      HEAD_SHA: 1d61563a92b1f54de9a2c479c5be6c5b2ba7dd09
+    steps:
+      - name: Checkout proof branch without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone \
+            --filter=blob:none \
+            --single-branch \
+            --branch "$GITHUB_REF_NAME" \
+            https://github.com/Alix-007/openclaw.git \
+            .
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "PROOF_BRANCH ref=$GITHUB_REF_NAME workflow_sha=$GITHUB_SHA"
+
+      - name: Set up public Node dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+          use-actions-cache: "false"
+
+      - name: Create secretless loopback harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/msteams-oauth-token-envelope-proof.mjs" <<'NODE'
+          import assert from "node:assert/strict";
+          import http from "node:http";
+          import { pathToFileURL } from "node:url";
+
+          const role = process.env.PROOF_ROLE;
+          const checkedSha = process.env.CHECKED_SHA;
+          assert.ok(role === "before" || role === "after");
+          assert.match(checkedSha ?? "", /^[0-9a-f]{40}$/);
+
+          const tokenModuleUrl = pathToFileURL(
+            `${process.env.GITHUB_WORKSPACE}/extensions/msteams/src/oauth.token.ts`,
+          ).href;
+          const { exchangeMSTeamsCodeForTokens, refreshMSTeamsDelegatedTokens } =
+            await import(tokenModuleUrl);
+
+          const cases = [
+            { flow: "exchange", payload: "null", responseBody: "null" },
+            { flow: "exchange", payload: "array", responseBody: "[]" },
+            { flow: "refresh", payload: "null", responseBody: "null" },
+            { flow: "refresh", payload: "array", responseBody: "[]" },
+          ];
+          const fakeClientCredential = ["proof", "credential"].join("-");
+
+          let activeCase;
+          let requestCount = 0;
+          const server = http.createServer(async (request, response) => {
+            assert.ok(activeCase, "loopback server received an unexpected request");
+            assert.equal(request.method, "POST");
+            assert.equal(request.url, "/token");
+            assert.match(request.headers.accept ?? "", /application\/json/);
+            assert.match(
+              request.headers["content-type"] ?? "",
+              /^application\/x-www-form-urlencoded;charset=UTF-8$/i,
+            );
+
+            const chunks = [];
+            for await (const chunk of request) {
+              chunks.push(chunk);
+            }
+            const form = new URLSearchParams(Buffer.concat(chunks).toString("utf8"));
+            assert.equal(
+              form.get("grant_type"),
+              activeCase.flow === "exchange" ? "authorization_code" : "refresh_token",
+            );
+            assert.equal(form.get("client_id"), "proof-client");
+            assert.equal(form.get("client_secret"), fakeClientCredential);
+            if (activeCase.flow === "exchange") {
+              assert.equal(form.get("code"), "proof-code");
+              assert.equal(form.get("code_verifier"), "proof-verifier");
+            } else {
+              assert.equal(form.get("refresh_token"), "proof-refresh-token");
+            }
+
+            requestCount += 1;
+            response.writeHead(200, { "content-type": "application/json" });
+            response.end(activeCase.responseBody);
+          });
+
+          await new Promise((resolve, reject) => {
+            server.once("error", reject);
+            server.listen(0, "127.0.0.1", resolve);
+          });
+          const address = server.address();
+          assert.ok(address && typeof address === "object");
+          const loopbackTokenUrl = `http://127.0.0.1:${address.port}/token`;
+
+          const nativeFetch = globalThis.fetch;
+          assert.equal(typeof nativeFetch, "function");
+          let transportRecord;
+          const redirectingFetch = async (input, init) => {
+            const originalUrl = input instanceof Request ? input.url : String(input);
+            const parsedOriginalUrl = new URL(originalUrl);
+            assert.equal(parsedOriginalUrl.protocol, "https:");
+            assert.equal(parsedOriginalUrl.hostname, "login.microsoftonline.com");
+            assert.equal(parsedOriginalUrl.pathname, "/proof-tenant/oauth2/v2.0/token");
+            assert.equal(init?.method, "POST");
+            assert.ok(init?.signal instanceof AbortSignal);
+            assert.equal(init.signal.aborted, false);
+
+            const forwardedInit = init;
+            const forwardedSignal = init.signal;
+            const result = await nativeFetch(loopbackTokenUrl, forwardedInit);
+            assert.equal(forwardedInit, init);
+            assert.equal(forwardedInit.signal, forwardedSignal);
+            transportRecord = {
+              method: init.method,
+              initPreserved: forwardedInit === init,
+              signalPreserved: forwardedInit.signal === forwardedSignal,
+              signalAborted: forwardedSignal.aborted,
+            };
+            return result;
+          };
+          // fetchWithSsrFGuard intentionally honors test-injected global fetches
+          // carrying Vitest-style metadata. The wrapper's only behavior is URL
+          // redirection; it forwards the exact RequestInit and AbortSignal.
+          Object.defineProperty(redirectingFetch, "mock", { value: {} });
+          globalThis.fetch = redirectingFetch;
+
+          function invokeFlow(flow) {
+            if (flow === "exchange") {
+              return exchangeMSTeamsCodeForTokens({
+                tenantId: "proof-tenant",
+                clientId: "proof-client",
+                clientSecret: fakeClientCredential,
+                code: "proof-code",
+                verifier: "proof-verifier",
+              });
+            }
+            return refreshMSTeamsDelegatedTokens({
+              tenantId: "proof-tenant",
+              clientId: "proof-client",
+              clientSecret: fakeClientCredential,
+              refreshToken: "proof-refresh-token",
+            });
+          }
+
+          try {
+            for (const proofCase of cases) {
+              activeCase = proofCase;
+              transportRecord = undefined;
+              const countBefore = requestCount;
+              let error;
+              try {
+                await invokeFlow(proofCase.flow);
+              } catch (caught) {
+                error = caught;
+              }
+              assert.ok(error instanceof Error, `${proofCase.flow}/${proofCase.payload}: expected error`);
+              assert.equal(requestCount, countBefore + 1);
+              assert.deepEqual(transportRecord, {
+                method: "POST",
+                initPreserved: true,
+                signalPreserved: true,
+                signalAborted: false,
+              });
+
+              const expectedStable =
+                `MSTeams token ${proofCase.flow === "exchange" ? "exchange" : "refresh"} failed: ` +
+                "invalid token response fields";
+              if (role === "before" && proofCase.payload === "null") {
+                assert.equal(error.constructor.name, "TypeError");
+                assert.match(error.message, /expires_in/);
+              } else {
+                assert.equal(error.message, expectedStable);
+              }
+
+              console.log(
+                [
+                  "RESULT",
+                  `role=${role}`,
+                  `sha=${checkedSha}`,
+                  `flow=${proofCase.flow}`,
+                  `payload=${proofCase.payload}`,
+                  "http=200",
+                  `error_class=${error.constructor.name}`,
+                  `message=${JSON.stringify(error.message)}`,
+                  "redirect=loopback",
+                  "request_init=preserved",
+                  "abort_signal=preserved",
+                ].join(" "),
+              );
+            }
+            console.log(`SUMMARY role=${role} sha=${checkedSha} cases=4 status=pass`);
+          } finally {
+            globalThis.fetch = nativeFetch;
+            await new Promise((resolve, reject) =>
+              server.close((closeError) => (closeError ? reject(closeError) : resolve())),
+            );
+          }
+          NODE
+
+      - name: Before - run exact parent production entry points
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${PARENT_SHA}^{commit}")" = "$PARENT_SHA"
+          test "$(git rev-parse "${HEAD_SHA}^")" = "$PARENT_SHA"
+          git checkout --detach "$PARENT_SHA"
+          test "$(git rev-parse HEAD)" = "$PARENT_SHA"
+          echo "CHECKED_SHA role=before sha=$PARENT_SHA"
+          PROOF_ROLE=before CHECKED_SHA="$PARENT_SHA" \
+            node --import tsx "$RUNNER_TEMP/msteams-oauth-token-envelope-proof.mjs"
+
+      - name: After - run exact PR head production entry points
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${HEAD_SHA}^{commit}")" = "$HEAD_SHA"
+          git checkout --detach "$HEAD_SHA"
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          echo "CHECKED_SHA role=after sha=$HEAD_SHA"
+          PROOF_ROLE=after CHECKED_SHA="$HEAD_SHA" \
+            node --import tsx "$RUNNER_TEMP/msteams-oauth-token-envelope-proof.mjs"
