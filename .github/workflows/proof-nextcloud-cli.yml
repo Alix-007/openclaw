@@ -44,6 +44,19 @@ jobs:
           corepack enable
           pnpm install --frozen-lockfile --config.engine-strict=false
 
+      - name: Prepare clean after-head source
+        shell: bash
+        run: |
+          set -euo pipefail
+          before_dir="$RUNNER_TEMP/nextcloud-proof-source"
+          after_dir="$RUNNER_TEMP/nextcloud-proof-after"
+          git clone --no-checkout "$before_dir" "$after_dir"
+          cd "$after_dir"
+          git checkout --detach "$AFTER_SHA"
+          test "$(git rev-parse HEAD)" = "$AFTER_SHA"
+          corepack enable
+          pnpm install --frozen-lockfile --config.engine-strict=false
+
       - name: Prove current main accepts and persists an unsupported scheme
         shell: bash
         run: |
@@ -84,8 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "$RUNNER_TEMP/nextcloud-proof-source"
-          git checkout --detach "$AFTER_SHA"
+          cd "$RUNNER_TEMP/nextcloud-proof-after"
           test "$(git rev-parse HEAD)" = "$AFTER_SHA"
           proof_root="$RUNNER_TEMP/nextcloud-proof/after-invalid"
           export HOME="$proof_root/home"
@@ -119,7 +131,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "$RUNNER_TEMP/nextcloud-proof-source"
+          cd "$RUNNER_TEMP/nextcloud-proof-after"
           test "$(git rev-parse HEAD)" = "$AFTER_SHA"
           proof_root="$RUNNER_TEMP/nextcloud-proof/after-valid"
           export HOME="$proof_root/home"
