@@ -85,6 +85,17 @@ function readQQBotSection(cfg: Record<string, unknown>): QQBotChannelConfig | un
   return asRecord(channels?.qqbot) as QQBotChannelConfig | undefined;
 }
 
+function readOwnAccountConfig(
+  accounts: QQBotChannelConfig["accounts"] | undefined,
+  accountId: string,
+): Record<string, unknown> | undefined {
+  if (!accounts || !Object.hasOwn(accounts, accountId)) {
+    return undefined;
+  }
+  const account = asRecord(accounts[accountId]);
+  return account ? { ...account } : undefined;
+}
+
 /**
  * List all configured QQBot account IDs.
  * 列出所有已配置的 QQBot 账号 ID。
@@ -118,7 +129,7 @@ export function resolveDefaultAccountId(cfg: Record<string, unknown>): string {
   if (
     configuredDefaultAccountId &&
     (configuredDefaultAccountId === DEFAULT_ACCOUNT_ID ||
-      hasAppId(qqbot?.accounts?.[configuredDefaultAccountId]?.appId))
+      hasAppId(readOwnAccountConfig(qqbot?.accounts, configuredDefaultAccountId)?.appId))
   ) {
     return configuredDefaultAccountId;
   }
@@ -127,7 +138,9 @@ export function resolveDefaultAccountId(cfg: Record<string, unknown>): string {
   }
   if (qqbot?.accounts) {
     const ids = Object.keys(qqbot.accounts);
-    const firstId = ids.find((id) => hasAppId(qqbot.accounts?.[id]?.appId));
+    const firstId = ids.find((id) =>
+      hasAppId(readOwnAccountConfig(qqbot.accounts, id)?.appId),
+    );
     if (firstId !== undefined) {
       return firstId;
     }
@@ -155,13 +168,13 @@ export function resolveAccountBase(
   if (resolvedAccountId === DEFAULT_ACCOUNT_ID) {
     accountConfig = normalizeAccountConfig({
       ...asRecord(qqbot),
-      ...asRecord(qqbot?.accounts?.[DEFAULT_ACCOUNT_ID]),
+      ...readOwnAccountConfig(qqbot?.accounts, DEFAULT_ACCOUNT_ID),
     });
     appId = normalizeAppId(accountConfig.appId);
   } else {
-    const account = qqbot?.accounts?.[resolvedAccountId];
-    accountConfig = normalizeAccountConfig(asRecord(account));
-    appId = normalizeAppId(asRecord(account)?.appId);
+    const account = readOwnAccountConfig(qqbot?.accounts, resolvedAccountId);
+    accountConfig = normalizeAccountConfig(account);
+    appId = normalizeAppId(account?.appId);
   }
 
   if (!appId && hasAppId(process.env.QQBOT_APP_ID) && resolvedAccountId === DEFAULT_ACCOUNT_ID) {
@@ -216,8 +229,11 @@ export function applyAccountConfig(
       },
     };
   } else {
-    const accounts = (existingQQBot.accounts ?? {}) as Record<string, Record<string, unknown>>;
-    const existingAccount = accounts[accountId] ?? {};
+    const accounts = (asRecord(existingQQBot.accounts) ?? {}) as Record<
+      string,
+      Record<string, unknown>
+    >;
+    const existingAccount = readOwnAccountConfig(accounts, accountId) ?? {};
     const allowFrom = (existingAccount.allowFrom as unknown[]) ?? ["*"];
     next.channels = {
       ...channels,
