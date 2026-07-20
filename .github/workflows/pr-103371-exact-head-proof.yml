@@ -1,0 +1,155 @@
+name: PR 103371 exact-head proof
+
+on:
+  push:
+    branches:
+      - proof/103371-exact-head-20260720
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-103371-exact-head-proof
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    name: QQBot inherited-config proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          ref: da6cdffc164254055be661bf51c23ca12b0a3d4d
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "da6cdffc164254055be661bf51c23ca12b0a3d4d"
+          echo "head=$(git rev-parse HEAD)"
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.15.0
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+
+      - name: Exercise production account-list, resolver, and logout paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import tsx --input-type=module <<'EOF'
+          delete process.env.QQBOT_APP_ID;
+          delete process.env.QQBOT_CLIENT_SECRET;
+
+          const { listAccountIds, resolveAccountBase } = await import(
+            "./extensions/qqbot/src/engine/config/resolve.ts"
+          );
+          const { qqbotPlugin } = await import("./extensions/qqbot/src/channel.ts");
+
+          const accountPrototype = {
+            appId: "inherited-app-id",
+            clientSecret: "inherited-secret-not-printed",
+            clientSecretFile: "/tmp/inherited-secret-file-not-read",
+          };
+          const account = Object.assign(Object.create(accountPrototype), {
+            name: "Owned Bot",
+            enabled: false,
+          });
+          const cfg = {
+            channels: {
+              qqbot: {
+                accounts: { bot2: account },
+              },
+            },
+          };
+
+          const listedAccountIds = listAccountIds(cfg);
+          const base = resolveAccountBase(cfg, "bot2");
+          const pluginResolved = qqbotPlugin.config.resolveAccount(cfg, "bot2");
+          const logoutAccount = qqbotPlugin.gateway?.logoutAccount;
+          if (!logoutAccount) {
+            throw new Error("QQBot logout entry point unavailable");
+          }
+          const logout = await logoutAccount({
+            cfg,
+            accountId: "bot2",
+            account: pluginResolved,
+            runtime: {},
+          });
+
+          const expectedConfigKeys = ["enabled", "name"];
+          const baseConfigKeys = Object.keys(base.config).sort();
+          const pluginConfigKeys = Object.keys(pluginResolved.config).sort();
+          const checks = {
+            accountListIgnoredInheritedAppId: listedAccountIds.length === 0,
+            inputStillExposesInheritedAppId: account.appId === "inherited-app-id",
+            inputOwnKeysOnly:
+              JSON.stringify(Object.keys(account).sort()) === JSON.stringify(expectedConfigKeys),
+            baseIgnoredInheritedAppId: base.appId === "",
+            basePreservedOwnFields: base.name === "Owned Bot" && base.enabled === false,
+            baseOwnConfigOnly:
+              JSON.stringify(baseConfigKeys) === JSON.stringify(expectedConfigKeys),
+            pluginIgnoredInheritedAppId: pluginResolved.appId === "",
+            pluginIgnoredInheritedSecret:
+              pluginResolved.clientSecret === "" && pluginResolved.secretSource === "none",
+            pluginOwnConfigOnly:
+              JSON.stringify(pluginConfigKeys) === JSON.stringify(expectedConfigKeys),
+            logoutSkippedInheritedCredentials:
+              logout.cleared === false && logout.loggedOut === true,
+          };
+
+          if (Object.values(checks).some((value) => !value)) {
+            throw new Error(`QQBot inherited-config proof failed: ${JSON.stringify(checks)}`);
+          }
+
+          console.log(
+            JSON.stringify(
+              {
+                head: "da6cdffc164254055be661bf51c23ca12b0a3d4d",
+                listedAccountIds,
+                inputOwnKeys: Object.keys(account).sort(),
+                base: {
+                  appIdLength: base.appId.length,
+                  enabled: base.enabled,
+                  configKeys: baseConfigKeys,
+                },
+                plugin: {
+                  appIdLength: pluginResolved.appId.length,
+                  secretLength: pluginResolved.clientSecret.length,
+                  secretSource: pluginResolved.secretSource,
+                  configKeys: pluginConfigKeys,
+                },
+                logout,
+                checks,
+              },
+              null,
+              2,
+            ),
+          );
+          console.log("PROOF_RESULT=PASS");
+          EOF
+
+      - name: Run focused QQBot tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-vitest.mjs \
+            extensions/qqbot/src/engine/config/resolve.test.ts \
+            extensions/qqbot/src/engine/config/credentials.test.ts \
+            extensions/qqbot/src/channel.logout.test.ts \
+            --reporter=dot
+
+      - name: Check plugin SDK boundary
+        shell: bash
+        run: node scripts/check-extension-plugin-sdk-boundary.mjs
