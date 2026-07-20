@@ -149,7 +149,7 @@ jobs:
           set -euo pipefail
           git checkout --detach "$AFTER_SHA"
           test "$(git rev-parse HEAD)" = "$AFTER_SHA"
-          node --import tsx "$RUNNER_TEMP/microsoft-voice-proof.mjs" after
+          corepack pnpm install --frozen-lockfile --config.engine-strict=false\n          node --import tsx "$RUNNER_TEMP/microsoft-voice-proof.mjs" after
 
       - name: Verify live public endpoint control
         shell: bash
