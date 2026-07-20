@@ -237,7 +237,7 @@ jobs:
           set -euo pipefail
           git checkout --detach "$AFTER_SHA"
           test "$(git rev-parse HEAD)" = "$AFTER_SHA"
-          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" after-malformed
+          corepack pnpm install --frozen-lockfile --config.engine-strict=false\n          node --import tsx "$RUNNER_TEMP/signal-release-proof.mjs" after-malformed
 
       - name: Verify mixed assets retain the valid download URL
         shell: bash
