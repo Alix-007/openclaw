@@ -73,8 +73,16 @@ jobs:
               },
             },
           };
+          const ownAccountCfg = {
+            channels: {
+              qqbot: {
+                accounts: { owned: { appId: "owned-app-id" } },
+              },
+            },
+          };
 
           const listedAccountIds = listAccountIds(cfg);
+          const listedOwnAccountIds = listAccountIds(ownAccountCfg);
           const base = resolveAccountBase(cfg, "bot2");
           const pluginResolved = qqbotPlugin.config.resolveAccount(cfg, "bot2");
           const logoutAccount = qqbotPlugin.gateway?.logoutAccount;
@@ -93,6 +101,8 @@ jobs:
           const pluginConfigKeys = Object.keys(pluginResolved.config).sort();
           const checks = {
             accountListIgnoredInheritedAppId: listedAccountIds.length === 0,
+            accountListPreservedOwnAppId:
+              JSON.stringify(listedOwnAccountIds) === JSON.stringify(["owned"]),
             inputStillExposesInheritedAppId: account.appId === "inherited-app-id",
             inputOwnKeysOnly:
               JSON.stringify(Object.keys(account).sort()) === JSON.stringify(expectedConfigKeys),
@@ -118,6 +128,7 @@ jobs:
               {
                 head: "da6cdffc164254055be661bf51c23ca12b0a3d4d",
                 listedAccountIds,
+                listedOwnAccountIds,
                 inputOwnKeys: Object.keys(account).sort(),
                 base: {
                   appIdLength: base.appId.length,
