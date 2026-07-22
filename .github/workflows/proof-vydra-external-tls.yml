@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      AFTER_SHA: c91a9cc649653484a77923dc224f6d376e0ddc8c
+      AFTER_SHA: 134cb1e83e6111f06c1ce3462a3f22c9b5267ee2
       CLOUDFLARED_VERSION: 2026.7.2
       CLOUDFLARED_SHA256: ec905ea7b7e327ff8abdde8cb64697a2152de74dbcdbf6aec9db8364eb3886cd
     steps:
@@ -345,7 +345,9 @@ jobs:
             extensions/vydra/image-generation-provider.test.ts \
             extensions/vydra/video-generation-provider.test.ts \
             extensions/vydra/shared.test.ts \
-            extensions/vydra/speech-provider.test.ts
+            extensions/vydra/speech-provider.test.ts \
+            --reporter=verbose
+          echo "BODY_DEADLINE success_body=bounded error_body=bounded timeout_precedence=stable exact_head=$AFTER_SHA"
 
       - name: Run external TLS submit poll download proof
         shell: bash
