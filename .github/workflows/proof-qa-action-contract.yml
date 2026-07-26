@@ -28,6 +28,7 @@ env:
 
 jobs:
   macos-proof:
+    if: inputs.qa_profile == 'computer-use-process-timeout'
     name: ${{ matrix.name }}
     runs-on: macos-15
     timeout-minutes: 30
@@ -116,3 +117,49 @@ jobs:
           path: target/.artifacts/computer-use-process-timeout/
           if-no-files-found: error
           retention-days: 30
+
+  startup-diagnostic:
+    if: inputs.qa_profile == 'computer-use-startup-diagnostic'
+    name: Focused supervision startup diagnostic
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout immutable diagnostic revision
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.ref }}
+          path: target
+          persist-credentials: false
+
+      - name: Verify immutable diagnostic revision
+        working-directory: target
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
+      - name: Setup Node and pnpm
+        uses: ./target/.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "false"
+          use-actions-cache: "false"
+
+      - name: Install immutable product dependencies
+        working-directory: target
+        shell: bash
+        run: pnpm install --frozen-lockfile
+
+      - name: Run focused supervision startup diagnostic
+        working-directory: target
+        env:
+          OPENCLAW_VITEST_MAX_WORKERS: "1"
+        shell: bash
+        run: |
+          node scripts/run-vitest.mjs \
+            extensions/codex/src/app-server/run-attempt.test.ts \
+            --testNamePattern "uses a supervised native model for review policy despite an outer Anthropic default" \
+            --testTimeout 30000 \
+            --reporter verbose
