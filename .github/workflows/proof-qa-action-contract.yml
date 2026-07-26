@@ -39,7 +39,7 @@ jobs:
             sha: 0951d0dd307d5008276714679c62459293d3b619
             expected: stalled
           - name: Candidate recovers and retries
-            sha: 28122b853d997902cd6217634c7a146ff8ddc3d0
+            sha: 37638b702ebc5b54ea29dda87fc5ebf7252f1e34
             expected: recovered
     steps:
       - name: Checkout proof harness
