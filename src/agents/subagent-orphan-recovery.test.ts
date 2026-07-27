@@ -13,6 +13,7 @@ import { resolveInternalSessionEffectsTarget } from "./internal-session-effects.
 import * as announceDelivery from "./subagent-announce-delivery.js";
 import {
   recoverOrphanedSubagentSessions as recoverOrphanedSubagentSessionsWithRuntime,
+  resetSubagentOrphanRecoveryReceiptsForTest,
   scheduleOrphanRecovery as scheduleOrphanRecoveryWithRuntime,
 } from "./subagent-orphan-recovery.js";
 import * as subagentRegistrySteerRuntime from "./subagent-registry-steer-runtime.js";
@@ -159,6 +160,18 @@ function createTestRunRecord(overrides: Partial<SubagentRunRecord> = {}): Subage
   };
 }
 
+function createInterruptedRun(
+  generation = 1,
+  interruptedAt = 1_000,
+  runId = `run-${generation}`,
+): SubagentRunRecord {
+  return createTestRunRecord({
+    runId,
+    generation,
+    execution: { status: "interrupted", interruptedAt },
+  });
+}
+
 function createActiveRuns(...runs: SubagentRunRecord[]) {
   return new Map(runs.map((run) => [run.runId, run] satisfies [string, SubagentRunRecord]));
 }
@@ -217,6 +230,7 @@ describe("subagent-orphan-recovery", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.clearAllMocks();
+    resetSubagentOrphanRecoveryReceiptsForTest();
     resetGatewayWorkAdmission();
     dispatchAgent.mockReset();
     dispatchAgent.mockResolvedValue({ runId: "test-run-id" });
@@ -225,9 +239,16 @@ describe("subagent-orphan-recovery", () => {
     vi.mocked(subagentRegistrySteerRuntime.finalizeInterruptedSubagentRun)
       .mockReset()
       .mockResolvedValue(1);
+    vi.mocked(subagentRegistrySteerRuntime.replaceSubagentRunAfterSteer)
+      .mockReset()
+      .mockReturnValue(true);
+    vi.mocked(subagentRegistrySteerRuntime.reserveSwarmCollectorLaunch)
+      .mockReset()
+      .mockReturnValue(true);
   });
 
   afterEach(() => {
+    resetSubagentOrphanRecoveryReceiptsForTest();
     resetGatewayWorkAdmission();
     vi.useRealTimers();
     vi.restoreAllMocks();
@@ -836,66 +857,131 @@ describe("subagent-orphan-recovery", () => {
     expect(announceDelivery.deliverSubagentAnnouncement).not.toHaveBeenCalled();
   });
 
-  it("prevents duplicate resume when the session accessor write fails", async () => {
-    dispatchAgent.mockResolvedValue({ runId: "new-run" } as never);
-    vi.mocked(sessionAccessor.patchSessionEntry).mockRejectedValueOnce(new Error("write failed"));
+  it("reuses one idempotency key after an ambiguous dispatch failure", async () => {
+    mockSingleAbortedSession();
+    const activeRuns = createActiveRuns(createInterruptedRun());
+    dispatchAgent
+      .mockRejectedValueOnce(new Error("gateway request timeout"))
+      .mockResolvedValueOnce({ runId: "accepted-run" });
 
-    sessionMocks.loadSessionStore.mockReturnValue({
-      "agent:main:subagent:test-session-1": {
-        sessionId: "session-abc",
-        updatedAt: Date.now(),
-        abortedLastRun: true,
-      },
-    });
+    await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
 
-    const activeRuns = new Map<string, SubagentRunRecord>();
-    activeRuns.set("run-1", createTestRunRecord());
-    activeRuns.set(
-      "run-2",
-      createTestRunRecord({
-        runId: "run-2",
+    expect(dispatchAgent).toHaveBeenCalledTimes(2);
+    expect(dispatchAgent.mock.calls[1]?.[0]).toEqual(
+      expect.objectContaining({
+        idempotencyKey: requireRecord(dispatchAgent.mock.calls[0]?.[0], "first dispatch")
+          .idempotencyKey,
       }),
     );
-
-    const result = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
-
-    expect(result.recovered).toBe(1);
-    expect(result.skipped).toBe(1);
-    expect(dispatchAgent).toHaveBeenCalledOnce();
-    expect(sessionAccessor.patchSessionEntry).toHaveBeenCalledOnce();
   });
 
-  it("does not retry a session after the gateway accepted resume but run remap failed", async () => {
-    dispatchAgent.mockResolvedValue({ runId: "new-run" } as never);
+  it("keeps an accepted generation claimed when the marker write fails", async () => {
+    const store = mockSingleAbortedSession({ updatedAt: 1_000 });
+    const source = createInterruptedRun();
+    const activeRuns = createActiveRuns(source);
     vi.mocked(subagentRegistrySteerRuntime.replaceSubagentRunAfterSteer).mockReturnValue(false);
+    vi.mocked(sessionAccessor.patchSessionEntry).mockRejectedValueOnce(new Error("write failed"));
 
-    sessionMocks.loadSessionStore.mockReturnValue({
-      "agent:main:subagent:test-session-1": {
-        sessionId: "session-abc",
-        updatedAt: Date.now(),
-        abortedLastRun: true,
-      },
-    });
-
-    const activeRuns = new Map<string, SubagentRunRecord>();
-    activeRuns.set("run-1", createTestRunRecord());
-    const resumedSessionKeys = new Set<string>();
-
-    const first = await recoverOrphanedSubagentSessions({
-      getActiveRuns: () => activeRuns,
-      resumedSessionKeys,
-    });
-    const second = await recoverOrphanedSubagentSessions({
-      getActiveRuns: () => activeRuns,
-      resumedSessionKeys,
-    });
+    const first = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    const delayed = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
 
     expect(first.recovered).toBe(1);
-    expect(first.failed).toBe(0);
-    expect(second.recovered).toBe(0);
-    expect(second.skipped).toBe(1);
+    expect(first.failed).toBe(1);
+    expect(delayed.skipped).toBe(1);
+    expect(delayed.failed).toBe(0);
     expect(dispatchAgent).toHaveBeenCalledOnce();
-    expect(sessionAccessor.patchSessionEntry).toHaveBeenCalledOnce();
+    expect(store["agent:main:subagent:test-session-1"].abortedLastRun).toBe(false);
+  });
+
+  it("keeps the accepted generation fenced across Gateway replacement", async () => {
+    mockSingleAbortedSession({ updatedAt: 1_000 });
+    const source = createInterruptedRun();
+    const activeRuns = createActiveRuns(source);
+    vi.mocked(subagentRegistrySteerRuntime.replaceSubagentRunAfterSteer).mockImplementation(
+      ({ previousRunId, nextRunId }) => {
+        const previous = activeRuns.get(previousRunId);
+        if (!previous) {
+          return false;
+        }
+        activeRuns.delete(previousRunId);
+        activeRuns.set(nextRunId, {
+          ...previous,
+          runId: nextRunId,
+          generation: (previous.generation ?? 0) + 1,
+          execution: { status: "running", startedAt: 2_000 },
+        });
+        return true;
+      },
+    );
+    vi.mocked(sessionAccessor.patchSessionEntry)
+      .mockRejectedValueOnce(new Error("write failed"))
+      .mockRejectedValueOnce(new Error("write still failed"));
+    dispatchAgent.mockResolvedValueOnce({ runId: "accepted-run" });
+    await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+
+    const replacementDispatch = vi.fn(async () => ({ runId: "replacement-run" }));
+    const replacementRuntime: GatewayRecoveryRuntime = {
+      dispatchAgent: replacementDispatch as GatewayRecoveryRuntime["dispatchAgent"],
+      waitForAgent: vi.fn(),
+      sendRecoveryNotice: vi.fn(),
+    };
+    const sameGeneration = await recoverOrphanedSubagentSessionsWithRuntime({
+      gatewayRuntime: replacementRuntime,
+      getActiveRuns: () => activeRuns,
+      readSessionMessages,
+    });
+
+    expect(sameGeneration).toMatchObject({ recovered: 0, failed: 1, skipped: 1 });
+    expect(replacementDispatch).not.toHaveBeenCalled();
+
+    const accepted = activeRuns.get("accepted-run");
+    if (!accepted) {
+      throw new Error("accepted recovery run was not registered");
+    }
+    accepted.execution = { status: "interrupted", interruptedAt: 3_000 };
+
+    const newerGeneration = await recoverOrphanedSubagentSessionsWithRuntime({
+      gatewayRuntime: replacementRuntime,
+      getActiveRuns: () => activeRuns,
+      readSessionMessages,
+    });
+
+    expect(newerGeneration).toMatchObject({ recovered: 1, failed: 0, skipped: 0 });
+    expect(replacementDispatch).toHaveBeenCalledOnce();
+    expect(
+      requireRecord(replacementDispatch.mock.calls[0]?.[0], "replacement dispatch").idempotencyKey,
+    ).not.toBe(requireRecord(dispatchAgent.mock.calls[0]?.[0], "initial dispatch").idempotencyKey);
+  });
+
+  it.each([
+    ["same generation", false],
+    ["newer interruption", true],
+  ])("coordinates an in-flight transcript claim for the %s", async (_label, newer) => {
+    mockSingleAbortedSession({ updatedAt: 1_000 });
+    const activeRuns = createActiveRuns(createInterruptedRun());
+    let releaseTranscript: (() => void) | undefined;
+    readSessionMessages.mockImplementationOnce(
+      async () =>
+        await new Promise<unknown[]>((resolve) => {
+          releaseTranscript = () => resolve([]);
+        }),
+    );
+
+    const staleScan = recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    await vi.waitFor(() => expect(readSessionMessages).toHaveBeenCalledOnce());
+    if (newer) {
+      activeRuns.clear();
+      activeRuns.set("run-2", createInterruptedRun(2, 2_000));
+    }
+
+    const overlap = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    releaseTranscript?.();
+    const staleResult = await staleScan;
+
+    expect(newer ? overlap.recovered : overlap.skipped).toBe(1);
+    expect(newer ? staleResult.skipped : staleResult.recovered).toBe(1);
+    expect(dispatchAgent).toHaveBeenCalledOnce();
   });
 
   it("finalizes interrupted runs with a readable failure after recovery retries are exhausted", async () => {
