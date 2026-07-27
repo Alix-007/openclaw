@@ -62,4 +62,5 @@ export {
   truncateUtf16Safe,
 } from "../utils.js";
 export { fetchWithTimeout } from "../utils/fetch-timeout.js";
+export { stripInternalRuntimeContext } from "../agents/internal-runtime-context.js";
 export { withTimeout };
