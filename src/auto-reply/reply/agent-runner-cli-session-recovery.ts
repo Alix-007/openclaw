@@ -70,7 +70,11 @@ async function clearExpectedCliSessionBinding(params: {
     if (!cleared) {
       return false;
     }
-    const entries = new Set([storedEntry, activeSessionEntry].filter(Boolean));
+    const entries = new Set(
+      [storedEntry, activeSessionEntry].filter(
+        (entry): entry is SessionEntry => entry !== undefined,
+      ),
+    );
     for (const entry of entries) {
       if (getCliSessionId(entry, provider) === expectedCliSessionId) {
         clearCliSession(entry, provider);
