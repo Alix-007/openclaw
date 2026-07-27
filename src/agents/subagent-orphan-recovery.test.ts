@@ -920,7 +920,7 @@ describe("subagent-orphan-recovery", () => {
     dispatchAgent.mockResolvedValueOnce({ runId: "accepted-run" });
     await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
 
-    const replacementDispatch = vi.fn(async () => ({ runId: "replacement-run" }));
+    const replacementDispatch = vi.fn(async (_: unknown) => ({ runId: "replacement-run" }));
     const replacementRuntime: GatewayRecoveryRuntime = {
       dispatchAgent: replacementDispatch as GatewayRecoveryRuntime["dispatchAgent"],
       waitForAgent: vi.fn(),
@@ -1037,7 +1037,9 @@ describe("subagent-orphan-recovery", () => {
 
   it("uses the replacement Gateway runtime when the instance changes before recovery", async () => {
     mockSingleAbortedSession();
-    const replacementDispatch = vi.fn(async () => ({ runId: "replacement-run" }));
+    const replacementDispatch = vi.fn(async (_payload: Record<string, unknown>) => ({
+      runId: "replacement-run",
+    }));
     const replacementRuntime: GatewayRecoveryRuntime = {
       dispatchAgent: replacementDispatch as GatewayRecoveryRuntime["dispatchAgent"],
       waitForAgent: vi.fn(),
