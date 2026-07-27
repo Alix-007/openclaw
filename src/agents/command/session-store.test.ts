@@ -3191,18 +3191,17 @@ describe("clearCliSessionInStore", () => {
   it("reports no clear and preserves a replacement CLI binding", async () => {
     await withTempSessionStore(async ({ storePath }) => {
       const sessionKey = "agent:main:explicit:test-clear-cli-replaced";
-      const sessionStore: Record<string, SessionEntry> = {
-        [sessionKey]: {
-          sessionId: "openclaw-session-1",
-          updatedAt: 1,
-          cliSessionBindings: {
-            "claude-cli": { sessionId: "stale-cli-session" },
-          },
+      const sessionEntry: SessionEntry = {
+        sessionId: "openclaw-session-1",
+        updatedAt: 1,
+        cliSessionBindings: {
+          "claude-cli": { sessionId: "stale-cli-session" },
         },
       };
+      const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
       await seedSessionStore(storePath, {
         [sessionKey]: {
-          ...sessionStore[sessionKey],
+          ...sessionEntry,
           updatedAt: 2,
           cliSessionBindings: {
             "claude-cli": { sessionId: "replacement-cli-session" },
