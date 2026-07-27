@@ -3,6 +3,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { EmbeddedAgentRunResult } from "../../agents/embedded-agent-runner/types.js";
 import { FailoverError } from "../../agents/failover-error.js";
 import { createAgentRunRestartAbortError } from "../../agents/run-termination.js";
+import type { SessionEntry } from "../../config/sessions.js";
+import { loadSessionEntry, replaceSessionEntry } from "../../config/sessions/session-accessor.js";
+import { useTempSessionsFixture } from "../../config/sessions/test-helpers.js";
 import {
   emitAgentEvent,
   getAgentEventLifecycleGeneration,
@@ -14,6 +17,7 @@ import {
   keepCliSessionBindingOnlyWhenReused,
   runCliAgentWithLifecycle,
 } from "./agent-runner-cli-dispatch.js";
+import { createCliSessionRecoveryCallbacks } from "./agent-runner-cli-session-recovery.js";
 
 type RunCliAgentWithLifecycleParams = Parameters<typeof runCliAgentWithLifecycle>[0];
 type ReasoningTextPayload = Parameters<
@@ -605,6 +609,134 @@ describe("runCliAgentWithLifecycle", () => {
       livenessState: "paused",
       stopReason: "end_turn",
     });
+  });
+});
+
+describe("createCliSessionRecoveryCallbacks", () => {
+  const fixture = useTempSessionsFixture("cli-session-recovery-cas-");
+
+  it("leaves fresh retry policy unchanged when session persistence is unavailable", () => {
+    expect(
+      createCliSessionRecoveryCallbacks({
+        provider: "claude-cli",
+        binding: { sessionId: "storeless" },
+        getActiveSessionEntry: () => undefined,
+        hasCommittedMedia: () => false,
+      }),
+    ).toEqual({});
+  });
+
+  it("does not clear a binding before fresh retry after detached media", async () => {
+    const sessionKey = "media";
+    const mediaSessionId = "media-owned";
+    const activeEntry: SessionEntry = {
+      sessionId: "openclaw-media-session",
+      updatedAt: 1,
+      cliSessionBindings: { "claude-cli": { sessionId: mediaSessionId } },
+    };
+    const sessionStore = { [sessionKey]: activeEntry };
+    await replaceSessionEntry({ sessionKey, storePath: fixture.storePath() }, activeEntry);
+    const callbacks = createCliSessionRecoveryCallbacks({
+      provider: "claude-cli",
+      binding: { sessionId: mediaSessionId },
+      sessionKey,
+      sessionStore,
+      storePath: fixture.storePath(),
+      getActiveSessionEntry: () => activeEntry,
+      hasCommittedMedia: () => true,
+    });
+    expect(
+      await callbacks.onBeforeFreshCliSessionRetry?.({
+        provider: "claude-cli",
+        reason: "session_expired",
+        sessionId: mediaSessionId,
+      }),
+    ).toBe(false);
+    expect(activeEntry.cliSessionBindings?.["claude-cli"]?.sessionId).toBe(mediaSessionId);
+  });
+
+  it("clears the expected fork binding only before a fresh retry", async () => {
+    const sessionKey = "fork";
+    const forkSessionId = "fork-source-cli-session";
+    const activeEntry: SessionEntry = {
+      sessionId: "openclaw-fork-session",
+      updatedAt: 1,
+      cliSessionBindings: {
+        "claude-cli": { sessionId: forkSessionId, forkNextResume: true },
+      },
+    };
+    const sessionStore = { [sessionKey]: activeEntry };
+    await replaceSessionEntry({ sessionKey, storePath: fixture.storePath() }, activeEntry);
+    const callbacks = createCliSessionRecoveryCallbacks({
+      provider: "claude-cli",
+      binding: { sessionId: forkSessionId, forkNextResume: true },
+      sessionKey,
+      sessionStore,
+      storePath: fixture.storePath(),
+      getActiveSessionEntry: () => activeEntry,
+      hasCommittedMedia: () => false,
+    });
+
+    expect(callbacks.onErrorBeforeLifecycle).toBeUndefined();
+    await expect(
+      callbacks.onBeforeFreshCliSessionRetry?.({
+        provider: "claude-cli",
+        reason: "session_expired",
+        sessionId: forkSessionId,
+      }),
+    ).resolves.toBe(true);
+    expect(activeEntry.cliSessionBindings?.["claude-cli"]).toBeUndefined();
+    expect(
+      loadSessionEntry({ sessionKey, storePath: fixture.storePath() })?.cliSessionBindings,
+    ).toBe(undefined);
+  });
+
+  it("preserves a replacement binding installed after callback creation", async () => {
+    const sessionKey = "main";
+    const staleSessionId = "stale-cli-session";
+    const activeEntry: SessionEntry = {
+      sessionId: "openclaw-session",
+      updatedAt: 1,
+      cliSessionBindings: { "claude-cli": { sessionId: staleSessionId } },
+    };
+    const sessionStore = { [sessionKey]: activeEntry };
+    await replaceSessionEntry({ sessionKey, storePath: fixture.storePath() }, activeEntry);
+    const callbacks = createCliSessionRecoveryCallbacks({
+      provider: "claude-cli",
+      binding: { sessionId: staleSessionId },
+      sessionKey,
+      sessionStore,
+      storePath: fixture.storePath(),
+      getActiveSessionEntry: () => activeEntry,
+      hasCommittedMedia: () => false,
+    });
+    await replaceSessionEntry(
+      { sessionKey, storePath: fixture.storePath() },
+      {
+        ...activeEntry,
+        updatedAt: 2,
+        cliSessionBindings: { "claude-cli": { sessionId: "replacement-cli-session" } },
+      },
+    );
+    expect(
+      loadSessionEntry({ sessionKey, storePath: fixture.storePath() })?.cliSessionBindings?.[
+        "claude-cli"
+      ]?.sessionId,
+    ).toBe("replacement-cli-session");
+
+    await expect(
+      callbacks.onBeforeFreshCliSessionRetry?.({
+        provider: "claude-cli",
+        reason: "session_expired",
+        sessionId: staleSessionId,
+      }),
+    ).resolves.toBe(false);
+    expect(activeEntry.cliSessionBindings?.["claude-cli"]?.sessionId).toBe(staleSessionId);
+    expect(
+      loadSessionEntry({ sessionKey, storePath: fixture.storePath() })?.cliSessionBindings?.[
+        "claude-cli"
+      ]?.sessionId,
+    ).toBe("replacement-cli-session");
   });
 });
 

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { SessionEntry } from "../../config/sessions.js";
+import { loadSessionEntry, replaceSessionEntry } from "../../config/sessions/session-accessor.js";
+import { useTempSessionsFixture } from "../../config/sessions/test-helpers.js";
 import type { TemplateContext } from "../templating.js";
 import { SILENT_REPLY_TOKEN } from "../tokens.js";
 import {
@@ -18,6 +20,8 @@ import type { FallbackRunnerParams } from "./agent-runner-execution.test-support
 const state = setupAgentRunnerExecutionTestState();
 
 describe("executeAgentTurn: CLI session routing", () => {
+  const fixture = useTempSessionsFixture("agent-runner-cli-fresh-retry-");
+
   it("forwards the static extra system prompt to CLI backends", async () => {
     state.isCliProviderMock.mockReturnValue(true);
     state.runWithModelFallbackMock.mockImplementationOnce(async (params: FallbackRunnerParams) => ({
@@ -251,6 +255,11 @@ describe("executeAgentTurn: CLI session routing", () => {
         sessionId: "existing-cli-session",
       },
     });
+    const cliRunParams = requireRecord(
+      requireMockCall(state.runCliAgentMock, 0, "CLI run params")[0],
+      "CLI run params",
+    );
+    expect(cliRunParams.onBeforeFreshCliSessionRetry).toBeUndefined();
     if (result.kind !== "success") {
       throw new Error("expected success");
     }
@@ -259,6 +268,74 @@ describe("executeAgentTurn: CLI session routing", () => {
       sessionId: "existing-cli-session",
       authProfileId: "profile",
     });
+  });
+
+  it("clears a persisted stale CLI session before a direct fresh retry succeeds", async () => {
+    state.isCliProviderMock.mockReturnValue(true);
+    state.runWithModelFallbackMock.mockImplementationOnce(async (params: FallbackRunnerParams) => ({
+      result: await params.run("claude-cli", "claude-sonnet-4-6"),
+      provider: "claude-cli",
+      model: "claude-sonnet-4-6",
+      attempts: [],
+    }));
+    const sessionKey = "main";
+    const storePath = fixture.storePath();
+    const staleSessionId = "stale-direct-cli-session";
+    const sessionEntry: SessionEntry = {
+      sessionId: "openclaw-session",
+      updatedAt: 1,
+      cliSessionBindings: {
+        "claude-cli": { sessionId: staleSessionId },
+      },
+      cliSessionIds: { "claude-cli": staleSessionId },
+      claudeCliSessionId: staleSessionId,
+    };
+    const activeSessionStore = { [sessionKey]: sessionEntry };
+    await replaceSessionEntry({ sessionKey, storePath }, structuredClone(sessionEntry));
+    state.runCliAgentMock.mockImplementationOnce(async (rawParams: unknown) => {
+      const cliParams = requireRecord(rawParams, "CLI run params");
+      expect(cliParams.cliSessionId).toBe(staleSessionId);
+      const retry = cliParams.onBeforeFreshCliSessionRetry;
+      if (typeof retry !== "function") {
+        throw new Error("expected a fresh-session retry callback");
+      }
+
+      await expect(
+        retry({
+          provider: "claude-cli",
+          reason: "session_expired",
+          sessionId: staleSessionId,
+        }),
+      ).resolves.toBe(true);
+
+      return {
+        payloads: [{ text: "fresh direct retry succeeded" }],
+        meta: {},
+      };
+    });
+
+    const executeAgentTurn = await getExecuteAgentTurnForTest();
+    const followupRun = createFollowupRun();
+    followupRun.run.provider = "claude-cli";
+    followupRun.run.model = "claude-sonnet-4-6";
+
+    const result = await executeAgentTurn({
+      ...createMinimalRunAgentTurnParams({ followupRun }),
+      sessionKey,
+      activeSessionStore,
+      storePath,
+      getActiveSessionEntry: () => sessionEntry,
+    });
+
+    expect(result.kind).toBe("success");
+    if (result.kind !== "success") {
+      throw new Error("expected fresh retry success");
+    }
+    expect(result.runResult.payloads).toEqual([{ text: "fresh direct retry succeeded" }]);
+    expect(sessionEntry.cliSessionBindings?.["claude-cli"]).toBeUndefined();
+    expect(loadSessionEntry({ sessionKey, storePath })?.cliSessionBindings?.["claude-cli"]).toBe(
+      undefined,
+    );
   });
 
   it("keeps the first CLI session created by a room-event turn", async () => {
