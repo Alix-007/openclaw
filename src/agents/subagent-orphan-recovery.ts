@@ -25,11 +25,10 @@ import { runWithGatewayIndependentRootWorkAdmission } from "../process/gateway-w
 import { truncateUtf16Safe } from "../utils.js";
 import { resolveInternalSessionEffectsTarget } from "./internal-session-effects.js";
 import {
+  beginOrphanRecoveryReceiptDispatch,
   createOrphanRecoveryReceipt,
   getOrphanRecoveryReceipt,
   markOrphanRecoveryReceiptAccepted,
-  matchesOrphanRecoveryReceiptMarker,
-  matchesOrphanRecoveryReceiptSource,
   orphanRecoveryReceiptBlocksRun,
   pruneAcceptedOrphanRecoveryReceipts,
   releaseOrphanRecoveryReceipt,
@@ -230,10 +229,6 @@ async function resumeOrphanedSession(params: {
     return { resumed: false, error };
   }
 
-  // Gateway acceptance is the irreversible boundary. Registry repair below
-  // must never turn this dispatch back into a retryable request.
-  params.onAccepted(acceptedRunId);
-
   try {
     const remapped = replaceSubagentRunAfterSteer({
       previousRunId: params.originalRunId,
@@ -262,6 +257,8 @@ async function resumeOrphanedSession(params: {
       `resumed orphaned session ${params.sessionKey} but registry remap failed: ${formatErrorMessage(err)}`,
     );
   }
+  // Gateway acceptance is irreversible. Registry repair above is synchronous,
+  // so the in-flight receipt remains exclusive until this transition.
   params.onAccepted(acceptedRunId, params.getActiveRun(acceptedRunId));
   log.info(`resumed orphaned session: ${params.sessionKey}`);
   return { resumed: true, acceptedRunId };
@@ -556,8 +553,12 @@ export async function recoverOrphanedSubagentSessions(params: {
           !dispatchEntry ||
           !dispatchRun ||
           dispatchRun.childSessionKey !== childSessionKey ||
-          !matchesOrphanRecoveryReceiptMarker(dispatchEntry, receipt) ||
-          !matchesOrphanRecoveryReceiptSource(dispatchRun, receipt)
+          !beginOrphanRecoveryReceiptDispatch({
+            childSessionKey,
+            entry: dispatchEntry,
+            run: dispatchRun,
+            receipt,
+          })
         ) {
           releaseOrphanRecoveryReceipt(childSessionKey, receipt);
           result.skipped++;
@@ -580,7 +581,12 @@ export async function recoverOrphanedSubagentSessions(params: {
           idempotencyKey: receipt.idempotencyKey,
           getActiveRun: (activeRunId) => params.getActiveRuns().get(activeRunId),
           onAccepted: (acceptedRunId, acceptedRun) => {
-            markOrphanRecoveryReceiptAccepted(receipt, acceptedRunId, acceptedRun);
+            markOrphanRecoveryReceiptAccepted({
+              childSessionKey,
+              receipt,
+              runId: acceptedRunId,
+              run: acceptedRun,
+            });
           },
         });
 
@@ -612,7 +618,7 @@ export async function recoverOrphanedSubagentSessions(params: {
           });
         }
       } catch (err) {
-        if (ownedReceipt?.state === "dispatching") {
+        if (ownedReceipt?.state === "preparing" || ownedReceipt?.state === "inflight") {
           releaseOrphanRecoveryReceipt(childSessionKey, ownedReceipt);
         }
         const error = formatErrorMessage(err);

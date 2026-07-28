@@ -13,7 +13,7 @@ export type OrphanRecoveryReceipt = {
   source: RunIdentity;
   accepted?: RunIdentity;
   attempt: number;
-  state: "dispatching" | "accepted";
+  state: "preparing" | "inflight" | "accepted";
 };
 
 // Accepted receipts survive marker-write failure and Gateway replacement. A
@@ -74,7 +74,7 @@ export function createOrphanRecoveryReceipt(params: {
     marker: { sessionId: params.entry.sessionId, updatedAt: params.entry.updatedAt },
     source,
     attempt: params.attempt,
-    state: "dispatching",
+    state: "preparing",
   };
   receipts.set(params.childSessionKey, receipt);
   return receipt;
@@ -84,13 +84,18 @@ export function orphanRecoveryReceiptBlocksRun(params: {
   receipt: OrphanRecoveryReceipt;
   run: SubagentRunRecord;
 }): boolean {
+  // Once Gateway admission is in flight, replacing the owner could dispatch
+  // both generations before either caller observes the RPC result.
+  if (params.receipt.state === "inflight") {
+    return true;
+  }
   if (hasNewerInterruption(params.run, params.receipt)) {
     return false;
   }
   return true;
 }
 
-export function matchesOrphanRecoveryReceiptMarker(
+function matchesOrphanRecoveryReceiptMarker(
   entry: SessionEntry,
   receipt: OrphanRecoveryReceipt,
 ): boolean {
@@ -101,7 +106,7 @@ export function matchesOrphanRecoveryReceiptMarker(
   );
 }
 
-export function matchesOrphanRecoveryReceiptSource(
+function matchesOrphanRecoveryReceiptSource(
   run: SubagentRunRecord,
   receipt: OrphanRecoveryReceipt,
 ): boolean {
@@ -112,15 +117,42 @@ export function matchesOrphanRecoveryReceiptSource(
   );
 }
 
-export function markOrphanRecoveryReceiptAccepted(
-  receipt: OrphanRecoveryReceipt,
-  runId: string,
-  run?: SubagentRunRecord,
-): void {
+export function beginOrphanRecoveryReceiptDispatch(params: {
+  childSessionKey: string;
+  entry: SessionEntry;
+  run: SubagentRunRecord;
+  receipt: OrphanRecoveryReceipt;
+}): boolean {
+  if (
+    receipts.get(params.childSessionKey) !== params.receipt ||
+    params.receipt.state !== "preparing" ||
+    !matchesOrphanRecoveryReceiptMarker(params.entry, params.receipt) ||
+    !matchesOrphanRecoveryReceiptSource(params.run, params.receipt)
+  ) {
+    return false;
+  }
+  params.receipt.state = "inflight";
+  return true;
+}
+
+export function markOrphanRecoveryReceiptAccepted(params: {
+  childSessionKey: string;
+  receipt: OrphanRecoveryReceipt;
+  runId: string;
+  run?: SubagentRunRecord;
+}): boolean {
+  if (
+    receipts.get(params.childSessionKey) !== params.receipt ||
+    params.receipt.state !== "inflight"
+  ) {
+    return false;
+  }
+  const { receipt, runId, run } = params;
   receipt.accepted = run
     ? identity(run)
     : { runId, generation: undefined, interruptedAt: undefined };
   receipt.state = "accepted";
+  return true;
 }
 
 export function releaseOrphanRecoveryReceipt(
@@ -153,7 +185,11 @@ export async function settleAcceptedOrphanRecoveryReceipt(params: {
     { storePath: params.storePath, sessionKey: params.childSessionKey },
     (current) => {
       // The accepted dispatch only owns the exact abort marker it observed.
-      if (!matchesOrphanRecoveryReceiptMarker(current, params.receipt)) {
+      if (
+        receipts.get(params.childSessionKey) !== params.receipt ||
+        params.receipt.state !== "accepted" ||
+        !matchesOrphanRecoveryReceiptMarker(current, params.receipt)
+      ) {
         return null;
       }
       matched = true;

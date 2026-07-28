@@ -971,8 +971,12 @@ describe("subagent-orphan-recovery", () => {
     const staleScan = recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
     await vi.waitFor(() => expect(readSessionMessages).toHaveBeenCalledOnce());
     if (newer) {
-      activeRuns.clear();
       activeRuns.set("run-2", createInterruptedRun(2, 2_000));
+      // Keep both generations visible and leave the abort marker set after the
+      // newer dispatch. The superseded transcript owner must still stand down.
+      vi.mocked(sessionAccessor.patchSessionEntry).mockRejectedValueOnce(
+        new Error("marker write failed"),
+      );
     }
 
     const overlap = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
@@ -982,6 +986,91 @@ describe("subagent-orphan-recovery", () => {
     expect(newer ? overlap.recovered : overlap.skipped).toBe(1);
     expect(newer ? staleResult.skipped : staleResult.recovered).toBe(1);
     expect(dispatchAgent).toHaveBeenCalledOnce();
+  });
+
+  it("blocks a newer generation while Gateway admission is in flight", async () => {
+    const store = mockSingleAbortedSession({ updatedAt: 1_000 });
+    const activeRuns = createActiveRuns(createInterruptedRun());
+    let resolveDispatch: ((value: { runId: string }) => void) | undefined;
+    dispatchAgent.mockImplementationOnce(
+      async () =>
+        await new Promise<{ runId: string }>((resolve) => {
+          resolveDispatch = resolve;
+        }),
+    );
+
+    const first = recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    await vi.waitFor(() => expect(dispatchAgent).toHaveBeenCalledOnce());
+
+    activeRuns.set("run-2", createInterruptedRun(2, 2_000));
+    store["agent:main:subagent:test-session-1"].updatedAt = 2_000;
+    const overlap = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+
+    expect(overlap).toMatchObject({ recovered: 0, failed: 0, skipped: 2 });
+    expect(dispatchAgent).toHaveBeenCalledOnce();
+
+    resolveDispatch?.({ runId: "accepted-run" });
+    await expect(first).resolves.toMatchObject({ recovered: 1, failed: 0 });
+    expect(store["agent:main:subagent:test-session-1"].abortedLastRun).toBe(true);
+
+    const newer = await recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    expect(newer).toMatchObject({ recovered: 1, failed: 0, skipped: 1 });
+    expect(dispatchAgent).toHaveBeenCalledTimes(2);
+    expect(store["agent:main:subagent:test-session-1"].abortedLastRun).toBe(false);
+  });
+
+  it("does not let a superseded accepted receipt settle a newer generation", async () => {
+    const store = mockSingleAbortedSession({ updatedAt: 1_000 });
+    const activeRuns = createActiveRuns(createInterruptedRun());
+    const patchSessionEntry = vi.mocked(sessionAccessor.patchSessionEntry);
+    const patchImplementation = patchSessionEntry.getMockImplementation();
+    if (!patchImplementation) {
+      throw new Error("patchSessionEntry mock implementation missing");
+    }
+    let releaseFirstSettlement: (() => void) | undefined;
+    let markFirstSettlementStarted: (() => void) | undefined;
+    const firstSettlementStarted = new Promise<void>((resolve) => {
+      markFirstSettlementStarted = resolve;
+    });
+    patchSessionEntry.mockImplementationOnce(
+      async (...args: Parameters<typeof sessionAccessor.patchSessionEntry>) => {
+        markFirstSettlementStarted?.();
+        await new Promise<void>((resolve) => {
+          releaseFirstSettlement = resolve;
+        });
+        return await patchImplementation(...args);
+      },
+    );
+
+    let resolveNewerDispatch: ((value: { runId: string }) => void) | undefined;
+    dispatchAgent.mockResolvedValueOnce({ runId: "accepted-run-1" }).mockImplementationOnce(
+      async () =>
+        await new Promise<{ runId: string }>((resolve) => {
+          resolveNewerDispatch = resolve;
+        }),
+    );
+
+    const first = recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    await firstSettlementStarted;
+
+    const originalRun = activeRuns.get("run-1");
+    if (!originalRun) {
+      throw new Error("original interrupted run missing");
+    }
+    // Visit the newer run first while retaining both registry generations.
+    activeRuns.clear();
+    activeRuns.set("run-2", createInterruptedRun(2, 2_000));
+    activeRuns.set("run-1", originalRun);
+    const newer = recoverOrphanedSubagentSessions({ getActiveRuns: () => activeRuns });
+    await vi.waitFor(() => expect(dispatchAgent).toHaveBeenCalledTimes(2));
+
+    releaseFirstSettlement?.();
+    await expect(first).resolves.toMatchObject({ recovered: 1, failed: 0 });
+    expect(store["agent:main:subagent:test-session-1"].abortedLastRun).toBe(true);
+
+    resolveNewerDispatch?.({ runId: "accepted-run-2" });
+    await expect(newer).resolves.toMatchObject({ recovered: 1, failed: 0, skipped: 1 });
+    expect(store["agent:main:subagent:test-session-1"].abortedLastRun).toBe(false);
   });
 
   it("finalizes interrupted runs with a readable failure after recovery retries are exhausted", async () => {
