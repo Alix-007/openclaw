@@ -10,6 +10,7 @@
  */
 
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   readProviderTextResponse,
   readResponseTextLimited,
@@ -184,7 +185,9 @@ export class ApiClient {
       };
 
       const rawBody = res.ok ? await readBody() : await readBody(QQBOT_API_ERROR_BODY_LIMIT_BYTES);
-      this.logger?.debug?.(`[qqbot:api] <<< Body: ${rawBody}`);
+      if (this.logger?.debug) {
+        this.logger.debug(`[qqbot:api] <<< Body: ${redactToolPayloadText(rawBody)}`);
+      }
 
       // Detect non-JSON responses (HTML gateway errors, CDN rate-limit pages).
       const contentType = res.headers.get("content-type") ?? "";
@@ -202,31 +205,39 @@ export class ApiClient {
           throw new ApiError(`${statusHint}（${path}），请稍后重试`, res.status, path);
         }
 
-        // JSON error response.
+        // Parse the original JSON before redacting extracted strings so business
+        // codes remain machine-readable while reflected credentials never escape.
+        let parsedError: unknown;
         try {
-          const error = JSON.parse(rawBody) as {
-            message?: string;
-            code?: number;
-            err_code?: number;
-          };
-          const bizCode = error.code ?? error.err_code;
+          parsedError = JSON.parse(rawBody);
+        } catch {
           throw new ApiError(
-            `API Error [${path}]: ${error.message ?? rawBody}. ${qqbotApiGuidance(res.status, bizCode)}`,
-            res.status,
-            path,
-            bizCode,
-            error.message,
-          );
-        } catch (parseErr) {
-          if (parseErr instanceof ApiError) {
-            throw parseErr;
-          }
-          throw new ApiError(
-            `API Error [${path}] HTTP ${res.status}: ${truncateUtf16Safe(rawBody, 200)}`,
+            `API Error [${path}] HTTP ${res.status}: ${truncateUtf16Safe(redactToolPayloadText(rawBody), 200)}`,
             res.status,
             path,
           );
         }
+
+        const error =
+          typeof parsedError === "object" && parsedError !== null
+            ? (parsedError as Record<string, unknown>)
+            : undefined;
+        const rawMessage = typeof error?.message === "string" ? error.message : undefined;
+        const redactedMessage =
+          rawMessage === undefined ? undefined : redactToolPayloadText(rawMessage);
+        const bizCode =
+          typeof error?.code === "number"
+            ? error.code
+            : typeof error?.err_code === "number"
+              ? error.err_code
+              : undefined;
+        throw new ApiError(
+          `API Error [${path}]: ${redactedMessage ?? redactToolPayloadText(rawBody)}. ${qqbotApiGuidance(res.status, bizCode)}`,
+          res.status,
+          path,
+          bizCode,
+          redactedMessage,
+        );
       }
 
       // Successful response but not JSON (extreme edge case).

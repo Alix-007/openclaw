@@ -1,3 +1,5 @@
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import type { LookupFn } from "openclaw/plugin-sdk/ssrf-runtime";
 // Qqbot tests cover api-client plugin behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -22,6 +24,68 @@ vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
 import { ApiError } from "../types.js";
 import { ApiClient } from "./api-client.js";
 
+const loopbackServers: Array<{ close: () => Promise<void> }> = [];
+
+async function startReflectedAuthorizationServer(): Promise<string> {
+  const server = createServer((req, res) => {
+    req.resume();
+    const authorization = req.headers.authorization ?? "";
+
+    if (req.url === "/json-error") {
+      res.writeHead(429, { "content-type": "application/json" });
+      res.end(
+        JSON.stringify({
+          code: 40093001,
+          message: `json-marker Authorization: ${authorization}`,
+        }),
+      );
+      return;
+    }
+    if (req.url === "/text-error") {
+      res.writeHead(503, { "content-type": "text/plain" });
+      res.end(`plain-marker Authorization: ${authorization}`);
+      return;
+    }
+    if (req.url === "/success") {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ authorization, marker: "success-marker" }));
+      return;
+    }
+
+    res.writeHead(404, { "content-type": "text/plain" });
+    res.end("not found");
+  });
+
+  await new Promise<void>((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      server.off("error", reject);
+      resolve();
+    });
+  });
+
+  loopbackServers.push({
+    close: () =>
+      new Promise<void>((resolve, reject) => {
+        server.close((error) => (error ? reject(error) : resolve()));
+      }),
+  });
+  const address = server.address() as AddressInfo;
+  return `http://127.0.0.1:${address.port}`;
+}
+
+async function captureApiError(run: () => Promise<unknown>): Promise<ApiError> {
+  try {
+    await run();
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return error;
+    }
+    throw error;
+  }
+  throw new Error("expected ApiClient request to fail");
+}
+
 function cancelTrackedResponse(
   text: string,
   init: ResponseInit,
@@ -45,10 +109,68 @@ function cancelTrackedResponse(
 }
 
 describe("ApiClient", () => {
-  afterEach(() => {
+  afterEach(async () => {
+    const pendingServers = loopbackServers.splice(0);
+    await Promise.all(pendingServers.map((server) => server.close()));
     vi.useRealTimers();
     vi.restoreAllMocks();
     fetchWithSsrFGuardMock.mockReset();
+  });
+
+  it("redacts reflected credentials from JSON, text, and debug output over real transport", async () => {
+    const actualGuard = ssrfRuntimeActual.fetchWithSsrFGuard;
+    if (!actualGuard) {
+      throw new Error("expected the real SSRF guard implementation");
+    }
+    const baseUrl = await startReflectedAuthorizationServer();
+    // Exercise the real guard and global fetch; only permit the test-owned
+    // loopback host that production QQBot policy intentionally rejects.
+    fetchWithSsrFGuardMock.mockImplementation(
+      async (request: Parameters<typeof actualGuard>[0]) =>
+        await actualGuard({
+          ...request,
+          policy: { ...request.policy, allowedHostnames: ["127.0.0.1"] },
+        }),
+    );
+
+    const logger = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const accessToken = "qqbot_AAAAUNIQUEQQBOTSECRETBBBB111122223333";
+    const authorization = `QQBot ${accessToken}`;
+    const client = new ApiClient({ baseUrl, logger });
+
+    const jsonError = await captureApiError(() =>
+      client.request(accessToken, "GET", "/json-error"),
+    );
+    expect(jsonError.httpStatus).toBe(429);
+    expect(jsonError.bizCode).toBe(40093001);
+    expect(jsonError.message).toContain("json-marker");
+    expect(jsonError.bizMessage).toContain("json-marker");
+    expect(jsonError.message).not.toContain(accessToken);
+    expect(jsonError.bizMessage).not.toContain(accessToken);
+    expect(jsonError.message).not.toContain("UNIQUEQQBOTSECRET");
+
+    const textError = await captureApiError(() =>
+      client.request(accessToken, "GET", "/text-error"),
+    );
+    expect(textError.httpStatus).toBe(503);
+    expect(textError.bizCode).toBeUndefined();
+    expect(textError.message).toContain("plain-marker");
+    expect(textError.message).not.toContain(accessToken);
+    expect(textError.message).not.toContain("UNIQUEQQBOTSECRET");
+
+    const success = await client.request<{ authorization: string; marker: string }>(
+      accessToken,
+      "GET",
+      "/success",
+    );
+    expect(success).toEqual({ authorization, marker: "success-marker" });
+
+    const debugOutput = logger.debug.mock.calls.flat().join("\n");
+    expect(debugOutput).toContain("json-marker");
+    expect(debugOutput).toContain("plain-marker");
+    expect(debugOutput).toContain("success-marker");
+    expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain("UNIQUEQQBOTSECRET");
   });
 
   it("bounds error bodies on a UTF-16 boundary without using response.text()", async () => {
