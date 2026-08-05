@@ -105,6 +105,11 @@ jobs:
                 src/agents/embedded-agent-runner/run/attempt.spawn-workspace.context-injection.test.ts \
                 src/agents/embedded-agent-runner/run/attempt.spawn-workspace.bootstrap-marker.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
+              node scripts/run-vitest.mjs \
+                src/agents/cli-runner/prepare.test.ts \
+                src/agents/cli-runner.reliability.test.ts \
+                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a CLI bootstrap completion marker after a successful turn' \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
               node --import tsx \
                 .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
                 2>&1 | tee -a "$log_file"
