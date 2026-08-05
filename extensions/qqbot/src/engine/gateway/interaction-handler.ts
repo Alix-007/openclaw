@@ -454,10 +454,8 @@ function resolveApprovalButtonAccountConfig(
 ): QQBotAccountConfigView {
   // Approval authorization must use the same own-container and own-entry
   // projection as runtime account resolution or inherited allowlists can grant access.
-  return resolveAccountBase(
-    cfg as unknown as Record<string, unknown>,
-    accountId,
-  ).config as QQBotAccountConfigView;
+  return resolveAccountBase(cfg as unknown as Record<string, unknown>, accountId)
+    .config as QQBotAccountConfigView;
 }
 
 function resolveApprovalActorSenderIds(event: InteractionEvent): string[] {
