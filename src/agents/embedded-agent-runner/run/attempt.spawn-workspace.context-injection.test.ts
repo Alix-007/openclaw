@@ -216,31 +216,45 @@ describe("embedded attempt context injection", () => {
     expect(resolver).toHaveBeenCalledOnce();
   });
 
-  it("does not let cron write established-workspace bootstrap state", async () => {
+  it("does not let cron consume or write established-workspace bootstrap state", async () => {
+    const resolver = vi.fn(async () => ({
+      bootstrapFiles: [{ name: "AGENTS.md" }],
+      contextFiles: [{ path: "AGENTS.md" }],
+    }));
     const { result } = await resolveBootstrapContext({
       contextInjectionMode: "continuation-skip",
       bootstrapContextMode: "full",
       bootstrapContextRunKind: "cron",
       bootstrapMode: "none",
-      completed: false,
+      completed: true,
+      resolver,
     });
 
     expect(result.isContinuationTurn).toBe(false);
     expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
+    expect(result.contextFiles).toEqual([{ path: "AGENTS.md" }]);
+    expect(resolver).toHaveBeenCalledOnce();
   });
 
-  it("does not let ineligible routing write established-workspace bootstrap state", async () => {
+  it("does not let ineligible routing consume or write established-workspace bootstrap state", async () => {
+    const resolver = vi.fn(async () => ({
+      bootstrapFiles: [{ name: "AGENTS.md" }],
+      contextFiles: [{ path: "AGENTS.md" }],
+    }));
     const { result } = await resolveBootstrapContext({
       contextInjectionMode: "continuation-skip",
       bootstrapContextMode: "full",
       bootstrapContextRunKind: "default",
       bootstrapMode: "none",
       isPrimaryInteractiveRun: false,
-      completed: false,
+      completed: true,
+      resolver,
     });
 
     expect(result.isContinuationTurn).toBe(false);
     expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
+    expect(result.contextFiles).toEqual([{ path: "AGENTS.md" }]);
+    expect(resolver).toHaveBeenCalledOnce();
   });
 
   it.each(["heartbeat", "commitment-only"] as const)(
