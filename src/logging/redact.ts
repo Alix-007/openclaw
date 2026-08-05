@@ -965,7 +965,7 @@ export function redactToolPayloadTextWithConfig(
       redactStructuredAuthHeaders: resolved.redactStructuredAuthHeaders,
     });
   }
-  return redactSensitiveText(text, resolveToolPayloadRedaction(loggingConfig));
+  return redactSensitiveText(exactRedacted, resolveToolPayloadRedaction(loggingConfig));
 }
 
 export function isSensitiveFieldKey(key: string): boolean {
