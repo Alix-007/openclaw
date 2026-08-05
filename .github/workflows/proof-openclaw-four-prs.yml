@@ -110,16 +110,18 @@ jobs:
                 src/agents/bootstrap-files.test.ts \
                 src/agents/cli-runner/prepare.test.ts \
                 src/agents/cli-runner.reliability.test.ts \
-                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|persists a CLI bootstrap completion marker after its runner-owned transcript|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|records CLI bootstrap completion after the post-run transcript commit|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
+                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|persists a CLI bootstrap completion marker after its runner-owned transcript|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|records CLI bootstrap completion after the post-run transcript commit|keeps CLI bootstrap completion pending until post-run compaction settles|does not record CLI bootstrap completion after post-run compaction|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               grep -F 'does not persist a CLI bootstrap marker after post-output cancellation' "$log_file"
               grep -F 'records CLI bootstrap completion after the post-run transcript commit' "$log_file"
+              grep -F 'keeps CLI bootstrap completion pending until post-run compaction settles' "$log_file"
+              grep -F 'does not record CLI bootstrap completion after post-run compaction' "$log_file"
               grep -F 'does not record CLI bootstrap completion when post-run transcript persistence fails' "$log_file"
               grep -F 'skips post-run persistence after the session is deleted' "$log_file"
               node --import tsx \
                 .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
                 2>&1 | tee -a "$log_file"
-              echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
+              echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
               ;;
             discord)
@@ -240,6 +242,7 @@ jobs:
               node scripts/run-vitest.mjs \
                 src/agents/provider-http-errors.test.ts \
                 src/agents/tools/web-search-provider-common.redact.test.ts \
+                src/logging/redact.test.ts \
                 extensions/brave/src/brave-web-search-provider.test.ts \
                 extensions/exa/src/exa-web-search-provider.test.ts \
                 extensions/firecrawl/src/firecrawl-client.test.ts \
@@ -252,7 +255,10 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               grep -F 'redacts an unlabelled reflected credential through the trusted guarded transport' "$log_file"
               grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
+              grep -F 'redacts lowercase percent-encoded request secrets from provider metadata' "$log_file"
               grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
+              grep -F 'redacts lowercase URL escapes and form-encoded request secrets' "$log_file"
+              grep -F 'removes lowercase encoded prefixes at the truncation boundary' "$log_file"
               test "$(grep -Fc 'suppresses credential-bearing diagnostics truncated at' "$log_file")" -eq 2
               grep -F 'suppresses a credential prefix split by the provider error-body cap' "$log_file"
               grep -F 'redacts an unlabelled reflected Brave credential' "$log_file"
@@ -265,7 +271,7 @@ jobs:
               grep -F 'redacts an unlabelled reflected Kimi credential' "$log_file"
               grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
               grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
-              echo '[web-search credential redaction proof] shared=true metadata=true cap16k=true cap64k=true secretref-provenance=true literal-header-visible=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
+              echo '[web-search credential redaction proof] shared=true metadata=true lowercase-percent=true form-encoded=true encoded-boundary=true cap16k=true cap64k=true secretref-provenance=true literal-header-visible=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
               marker='[web-search credential redaction proof]'
               ;;
             *)
