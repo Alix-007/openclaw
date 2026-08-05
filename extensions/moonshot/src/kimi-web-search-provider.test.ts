@@ -162,7 +162,9 @@ describe("kimi web search provider", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await withEnvAsync({ KIMI_API_KEY: apiKey }, async () => {
-      const error = await executeKimiSearch("kimi reflected credential").catch((cause) => cause);
+      const error = await executeKimiSearch("kimi reflected credential").catch(
+        (cause: unknown) => cause,
+      );
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Kimi API error (401)");

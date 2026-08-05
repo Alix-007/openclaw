@@ -72,7 +72,9 @@ describe("minimax web search provider", () => {
       }
 
       try {
-        const error = await tool.execute({ query: `reflected ${kind}` }).catch((cause) => cause);
+        const error = await tool
+          .execute({ query: `reflected ${kind}` })
+          .catch((cause: unknown) => cause);
         expect(error).toBeInstanceOf(Error);
         expect((error as Error).message).toContain("MiniMax Search API error");
         expect((error as Error).message).not.toContain(apiKey);

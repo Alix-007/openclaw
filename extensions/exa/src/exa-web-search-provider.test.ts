@@ -75,7 +75,7 @@ describe("exa web search provider", () => {
     try {
       const error = await tool
         .execute({ query: "exa reflected credential" })
-        .catch((cause) => cause);
+        .catch((cause: unknown) => cause);
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Exa API error (401)");

@@ -374,7 +374,9 @@ describe("brave web search provider", () => {
     global.fetch = mockFetch as typeof global.fetch;
     const tool = createBraveTool({ webSearch: { apiKey, mode: "web" } });
 
-    const error = await tool.execute({ query: "reflected credential" }).catch((cause) => cause);
+    const error = await tool
+      .execute({ query: "reflected credential" })
+      .catch((cause: unknown) => cause);
 
     expect(error).toBeInstanceOf(Error);
     expect((error as Error).message).toContain("Brave Search API error (401)");

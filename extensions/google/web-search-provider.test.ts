@@ -160,7 +160,9 @@ describe("google web search provider", () => {
         throw new Error("Expected tool definition");
       }
 
-      const error = await tool.execute({ query: `reflected ${kind}` }).catch((cause) => cause);
+      const error = await tool
+        .execute({ query: `reflected ${kind}` })
+        .catch((cause: unknown) => cause);
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Gemini API error");
