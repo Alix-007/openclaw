@@ -240,30 +240,6 @@ export async function finalizeEmbeddedAgentCommand(params: {
       }
     }
 
-    if (
-      persistedCliTurnTranscript &&
-      result.meta.bootstrapContextCompletionPending === true &&
-      params.opts.abortSignal?.aborted !== true &&
-      !sessionReboundDuringRun
-    ) {
-      try {
-        persistCompletedBootstrapTurn({
-          sessionTarget: {
-            agentId: internalSessionTarget?.agentId ?? sessionAgentId,
-            sessionId: effectiveSessionId,
-            sessionKey: internalSessionTarget?.sessionKey ?? sessionKey ?? effectiveSessionId,
-            storePath: internalSessionTarget?.storePath ?? storePath,
-          },
-          runId: params.prepared.runId,
-          runner: "cli",
-        });
-      } catch (error) {
-        log.warn(
-          `CLI bootstrap completion persistence failed for ${sessionKey ?? sessionId}: ${formatErrorMessage(error)}`,
-        );
-      }
-    }
-
     const payloads = result.payloads ?? [];
     const pendingFinalDeliveryMarker = await persistPendingFinalDeliveryMarker({
       deliver: params.opts.deliver === true,
@@ -283,13 +259,15 @@ export async function finalizeEmbeddedAgentCommand(params: {
       params.opts.deliver !== true ||
       !pendingFinalDeliveryMarker.hasSendableFinalPayload ||
       pendingFinalDeliveryMarker.pendingFinalDeliveryMarkerPersisted;
+    let cliPostTurnCompacted = false;
+    let cliPostTurnLifecycleStable = true;
     if (
       persistedCliTurnTranscript &&
       !params.suppressVisibleSessionEffects &&
       canSafelyRunPostTurnCompaction
     ) {
       try {
-        const compactedSessionEntry = await (
+        const compactionOutcome = await (
           await loadCliCompactionRuntime()
         ).runCliTurnCompactionLifecycle({
           cfg,
@@ -313,10 +291,14 @@ export async function finalizeEmbeddedAgentCommand(params: {
         });
         throwAgentRunRestartAbortReason(params.opts.abortSignal?.reason);
         assertAgentRunLifecycleGenerationCurrent(lifecycleGeneration);
-        sessionEntry = compactedSessionEntry;
-        runOwnedSessionId = compactedSessionEntry?.sessionId ?? runOwnedSessionId;
+        cliPostTurnCompacted = compactionOutcome.compacted;
+        sessionEntry = compactionOutcome.sessionEntry;
+        runOwnedSessionId = compactionOutcome.sessionEntry?.sessionId ?? runOwnedSessionId;
         publishSessionOwnership();
       } catch (error) {
+        // A failed lifecycle may already have appended a compaction boundary.
+        // Never restore continuation eligibility after a partially mutated transcript.
+        cliPostTurnLifecycleStable = false;
         throwAgentRunRestartAbortReason(params.opts.abortSignal?.reason);
         throwAgentRunRestartAbortReason(error);
         assertAgentRunLifecycleGenerationCurrent(lifecycleGeneration);
@@ -329,6 +311,33 @@ export async function finalizeEmbeddedAgentCommand(params: {
         }
         log.warn(
           `Post-turn transcript compaction failed for ${sessionKey ?? sessionId}; continuing final delivery: ${formatErrorMessage(error)}`,
+        );
+      }
+    }
+
+    if (
+      persistedCliTurnTranscript &&
+      result.meta.bootstrapContextCompletionPending === true &&
+      params.opts.abortSignal?.aborted !== true &&
+      !sessionReboundDuringRun &&
+      !cliPostTurnCompacted &&
+      cliPostTurnLifecycleStable
+    ) {
+      assertAgentRunLifecycleGenerationCurrent(lifecycleGeneration);
+      try {
+        persistCompletedBootstrapTurn({
+          sessionTarget: {
+            agentId: internalSessionTarget?.agentId ?? sessionAgentId,
+            sessionId: runOwnedSessionId,
+            sessionKey: internalSessionTarget?.sessionKey ?? sessionKey ?? runOwnedSessionId,
+            storePath: internalSessionTarget?.storePath ?? storePath,
+          },
+          runId: params.prepared.runId,
+          runner: "cli",
+        });
+      } catch (error) {
+        log.warn(
+          `CLI bootstrap completion persistence failed for ${sessionKey ?? sessionId}: ${formatErrorMessage(error)}`,
         );
       }
     }
