@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
+const originalDebug = process.env.QQBOT_DEBUG;
 
 vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
   const actual = await importOriginal<typeof import("openclaw/plugin-sdk/ssrf-runtime")>();
@@ -44,6 +45,11 @@ function cancelTrackedResponse(
 
 describe("executeChannelApi", () => {
   afterEach(() => {
+    if (originalDebug === undefined) {
+      delete process.env.QQBOT_DEBUG;
+    } else {
+      process.env.QQBOT_DEBUG = originalDebug;
+    }
     vi.useRealTimers();
     vi.restoreAllMocks();
     fetchWithSsrFGuardMock.mockReset();
@@ -304,6 +310,53 @@ describe("executeChannelApi", () => {
     expect(bodyPreview).not.toContain("tail");
     expect(tracked.wasCanceled()).toBe(true);
     expect(textSpy).not.toHaveBeenCalled();
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it("redacts reflected authorization from error details and debug output", async () => {
+    process.env.QQBOT_DEBUG = "1";
+    const debugErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const release = vi.fn(async () => {});
+    const accessToken = "qqbot_AAAAUNIQUECHANNELSECRETBBBB111122223333";
+    const authorization = `QQBot ${accessToken}`;
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(
+        JSON.stringify({
+          message: `channel-marker Authorization: ${authorization}`,
+          nested: { reflected: `Authorization: ${authorization}` },
+        }),
+        {
+          status: 401,
+          statusText: "Unauthorized",
+          headers: { "content-type": "application/json" },
+        },
+      ),
+      release,
+    });
+
+    const result = await executeChannelApi(
+      { method: "GET", path: "/guilds/123/channels" },
+      { accessToken },
+    );
+
+    expect(result.details).toMatchObject({
+      error: expect.stringContaining("channel-marker"),
+      status: 401,
+      path: "/guilds/123/channels",
+      details: {
+        message: expect.stringContaining("channel-marker"),
+        nested: { reflected: expect.any(String) },
+      },
+    });
+    const toolOutput = JSON.stringify(result);
+    expect(toolOutput).toContain("channel-marker");
+    expect(toolOutput).not.toContain(accessToken);
+    expect(toolOutput).not.toContain("UNIQUECHANNELSECRET");
+
+    const debugOutput = debugErrorSpy.mock.calls.flat().join("\n");
+    expect(debugOutput).toContain("channel-marker");
+    expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain("UNIQUECHANNELSECRET");
     expect(release).toHaveBeenCalledTimes(1);
   });
 
