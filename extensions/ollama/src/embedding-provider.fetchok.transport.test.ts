@@ -1,18 +1,16 @@
 // Real-transport regression proof for Ollama embedding error redaction.
 // Drives the production embedding path through the real SSRF guard and loopback
 // sockets, without mocking global fetch, SSRF runtime, or logging redaction.
-import fs from "node:fs";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
-import os from "node:os";
-import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createOllamaEmbeddingProvider } from "./embedding-provider.js";
 
 type OllamaRequest = {
   method: string | undefined;
   url: string | undefined;
   authorization: string | undefined;
+  proxyAuth: string | undefined;
   body: string;
 };
 
@@ -37,6 +35,10 @@ async function startOllamaServer(
         method: req.method,
         url: req.url,
         authorization: req.headers.authorization,
+        proxyAuth:
+          typeof req.headers["x-proxy-auth"] === "string"
+            ? req.headers["x-proxy-auth"]
+            : undefined,
         body: Buffer.concat(chunks).toString("utf8"),
       };
       requests.push(request);
@@ -75,29 +77,10 @@ function createOptions(baseUrl: string, apiKey: string) {
   } as Parameters<typeof createOllamaEmbeddingProvider>[0];
 }
 
-function withRedactionDisabledConfig(): () => void {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ollama-redact-off-"));
-  const configPath = path.join(dir, "openclaw.json");
-  fs.writeFileSync(configPath, JSON.stringify({ logging: { redactSensitive: "off" } }));
-  const previous = process.env.OPENCLAW_CONFIG_PATH;
-  process.env.OPENCLAW_CONFIG_PATH = configPath;
-  return () => {
-    if (previous === undefined) {
-      delete process.env.OPENCLAW_CONFIG_PATH;
-    } else {
-      process.env.OPENCLAW_CONFIG_PATH = previous;
-    }
-    fs.rmSync(dir, { recursive: true, force: true });
-  };
-}
-
-async function captureEmbeddingError(params: {
-  baseUrl: string;
-  apiKey: string;
-}): Promise<Error | undefined> {
-  const { provider } = await createOllamaEmbeddingProvider(
-    createOptions(params.baseUrl, params.apiKey),
-  );
+async function captureEmbeddingError(
+  options: Parameters<typeof createOllamaEmbeddingProvider>[0],
+): Promise<Error | undefined> {
+  const { provider } = await createOllamaEmbeddingProvider(options);
   try {
     await provider.embedQuery("hello");
   } catch (error) {
@@ -108,6 +91,7 @@ async function captureEmbeddingError(params: {
 
 describe("Ollama embedding provider real transport", () => {
   afterEach(async () => {
+    vi.unstubAllEnvs();
     const pending = servers.splice(0);
     await Promise.all(pending.map((server) => server.close()));
   });
@@ -122,13 +106,14 @@ describe("Ollama embedding provider real transport", () => {
       }),
     }));
 
-    const error = await captureEmbeddingError({ baseUrl: server.baseUrl, apiKey });
+    const error = await captureEmbeddingError(createOptions(server.baseUrl, apiKey));
 
     expect(server.requests).toEqual([
       {
         method: "POST",
         url: "/api/embed",
         authorization: `Bearer ${apiKey}`,
+        proxyAuth: undefined,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
     ]);
@@ -138,24 +123,50 @@ describe("Ollama embedding provider real transport", () => {
     expect(error?.message).not.toContain("UNIQUEOLLAMASECRET");
   });
 
-  it("still redacts reflected credentials when logging.redactSensitive is off", async () => {
-    const restoreConfig = withRedactionDisabledConfig();
-    try {
-      const apiKey = "gho_BBBBUNIQUEOLLAMAOFFSECRETYYYY444455556666";
-      const server = await startOllamaServer((request) => ({
-        status: 403,
-        body: JSON.stringify({ error: "forbidden", authorization: request.authorization }),
-      }));
+  it("redacts a reflected custom SecretRef header from embed errors", async () => {
+    const proxyAuth = "proxy_AAAAUNIQUEOLLAMAPROXYSECRETXXXX11112222";
+    vi.stubEnv("OLLAMA_PROXY_AUTH", proxyAuth);
+    const server = await startOllamaServer((request) => ({
+      status: 403,
+      body: JSON.stringify({ error: "forbidden", upstreamEcho: request.proxyAuth }),
+    }));
 
-      const error = await captureEmbeddingError({ baseUrl: server.baseUrl, apiKey });
+    const error = await captureEmbeddingError({
+      config: {
+        models: {
+          providers: {
+            ollama: {
+              baseUrl: server.baseUrl,
+              models: [],
+              headers: {
+                "X-Proxy-Auth": {
+                  source: "env",
+                  provider: "default",
+                  id: "OLLAMA_PROXY_AUTH",
+                },
+              },
+            },
+          },
+        },
+      },
+      provider: "ollama",
+      model: "test-embedding",
+      fallback: "none",
+    } as Parameters<typeof createOllamaEmbeddingProvider>[0]);
 
-      expect(error?.message).toContain("Ollama embed HTTP 403");
-      expect(error?.message).toContain("forbidden");
-      expect(error?.message).not.toContain(apiKey);
-      expect(error?.message).not.toContain("UNIQUEOLLAMAOFFSECRET");
-    } finally {
-      restoreConfig();
-    }
+    expect(server.requests).toEqual([
+      {
+        method: "POST",
+        url: "/api/embed",
+        authorization: undefined,
+        proxyAuth,
+        body: JSON.stringify({ model: "test-embedding", input: "hello" }),
+      },
+    ]);
+    expect(error?.message).toContain("Ollama embed HTTP 403");
+    expect(error?.message).toContain("forbidden");
+    expect(error?.message).not.toContain(proxyAuth);
+    expect(error?.message).not.toContain("UNIQUEOLLAMAPROXYSECRET");
   });
 
   it("returns normalized vectors on a successful response", async () => {
@@ -173,6 +184,7 @@ describe("Ollama embedding provider real transport", () => {
         method: "POST",
         url: "/api/embed",
         authorization: `Bearer ${apiKey}`,
+        proxyAuth: undefined,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
     ]);

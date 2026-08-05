@@ -23,25 +23,65 @@ function registerOneSecretValue(value: string): void {
   rebuildProbe();
 }
 
+function secretValueVariants(value: string): string[] {
+  const variants: string[] = [];
+  // Provider egress can percent-encode a configured value before a remote
+  // endpoint reflects it, so keep that wire form tied to the same secret.
+  const encoded = encodeURIComponent(value);
+  if (encoded !== value) {
+    variants.push(encoded);
+  }
+  // Structured error bodies escape quotes and control characters before the
+  // redactor receives response text; match that serialized content too.
+  const jsonEscaped = JSON.stringify(value).slice(1, -1);
+  if (jsonEscaped !== value) {
+    variants.push(jsonEscaped);
+  }
+  variants.push(value);
+  return variants;
+}
+
 /** Registers one resolved secret for exact-value log redaction. */
 export function registerSecretValueForRedaction(value: string): void {
   if (value.length < MIN_SECRET_VALUE_LENGTH) {
     return;
   }
-  // URL egress percent-encodes injected values; redact that surface form too.
-  const encoded = encodeURIComponent(value);
-  if (encoded !== value) {
-    registerOneSecretValue(encoded);
-  }
-  // Captured structured payloads are serialized before persistence, so retain
-  // the JSON string-content form for credentials with escaped characters.
-  const jsonEscaped = JSON.stringify(value).slice(1, -1);
-  if (jsonEscaped !== value) {
-    registerOneSecretValue(jsonEscaped);
-  }
-  // Keep the raw value newest so bounded-registry eviction cannot drop the
+  // The raw value stays newest so bounded-registry eviction cannot drop the
   // active credential while retaining only a transformed representation.
-  registerOneSecretValue(value);
+  for (const variant of secretValueVariants(value)) {
+    registerOneSecretValue(variant);
+  }
+}
+
+/** Redacts exact caller-supplied secrets without retaining them in process state. */
+export function redactSuppliedSecretValues(
+  text: string,
+  values: readonly string[] | undefined,
+  mask: (value: string) => string,
+): string {
+  if (!text || !values?.length) {
+    return text;
+  }
+  const variants = new Set<string>();
+  for (const value of values) {
+    if (!value) {
+      continue;
+    }
+    for (const variant of secretValueVariants(value)) {
+      variants.add(variant);
+    }
+  }
+  if (variants.size === 0) {
+    return text;
+  }
+  const matcher = new RegExp(
+    [...variants]
+      .toSorted((left, right) => right.length - left.length)
+      .map(escapeRegExp)
+      .join("|"),
+    "g",
+  );
+  return text.replace(matcher, (value) => mask(value));
 }
 
 /** Returns whether a value has SecretRef provenance in the process registry. */

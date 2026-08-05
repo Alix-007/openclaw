@@ -13,6 +13,7 @@ import {
   redactSensitiveLines,
   redactSensitiveText,
   redactToolDetail,
+  redactToolPayloadText,
   redactToolPayloadTextWithConfig,
   resolveRedactOptions,
 } from "./redact.js";
@@ -114,6 +115,25 @@ describe("registered exact secret values", () => {
 
     expect(redactSensitiveText(first, { mode: "off" })).not.toContain(first);
     expect(redactSensitiveText(second, { mode: "off" })).toBe(second);
+  });
+});
+
+describe("supplied exact secret values", () => {
+  it("masks raw and serialized values without relying on a recognized field name", () => {
+    const secret = 'proxy-credential-with-"quoted"-value';
+    const payload = JSON.stringify({ upstreamEcho: secret });
+
+    const redacted = redactToolPayloadText(payload, { exactSecretValues: [secret] });
+
+    expect(redacted).toContain("upstreamEcho");
+    expect(redacted).not.toContain(secret);
+    expect(redacted).not.toContain(JSON.stringify(secret).slice(1, -1));
+  });
+
+  it("masks explicitly supplied short values", () => {
+    expect(redactToolPayloadText("upstream echo: abc", { exactSecretValues: ["abc"] })).toBe(
+      "upstream echo: ***",
+    );
   });
 });
 

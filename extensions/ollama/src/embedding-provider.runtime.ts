@@ -415,6 +415,11 @@ export async function createOllamaEmbeddingProvider(
 ): Promise<{ provider: OllamaEmbeddingProvider; client: OllamaEmbeddingClient }> {
   const client = await resolveOllamaEmbeddingClient(options);
   const embedUrl = `${client.baseUrl.replace(/\/$/, "")}/api/embed`;
+  // Arbitrary configured headers can carry credentials whose names the shared
+  // pattern redactor cannot infer. Keep their exact values scoped to this call.
+  const requestHeaderSecretValues = Object.entries(client.headers)
+    .filter(([headerName]) => headerName.toLowerCase() !== "content-type")
+    .map(([, headerValue]) => headerValue);
 
   const embedMany = async (input: string | string[], signal?: AbortSignal): Promise<number[][]> => {
     const localServiceLease =
@@ -441,6 +446,7 @@ export async function createOllamaEmbeddingProvider(
               await readResponseTextLimited(response, OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES).catch(
                 () => "unknown error",
               ),
+              { exactSecretValues: requestHeaderSecretValues },
             );
             throw new Error(`Ollama embed HTTP ${response.status}: ${detail}`);
           }
