@@ -211,13 +211,11 @@ function maskToken(token: string): string {
   return `${start}…${end}`;
 }
 
-function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly string[]): string {
-  if (!sensitiveValues?.length) {
-    return text;
-  }
-
+function collectExplicitSensitiveValueReplacements(
+  sensitiveValues?: readonly string[],
+): Map<string, string> {
   const replacements = new Map<string, string>();
-  for (const value of sensitiveValues) {
+  for (const value of sensitiveValues ?? []) {
     if (!value) {
       continue;
     }
@@ -239,6 +237,14 @@ function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly 
       // Lone UTF-16 surrogates cannot be URL encoded; the raw and JSON forms still apply.
     }
   }
+  return replacements;
+}
+
+function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly string[]): string {
+  const replacements = collectExplicitSensitiveValueReplacements(sensitiveValues);
+  if (replacements.size === 0) {
+    return text;
+  }
 
   let redacted = text;
   for (const [candidate, replacement] of [...replacements].toSorted(
@@ -247,6 +253,35 @@ function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly 
     redacted = redacted.replaceAll(candidate, replacement);
   }
   return redacted;
+}
+
+function redactTruncatedSensitiveValueSuffix(
+  text: string,
+  sensitiveValues?: readonly string[],
+): string {
+  let longestPartialSuffix = 0;
+  for (const candidate of collectExplicitSensitiveValueReplacements(sensitiveValues).keys()) {
+    // A complete value is handled by exact redaction. Only the incomplete suffix
+    // needs special treatment because the unread bytes can contain its remainder.
+    if (text.endsWith(candidate)) {
+      continue;
+    }
+    const maxPrefixLength = Math.min(candidate.length - 1, text.length);
+    for (
+      let prefixLength = maxPrefixLength;
+      prefixLength > longestPartialSuffix;
+      prefixLength -= 1
+    ) {
+      if (text.endsWith(candidate.slice(0, prefixLength))) {
+        longestPartialSuffix = prefixLength;
+        break;
+      }
+    }
+  }
+  if (longestPartialSuffix === 0) {
+    return text;
+  }
+  return `${text.slice(0, -longestPartialSuffix)}[truncated diagnostic omitted because it ended with a partial sensitive value]`;
 }
 
 function splitSecretValueForMask(token: string): {
@@ -944,9 +979,9 @@ function resolveToolPayloadRedaction(
 /**
  * Redacts tool-visible text plus exact request-scoped sensitive values.
  *
- * When the source was truncated before this call, exact matching cannot prove
- * that a credential did not cross the cut. Suppress that diagnostic instead of
- * retaining a potentially identifying credential prefix.
+ * When the source was truncated before this call, exact matching cannot cover
+ * a credential split by the cut. Remove a matching sensitive-value prefix at
+ * that boundary while retaining the preceding non-sensitive diagnostic.
  */
 export function redactToolPayloadText(
   text: string,
@@ -965,11 +1000,11 @@ export function redactToolPayloadTextWithConfig(
   if (!text) {
     return text;
   }
-  if (options?.sourceTruncated && sensitiveValues?.some((value) => value.length > 0)) {
-    return "[truncated diagnostic omitted because it may contain a partial sensitive value]";
-  }
+  const boundaryRedacted = options?.sourceTruncated
+    ? redactTruncatedSensitiveValueSuffix(text, sensitiveValues)
+    : text;
   const exactRedacted = redactRegisteredSecretValues(
-    redactExplicitSensitiveValues(text, sensitiveValues),
+    redactExplicitSensitiveValues(boundaryRedacted, sensitiveValues),
     maskToken,
   );
   if (isFullContextToolPayloadRedaction(loggingConfig)) {

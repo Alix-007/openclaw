@@ -117,6 +117,32 @@ describe("registered exact secret values", () => {
   });
 });
 
+describe("truncated request-scoped secret values", () => {
+  const secret = "orchidRiver17glassMoth92cabin";
+
+  it("removes a partial sensitive value at the truncation boundary", () => {
+    const retainedPrefix = secret.slice(0, 12);
+    const output = redactToolPayloadTextWithConfig(
+      `provider unavailable: ${retainedPrefix}`,
+      undefined,
+      [secret],
+      { sourceTruncated: true },
+    );
+
+    expect(output).toContain("provider unavailable:");
+    expect(output).toContain("truncated diagnostic omitted");
+    expect(output).not.toContain(retainedPrefix);
+  });
+
+  it("retains a truncated diagnostic that does not end in a sensitive prefix", () => {
+    expect(
+      redactToolPayloadTextWithConfig("provider unavailable: retry later!", undefined, [secret], {
+        sourceTruncated: true,
+      }),
+    ).toBe("provider unavailable: retry later!");
+  });
+});
+
 describe("redactSensitiveText", () => {
   it("masks env assignments while keeping the key", () => {
     const input = "OPENAI_API_KEY=sk-1234567890abcdef";

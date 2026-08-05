@@ -89,8 +89,8 @@ function redactProviderErrorBody(body: string, sensitiveValues?: readonly string
 
 /**
  * Reads at most `limitBytes` from a response body without buffering provider-sized failures.
- * Pass exact request `sensitiveValues` for error diagnostics; truncated bodies are then omitted
- * because an exact value may cross the byte boundary.
+ * Pass exact request `sensitiveValues` for error diagnostics; a credential prefix split by the
+ * byte boundary is then omitted without discarding the preceding non-sensitive diagnostic.
  */
 export async function readResponseTextLimited(
   response: Response,
