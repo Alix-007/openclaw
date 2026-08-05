@@ -448,7 +448,7 @@ describe("runCliAgent reliability", () => {
     vi.useRealTimers();
   });
 
-  it("persists a CLI bootstrap completion marker after a successful turn", async () => {
+  it("persists a CLI bootstrap completion marker after its runner-owned transcript", async () => {
     const { dir, sessionFile, storePath } = createSessionFile();
     await seedSqliteSessionEntry({ sessionFile, storePath });
     const sessionTarget = {
@@ -461,8 +461,12 @@ describe("runCliAgent reliability", () => {
       sessionKey: sessionTarget.sessionKey,
       runId: "run-cli-bootstrap-marker",
     });
+    context.params.agentId = "main";
+    context.params.persistAssistantTranscript = true;
     context.params.sessionFile = sessionFile;
     context.params.sessionTarget = sessionTarget;
+    context.params.storePath = storePath;
+    context.params.workspaceDir = dir;
     context.shouldRecordCompletedBootstrapTurn = true;
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
@@ -490,6 +494,45 @@ describe("runCliAgent reliability", () => {
           }),
         ]),
       );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("defers the CLI bootstrap marker when command post-run owns the transcript", async () => {
+    const { dir, sessionFile, storePath } = createSessionFile();
+    await seedSqliteSessionEntry({ sessionFile, storePath });
+    const sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath,
+    };
+    const context = buildPreparedContext({
+      sessionKey: sessionTarget.sessionKey,
+      runId: "run-cli-bootstrap-marker-deferred",
+    });
+    context.params.sessionFile = sessionFile;
+    context.params.sessionTarget = sessionTarget;
+    context.shouldRecordCompletedBootstrapTurn = true;
+    supervisorSpawnMock.mockResolvedValueOnce(
+      createManagedRun({
+        reason: "exit",
+        exitCode: 0,
+        exitSignal: null,
+        durationMs: 20,
+        stdout: "completed",
+        stderr: "",
+        timedOut: false,
+        noOutputTimedOut: false,
+      }),
+    );
+
+    try {
+      const result = await runPreparedCliAgent(context);
+
+      expect(result.meta.bootstrapContextCompletionPending).toBe(true);
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

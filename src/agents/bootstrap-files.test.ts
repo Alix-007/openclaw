@@ -25,6 +25,7 @@ import {
   FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
   hasCompletedBootstrapTurn,
   makeBootstrapWarn,
+  persistCompletedBootstrapTurn,
   resolveBootstrapContextForRun,
   resolveBootstrapFilesForRun,
   resolveContextInjectionMode,
@@ -708,6 +709,18 @@ describe("hasCompletedBootstrapTurn", () => {
   it("reads a completion marker persisted by the SQLite session manager", async () => {
     sessionManager.appendMessage({ role: "user", content: "hello", timestamp: 1 });
     sessionManager.appendCustomEntry(FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, { timestamp: 2 });
+
+    expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(true);
+  });
+
+  it("persists a completion marker through the canonical helper", async () => {
+    sessionManager.appendMessage({ role: "user", content: "hello", timestamp: 1 });
+
+    persistCompletedBootstrapTurn({
+      sessionTarget,
+      runId: "run-bootstrap-complete",
+      runner: "cli",
+    });
 
     expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(true);
   });

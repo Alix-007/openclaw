@@ -57,6 +57,7 @@ const state = vi.hoisted(() => ({
   emitAcpLifecycleEndMock: vi.fn(),
   emitAcpLifecycleErrorMock: vi.fn(),
   persistCliTurnTranscriptMock: vi.fn(),
+  persistCompletedBootstrapTurnMock: vi.fn(),
   persistAcpTurnTranscriptMock: vi.fn(),
   runCliTurnCompactionLifecycleMock: vi.fn(),
   resolveAcpAgentPolicyErrorMock: vi.fn(),
@@ -150,6 +151,15 @@ vi.mock("./command/attempt-execution.runtime.js", () => ({
   runAgentAttempt: (...args: unknown[]) => state.runAgentAttemptMock(...args),
   sessionFileHasContent: vi.fn(async () => false),
 }));
+
+vi.mock("./bootstrap-files.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./bootstrap-files.js")>();
+  return {
+    ...actual,
+    persistCompletedBootstrapTurn: (...args: unknown[]) =>
+      state.persistCompletedBootstrapTurnMock(...args),
+  };
+});
 
 vi.mock("./command/attempt-execution.shared.js", async () => {
   const actual = await vi.importActual<typeof import("./command/attempt-execution.shared.js")>(
@@ -2050,6 +2060,67 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     });
   });
 
+  it("records CLI bootstrap completion after the post-run transcript commit", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockResolvedValue({
+      kind: "persisted",
+      sessionEntry: state.sessionEntryMock,
+    });
+
+    await runBasicAgentCommand();
+
+    expect(state.persistCompletedBootstrapTurnMock).toHaveBeenCalledOnce();
+    expectRecordFields(mockCallArg(state.persistCompletedBootstrapTurnMock), {
+      runner: "cli",
+      sessionTarget: {
+        agentId: "default",
+        sessionId: "session-1",
+        sessionKey: "agent:main:main",
+      },
+    });
+    expect(state.persistCliTurnTranscriptMock.mock.invocationCallOrder[0]).toBeLessThan(
+      state.persistCompletedBootstrapTurnMock.mock.invocationCallOrder[0] ?? 0,
+    );
+  });
+
+  it("does not record CLI bootstrap completion when post-run transcript persistence fails", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    state.sessionStoreMock = undefined;
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockRejectedValue(new Error("transcript write failed"));
+
+    await runBasicAgentCommand();
+
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
+  });
+
   it("skips post-run persistence after the session is deleted", async () => {
     setupSingleAttemptFallback();
     setupStoredSession();
@@ -2064,6 +2135,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
+    result.meta.bootstrapContextCompletionPending = true;
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "session-rebound",
@@ -2073,6 +2145,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     await runBasicAgentCommand();
 
     expect(state.persistCliTurnTranscriptMock).toHaveBeenCalledTimes(1);
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
     expect(state.runCliTurnCompactionLifecycleMock).not.toHaveBeenCalled();
     expect(state.deliverAgentCommandResultMock).toHaveBeenCalledTimes(1);
   });
