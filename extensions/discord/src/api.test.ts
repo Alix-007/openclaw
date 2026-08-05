@@ -403,6 +403,40 @@ describe("fetchDiscord", () => {
     }
   });
 
+  it("redacts reflected bot credentials from non-JSON error bodies", async () => {
+    const uniqueSecret = "discord-loopback-secret";
+    const token = `proof-prefix-${uniqueSecret}-proof-suffix`;
+    let authorization: string | undefined;
+    const server = createServer((req, res) => {
+      authorization = req.headers.authorization;
+      res.writeHead(502, { "content-type": "text/html" });
+      res.end(
+        `<html><body>proxy failure Authorization: ${authorization}; request rejected</body></html>`,
+      );
+    });
+    const port = await listenLoopbackServer(server);
+
+    try {
+      stubDiscordFetchToLoopback(`http://127.0.0.1:${port}`);
+
+      const error = await requestDiscord("/gateway/bot", token, {
+        retry: { attempts: 1 },
+      }).catch((err: unknown) => err);
+
+      expect(error).toBeInstanceOf(DiscordApiError);
+      expect(authorization).toBe(`Bot ${token}`);
+      const message = String(error);
+      expect(message).toContain("Discord API /gateway/bot failed (502)");
+      expect(message).toContain("proxy failure");
+      expect(message).toContain("Authorization: Bot");
+      expect(message).not.toContain(token);
+      expect(message).not.toContain(uniqueSecret);
+      expect(message).not.toContain("<html");
+    } finally {
+      await closeServer(server);
+    }
+  });
+
   it("rejects oversized valid JSON requestDiscord responses from a real loopback HTTP server", async () => {
     const oversizedPayloadBytes = DISCORD_SUCCESS_RESPONSE_LIMIT_BYTES + 256 * 1024;
     let contentLength: string | null | undefined;
