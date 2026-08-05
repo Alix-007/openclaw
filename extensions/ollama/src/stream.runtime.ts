@@ -27,6 +27,7 @@ import {
   parseJsonPreservingUnsafeIntegers,
 } from "./ollama-json.js";
 import { buildOllamaBaseUrlSsrFPolicy, isOllamaCloudModel } from "./provider-models.js";
+import { redactOllamaResponseErrorText } from "./request-header-redaction.js";
 import {
   createOllamaVisibleContentSanitizer,
   sanitizeOllamaFinalVisibleContent,
@@ -1021,10 +1022,12 @@ function createRawOllamaStreamFn(
 
         try {
           if (!response.ok) {
-            const errorText = await readResponseTextLimited(
-              response,
-              OLLAMA_STREAM_ERROR_BODY_LIMIT_BYTES,
-            ).catch(() => "unknown error");
+            const errorText = redactOllamaResponseErrorText(
+              await readResponseTextLimited(response, OLLAMA_STREAM_ERROR_BODY_LIMIT_BYTES).catch(
+                () => "unknown error",
+              ),
+              headers,
+            );
             throw new Error(`${response.status} ${errorText}`);
           }
           if (!response.body) {

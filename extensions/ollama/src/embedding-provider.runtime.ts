@@ -1,5 +1,4 @@
 // Ollama embedding runtime implements provider integration.
-import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
 import {
   isKnownEnvApiKeyMarker,
@@ -28,6 +27,7 @@ import { DEFAULT_OLLAMA_EMBEDDING_MODEL, OLLAMA_CLOUD_BASE_URL } from "./default
 import { normalizeOllamaWireModelId } from "./model-id.js";
 import { readProviderBaseUrl } from "./provider-base-url.js";
 import { resolveOllamaApiBase } from "./provider-models.js";
+import { redactOllamaResponseErrorText } from "./request-header-redaction.js";
 
 export type OllamaEmbeddingProvider = {
   id: string;
@@ -78,7 +78,6 @@ type OllamaEmbeddingClientConfig = Omit<OllamaEmbeddingClient, "embedBatch">;
 
 export { DEFAULT_OLLAMA_EMBEDDING_MODEL } from "./defaults.js";
 const OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
-const AUTHORIZATION_SECRET_HEADERS = new Set(["authorization", "proxy-authorization"]);
 
 const QUERY_INSTRUCTION_TEMPLATES = [
   {
@@ -416,22 +415,6 @@ export async function createOllamaEmbeddingProvider(
 ): Promise<{ provider: OllamaEmbeddingProvider; client: OllamaEmbeddingClient }> {
   const client = await resolveOllamaEmbeddingClient(options);
   const embedUrl = `${client.baseUrl.replace(/\/$/, "")}/api/embed`;
-  // Arbitrary configured headers can carry credentials whose names the shared
-  // pattern redactor cannot infer. Authorization intermediaries can also
-  // reflect the credential without its scheme, so retain both scoped forms.
-  const requestHeaderSecretValues = Object.entries(client.headers).flatMap(
-    ([headerName, headerValue]) => {
-      const normalizedHeaderName = headerName.toLowerCase();
-      if (normalizedHeaderName === "content-type" && headerValue === "application/json") {
-        return [];
-      }
-      if (!AUTHORIZATION_SECRET_HEADERS.has(normalizedHeaderName)) {
-        return [headerValue];
-      }
-      const credentialComponent = /^\s*\S+\s+(.+?)\s*$/u.exec(headerValue)?.[1];
-      return credentialComponent ? [headerValue, credentialComponent] : [headerValue];
-    },
-  );
 
   const embedMany = async (input: string | string[], signal?: AbortSignal): Promise<number[][]> => {
     const localServiceLease =
@@ -454,11 +437,11 @@ export async function createOllamaEmbeddingProvider(
           if (!response.ok) {
             // Reflected provider text can include request credentials; force tool-payload
             // redaction even when the operator disables general log redaction.
-            const detail = redactToolPayloadText(
+            const detail = redactOllamaResponseErrorText(
               await readResponseTextLimited(response, OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES).catch(
                 () => "unknown error",
               ),
-              { exactSecretValues: requestHeaderSecretValues },
+              client.headers,
             );
             throw new Error(`Ollama embed HTTP ${response.status}: ${detail}`);
           }

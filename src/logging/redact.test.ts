@@ -116,6 +116,18 @@ describe("registered exact secret values", () => {
     expect(redactSensitiveText(first, { mode: "off" })).not.toContain(first);
     expect(redactSensitiveText(second, { mode: "off" })).toBe(second);
   });
+
+  it("does not let request-only form variants evict registered raw secrets", () => {
+    const first = 'registry secret 000~"value';
+    registerSecretValueForRedaction(first);
+    for (let index = 1; index < 129; index += 1) {
+      registerSecretValueForRedaction(
+        `registry secret ${index.toString().padStart(3, "0")}~"value`,
+      );
+    }
+
+    expect(redactSensitiveText(first, { mode: "off" })).not.toContain(first);
+  });
 });
 
 describe("supplied exact secret values", () => {

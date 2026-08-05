@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 const loopback = vi.hoisted(() => ({
   baseUrl: "",
   status: 401,
+  authorization: undefined as string | undefined,
   socketClosed: undefined as Promise<void> | undefined,
   releases: [] as Array<{
     bodyIsNull: boolean;
@@ -50,8 +51,10 @@ vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
         release: async () => {
           let socketClosedBeforeGuardRelease = false;
           try {
-            await waitForSocketClose(loopback.socketClosed);
-            socketClosedBeforeGuardRelease = true;
+            if (guarded.response.status === 401 || guarded.response.status === 403) {
+              await waitForSocketClose(loopback.socketClosed);
+              socketClosedBeforeGuardRelease = true;
+            }
           } finally {
             loopback.releases.push({
               bodyIsNull: guarded.response.body === null,
@@ -75,14 +78,38 @@ const sockets = new Set<Socket>();
 
 beforeAll(async () => {
   server = createServer((request, response) => {
+    loopback.authorization = request.headers.authorization;
     loopback.socketClosed = new Promise<void>((resolve) => {
       request.socket.once("close", resolve);
     });
+    const bearerCredential = loopback.authorization?.replace(/^\S+\s+/u, "") ?? "";
+    const responseBody = (() => {
+      if (loopback.status === 429) {
+        return JSON.stringify({
+          error: "rate limit exceeded",
+          authorizationEcho: loopback.authorization,
+          bearerEcho: bearerCredential,
+        });
+      }
+      if (loopback.status === 200) {
+        return JSON.stringify({
+          results: [{ title: "Success", url: "https://example.com", content: "control" }],
+        });
+      }
+      return RESPONSE_BODY;
+    })();
+    const completedResponse = loopback.status === 429 || loopback.status === 200;
     response.writeHead(loopback.status, {
-      "content-length": String(RESPONSE_BODY.length + 1_024),
+      "content-length": String(
+        completedResponse ? responseBody.length : responseBody.length + 1_024,
+      ),
       "content-type": "application/json",
     });
-    response.write(RESPONSE_BODY);
+    if (completedResponse) {
+      response.end(responseBody);
+    } else {
+      response.write(responseBody);
+    }
   });
   server.on("connection", (socket) => {
     sockets.add(socket);
@@ -106,6 +133,7 @@ afterAll(async () => {
 
 beforeEach(() => {
   loopback.status = 401;
+  loopback.authorization = undefined;
   loopback.socketClosed = undefined;
   loopback.releases = [];
 });
@@ -148,5 +176,55 @@ describe("ollama web search guarded fetch", () => {
         socketClosedBeforeGuardRelease: true,
       });
     }
+  });
+
+  it("redacts a reflected bearer credential from a real completed 429 response", async () => {
+    loopback.status = 429;
+    const bearerCredential = "web-search-transport-bearer-secret";
+    const authorization = `Bearer ${bearerCredential}`;
+    const tool = createOllamaWebSearchProvider().createTool({
+      config: {
+        models: {
+          providers: {
+            ollama: {
+              baseUrl: "https://ollama.com",
+              api: "ollama",
+              models: [],
+              apiKey: bearerCredential,
+            },
+          },
+        },
+      },
+    } as never);
+    if (!tool) {
+      throw new Error("Expected Ollama web search tool");
+    }
+
+    const error = await tool
+      .execute({ query: "latest openclaw release" })
+      .catch((caught: unknown) => caught);
+    if (!(error instanceof Error)) {
+      throw new Error("expected Ollama web search error");
+    }
+
+    expect(loopback.authorization).toBe(authorization);
+    expect(error.message).toContain("Ollama web search failed (429)");
+    expect(error.message).toContain("rate limit exceeded");
+    expect(error.message).not.toContain(authorization);
+    expect(error.message).not.toContain(bearerCredential);
+    expect(loopback.releases).toEqual([
+      {
+        bodyIsNull: false,
+        bodyUsed: true,
+        socketClosedBeforeGuardRelease: false,
+      },
+    ]);
+
+    loopback.status = 200;
+    const result = await tool.execute({ query: "latest openclaw release" });
+    expect(result).toMatchObject({ provider: "ollama", count: 1 });
+    console.info(
+      "[ollama credential redaction proof] surface=web-search status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true",
+    );
   });
 });

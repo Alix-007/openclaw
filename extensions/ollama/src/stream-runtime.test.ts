@@ -2740,6 +2740,51 @@ describe("createOllamaStreamFn", () => {
     }
   });
 
+  it("redacts reflected configured and bearer credentials from non-2xx response text", async () => {
+    const configuredSecret = "stream-configured-header-secret";
+    const staleAuthorization = "Bearer stale-stream-authorization";
+    const bearerCredential = "stream-bearer-credential-secret";
+    fetchWithSsrFGuardMock.mockResolvedValue({
+      response: new Response(
+        JSON.stringify({
+          error: "rate limit exceeded",
+          configuredEcho: configuredSecret,
+          bearerEcho: bearerCredential,
+        }),
+        { status: 429, headers: { "Content-Type": "application/json" } },
+      ),
+      release: vi.fn(async () => undefined),
+    });
+
+    const stream = await createOllamaTestStream({
+      baseUrl: "http://ollama-host:11434",
+      defaultHeaders: {
+        "X-Proxy-Auth": configuredSecret,
+        Authorization: staleAuthorization,
+      },
+      options: { apiKey: bearerCredential },
+    });
+    const events = await collectStreamEvents(stream);
+    const errorEvent = events.find((event) => event.type === "error") as
+      | { type: "error"; error: { errorMessage?: string } }
+      | undefined;
+    if (!errorEvent) {
+      throw new Error("expected Ollama stream error event");
+    }
+
+    const message = errorEvent.error.errorMessage ?? "";
+    expect(message).toMatch(/^429\b/);
+    expect(message).toContain("rate limit exceeded");
+    expect(message).not.toContain(configuredSecret);
+    expect(message).not.toContain(bearerCredential);
+    expect(requireHeaders(getGuardedFetchCall(fetchWithSsrFGuardMock).init?.headers)).toMatchObject(
+      {
+        "X-Proxy-Auth": configuredSecret,
+        Authorization: `Bearer ${bearerCredential}`,
+      },
+    );
+  });
+
   it("keeps thinking chunks when no final content is emitted", async () => {
     await expectDoneEventContent(
       [
