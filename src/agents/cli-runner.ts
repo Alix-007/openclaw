@@ -27,6 +27,7 @@ import {
   markAuthProfileFailure,
   markAuthProfileSuccess,
 } from "./auth-profiles.js";
+import { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE } from "./bootstrap-files.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
@@ -129,6 +130,31 @@ export async function isCliBindingFlushed(
     }
   }
   return false;
+}
+
+/**
+ * Records continuation state only after CLI output and any runner-owned transcript write succeed.
+ * Failed turns stay eligible for full context on their next attempt.
+ */
+function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): void {
+  if (context.shouldRecordCompletedBootstrapTurn !== true) {
+    return;
+  }
+  const sessionTarget = context.params.sessionTarget;
+  if (!sessionTarget) {
+    return;
+  }
+  try {
+    const sessionManager = context.params.sessionManager ?? SessionManager.open(sessionTarget);
+    sessionManager.appendCustomEntry(FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, {
+      timestamp: Date.now(),
+      runId: context.params.runId,
+      sessionId: context.params.sessionId,
+      runner: "cli",
+    });
+  } catch (error) {
+    log.warn(`failed to persist CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
+  }
 }
 
 /** Prepares and runs one CLI-backed agent turn. */
@@ -553,6 +579,7 @@ export async function runPreparedCliAgent(
           terminalAnchor: assistantTranscript.terminalAnchor,
           output,
         });
+        recordCompletedCliBootstrapTurn(context);
         // A stateless backend may emit an id, but it never becomes continuity.
         // Managed stdio sessions own continuity in-process and write no native transcript.
         const bindingFlushOk = sessionBindingDisabled

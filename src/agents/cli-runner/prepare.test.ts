@@ -389,6 +389,7 @@ describe("prepareCliRunContext", () => {
       resolveRuntimeCliBackends: () => [defaultTestCliBackend],
     });
     setCliRunnerPrepareTestDeps({
+      hasCompletedBootstrapTurn: vi.fn(async () => false),
       isWorkspaceBootstrapPending: vi.fn(async () => false),
       makeBootstrapWarn: vi.fn(() => () => undefined),
       resolveBootstrapContextForRun: vi.fn(async () => ({
@@ -1758,6 +1759,56 @@ describe("prepareCliRunContext", () => {
         sessionId: "cli-session",
       });
     }
+  });
+
+  it("skips CLI workspace context after a completed continuation-skip turn", async () => {
+    const { dir } = fixture.session;
+    const hasCompletedBootstrapTurn = vi.fn(async () => false);
+    const resolveBootstrapContextForRun = vi.fn(async () => ({
+      bootstrapFiles: [
+        {
+          name: "AGENTS.md" as const,
+          path: path.join(dir, "AGENTS.md"),
+          content: "CLI continuation context",
+          missing: false,
+        },
+      ],
+      contextFiles: [
+        {
+          path: path.join(dir, "AGENTS.md"),
+          content: "CLI continuation context",
+        },
+      ],
+    }));
+    setCliRunnerPrepareTestDeps({
+      hasCompletedBootstrapTurn,
+      resolveBootstrapContextForRun,
+    });
+    const config = {
+      agents: {
+        defaults: {
+          workspace: dir,
+          contextInjection: "continuation-skip" as const,
+        },
+      },
+    } satisfies OpenClawConfig;
+    const runParams = {
+      sessionKey: "agent:main:main",
+      config,
+      trigger: "user" as const,
+    };
+
+    const firstTurn = await fixture.prepare(runParams);
+
+    expect(firstTurn.systemPrompt).toContain("CLI continuation context");
+    expect(firstTurn.shouldRecordCompletedBootstrapTurn).toBe(true);
+
+    hasCompletedBootstrapTurn.mockResolvedValue(true);
+    const continuation = await fixture.prepare(runParams);
+
+    expect(continuation.systemPrompt).not.toContain("CLI continuation context");
+    expect(continuation.shouldRecordCompletedBootstrapTurn).toBeUndefined();
+    expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });
 
   it("applies prompt-build hook context to Claude-style CLI preparation", async () => {

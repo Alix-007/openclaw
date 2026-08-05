@@ -44,6 +44,10 @@ import {
 import { createTestUserTurnTranscriptTarget } from "../sessions/user-turn-transcript.test-support.js";
 import { captureEnv, setTestEnvValue } from "../test-utils/env.js";
 import { createTestAdmittedRunContext } from "./admitted-run-context.test-support.js";
+import {
+  FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
+  hasCompletedBootstrapTurn,
+} from "./bootstrap-files.js";
 import { testing as cliBackendsTesting } from "./cli-backends.test-support.js";
 import {
   restoreCliRunnerTestDeps,
@@ -445,6 +449,53 @@ describe("runCliAgent reliability", () => {
     resetDiagnosticEventsForTest();
     cliBackendsTesting.resetDepsForTest();
     vi.useRealTimers();
+  });
+
+  it("persists a CLI bootstrap completion marker after a successful turn", async () => {
+    const { dir, sessionFile, storePath } = createSessionFile();
+    await seedSqliteSessionEntry({ sessionFile, storePath });
+    const sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath,
+    };
+    const context = buildPreparedContext({
+      sessionKey: sessionTarget.sessionKey,
+      runId: "run-cli-bootstrap-marker",
+    });
+    context.params.sessionFile = sessionFile;
+    context.params.sessionTarget = sessionTarget;
+    context.shouldRecordCompletedBootstrapTurn = true;
+    supervisorSpawnMock.mockResolvedValueOnce(
+      createManagedRun({
+        reason: "exit",
+        exitCode: 0,
+        exitSignal: null,
+        durationMs: 20,
+        stdout: "completed",
+        stderr: "",
+        timedOut: false,
+        noOutputTimedOut: false,
+      }),
+    );
+
+    try {
+      await runPreparedCliAgent(context);
+
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(true);
+      const events = await loadTranscriptEvents(sessionTarget);
+      expect(events).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: "custom",
+            customType: FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
+          }),
+        ]),
+      );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("fails with timeout when no-output watchdog trips", async () => {

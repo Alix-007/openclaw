@@ -347,6 +347,8 @@ export type PreparedCliRunContext = {
   systemPromptReport: SessionSystemPromptReport;
   claudeSkillsPluginArgs?: string[] | undefined;
   bootstrapPromptWarningLines: string[];
+  /** Persist continuation-skip state only after this prepared turn completes successfully. */
+  shouldRecordCompletedBootstrapTurn?: true;
   openClawHistoryPrompt?: string;
   heartbeatPrompt?: string;
   authEpoch?: string;
