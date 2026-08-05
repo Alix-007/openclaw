@@ -1,4 +1,5 @@
 // Ollama embedding runtime implements provider integration.
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
 import {
   isKnownEnvApiKeyMarker,
@@ -434,10 +435,13 @@ export async function createOllamaEmbeddingProvider(
         },
         onResponse: async (response) => {
           if (!response.ok) {
-            const detail = await readResponseTextLimited(
-              response,
-              OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES,
-            ).catch(() => "unknown error");
+            // Reflected provider text can include request credentials; force tool-payload
+            // redaction even when the operator disables general log redaction.
+            const detail = redactToolPayloadText(
+              await readResponseTextLimited(response, OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES).catch(
+                () => "unknown error",
+              ),
+            );
             throw new Error(`Ollama embed HTTP ${response.status}: ${detail}`);
           }
           return await readOllamaEmbeddingJsonResponse(response);
