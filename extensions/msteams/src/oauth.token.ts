@@ -2,6 +2,7 @@
 import { resolveExpiresAtMsFromDurationSeconds } from "openclaw/plugin-sdk/number-runtime";
 import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
 import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { createMSTeamsHttpError } from "./http-error.js";
 import {
   MSTEAMS_DEFAULT_DELEGATED_SCOPES,
@@ -51,10 +52,10 @@ function assertMSTeamsTokenResponseObject(
   failureLabel: string,
 ): Record<string, unknown> {
   // JSON.parse can yield null or arrays even when the provider response is typed as an object.
-  if (data === null || typeof data !== "object" || Array.isArray(data)) {
+  if (!isRecord(data)) {
     throw new Error(`MSTeams ${failureLabel} failed: invalid token response fields`);
   }
-  return data as Record<string, unknown>;
+  return data;
 }
 
 function parseMSTeamsTokenResponse(
