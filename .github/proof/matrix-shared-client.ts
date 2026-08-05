@@ -11,6 +11,50 @@ process.env.OPENCLAW_STATE_DIR = path.join(runtimeRoot, "state");
 await fs.mkdir(process.env.HOME, { recursive: true });
 await fs.mkdir(process.env.OPENCLAW_STATE_DIR, { recursive: true });
 
+const runtime = await import(
+  pathToFileURL(path.join(targetRoot, "extensions/matrix/src/runtime.ts")).href
+);
+const syncStores = new Map<string, Map<string, unknown>>();
+const logger = {
+  trace: () => undefined,
+  debug: () => undefined,
+  info: () => undefined,
+  warn: () => undefined,
+  error: () => undefined,
+};
+runtime.setMatrixRuntime({
+  logging: {
+    shouldLogVerbose: () => false,
+    getChildLogger: () => logger,
+  },
+  state: {
+    resolveStateDir: () => process.env.OPENCLAW_STATE_DIR,
+    openSyncKeyedStore: ({ namespace }: { namespace: string }) => {
+      const values = syncStores.get(namespace) ?? new Map<string, unknown>();
+      syncStores.set(namespace, values);
+      return {
+        register: (key: string, value: unknown) => values.set(key, value),
+        registerIfAbsent: (key: string, value: unknown) => {
+          if (values.has(key)) {
+            return false;
+          }
+          values.set(key, value);
+          return true;
+        },
+        lookup: (key: string) => values.get(key),
+        consume: (key: string) => {
+          const value = values.get(key);
+          values.delete(key);
+          return value;
+        },
+        delete: (key: string) => values.delete(key),
+        entries: () => [...values].map(([key, value]) => ({ key, value, createdAt: Date.now() })),
+        clear: () => values.clear(),
+      };
+    },
+  },
+});
+
 const shared = await import(
   pathToFileURL(path.join(targetRoot, "extensions/matrix/src/matrix/client/shared.ts")).href
 );
