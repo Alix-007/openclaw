@@ -24,4 +24,10 @@ describe("formatErrorMessage", () => {
   it("redacts bearer schemes case-insensitively", () => {
     expect(formatErrorMessage("bearer memory/Start~opaque-memoryEnd")).toBe("bearer memory...yEnd");
   });
+
+  it("redacts quoted short bearer header values", () => {
+    expect(formatErrorMessage('{"Authorization":"bearer t7K4_x"}')).toBe(
+      '{"Authorization":"bearer ***"}',
+    );
+  });
 });

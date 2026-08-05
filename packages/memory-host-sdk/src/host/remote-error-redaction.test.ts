@@ -7,6 +7,7 @@ import { postJson } from "./post-json.js";
 import { buildRemoteBaseUrlPolicy } from "./remote-http.js";
 
 const API_KEY = "memory/Start~OC_T24_13_UNIQUE_NEEDLE-memoryEnd";
+const SHORT_API_KEY = "t7K4_x";
 const UNIQUE_NEEDLE = "OC_T24_13_UNIQUE_NEEDLE";
 
 type RequestRecord = {
@@ -48,7 +49,10 @@ function createMemoryRemoteServer(records: RequestRecord[]): Server {
 
       let status = 200;
       let body: string;
-      if (path.includes("/error/") || path.endsWith("/error")) {
+      if (path.includes("/quoted-error/") || path.endsWith("/quoted-error")) {
+        status = 401;
+        body = JSON.stringify({ Authorization: authorization });
+      } else if (path.includes("/error/") || path.endsWith("/error")) {
         status = 401;
         body = `upstream echoed Authorization: ${authorization}`;
       } else if (path.endsWith("/benign")) {
@@ -124,6 +128,33 @@ describe.sequential("memory remote error redaction", () => {
     }
   });
 
+  it("redacts quoted short bearer credentials through the real JSON error path", async () => {
+    const records: RequestRecord[] = [];
+    const server = createMemoryRemoteServer(records);
+    const baseUrl = await listenOnLoopback(server);
+    const headers = {
+      Authorization: `bearer ${SHORT_API_KEY}`,
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const error = await fetchRemoteEmbeddingVectors({
+        url: `${baseUrl}/v1/embeddings/quoted-error`,
+        headers,
+        ssrfPolicy: buildRemoteBaseUrlPolicy(baseUrl),
+        body: { model: "proof", input: ["one"] },
+        errorPrefix: "embedding fetch failed",
+      }).catch((cause: unknown) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain('{"Authorization":"bearer ***"}');
+      expect((error as Error).message).not.toContain(SHORT_API_KEY);
+      expect(records.map((record) => record.authorization)).toEqual([`bearer ${SHORT_API_KEY}`]);
+    } finally {
+      await closeServer(server);
+    }
+  });
+
   it("preserves status metadata and harmless provider diagnostics", async () => {
     const records: RequestRecord[] = [];
     const server = createMemoryRemoteServer(records);
@@ -176,6 +207,19 @@ describe.sequential("memory remote error redaction", () => {
       expect((error as Error).message).not.toContain(API_KEY);
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
 
+      const shortError = await uploadBatchJsonlFile({
+        client: {
+          baseUrl: `${baseUrl}/quoted-error`,
+          headers: { Authorization: `bearer ${SHORT_API_KEY}` },
+          ssrfPolicy: buildRemoteBaseUrlPolicy(baseUrl),
+        },
+        requests: [{ input: "one" }],
+        errorPrefix: "file upload failed",
+      }).catch((cause: unknown) => cause);
+      expect(shortError).toBeInstanceOf(Error);
+      expect((shortError as Error).message).toContain('{"Authorization":"bearer ***"}');
+      expect((shortError as Error).message).not.toContain(SHORT_API_KEY);
+
       await expect(
         uploadBatchJsonlFile({
           client: client("/ok"),
@@ -184,12 +228,13 @@ describe.sequential("memory remote error redaction", () => {
         }),
       ).resolves.toBe("file_control");
       const batchRecords = records.filter((record) => record.path.endsWith("/files"));
-      expect(batchRecords).toHaveLength(2);
+      expect(batchRecords).toHaveLength(3);
       expect(batchRecords[0]?.contentType).toMatch(/^multipart\/form-data; boundary=/u);
       expect(batchRecords[0]?.body).toContain('name="purpose"');
       expect(batchRecords[0]?.body).toContain("batch");
       expect(batchRecords.map((record) => record.authorization)).toEqual([
         `bearer ${API_KEY}`,
+        `bearer ${SHORT_API_KEY}`,
         `bearer ${API_KEY}`,
       ]);
     } finally {
