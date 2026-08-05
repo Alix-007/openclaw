@@ -90,19 +90,40 @@ try {
     startClient: false,
   });
 
-  assert.equal(firstLease, repeatedFirstLease);
-  assert.notEqual(firstLease, secondLease);
-  const firstHeld = await shared.releaseSharedClientInstance(firstLease, "discard");
-  const firstFinal = await shared.releaseSharedClientInstance(repeatedFirstLease, "discard");
-  const secondFinal = await shared.releaseSharedClientInstance(secondLease, "discard");
-  assert.equal(firstHeld, false);
-  assert.equal(firstFinal, true);
-  assert.equal(secondFinal, true);
+  assert.equal(firstLease.client, repeatedFirstLease.client);
+  assert.notEqual(firstLease.client, secondLease.client);
+
+  await firstLease.release({ mode: "discard" });
+  const firstStillHeld = await shared.acquireSharedMatrixClient({
+    auth: firstAuth,
+    startClient: false,
+  });
+  assert.equal(firstStillHeld.client, repeatedFirstLease.client);
+  await firstStillHeld.release({ mode: "discard" });
+  await repeatedFirstLease.release({ mode: "discard" });
+
+  const firstReplacement = await shared.acquireSharedMatrixClient({
+    auth: firstAuth,
+    startClient: false,
+  });
+  assert.notEqual(firstReplacement.client, repeatedFirstLease.client);
+  await firstReplacement.release({ mode: "discard" });
+
+  await secondLease.release({ mode: "discard" });
+  const secondReplacement = await shared.acquireSharedMatrixClient({
+    auth: secondAuth,
+    startClient: false,
+  });
+  assert.notEqual(secondReplacement.client, secondLease.client);
+  await secondReplacement.release({ mode: "discard" });
 
   console.log(
     "[matrix shared-client proof] real-client=true distinct=true same-auth-reused=true first-release-held=true first-release-final=true second-release-final=true secret-output=false",
   );
 } finally {
-  shared.stopSharedClient();
+  await Promise.allSettled([
+    shared.stopSharedClientForAccount(firstAuth),
+    shared.stopSharedClientForAccount(secondAuth),
+  ]);
   await fs.rm(runtimeRoot, { recursive: true, force: true });
 }
