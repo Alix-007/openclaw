@@ -798,6 +798,57 @@ describe("qa-channel plugin", () => {
     }
   });
 
+  it("prefers canonical targets over conflicting direct-adapter aliases", async () => {
+    installQaChannelTestRegistry();
+    const state = createQaBusState();
+    const bus = await startQaBusServer({ state });
+
+    try {
+      const cfg = createQaChannelConfig({ baseUrl: bus.baseUrl });
+      const handleAction = requireQaActionHandler();
+      const threadResult = await handleAction({
+        channel: "qa-channel",
+        action: "thread-create",
+        cfg,
+        accountId: "default",
+        params: {
+          target: "channel:canonical-room",
+          to: "channel:legacy-to-room",
+          channelId: "legacy-channel-id-room",
+          threadName: "Canonical target thread",
+        },
+      });
+      const threadPayload = extractToolPayload(threadResult) as {
+        thread: { id: string; conversationId: string };
+        target: string;
+      };
+
+      expect(threadPayload.thread.conversationId).toBe("canonical-room");
+      expect(threadPayload.target).toBe(`thread:canonical-room/${threadPayload.thread.id}`);
+
+      const replyResult = await handleAction({
+        channel: "qa-channel",
+        action: "thread-reply",
+        cfg,
+        accountId: "default",
+        params: {
+          target: threadPayload.target,
+          channelId: "legacy-reply-room",
+          message: "canonical target reply",
+        },
+      });
+      expect(extractToolPayload(replyResult)).toMatchObject({
+        message: {
+          conversation: { id: "canonical-room", kind: "channel" },
+          text: "canonical target reply",
+          threadId: threadPayload.thread.id,
+        },
+      });
+    } finally {
+      await bus.stop();
+    }
+  });
+
   it("rejects thread replies outside the owning account and conversation", async () => {
     installQaChannelTestRegistry();
     const state = createQaBusState();

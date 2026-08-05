@@ -56,6 +56,10 @@ function readQaSendText(params: Record<string, unknown>) {
 }
 
 function readQaSendTarget(params: Record<string, unknown>) {
+  const target = readStringParam(params, "target");
+  if (target) {
+    return buildQaTarget(parseQaTarget(target, { defaultChatType: "channel" }));
+  }
   const explicitTo = readStringParam(params, "to");
   if (explicitTo) {
     return buildQaTarget(parseQaTarget(explicitTo));
@@ -64,11 +68,7 @@ function readQaSendTarget(params: Record<string, unknown>) {
   if (channelId) {
     return buildQaTarget(parseQaTarget(channelId, { defaultChatType: "channel" }));
   }
-  const target = readStringParam(params, "target");
-  if (!target) {
-    return undefined;
-  }
-  return buildQaTarget(parseQaTarget(target, { defaultChatType: "channel" }));
+  return undefined;
 }
 
 type QaMessageTarget = {
