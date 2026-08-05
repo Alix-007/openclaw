@@ -1,6 +1,7 @@
 // Qqbot tests cover resolve plugin behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  applyAccountConfig,
   DEFAULT_ACCOUNT_ID,
   listAccountIds,
   resolveDefaultAccountId,
@@ -82,6 +83,21 @@ describe("engine/config/resolve", () => {
 
     expect(listAccountIds(cfg)).toStrictEqual([]);
     expect(resolveDefaultAccountId(cfg)).toBe(DEFAULT_ACCOUNT_ID);
+  });
+
+  it("ignores an inherited accounts container", () => {
+    const inheritedAccounts = {
+      bot2: { appId: "inherited-app-id", name: "Inherited Bot" },
+    };
+    const qqbot = Object.create({ accounts: inheritedAccounts }) as Record<string, unknown>;
+    const cfg = { channels: { qqbot } };
+    const base = resolveAccountBase(cfg, "bot2");
+
+    expect(listAccountIds(cfg)).toStrictEqual([]);
+    expect(resolveDefaultAccountId(cfg)).toBe(DEFAULT_ACCOUNT_ID);
+    expect(base.appId).toBe("");
+    expect(base.config).toEqual({});
+    expect(Object.hasOwn(qqbot, "accounts")).toBe(false);
   });
 
   it("resolves default account id to 'default' when top-level appId exists", () => {
@@ -212,6 +228,30 @@ describe("engine/config/resolve", () => {
     expect(base.config).toEqual({ name: "Owned Bot", enabled: false });
     expect(base.config.clientSecret).toBeUndefined();
     expect(base.config.clientSecretFile).toBeUndefined();
+  });
+
+  it("does not copy an inherited accounts container during named-account setup", () => {
+    const qqbot = Object.create({
+      accounts: {
+        inherited: { appId: "inherited-app-id" },
+      },
+    }) as Record<string, unknown>;
+
+    const next = applyAccountConfig({ channels: { qqbot } }, "bot2", {
+      appId: "owned-app-id",
+    });
+    const nextAccounts = (
+      (next.channels as Record<string, unknown>).qqbot as Record<string, unknown>
+    ).accounts as Record<string, unknown>;
+
+    expect(Object.hasOwn(nextAccounts, "inherited")).toBe(false);
+    expect(nextAccounts).toEqual({
+      bot2: {
+        enabled: true,
+        allowFrom: ["*"],
+        appId: "owned-app-id",
+      },
+    });
   });
 
   it("uses configured defaultAccount when accountId is omitted", () => {

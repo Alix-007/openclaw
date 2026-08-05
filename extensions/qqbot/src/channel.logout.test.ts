@@ -84,6 +84,36 @@ describe("qqbotPlugin gateway.logoutAccount", () => {
     });
   });
 
+  it("ignores an inherited accounts container during logout", async () => {
+    const inheritedAccounts = {
+      bot2: {
+        appId: "app-id",
+        clientSecret: "secret",
+        clientSecretFile: "/tmp/secret",
+      },
+    };
+    const qqbot = Object.create({ accounts: inheritedAccounts }) as Record<string, unknown>;
+    const cfg = { channels: { qqbot } } as unknown as OpenClawConfig;
+
+    const { result, account, mocks } = await runLogoutScenario({ cfg, accountId: "bot2" });
+
+    expect(account.appId).toBe("");
+    expect(account.secretSource).toBe("none");
+    expect(result).toStrictEqual({
+      ok: true,
+      cleared: false,
+      envToken: false,
+      loggedOut: true,
+    });
+    expect(mocks.replaceConfigFile).not.toHaveBeenCalled();
+    expect(Object.hasOwn(qqbot, "accounts")).toBe(false);
+    expect(inheritedAccounts.bot2).toEqual({
+      appId: "app-id",
+      clientSecret: "secret",
+      clientSecretFile: "/tmp/secret",
+    });
+  });
+
   it("ignores inherited credentials on an own named account during logout", async () => {
     const ownAccount = Object.assign(
       Object.create({
