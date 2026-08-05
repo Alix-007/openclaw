@@ -27,7 +27,7 @@ import {
   markAuthProfileFailure,
   markAuthProfileSuccess,
 } from "./auth-profiles.js";
-import { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE } from "./bootstrap-files.js";
+import { persistCompletedBootstrapTurn } from "./bootstrap-files.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
@@ -136,29 +136,30 @@ export async function isCliBindingFlushed(
  * Records continuation state only after CLI output and any runner-owned transcript write succeed.
  * Failed turns stay eligible for full context on their next attempt.
  */
-function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): void {
+function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolean {
   // Post-output transcript/finalization awaits can race with cancellation. Never
   // let an aborted turn suppress workspace context on the next eligible turn.
   if (
     context.shouldRecordCompletedBootstrapTurn !== true ||
     context.params.abortSignal?.aborted === true
   ) {
-    return;
+    return false;
   }
   const sessionTarget = context.params.sessionTarget;
   if (!sessionTarget) {
-    return;
+    return false;
   }
   try {
-    const sessionManager = context.params.sessionManager ?? SessionManager.open(sessionTarget);
-    sessionManager.appendCustomEntry(FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, {
-      timestamp: Date.now(),
+    persistCompletedBootstrapTurn({
+      sessionTarget,
+      sessionManager: context.params.sessionManager,
       runId: context.params.runId,
-      sessionId: context.params.sessionId,
       runner: "cli",
     });
+    return true;
   } catch (error) {
     log.warn(`failed to persist CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
+    return false;
   }
 }
 
@@ -569,7 +570,7 @@ export async function runPreparedCliAgent(
       try {
         await assertCliRuntimeBinding(context);
         const effectiveCliSessionId = output.sessionId ?? fallbackCliSessionId;
-        const assistantTranscript = await persistCliAssistantTranscript({
+        const assistantTranscriptPersistence = await persistCliAssistantTranscript({
           runParams: params,
           // Dispatch owns source-reply transcript mirrors and their idempotency keys.
           // Persisting them here would duplicate the same visible assistant reply.
@@ -581,10 +582,9 @@ export async function runPreparedCliAgent(
           context,
           historyMessages: context.contextEngine ? contextEngineHistoryMessages : historyMessages,
           assistantText,
-          terminalAnchor: assistantTranscript.terminalAnchor,
+          terminalAnchor: assistantTranscriptPersistence.terminalAnchor,
           output,
         });
-        recordCompletedCliBootstrapTurn(context);
         // A stateless backend may emit an id, but it never becomes continuity.
         // Managed stdio sessions own continuity in-process and write no native transcript.
         const bindingFlushOk = sessionBindingDisabled
@@ -604,13 +604,17 @@ export async function runPreparedCliAgent(
           ctx: hookContext,
           hookRunner,
         });
+        const bootstrapCompletionRecorded = assistantTranscriptPersistence.persisted
+          ? recordCompletedCliBootstrapTurn(context)
+          : false;
         return buildCliRunResult({
           context,
           output,
           effectiveCliSessionId,
           bindingFlushOk,
-          assistantTranscriptOwned: assistantTranscript.owned,
-          assistantTranscriptIdempotencyKey: assistantTranscript.idempotencyKey,
+          assistantTranscriptOwned: assistantTranscriptPersistence.owned,
+          assistantTranscriptIdempotencyKey: assistantTranscriptPersistence.idempotencyKey,
+          bootstrapCompletionRecorded,
           usedHistoryPrompt,
           userTurnHandled,
           sessionBindingDisabled,

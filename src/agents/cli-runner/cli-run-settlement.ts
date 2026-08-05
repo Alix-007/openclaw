@@ -427,6 +427,7 @@ export function buildCliRunResult(params: {
   bindingFlushOk?: boolean;
   assistantTranscriptOwned?: boolean;
   assistantTranscriptIdempotencyKey?: string;
+  bootstrapCompletionRecorded?: boolean;
   usedHistoryPrompt: boolean;
   userTurnHandled: boolean;
   sessionBindingDisabled: boolean;
@@ -435,6 +436,7 @@ export function buildCliRunResult(params: {
   const {
     assistantTranscriptOwned,
     assistantTranscriptIdempotencyKey,
+    bootstrapCompletionRecorded,
     bindingFlushOk,
     context,
     effectiveCliSessionId,
@@ -553,6 +555,11 @@ export function buildCliRunResult(params: {
           }
         : {}),
       systemPromptReport: context.systemPromptReport,
+      ...(context.shouldRecordCompletedBootstrapTurn === true &&
+      bootstrapCompletionRecorded !== true &&
+      runParams.abortSignal?.aborted !== true
+        ? { bootstrapContextCompletionPending: true as const }
+        : {}),
       ...(yielded ? { yielded: true, livenessState: "paused" as const, stopReason } : {}),
       ...(output.yieldAcknowledgment ? { yieldAcknowledgment: output.yieldAcknowledgment } : {}),
       executionTrace: {

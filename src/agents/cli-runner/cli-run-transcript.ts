@@ -146,6 +146,7 @@ export async function persistCliAssistantTranscript(params: {
   };
 }): Promise<{
   owned: boolean;
+  persisted: boolean;
   idempotencyKey?: string;
   terminalAnchor?: import("../../config/sessions/session-accessor.js").TranscriptEntryAnchor;
 }> {
@@ -154,6 +155,7 @@ export async function persistCliAssistantTranscript(params: {
     const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();
     return {
       owned: true,
+      persisted: false,
       ...(admission ? { terminalAnchor: admission } : {}),
     };
   }
@@ -161,11 +163,12 @@ export async function persistCliAssistantTranscript(params: {
     const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();
     return {
       owned: false,
+      persisted: false,
       ...(admission ? { terminalAnchor: admission } : {}),
     };
   }
   if (!runParams.persistAssistantTranscript || !runParams.sessionKey) {
-    return { owned: false };
+    return { owned: false, persisted: false };
   }
   try {
     const idempotencyKey = `cli-assistant:${runParams.runId}`;
@@ -202,16 +205,20 @@ export async function persistCliAssistantTranscript(params: {
     });
     if (!result.ok) {
       log.warn(`CLI assistant transcript persistence skipped: ${result.reason}`);
-      return { owned: result.code === "blocked" || result.code === "session-rebound" };
+      return {
+        owned: result.code === "blocked" || result.code === "session-rebound",
+        persisted: false,
+      };
     }
     return {
       owned: true,
+      persisted: true,
       idempotencyKey,
       ...(result.anchor ? { terminalAnchor: result.anchor } : {}),
     };
   } catch (error) {
     log.warn(`CLI assistant transcript persistence failed: ${formatErrorMessage(error)}`);
-    return { owned: false };
+    return { owned: false, persisted: false };
   }
 }
 

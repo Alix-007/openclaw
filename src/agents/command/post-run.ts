@@ -17,6 +17,7 @@ import {
   shouldPersistCurrentRunSessionCleanup,
 } from "../agent-command-restart-recovery.js";
 import { normalizeAgentRunTerminalDeliverySnapshot } from "../agent-run-terminal-delivery.js";
+import { persistCompletedBootstrapTurn } from "../bootstrap-files.js";
 import { isHeartbeatLifecycleRunKind } from "../bootstrap-mode.js";
 import { persistPendingFinalDeliveryMarker } from "../pending-final-delivery-marker.js";
 import type { AgentRunSessionTarget } from "../run-session-target.js";
@@ -238,6 +239,30 @@ export async function finalizeEmbeddedAgentCommand(params: {
             runOwnedSessionId,
           });
         }
+      }
+    }
+
+    if (
+      persistedCliTurnTranscript &&
+      result.meta.bootstrapContextCompletionPending === true &&
+      params.opts.abortSignal?.aborted !== true &&
+      !sessionReboundDuringRun
+    ) {
+      try {
+        persistCompletedBootstrapTurn({
+          sessionTarget: {
+            agentId: internalSessionTarget?.agentId ?? sessionAgentId,
+            sessionId: effectiveSessionId,
+            sessionKey: internalSessionTarget?.sessionKey ?? sessionKey ?? effectiveSessionId,
+            storePath: internalSessionTarget?.storePath ?? storePath,
+          },
+          runId: params.prepared.runId,
+          runner: "cli",
+        });
+      } catch (error) {
+        log.warn(
+          `CLI bootstrap completion persistence failed for ${sessionKey ?? sessionId}: ${formatErrorMessage(error)}`,
+        );
       }
     }
 
