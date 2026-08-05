@@ -55,6 +55,16 @@ jobs:
             echo "run_id=$GITHUB_RUN_ID"
           } | tee proof-metadata.txt
 
+      - name: Check out configured proof harness
+        if: inputs.proof_kind == 'ollama'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof
+          persist-credentials: false
+
       - name: Set up Node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
@@ -67,6 +77,17 @@ jobs:
           corepack enable
           corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
           pnpm install --frozen-lockfile
+
+      - name: Install configured proxy proof dependency
+        if: inputs.proof_kind == 'ollama'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v nginx >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes nginx
+          fi
+          nginx -v
 
       - name: Run exact-head behavior proof
         shell: bash
@@ -92,7 +113,42 @@ jobs:
                 extensions/ollama/src/embedding-provider.test.ts \
                 src/logging/redact.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
+              pnpm build 2>&1 | tee -a "$log_file"
+              proof_runtime="$PWD/.ollama-proof-runtime"
+              proof_config="$PWD/.proof-tooling/.github/proof/ollama-nginx.conf"
+              mkdir -p "$proof_runtime/logs"
+              python3 .proof-tooling/.github/proof/ollama-upstream.py \
+                --port 18766 >"$proof_runtime/upstream.log" 2>&1 &
+              upstream_pid="$!"
+              cleanup_ollama_proof() {
+                nginx -p "$proof_runtime/" -c "$proof_config" -s quit >/dev/null 2>&1 || true
+                kill "$upstream_pid" >/dev/null 2>&1 || true
+                wait "$upstream_pid" >/dev/null 2>&1 || true
+              }
+              trap cleanup_ollama_proof EXIT
+              nginx -t -p "$proof_runtime/" -c "$proof_config"
+              nginx -p "$proof_runtime/" -c "$proof_config"
+              proxy_ready=false
+              for _attempt in $(seq 1 50); do
+                if curl --fail --silent --show-error \
+                  http://127.0.0.1:18765/health >/dev/null; then
+                  proxy_ready=true
+                  break
+                fi
+                sleep 0.2
+              done
+              if [[ "$proxy_ready" != "true" ]]; then
+                echo "configured proof reverse proxy did not become ready" >&2
+                exit 1
+              fi
+              OLLAMA_PROOF_BASE_URL=http://127.0.0.1:18765 \
+                node --import tsx \
+                  .proof-tooling/.github/proof/ollama-configured-provider.ts \
+                  2>&1 | tee -a "$log_file"
+              cleanup_ollama_proof
+              trap - EXIT
               marker='[ollama credential redaction proof]'
+              grep -F '[ollama configured reverse-proxy proof]' "$log_file"
               ;;
             qqbot)
               node scripts/run-vitest.mjs \
