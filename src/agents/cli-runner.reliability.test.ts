@@ -495,6 +495,60 @@ describe("runCliAgent reliability", () => {
     }
   });
 
+  it("does not persist a CLI bootstrap marker after post-output cancellation", async () => {
+    const { dir, sessionFile, storePath } = createSessionFile();
+    await seedSqliteSessionEntry({ sessionFile, storePath });
+    const sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath,
+    };
+    const abortController = new AbortController();
+    const hookRunner = {
+      hasHooks: vi.fn((hookName: string) => hookName === "before_message_write"),
+      runBeforeMessageWrite: vi.fn(() => {
+        abortController.abort();
+        return undefined;
+      }),
+    };
+    setHookRunnerForTest(hookRunner);
+    const context = buildPreparedContext({
+      sessionKey: sessionTarget.sessionKey,
+      runId: "run-cli-bootstrap-marker-aborted",
+    });
+    context.params.agentId = "main";
+    context.params.abortSignal = abortController.signal;
+    context.params.persistAssistantTranscript = true;
+    context.params.sessionFile = sessionFile;
+    context.params.sessionTarget = sessionTarget;
+    context.params.storePath = storePath;
+    context.params.workspaceDir = dir;
+    context.shouldRecordCompletedBootstrapTurn = true;
+    supervisorSpawnMock.mockResolvedValueOnce(
+      createManagedRun({
+        reason: "exit",
+        exitCode: 0,
+        exitSignal: null,
+        durationMs: 20,
+        stdout: "completed before cancellation",
+        stderr: "",
+        timedOut: false,
+        noOutputTimedOut: false,
+      }),
+    );
+
+    try {
+      await runPreparedCliAgent(context);
+
+      expect(abortController.signal.aborted).toBe(true);
+      expect(hookRunner.runBeforeMessageWrite).toHaveBeenCalledOnce();
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("fails with timeout when no-output watchdog trips", async () => {
     supervisorSpawnMock.mockResolvedValueOnce(
       makeManagedRun({
