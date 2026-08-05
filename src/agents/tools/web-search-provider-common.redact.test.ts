@@ -25,7 +25,7 @@ describe.sequential("web search provider error redaction", () => {
     vi.unstubAllEnvs();
   });
 
-  it("redacts a reflected bearer credential through the trusted guarded transport", async () => {
+  it("redacts an unlabelled reflected credential through the trusted guarded transport", async () => {
     const receivedAuthorization: Array<string | undefined> = [];
     const server = createServer();
     server.on("connect", (_request, socket) => {
