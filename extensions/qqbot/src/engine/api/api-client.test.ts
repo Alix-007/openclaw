@@ -171,6 +171,32 @@ describe("ApiClient", () => {
     expect(debugOutput).toContain("success-marker");
     expect(debugOutput).not.toContain(accessToken);
     expect(debugOutput).not.toContain("UNIQUEQQBOTSECRET");
+
+    const redactedSurfaces = [
+      jsonError.message,
+      jsonError.bizMessage,
+      textError.message,
+      debugOutput,
+    ].join("\n");
+    const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+    if (proofHeadSha) {
+      if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+        throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+      }
+      console.info(
+        `[qqbot credential redaction proof] ${JSON.stringify({
+          exactHead: proofHeadSha,
+          status: [jsonError.httpStatus, textError.httpStatus, 200],
+          path: ["/json-error", "/text-error", "/success"],
+          safeMarkerPresent:
+            redactedSurfaces.includes("json-marker") &&
+            redactedSurfaces.includes("plain-marker") &&
+            redactedSurfaces.includes("success-marker"),
+          tokenAbsent: !redactedSurfaces.includes(accessToken),
+          fragmentAbsent: !redactedSurfaces.includes("UNIQUEQQBOTSECRET"),
+        })}`,
+      );
+    }
   });
 
   it("bounds error bodies on a UTF-16 boundary without using response.text()", async () => {

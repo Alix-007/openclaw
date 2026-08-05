@@ -358,6 +358,26 @@ describe("executeChannelApi", () => {
     expect(debugOutput).not.toContain(accessToken);
     expect(debugOutput).not.toContain("UNIQUECHANNELSECRET");
     expect(release).toHaveBeenCalledTimes(1);
+
+    const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+    if (proofHeadSha) {
+      if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+        throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+      }
+      console.info(
+        `[qqbot credential redaction proof] ${JSON.stringify({
+          exactHead: proofHeadSha,
+          status: (result.details as { status?: number }).status,
+          path: (result.details as { path?: string }).path,
+          safeMarkerPresent:
+            toolOutput.includes("channel-marker") && debugOutput.includes("channel-marker"),
+          tokenAbsent: !toolOutput.includes(accessToken) && !debugOutput.includes(accessToken),
+          fragmentAbsent:
+            !toolOutput.includes("UNIQUECHANNELSECRET") &&
+            !debugOutput.includes("UNIQUECHANNELSECRET"),
+        })}`,
+      );
+    }
   });
 
   it("bounds successful response bodies without using response.text()", async () => {
