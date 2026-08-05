@@ -35,6 +35,7 @@ type WorkspaceBootstrapRouting = {
   bootstrapMode: BootstrapMode;
   includeBootstrapInSystemContext: boolean;
   includeBootstrapInRuntimeContext: boolean;
+  isPrimaryInteractiveRun: boolean;
 };
 
 type WorkspaceBootstrapRoutingInput = Omit<BootstrapRoutingInput, "workspaceBootstrapPending"> & {
@@ -44,10 +45,12 @@ type WorkspaceBootstrapRoutingInput = Omit<BootstrapRoutingInput, "workspaceBoot
 };
 
 function resolveBootstrapRouting(params: BootstrapRoutingInput): WorkspaceBootstrapRouting {
+  const isPrimaryInteractiveRun =
+    params.isPrimaryRun && (params.trigger === "user" || params.trigger === "manual");
   const bootstrapMode = resolveBootstrapMode({
     bootstrapPending: params.workspaceBootstrapPending,
     runKind: params.bootstrapContextRunKind ?? "default",
-    isInteractiveUserFacing: params.trigger === "user" || params.trigger === "manual",
+    isInteractiveUserFacing: isPrimaryInteractiveRun,
     isPrimaryRun: params.isPrimaryRun,
     isCanonicalWorkspace:
       (params.isCanonicalWorkspace ?? true) &&
@@ -59,6 +62,9 @@ function resolveBootstrapRouting(params: BootstrapRoutingInput): WorkspaceBootst
     bootstrapMode,
     includeBootstrapInSystemContext: bootstrapMode === "full",
     includeBootstrapInRuntimeContext: false,
+    // Keep this routing fact distinct from bootstrapMode: established workspaces
+    // resolve to "none" for both user turns and hidden maintenance runs.
+    isPrimaryInteractiveRun,
   };
 }
 

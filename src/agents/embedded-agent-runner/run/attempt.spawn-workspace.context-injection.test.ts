@@ -18,6 +18,7 @@ async function resolveBootstrapContext(params: {
   bootstrapContextMode?: string;
   bootstrapContextRunKind?: BootstrapContextRunKind;
   bootstrapMode?: "full" | "limited" | "none";
+  isPrimaryInteractiveRun?: boolean;
   completed?: boolean;
   resolver?: () => Promise<{ bootstrapFiles: unknown[]; contextFiles: unknown[] }>;
 }) {
@@ -36,6 +37,7 @@ async function resolveBootstrapContext(params: {
     bootstrapContextMode: params.bootstrapContextMode ?? "full",
     bootstrapContextRunKind: params.bootstrapContextRunKind ?? "default",
     bootstrapMode: params.bootstrapMode ?? "none",
+    isPrimaryInteractiveRun: params.isPrimaryInteractiveRun ?? true,
     hasCompletedBootstrapTurn,
     resolveBootstrapContextForRun,
   });
@@ -220,6 +222,20 @@ describe("embedded attempt context injection", () => {
       bootstrapContextMode: "full",
       bootstrapContextRunKind: "cron",
       bootstrapMode: "none",
+      completed: false,
+    });
+
+    expect(result.isContinuationTurn).toBe(false);
+    expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
+  });
+
+  it("does not let ineligible routing write established-workspace bootstrap state", async () => {
+    const { result } = await resolveBootstrapContext({
+      contextInjectionMode: "continuation-skip",
+      bootstrapContextMode: "full",
+      bootstrapContextRunKind: "default",
+      bootstrapMode: "none",
+      isPrimaryInteractiveRun: false,
       completed: false,
     });
 
