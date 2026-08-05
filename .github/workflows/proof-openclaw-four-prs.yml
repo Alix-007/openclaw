@@ -82,6 +82,8 @@ jobs:
               ;;
             ollama)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
+              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
+                proof-plugin-sdk-api-baseline.sha256
               git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
               git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
               pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
@@ -123,6 +125,6 @@ jobs:
           path: |
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
-            docs/.generated/plugin-sdk-api-baseline.*
+            proof-plugin-sdk-api-baseline.sha256
           if-no-files-found: warn
           retention-days: 30
