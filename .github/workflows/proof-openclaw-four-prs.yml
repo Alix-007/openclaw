@@ -242,6 +242,7 @@ jobs:
                 extensions/ollama/src/web-search-provider.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               grep -F 'redacts an unlabelled reflected credential through the trusted guarded transport' "$log_file"
+              grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
               grep -F 'redacts an unlabelled reflected Brave credential' "$log_file"
               grep -F 'redacts reflected API credentials from provider errors' "$log_file"
               grep -F 'redacts an unlabelled reflected Firecrawl credential' "$log_file"
@@ -250,7 +251,7 @@ jobs:
               grep -F 'redacts an unlabelled reflected Kimi credential' "$log_file"
               grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
               grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
-              echo '[web-search credential redaction proof] shared=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
+              echo '[web-search credential redaction proof] shared=true metadata=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
               marker='[web-search credential redaction proof]'
               ;;
             *)
