@@ -98,6 +98,9 @@ describe("Synology Chat client loopback", () => {
     await expect(send).resolves.toBe(true);
     expect(receivedRequests).toBe(1);
     expect(timeoutSpy.mock.calls.filter(([, delay]) => delay === 300)).toHaveLength(1);
+    console.log(
+      `[synology webhook retry proof] preconnect_refusal=true retry_scheduled=true server_received=${receivedRequests} outcome=success`,
+    );
   });
 
   it("does not replay after the server receives the upload and disconnects mid-response", async () => {
@@ -135,6 +138,9 @@ describe("Synology Chat client loopback", () => {
     expect(requestCount).toBe(1);
     expect(new URLSearchParams(uploadedBody).get("payload")).toBe(
       JSON.stringify({ text: "post-upload disconnect" }),
+    );
+    console.log(
+      `[synology webhook retry proof] server_received=${requestCount} disconnect_after_upload=true replayed=${requestCount > 1} outcome=not_sent`,
     );
   });
 
