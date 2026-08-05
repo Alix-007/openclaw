@@ -256,3 +256,4 @@ describe("repairPendingAssistantTranscriptTurns", () => {
     expect(sessionStore[sessionKey]?.sessionId).toBe("replacement");
   });
 });
+

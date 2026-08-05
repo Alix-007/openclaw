@@ -202,7 +202,9 @@ async function prepareCompactionScenario(params: {
     contextEngine,
     maintenance,
     recordCliCompactionInStore,
-    run: (overrides: Partial<CliCompactionParams> = {}) =>
+    run: async (overrides: Partial<CliCompactionParams> = {}) =>
+      (await runCliTurnCompactionLifecycle({ ...runParams, ...overrides })).sessionEntry,
+    runOutcome: (overrides: Partial<CliCompactionParams> = {}) =>
       runCliTurnCompactionLifecycle({ ...runParams, ...overrides }),
     sessionEntry,
     sessionId,
@@ -335,8 +337,10 @@ describe("runCliTurnCompactionLifecycle", () => {
       },
     });
     const { compactCalls, maintenance, sessionId, sessionKey, storePath } = scenario;
-    const updatedEntry = await scenario.run();
+    const outcome = await scenario.runOutcome();
+    const updatedEntry = outcome.sessionEntry;
 
+    expect(outcome.compacted).toBe(true);
     expect(compactCalls).toHaveLength(1);
     const compactCall = compactCalls[0];
     expect(compactCall?.sessionId).toBe(sessionId);
@@ -566,8 +570,10 @@ describe("runCliTurnCompactionLifecycle", () => {
       }),
     });
     const { compactCalls, maintenance, recordCliCompactionInStore, sessionEntry } = scenario;
-    const updatedEntry = await scenario.run();
+    const outcome = await scenario.runOutcome();
+    const updatedEntry = outcome.sessionEntry;
 
+    expect(outcome.compacted).toBe(false);
     expect(compactCalls).toHaveLength(1);
     expect(maintenance).not.toHaveBeenCalled();
     expect(recordCliCompactionInStore).not.toHaveBeenCalled();

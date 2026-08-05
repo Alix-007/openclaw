@@ -1062,7 +1062,10 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       messageId: "repaired-message",
     });
     state.runCliTurnCompactionLifecycleMock.mockImplementation(
-      async (params: { sessionEntry?: unknown }) => params.sessionEntry,
+      async (params: { sessionEntry?: unknown }) => ({
+        sessionEntry: params.sessionEntry,
+        compacted: false,
+      }),
     );
     state.authProfileStoreMock = { profiles: {} };
     state.sessionEntryMock = undefined;
@@ -2277,7 +2280,10 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       kind: "persisted",
       sessionEntry: rotatedEntry,
     });
-    state.runCliTurnCompactionLifecycleMock.mockResolvedValue(rotatedEntry);
+    state.runCliTurnCompactionLifecycleMock.mockResolvedValue({
+      sessionEntry: rotatedEntry,
+      compacted: false,
+    });
 
     await runBasicAgentCommand();
 
@@ -2333,6 +2339,79 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     expect(state.persistCliTurnTranscriptMock.mock.invocationCallOrder[0]).toBeLessThan(
       state.persistCompletedBootstrapTurnMock.mock.invocationCallOrder[0] ?? 0,
     );
+    expect(state.runCliTurnCompactionLifecycleMock.mock.invocationCallOrder[0]).toBeLessThan(
+      state.persistCompletedBootstrapTurnMock.mock.invocationCallOrder[0] ?? 0,
+    );
+  });
+
+  it("keeps CLI bootstrap completion pending until post-run compaction settles", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockResolvedValue({
+      kind: "persisted",
+      sessionEntry: state.sessionEntryMock,
+    });
+    let settleCompaction:
+      | ((value: { sessionEntry?: SessionEntry; compacted: boolean }) => void)
+      | undefined;
+    state.runCliTurnCompactionLifecycleMock.mockImplementationOnce(
+      async () =>
+        await new Promise<{ sessionEntry?: SessionEntry; compacted: boolean }>((resolve) => {
+          settleCompaction = resolve;
+        }),
+    );
+
+    const command = runBasicAgentCommand();
+    await vi.waitFor(() => expect(state.runCliTurnCompactionLifecycleMock).toHaveBeenCalledOnce());
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
+
+    settleCompaction?.({ sessionEntry: state.sessionEntryMock, compacted: false });
+    await command;
+
+    expect(state.persistCompletedBootstrapTurnMock).toHaveBeenCalledOnce();
+  });
+
+  it("does not record CLI bootstrap completion after post-run compaction", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockResolvedValue({
+      kind: "persisted",
+      sessionEntry: state.sessionEntryMock,
+    });
+    state.runCliTurnCompactionLifecycleMock.mockResolvedValueOnce({
+      sessionEntry: state.sessionEntryMock,
+      compacted: true,
+    });
+
+    await runBasicAgentCommand();
+
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
   });
 
   it("does not record CLI bootstrap completion when post-run transcript persistence fails", async () => {
