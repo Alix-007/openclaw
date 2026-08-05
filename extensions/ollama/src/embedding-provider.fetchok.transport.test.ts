@@ -27,12 +27,13 @@ function printProof(params: {
   status: number;
   safeMarkerPresent: boolean;
   customSecretAbsent: boolean;
+  customFormSecretAbsent: boolean;
   authorizationSecretAbsent: boolean;
   proxyAuthorizationSecretAbsent: boolean;
   successVectorControl: boolean;
 }): void {
   console.info(
-    `${PROOF_MARKER} status=${params.status} safe-marker-present=${params.safeMarkerPresent} custom-secret-absent=${params.customSecretAbsent} authorization-secret-absent=${params.authorizationSecretAbsent} proxy-authorization-secret-absent=${params.proxyAuthorizationSecretAbsent} success-vector-control=${params.successVectorControl}`,
+    `${PROOF_MARKER} status=${params.status} safe-marker-present=${params.safeMarkerPresent} custom-secret-absent=${params.customSecretAbsent} custom-form-secret-absent=${params.customFormSecretAbsent} authorization-secret-absent=${params.authorizationSecretAbsent} proxy-authorization-secret-absent=${params.proxyAuthorizationSecretAbsent} success-vector-control=${params.successVectorControl}`,
   );
 }
 
@@ -154,6 +155,7 @@ describe("Ollama embedding provider real transport", () => {
       status: 429,
       safeMarkerPresent: error?.message.includes("rate limit exceeded") === true,
       customSecretAbsent: true,
+      customFormSecretAbsent: true,
       authorizationSecretAbsent: error ? !error.message.includes(authorizationCredential) : false,
       proxyAuthorizationSecretAbsent: error
         ? !error.message.includes(proxyAuthorizationCredential)
@@ -162,12 +164,20 @@ describe("Ollama embedding provider real transport", () => {
     });
   });
 
-  it("redacts a reflected custom SecretRef header from embed errors", async () => {
-    const proxyAuth = "proxy_AAAAUNIQUEOLLAMAPROXYSECRETXXXX11112222";
+  it("redacts a form-serialized custom SecretRef header from embed errors", async () => {
+    const proxyAuth = "proxy AAAAUNIQUEOLLAMA~PROXYSECRET XXXX11112222";
+    const formEncodedProxyAuth = new URLSearchParams([["value", proxyAuth]])
+      .toString()
+      .slice("value=".length);
     vi.stubEnv("OLLAMA_PROXY_AUTH", proxyAuth);
     const server = await startOllamaServer((request) => ({
       status: 403,
-      body: JSON.stringify({ error: "forbidden", upstreamEcho: request.proxyAuth }),
+      body: JSON.stringify({
+        error: "forbidden",
+        upstreamEcho: request.proxyAuth
+          ? new URLSearchParams([["value", request.proxyAuth]]).toString().slice("value=".length)
+          : undefined,
+      }),
     }));
 
     const error = await captureEmbeddingError({
@@ -206,11 +216,13 @@ describe("Ollama embedding provider real transport", () => {
     expect(error?.message).toContain("Ollama embed HTTP 403");
     expect(error?.message).toContain("forbidden");
     expect(error?.message).not.toContain(proxyAuth);
+    expect(error?.message).not.toContain(formEncodedProxyAuth);
     expect(error?.message).not.toContain("UNIQUEOLLAMAPROXYSECRET");
     printProof({
       status: 403,
       safeMarkerPresent: error?.message.includes("forbidden") === true,
       customSecretAbsent: error ? !error.message.includes(proxyAuth) : false,
+      customFormSecretAbsent: error ? !error.message.includes(formEncodedProxyAuth) : false,
       authorizationSecretAbsent: true,
       proxyAuthorizationSecretAbsent: true,
       successVectorControl: false,
@@ -250,6 +262,7 @@ describe("Ollama embedding provider real transport", () => {
       status: 200,
       safeMarkerPresent: false,
       customSecretAbsent: !renderedVector.includes(proxyAuth),
+      customFormSecretAbsent: true,
       authorizationSecretAbsent: !renderedVector.includes(apiKey),
       proxyAuthorizationSecretAbsent: true,
       successVectorControl: vector.length === 2,

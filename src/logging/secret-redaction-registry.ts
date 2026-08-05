@@ -31,6 +31,12 @@ function secretValueVariants(value: string): string[] {
   if (encoded !== value) {
     variants.push(encoded);
   }
+  // Form submissions serialize spaces as `+` and use a broader encode set than
+  // encodeURIComponent; reflected values would otherwise bypass exact matching.
+  const formEncoded = new URLSearchParams([["value", value]]).toString().slice("value=".length);
+  if (formEncoded !== value && formEncoded !== encoded) {
+    variants.push(formEncoded);
+  }
   // Structured error bodies escape quotes and control characters before the
   // redactor receives response text; match that serialized content too.
   const jsonEscaped = JSON.stringify(value).slice(1, -1);

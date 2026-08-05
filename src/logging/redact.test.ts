@@ -130,6 +130,18 @@ describe("supplied exact secret values", () => {
     expect(redacted).not.toContain(JSON.stringify(secret).slice(1, -1));
   });
 
+  it("masks form-serialized values without relying on a recognized field name", () => {
+    const secret = "proxy credential~with spaces";
+    const formEncoded = new URLSearchParams([["value", secret]]).toString().slice("value=".length);
+    const payload = JSON.stringify({ upstreamEcho: formEncoded });
+
+    const redacted = redactToolPayloadText(payload, { exactSecretValues: [secret] });
+
+    expect(formEncoded).toBe("proxy+credential%7Ewith+spaces");
+    expect(redacted).toContain("upstreamEcho");
+    expect(redacted).not.toContain(formEncoded);
+  });
+
   it("masks explicitly supplied short values", () => {
     expect(redactToolPayloadText("upstream echo: abc", { exactSecretValues: ["abc"] })).toBe(
       "upstream echo: ***",
