@@ -35,6 +35,7 @@ import {
   resolveFirecrawlScrapeTimeoutSeconds,
   resolveFirecrawlSearchTimeoutSeconds,
 } from "./config.js";
+import { safeFirecrawlError } from "./firecrawl-error-redaction.js";
 
 const SEARCH_CACHE = new Map<
   string,
@@ -263,10 +264,7 @@ async function postFirecrawlJson<T>(
             detail = errorBody.text;
           }
         }
-        const safeDetail = wrapWebContent(
-          truncateSanitizedExternalContent(detail, 1_000).text,
-          "web_fetch",
-        );
+        const safeDetail = wrapWebContent(safeFirecrawlError(detail, apiKey, 1_000), "web_fetch");
         throw new Error(`${params.errorLabel} API error (${response.status}): ${safeDetail}`);
       }
       return await parse(response);
@@ -517,10 +515,7 @@ export async function runFirecrawlSearch(
             : typeof payloadValue.message === "string"
               ? payloadValue.message
               : "unknown error";
-        const safeError = wrapWebContent(
-          truncateSanitizedExternalContent(error, 1_000).text,
-          "web_search",
-        );
+        const safeError = wrapWebContent(safeFirecrawlError(error, apiKey, 1_000), "web_search");
         throw new Error(`Firecrawl Search API error: ${safeError}`);
       }
       return payloadValue;
@@ -698,11 +693,9 @@ export async function runFirecrawlScrape(
             : typeof payloadLocal.message === "string"
               ? payloadLocal.message
               : response.statusText;
+        const safeDetail = safeFirecrawlError(detail, apiKey, FIRECRAWL_SCRAPE_METADATA_MAX_CHARS);
         throw new Error(
-          `Firecrawl fetch failed (${response.status}): ${wrapWebContent(
-            truncateSanitizedExternalContent(detail, FIRECRAWL_SCRAPE_METADATA_MAX_CHARS).text,
-            "web_fetch",
-          )}`.trim(),
+          `Firecrawl fetch failed (${response.status}): ${wrapWebContent(safeDetail, "web_fetch")}`.trim(),
         );
       }
       return payloadLocal;

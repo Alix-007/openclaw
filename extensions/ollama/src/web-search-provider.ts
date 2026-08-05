@@ -241,8 +241,10 @@ async function runOllamaWebSearch(params: {
       }
       if (!response.ok) {
         const detail = await readResponseText(response, { maxBytes: 64_000 });
-        const message =
-          `Ollama web search failed (${response.status}): ${redactToolPayloadText(detail.text || "")}`.trim();
+        const message = `Ollama web search failed (${response.status}): ${redactToolPayloadText(
+          detail.text || "",
+          attempt.apiKey ? [attempt.apiKey] : undefined,
+        )}`.trim();
         if (response.status === 404) {
           lastError = new Error(message);
           continue;

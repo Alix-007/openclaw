@@ -461,9 +461,9 @@ describe("ollama web search provider", () => {
   });
 
   it("redacts reflected bearer credentials from provider errors", async () => {
-    const apiKey = "ollama-proof-OC_T24_12_UNIQUE_NEEDLE";
+    const apiKey = "orchidRiver17glassMoth92cabin";
     fetchWithSsrFGuardMock.mockResolvedValueOnce(
-      guardedResponse(`upstream echoed Authorization: Bearer ${apiKey}`, { status: 500 }),
+      guardedResponse(`upstream rejected ${apiKey}`, { status: 500 }),
     );
 
     const error = await runOllamaWebSearch(
@@ -473,7 +473,7 @@ describe("ollama web search provider", () => {
     expect(error).toBeInstanceOf(Error);
     expect((error as Error).message).toContain("Ollama web search failed (500)");
     expect((error as Error).message).not.toContain(apiKey);
-    expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+    expect((error as Error).message).not.toContain("glassMoth92");
     expectHostedRequest(apiKey);
   });
 

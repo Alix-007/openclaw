@@ -43,6 +43,49 @@ describe("minimax web search provider", () => {
     restoreEnvValue("MINIMAX_API_KEY", originalApiKey);
   });
 
+  it.each(["http", "embedded"] as const)(
+    "redacts an unlabelled reflected MiniMax credential from %s errors",
+    async (kind) => {
+      const apiKey = "orchidRiver17glassMoth92cabin";
+      const response =
+        kind === "http"
+          ? new Response(JSON.stringify({ error: `provider rejected ${apiKey}` }), {
+              status: 401,
+              headers: { "content-type": "application/json" },
+            })
+          : new Response(
+              JSON.stringify({
+                organic: [],
+                base_resp: { status_code: 1001, status_msg: `provider rejected ${apiKey}` },
+              }),
+              { headers: { "content-type": "application/json" } },
+            );
+      const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(response);
+      const tool = createMiniMaxWebSearchProvider().createTool({
+        config: {
+          plugins: { entries: { minimax: { config: { webSearch: { apiKey } } } } },
+        },
+        searchConfig: {},
+      });
+      if (!tool) {
+        throw new Error("Expected tool definition");
+      }
+
+      try {
+        const error = await tool.execute({ query: `reflected ${kind}` }).catch((cause) => cause);
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toContain("MiniMax Search API error");
+        expect((error as Error).message).not.toContain(apiKey);
+        expect((error as Error).message).not.toContain("glassMoth92");
+        expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("authorization")).toBe(
+          `Bearer ${apiKey}`,
+        );
+      } finally {
+        fetchMock.mockRestore();
+      }
+    },
+  );
+
   it("does not send an already canceled MiniMax search", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ organic: [], base_resp: { status_code: 0 } }), {

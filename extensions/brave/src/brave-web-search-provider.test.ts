@@ -362,6 +362,27 @@ describe("brave web search provider", () => {
     );
   });
 
+  it("redacts an unlabelled reflected Brave credential", async () => {
+    vi.stubEnv("BRAVE_API_KEY", "");
+    const apiKey = "orchidRiver17glassMoth92cabin";
+    const mockFetch = vi.fn(async (_input?: unknown, _init?: unknown) =>
+      createBodyOnlyErrorResponse({
+        status: 401,
+        body: `provider rejected ${apiKey}`,
+      }),
+    );
+    global.fetch = mockFetch as typeof global.fetch;
+    const tool = createBraveTool({ webSearch: { apiKey, mode: "web" } });
+
+    const error = await tool.execute({ query: "reflected credential" }).catch((cause) => cause);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("Brave Search API error (401)");
+    expect((error as Error).message).not.toContain(apiKey);
+    expect((error as Error).message).not.toContain("glassMoth92");
+    expect(readHeader(fetchRequestInit(mockFetch), "X-Subscription-Token")).toBe(apiKey);
+  });
+
   it("reports malformed Brave llm-context JSON as a provider error", async () => {
     vi.stubEnv("BRAVE_API_KEY", "");
     const mockFetch = vi.fn(async (_input?: unknown, _init?: unknown) => {

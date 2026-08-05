@@ -1,5 +1,7 @@
 // Firecrawl tests cover firecrawl client behavior — URL safety,
 // scrape payload parsing, and search-item extraction.
+import { createServer, type Server } from "node:http";
+import type { AddressInfo } from "node:net";
 import { expectDefined } from "@openclaw/normalization-core";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -7,6 +9,20 @@ let firecrawlClient: typeof import("./firecrawl-client.js").testing;
 
 function requireSearchResult<T>(results: readonly T[], index: number): T {
   return expectDefined(results[index], `firecrawl search result ${index}`);
+}
+
+async function listenOnLoopback(server: Server): Promise<string> {
+  await new Promise<void>((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  return `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+}
+
+async function closeServer(server: Server): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  });
 }
 
 beforeAll(async () => {
@@ -106,6 +122,55 @@ describe("assertFirecrawlScrapeTargetAllowed", () => {
     expect(() => firecrawlClient.assertFirecrawlScrapeTargetAllowed("example.com")).toThrow(
       "Invalid URL",
     );
+  });
+});
+
+describe("postFirecrawlJson", () => {
+  it("redacts an unlabelled reflected Firecrawl credential", async () => {
+    const apiKey = "orchidRiver17glassMoth92cabin";
+    let receivedAuthorization: string | undefined;
+    const server = createServer((request, response) => {
+      receivedAuthorization = request.headers.authorization;
+      const reflectedCredential = receivedAuthorization?.replace(/^Bearer\s+/u, "");
+      response.writeHead(401, { "content-type": "application/json", connection: "close" });
+      response.end(JSON.stringify({ error: `provider rejected ${reflectedCredential}` }));
+    });
+    const baseUrl = await listenOnLoopback(server);
+    for (const name of [
+      "HTTP_PROXY",
+      "http_proxy",
+      "HTTPS_PROXY",
+      "https_proxy",
+      "ALL_PROXY",
+      "all_proxy",
+    ]) {
+      vi.stubEnv(name, "");
+    }
+
+    try {
+      const error = await firecrawlClient
+        .postFirecrawlJson(
+          {
+            url: `${baseUrl}/v2/search`,
+            mode: "selfHosted",
+            timeoutSeconds: 5,
+            apiKey,
+            body: { query: "reflected credential" },
+            errorLabel: "Firecrawl Search",
+          },
+          async (response) => (await response.json()) as Record<string, unknown>,
+        )
+        .catch((cause: unknown) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("Firecrawl Search API error (401)");
+      expect((error as Error).message).not.toContain(apiKey);
+      expect((error as Error).message).not.toContain("glassMoth92");
+      expect(receivedAuthorization).toBe(`Bearer ${apiKey}`);
+    } finally {
+      vi.unstubAllEnvs();
+      await closeServer(server);
+    }
   });
 });
 

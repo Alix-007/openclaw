@@ -253,7 +253,7 @@ async function runPerplexitySearchApi(params: {
     },
     async (res) => {
       if (!res.ok) {
-        return await throwWebSearchApiError(res, "Perplexity Search");
+        return await throwWebSearchApiError(res, "Perplexity Search", [params.apiKey]);
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchApiResponse>(
         res,
@@ -301,7 +301,7 @@ async function runPerplexitySearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        return await throwWebSearchApiError(res, "Perplexity");
+        return await throwWebSearchApiError(res, "Perplexity", [params.apiKey]);
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchResponse>(res, "Perplexity");
       return {

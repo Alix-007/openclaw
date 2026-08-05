@@ -134,6 +134,42 @@ describe("google web search provider", () => {
     expect(provider.getConfiguredCredentialValue?.(config)).toBe("AIza-plugin-test");
   });
 
+  it.each(["http", "embedded"] as const)(
+    "redacts an unlabelled reflected Gemini credential from %s errors",
+    async (kind) => {
+      const apiKey = "orchidRiver17glassMoth92cabin";
+      const payload = { error: { code: 401, message: `provider rejected ${apiKey}` } };
+      const mockFetch = vi.fn((_input?: RequestInfo | URL, _init?: RequestInit) =>
+        Promise.resolve(
+          new Response(JSON.stringify(payload), {
+            status: kind === "http" ? 401 : 200,
+            headers: { "content-type": "application/json" },
+          }),
+        ),
+      );
+      vi.stubGlobal("fetch", withFetchPreconnect(mockFetch));
+      const tool = createGeminiWebSearchProvider().createTool({
+        config: {
+          plugins: {
+            entries: { google: { config: { webSearch: { apiKey } } } },
+          },
+        },
+        searchConfig: { provider: "gemini" },
+      });
+      if (!tool) {
+        throw new Error("Expected tool definition");
+      }
+
+      const error = await tool.execute({ query: `reflected ${kind}` }).catch((cause) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("Gemini API error");
+      expect((error as Error).message).not.toContain(apiKey);
+      expect((error as Error).message).not.toContain("glassMoth92");
+      expect(new Headers(mockFetch.mock.calls[0]?.[1]?.headers).get("x-goog-api-key")).toBe(apiKey);
+    },
+  );
+
   it("routes Gemini web search through plugin webSearch.baseUrl", async () => {
     const mockFetch = installGeminiFetch();
     const provider = createGeminiWebSearchProvider();

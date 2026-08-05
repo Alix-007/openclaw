@@ -245,7 +245,9 @@ async function runBraveJsonRequest<T>(
         ok: response.ok,
         durationMs: Date.now() - startedAt,
       });
-      await assertOkOrThrowProviderError(response, errorLabel);
+      await assertOkOrThrowProviderError(response, errorLabel, {
+        sensitiveValues: [params.apiKey],
+      });
       return readProviderJsonResponse<T>(response, errorLabel);
     },
   );

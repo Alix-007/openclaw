@@ -429,7 +429,7 @@ async function runExaSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const detail = redactToolPayloadText(await readExaErrorDetail(res));
+        const detail = redactToolPayloadText(await readExaErrorDetail(res), [params.apiKey]);
         throw new Error(`Exa API error (${res.status}): ${detail || res.statusText}`);
       }
       return readExaSearchResults(res);

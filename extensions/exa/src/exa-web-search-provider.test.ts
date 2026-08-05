@@ -55,9 +55,9 @@ function streamingJsonResponse(params: { chunkCount: number; chunkSize: number }
 
 describe("exa web search provider", () => {
   it("redacts reflected API credentials from provider errors", async () => {
-    const apiKey = "exa-proof-OC_T24_12_UNIQUE_NEEDLE";
+    const apiKey = "orchidRiver17glassMoth92cabin";
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(`upstream echoed x-api-key: ${apiKey}`, {
+      new Response(`upstream rejected ${apiKey}`, {
         status: 401,
         headers: { "content-type": "text/plain" },
       }),
@@ -80,7 +80,7 @@ describe("exa web search provider", () => {
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Exa API error (401)");
       expect((error as Error).message).not.toContain(apiKey);
-      expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+      expect((error as Error).message).not.toContain("glassMoth92");
       const headers = new Headers(fetchMock.mock.calls[0]?.[1]?.headers);
       expect(headers.get("x-api-key")).toBe(apiKey);
     } finally {

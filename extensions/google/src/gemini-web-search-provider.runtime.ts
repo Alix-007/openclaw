@@ -1,5 +1,6 @@
 // Google provider module implements model/runtime integration.
 import { createHash } from "node:crypto";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   createProviderHttpError,
   formatProviderHttpErrorMessage,
@@ -278,6 +279,7 @@ async function runGeminiSearch(params: {
   const endpoint = `${params.baseUrl}/models/${params.model}:generateContent`;
   const googleSearch =
     params.timeRangeFilter === undefined ? {} : { timeRangeFilter: params.timeRangeFilter };
+  const sensitiveValues = [params.apiKey, ...Object.values(params.headers ?? {})];
 
   return withTrustedWebSearchEndpoint(
     {
@@ -299,8 +301,7 @@ async function runGeminiSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const error = await createProviderHttpError(res, "Gemini API error");
-        throw new Error(error.message.replace(/key=[^&\s]+/giu, "key=***"));
+        throw await createProviderHttpError(res, "Gemini API error", { sensitiveValues });
       }
 
       const data = (await readProviderJsonObjectResponse(
@@ -314,7 +315,7 @@ async function runGeminiSearch(params: {
           formatProviderHttpErrorMessage({
             label: "Gemini API error",
             status: data.error.code ?? 0,
-            detail: rawMessage.replace(/key=[^&\s]+/giu, "key=***"),
+            detail: redactToolPayloadText(rawMessage, sensitiveValues),
           }),
         );
       }

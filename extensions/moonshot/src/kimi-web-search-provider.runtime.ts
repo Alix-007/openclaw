@@ -247,7 +247,9 @@ async function runKimiSearch(params: {
         res,
       ): Promise<{ done: true; content: string; citations: string[] } | { done: false }> => {
         if (!res.ok) {
-          throw await createProviderHttpError(res, "Kimi API error");
+          throw await createProviderHttpError(res, "Kimi API error", {
+            sensitiveValues: [params.apiKey],
+          });
         }
 
         const data = (await readProviderJsonObjectResponse(

@@ -1,4 +1,5 @@
 // Minimax provider module implements model/runtime integration.
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   createProviderHttpError,
   formatProviderHttpErrorMessage,
@@ -149,7 +150,9 @@ async function runMiniMaxSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        throw await createProviderHttpError(res, "MiniMax Search API error");
+        throw await createProviderHttpError(res, "MiniMax Search API error", {
+          sensitiveValues: [params.apiKey],
+        });
       }
 
       const data = await readProviderJsonResponse<MiniMaxSearchResponse>(
@@ -162,7 +165,9 @@ async function runMiniMaxSearch(params: {
           formatProviderHttpErrorMessage({
             label: "MiniMax Search API error",
             status: data.base_resp.status_code,
-            detail: data.base_resp.status_msg || "unknown error",
+            detail: redactToolPayloadText(data.base_resp.status_msg || "unknown error", [
+              params.apiKey,
+            ]),
           }),
         );
       }

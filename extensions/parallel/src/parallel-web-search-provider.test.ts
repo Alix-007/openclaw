@@ -461,9 +461,9 @@ describe("parallel web search provider", () => {
     expect(textSpy).not.toHaveBeenCalled();
   });
   it("redacts reflected API credentials from Parallel errors", async () => {
-    const apiKey = "parallel-proof-OC_T24_12_UNIQUE_NEEDLE";
+    const apiKey = "orchidRiver17glassMoth92cabin";
     endpointMockState.responses.push(
-      new Response(`upstream echoed x-api-key: ${apiKey}`, {
+      new Response(`upstream rejected ${apiKey}`, {
         status: 401,
         headers: { "Content-Type": "text/plain" },
       }),
@@ -479,7 +479,7 @@ describe("parallel web search provider", () => {
     expect(error).toBeInstanceOf(Error);
     expect((error as Error).message).toContain("Parallel API error (401)");
     expect((error as Error).message).not.toContain(apiKey);
-    expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+    expect((error as Error).message).not.toContain("glassMoth92");
     expect(headerOf(endpointCall(0), "x-api-key")).toBe(apiKey);
   });
   it("bounds successful Parallel JSON bodies instead of buffering the whole response", async () => {

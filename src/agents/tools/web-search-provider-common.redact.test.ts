@@ -3,8 +3,8 @@ import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { postTrustedWebToolsJson, throwWebSearchApiError } from "./web-search-provider-common.js";
 
-const API_KEY = "proofStart-OC_T24_12_UNIQUE_NEEDLE-proofEnd";
-const UNIQUE_NEEDLE = "OC_T24_12_UNIQUE_NEEDLE";
+const API_KEY = "orchidRiver17glassMoth92cabin";
+const UNIQUE_NEEDLE = "glassMoth92";
 
 async function listenOnLoopback(server: Server): Promise<string> {
   await new Promise<void>((resolve, reject) => {
@@ -60,8 +60,9 @@ describe.sequential("web search provider error redaction", () => {
         const [, requestTarget = "/"] = requestLine.split(" ");
         const pathname = new URL(requestTarget, "http://web-search-proof.test").pathname;
         const isError = pathname === "/v1/error";
+        const reflectedCredential = authorization?.replace(/^Bearer\s+/u, "");
         const body = isError
-          ? `request failed; Authorization: ${authorization}; retry later`
+          ? `request failed; provider echoed ${reflectedCredential}; retry later`
           : '{"ok":true,"detail":"harmless response"}';
         socket.end(
           `HTTP/1.1 ${isError ? "401 Unauthorized" : "200 OK"}\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.byteLength(body)}\r\nConnection: close\r\n\r\n${body}`,
@@ -93,7 +94,6 @@ describe.sequential("web search provider error redaction", () => {
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Web search API error (401)");
-      expect((error as Error).message).toContain("Authorization: Bearer ");
       expect((error as Error).message).not.toContain(API_KEY);
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
 
@@ -117,7 +117,9 @@ describe.sequential("web search provider error redaction", () => {
   it("redacts a reflected bearer credential from the shared response error helper", async () => {
     const server = createServer((request, response) => {
       response.writeHead(401, { "content-type": "text/plain" });
-      response.end(`upstream rejected Authorization: ${request.headers.authorization}`);
+      response.end(
+        `upstream rejected ${request.headers.authorization?.replace(/^Bearer\s+/u, "")}`,
+      );
     });
     const baseUrl = await listenOnLoopback(server);
 
@@ -125,13 +127,12 @@ describe.sequential("web search provider error redaction", () => {
       const response = await fetch(`${baseUrl}/error`, {
         headers: { Authorization: `Bearer ${API_KEY}` },
       });
-      const error = await throwWebSearchApiError(response, "Provider").catch(
+      const error = await throwWebSearchApiError(response, "Provider", [API_KEY]).catch(
         (cause: unknown) => cause,
       );
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Provider API error (401)");
-      expect((error as Error).message).toContain("Authorization: Bearer ");
       expect((error as Error).message).not.toContain(API_KEY);
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
     } finally {

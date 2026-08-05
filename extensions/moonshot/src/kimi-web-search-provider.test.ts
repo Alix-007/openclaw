@@ -151,6 +151,29 @@ describe("kimi web search provider", () => {
     });
   });
 
+  it("redacts an unlabelled reflected Kimi credential", async () => {
+    const apiKey = "orchidRiver17glassMoth92cabin";
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ error: { message: `provider rejected ${apiKey}` } }), {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await withEnvAsync({ KIMI_API_KEY: apiKey }, async () => {
+      const error = await executeKimiSearch("kimi reflected credential").catch((cause) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("Kimi API error (401)");
+      expect((error as Error).message).not.toContain(apiKey);
+      expect((error as Error).message).not.toContain("glassMoth92");
+      expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("authorization")).toBe(
+        `Bearer ${apiKey}`,
+      );
+    });
+  });
+
   it("rejects wrong-root Kimi success JSON with a stable provider error", async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse([]));
     vi.stubGlobal("fetch", fetchMock);

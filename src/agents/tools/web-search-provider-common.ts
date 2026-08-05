@@ -166,7 +166,7 @@ export async function postTrustedWebToolsJson<T>(
           maxBytes: params.maxErrorBytes ?? 64_000,
         });
         throw new Error(
-          `${params.errorLabel} API error (${response.status}): ${redactToolPayloadText(detail.text || response.statusText)}`,
+          `${params.errorLabel} API error (${response.status}): ${redactToolPayloadText(detail.text || response.statusText, [params.apiKey])}`,
         );
       }
       return await parseResponse(response);
@@ -174,9 +174,13 @@ export async function postTrustedWebToolsJson<T>(
   );
 }
 
-export async function throwWebSearchApiError(res: Response, providerLabel: string): Promise<never> {
+export async function throwWebSearchApiError(
+  res: Response,
+  providerLabel: string,
+  sensitiveValues?: readonly string[],
+): Promise<never> {
   const detailResult = await readResponseText(res, { maxBytes: 64_000 });
-  const detail = redactToolPayloadText(detailResult.text || res.statusText);
+  const detail = redactToolPayloadText(detailResult.text || res.statusText, sensitiveValues);
   throw new Error(`${providerLabel} API error (${res.status}): ${detail || res.statusText}`);
 }
 

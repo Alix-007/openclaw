@@ -160,6 +160,7 @@ async function runParallelSearch(params: {
       if (!res.ok) {
         const detail = redactToolPayloadText(
           await readResponseTextLimited(res, PARALLEL_ERROR_BODY_LIMIT_BYTES).catch(() => ""),
+          [params.apiKey],
         );
         throw new Error(`Parallel API error (${res.status}): ${detail || res.statusText}`);
       }

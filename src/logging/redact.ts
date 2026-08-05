@@ -211,6 +211,44 @@ function maskToken(token: string): string {
   return `${start}…${end}`;
 }
 
+function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly string[]): string {
+  if (!sensitiveValues?.length) {
+    return text;
+  }
+
+  const replacements = new Map<string, string>();
+  for (const value of sensitiveValues) {
+    if (!value) {
+      continue;
+    }
+    const replacement = maskToken(value);
+    replacements.set(value, replacement);
+
+    // Provider error bodies can echo a credential after JSON or URL encoding it.
+    // Keep those representations tied to the exact credential from this request.
+    const jsonEncoded = JSON.stringify(value).slice(1, -1);
+    if (jsonEncoded) {
+      replacements.set(jsonEncoded, replacement);
+    }
+    try {
+      const urlEncoded = encodeURIComponent(value);
+      if (urlEncoded) {
+        replacements.set(urlEncoded, replacement);
+      }
+    } catch {
+      // Lone UTF-16 surrogates cannot be URL encoded; the raw and JSON forms still apply.
+    }
+  }
+
+  let redacted = text;
+  for (const [candidate, replacement] of [...replacements].toSorted(
+    ([left], [right]) => right.length - left.length,
+  )) {
+    redacted = redacted.replaceAll(candidate, replacement);
+  }
+  return redacted;
+}
+
 function splitSecretValueForMask(token: string): {
   maskable: string;
   suffix: string;
@@ -903,18 +941,22 @@ function resolveToolPayloadRedaction(
 // Forces tools-mode so UI/tool payloads never inherit a caller-supplied "off"
 // mode, and merges user `logging.redactPatterns` with the built-in defaults so
 // both apply.
-export function redactToolPayloadText(text: string): string {
-  return redactToolPayloadTextWithConfig(text, readLoggingConfig());
+export function redactToolPayloadText(text: string, sensitiveValues?: readonly string[]): string {
+  return redactToolPayloadTextWithConfig(text, readLoggingConfig(), sensitiveValues);
 }
 
 export function redactToolPayloadTextWithConfig(
   text: string,
   loggingConfig?: LoggingConfig,
+  sensitiveValues?: readonly string[],
 ): string {
   if (!text) {
     return text;
   }
-  const exactRedacted = redactRegisteredSecretValues(text, maskToken);
+  const exactRedacted = redactRegisteredSecretValues(
+    redactExplicitSensitiveValues(text, sensitiveValues),
+    maskToken,
+  );
   if (isFullContextToolPayloadRedaction(loggingConfig)) {
     const resolved = resolveRedactOptions(resolveToolPayloadRedaction(loggingConfig));
     return redactText(exactRedacted, resolved.patterns, {
