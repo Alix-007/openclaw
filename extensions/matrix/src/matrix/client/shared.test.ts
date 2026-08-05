@@ -159,6 +159,61 @@ describe("resolveSharedMatrixClient", () => {
     expect(opsClient.start).toHaveBeenCalledTimes(0);
   });
 
+  it("keeps colliding delimiter-shaped auth tuples isolated", async () => {
+    const firstAuth = {
+      ...authFor("main"),
+      homeserver: "https://matrix.example.org/base|@alice",
+      userId: "@bob:example.org",
+      accessToken: "shared-token",
+      encryption: true,
+    } satisfies MatrixAuth;
+    const secondAuth = {
+      ...authFor("main"),
+      homeserver: "https://matrix.example.org/base",
+      // Historical Matrix user IDs may contain both characters in the localpart.
+      userId: "@alice|@bob:example.org",
+      accessToken: "shared-token",
+      encryption: true,
+    } satisfies MatrixAuth;
+    const firstCrypto = { prepare: vi.fn(async () => undefined) };
+    const secondCrypto = { prepare: vi.fn(async () => undefined) };
+    const firstClient = { ...createMockClient("first"), crypto: firstCrypto };
+    const secondClient = { ...createMockClient("second"), crypto: secondCrypto };
+
+    createMatrixClientMock.mockResolvedValueOnce(firstClient).mockResolvedValueOnce(secondClient);
+
+    const firstLease = await acquireSharedMatrixClient({ auth: firstAuth });
+    const repeatedFirstLease = await acquireSharedMatrixClient({ auth: firstAuth });
+    const secondLease = await acquireSharedMatrixClient({ auth: secondAuth });
+
+    expect(firstLease).toBe(firstClient);
+    expect(repeatedFirstLease).toBe(firstClient);
+    expect(secondLease).toBe(secondClient);
+    expect(createMatrixClientMock).toHaveBeenCalledTimes(2);
+    expect(firstCrypto.prepare).toHaveBeenCalledTimes(1);
+    expect(secondCrypto.prepare).toHaveBeenCalledTimes(1);
+
+    expect(
+      await releaseSharedClientInstance(firstLease as unknown as import("../sdk.js").MatrixClient),
+    ).toBe(false);
+    expect(firstClient.stop).not.toHaveBeenCalled();
+    expect(
+      await releaseSharedClientInstance(
+        repeatedFirstLease as unknown as import("../sdk.js").MatrixClient,
+      ),
+    ).toBe(true);
+    expect(firstClient.stop).toHaveBeenCalledTimes(1);
+    expect(secondClient.stop).not.toHaveBeenCalled();
+    await expect(resolveSharedMatrixClient({ auth: secondAuth, startClient: false })).resolves.toBe(
+      secondClient,
+    );
+
+    expect(
+      await releaseSharedClientInstance(secondLease as unknown as import("../sdk.js").MatrixClient),
+    ).toBe(true);
+    expect(secondClient.stop).toHaveBeenCalledTimes(1);
+  });
+
   it("stops only the targeted account client", async () => {
     const { mainAuth, mainClient, opsClient } = primeAccountClientMocks();
 
