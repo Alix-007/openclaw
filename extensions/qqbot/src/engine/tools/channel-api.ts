@@ -11,6 +11,7 @@
 import { resolveChannelGroupPolicy } from "openclaw/plugin-sdk/channel-policy";
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   readProviderTextResponse,
   readResponseTextLimited,
@@ -356,11 +357,14 @@ export async function executeChannelApi(
         });
       }
 
+      // Error bodies are untrusted and become both debug output and an agent-visible
+      // tool result. Redact before parsing so every nested detail shares the boundary.
+      const presentedBody = res.ok ? rawBody : redactToolPayloadText(rawBody);
       let parsed: unknown;
       try {
-        parsed = JSON.parse(rawBody);
+        parsed = JSON.parse(presentedBody);
       } catch {
-        parsed = rawBody;
+        parsed = presentedBody;
       }
 
       if (!res.ok) {
