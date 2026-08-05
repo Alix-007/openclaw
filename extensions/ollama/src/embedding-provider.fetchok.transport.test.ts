@@ -49,9 +49,7 @@ async function startOllamaServer(
         url: req.url,
         authorization: req.headers.authorization,
         proxyAuth:
-          typeof req.headers["x-proxy-auth"] === "string"
-            ? req.headers["x-proxy-auth"]
-            : undefined,
+          typeof req.headers["x-proxy-auth"] === "string" ? req.headers["x-proxy-auth"] : undefined,
         body: Buffer.concat(chunks).toString("utf8"),
       };
       requests.push(request);

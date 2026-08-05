@@ -911,10 +911,7 @@ function resolveToolPayloadRedaction(
 // Forces tools-mode so UI/tool payloads never inherit a caller-supplied "off"
 // mode, and merges user `logging.redactPatterns` with the built-in defaults so
 // both apply.
-export function redactToolPayloadText(
-  text: string,
-  options?: ToolPayloadRedactionOptions,
-): string {
+export function redactToolPayloadText(text: string, options?: ToolPayloadRedactionOptions): string {
   return redactToolPayloadTextWithConfig(
     redactSuppliedSecretValues(text, options?.exactSecretValues, maskToken),
     readLoggingConfig(),
