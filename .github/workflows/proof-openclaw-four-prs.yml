@@ -214,17 +214,37 @@ jobs:
               marker='[synology webhook retry proof]'
               ;;
             web-search)
+              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
+              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
+                proof-plugin-sdk-api-baseline.sha256
+              git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
+              git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
+              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.sha256 \
+                2>&1 | tee -a "$log_file"
+              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
               node scripts/run-vitest.mjs \
+                src/agents/provider-http-errors.test.ts \
                 src/agents/tools/web-search-provider-common.redact.test.ts \
+                extensions/brave/src/brave-web-search-provider.test.ts \
                 extensions/exa/src/exa-web-search-provider.test.ts \
+                extensions/firecrawl/src/firecrawl-client.test.ts \
+                extensions/google/web-search-provider.test.ts \
+                extensions/minimax/src/minimax-web-search-provider.test.ts \
+                extensions/moonshot/src/kimi-web-search-provider.test.ts \
                 extensions/parallel/src/parallel-web-search-provider.test.ts \
+                extensions/perplexity/src/perplexity-web-search-provider.test.ts \
                 extensions/ollama/src/web-search-provider.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'redacts a reflected bearer credential through the trusted guarded transport' "$log_file"
+              grep -F 'redacts an unlabelled reflected credential through the trusted guarded transport' "$log_file"
+              grep -F 'redacts an unlabelled reflected Brave credential' "$log_file"
               grep -F 'redacts reflected API credentials from provider errors' "$log_file"
+              grep -F 'redacts an unlabelled reflected Firecrawl credential' "$log_file"
+              grep -F 'redacts an unlabelled reflected Gemini credential' "$log_file"
+              grep -F 'redacts an unlabelled reflected MiniMax credential' "$log_file"
+              grep -F 'redacts an unlabelled reflected Kimi credential' "$log_file"
               grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
               grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
-              echo '[web-search credential redaction proof] shared=true exa=true parallel=true ollama=true secret-output=false' | tee -a "$log_file"
+              echo '[web-search credential redaction proof] shared=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
               marker='[web-search credential redaction proof]'
               ;;
             *)
