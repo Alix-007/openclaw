@@ -31,6 +31,7 @@ export async function resolveAttemptBootstrapContext<TBootstrapFile, TContextFil
   bootstrapContextMode?: string;
   bootstrapContextRunKind?: BootstrapContextRunKind;
   bootstrapMode?: BootstrapMode;
+  isPrimaryInteractiveRun: boolean;
   hasCompletedBootstrapTurn: () => Promise<boolean>;
   resolveBootstrapContextForRun: () => Promise<
     AttemptBootstrapContext<TBootstrapFile, TContextFile>
@@ -54,13 +55,14 @@ export async function resolveAttemptBootstrapContext<TBootstrapFile, TContextFil
   const shouldRecordEstablishedWorkspaceTurn =
     params.bootstrapMode === "none" &&
     params.contextInjectionMode === "continuation-skip" &&
+    params.isPrimaryInteractiveRun &&
     params.bootstrapContextRunKind !== "cron";
   const shouldRecordCompletedBootstrapTurn =
     !shouldSkipBootstrapInjection &&
     params.bootstrapContextMode !== "lightweight" &&
     !isHeartbeatLifecycleRun &&
-    // Established workspaces still inject normal context once. Record that fact only for
-    // eligible continuation runs; cron must never change later interactive bootstrap state.
+    // Established workspaces still inject normal context once. Only a primary
+    // user/manual turn may establish state consumed by later continuations.
     (params.bootstrapMode === "full" || shouldRecordEstablishedWorkspaceTurn);
 
   const context = shouldSkipBootstrapInjection

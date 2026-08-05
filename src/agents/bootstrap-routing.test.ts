@@ -157,4 +157,25 @@ describe("resolveWorkspaceBootstrapRouting", () => {
     expect(routing.includeBootstrapInSystemContext).toBe(false);
     expect(routing.includeBootstrapInRuntimeContext).toBe(false);
   });
+
+  it.each([
+    { label: "memory maintenance", trigger: "memory", isPrimaryRun: true },
+    { label: "a non-primary user run", trigger: "user", isPrimaryRun: false },
+  ])(
+    "marks $label as ineligible to establish continuation state",
+    async ({ trigger, isPrimaryRun }) => {
+      const routing = await resolveWorkspaceBootstrapRouting({
+        isWorkspaceBootstrapPending: vi.fn(async () => false),
+        trigger,
+        isPrimaryRun,
+        isCanonicalWorkspace: true,
+        effectiveWorkspace: "/tmp/openclaw-workspace",
+        resolvedWorkspace: "/tmp/openclaw-workspace",
+        hasBootstrapFileAccess: true,
+      });
+
+      expect(routing.bootstrapMode).toBe("none");
+      expect(routing.isPrimaryInteractiveRun).toBe(false);
+    },
+  );
 });
