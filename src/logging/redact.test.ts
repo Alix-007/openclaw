@@ -141,6 +141,19 @@ describe("truncated request-scoped secret values", () => {
       }),
     ).toBe("provider unavailable: retry later!");
   });
+
+  it("redacts a complete value before checking encoded boundary prefixes", () => {
+    const encodedVariantSecret = "alpha betaa";
+    const output = redactToolPayloadTextWithConfig(
+      `provider rejected ${encodedVariantSecret}`,
+      undefined,
+      [encodedVariantSecret],
+      { sourceTruncated: true },
+    );
+
+    expect(output).not.toContain(encodedVariantSecret);
+    expect(output).not.toContain("alpha beta");
+  });
 });
 
 describe("redactSensitiveText", () => {

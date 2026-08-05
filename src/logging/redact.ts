@@ -1000,22 +1000,22 @@ export function redactToolPayloadTextWithConfig(
   if (!text) {
     return text;
   }
-  const boundaryRedacted = options?.sourceTruncated
-    ? redactTruncatedSensitiveValueSuffix(text, sensitiveValues)
-    : text;
   const exactRedacted = redactRegisteredSecretValues(
-    redactExplicitSensitiveValues(boundaryRedacted, sensitiveValues),
+    redactExplicitSensitiveValues(text, sensitiveValues),
     maskToken,
   );
+  const boundaryRedacted = options?.sourceTruncated
+    ? redactTruncatedSensitiveValueSuffix(exactRedacted, sensitiveValues)
+    : exactRedacted;
   if (isFullContextToolPayloadRedaction(loggingConfig)) {
     const resolved = resolveRedactOptions(resolveToolPayloadRedaction(loggingConfig));
-    return redactText(exactRedacted, resolved.patterns, {
+    return redactText(boundaryRedacted, resolved.patterns, {
       fullContext: true,
       redactFormBodies: resolved.redactFormBodies,
       redactStructuredAuthHeaders: resolved.redactStructuredAuthHeaders,
     });
   }
-  return redactSensitiveText(exactRedacted, resolveToolPayloadRedaction(loggingConfig));
+  return redactSensitiveText(boundaryRedacted, resolveToolPayloadRedaction(loggingConfig));
 }
 
 export function isSensitiveFieldKey(key: string): boolean {
