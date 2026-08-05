@@ -1,0 +1,124 @@
+name: Alix OpenClaw exact-head proof
+
+run-name: ${{ inputs.proof_kind }} proof at ${{ inputs.target_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      proof_kind:
+        description: PR behavior to prove
+        required: true
+        type: choice
+        options:
+          - discord
+          - ollama
+          - qqbot
+          - synology
+      target_sha:
+        description: Immutable full SHA from the Alix fork
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  proof:
+    name: ${{ inputs.proof_kind }} exact-head runtime proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OPENCLAW_PROOF_HEAD_SHA: ${{ inputs.target_sha }}
+      PROOF_KIND: ${{ inputs.proof_kind }}
+      TARGET_SHA: ${{ inputs.target_sha }}
+    steps:
+      - name: Check out immutable Alix source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          persist-credentials: false
+
+      - name: Verify immutable source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || [[ "$actual_sha" != "$TARGET_SHA" ]]; then
+            echo "target SHA mismatch: expected=$TARGET_SHA actual=$actual_sha" >&2
+            exit 1
+          fi
+          {
+            echo "proof_kind=$PROOF_KIND"
+            echo "target_sha=$actual_sha"
+            echo "repository=Alix-007/openclaw"
+            echo "runner_os=$RUNNER_OS"
+            echo "run_id=$GITHUB_RUN_ID"
+          } | tee proof-metadata.txt
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Run exact-head behavior proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_file="proof-${PROOF_KIND}.log"
+          case "$PROOF_KIND" in
+            discord)
+              node scripts/run-vitest.mjs \
+                extensions/discord/src/api.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[discord credential redaction proof]'
+              ;;
+            ollama)
+              pnpm plugin-sdk:api:check 2>&1 | tee "$log_file"
+              node scripts/run-vitest.mjs \
+                extensions/ollama/src/embedding-provider.fetchok.transport.test.ts \
+                extensions/ollama/src/embedding-provider.test.ts \
+                src/logging/redact.test.ts \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              marker='[ollama credential redaction proof]'
+              ;;
+            qqbot)
+              node scripts/run-vitest.mjs \
+                extensions/qqbot/src/engine/tools/channel-api.test.ts \
+                extensions/qqbot/src/engine/api/api-client.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[qqbot credential redaction proof]'
+              ;;
+            synology)
+              node scripts/run-vitest.mjs \
+                extensions/synology-chat/src/client.test.ts \
+                extensions/synology-chat/src/client.loopback.test.ts \
+                src/infra/outbound/deliver.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[synology webhook retry proof]'
+              ;;
+            *)
+              echo "unsupported proof kind: $PROOF_KIND" >&2
+              exit 2
+              ;;
+          esac
+          grep -F "$marker" "$log_file"
+          echo "proof_marker_verified=true" | tee -a "$log_file" proof-metadata.txt
+
+      - name: Upload terminal proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: openclaw-${{ inputs.proof_kind }}-${{ inputs.target_sha }}
+          path: |
+            proof-metadata.txt
+            proof-${{ inputs.proof_kind }}.log
+          if-no-files-found: warn
+          retention-days: 30
