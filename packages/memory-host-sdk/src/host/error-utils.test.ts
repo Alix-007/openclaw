@@ -20,4 +20,8 @@ describe("formatErrorMessage", () => {
     );
     expect(formatErrorMessage("TOKEN=$&abcdxxxxxxxxwxyz")).toBe("TOKEN=$&abcd...wxyz");
   });
+
+  it("redacts bearer schemes case-insensitively", () => {
+    expect(formatErrorMessage("bearer memory/Start~opaque-memoryEnd")).toBe("bearer memory...yEnd");
+  });
 });

@@ -82,12 +82,12 @@ describe.sequential("memory remote error redaction", () => {
     vi.unstubAllEnvs();
   });
 
-  it("redacts reflected credentials through the real remote embedding fetch path", async () => {
+  it("redacts lower-case bearer credentials through the real remote embedding fetch path", async () => {
     const records: RequestRecord[] = [];
     const server = createMemoryRemoteServer(records);
     const baseUrl = await listenOnLoopback(server);
     const headers = {
-      Authorization: `Bearer ${API_KEY}`,
+      Authorization: `bearer ${API_KEY}`,
       "Content-Type": "application/json",
     };
 
@@ -102,7 +102,7 @@ describe.sequential("memory remote error redaction", () => {
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("embedding fetch failed: 401");
-      expect((error as Error).message).toContain("Authorization: Bearer ");
+      expect((error as Error).message).toContain("Authorization: bearer ");
       expect((error as Error).message).not.toContain(API_KEY);
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
 
@@ -116,8 +116,8 @@ describe.sequential("memory remote error redaction", () => {
         }),
       ).resolves.toEqual([[0.25, 0.5]]);
       expect(records.map((record) => record.authorization)).toEqual([
-        `Bearer ${API_KEY}`,
-        `Bearer ${API_KEY}`,
+        `bearer ${API_KEY}`,
+        `bearer ${API_KEY}`,
       ]);
     } finally {
       await closeServer(server);
@@ -155,13 +155,13 @@ describe.sequential("memory remote error redaction", () => {
     }
   });
 
-  it("redacts reflected credentials from batch upload errors without changing success", async () => {
+  it("redacts lower-case bearer credentials from batch errors without changing success", async () => {
     const records: RequestRecord[] = [];
     const server = createMemoryRemoteServer(records);
     const baseUrl = await listenOnLoopback(server);
     const client = (path: string) => ({
       baseUrl: `${baseUrl}${path}`,
-      headers: { Authorization: `Bearer ${API_KEY}` },
+      headers: { Authorization: `bearer ${API_KEY}` },
       ssrfPolicy: buildRemoteBaseUrlPolicy(baseUrl),
     });
 
@@ -189,8 +189,8 @@ describe.sequential("memory remote error redaction", () => {
       expect(batchRecords[0]?.body).toContain('name="purpose"');
       expect(batchRecords[0]?.body).toContain("batch");
       expect(batchRecords.map((record) => record.authorization)).toEqual([
-        `Bearer ${API_KEY}`,
-        `Bearer ${API_KEY}`,
+        `bearer ${API_KEY}`,
+        `bearer ${API_KEY}`,
       ]);
     } finally {
       await closeServer(server);
