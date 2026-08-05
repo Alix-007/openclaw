@@ -111,6 +111,10 @@ jobs:
               node scripts/run-vitest.mjs \
                 extensions/ollama/src/embedding-provider.fetchok.transport.test.ts \
                 extensions/ollama/src/embedding-provider.test.ts \
+                extensions/ollama/src/stream-runtime.test.ts \
+                extensions/ollama/src/stream.test.ts \
+                extensions/ollama/src/web-search-provider.fetchok.transport.test.ts \
+                extensions/ollama/src/web-search-provider.test.ts \
                 src/logging/redact.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               pnpm build 2>&1 | tee -a "$log_file"
@@ -148,6 +152,8 @@ jobs:
               cleanup_ollama_proof
               trap - EXIT
               marker='[ollama credential redaction proof]'
+              grep -F '[ollama credential redaction proof] surface=stream status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true' "$log_file"
+              grep -F '[ollama credential redaction proof] surface=web-search status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true' "$log_file"
               grep -F '[ollama configured reverse-proxy proof]' "$log_file"
               ;;
             qqbot)
