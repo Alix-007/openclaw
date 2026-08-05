@@ -81,7 +81,10 @@ jobs:
               marker='[discord credential redaction proof]'
               ;;
             ollama)
-              pnpm plugin-sdk:api:check 2>&1 | tee "$log_file"
+              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
+              git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
+              git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
+              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
               node scripts/run-vitest.mjs \
                 extensions/ollama/src/embedding-provider.fetchok.transport.test.ts \
                 extensions/ollama/src/embedding-provider.test.ts \
@@ -120,5 +123,6 @@ jobs:
           path: |
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
+            docs/.generated/plugin-sdk-api-baseline.*
           if-no-files-found: warn
           retention-days: 30
