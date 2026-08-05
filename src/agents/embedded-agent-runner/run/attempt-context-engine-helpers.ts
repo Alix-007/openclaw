@@ -51,11 +51,17 @@ export async function resolveAttemptBootstrapContext<TBootstrapFile, TContextFil
   // but only a clean full bootstrap later records a durable completion marker.
   const shouldSkipBootstrapInjection =
     params.contextInjectionMode === "never" || isContinuationTurn;
+  const shouldRecordEstablishedWorkspaceTurn =
+    params.bootstrapMode === "none" &&
+    params.contextInjectionMode === "continuation-skip" &&
+    params.bootstrapContextRunKind !== "cron";
   const shouldRecordCompletedBootstrapTurn =
     !shouldSkipBootstrapInjection &&
     params.bootstrapContextMode !== "lightweight" &&
     !isHeartbeatLifecycleRun &&
-    params.bootstrapMode === "full";
+    // Established workspaces still inject normal context once. Record that fact only for
+    // eligible continuation runs; cron must never change later interactive bootstrap state.
+    (params.bootstrapMode === "full" || shouldRecordEstablishedWorkspaceTurn);
 
   const context = shouldSkipBootstrapInjection
     ? { bootstrapFiles: [], contextFiles: [] }
