@@ -54,6 +54,40 @@ function streamingJsonResponse(params: { chunkCount: number; chunkSize: number }
 }
 
 describe("exa web search provider", () => {
+  it("redacts reflected API credentials from provider errors", async () => {
+    const apiKey = "exa-proof-OC_T24_12_UNIQUE_NEEDLE";
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(`upstream echoed x-api-key: ${apiKey}`, {
+        status: 401,
+        headers: { "content-type": "text/plain" },
+      }),
+    );
+    const tool = createExaWebSearchProvider().createTool({
+      config: {
+        plugins: { entries: { exa: { config: { webSearch: { apiKey } } } } },
+      },
+      searchConfig: {},
+    });
+    if (!tool) {
+      throw new Error("Expected tool definition");
+    }
+
+    try {
+      const error = await tool
+        .execute({ query: "exa reflected credential" })
+        .catch((cause) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("Exa API error (401)");
+      expect((error as Error).message).not.toContain(apiKey);
+      expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+      const headers = new Headers(fetchMock.mock.calls[0]?.[1]?.headers);
+      expect(headers.get("x-api-key")).toBe(apiKey);
+    } finally {
+      fetchMock.mockRestore();
+    }
+  });
+
   it("does not send or cache an already canceled search", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ results: [] }), {

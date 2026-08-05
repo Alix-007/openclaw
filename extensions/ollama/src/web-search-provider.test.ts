@@ -460,6 +460,23 @@ describe("ollama web search provider", () => {
     );
   });
 
+  it("redacts reflected bearer credentials from provider errors", async () => {
+    const apiKey = "ollama-proof-OC_T24_12_UNIQUE_NEEDLE";
+    fetchWithSsrFGuardMock.mockResolvedValueOnce(
+      guardedResponse(`upstream echoed Authorization: Bearer ${apiKey}`, { status: 500 }),
+    );
+
+    const error = await runOllamaWebSearch(
+      createOllamaConfig({ apiKey, baseUrl: "https://ollama.com" }),
+    ).catch((cause: unknown) => cause);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("Ollama web search failed (500)");
+    expect((error as Error).message).not.toContain(apiKey);
+    expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+    expectHostedRequest(apiKey);
+  });
+
   it("reports malformed Ollama web search JSON with a stable provider error", async () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce(guardedResponse("{ nope"));
 

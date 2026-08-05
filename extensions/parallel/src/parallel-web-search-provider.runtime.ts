@@ -1,5 +1,6 @@
 import { createRequire } from "node:module";
 import { readPluginPackageVersion } from "openclaw/plugin-sdk/extension-shared";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   readProviderJsonResponse,
   readResponseTextLimited,
@@ -157,8 +158,8 @@ async function runParallelSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const detail = await readResponseTextLimited(res, PARALLEL_ERROR_BODY_LIMIT_BYTES).catch(
-          () => "",
+        const detail = redactToolPayloadText(
+          await readResponseTextLimited(res, PARALLEL_ERROR_BODY_LIMIT_BYTES).catch(() => ""),
         );
         throw new Error(`Parallel API error (${res.status}): ${detail || res.statusText}`);
       }

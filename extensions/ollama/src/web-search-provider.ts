@@ -1,5 +1,6 @@
 // Ollama provider module implements model/runtime integration.
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   isNonSecretApiKeyMarker,
   normalizeOptionalSecretInput,
@@ -241,7 +242,7 @@ async function runOllamaWebSearch(params: {
       if (!response.ok) {
         const detail = await readResponseText(response, { maxBytes: 64_000 });
         const message =
-          `Ollama web search failed (${response.status}): ${detail.text || ""}`.trim();
+          `Ollama web search failed (${response.status}): ${redactToolPayloadText(detail.text || "")}`.trim();
         if (response.status === 404) {
           lastError = new Error(message);
           continue;

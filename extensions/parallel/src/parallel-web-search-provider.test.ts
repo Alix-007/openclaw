@@ -460,6 +460,28 @@ describe("parallel web search provider", () => {
     expect(tracked.wasCanceled()).toBe(true);
     expect(textSpy).not.toHaveBeenCalled();
   });
+  it("redacts reflected API credentials from Parallel errors", async () => {
+    const apiKey = "parallel-proof-OC_T24_12_UNIQUE_NEEDLE";
+    endpointMockState.responses.push(
+      new Response(`upstream echoed x-api-key: ${apiKey}`, {
+        status: 401,
+        headers: { "Content-Type": "text/plain" },
+      }),
+    );
+
+    const error = await paidTool({ parallel: { apiKey } })
+      .execute({
+        objective: `parallel-reflected-credential-${Date.now()}`,
+        search_queries: ["openclaw"],
+      })
+      .catch((cause: unknown) => cause);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("Parallel API error (401)");
+    expect((error as Error).message).not.toContain(apiKey);
+    expect((error as Error).message).not.toContain("OC_T24_12_UNIQUE_NEEDLE");
+    expect(headerOf(endpointCall(0), "x-api-key")).toBe(apiKey);
+  });
   it("bounds successful Parallel JSON bodies instead of buffering the whole response", async () => {
     const streamed = createStreamingResponse({
       chunkCount: 200,
