@@ -5,9 +5,11 @@
 
 import * as http from "node:http";
 import * as https from "node:https";
+import { extractErrorCode } from "openclaw/plugin-sdk/error-runtime";
 import { safeParseJsonWithSchema, safeParseWithSchema } from "openclaw/plugin-sdk/extension-shared";
 import { parseStrictNonNegativeInteger } from "openclaw/plugin-sdk/number-runtime";
 import { readByteStreamWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
+import { classifyTransientNetworkErrorCode } from "openclaw/plugin-sdk/retry-runtime";
 import { sleep } from "openclaw/plugin-sdk/runtime-env";
 import {
   formatErrorMessage,
@@ -120,19 +122,19 @@ async function sendMessageChunk(
   // The @mention is optional but user_ids is mandatory
   const body = buildWebhookBody({ text }, userId);
 
-  // Retry with exponential backoff (3 attempts, 300ms base)
+  // A webhook POST is non-idempotent. Retry only when the transport proves the
+  // request never connected; replaying an ambiguous failure can duplicate a message.
   const maxRetries = 3;
   const baseDelay = 300;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       await waitForSendSlot();
-      const ok = await doPost(incomingUrl, body, allowInsecureSsl);
-      if (ok) {
-        return true;
+      return await doPost(incomingUrl, body, allowInsecureSsl);
+    } catch (error) {
+      if (classifyTransientNetworkErrorCode(extractErrorCode(error)) !== "pre-connect") {
+        return false;
       }
-    } catch {
-      // will retry
     }
 
     if (attempt < maxRetries - 1) {

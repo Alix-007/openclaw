@@ -6,18 +6,32 @@ import { resolveLegacyWebhookNameToChatUserId, sendMessage } from "./client.js";
 
 const USER_LIST_RESPONSE_MAX_BYTES = 1 * 1024 * 1024;
 
-describe("Synology Chat user_list loopback", () => {
+describe("Synology Chat client loopback", () => {
   let server: http.Server | undefined;
 
-  async function listenLoopback(handler: http.RequestListener): Promise<number> {
+  async function listenLoopback(handler: http.RequestListener, port = 0): Promise<number> {
     server = http.createServer(handler);
     server.on("clientError", (_err, socket) => socket.destroy());
-    server.listen(0, "127.0.0.1");
+    server.listen(port, "127.0.0.1");
     await once(server, "listening");
     const address = server.address();
     if (!address || typeof address === "string") {
       throw new Error("expected loopback server address");
     }
+    return address.port;
+  }
+
+  async function reserveLoopbackPort(): Promise<number> {
+    const reservation = http.createServer();
+    reservation.listen(0, "127.0.0.1");
+    await once(reservation, "listening");
+    const address = reservation.address();
+    if (!address || typeof address === "string") {
+      throw new Error("expected reserved loopback address");
+    }
+    await new Promise<void>((resolve, reject) => {
+      reservation.close((err) => (err ? reject(err) : resolve()));
+    });
     return address.port;
   }
 
@@ -30,6 +44,98 @@ describe("Synology Chat user_list loopback", () => {
       });
       server = undefined;
     }
+  });
+
+  it("retries once when a real connection refusal occurs before the listener starts", async () => {
+    const port = await reserveLoopbackPort();
+    const nativeSetTimeout = globalThis.setTimeout;
+    let releaseRetry: (() => void) | undefined;
+    let markRetryScheduled!: () => void;
+    const retryScheduled = new Promise<void>((resolve) => {
+      markRetryScheduled = resolve;
+    });
+    const timeoutSpy = vi.spyOn(globalThis, "setTimeout");
+    timeoutSpy.mockImplementation(((
+      callback: (...args: unknown[]) => void,
+      delay?: number,
+      ...args: unknown[]
+    ) => {
+      if (delay === 300 && releaseRetry === undefined) {
+        const heldTimer = nativeSetTimeout(() => {}, 10_000);
+        heldTimer.unref?.();
+        releaseRetry = () => {
+          clearTimeout(heldTimer);
+          callback(...args);
+        };
+        markRetryScheduled();
+        return heldTimer;
+      }
+      return nativeSetTimeout(callback, delay, ...args);
+    }) as typeof setTimeout);
+
+    const incomingUrl = `http://127.0.0.1:${port}/webapi/entry.cgi`;
+    const send = sendMessage(incomingUrl, "retry after refusal");
+    const firstOutcome = await Promise.race([
+      retryScheduled.then(() => "retry-scheduled" as const),
+      send.then((sendResult) => ({ sendResult })),
+    ]);
+    expect(firstOutcome).toBe("retry-scheduled");
+
+    let receivedRequests = 0;
+    await listenLoopback((req, res) => {
+      receivedRequests += 1;
+      req.resume();
+      req.on("end", () => {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: true }));
+      });
+    }, port);
+    if (!releaseRetry) {
+      throw new Error("expected pre-connect retry backoff");
+    }
+    releaseRetry();
+
+    await expect(send).resolves.toBe(true);
+    expect(receivedRequests).toBe(1);
+    expect(timeoutSpy.mock.calls.filter(([, delay]) => delay === 300)).toHaveLength(1);
+  });
+
+  it("does not replay after the server receives the upload and disconnects mid-response", async () => {
+    let requestCount = 0;
+    let uploadedBody = "";
+    const port = await listenLoopback((req, res) => {
+      requestCount += 1;
+      req.setEncoding("utf8");
+      req.on("data", (chunk: string) => {
+        uploadedBody += chunk;
+      });
+      req.on("end", () => {
+        res.on("error", () => {});
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+          "Content-Length": "1000",
+        });
+        res.write('{"success":');
+        const dripTimer = setInterval(() => {
+          if (!res.destroyed) {
+            res.write(" ");
+          }
+        }, 10);
+        const disconnectTimer = setTimeout(() => res.destroy(), 50);
+        res.on("close", () => {
+          clearInterval(dripTimer);
+          clearTimeout(disconnectTimer);
+        });
+      });
+    });
+    const incomingUrl = `http://127.0.0.1:${port}/webapi/entry.cgi`;
+
+    await expect(sendMessage(incomingUrl, "post-upload disconnect")).resolves.toBe(false);
+
+    expect(requestCount).toBe(1);
+    expect(new URLSearchParams(uploadedBody).get("payload")).toBe(
+      JSON.stringify({ text: "post-upload disconnect" }),
+    );
   });
 
   it("delivers authenticated text and media without inventing platform message ids", async () => {
@@ -188,7 +294,7 @@ describe("Synology Chat user_list loopback", () => {
     await expect(
       synologyChatPlugin.outbound.sendText({ cfg, text: "rejected", to: "42" }),
     ).rejects.toThrow("Failed to send message to Synology Chat");
-    expect(rejectedRequests).toBe(3);
+    expect(rejectedRequests).toBe(1);
 
     await expect(
       synologyChatPlugin.outbound.sendMedia({
@@ -197,7 +303,30 @@ describe("Synology Chat user_list loopback", () => {
         to: "42",
       }),
     ).rejects.toThrow("Failed to send media to Synology Chat");
-    expect(rejectedRequests).toBe(4);
+    expect(rejectedRequests).toBe(2);
+  });
+
+  it("does not replay an HTTP-successful webhook rejection", async () => {
+    let rejectedRequests = 0;
+    const port = await listenLoopback((_req, res) => {
+      rejectedRequests += 1;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ success: false, error: { code: 105 } }));
+    });
+    const cfg = {
+      channels: {
+        "synology-chat": {
+          enabled: true,
+          token: "synology-loopback-rejected",
+          incomingUrl: `http://127.0.0.1:${port}/webapi/entry.cgi`,
+        },
+      },
+    };
+
+    await expect(
+      synologyChatPlugin.outbound.sendText({ cfg, text: "rejected", to: "42" }),
+    ).rejects.toThrow("Failed to send message to Synology Chat");
+    expect(rejectedRequests).toBe(1);
   });
 
   it("rejects private file URLs before contacting the authenticated webhook", async () => {
@@ -344,7 +473,7 @@ describe("Synology Chat user_list loopback", () => {
     expect(elapsedMs).toBeLessThan(timeoutMs + 1_500);
   });
 
-  it("bounds a dripping chatbot response with a wall-clock deadline", async () => {
+  it("does not replay a code-less wall-clock timeout from a dripping chatbot response", async () => {
     let requestCount = 0;
     const port = await listenLoopback((_req, res) => {
       requestCount += 1;
@@ -380,9 +509,10 @@ describe("Synology Chat user_list loopback", () => {
     await expect(sendMessage(incomingUrl, "hello")).resolves.toBe(false);
     const elapsedMs = performance.now() - startedAt;
 
-    expect(requestCount).toBe(3);
+    expect(requestCount).toBe(1);
     expect(timeoutSpy).toHaveBeenCalledWith(expect.any(Function), 30_000);
-    expect(elapsedMs).toBeGreaterThanOrEqual(timeoutMs * 3 - 100);
-    expect(elapsedMs).toBeLessThan(3_500);
+    expect(timeoutSpy.mock.calls.filter(([, delay]) => delay === 30_000)).toHaveLength(1);
+    expect(elapsedMs).toBeGreaterThanOrEqual(timeoutMs - 50);
+    expect(elapsedMs).toBeLessThan(timeoutMs + 1_500);
   });
 });
