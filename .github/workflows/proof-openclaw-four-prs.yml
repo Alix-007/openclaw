@@ -108,8 +108,9 @@ jobs:
               node scripts/run-vitest.mjs \
                 src/agents/cli-runner/prepare.test.ts \
                 src/agents/cli-runner.reliability.test.ts \
-                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a CLI bootstrap completion marker after a successful turn' \
+                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a CLI bootstrap completion marker after a successful turn|does not persist a CLI bootstrap marker after post-output cancellation' \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
+              grep -F 'does not persist a CLI bootstrap marker after post-output cancellation' "$log_file"
               node --import tsx \
                 .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
                 2>&1 | tee -a "$log_file"
@@ -245,6 +246,7 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               grep -F 'redacts an unlabelled reflected credential through the trusted guarded transport' "$log_file"
               grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
+              grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
               grep -F 'redacts an unlabelled reflected Brave credential' "$log_file"
               grep -F 'redacts reflected API credentials from provider errors' "$log_file"
               grep -F 'redacts an unlabelled reflected Firecrawl credential' "$log_file"
@@ -253,7 +255,7 @@ jobs:
               grep -F 'redacts an unlabelled reflected Kimi credential' "$log_file"
               grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
               grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
-              echo '[web-search credential redaction proof] shared=true metadata=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
+              echo '[web-search credential redaction proof] shared=true metadata=true truncate-after-redact=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
               marker='[web-search credential redaction proof]'
               ;;
             *)
