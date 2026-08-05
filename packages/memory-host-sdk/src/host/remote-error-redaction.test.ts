@@ -6,7 +6,7 @@ import { fetchRemoteEmbeddingVectors } from "./embeddings-remote-fetch.js";
 import { postJson } from "./post-json.js";
 import { buildRemoteBaseUrlPolicy } from "./remote-http.js";
 
-const API_KEY = "memoryStart-OC_T24_13_UNIQUE_NEEDLE-memoryEnd";
+const API_KEY = "memory/Start~OC_T24_13_UNIQUE_NEEDLE-memoryEnd";
 const UNIQUE_NEEDLE = "OC_T24_13_UNIQUE_NEEDLE";
 
 type RequestRecord = {
