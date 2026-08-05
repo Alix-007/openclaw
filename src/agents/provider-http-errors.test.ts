@@ -392,7 +392,7 @@ describe("provider error utils", () => {
       sensitiveValues: [sensitiveValue],
     })) as ProviderHttpError;
 
-    expect(providerError.message).toContain("truncated diagnostic omitted");
+    expect(providerError.message.length).toBeLessThan(700);
     expect(JSON.stringify(providerError)).not.toContain(retainedPrefix);
     expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
   });

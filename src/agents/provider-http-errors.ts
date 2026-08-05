@@ -263,9 +263,11 @@ async function extractProviderErrorInfo(
     return requestId ? { requestId } : {};
   }
   if (bodyRead.truncated && options?.sensitiveValues?.some((value) => value.length > 0)) {
-    const body = redactToolPayloadText(rawBody, options.sensitiveValues, {
-      sourceTruncated: true,
-    });
+    const body = truncateErrorDetail(
+      redactToolPayloadText(rawBody, options.sensitiveValues, {
+        sourceTruncated: true,
+      }),
+    );
     return {
       detail: body,
       body,
