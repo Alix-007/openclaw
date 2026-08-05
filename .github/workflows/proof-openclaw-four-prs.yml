@@ -10,10 +10,15 @@ on:
         required: true
         type: choice
         options:
+          - bootstrap
           - discord
+          - matrix
+          - memory
           - ollama
           - qqbot
+          - responses
           - synology
+          - web-search
       target_sha:
         description: Immutable full SHA from the Alix fork
         required: true
@@ -56,7 +61,6 @@ jobs:
           } | tee proof-metadata.txt
 
       - name: Check out configured proof harness
-        if: inputs.proof_kind == 'ollama'
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: Alix-007/openclaw
@@ -95,11 +99,41 @@ jobs:
           set -euo pipefail
           log_file="proof-${PROOF_KIND}.log"
           case "$PROOF_KIND" in
+            bootstrap)
+              node scripts/run-vitest.mjs \
+                src/agents/bootstrap-routing.test.ts \
+                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.context-injection.test.ts \
+                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.bootstrap-marker.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              node --import tsx \
+                .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
+                2>&1 | tee -a "$log_file"
+              marker='[bootstrap continuation SQLite proof]'
+              ;;
             discord)
               node scripts/run-vitest.mjs \
                 extensions/discord/src/api.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[discord credential redaction proof]'
+              ;;
+            matrix)
+              node scripts/run-vitest.mjs \
+                extensions/matrix/src/matrix/client/shared.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              node --import tsx \
+                .proof-tooling/.github/proof/matrix-shared-client.ts \
+                2>&1 | tee -a "$log_file"
+              marker='[matrix shared-client proof]'
+              ;;
+            memory)
+              node scripts/run-vitest.mjs \
+                packages/memory-host-sdk/src/host/remote-error-redaction.test.ts \
+                packages/memory-host-sdk/src/host/error-utils.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F 'redacts reflected credentials through the real remote embedding fetch path' "$log_file"
+              grep -F 'redacts reflected credentials from batch upload errors without changing success' "$log_file"
+              echo '[memory credential redaction proof] loopback-json=true loopback-batch=true token68=true secret-output=false' | tee -a "$log_file"
+              marker='[memory credential redaction proof]'
               ;;
             ollama)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
@@ -163,6 +197,14 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[qqbot credential redaction proof]'
               ;;
+            responses)
+              node scripts/run-vitest.mjs \
+                src/agents/openai-transport-stream.streaming.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F 'keeps internal Responses web-search events alive beyond the model idle timeout' "$log_file"
+              echo '[responses idle-activity proof] loopback-sse=true internal-window-exceeded=true final-text=true idle-timeout=false' | tee -a "$log_file"
+              marker='[responses idle-activity proof]'
+              ;;
             synology)
               node scripts/run-vitest.mjs \
                 extensions/synology-chat/src/client.test.ts \
@@ -170,6 +212,20 @@ jobs:
                 src/infra/outbound/deliver.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[synology webhook retry proof]'
+              ;;
+            web-search)
+              node scripts/run-vitest.mjs \
+                src/agents/tools/web-search-provider-common.redact.test.ts \
+                extensions/exa/src/exa-web-search-provider.test.ts \
+                extensions/parallel/src/parallel-web-search-provider.test.ts \
+                extensions/ollama/src/web-search-provider.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F 'redacts a reflected bearer credential through the trusted guarded transport' "$log_file"
+              grep -F 'redacts reflected API credentials from provider errors' "$log_file"
+              grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
+              grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
+              echo '[web-search credential redaction proof] shared=true exa=true parallel=true ollama=true secret-output=false' | tee -a "$log_file"
+              marker='[web-search credential redaction proof]'
               ;;
             *)
               echo "unsupported proof kind: $PROOF_KIND" >&2
