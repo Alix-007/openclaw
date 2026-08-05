@@ -27,7 +27,7 @@ type CliBootstrapContextDeps = {
   resolveBootstrapContextForRun: typeof resolveBootstrapContextForRun;
 };
 
-export type PreparedCliBootstrapContext = {
+type PreparedCliBootstrapContext = {
   bootstrapFiles: WorkspaceBootstrapFile[];
   contextFiles: EmbeddedContextFile[];
   bootstrapMode: BootstrapMode;
