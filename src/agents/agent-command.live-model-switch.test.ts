@@ -148,6 +148,7 @@ vi.mock("./command/attempt-execution.runtime.js", () => ({
   persistAcpTurnTranscript: (...args: unknown[]) => state.persistAcpTurnTranscriptMock(...args),
   persistSessionEntry: vi.fn(),
   prependInternalEventContext: (body: string) => body,
+  resolveCliTranscriptReplyText: vi.fn(() => ""),
   runAgentAttempt: (...args: unknown[]) => state.runAgentAttemptMock(...args),
   sessionFileHasContent: vi.fn(async () => false),
 }));
