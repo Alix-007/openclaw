@@ -137,7 +137,12 @@ export async function isCliBindingFlushed(
  * Failed turns stay eligible for full context on their next attempt.
  */
 function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): void {
-  if (context.shouldRecordCompletedBootstrapTurn !== true) {
+  // Post-output transcript/finalization awaits can race with cancellation. Never
+  // let an aborted turn suppress workspace context on the next eligible turn.
+  if (
+    context.shouldRecordCompletedBootstrapTurn !== true ||
+    context.params.abortSignal?.aborted === true
+  ) {
     return;
   }
   const sessionTarget = context.params.sessionTarget;
