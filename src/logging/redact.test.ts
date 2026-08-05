@@ -120,6 +120,48 @@ describe("registered exact secret values", () => {
 describe("truncated request-scoped secret values", () => {
   const secret = "orchidRiver17glassMoth92cabin";
 
+  it("redacts lowercase URL escapes and form-encoded request secrets", () => {
+    const encodedSecret = "orchid/River+17=glass~Moth92cabin";
+    const lowerPercentEscapes = (value: string) =>
+      value.replace(/%[0-9A-F]{2}/gu, (escape) => escape.toLowerCase());
+    const urlEncoded = lowerPercentEscapes(encodeURIComponent(encodedSecret));
+    const formEncoded = lowerPercentEscapes(
+      new URLSearchParams({ key: encodedSecret }).toString().slice("key=".length),
+    );
+
+    for (const reflected of [urlEncoded, formEncoded]) {
+      const output = redactToolPayloadTextWithConfig(`provider reflected ${reflected}`, undefined, [
+        encodedSecret,
+      ]);
+      expect(output).not.toContain(reflected);
+      expect(output).not.toContain("glass");
+    }
+  });
+
+  it("removes lowercase encoded prefixes at the truncation boundary", () => {
+    const encodedSecret = "orchid/River+17=glass~Moth92cabin";
+    const lowerPercentEscapes = (value: string) =>
+      value.replace(/%[0-9A-F]{2}/gu, (escape) => escape.toLowerCase());
+    const variants = [
+      lowerPercentEscapes(encodeURIComponent(encodedSecret)),
+      lowerPercentEscapes(
+        new URLSearchParams({ key: encodedSecret }).toString().slice("key=".length),
+      ),
+    ];
+
+    for (const encoded of variants) {
+      const retainedPrefix = encoded.slice(0, -5);
+      const output = redactToolPayloadTextWithConfig(
+        `provider unavailable: ${retainedPrefix}`,
+        undefined,
+        [encodedSecret],
+        { sourceTruncated: true },
+      );
+      expect(output).toContain("truncated diagnostic omitted");
+      expect(output).not.toContain(retainedPrefix);
+    }
+  });
+
   it("removes a partial sensitive value at the truncation boundary", () => {
     const retainedPrefix = secret.slice(0, 12);
     const output = redactToolPayloadTextWithConfig(

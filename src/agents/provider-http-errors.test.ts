@@ -340,6 +340,33 @@ describe("provider error utils", () => {
     expect(JSON.stringify(transcriptFields)).not.toContain(sensitiveValue);
   });
 
+  it("redacts lowercase percent-encoded request secrets from provider metadata", async () => {
+    const sensitiveValue = "orchid/River+17=glassMoth92cabin";
+    const reflectedValue = encodeURIComponent(sensitiveValue).replace(/%[0-9A-F]{2}/gu, (escape) =>
+      escape.toLowerCase(),
+    );
+    const response = new Response(
+      JSON.stringify({
+        error: {
+          message: `provider reflected ${reflectedValue}`,
+          code: reflectedValue,
+          type: reflectedValue,
+        },
+      }),
+      {
+        status: 401,
+        headers: { "x-request-id": reflectedValue },
+      },
+    );
+
+    const providerError = (await createProviderHttpError(response, "Provider API error", {
+      sensitiveValues: [sensitiveValue],
+    })) as ProviderHttpError;
+
+    expect(JSON.stringify(providerError)).not.toContain(reflectedValue);
+    expect(JSON.stringify(providerError)).not.toContain("glassMoth92");
+  });
+
   it("redacts request secrets before truncating JSON error details", async () => {
     const sensitiveValue = "orchidRiver17glassMoth92cabin";
     const reflectedPrefix = "x".repeat(205);

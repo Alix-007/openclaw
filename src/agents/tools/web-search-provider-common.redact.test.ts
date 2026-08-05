@@ -3,9 +3,12 @@ import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { postTrustedWebToolsJson, throwWebSearchApiError } from "./web-search-provider-common.js";
 
-const API_KEY = "orchidRiver17glassMoth92cabin";
+const API_KEY = "orchid/River+17=glassMoth92~cabin";
 const UNIQUE_NEEDLE = "glassMoth92";
 const ERROR_BODY_CAP_BYTES = 64 * 1024;
+const LOWERCASE_ENCODED_API_KEY = encodeURIComponent(API_KEY).replace(/%[0-9A-F]{2}/gu, (escape) =>
+  escape.toLowerCase(),
+);
 
 async function listenOnLoopback(server: Server): Promise<string> {
   await new Promise<void>((resolve, reject) => {
@@ -62,9 +65,14 @@ describe.sequential("web search provider error redaction", () => {
         const pathname = new URL(requestTarget, "http://web-search-proof.test").pathname;
         const isError = pathname === "/v1/error";
         const reflectedCredential = authorization?.replace(/^Bearer\s+/u, "");
+        const encodedReflection = reflectedCredential
+          ? encodeURIComponent(reflectedCredential).replace(/%[0-9A-F]{2}/gu, (escape) =>
+              escape.toLowerCase(),
+            )
+          : "";
         const retainedCredentialPrefixBytes = 12;
         const body = isError
-          ? `${"x".repeat(ERROR_BODY_CAP_BYTES - retainedCredentialPrefixBytes)}${reflectedCredential}; retry later`
+          ? `${"x".repeat(ERROR_BODY_CAP_BYTES - retainedCredentialPrefixBytes)}${encodedReflection}; retry later`
           : '{"ok":true,"detail":"harmless response"}';
         socket.end(
           `HTTP/1.1 ${isError ? "401 Unauthorized" : "200 OK"}\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.byteLength(body)}\r\nConnection: close\r\n\r\n${body}`,
@@ -99,7 +107,8 @@ describe.sequential("web search provider error redaction", () => {
       expect((error as Error).message).toContain("Web search API error (401)");
       expect((error as Error).message).toContain("truncated diagnostic omitted");
       expect((error as Error).message).not.toContain(API_KEY);
-      expect((error as Error).message).not.toContain(API_KEY.slice(0, 12));
+      expect((error as Error).message).not.toContain(LOWERCASE_ENCODED_API_KEY);
+      expect((error as Error).message).not.toContain(LOWERCASE_ENCODED_API_KEY.slice(0, 12));
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
 
       const control = await postTrustedWebToolsJson(
@@ -122,9 +131,12 @@ describe.sequential("web search provider error redaction", () => {
   it("redacts a reflected bearer credential from the shared response error helper", async () => {
     const server = createServer((request, response) => {
       response.writeHead(401, { "content-type": "text/plain" });
-      response.end(
-        `upstream rejected ${request.headers.authorization?.replace(/^Bearer\s+/u, "")}`,
+      const reflectedCredential = request.headers.authorization?.replace(/^Bearer\s+/u, "") ?? "";
+      const encodedReflection = encodeURIComponent(reflectedCredential).replace(
+        /%[0-9A-F]{2}/gu,
+        (escape) => escape.toLowerCase(),
       );
+      response.end(`upstream rejected ${encodedReflection}`);
     });
     const baseUrl = await listenOnLoopback(server);
 
@@ -139,6 +151,7 @@ describe.sequential("web search provider error redaction", () => {
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Provider API error (401)");
       expect((error as Error).message).not.toContain(API_KEY);
+      expect((error as Error).message).not.toContain(LOWERCASE_ENCODED_API_KEY);
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
     } finally {
       await closeServer(server);

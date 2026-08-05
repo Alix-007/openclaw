@@ -5,6 +5,7 @@ import { expectDefined } from "@openclaw/normalization-core";
 import { sliceUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { compileConfigRegex } from "../security/config-regex.js";
+import { escapeRegExp } from "../shared/regexp.js";
 import { readLoggingConfig } from "./config.js";
 import { replacePatternBounded } from "./redact-bounded.js";
 import { isFullContextToolPayloadRedaction } from "./redact-internal.js";
@@ -211,46 +212,106 @@ function maskToken(token: string): string {
   return `${start}…${end}`;
 }
 
+type ExplicitSensitiveValueReplacement = {
+  candidate: string;
+  replacement: string;
+  percentEscapesCaseInsensitive: boolean;
+};
+
+function encodeFormComponentFromUriComponent(uriEncoded: string): string {
+  return uriEncoded
+    .replace(/%20/gu, "+")
+    .replace(
+      /[!'()~]/gu,
+      (character) => `%${character.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0")}`,
+    );
+}
+
 function collectExplicitSensitiveValueReplacements(
   sensitiveValues?: readonly string[],
-): Map<string, string> {
-  const replacements = new Map<string, string>();
+): ExplicitSensitiveValueReplacement[] {
+  const replacements = new Map<string, ExplicitSensitiveValueReplacement>();
+  const addReplacement = (params: {
+    candidate: string;
+    replacement: string;
+    percentEscapesCaseInsensitive?: boolean;
+  }) => {
+    if (!params.candidate) {
+      return;
+    }
+    const existing = replacements.get(params.candidate);
+    replacements.set(params.candidate, {
+      candidate: params.candidate,
+      replacement: params.replacement,
+      percentEscapesCaseInsensitive:
+        existing?.percentEscapesCaseInsensitive === true ||
+        params.percentEscapesCaseInsensitive === true,
+    });
+  };
   for (const value of sensitiveValues ?? []) {
     if (!value) {
       continue;
     }
     const replacement = maskToken(value);
-    replacements.set(value, replacement);
+    addReplacement({ candidate: value, replacement });
 
-    // Provider error bodies can echo a credential after JSON or URL encoding it.
-    // Keep those representations tied to the exact credential from this request.
+    // Provider error bodies can echo a credential after JSON, URL, or form encoding it.
+    // Percent-escape hex is case-insensitive, so encoded candidates need scoped matching.
     const jsonEncoded = JSON.stringify(value).slice(1, -1);
-    if (jsonEncoded) {
-      replacements.set(jsonEncoded, replacement);
-    }
+    addReplacement({ candidate: jsonEncoded, replacement });
     try {
       const urlEncoded = encodeURIComponent(value);
-      if (urlEncoded) {
-        replacements.set(urlEncoded, replacement);
-      }
+      addReplacement({
+        candidate: urlEncoded,
+        replacement,
+        percentEscapesCaseInsensitive: true,
+      });
+      addReplacement({
+        candidate: encodeFormComponentFromUriComponent(urlEncoded),
+        replacement,
+        percentEscapesCaseInsensitive: true,
+      });
     } catch {
       // Lone UTF-16 surrogates cannot be URL encoded; the raw and JSON forms still apply.
     }
   }
-  return replacements;
+  return [...replacements.values()];
+}
+
+function buildPercentEscapeCaseInsensitivePattern(candidate: string): RegExp {
+  const source = escapeRegExp(candidate).replace(
+    /%([0-9A-Fa-f])([0-9A-Fa-f])/gu,
+    (_match, first: string, second: string) => {
+      const hexPattern = (character: string) => {
+        const upper = character.toUpperCase();
+        return /[A-F]/u.test(upper) ? `[${upper}${upper.toLowerCase()}]` : upper;
+      };
+      return `%${hexPattern(first)}${hexPattern(second)}`;
+    },
+  );
+  return new RegExp(source, "gu");
+}
+
+function normalizePercentEscapeHexCase(value: string): string {
+  return value.replace(/%[0-9A-Fa-f]{2}/gu, (escape) => escape.toUpperCase());
 }
 
 function redactExplicitSensitiveValues(text: string, sensitiveValues?: readonly string[]): string {
   const replacements = collectExplicitSensitiveValueReplacements(sensitiveValues);
-  if (replacements.size === 0) {
+  if (replacements.length === 0) {
     return text;
   }
 
   let redacted = text;
-  for (const [candidate, replacement] of [...replacements].toSorted(
-    ([left], [right]) => right.length - left.length,
+  for (const replacement of replacements.toSorted(
+    (left, right) => right.candidate.length - left.candidate.length,
   )) {
-    redacted = redacted.replaceAll(candidate, replacement);
+    redacted = replacement.percentEscapesCaseInsensitive
+      ? redacted.replace(
+          buildPercentEscapeCaseInsensitivePattern(replacement.candidate),
+          replacement.replacement,
+        )
+      : redacted.replaceAll(replacement.candidate, replacement.replacement);
   }
   return redacted;
 }
@@ -260,19 +321,26 @@ function redactTruncatedSensitiveValueSuffix(
   sensitiveValues?: readonly string[],
 ): string {
   let longestPartialSuffix = 0;
-  for (const candidate of collectExplicitSensitiveValueReplacements(sensitiveValues).keys()) {
+  for (const replacement of collectExplicitSensitiveValueReplacements(sensitiveValues)) {
+    const candidate = replacement.candidate;
+    const comparableText = replacement.percentEscapesCaseInsensitive
+      ? normalizePercentEscapeHexCase(text)
+      : text;
+    const comparableCandidate = replacement.percentEscapesCaseInsensitive
+      ? normalizePercentEscapeHexCase(candidate)
+      : candidate;
     // A complete value is handled by exact redaction. Only the incomplete suffix
     // needs special treatment because the unread bytes can contain its remainder.
-    if (text.endsWith(candidate)) {
+    if (comparableText.endsWith(comparableCandidate)) {
       continue;
     }
-    const maxPrefixLength = Math.min(candidate.length - 1, text.length);
+    const maxPrefixLength = Math.min(comparableCandidate.length - 1, comparableText.length);
     for (
       let prefixLength = maxPrefixLength;
       prefixLength > longestPartialSuffix;
       prefixLength -= 1
     ) {
-      if (text.endsWith(candidate.slice(0, prefixLength))) {
+      if (comparableText.endsWith(comparableCandidate.slice(0, prefixLength))) {
         longestPartialSuffix = prefixLength;
         break;
       }
