@@ -8,6 +8,7 @@ import {
   type WebSearchProviderPlugin,
   type WebSearchProviderToolDefinition,
 } from "openclaw/plugin-sdk/provider-web-search-config-contract";
+import { coerceSecretRef } from "openclaw/plugin-sdk/secret-input-runtime";
 import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
 
 const GEMINI_CREDENTIAL_PATH = "plugins.entries.google.config.webSearch.apiKey";
@@ -48,6 +49,7 @@ const GEMINI_TOOL_PARAMETERS = {
 
 function createGeminiToolDefinition(
   searchConfig?: Record<string, unknown>,
+  secretRefHeaderNames?: readonly string[],
 ): WebSearchProviderToolDefinition {
   return {
     description:
@@ -55,9 +57,57 @@ function createGeminiToolDefinition(
     parameters: GEMINI_TOOL_PARAMETERS,
     execute: async (args, context) => {
       const { executeGeminiSearch } = await loadGeminiWebSearchRuntime();
-      return await executeGeminiSearch(args, searchConfig, context);
+      return await executeGeminiSearch(args, searchConfig, {
+        signal: context?.signal,
+        secretRefHeaderNames,
+      });
     },
   };
+}
+
+function resolveGeminiSearchConfig(
+  searchConfig: Record<string, unknown> | undefined,
+  config?: OpenClawConfig,
+): Record<string, unknown> | undefined {
+  return withGoogleModelProviderFallbacks(
+    mergeScopedSearchConfig(
+      searchConfig,
+      "gemini",
+      resolveProviderWebSearchPluginConfig(config, "google"),
+    ),
+    config,
+  );
+}
+
+function resolveGeminiSecretRefHeaderNames(
+  searchConfig: Record<string, unknown> | undefined,
+  config?: OpenClawConfig,
+): string[] {
+  const scoped = resolveGeminiSearchConfig(searchConfig, config)?.gemini;
+  const headers = isRecord(scoped) && isRecord(scoped.headers) ? scoped.headers : undefined;
+  if (!headers) {
+    return [];
+  }
+  const secretNames = new Set<string>();
+  for (const [name, value] of Object.entries(headers)) {
+    let normalizedName: string;
+    try {
+      normalizedName = new Headers([[name, "provenance"]]).keys().next().value ?? "";
+    } catch {
+      continue;
+    }
+    if (!normalizedName) {
+      continue;
+    }
+    // Runtime resolution replaces SecretRefs with strings. Preserve the source
+    // provenance by normalized name so only their resolved values are redacted.
+    if (coerceSecretRef(value, config?.secrets?.defaults)) {
+      secretNames.add(normalizedName);
+    } else {
+      secretNames.delete(normalizedName);
+    }
+  }
+  return [...secretNames].toSorted();
 }
 
 function resolveGoogleModelProviderConfig(
@@ -129,16 +179,13 @@ export function createGeminiWebSearchProvider(): WebSearchProviderPlugin {
     credentialPath: GEMINI_CREDENTIAL_PATH,
     ...contractFields,
     getConfiguredCredentialFallback: getGoogleModelProviderCredentialFallback,
+    resolveRuntimeMetadata: (ctx) => ({
+      secretRefHeaderNames: resolveGeminiSecretRefHeaderNames(ctx.searchConfig, ctx.config),
+    }),
     createTool: (ctx) =>
       createGeminiToolDefinition(
-        withGoogleModelProviderFallbacks(
-          mergeScopedSearchConfig(
-            ctx.searchConfig,
-            "gemini",
-            resolveProviderWebSearchPluginConfig(ctx.config, "google"),
-          ),
-          ctx.config,
-        ),
+        resolveGeminiSearchConfig(ctx.searchConfig, ctx.config),
+        ctx.runtimeMetadata?.secretRefHeaderNames,
       ),
   };
 }

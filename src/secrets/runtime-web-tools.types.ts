@@ -27,6 +27,8 @@ export type RuntimeWebSearchMetadata = {
   selectedProviderKeySource?: "config" | "secretRef" | "env" | "missing";
   /** Perplexity transport chosen from provider config or runtime default. */
   perplexityTransport?: "search_api" | "chat_completions";
+  /** Normalized request-header names whose active values originated from SecretRefs. */
+  secretRefHeaderNames?: string[];
   diagnostics: RuntimeWebDiagnostic[];
 };
 

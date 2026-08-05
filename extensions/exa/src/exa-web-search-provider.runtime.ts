@@ -1,5 +1,4 @@
 // Exa provider module implements model/runtime integration.
-import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
 import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
 import {
@@ -92,8 +91,11 @@ async function readExaSearchResults(
   }
 }
 
-async function readExaErrorDetail(response: Response): Promise<string> {
-  return await readResponseTextLimited(response, EXA_ERROR_BODY_LIMIT_BYTES);
+async function readExaErrorDetail(
+  response: Response,
+  sensitiveValues?: readonly string[],
+): Promise<string> {
+  return await readResponseTextLimited(response, EXA_ERROR_BODY_LIMIT_BYTES, { sensitiveValues });
 }
 
 function normalizeExaFreshness(value: string | undefined): ExaFreshness | undefined {
@@ -429,7 +431,7 @@ async function runExaSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const detail = redactToolPayloadText(await readExaErrorDetail(res), [params.apiKey]);
+        const detail = await readExaErrorDetail(res, [params.apiKey]);
         throw new Error(`Exa API error (${res.status}): ${detail || res.statusText}`);
       }
       return readExaSearchResults(res);

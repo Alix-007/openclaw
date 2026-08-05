@@ -231,26 +231,19 @@ async function postFirecrawlJson<T>(
     },
     async ({ response }) => {
       if (!response.ok) {
+        const errorBody = await readResponseText(response, { maxBytes: 64_000 });
         let detail =
           typeof response.statusText === "string" && response.statusText.trim()
             ? response.statusText.trim()
             : "request failed";
-
-        const readJsonPayload = async (): Promise<Record<string, unknown> | null> => {
-          const candidate = response as Response & { clone?: () => Response };
-          const jsonResponse = typeof candidate.clone === "function" ? candidate.clone() : response;
-          try {
-            const body = await readResponseText(jsonResponse, { maxBytes: 64_000 });
-            const payload = JSON.parse(body.text) as unknown;
-            return payload && typeof payload === "object" && !Array.isArray(payload)
-              ? (payload as Record<string, unknown>)
+        let payload: Record<string, unknown> | null = null;
+        try {
+          const parsed = JSON.parse(errorBody.text) as unknown;
+          payload =
+            parsed && typeof parsed === "object" && !Array.isArray(parsed)
+              ? (parsed as Record<string, unknown>)
               : null;
-          } catch {
-            return null;
-          }
-        };
-
-        const payload = await readJsonPayload();
+        } catch {}
         if (payload) {
           detail =
             typeof payload.error === "string"
@@ -258,13 +251,15 @@ async function postFirecrawlJson<T>(
               : typeof payload.message === "string"
                 ? payload.message
                 : detail;
-        } else {
-          const errorBody = await readResponseText(response, { maxBytes: 64_000 });
-          if (errorBody.text) {
-            detail = errorBody.text;
-          }
+        } else if (errorBody.text) {
+          detail = errorBody.text;
         }
-        const safeDetail = wrapWebContent(safeFirecrawlError(detail, apiKey, 1_000), "web_fetch");
+        const safeDetail = wrapWebContent(
+          safeFirecrawlError(detail, apiKey, 1_000, {
+            sourceTruncated: errorBody.truncated,
+          }),
+          "web_fetch",
+        );
         throw new Error(`${params.errorLabel} API error (${response.status}): ${safeDetail}`);
       }
       return await parse(response);

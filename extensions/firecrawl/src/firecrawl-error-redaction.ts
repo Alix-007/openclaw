@@ -5,9 +5,10 @@ export function safeFirecrawlError(
   detail: string,
   apiKey: string | undefined,
   maxChars: number,
+  options?: { sourceTruncated?: boolean },
 ): string {
   return truncateSanitizedExternalContent(
-    redactToolPayloadText(detail, apiKey ? [apiKey] : undefined),
+    redactToolPayloadText(detail, apiKey ? [apiKey] : undefined, options),
     maxChars,
   ).text;
 }

@@ -54,7 +54,10 @@ function getFetchHeaders(mockFetch: ReturnType<typeof installGeminiFetch>): Reco
   return Object.fromEntries(new Headers(init?.headers).entries());
 }
 
-function createGeminiToolWithHeaders(headers: Record<string, unknown>) {
+function createGeminiToolWithHeaders(
+  headers: Record<string, unknown>,
+  secretRefHeaderNames: string[] = [],
+) {
   return createGeminiWebSearchProvider().createTool({
     config: {
       plugins: {
@@ -71,6 +74,11 @@ function createGeminiToolWithHeaders(headers: Record<string, unknown>) {
       },
     },
     searchConfig: { provider: "gemini" },
+    runtimeMetadata: {
+      providerSource: "configured",
+      diagnostics: [],
+      secretRefHeaderNames,
+    },
   });
 }
 
@@ -215,6 +223,75 @@ describe("google web search provider", () => {
       "x-gateway-token": "resolved-gateway-token",
       "x-goog-api-key": "AIza-plugin-test",
       "x-routing-target": "staging",
+    });
+  });
+
+  it("preserves custom-header SecretRef provenance in runtime metadata", async () => {
+    const provider = createGeminiWebSearchProvider();
+    const metadata = await provider.resolveRuntimeMetadata?.({
+      config: {
+        plugins: {
+          entries: {
+            google: {
+              config: {
+                webSearch: {
+                  headers: {
+                    "X-Routing-Target": "staging",
+                    "X-Gateway-Token": {
+                      source: "env",
+                      provider: "default",
+                      id: "GEMINI_GATEWAY_TOKEN",
+                    },
+                    "X-Secondary-Token": "${GEMINI_SECONDARY_TOKEN}",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      searchConfig: { provider: "gemini" },
+    });
+
+    expect(metadata?.secretRefHeaderNames).toEqual(["x-gateway-token", "x-secondary-token"]);
+  });
+
+  it("redacts SecretRef-derived header reflections but preserves literal metadata", async () => {
+    const literalHeader = "tenant-staging";
+    const secretHeader = "orchidRiver17glassMoth92cabin";
+    const mockFetch = vi.fn((_input?: RequestInfo | URL, init?: RequestInit) => {
+      const requestHeaders = new Headers(init?.headers);
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            error: {
+              message: `tenant=${requestHeaders.get("x-routing-target")} gateway=${requestHeaders.get("x-gateway-token")}`,
+            },
+          }),
+          { status: 401, headers: { "content-type": "application/json" } },
+        ),
+      );
+    });
+    vi.stubGlobal("fetch", withFetchPreconnect(mockFetch));
+    const tool = createGeminiToolWithHeaders(
+      {
+        "X-Routing-Target": literalHeader,
+        "X-Gateway-Token": secretHeader,
+      },
+      ["x-gateway-token"],
+    );
+
+    const error = await tool
+      ?.execute({ query: "OpenClaw header provenance" })
+      .catch((cause: unknown) => cause);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain(literalHeader);
+    expect((error as Error).message).not.toContain(secretHeader);
+    expect((error as Error).message).not.toContain("glassMoth92");
+    expect(getFetchHeaders(mockFetch)).toMatchObject({
+      "x-gateway-token": secretHeader,
+      "x-routing-target": literalHeader,
     });
   });
 

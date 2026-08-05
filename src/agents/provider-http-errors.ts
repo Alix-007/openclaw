@@ -64,6 +64,21 @@ function redactProviderErrorText(body: string, sensitiveValues?: readonly string
     : redactSensitiveText(body);
 }
 
+async function readResponseTextLimitedResult(
+  response: Response,
+  limitBytes: number,
+  options?: ReadResponseTextPrefixOptions,
+) {
+  return await readResponseTextPrefix(response, limitBytes, {
+    chunkTimeoutMs: options?.chunkTimeoutMs ?? 10_000,
+    onIdleTimeout:
+      options?.onIdleTimeout ??
+      (({ chunkTimeoutMs }) => new Error(`error body read stalled for ${chunkTimeoutMs}ms`)),
+    timeoutMs: options?.timeoutMs,
+    onTimeout: options?.onTimeout,
+  });
+}
+
 /** Redacts secrets before preserving a bounded provider error body preview. */
 function redactProviderErrorBody(body: string, sensitiveValues?: readonly string[]): string {
   return truncateErrorDetail(
@@ -72,25 +87,25 @@ function redactProviderErrorBody(body: string, sensitiveValues?: readonly string
   );
 }
 
-/** Reads at most `limitBytes` from a response body without buffering provider-sized failures. */
+/**
+ * Reads at most `limitBytes` from a response body without buffering provider-sized failures.
+ * Pass exact request `sensitiveValues` for error diagnostics; truncated bodies are then omitted
+ * because an exact value may cross the byte boundary.
+ */
 export async function readResponseTextLimited(
   response: Response,
   limitBytes = 16 * 1024,
-  options?: ReadResponseTextPrefixOptions,
+  options?: ReadResponseTextPrefixOptions & { sensitiveValues?: readonly string[] },
 ): Promise<string> {
   if (limitBytes <= 0) {
     return "";
   }
-  return (
-    await readResponseTextPrefix(response, limitBytes, {
-      chunkTimeoutMs: options?.chunkTimeoutMs ?? 10_000,
-      onIdleTimeout:
-        options?.onIdleTimeout ??
-        (({ chunkTimeoutMs }) => new Error(`error body read stalled for ${chunkTimeoutMs}ms`)),
-      timeoutMs: options?.timeoutMs,
-      onTimeout: options?.onTimeout,
-    })
-  ).text;
+  const result = await readResponseTextLimitedResult(response, limitBytes, options);
+  return options?.sensitiveValues?.some((value) => value.length > 0)
+    ? redactToolPayloadText(result.text, options.sensitiveValues, {
+        sourceTruncated: result.truncated,
+      })
+    : result.text;
 }
 
 /** Reads a successful provider text response under a byte cap. */
@@ -217,36 +232,45 @@ async function extractProviderErrorInfo(
   options?: ProviderHttpErrorOptions,
 ): Promise<ProviderHttpErrorInfo> {
   const bodyTimeoutMs = options?.bodyTimeoutMs;
-  const rawBody = trimToUndefined(
-    await readResponseTextLimited(response, 16 * 1024, {
-      timeoutMs:
-        typeof bodyTimeoutMs === "function"
-          ? () => {
-              try {
-                return bodyTimeoutMs();
-              } catch (error) {
-                throw new ProviderErrorBodyTimeout(error);
-              }
+  const bodyRead = await readResponseTextLimitedResult(response, 16 * 1024, {
+    timeoutMs:
+      typeof bodyTimeoutMs === "function"
+        ? () => {
+            try {
+              return bodyTimeoutMs();
+            } catch (error) {
+              throw new ProviderErrorBodyTimeout(error);
             }
-          : bodyTimeoutMs,
-      onTimeout: (params) =>
-        new ProviderErrorBodyTimeout(
-          options?.onBodyTimeout?.(params) ??
-            new Error(`Provider error body timed out after ${params.timeoutMs}ms`),
-        ),
-    }).catch((error: unknown) => {
-      if (error instanceof ProviderErrorBodyTimeout) {
-        throw error.timeoutError;
-      }
-      return "";
-    }),
-  );
+          }
+        : bodyTimeoutMs,
+    onTimeout: (params) =>
+      new ProviderErrorBodyTimeout(
+        options?.onBodyTimeout?.(params) ??
+          new Error(`Provider error body timed out after ${params.timeoutMs}ms`),
+      ),
+  }).catch((error: unknown) => {
+    if (error instanceof ProviderErrorBodyTimeout) {
+      throw error.timeoutError;
+    }
+    return { text: "", size: 0, truncated: false };
+  });
+  const rawBody = trimToUndefined(bodyRead.text);
   const rawRequestId = extractProviderRequestId(response);
   const requestId = rawRequestId
     ? redactProviderErrorText(rawRequestId, options?.sensitiveValues)
     : undefined;
   if (!rawBody) {
     return requestId ? { requestId } : {};
+  }
+  if (bodyRead.truncated && options?.sensitiveValues?.some((value) => value.length > 0)) {
+    const body = redactToolPayloadText(rawBody, options.sensitiveValues, {
+      sourceTruncated: true,
+    });
+    return {
+      detail: body,
+      body,
+      ...(requestId ? { requestId } : {}),
+    };
   }
   const body = redactProviderErrorBody(rawBody, options?.sensitiveValues);
   try {

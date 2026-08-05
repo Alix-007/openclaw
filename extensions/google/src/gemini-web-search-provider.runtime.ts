@@ -203,11 +203,16 @@ function resolveGeminiRuntimeApiKey(gemini?: GeminiConfig): string | undefined {
   );
 }
 
-function resolveGeminiWebSearchHeaders(gemini?: GeminiConfig): Record<string, string> | undefined {
+function resolveGeminiWebSearchHeaders(
+  gemini?: GeminiConfig,
+  secretRefHeaderNames?: readonly string[],
+): { headers?: Record<string, string>; sensitiveValues: string[] } {
   if (!isRecord(gemini?.headers)) {
-    return undefined;
+    return { sensitiveValues: [] };
   }
   const headers = new Headers();
+  const sensitiveNames = new Set(secretRefHeaderNames);
+  const sensitiveValues = new Map<string, string>();
   for (const [name, input] of Object.entries(gemini.headers)) {
     const path = `plugins.entries.google.config.webSearch.headers[${JSON.stringify(name)}]`;
     const value =
@@ -236,9 +241,15 @@ function resolveGeminiWebSearchHeaders(gemini?: GeminiConfig): Record<string, st
       continue;
     }
     headers.set(normalizedName, normalizedValue);
+    if (sensitiveNames.has(normalizedName)) {
+      sensitiveValues.set(normalizedName, normalizedValue);
+    }
   }
   const entries = [...headers.entries()];
-  return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+  return {
+    ...(entries.length > 0 ? { headers: Object.fromEntries(entries) } : {}),
+    sensitiveValues: [...sensitiveValues.values()],
+  };
 }
 
 function buildGeminiRequestHeaders(params: {
@@ -275,11 +286,12 @@ async function runGeminiSearch(params: {
   signal?: AbortSignal;
   timeRangeFilter?: GeminiTimeRangeFilter;
   headers?: Record<string, string>;
+  headerSensitiveValues?: readonly string[];
 }): Promise<{ content: string; citations: Array<{ url: string; title?: string }> }> {
   const endpoint = `${params.baseUrl}/models/${params.model}:generateContent`;
   const googleSearch =
     params.timeRangeFilter === undefined ? {} : { timeRangeFilter: params.timeRangeFilter };
-  const sensitiveValues = [params.apiKey, ...Object.values(params.headers ?? {})];
+  const sensitiveValues = [params.apiKey, ...(params.headerSensitiveValues ?? [])];
 
   return withTrustedWebSearchEndpoint(
     {
@@ -383,7 +395,7 @@ async function runGeminiSearch(params: {
 export async function executeGeminiSearch(
   args: Record<string, unknown>,
   searchConfig?: SearchConfigRecord,
-  context?: { signal?: AbortSignal },
+  context?: { signal?: AbortSignal; secretRefHeaderNames?: readonly string[] },
 ): Promise<Record<string, unknown>> {
   const unsupportedResponse = buildUnsupportedSearchFilterResponse(
     {
@@ -422,7 +434,11 @@ export async function executeGeminiSearch(
     undefined;
   const model = resolveGeminiModel(geminiConfig);
   const baseUrl = resolveGeminiBaseUrl(geminiConfig);
-  const headers = resolveGeminiWebSearchHeaders(geminiConfig);
+  const resolvedHeaders = resolveGeminiWebSearchHeaders(
+    geminiConfig,
+    context?.secretRefHeaderNames,
+  );
+  const headers = resolvedHeaders.headers;
   const headersCacheKey = headers
     ? createHash("sha256")
         .update(
@@ -458,6 +474,7 @@ export async function executeGeminiSearch(
     signal: context?.signal,
     timeRangeFilter: timeRange.timeRangeFilter,
     headers,
+    headerSensitiveValues: resolvedHeaders.sensitiveValues,
   });
   const payload = {
     query,

@@ -5,6 +5,7 @@ import { postTrustedWebToolsJson, throwWebSearchApiError } from "./web-search-pr
 
 const API_KEY = "orchidRiver17glassMoth92cabin";
 const UNIQUE_NEEDLE = "glassMoth92";
+const ERROR_BODY_CAP_BYTES = 64 * 1024;
 
 async function listenOnLoopback(server: Server): Promise<string> {
   await new Promise<void>((resolve, reject) => {
@@ -61,8 +62,9 @@ describe.sequential("web search provider error redaction", () => {
         const pathname = new URL(requestTarget, "http://web-search-proof.test").pathname;
         const isError = pathname === "/v1/error";
         const reflectedCredential = authorization?.replace(/^Bearer\s+/u, "");
+        const retainedCredentialPrefixBytes = 12;
         const body = isError
-          ? `request failed; provider echoed ${reflectedCredential}; retry later`
+          ? `${"x".repeat(ERROR_BODY_CAP_BYTES - retainedCredentialPrefixBytes)}${reflectedCredential}; retry later`
           : '{"ok":true,"detail":"harmless response"}';
         socket.end(
           `HTTP/1.1 ${isError ? "401 Unauthorized" : "200 OK"}\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.byteLength(body)}\r\nConnection: close\r\n\r\n${body}`,
@@ -88,13 +90,16 @@ describe.sequential("web search provider error redaction", () => {
           apiKey: API_KEY,
           body: { query: "proof" },
           errorLabel: "Web search",
+          maxErrorBytes: ERROR_BODY_CAP_BYTES,
         },
         async (response) => await response.json(),
       ).catch((cause: unknown) => cause);
 
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toContain("Web search API error (401)");
+      expect((error as Error).message).toContain("truncated diagnostic omitted");
       expect((error as Error).message).not.toContain(API_KEY);
+      expect((error as Error).message).not.toContain(API_KEY.slice(0, 12));
       expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
 
       const control = await postTrustedWebToolsJson(

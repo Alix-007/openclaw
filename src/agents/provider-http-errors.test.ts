@@ -359,6 +359,44 @@ describe("provider error utils", () => {
     expect(JSON.stringify(providerError)).not.toContain("orchidRiver17");
   });
 
+  it.each([16 * 1024, 64 * 1024])(
+    "suppresses credential-bearing diagnostics truncated at %i bytes",
+    async (limitBytes) => {
+      const sensitiveValue = "orchidRiver17glassMoth92cabin";
+      const retainedPrefix = sensitiveValue.slice(0, 12);
+      const response = new Response(
+        `${"x".repeat(limitBytes - retainedPrefix.length)}${sensitiveValue} trailing text`,
+        { status: 401 },
+      );
+
+      const detail = await readResponseTextLimited(response, limitBytes, {
+        sensitiveValues: [sensitiveValue],
+      });
+
+      expect(detail).toContain("truncated diagnostic omitted");
+      expect(detail).not.toContain(retainedPrefix);
+      expect(detail).not.toContain(sensitiveValue);
+    },
+  );
+
+  it("suppresses a credential prefix split by the provider error-body cap", async () => {
+    const sensitiveValue = "orchidRiver17glassMoth92cabin";
+    const retainedPrefix = sensitiveValue.slice(0, 12);
+    const limitBytes = 16 * 1024;
+    const response = new Response(
+      `${"x".repeat(limitBytes - retainedPrefix.length)}${sensitiveValue} trailing text`,
+      { status: 401 },
+    );
+
+    const providerError = (await createProviderHttpError(response, "Provider API error", {
+      sensitiveValues: [sensitiveValue],
+    })) as ProviderHttpError;
+
+    expect(providerError.message).toContain("truncated diagnostic omitted");
+    expect(JSON.stringify(providerError)).not.toContain(retainedPrefix);
+    expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
+  });
+
   it("keeps legacy HTTP status formatting while sharing provider parsing", async () => {
     const response = new Response(
       JSON.stringify({

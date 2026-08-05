@@ -941,17 +941,32 @@ function resolveToolPayloadRedaction(
 // Forces tools-mode so UI/tool payloads never inherit a caller-supplied "off"
 // mode, and merges user `logging.redactPatterns` with the built-in defaults so
 // both apply.
-export function redactToolPayloadText(text: string, sensitiveValues?: readonly string[]): string {
-  return redactToolPayloadTextWithConfig(text, readLoggingConfig(), sensitiveValues);
+/**
+ * Redacts tool-visible text plus exact request-scoped sensitive values.
+ *
+ * When the source was truncated before this call, exact matching cannot prove
+ * that a credential did not cross the cut. Suppress that diagnostic instead of
+ * retaining a potentially identifying credential prefix.
+ */
+export function redactToolPayloadText(
+  text: string,
+  sensitiveValues?: readonly string[],
+  options?: { sourceTruncated?: boolean },
+): string {
+  return redactToolPayloadTextWithConfig(text, readLoggingConfig(), sensitiveValues, options);
 }
 
 export function redactToolPayloadTextWithConfig(
   text: string,
   loggingConfig?: LoggingConfig,
   sensitiveValues?: readonly string[],
+  options?: { sourceTruncated?: boolean },
 ): string {
   if (!text) {
     return text;
+  }
+  if (options?.sourceTruncated && sensitiveValues?.some((value) => value.length > 0)) {
+    return "[truncated diagnostic omitted because it may contain a partial sensitive value]";
   }
   const exactRedacted = redactRegisteredSecretValues(
     redactExplicitSensitiveValues(text, sensitiveValues),
