@@ -418,7 +418,10 @@ export async function createOllamaEmbeddingProvider(
   // Arbitrary configured headers can carry credentials whose names the shared
   // pattern redactor cannot infer. Keep their exact values scoped to this call.
   const requestHeaderSecretValues = Object.entries(client.headers)
-    .filter(([headerName]) => headerName.toLowerCase() !== "content-type")
+    .filter(
+      ([headerName, headerValue]) =>
+        headerName.toLowerCase() !== "content-type" || headerValue !== "application/json",
+    )
     .map(([, headerValue]) => headerValue);
 
   const embedMany = async (input: string | string[], signal?: AbortSignal): Promise<number[][]> => {

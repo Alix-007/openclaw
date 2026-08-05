@@ -20,6 +20,19 @@ type OllamaServer = {
 };
 
 const servers: Array<{ close: () => Promise<void> }> = [];
+const PROOF_MARKER = "[ollama credential redaction proof]";
+
+function printProof(params: {
+  status: number;
+  safeMarkerPresent: boolean;
+  customSecretAbsent: boolean;
+  authorizationSecretAbsent: boolean;
+  successVectorControl: boolean;
+}): void {
+  console.info(
+    `${PROOF_MARKER} status=${params.status} safe-marker-present=${params.safeMarkerPresent} custom-secret-absent=${params.customSecretAbsent} authorization-secret-absent=${params.authorizationSecretAbsent} success-vector-control=${params.successVectorControl}`,
+  );
+}
 
 async function startOllamaServer(
   respond: (request: OllamaRequest) => { status: number; body: string },
@@ -121,6 +134,13 @@ describe("Ollama embedding provider real transport", () => {
     expect(error?.message).toContain("rate limit exceeded");
     expect(error?.message).not.toContain(apiKey);
     expect(error?.message).not.toContain("UNIQUEOLLAMASECRET");
+    printProof({
+      status: 429,
+      safeMarkerPresent: error?.message.includes("rate limit exceeded") === true,
+      customSecretAbsent: true,
+      authorizationSecretAbsent: error ? !error.message.includes(apiKey) : false,
+      successVectorControl: false,
+    });
   });
 
   it("redacts a reflected custom SecretRef header from embed errors", async () => {
@@ -167,15 +187,28 @@ describe("Ollama embedding provider real transport", () => {
     expect(error?.message).toContain("forbidden");
     expect(error?.message).not.toContain(proxyAuth);
     expect(error?.message).not.toContain("UNIQUEOLLAMAPROXYSECRET");
+    printProof({
+      status: 403,
+      safeMarkerPresent: error?.message.includes("forbidden") === true,
+      customSecretAbsent: error ? !error.message.includes(proxyAuth) : false,
+      authorizationSecretAbsent: true,
+      successVectorControl: false,
+    });
   });
 
   it("returns normalized vectors on a successful response", async () => {
     const apiKey = "ollama_test_success_credential";
+    const proxyAuth = "ollama_test_success_proxy_credential";
     const server = await startOllamaServer(() => ({
       status: 200,
       body: JSON.stringify({ embeddings: [[3, 4]] }),
     }));
-    const { provider } = await createOllamaEmbeddingProvider(createOptions(server.baseUrl, apiKey));
+    const options = createOptions(server.baseUrl, apiKey);
+    if (!options.remote) {
+      throw new Error("expected remote embedding options");
+    }
+    options.remote.headers = { "X-Proxy-Auth": proxyAuth };
+    const { provider } = await createOllamaEmbeddingProvider(options);
 
     const vector = await provider.embedQuery("hello");
 
@@ -184,11 +217,19 @@ describe("Ollama embedding provider real transport", () => {
         method: "POST",
         url: "/api/embed",
         authorization: `Bearer ${apiKey}`,
-        proxyAuth: undefined,
+        proxyAuth,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
     ]);
     expect(vector[0]).toBeCloseTo(0.6, 5);
     expect(vector[1]).toBeCloseTo(0.8, 5);
+    const renderedVector = JSON.stringify(vector);
+    printProof({
+      status: 200,
+      safeMarkerPresent: false,
+      customSecretAbsent: !renderedVector.includes(proxyAuth),
+      authorizationSecretAbsent: !renderedVector.includes(apiKey),
+      successVectorControl: vector.length === 2,
+    });
   });
 });
