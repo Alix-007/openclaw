@@ -340,6 +340,25 @@ describe("provider error utils", () => {
     expect(JSON.stringify(transcriptFields)).not.toContain(sensitiveValue);
   });
 
+  it("redacts request secrets before truncating JSON error details", async () => {
+    const sensitiveValue = "orchidRiver17glassMoth92cabin";
+    const reflectedPrefix = "x".repeat(205);
+    const response = new Response(
+      JSON.stringify({
+        error: { message: `${reflectedPrefix}${sensitiveValue}` },
+      }),
+      { status: 401 },
+    );
+
+    const providerError = (await createProviderHttpError(response, "Provider API error", {
+      sensitiveValues: [sensitiveValue],
+    })) as ProviderHttpError;
+
+    expect(providerError.message).toContain(`${reflectedPrefix}orchid…abin`);
+    expect(providerError.message).not.toContain("orchidRiver17");
+    expect(JSON.stringify(providerError)).not.toContain("orchidRiver17");
+  });
+
   it("keeps legacy HTTP status formatting while sharing provider parsing", async () => {
     const response = new Response(
       JSON.stringify({

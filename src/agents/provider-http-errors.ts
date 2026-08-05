@@ -114,8 +114,15 @@ export async function readProviderTextResponse(
   return new TextDecoder().decode(bytes);
 }
 
-/** Formats common provider JSON error payload shapes into one readable detail string. */
-export function formatProviderErrorPayload(payload: unknown): string | undefined {
+type ProviderErrorPayloadFields = {
+  message?: string;
+  code?: string;
+  type?: string;
+};
+
+function extractProviderErrorPayloadFields(
+  payload: unknown,
+): ProviderErrorPayloadFields | undefined {
   const root = asObject(payload);
   const detailObject = asObject(root?.detail);
   const subject = asObject(root?.error) ?? detailObject ?? root;
@@ -134,19 +141,36 @@ export function formatProviderErrorPayload(payload: unknown): string | undefined
     trimToUndefined(root?.detail);
   const type = trimToUndefined(subject.type);
   const code = trimToUndefined(subject.code) ?? trimToUndefined(subject.status) ?? oauthCode;
-  const metadata = [type ? `type=${type}` : undefined, code ? `code=${code}` : undefined]
+  return {
+    ...(message ? { message } : {}),
+    ...(code ? { code } : {}),
+    ...(type ? { type } : {}),
+  };
+}
+
+function formatProviderErrorFields(fields: ProviderErrorPayloadFields): string | undefined {
+  const metadata = [
+    fields.type ? `type=${fields.type}` : undefined,
+    fields.code ? `code=${fields.code}` : undefined,
+  ]
     .filter((value): value is string => Boolean(value))
     .join(", ");
-  if (message && metadata) {
-    return `${truncateErrorDetail(message)} [${metadata}]`;
+  if (fields.message && metadata) {
+    return `${truncateErrorDetail(fields.message)} [${metadata}]`;
   }
-  if (message) {
-    return truncateErrorDetail(message);
+  if (fields.message) {
+    return truncateErrorDetail(fields.message);
   }
   if (metadata) {
     return `[${metadata}]`;
   }
   return undefined;
+}
+
+/** Formats common provider JSON error payload shapes into one readable detail string. */
+export function formatProviderErrorPayload(payload: unknown): string | undefined {
+  const fields = extractProviderErrorPayloadFields(payload);
+  return fields ? formatProviderErrorFields(fields) : undefined;
 }
 
 type ProviderErrorPayloadMetadata = {
@@ -159,23 +183,22 @@ function extractProviderErrorPayloadMetadata(
   payload: unknown,
   sensitiveValues?: readonly string[],
 ): ProviderErrorPayloadMetadata {
-  const root = asObject(payload);
-  const detailObject = asObject(root?.detail);
-  const subject = asObject(root?.error) ?? detailObject ?? root;
-  if (!subject) {
+  const fields = extractProviderErrorPayloadFields(payload);
+  if (!fields) {
     return {};
   }
-
-  const detail = formatProviderErrorPayload(payload);
-  const type = trimToUndefined(subject.type);
-  const errorDescription =
-    trimToUndefined(subject.error_description) ?? trimToUndefined(root?.error_description);
-  const oauthCode = errorDescription ? trimToUndefined(root?.error) : undefined;
-  const code = trimToUndefined(subject.code) ?? trimToUndefined(subject.status) ?? oauthCode;
+  // Exact request values must be removed before the detail cap is applied;
+  // truncating first can retain an unmatched credential prefix.
+  const message = fields.message
+    ? redactProviderErrorText(fields.message, sensitiveValues)
+    : undefined;
+  const code = fields.code ? redactProviderErrorText(fields.code, sensitiveValues) : undefined;
+  const type = fields.type ? redactProviderErrorText(fields.type, sensitiveValues) : undefined;
+  const detail = formatProviderErrorFields({ message, code, type });
   return {
-    ...(detail ? { detail: redactProviderErrorText(detail, sensitiveValues) } : {}),
-    ...(code ? { code: redactProviderErrorText(code, sensitiveValues) } : {}),
-    ...(type ? { type: redactProviderErrorText(type, sensitiveValues) } : {}),
+    ...(detail ? { detail } : {}),
+    ...(code ? { code } : {}),
+    ...(type ? { type } : {}),
   };
 }
 
