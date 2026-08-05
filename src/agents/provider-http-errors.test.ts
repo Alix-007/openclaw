@@ -304,6 +304,42 @@ describe("provider error utils", () => {
     expect(providerError.errorBody).not.toContain("sk-secret1234567890abcd");
   });
 
+  it("redacts request secrets from errors and transcript-bound metadata", async () => {
+    const sensitiveValue = "orchidRiver17glassMoth92cabin";
+    const response = new Response(
+      JSON.stringify({
+        error: {
+          message: `provider reflected ${sensitiveValue}`,
+          code: sensitiveValue,
+          type: sensitiveValue,
+        },
+      }),
+      {
+        status: 401,
+        headers: { "x-request-id": sensitiveValue },
+      },
+    );
+
+    const providerError = (await createProviderHttpError(response, "Provider API error", {
+      sensitiveValues: [sensitiveValue],
+    })) as ProviderHttpError;
+    const transcriptFields = {
+      errorMessage: providerError.message,
+      errorCode: providerError.errorCode,
+      errorType: providerError.errorType,
+      errorBody: providerError.errorBody,
+    };
+
+    expect(providerError).toMatchObject({
+      code: "orchid…abin",
+      errorCode: "orchid…abin",
+      errorType: "orchid…abin",
+      requestId: "orchid…abin",
+    } satisfies Partial<ProviderHttpError>);
+    expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
+    expect(JSON.stringify(transcriptFields)).not.toContain(sensitiveValue);
+  });
+
   it("keeps legacy HTTP status formatting while sharing provider parsing", async () => {
     const response = new Response(
       JSON.stringify({

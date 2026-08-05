@@ -174,8 +174,8 @@ function extractProviderErrorPayloadMetadata(
   const code = trimToUndefined(subject.code) ?? trimToUndefined(subject.status) ?? oauthCode;
   return {
     ...(detail ? { detail: redactProviderErrorText(detail, sensitiveValues) } : {}),
-    ...(code ? { code } : {}),
-    ...(type ? { type } : {}),
+    ...(code ? { code: redactProviderErrorText(code, sensitiveValues) } : {}),
+    ...(type ? { type: redactProviderErrorText(type, sensitiveValues) } : {}),
   };
 }
 
@@ -218,7 +218,10 @@ async function extractProviderErrorInfo(
       return "";
     }),
   );
-  const requestId = extractProviderRequestId(response);
+  const rawRequestId = extractProviderRequestId(response);
+  const requestId = rawRequestId
+    ? redactProviderErrorText(rawRequestId, options?.sensitiveValues)
+    : undefined;
   if (!rawBody) {
     return requestId ? { requestId } : {};
   }
