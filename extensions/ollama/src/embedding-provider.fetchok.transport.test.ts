@@ -10,6 +10,7 @@ type OllamaRequest = {
   method: string | undefined;
   url: string | undefined;
   authorization: string | undefined;
+  proxyAuthorization: string | undefined;
   proxyAuth: string | undefined;
   body: string;
 };
@@ -27,10 +28,11 @@ function printProof(params: {
   safeMarkerPresent: boolean;
   customSecretAbsent: boolean;
   authorizationSecretAbsent: boolean;
+  proxyAuthorizationSecretAbsent: boolean;
   successVectorControl: boolean;
 }): void {
   console.info(
-    `${PROOF_MARKER} status=${params.status} safe-marker-present=${params.safeMarkerPresent} custom-secret-absent=${params.customSecretAbsent} authorization-secret-absent=${params.authorizationSecretAbsent} success-vector-control=${params.successVectorControl}`,
+    `${PROOF_MARKER} status=${params.status} safe-marker-present=${params.safeMarkerPresent} custom-secret-absent=${params.customSecretAbsent} authorization-secret-absent=${params.authorizationSecretAbsent} proxy-authorization-secret-absent=${params.proxyAuthorizationSecretAbsent} success-vector-control=${params.successVectorControl}`,
   );
 }
 
@@ -48,6 +50,7 @@ async function startOllamaServer(
         method: req.method,
         url: req.url,
         authorization: req.headers.authorization,
+        proxyAuthorization: req.headers["proxy-authorization"],
         proxyAuth:
           typeof req.headers["x-proxy-auth"] === "string" ? req.headers["x-proxy-auth"] : undefined,
         body: Buffer.concat(chunks).toString("utf8"),
@@ -107,36 +110,54 @@ describe("Ollama embedding provider real transport", () => {
     await Promise.all(pending.map((server) => server.close()));
   });
 
-  it("redacts reflected request credentials from embed errors", async () => {
-    const apiKey = "gho_AAAAUNIQUEOLLAMASECRETXXXX111122223333";
+  it("redacts bare authorization credentials reflected under unknown fields", async () => {
+    const authorizationCredential = "v9M2q7L4n8R6t1W5c3K0";
+    const proxyAuthorizationCredential = "p4Z8m1D7s5J2x9Q6h3V0";
     const server = await startOllamaServer((request) => ({
       status: 429,
       body: JSON.stringify({
         error: "rate limit exceeded",
-        authorization: request.authorization,
+        upstreamEcho: request.authorization?.replace(/^\S+\s+/u, ""),
+        proxyUpstreamEcho: request.proxyAuthorization?.replace(/^\S+\s+/u, ""),
       }),
     }));
 
-    const error = await captureEmbeddingError(createOptions(server.baseUrl, apiKey));
+    const error = await captureEmbeddingError({
+      config: {},
+      provider: "ollama",
+      model: "test-embedding",
+      fallback: "none",
+      remote: {
+        baseUrl: server.baseUrl,
+        headers: {
+          Authorization: `Bearer ${authorizationCredential}`,
+          "Proxy-Authorization": `Basic ${proxyAuthorizationCredential}`,
+        },
+      },
+    });
 
     expect(server.requests).toEqual([
       {
         method: "POST",
         url: "/api/embed",
-        authorization: `Bearer ${apiKey}`,
+        authorization: `Bearer ${authorizationCredential}`,
+        proxyAuthorization: `Basic ${proxyAuthorizationCredential}`,
         proxyAuth: undefined,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
     ]);
     expect(error?.message).toContain("Ollama embed HTTP 429");
     expect(error?.message).toContain("rate limit exceeded");
-    expect(error?.message).not.toContain(apiKey);
-    expect(error?.message).not.toContain("UNIQUEOLLAMASECRET");
+    expect(error?.message).not.toContain(authorizationCredential);
+    expect(error?.message).not.toContain(proxyAuthorizationCredential);
     printProof({
       status: 429,
       safeMarkerPresent: error?.message.includes("rate limit exceeded") === true,
       customSecretAbsent: true,
-      authorizationSecretAbsent: error ? !error.message.includes(apiKey) : false,
+      authorizationSecretAbsent: error ? !error.message.includes(authorizationCredential) : false,
+      proxyAuthorizationSecretAbsent: error
+        ? !error.message.includes(proxyAuthorizationCredential)
+        : false,
       successVectorControl: false,
     });
   });
@@ -177,6 +198,7 @@ describe("Ollama embedding provider real transport", () => {
         method: "POST",
         url: "/api/embed",
         authorization: undefined,
+        proxyAuthorization: undefined,
         proxyAuth,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
@@ -190,6 +212,7 @@ describe("Ollama embedding provider real transport", () => {
       safeMarkerPresent: error?.message.includes("forbidden") === true,
       customSecretAbsent: error ? !error.message.includes(proxyAuth) : false,
       authorizationSecretAbsent: true,
+      proxyAuthorizationSecretAbsent: true,
       successVectorControl: false,
     });
   });
@@ -215,6 +238,7 @@ describe("Ollama embedding provider real transport", () => {
         method: "POST",
         url: "/api/embed",
         authorization: `Bearer ${apiKey}`,
+        proxyAuthorization: undefined,
         proxyAuth,
         body: JSON.stringify({ model: "test-embedding", input: "hello" }),
       },
@@ -227,6 +251,7 @@ describe("Ollama embedding provider real transport", () => {
       safeMarkerPresent: false,
       customSecretAbsent: !renderedVector.includes(proxyAuth),
       authorizationSecretAbsent: !renderedVector.includes(apiKey),
+      proxyAuthorizationSecretAbsent: true,
       successVectorControl: vector.length === 2,
     });
   });

@@ -78,6 +78,7 @@ type OllamaEmbeddingClientConfig = Omit<OllamaEmbeddingClient, "embedBatch">;
 
 export { DEFAULT_OLLAMA_EMBEDDING_MODEL } from "./defaults.js";
 const OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
+const AUTHORIZATION_SECRET_HEADERS = new Set(["authorization", "proxy-authorization"]);
 
 const QUERY_INSTRUCTION_TEMPLATES = [
   {
@@ -416,13 +417,21 @@ export async function createOllamaEmbeddingProvider(
   const client = await resolveOllamaEmbeddingClient(options);
   const embedUrl = `${client.baseUrl.replace(/\/$/, "")}/api/embed`;
   // Arbitrary configured headers can carry credentials whose names the shared
-  // pattern redactor cannot infer. Keep their exact values scoped to this call.
-  const requestHeaderSecretValues = Object.entries(client.headers)
-    .filter(
-      ([headerName, headerValue]) =>
-        headerName.toLowerCase() !== "content-type" || headerValue !== "application/json",
-    )
-    .map(([, headerValue]) => headerValue);
+  // pattern redactor cannot infer. Authorization intermediaries can also
+  // reflect the credential without its scheme, so retain both scoped forms.
+  const requestHeaderSecretValues = Object.entries(client.headers).flatMap(
+    ([headerName, headerValue]) => {
+      const normalizedHeaderName = headerName.toLowerCase();
+      if (normalizedHeaderName === "content-type" && headerValue === "application/json") {
+        return [];
+      }
+      if (!AUTHORIZATION_SECRET_HEADERS.has(normalizedHeaderName)) {
+        return [headerValue];
+      }
+      const credentialComponent = /^\s*\S+\s+(.+?)\s*$/u.exec(headerValue)?.[1];
+      return credentialComponent ? [headerValue, credentialComponent] : [headerValue];
+    },
+  );
 
   const embedMany = async (input: string | string[], signal?: AbortSignal): Promise<number[][]> => {
     const localServiceLease =
