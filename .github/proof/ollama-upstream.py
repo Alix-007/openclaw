@@ -2,6 +2,7 @@
 import argparse
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import quote_plus
 
 
 class ProofHandler(BaseHTTPRequestHandler):
@@ -38,6 +39,9 @@ class ProofHandler(BaseHTTPRequestHandler):
                     "X-Proof-Proxy-Authorization-Component"
                 ),
                 "customUpstreamEcho": self.headers.get("X-Proof-Custom-Component"),
+                "customFormUpstreamEcho": quote_plus(
+                    self.headers.get("X-Proof-Custom-Component", "")
+                ),
             },
         )
 

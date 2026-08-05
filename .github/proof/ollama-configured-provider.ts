@@ -18,7 +18,10 @@ const proofRoot = await mkdtemp(join(tmpdir(), "openclaw-ollama-configured-proof
 const configPath = join(proofRoot, "openclaw.json");
 const authorizationCredential = randomCredential();
 const proxyAuthorizationCredential = randomCredential();
-const customCredential = randomCredential();
+const customCredential = `${randomCredential()} ${randomCredential()}`;
+const customFormEncodedCredential = new URLSearchParams({ value: customCredential })
+  .toString()
+  .slice("value=".length);
 
 process.env.OLLAMA_PROOF_AUTHORIZATION = `Bearer ${authorizationCredential}`;
 process.env.OLLAMA_PROOF_PROXY_AUTHORIZATION = `Basic ${proxyAuthorizationCredential}`;
@@ -101,6 +104,7 @@ try {
     authorizationSecretAbsent: !failureMessage.includes(authorizationCredential),
     proxyAuthorizationSecretAbsent: !failureMessage.includes(proxyAuthorizationCredential),
     customSecretAbsent: !failureMessage.includes(customCredential),
+    customFormSecretAbsent: !failureMessage.includes(customFormEncodedCredential),
     successVectorControl:
       vector.length === 2 &&
       Math.abs((vector[0] ?? 0) - 0.6) < 0.00001 &&
@@ -108,7 +112,7 @@ try {
   };
 
   console.info(
-    `${PROOF_MARKER} status-429=${result.status429} safe-marker-present=${result.safeMarkerPresent} authorization-secret-absent=${result.authorizationSecretAbsent} proxy-authorization-secret-absent=${result.proxyAuthorizationSecretAbsent} custom-secret-absent=${result.customSecretAbsent} success-vector-control=${result.successVectorControl}`,
+    `${PROOF_MARKER} status-429=${result.status429} safe-marker-present=${result.safeMarkerPresent} authorization-secret-absent=${result.authorizationSecretAbsent} proxy-authorization-secret-absent=${result.proxyAuthorizationSecretAbsent} custom-secret-absent=${result.customSecretAbsent} custom-form-secret-absent=${result.customFormSecretAbsent} success-vector-control=${result.successVectorControl}`,
   );
 
   if (Object.values(result).some((value) => !value)) {
