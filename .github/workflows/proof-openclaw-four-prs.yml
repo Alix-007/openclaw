@@ -135,9 +135,10 @@ jobs:
                 packages/memory-host-sdk/src/host/remote-error-redaction.test.ts \
                 packages/memory-host-sdk/src/host/error-utils.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'redacts reflected credentials through the real remote embedding fetch path' "$log_file"
-              grep -F 'redacts reflected credentials from batch upload errors without changing success' "$log_file"
-              echo '[memory credential redaction proof] loopback-json=true loopback-batch=true token68=true secret-output=false' | tee -a "$log_file"
+              grep -F 'redacts lower-case bearer credentials through the real remote embedding fetch path' "$log_file"
+              grep -F 'redacts lower-case bearer credentials from batch errors without changing success' "$log_file"
+              grep -F 'redacts bearer schemes case-insensitively' "$log_file"
+              echo '[memory credential redaction proof] loopback-json=true loopback-batch=true token68=true lowercase-scheme=true secret-output=false' | tee -a "$log_file"
               marker='[memory credential redaction proof]'
               ;;
             ollama)
