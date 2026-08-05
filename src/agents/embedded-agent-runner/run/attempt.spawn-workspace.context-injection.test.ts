@@ -178,6 +178,55 @@ describe("embedded attempt context injection", () => {
     expect(result.bootstrapFiles).toEqual([{ name: "AGENTS.md", content: "bootstrap context" }]);
   });
 
+  it("records an established-workspace turn and skips its continuation", async () => {
+    const resolver = vi.fn(async () => ({
+      bootstrapFiles: [{ name: "AGENTS.md", content: "workspace rules" }],
+      contextFiles: [{ path: "AGENTS.md", content: "workspace rules" }],
+    }));
+
+    const firstTurn = await resolveBootstrapContext({
+      contextInjectionMode: "continuation-skip",
+      bootstrapContextMode: "full",
+      bootstrapContextRunKind: "default",
+      bootstrapMode: "none",
+      completed: false,
+      resolver,
+    });
+
+    expect(firstTurn.result.isContinuationTurn).toBe(false);
+    expect(firstTurn.result.shouldRecordCompletedBootstrapTurn).toBe(true);
+    expect(firstTurn.result.contextFiles).toEqual([
+      { path: "AGENTS.md", content: "workspace rules" },
+    ]);
+
+    const secondTurn = await resolveBootstrapContext({
+      contextInjectionMode: "continuation-skip",
+      bootstrapContextMode: "full",
+      bootstrapContextRunKind: "default",
+      bootstrapMode: "none",
+      completed: true,
+      resolver,
+    });
+
+    expect(secondTurn.result.isContinuationTurn).toBe(true);
+    expect(secondTurn.result.shouldRecordCompletedBootstrapTurn).toBe(false);
+    expect(secondTurn.result.contextFiles).toStrictEqual([]);
+    expect(resolver).toHaveBeenCalledOnce();
+  });
+
+  it("does not let cron write established-workspace bootstrap state", async () => {
+    const { result } = await resolveBootstrapContext({
+      contextInjectionMode: "continuation-skip",
+      bootstrapContextMode: "full",
+      bootstrapContextRunKind: "cron",
+      bootstrapMode: "none",
+      completed: false,
+    });
+
+    expect(result.isContinuationTurn).toBe(false);
+    expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
+  });
+
   it.each(["heartbeat", "commitment-only"] as const)(
     "does not record full bootstrap completion for %s runs",
     async (bootstrapContextRunKind) => {
