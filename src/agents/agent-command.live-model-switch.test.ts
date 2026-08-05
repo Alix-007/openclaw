@@ -2327,6 +2327,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
         agentId: "default",
         sessionId: "session-1",
         sessionKey: "agent:main:main",
+        storePath: "/tmp/openclaw-sessions.json",
       },
     });
     expect(state.persistCliTurnTranscriptMock.mock.invocationCallOrder[0]).toBeLessThan(
@@ -2337,7 +2338,6 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
   it("does not record CLI bootstrap completion when post-run transcript persistence fails", async () => {
     setupSingleAttemptFallback();
     setupStoredSession();
-    state.sessionStoreMock = undefined;
     const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
       typeof makeSuccessResult
     > & {
