@@ -117,7 +117,7 @@ try {
     runId: "bootstrap-deferred-proof",
     sessionTarget,
   });
-  sessionManager.appendResetBoundary("command post-run reset proof");
+  sessionManager.appendResetBoundary("reset");
   const markerFinalized = await finalizePendingCliBootstrapCompletion({
     result: deferredResult,
     transcriptStable: false,
