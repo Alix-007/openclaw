@@ -14,8 +14,8 @@ import {
   shouldPersistCurrentRunSessionCleanup,
 } from "../agent-command-restart-recovery.js";
 import { normalizeAgentRunTerminalDeliverySnapshot } from "../agent-run-terminal-delivery.js";
-import { persistCompletedBootstrapTurn } from "../bootstrap-files.js";
 import { isHeartbeatLifecycleRunKind } from "../bootstrap-mode.js";
+import { finalizePendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
 import { persistPendingFinalDeliveryMarker } from "../pending-final-delivery-marker.js";
 import type { AgentRunSessionTarget } from "../run-session-target.js";
 import { throwAgentRunRestartAbortReason } from "../run-termination.js";
@@ -315,32 +315,25 @@ export async function finalizeEmbeddedAgentCommand(params: {
       }
     }
 
-    if (
-      persistedCliTurnTranscript &&
-      result.meta.bootstrapContextCompletionPending === true &&
-      params.opts.abortSignal?.aborted !== true &&
-      !sessionReboundDuringRun &&
-      !cliPostTurnCompacted &&
-      cliPostTurnLifecycleStable
-    ) {
-      assertAgentRunLifecycleGenerationCurrent(lifecycleGeneration);
-      try {
-        persistCompletedBootstrapTurn({
-          sessionTarget: {
-            agentId: internalSessionTarget?.agentId ?? sessionAgentId,
-            sessionId: runOwnedSessionId,
-            sessionKey: internalSessionTarget?.sessionKey ?? sessionKey ?? runOwnedSessionId,
-            storePath: internalSessionTarget?.storePath ?? storePath,
-          },
-          runId: params.prepared.runId,
-          runner: "cli",
-        });
-      } catch (error) {
-        log.warn(
-          `CLI bootstrap completion persistence failed for ${sessionKey ?? sessionId}: ${formatErrorMessage(error)}`,
-        );
-      }
-    }
+    await finalizePendingCliBootstrapCompletion({
+      result,
+      transcriptStable:
+        persistedCliTurnTranscript && !cliPostTurnCompacted && cliPostTurnLifecycleStable,
+      sessionTarget: {
+        agentId: internalSessionTarget?.agentId ?? sessionAgentId,
+        sessionId: runOwnedSessionId,
+        sessionKey: internalSessionTarget?.sessionKey ?? sessionKey ?? runOwnedSessionId,
+        storePath: internalSessionTarget?.storePath ?? storePath,
+      },
+      runId: params.prepared.runId,
+      isStillEligible: () => {
+        if (params.opts.abortSignal?.aborted === true || sessionReboundDuringRun) {
+          return false;
+        }
+        assertAgentRunLifecycleGenerationCurrent(lifecycleGeneration);
+        return true;
+      },
+    });
 
     const { deliverAgentCommandResult } = await loadDeliveryRuntime();
     const resolveFreshSessionEntryForDelivery =

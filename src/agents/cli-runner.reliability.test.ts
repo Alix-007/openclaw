@@ -49,6 +49,7 @@ import {
   hasCompletedBootstrapTurn,
 } from "./bootstrap-files.js";
 import { testing as cliBackendsTesting } from "./cli-backends.test-support.js";
+import { finalizePendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import {
   restoreCliRunnerTestDeps,
   runPreparedCliAgent,
@@ -581,12 +582,12 @@ describe("runCliAgent reliability", () => {
         const result = await runPreparedCliAgent(context);
         await maintenanceStarted;
 
-        expect(result.meta.bootstrapContextCompletionPending).toBeUndefined();
+        expect(result.meta.bootstrapContextCompletionPending).toBe(true);
         expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
 
         releaseMaintenance?.();
         await context.contextEngineDeferredTurnMaintenance;
-        await Promise.resolve();
+        await finalizePendingCliBootstrapCompletion({ result, transcriptStable: true });
         expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(
           maintenanceKind === "no-rewrite",
         );

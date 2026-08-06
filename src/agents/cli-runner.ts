@@ -41,6 +41,10 @@ import {
   resolveCliRuntimeOwnerFingerprint,
 } from "./cli-auth-epoch.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
+import {
+  setPendingCliBootstrapCompletion,
+  type PendingCliBootstrapCompletion,
+} from "./cli-bootstrap-completion.js";
 import type { CliOutput } from "./cli-output.js";
 import { CliAuthProfilePreparationError } from "./cli-runner/auth-profile-preparation-error.js";
 import { shouldUseClaudeLiveSession } from "./cli-runner/claude-live-session.js";
@@ -618,21 +622,24 @@ async function finalizeCliContextEngineTurn(params: {
 }
 
 /**
- * Owns continuation state only after the runner transcript commits. Deferred
- * maintenance must first prove it completed without rewriting that transcript.
+ * Persists runner-owned completion immediately; otherwise transfers ownership
+ * until every transcript-rewrite owner confirms the turn remained stable.
  */
-function handleCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolean {
+function handleCompletedCliBootstrapTurn(
+  context: PreparedCliRunContext,
+  runnerTranscriptPersisted: boolean,
+): { handled: boolean; pending?: PendingCliBootstrapCompletion } {
   // Post-output transcript/finalization awaits can race with cancellation. Never
   // let an aborted turn suppress workspace context on the next eligible turn.
   if (
     context.shouldRecordCompletedBootstrapTurn !== true ||
     context.params.abortSignal?.aborted === true
   ) {
-    return false;
+    return { handled: false };
   }
   const sessionTarget = context.params.sessionTarget;
   if (!sessionTarget) {
-    return false;
+    return { handled: false };
   }
   const persistCompletion = (): boolean => {
     if (context.params.abortSignal?.aborted === true) {
@@ -656,22 +663,41 @@ function handleCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolea
   };
 
   const maintenanceOutcome = cliDeferredTurnMaintenanceOutcomes.get(context);
-  if (!maintenanceOutcome) {
-    return persistCompletion();
+  if (maintenanceOutcome) {
+    cliDeferredTurnMaintenanceOutcomes.delete(context);
   }
-  cliDeferredTurnMaintenanceOutcomes.delete(context);
-  void maintenanceOutcome
-    .then((outcome) => {
-      if (outcome.status === "completed" && !outcome.changed) {
-        persistCompletion();
-      }
-    })
-    .catch((error: unknown) => {
-      log.warn(`failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
-    });
-  // Runner-owned transcript persistence also owns this deferred marker. Do not
-  // let command post-run race it by treating the marker as still pending.
-  return true;
+  if (runnerTranscriptPersisted && !maintenanceOutcome) {
+    const handled = persistCompletion();
+    return handled
+      ? { handled: true }
+      : {
+          handled: false,
+          pending: {
+            maintenanceSettledWithoutRewrite: Promise.resolve(true),
+            runId: context.params.runId,
+            sessionTarget,
+            sessionManager: context.params.sessionManager,
+          },
+        };
+  }
+  return {
+    handled: false,
+    pending: {
+      maintenanceSettledWithoutRewrite: maintenanceOutcome
+        ? maintenanceOutcome
+            .then((outcome) => outcome.status === "completed" && !outcome.changed)
+            .catch((error: unknown) => {
+              log.warn(
+                `failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`,
+              );
+              return false;
+            })
+        : Promise.resolve(true),
+      runId: context.params.runId,
+      sessionTarget,
+      sessionManager: context.params.sessionManager,
+    },
+  };
 }
 
 /** Prepares and runs one CLI-backed agent turn. */
@@ -1361,7 +1387,10 @@ export async function runPreparedCliAgent(
     effectiveCliSessionId?: string;
     bindingFlushOk?: boolean;
     assistantTranscriptOwned?: boolean;
-    bootstrapCompletionHandled?: boolean;
+    bootstrapCompletion?: {
+      handled: boolean;
+      pending?: PendingCliBootstrapCompletion;
+    };
     usedHistoryPrompt: boolean;
   }): EmbeddedAgentRunResult => {
     const text = resultParams.output.text?.trim();
@@ -1448,7 +1477,7 @@ export async function runPreparedCliAgent(
       ...(context.authBindingSkipsLocalCredential ? { skipLocalCredential: true } : {}),
     });
 
-    return {
+    const result: EmbeddedAgentRunResult = {
       payloads,
       meta: {
         durationMs: Date.now() - context.started,
@@ -1463,7 +1492,8 @@ export async function runPreparedCliAgent(
           : {}),
         systemPromptReport: context.systemPromptReport,
         ...(context.shouldRecordCompletedBootstrapTurn === true &&
-        resultParams.bootstrapCompletionHandled !== true &&
+        resultParams.bootstrapCompletion?.handled !== true &&
+        resultParams.bootstrapCompletion?.pending !== undefined &&
         params.abortSignal?.aborted !== true
           ? { bootstrapContextCompletionPending: true as const }
           : {}),
@@ -1557,6 +1587,13 @@ export async function runPreparedCliAgent(
         ? { messagingToolSourceReplyPayloads: resultParams.output.messagingToolSourceReplyPayloads }
         : {}),
     };
+    if (
+      result.meta.bootstrapContextCompletionPending === true &&
+      resultParams.bootstrapCompletion?.pending
+    ) {
+      setPendingCliBootstrapCompletion(result, resultParams.bootstrapCompletion.pending);
+    }
+    return result;
   };
 
   const executeRun = async (): Promise<EmbeddedAgentRunResult> => {
@@ -1635,15 +1672,16 @@ export async function runPreparedCliAgent(
           ctx: hookContext,
           hookRunner,
         });
-        const bootstrapCompletionHandled = assistantTranscriptPersistence.persisted
-          ? handleCompletedCliBootstrapTurn(context)
-          : false;
+        const bootstrapCompletion = handleCompletedCliBootstrapTurn(
+          context,
+          assistantTranscriptPersistence.persisted,
+        );
         return buildCliRunResult({
           output,
           effectiveCliSessionId,
           bindingFlushOk,
           assistantTranscriptOwned: assistantTranscriptPersistence.owned,
-          bootstrapCompletionHandled,
+          bootstrapCompletion,
           usedHistoryPrompt,
         });
       } catch (error) {

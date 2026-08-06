@@ -26,6 +26,7 @@ import {
   resolveTestModelAliasFromPair,
   resolveTestModelRefFromString,
 } from "./agent-command.live-model-switch.test-helpers.js";
+import { setPendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import {
   INTERNAL_RUNTIME_CONTEXT_BEGIN,
   INTERNAL_RUNTIME_CONTEXT_END,
@@ -2175,6 +2176,53 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
 
     await runBasicAgentCommand();
 
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
+  });
+
+  it("does not record CLI bootstrap completion when deferred maintenance settles after compaction", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    let releaseMaintenance: (() => void) | undefined;
+    const maintenanceSettledWithoutRewrite = new Promise<boolean>((resolve) => {
+      releaseMaintenance = () => resolve(true);
+    });
+    setPendingCliBootstrapCompletion(result, {
+      maintenanceSettledWithoutRewrite,
+      runId: "session-1",
+      sessionTarget: {
+        agentId: "default",
+        sessionId: "session-1",
+        sessionKey: "agent:main:main",
+        storePath: "/tmp/openclaw-sessions.json",
+      },
+    });
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockResolvedValue({
+      kind: "persisted",
+      sessionEntry: state.sessionEntryMock,
+    });
+    state.runCliTurnCompactionLifecycleMock.mockResolvedValueOnce({
+      sessionEntry: state.sessionEntryMock,
+      compacted: true,
+    });
+
+    await runBasicAgentCommand();
+    releaseMaintenance?.();
+    await maintenanceSettledWithoutRewrite;
+
+    expect(state.runCliTurnCompactionLifecycleMock).toHaveBeenCalledOnce();
     expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
   });
 
