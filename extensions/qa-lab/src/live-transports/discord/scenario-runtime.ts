@@ -291,6 +291,16 @@ function redactDiscordScenarioError(error: unknown, environment: DiscordQaScenar
   return message.replace(/\b\d{17,20}\b/gu, "<redacted>");
 }
 
+function createRedactedDiscordScenarioFailure(
+  error: unknown,
+  environment: DiscordQaScenarioEnvironment,
+) {
+  // Keep the original Discord error out of the cause chain because it can contain
+  // credentials or transport identifiers; retain only the redacted diagnostic.
+  const safeCause = new Error(redactDiscordScenarioError(error, environment));
+  return new Error("Discord runtime-context redaction scenario failed", { cause: safeCause });
+}
+
 export async function runDiscordScenario(
   environment: DiscordQaScenarioEnvironment,
   implementation: DiscordQaScenarioImplementation,
@@ -485,9 +495,7 @@ export async function runDiscordScenario(
         },
       };
     } catch (error) {
-      const redactedError = redactDiscordScenarioError(error, environment);
-      // oxlint-disable-next-line preserve-caught-error -- The original cause can contain live Discord credentials or channel identifiers.
-      throw new Error(`Discord runtime-context redaction scenario failed: ${redactedError}`);
+      throw createRedactedDiscordScenarioFailure(error, environment);
     }
   }
   const sent = await discordQaScenarioSupport.testing.sendChannelMessage(
