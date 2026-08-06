@@ -12,8 +12,12 @@
  * to run through the CLI backend on plan limits instead.
  */
 import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { onAgentEvent } from "../../infra/agent-events.js";
+import {
+  assertAgentRunLifecycleGenerationCurrent,
+  onAgentEvent,
+} from "../../infra/agent-events.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
+import { finalizePendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
 import { resolvePreparedRunAdmission } from "../admitted-run-context.js";
 import { stripOpenClawMcpToolPrefix } from "../cli-runner/tool-policy.js";
 import { normalizeToolPolicyName } from "../tool-policy.js";
@@ -203,8 +207,9 @@ async function runEmbeddedAgentViaCliBackend(
     `dispatching embedded run through CLI backend: runId=${params.runId} provider=${dispatch.provider} model=${params.model ?? ""}`,
   );
   let finalAssistantText: string | undefined;
-  try {
-    const result = await runCliAgent({
+  const result = await (async () => {
+    try {
+      const cliResult = await runCliAgent({
       admittedRunContext,
       sessionId: params.sessionId,
       sessionKey: params.sessionKey,
@@ -254,20 +259,35 @@ async function runEmbeddedAgentViaCliBackend(
       // concurrent main turn or overlapping recall may still be using.
       // Session-scoped MCP runtimes are retired below instead.
     });
-    finalAssistantText = result.payloads?.find(
+      finalAssistantText = cliResult.payloads?.find(
       (payload) => payload.isReasoning !== true && typeof payload.text === "string",
-    )?.text;
-    return withoutCliSessionBinding(result);
-  } finally {
-    params.abortSignal?.removeEventListener("abort", flushOnAbort);
-    unsubscribe();
-    // Flush before the promise settles: timeout salvage reads the session
-    // file as soon as the caller observes the rejection.
-    await transcript.finalize(finalAssistantText);
-    if (params.cleanupBundleMcpOnRunEnd === true) {
-      await retireDispatchSessionMcpRuntime(params);
+      )?.text;
+      return withoutCliSessionBinding(cliResult);
+    } finally {
+      params.abortSignal?.removeEventListener("abort", flushOnAbort);
+      unsubscribe();
+      // Flush before the promise settles: timeout salvage reads the session
+      // file as soon as the caller observes the rejection.
+      await transcript.finalize(finalAssistantText);
+      if (params.cleanupBundleMcpOnRunEnd === true) {
+        await retireDispatchSessionMcpRuntime(params);
+      }
     }
-  }
+  })();
+  void finalizePendingCliBootstrapCompletion({
+    result,
+    transcriptStable: true,
+    isStillEligible: () => {
+      if (params.abortSignal?.aborted === true) {
+        return false;
+      }
+      if (params.lifecycleGeneration) {
+        assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+      }
+      return true;
+    },
+  });
+  return result;
 }
 
 /**

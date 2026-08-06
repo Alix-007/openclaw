@@ -27,9 +27,11 @@ import {
   markAuthProfileFailure,
   markAuthProfileSuccess,
 } from "./auth-profiles.js";
-import { persistCompletedBootstrapTurn } from "./bootstrap-files.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
-import type { PendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
+import {
+  finalizeRunnerOwnedPendingCliBootstrapCompletion,
+  type PendingCliBootstrapCompletion,
+} from "./cli-bootstrap-completion.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
   resolveCliSessionId,
@@ -134,10 +136,7 @@ export async function isCliBindingFlushed(
   return false;
 }
 
-/**
- * Persists runner-owned completion immediately; otherwise transfers ownership
- * until every transcript-rewrite owner confirms the turn remained stable.
- */
+/** Transfers completion to the transcript owner after all rewrite-capable work settles. */
 function handleCompletedCliBootstrapTurn(
   context: PreparedCliRunContext,
   runnerTranscriptPersisted: boolean,
@@ -154,41 +153,7 @@ function handleCompletedCliBootstrapTurn(
   if (!sessionTarget) {
     return { handled: false };
   }
-  const persistCompletion = (): boolean => {
-    if (context.params.abortSignal?.aborted === true) {
-      return false;
-    }
-    try {
-      if (context.params.lifecycleGeneration) {
-        assertAgentRunLifecycleGenerationCurrent(context.params.lifecycleGeneration);
-      }
-      persistCompletedBootstrapTurn({
-        sessionTarget,
-        sessionManager: context.params.sessionManager,
-        runId: context.params.runId,
-        runner: "cli",
-      });
-      return true;
-    } catch (error) {
-      log.warn(`failed to persist CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
-      return false;
-    }
-  };
   const maintenanceOutcome = takeCliDeferredTurnMaintenanceOutcome(context);
-  if (runnerTranscriptPersisted && !maintenanceOutcome) {
-    const handled = persistCompletion();
-    return handled
-      ? { handled: true }
-      : {
-          handled: false,
-          pending: {
-            maintenanceSettledWithoutRewrite: Promise.resolve(true),
-            runId: context.params.runId,
-            sessionTarget,
-            sessionManager: context.params.sessionManager,
-          },
-        };
-  }
   return {
     handled: false,
     pending: {
@@ -205,6 +170,7 @@ function handleCompletedCliBootstrapTurn(
       runId: context.params.runId,
       sessionTarget,
       sessionManager: context.params.sessionManager,
+      transcriptOwner: runnerTranscriptPersisted ? "runner" : "caller",
     },
   };
 }
@@ -787,6 +753,7 @@ export async function runPreparedCliAgent(
   let runResult: EmbeddedAgentRunResult | undefined;
   let runError: unknown;
   let runFailed = false;
+  let cleanupSucceeded = true;
   try {
     runResult = await executeRun();
   } catch (error) {
@@ -797,9 +764,10 @@ export async function runPreparedCliAgent(
   try {
     await context.preparedBackend.cleanup?.();
   } catch (error) {
+    cleanupSucceeded = false;
     cleanupError = error as Error;
   }
-  return settleCliBackendOutcome({
+  const settledResult = settleCliBackendOutcome({
     runResult,
     runError,
     runFailed,
@@ -808,4 +776,20 @@ export async function runPreparedCliAgent(
     diagnosticLifecycle,
     failoverContext: cliFailoverContext,
   });
+  if (cleanupSucceeded) {
+    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+      result: settledResult,
+      transcriptStable: true,
+      isStillEligible: () => {
+        if (params.abortSignal?.aborted === true) {
+          return false;
+        }
+        if (params.lifecycleGeneration) {
+          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+        }
+        return true;
+      },
+    });
+  }
+  return settledResult;
 }

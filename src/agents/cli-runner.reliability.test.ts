@@ -505,6 +505,50 @@ describe("runCliAgent reliability", () => {
     }
   });
 
+  it("does not persist a runner-owned bootstrap marker when backend cleanup fails", async () => {
+    const { dir, sessionFile, storePath } = createSessionFile();
+    await seedSqliteSessionEntry({ sessionFile, storePath });
+    const sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath,
+    };
+    const context = buildPreparedContext({
+      sessionKey: sessionTarget.sessionKey,
+      runId: "run-cli-bootstrap-cleanup-failure",
+    });
+    context.params.agentId = "main";
+    context.params.persistAssistantTranscript = true;
+    context.params.sessionFile = sessionFile;
+    context.params.sessionTarget = sessionTarget;
+    context.params.storePath = storePath;
+    context.params.workspaceDir = dir;
+    context.shouldRecordCompletedBootstrapTurn = true;
+    context.preparedBackend.cleanup = vi.fn(async () => {
+      throw new Error("backend cleanup failed");
+    });
+    supervisorSpawnMock.mockResolvedValueOnce(
+      createManagedRun({
+        reason: "exit",
+        exitCode: 0,
+        exitSignal: null,
+        durationMs: 20,
+        stdout: "completed",
+        stderr: "",
+        timedOut: false,
+        noOutputTimedOut: false,
+      }),
+    );
+
+    try {
+      await expect(runPreparedCliAgent(context)).rejects.toThrow("backend cleanup failed");
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it.each(["no-rewrite", "compaction", "reset"] as const)(
     "settles the CLI bootstrap marker after deferred %s maintenance",
     async (maintenanceKind) => {
@@ -586,7 +630,11 @@ describe("runCliAgent reliability", () => {
         await maintenanceStarted;
 
         expect(result.meta.bootstrapContextCompletionPending).toBe(true);
-        expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
+        expect(await loadTranscriptEvents(sessionTarget)).not.toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ customType: FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE }),
+          ]),
+        );
 
         releaseMaintenance?.();
         await context.contextEngineDeferredTurnMaintenance;
