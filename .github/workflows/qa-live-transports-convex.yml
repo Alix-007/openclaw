@@ -752,6 +752,9 @@ jobs:
 
           output_dir=".artifacts/qa-e2e/discord-live-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           scenario_args=()
+          provider_mode="live-frontier"
+          primary_model="openai/gpt-5.6-luna"
+          alternate_model="${OPENCLAW_CI_OPENAI_FALLBACK_MODEL}"
 
           if [[ -n "${INPUT_SCENARIO// }" ]]; then
             IFS=',' read -r -a raw_scenarios <<<"${INPUT_SCENARIO}"
@@ -759,6 +762,11 @@ jobs:
               scenario="$(printf '%s' "${raw}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
               if [[ -n "${scenario}" ]]; then
                 scenario_args+=(--scenario "${scenario}")
+                if [[ "${scenario}" == "discord-runtime-context-redaction" ]]; then
+                  provider_mode="mock-openai"
+                  primary_model="mock-openai/gpt-5.6-luna"
+                  alternate_model="mock-openai/gpt-5.6-luna-alt"
+                fi
               fi
             done
           fi
@@ -768,9 +776,9 @@ jobs:
           pnpm openclaw qa discord \
             --repo-root . \
             --output-dir "${output_dir}" \
-            --provider-mode live-frontier \
-            --model openai/gpt-5.6-luna \
-            --alt-model "${OPENCLAW_CI_OPENAI_FALLBACK_MODEL}" \
+            --provider-mode "${provider_mode}" \
+            --model "${primary_model}" \
+            --alt-model "${alternate_model}" \
             --fast \
             --credential-source convex \
             --credential-role ci \
