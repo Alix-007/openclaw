@@ -78,9 +78,10 @@ function extractDelimitedBlocks(
   options: DelimitedBlockOptions = {},
 ): { text: string; blocks: string[] } {
   let next = text;
+  let searchFrom = 0;
   const blocks: string[] = [];
   for (;;) {
-    const start = findDelimitedTokenIndex(next, begin, 0);
+    const start = findDelimitedTokenIndex(next, begin, searchFrom);
     if (start === -1) {
       return { text: next, blocks };
     }
@@ -111,7 +112,13 @@ function extractDelimitedBlocks(
       ? next.slice(0, blockStart)
       : next.slice(0, start).trimEnd();
     if (finish === -1 || depth !== 0) {
-      return { text: options.preserveIncompleteBlock ? next : before, blocks };
+      if (!options.preserveIncompleteBlock) {
+        return { text: before, blocks };
+      }
+      // An unmatched opener is literal in untrusted text. Keep scanning so it
+      // cannot shield a later complete protected block from removal.
+      searchFrom = start + begin.length;
+      continue;
     }
     let blockEnd = finish + end.length;
     while (next[blockEnd] === " " || next[blockEnd] === "\t") {
@@ -125,6 +132,7 @@ function extractDelimitedBlocks(
       !options.preserveSurroundingWhitespace && before && after
         ? `${before}${options.separator ?? "\n\n"}${after}`
         : `${before}${after}`;
+    searchFrom = 0;
   }
 }
 

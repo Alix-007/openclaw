@@ -323,6 +323,17 @@ describe("resolveDiscordMessageText", () => {
     expect(resolveDiscordMessageText(asMessage({ content }))).toBe(content);
   });
 
+  it("strips a complete runtime-context block after an unmatched opener", () => {
+    const literalPrefix = ["<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user prefix"].join(
+      "\n",
+    );
+    const content = [literalPrefix, internalRuntimeContext(), "Visible tail"].join("\n");
+
+    expect(resolveDiscordMessageText(asMessage({ content }))).toBe(
+      [literalPrefix, "", "Visible tail"].join("\n"),
+    );
+  });
+
   it("returns empty text for an internal-runtime-context-only message", () => {
     expect(resolveDiscordMessageText(asMessage({ content: internalRuntimeContext() }))).toBe("");
   });
