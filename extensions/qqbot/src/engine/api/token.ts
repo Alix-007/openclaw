@@ -7,6 +7,7 @@
  */
 
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   asDateTimestampMs,
   parseStrictPositiveInteger,
@@ -288,8 +289,8 @@ export class TokenManager {
           cause: err,
         });
       }
-      const logBody = rawBody.replace(/"access_token"\s*:\s*"[^"]+"/g, '"access_token": "***"');
-      this.logger?.debug?.(`[qqbot:token:${appId}] <<< Body: ${logBody}`);
+      const presentedBody = redactToolPayloadText(rawBody);
+      this.logger?.debug?.(`[qqbot:token:${appId}] <<< Body: ${presentedBody}`);
 
       let data: { access_token?: string; expires_in?: unknown };
       try {
@@ -299,7 +300,7 @@ export class TokenManager {
       }
 
       if (!data.access_token) {
-        throw new Error(qqbotTokenFailureMessage(JSON.stringify(data)));
+        throw new Error(qqbotTokenFailureMessage(presentedBody));
       }
 
       const nowMs = asDateTimestampMs(Date.now());
