@@ -788,6 +788,14 @@ jobs:
               scenario="$(printf '%s' "${raw}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
               if [[ -n "${scenario}" ]]; then
                 scenario_args+=(--scenario "${scenario}")
+                if [[ "${scenario}" == "discord-runtime-context-redaction" ]]; then
+                  provider_args=(
+                    --provider-mode mock-openai
+                    --model mock-openai/gpt-5.6-luna
+                    --alt-model mock-openai/gpt-5.6-luna-alt
+                    --fast
+                  )
+                fi
               fi
             done
           fi
