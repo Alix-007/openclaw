@@ -131,6 +131,69 @@ try {
     "[bootstrap deferred finalization proof] maintenance=no-rewrite command-post-run=reset marker=false",
   );
 
+  let releaseNonblockingMaintenance: ((settledWithoutRewrite: boolean) => void) | undefined;
+  const nonblockingMaintenance = new Promise<boolean>((resolve) => {
+    releaseNonblockingMaintenance = resolve;
+  });
+  const nonblockingResult = {
+    meta: {
+      durationMs: 0,
+      bootstrapContextCompletionPending: true,
+    },
+  };
+  setPendingCliBootstrapCompletion(nonblockingResult, {
+    maintenanceSettledWithoutRewrite: nonblockingMaintenance,
+    runId: "bootstrap-nonblocking-proof",
+    sessionTarget,
+  });
+  const markerCountBefore = sessionManager
+    .getBranch()
+    .filter(
+      (entry) =>
+        entry.type === "custom" && entry.customType === FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
+    ).length;
+  const nonblockingSettlement = finalizePendingCliBootstrapCompletion({
+    result: nonblockingResult,
+    transcriptStable: true,
+  });
+  let settlementFinished = false;
+  void nonblockingSettlement.then(() => {
+    settlementFinished = true;
+  });
+  let nextTurnReadFinished = false;
+  const nextTurnCompleted = hasCompletedBootstrapTurn(sessionTarget).then((completed) => {
+    nextTurnReadFinished = true;
+    return completed;
+  });
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.equal(settlementFinished, false);
+  assert.equal(nextTurnReadFinished, false);
+  assert.equal(
+    sessionManager
+      .getBranch()
+      .filter(
+        (entry) =>
+          entry.type === "custom" && entry.customType === FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
+      ).length,
+    markerCountBefore,
+  );
+
+  releaseNonblockingMaintenance?.(true);
+  assert.equal(await nonblockingSettlement, true);
+  assert.equal(await nextTurnCompleted, true);
+  assert.equal(
+    sessionManager
+      .getBranch()
+      .filter(
+        (entry) =>
+          entry.type === "custom" && entry.customType === FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
+      ).length,
+    markerCountBefore + 1,
+  );
+  console.log(
+    "[bootstrap nonblocking delivery proof] reply-before-maintenance=true marker-before=false next-turn-serialized=true marker-after=true",
+  );
+
   console.log(
     "[bootstrap continuation SQLite proof] sqlite-marker=true first=injected marker-write=true continuation=skipped memory=injected non-primary=injected cron=injected secret-output=false",
   );
