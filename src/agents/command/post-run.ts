@@ -315,7 +315,7 @@ export async function finalizeEmbeddedAgentCommand(params: {
       }
     }
 
-    await finalizePendingCliBootstrapCompletion({
+    void finalizePendingCliBootstrapCompletion({
       result,
       transcriptStable:
         persistedCliTurnTranscript && !cliPostTurnCompacted && cliPostTurnLifecycleStable,
