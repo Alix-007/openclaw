@@ -305,4 +305,62 @@ describe("engine/utils/stt", () => {
       expect(release).toHaveBeenCalledTimes(1);
     });
   });
+
+  it("redacts a reflected Bearer credential before exposing an STT error", async () => {
+    await withTempDir("openclaw-qqbot-stt-redaction-", async (tmpDir) => {
+      const audioPath = path.join(tmpDir, "voice.wav");
+      fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
+
+      const apiKey = "stt-reflected-secret-1234567890";
+      const release = vi.fn(async () => {});
+      ssrfRuntimeMocks.fetchWithSsrFGuard.mockResolvedValueOnce({
+        response: new Response(
+          `upstream rejected Authorization: Bearer ${apiKey}; request_id=stt-visible-123`,
+          { status: 401 },
+        ),
+        release,
+      });
+
+      let error: unknown;
+      try {
+        await transcribeAudio(audioPath, {
+          channels: {
+            qqbot: {
+              stt: {
+                baseUrl: "https://api.example.test/v1/",
+                apiKey,
+                model: "whisper-1",
+              },
+            },
+          },
+        });
+      } catch (caught) {
+        error = caught;
+      }
+
+      const message = (error as Error).message;
+      expect(message).toContain("STT failed (HTTP 401):");
+      expect(message).toContain("Authorization: Bearer");
+      expect(message).toContain("request_id=stt-visible-123");
+      expect(message).not.toContain(apiKey);
+      expect(message).not.toContain("reflected-secret");
+      expect(release).toHaveBeenCalledTimes(1);
+
+      const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+      if (proofHeadSha) {
+        if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+          throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+        }
+        console.info(
+          `[qqbot stt credential redaction proof] ${JSON.stringify({
+            exactHead: proofHeadSha,
+            status: 401,
+            safeMarkerPresent: message.includes("stt-visible-123"),
+            tokenAbsent: !message.includes(apiKey),
+            fragmentAbsent: !message.includes("reflected-secret"),
+          })}`,
+        );
+      }
+    });
+  });
 });
