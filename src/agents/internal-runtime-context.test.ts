@@ -16,6 +16,7 @@ import {
   OPENCLAW_RUNTIME_CONTEXT_NOTICE,
   OPENCLAW_RUNTIME_EVENT_HEADER,
   relocateCurrentRuntimeContextCarrierToTail,
+  stripCompleteInternalRuntimeContextBlocks,
   stripInternalRuntimeContext,
 } from "./internal-runtime-context.js";
 
@@ -93,6 +94,30 @@ describe("internal runtime context codec", () => {
     expect(extractInternalRuntimeContext(input)).toEqual({
       text: "Visible intro",
     });
+  });
+
+  it("preserves unmatched delimiters when stripping complete blocks from untrusted text", () => {
+    for (const input of [
+      ["Visible intro", INTERNAL_RUNTIME_CONTEXT_BEGIN, "Literal user tail"].join("\n"),
+      ["Visible intro", INTERNAL_RUNTIME_CONTEXT_END, "Literal user tail"].join("\n"),
+    ]) {
+      expect(stripCompleteInternalRuntimeContextBlocks(input)).toBe(input);
+    }
+  });
+
+  it("strips confirmed blocks before preserving a later incomplete block", () => {
+    const completeBlock = [
+      INTERNAL_RUNTIME_CONTEXT_BEGIN,
+      "private runtime metadata",
+      INTERNAL_RUNTIME_CONTEXT_END,
+    ].join("\n");
+    const incompleteBlock = [INTERNAL_RUNTIME_CONTEXT_BEGIN, "Literal user tail"].join("\n");
+
+    expect(
+      stripCompleteInternalRuntimeContextBlocks(
+        ["Visible intro", completeBlock, "Visible middle", incompleteBlock].join("\n"),
+      ),
+    ).toBe(["Visible intro", "", "Visible middle", incompleteBlock].join("\n"));
   });
 
   it("detects canonical runtime context and ignores inline marker mentions", () => {

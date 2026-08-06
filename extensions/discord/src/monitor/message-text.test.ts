@@ -306,6 +306,23 @@ describe("resolveDiscordMessageText", () => {
     expect(text).toBe("Visible intro\n\nVisible outro");
   });
 
+  it.each([
+    {
+      label: "begin",
+      content: ["Visible intro", "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user tail"].join(
+        "\n",
+      ),
+    },
+    {
+      label: "end",
+      content: ["Visible intro", "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user tail"].join(
+        "\n",
+      ),
+    },
+  ])("preserves an unmatched runtime-context $label delimiter", ({ content }) => {
+    expect(resolveDiscordMessageText(asMessage({ content }))).toBe(content);
+  });
+
   it("returns empty text for an internal-runtime-context-only message", () => {
     expect(resolveDiscordMessageText(asMessage({ content: internalRuntimeContext() }))).toBe("");
   });

@@ -65,11 +65,17 @@ function findDelimitedTokenLinePrefixStart(text: string, tokenIndex: number): nu
   return text[lineStart - 2] === "\r" ? lineStart - 2 : lineStart - 1;
 }
 
+type DelimitedBlockOptions = {
+  preserveIncompleteBlock?: boolean;
+  preserveSurroundingWhitespace?: boolean;
+  separator?: string;
+};
+
 function extractDelimitedBlocks(
   text: string,
   begin: string,
   end: string,
-  options: { preserveSurroundingWhitespace?: boolean; separator?: string } = {},
+  options: DelimitedBlockOptions = {},
 ): { text: string; blocks: string[] } {
   let next = text;
   const blocks: string[] = [];
@@ -105,7 +111,7 @@ function extractDelimitedBlocks(
       ? next.slice(0, blockStart)
       : next.slice(0, start).trimEnd();
     if (finish === -1 || depth !== 0) {
-      return { text: before, blocks };
+      return { text: options.preserveIncompleteBlock ? next : before, blocks };
     }
     let blockEnd = finish + end.length;
     while (next[blockEnd] === " " || next[blockEnd] === "\t") {
@@ -126,7 +132,7 @@ function stripDelimitedBlock(
   text: string,
   begin: string,
   end: string,
-  options?: { preserveSurroundingWhitespace?: boolean; separator?: string },
+  options?: DelimitedBlockOptions,
 ): string {
   return extractDelimitedBlocks(text, begin, end, options).text;
 }
@@ -268,6 +274,24 @@ export function stripInternalRuntimeContext(
   return stripRuntimeContextPromptPreface(
     stripLegacyInternalRuntimeContext(withoutDelimitedBlocks),
   );
+}
+
+/**
+ * Remove complete protected blocks from untrusted text.
+ * Unmatched delimiters stay literal so malformed input cannot truncate user content.
+ */
+export function stripCompleteInternalRuntimeContextBlocks(text: string): string {
+  if (!text) {
+    return text;
+  }
+  return extractDelimitedBlocks(
+    text,
+    INTERNAL_RUNTIME_CONTEXT_BEGIN,
+    INTERNAL_RUNTIME_CONTEXT_END,
+    {
+      preserveIncompleteBlock: true,
+    },
+  ).text;
 }
 
 /** Extract protected runtime-context blocks while returning remaining visible text. */

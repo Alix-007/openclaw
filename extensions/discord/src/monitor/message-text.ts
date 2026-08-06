@@ -1,7 +1,7 @@
 // Discord plugin module implements message text behavior.
 import { ComponentType } from "discord-api-types/v10";
 import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { stripInternalRuntimeContext } from "openclaw/plugin-sdk/text-utility-runtime";
+import { stripCompleteInternalRuntimeContextBlocks } from "openclaw/plugin-sdk/text-utility-runtime";
 import type { Message } from "../internal/discord.js";
 import {
   formatDiscordSnapshotAuthor,
@@ -66,7 +66,7 @@ export function resolveDiscordMessageText(
 }
 
 function resolveDiscordVisibleTextCandidate(value: string | null | undefined): string {
-  return stripInternalRuntimeContext(normalizeOptionalString(value) ?? "");
+  return stripCompleteInternalRuntimeContextBlocks(normalizeOptionalString(value) ?? "");
 }
 
 /** Adds native media text only for history surfaces that cannot carry structured facts. */
