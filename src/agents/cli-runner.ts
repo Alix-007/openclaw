@@ -29,6 +29,7 @@ import {
 } from "./auth-profiles.js";
 import { persistCompletedBootstrapTurn } from "./bootstrap-files.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
+import type { PendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
   resolveCliSessionId,
@@ -133,23 +134,25 @@ export async function isCliBindingFlushed(
   return false;
 }
 
-type CliDeferredTurnMaintenanceOutcome = Awaited<
-  NonNullable<ReturnType<typeof takeCliDeferredTurnMaintenanceOutcome>>
->;
-
-/** Owns continuation state only after transcript and deferred maintenance settle safely. */
-function handleCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolean {
+/**
+ * Persists runner-owned completion immediately; otherwise transfers ownership
+ * until every transcript-rewrite owner confirms the turn remained stable.
+ */
+function handleCompletedCliBootstrapTurn(
+  context: PreparedCliRunContext,
+  runnerTranscriptPersisted: boolean,
+): { handled: boolean; pending?: PendingCliBootstrapCompletion } {
   // Post-output transcript/finalization awaits can race with cancellation. Never
   // let an aborted turn suppress workspace context on the next eligible turn.
   if (
     context.shouldRecordCompletedBootstrapTurn !== true ||
     context.params.abortSignal?.aborted === true
   ) {
-    return false;
+    return { handled: false };
   }
   const sessionTarget = context.params.sessionTarget;
   if (!sessionTarget) {
-    return false;
+    return { handled: false };
   }
   const persistCompletion = (): boolean => {
     if (context.params.abortSignal?.aborted === true) {
@@ -172,19 +175,38 @@ function handleCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolea
     }
   };
   const maintenanceOutcome = takeCliDeferredTurnMaintenanceOutcome(context);
-  if (!maintenanceOutcome) {
-    return persistCompletion();
+  if (runnerTranscriptPersisted && !maintenanceOutcome) {
+    const handled = persistCompletion();
+    return handled
+      ? { handled: true }
+      : {
+          handled: false,
+          pending: {
+            maintenanceSettledWithoutRewrite: Promise.resolve(true),
+            runId: context.params.runId,
+            sessionTarget,
+            sessionManager: context.params.sessionManager,
+          },
+        };
   }
-  void maintenanceOutcome
-    .then((outcome: CliDeferredTurnMaintenanceOutcome) => {
-      if (outcome.status === "completed" && !outcome.changed) {
-        persistCompletion();
-      }
-    })
-    .catch((error: unknown) => {
-      log.warn(`failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
-    });
-  return true;
+  return {
+    handled: false,
+    pending: {
+      maintenanceSettledWithoutRewrite: maintenanceOutcome
+        ? maintenanceOutcome
+            .then((outcome) => outcome.status === "completed" && !outcome.changed)
+            .catch((error: unknown) => {
+              log.warn(
+                `failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`,
+              );
+              return false;
+            })
+        : Promise.resolve(true),
+      runId: context.params.runId,
+      sessionTarget,
+      sessionManager: context.params.sessionManager,
+    },
+  };
 }
 
 /** Prepares and runs one CLI-backed agent turn. */
@@ -631,9 +653,10 @@ export async function runPreparedCliAgent(
           ctx: hookContext,
           hookRunner,
         });
-        const bootstrapCompletionHandled = assistantTranscriptPersistence.persisted
-          ? handleCompletedCliBootstrapTurn(context)
-          : false;
+        const bootstrapCompletion = handleCompletedCliBootstrapTurn(
+          context,
+          assistantTranscriptPersistence.persisted,
+        );
         return buildCliRunResult({
           context,
           output,
@@ -641,7 +664,7 @@ export async function runPreparedCliAgent(
           bindingFlushOk,
           assistantTranscriptOwned: assistantTranscriptPersistence.owned,
           assistantTranscriptIdempotencyKey: assistantTranscriptPersistence.idempotencyKey,
-          bootstrapCompletionHandled,
+          bootstrapCompletion,
           usedHistoryPrompt,
           userTurnHandled,
           sessionBindingDisabled,

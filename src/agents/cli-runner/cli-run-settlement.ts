@@ -21,6 +21,10 @@ import { resolveAuthProfileFailureReason } from "../embedded-agent-runner/run/au
 import { buildEmbeddedRunPayloads } from "../embedded-agent-runner/run/payloads.js";
 import { mergeAttemptToolMediaPayloads } from "../embedded-agent-runner/run/tool-media-payloads.js";
 import { coerceToFailoverError, isFailoverError } from "../failover-error.js";
+import {
+  setPendingCliBootstrapCompletion,
+  type PendingCliBootstrapCompletion,
+} from "../cli-bootstrap-completion.js";
 import { CliAuthProfilePreparationError } from "./auth-profile-preparation-error.js";
 import { hashCliReseedPrompt } from "./reseed-envelope.js";
 import type { ClaudeCliRunDiagnosticLifecycle } from "./run-diagnostics.js";
@@ -427,7 +431,10 @@ export function buildCliRunResult(params: {
   bindingFlushOk?: boolean;
   assistantTranscriptOwned?: boolean;
   assistantTranscriptIdempotencyKey?: string;
-  bootstrapCompletionHandled?: boolean;
+  bootstrapCompletion?: {
+    handled: boolean;
+    pending?: PendingCliBootstrapCompletion;
+  };
   usedHistoryPrompt: boolean;
   userTurnHandled: boolean;
   sessionBindingDisabled: boolean;
@@ -436,7 +443,7 @@ export function buildCliRunResult(params: {
   const {
     assistantTranscriptOwned,
     assistantTranscriptIdempotencyKey,
-    bootstrapCompletionHandled,
+    bootstrapCompletion,
     bindingFlushOk,
     context,
     effectiveCliSessionId,
@@ -543,7 +550,7 @@ export function buildCliRunResult(params: {
     ...(context.authBindingSkipsLocalCredential ? { skipLocalCredential: true } : {}),
   });
 
-  return {
+  const result: EmbeddedAgentRunResult = {
     payloads: payloadsWithToolMedia,
     meta: {
       durationMs: Date.now() - context.started,
@@ -556,7 +563,8 @@ export function buildCliRunResult(params: {
         : {}),
       systemPromptReport: context.systemPromptReport,
       ...(context.shouldRecordCompletedBootstrapTurn === true &&
-      bootstrapCompletionHandled !== true &&
+      bootstrapCompletion?.handled !== true &&
+      bootstrapCompletion?.pending !== undefined &&
       runParams.abortSignal?.aborted !== true
         ? { bootstrapContextCompletionPending: true as const }
         : {}),
@@ -641,6 +649,13 @@ export function buildCliRunResult(params: {
       ? { messagingToolSourceReplyPayloads: output.messagingToolSourceReplyPayloads }
       : {}),
   };
+  if (
+    result.meta.bootstrapContextCompletionPending === true &&
+    bootstrapCompletion?.pending
+  ) {
+    setPendingCliBootstrapCompletion(result, bootstrapCompletion.pending);
+  }
+  return result;
 }
 
 export function settleCliBackendOutcome(params: {
