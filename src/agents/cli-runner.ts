@@ -776,20 +776,18 @@ export async function runPreparedCliAgent(
     diagnosticLifecycle,
     failoverContext: cliFailoverContext,
   });
-  if (cleanupSucceeded) {
-    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
-      result: settledResult,
-      transcriptStable: true,
-      isStillEligible: () => {
-        if (params.abortSignal?.aborted === true) {
-          return false;
-        }
-        if (params.lifecycleGeneration) {
-          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
-        }
-        return true;
-      },
-    });
-  }
+  void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+    result: settledResult,
+    transcriptStable: cleanupSucceeded,
+    isStillEligible: () => {
+      if (params.abortSignal?.aborted === true) {
+        return false;
+      }
+      if (params.lifecycleGeneration) {
+        assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+      }
+      return true;
+    },
+  });
   return settledResult;
 }
