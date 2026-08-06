@@ -53,9 +53,6 @@ export type DiscordQaScenarioRun =
       kind: "runtime-context-redaction";
     }
   | {
-      kind: "runtime-context-redaction";
-    }
-  | {
       kind: "thread-reply-filepath-attachment";
       expectedAttachmentFilename: string;
       input: string;
