@@ -639,7 +639,7 @@ async function runCliAgentWithLifecycleInternal(
           payloads: [{ text: durableReasoningText, isReasoning: true }, ...(result.payloads ?? [])],
         }
       : result;
-    await finalizePendingCliBootstrapCompletion({
+    void finalizePendingCliBootstrapCompletion({
       result: resultWithReasoning,
       transcriptStable: true,
       isStillEligible: () => {

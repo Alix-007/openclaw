@@ -2385,6 +2385,51 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     expect(state.persistCompletedBootstrapTurnMock).toHaveBeenCalledOnce();
   });
 
+  it("delivers the completed reply while deferred bootstrap maintenance is pending", async () => {
+    setupSingleAttemptFallback();
+    setupStoredSession();
+    const result = makeSuccessResult("openai", "gpt-5.4") as ReturnType<
+      typeof makeSuccessResult
+    > & {
+      meta: Record<string, unknown> & { executionTrace: Record<string, unknown> };
+    };
+    result.meta.executionTrace = {
+      runner: "cli",
+      fallbackUsed: false,
+      winnerProvider: "openai",
+      winnerModel: "gpt-5.4",
+    };
+    result.meta.bootstrapContextCompletionPending = true;
+    let releaseMaintenance: ((settledWithoutRewrite: boolean) => void) | undefined;
+    const maintenanceSettledWithoutRewrite = new Promise<boolean>((resolve) => {
+      releaseMaintenance = resolve;
+    });
+    setPendingCliBootstrapCompletion(result, {
+      maintenanceSettledWithoutRewrite,
+      runId: "session-1",
+      sessionTarget: {
+        agentId: "default",
+        sessionId: "session-1",
+        sessionKey: "agent:main:main",
+        storePath: "/tmp/openclaw-sessions.json",
+      },
+    });
+    state.runAgentAttemptMock.mockResolvedValue(result);
+    state.persistCliTurnTranscriptMock.mockResolvedValue({
+      kind: "persisted",
+      sessionEntry: state.sessionEntryMock,
+    });
+
+    const command = runBasicAgentCommand();
+    await vi.waitFor(() => expect(state.deliverAgentCommandResultMock).toHaveBeenCalledOnce());
+    expect(state.persistCompletedBootstrapTurnMock).not.toHaveBeenCalled();
+    await command;
+
+    releaseMaintenance?.(true);
+    await maintenanceSettledWithoutRewrite;
+    await vi.waitFor(() => expect(state.persistCompletedBootstrapTurnMock).toHaveBeenCalledOnce());
+  });
+
   it("does not record CLI bootstrap completion after post-run compaction", async () => {
     setupSingleAttemptFallback();
     setupStoredSession();

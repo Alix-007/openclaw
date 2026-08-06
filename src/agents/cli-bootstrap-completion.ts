@@ -1,7 +1,10 @@
 import type { SessionTranscriptRuntimeTarget } from "../config/sessions/session-accessor.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
-import { persistCompletedBootstrapTurn } from "./bootstrap-files.js";
+import {
+  persistCompletedBootstrapTurn,
+  trackPendingBootstrapCompletionSettlement,
+} from "./bootstrap-files.js";
 import type { EmbeddedAgentRunResult } from "./embedded-agent-runner/types.js";
 import type { SessionManager } from "./sessions/session-manager.js";
 
@@ -30,7 +33,7 @@ export function setPendingCliBootstrapCompletion(
 }
 
 /** Finalizes a pending marker only after every transcript-rewrite owner reports stable state. */
-export async function finalizePendingCliBootstrapCompletion(params: {
+export function finalizePendingCliBootstrapCompletion(params: {
   result: EmbeddedAgentRunResult;
   transcriptStable: boolean;
   sessionTarget?: SessionTranscriptRuntimeTarget;
@@ -41,35 +44,38 @@ export async function finalizePendingCliBootstrapCompletion(params: {
   const result = params.result as CliBootstrapCompletionResult;
   const pending = result[CLI_BOOTSTRAP_COMPLETION];
   delete result[CLI_BOOTSTRAP_COMPLETION];
-  if (
-    result.meta.bootstrapContextCompletionPending !== true ||
-    !params.transcriptStable ||
-    params.isStillEligible?.() === false
-  ) {
-    return false;
+  const sessionTarget = params.sessionTarget ?? pending?.sessionTarget;
+  const runId = params.runId ?? pending?.runId;
+  const settlement = (async () => {
+    try {
+      if (
+        result.meta.bootstrapContextCompletionPending !== true ||
+        !params.transcriptStable ||
+        params.isStillEligible?.() === false
+      ) {
+        return false;
+      }
+      if (pending && !(await pending.maintenanceSettledWithoutRewrite)) {
+        return false;
+      }
+      if (params.isStillEligible?.() === false || !sessionTarget || !runId) {
+        return false;
+      }
+      persistCompletedBootstrapTurn({
+        sessionTarget,
+        sessionManager: params.sessionManager ?? pending?.sessionManager,
+        runId,
+        runner: "cli",
+      });
+      return true;
+    } catch (error) {
+      log.warn(`failed to finalize CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
+      return false;
+    }
+  })();
+  if (sessionTarget) {
+    // Delivery may finish first, but the next turn must observe the settled marker decision.
+    trackPendingBootstrapCompletionSettlement(sessionTarget, settlement);
   }
-
-  try {
-    if (pending && !(await pending.maintenanceSettledWithoutRewrite)) {
-      return false;
-    }
-    if (params.isStillEligible?.() === false) {
-      return false;
-    }
-    const sessionTarget = params.sessionTarget ?? pending?.sessionTarget;
-    const runId = params.runId ?? pending?.runId;
-    if (!sessionTarget || !runId) {
-      return false;
-    }
-    persistCompletedBootstrapTurn({
-      sessionTarget,
-      sessionManager: params.sessionManager ?? pending?.sessionManager,
-      runId,
-      runner: "cli",
-    });
-    return true;
-  } catch (error) {
-    log.warn(`failed to finalize CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
-    return false;
-  }
+  return settlement;
 }
