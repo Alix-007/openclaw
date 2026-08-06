@@ -4,6 +4,10 @@ import type { LookupFn } from "openclaw/plugin-sdk/ssrf-runtime";
 // Qqbot tests cover api-client plugin behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
+import {
+  lowercasePercentEscapes,
+  stringifyWithSlashEscapedCredential,
+} from "../../test-support/credential-reflection.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
 const ssrfRuntimeActual = vi.hoisted(() => ({
@@ -33,22 +37,33 @@ async function startReflectedAuthorizationServer(): Promise<string> {
     const reflectedCredential = authorization.startsWith("QQBot ")
       ? authorization.slice("QQBot ".length)
       : authorization;
-    const formEncodedCredential = new URLSearchParams([["echo", reflectedCredential]]).toString();
+    const encodedCredential = lowercasePercentEscapes(encodeURIComponent(reflectedCredential));
+    const formEncodedCredential = lowercasePercentEscapes(
+      new URLSearchParams([["echo", reflectedCredential]]).toString(),
+    );
+    const slashEscapedCredential = reflectedCredential.replaceAll("/", "\\/");
+    const slashEscapedAuthorization = authorization.replaceAll(
+      reflectedCredential,
+      slashEscapedCredential,
+    );
 
     if (req.url === "/json-error") {
       res.writeHead(429, { "content-type": "application/json" });
       res.end(
-        JSON.stringify({
-          code: 40093001,
-          message: `json-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${formEncodedCredential}; Authorization: ${authorization}`,
-        }),
+        stringifyWithSlashEscapedCredential(
+          {
+            code: 40093001,
+            message: `json-marker reflected credential ${reflectedCredential}; encoded ${encodedCredential}; form ${formEncodedCredential}; Authorization: ${authorization}`,
+          },
+          reflectedCredential,
+        ),
       );
       return;
     }
     if (req.url === "/text-error") {
       res.writeHead(503, { "content-type": "text/plain" });
       res.end(
-        `plain-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${formEncodedCredential}; Authorization: ${authorization}`,
+        `plain-marker reflected credential ${slashEscapedCredential}; encoded ${encodedCredential}; form ${formEncodedCredential}; Authorization: ${slashEscapedAuthorization}`,
       );
       return;
     }
@@ -145,6 +160,9 @@ describe("ApiClient", () => {
     const accessToken = `${secretPrefix}/UNIQUE~QQBOTSECRET+${secretSuffix}`;
     const encodedCredential = encodeURIComponent(accessToken);
     const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
+    const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
+    const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
+    const slashEscapedCredential = accessToken.replaceAll("/", "\\/");
     const authorization = `QQBot ${accessToken}`;
     const client = new ApiClient({ baseUrl, logger });
 
@@ -161,6 +179,12 @@ describe("ApiClient", () => {
     expect(jsonError.bizMessage).not.toContain(encodedCredential);
     expect(jsonError.message).not.toContain(formEncodedCredential);
     expect(jsonError.bizMessage).not.toContain(formEncodedCredential);
+    expect(jsonError.message).not.toContain(lowercaseEncodedCredential);
+    expect(jsonError.bizMessage).not.toContain(lowercaseEncodedCredential);
+    expect(jsonError.message).not.toContain(lowercaseFormEncodedCredential);
+    expect(jsonError.bizMessage).not.toContain(lowercaseFormEncodedCredential);
+    expect(jsonError.message).not.toContain(slashEscapedCredential);
+    expect(jsonError.bizMessage).not.toContain(slashEscapedCredential);
     expect(jsonError.message).not.toContain(secretPrefix);
     expect(jsonError.bizMessage).not.toContain(secretSuffix);
     expect(jsonError.message).not.toContain("UNIQUEQQBOTSECRET");
@@ -174,6 +198,9 @@ describe("ApiClient", () => {
     expect(textError.message).not.toContain(accessToken);
     expect(textError.message).not.toContain(encodedCredential);
     expect(textError.message).not.toContain(formEncodedCredential);
+    expect(textError.message).not.toContain(lowercaseEncodedCredential);
+    expect(textError.message).not.toContain(lowercaseFormEncodedCredential);
+    expect(textError.message).not.toContain(slashEscapedCredential);
     expect(textError.message).not.toContain(secretPrefix);
     expect(textError.message).not.toContain(secretSuffix);
     expect(textError.message).not.toContain("UNIQUEQQBOTSECRET");
@@ -192,6 +219,9 @@ describe("ApiClient", () => {
     expect(debugOutput).not.toContain(accessToken);
     expect(debugOutput).not.toContain(encodedCredential);
     expect(debugOutput).not.toContain(formEncodedCredential);
+    expect(debugOutput).not.toContain(lowercaseEncodedCredential);
+    expect(debugOutput).not.toContain(lowercaseFormEncodedCredential);
+    expect(debugOutput).not.toContain(slashEscapedCredential);
     expect(debugOutput).not.toContain(secretPrefix);
     expect(debugOutput).not.toContain(secretSuffix);
     expect(debugOutput).not.toContain("UNIQUEQQBOTSECRET");
@@ -220,6 +250,9 @@ describe("ApiClient", () => {
           tokenAbsent: !redactedSurfaces.includes(accessToken),
           encodedAbsent: !redactedSurfaces.includes(encodedCredential),
           formEncodedAbsent: !redactedSurfaces.includes(formEncodedCredential),
+          lowercaseEncodedAbsent: !redactedSurfaces.includes(lowercaseEncodedCredential),
+          lowercaseFormEncodedAbsent: !redactedSurfaces.includes(lowercaseFormEncodedCredential),
+          jsonSlashEscapedAbsent: !redactedSurfaces.includes(slashEscapedCredential),
           prefixAbsent: !redactedSurfaces.includes(secretPrefix),
           suffixAbsent: !redactedSurfaces.includes(secretSuffix),
           fragmentAbsent: !redactedSurfaces.includes("UNIQUEQQBOTSECRET"),

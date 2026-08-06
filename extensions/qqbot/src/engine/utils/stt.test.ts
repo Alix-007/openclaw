@@ -4,6 +4,10 @@ import * as path from "node:path";
 import { expectDefined } from "@openclaw/normalization-core";
 import { withTempDir } from "openclaw/plugin-sdk/test-env";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  lowercasePercentEscapes,
+  stringifyWithSlashEscapedCredential,
+} from "../../test-support/credential-reflection.js";
 import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
 
 const ssrfRuntimeMocks = vi.hoisted(() => ({
@@ -327,6 +331,9 @@ describe("engine/utils/stt", () => {
       const apiKey = `${secretPrefix}/reflected~secret+${secretSuffix}`;
       const encodedCredential = encodeURIComponent(apiKey);
       const formEncodedCredential = new URLSearchParams([["echo", apiKey]]).toString();
+      const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
+      const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
+      const slashEscapedCredential = apiKey.replaceAll("/", "\\/");
       await withLoopbackHttpServer(
         (req, res) => {
           req.resume();
@@ -337,9 +344,15 @@ describe("engine/utils/stt", () => {
           const reflectedFormCredential = new URLSearchParams([
             ["echo", reflectedCredential],
           ]).toString();
-          res.writeHead(401, { "content-type": "text/plain" });
+          res.writeHead(401, { "content-type": "application/json" });
           res.end(
-            `upstream reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${reflectedFormCredential}; Authorization: ${authorization}; request_id=stt-visible-123`,
+            stringifyWithSlashEscapedCredential(
+              {
+                message: `upstream reflected credential ${reflectedCredential}; encoded ${lowercasePercentEscapes(encodeURIComponent(reflectedCredential))}; form ${lowercasePercentEscapes(reflectedFormCredential)}; Authorization: ${authorization}`,
+                request_id: "stt-visible-123",
+              },
+              reflectedCredential,
+            ),
           );
         },
         async (baseUrl) => {
@@ -375,10 +388,13 @@ describe("engine/utils/stt", () => {
           const message = (error as Error).message;
           expect(message).toContain("STT failed (HTTP 401):");
           expect(message).toContain("Authorization: Bearer");
-          expect(message).toContain("request_id=stt-visible-123");
+          expect(message).toContain("stt-visible-123");
           expect(message).not.toContain(apiKey);
           expect(message).not.toContain(encodedCredential);
           expect(message).not.toContain(formEncodedCredential);
+          expect(message).not.toContain(lowercaseEncodedCredential);
+          expect(message).not.toContain(lowercaseFormEncodedCredential);
+          expect(message).not.toContain(slashEscapedCredential);
           expect(message).not.toContain(secretPrefix);
           expect(message).not.toContain(secretSuffix);
           expect(message).not.toContain("reflected-secret");
@@ -397,6 +413,9 @@ describe("engine/utils/stt", () => {
                 tokenAbsent: !message.includes(apiKey),
                 encodedAbsent: !message.includes(encodedCredential),
                 formEncodedAbsent: !message.includes(formEncodedCredential),
+                lowercaseEncodedAbsent: !message.includes(lowercaseEncodedCredential),
+                lowercaseFormEncodedAbsent: !message.includes(lowercaseFormEncodedCredential),
+                jsonSlashEscapedAbsent: !message.includes(slashEscapedCredential),
                 prefixAbsent: !message.includes(secretPrefix),
                 suffixAbsent: !message.includes(secretSuffix),
                 fragmentAbsent: !message.includes("reflected-secret"),
