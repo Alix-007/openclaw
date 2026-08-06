@@ -711,7 +711,7 @@ function makeSuccessResult(provider: string, model: string) {
       durationMs: 100,
       aborted: false,
       stopReason: "end_turn",
-      agentMeta: { provider, model },
+      agentMeta: { sessionId: "session-1", provider, model },
     },
   };
 }
