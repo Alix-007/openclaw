@@ -1916,21 +1916,19 @@ export async function runPreparedCliAgent(
   if (!runResult) {
     throw new Error("CLI run completed without a result");
   }
-  if (cleanupSucceeded) {
-    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
-      result: runResult,
-      transcriptStable: true,
-      isStillEligible: () => {
-        if (params.abortSignal?.aborted === true) {
-          return false;
-        }
-        if (params.lifecycleGeneration) {
-          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
-        }
-        return true;
-      },
-    });
-  }
+  void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+    result: runResult,
+    transcriptStable: cleanupSucceeded,
+    isStillEligible: () => {
+      if (params.abortSignal?.aborted === true) {
+        return false;
+      }
+      if (params.lifecycleGeneration) {
+        assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+      }
+      return true;
+    },
+  });
   return runResult;
 }
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */
