@@ -12,6 +12,7 @@ on:
         options:
           - bootstrap
           - discord
+          - foundation
           - matrix
           - memory
           - ollama
@@ -129,6 +130,30 @@ jobs:
                 extensions/discord/src/api.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[discord credential redaction proof]'
+              ;;
+            foundation)
+              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
+              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
+                proof-plugin-sdk-api-baseline.sha256
+              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.sha256 \
+                2>&1 | tee -a "$log_file"
+              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
+              pnpm plugin-sdk:surface:check 2>&1 | tee -a "$log_file"
+              node scripts/run-vitest.mjs \
+                src/logging/redact.test.ts \
+                src/agents/provider-http-errors.test.ts \
+                src/agents/tools/web-search-provider-common.redact.test.ts \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              grep -F 'redacts a reflected credential through the trusted guarded transport' "$log_file"
+              grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
+              grep -F 'redacts raw and encoded request secrets from provider metadata' "$log_file"
+              grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
+              grep -F 'suppresses a request-secret prefix truncated at' "$log_file"
+              grep -F 'suppresses a request-secret prefix split by the provider error-body cap' "$log_file"
+              grep -F 'redacts a raw or encoded request secret' "$log_file"
+              grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
+              echo '[foundation credential redaction proof] shared-logging=true provider-http=true guarded-web-transport=true raw=true json=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
+              marker='[foundation credential redaction proof]'
               ;;
             matrix)
               node scripts/run-vitest.mjs \
