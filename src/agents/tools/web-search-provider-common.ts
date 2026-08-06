@@ -6,6 +6,7 @@
 import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import { normalizeResolvedSecretInputString } from "../../config/types.secrets.js";
+import { redactToolPayloadText } from "../../logging/redact.js";
 import { createLazyImportLoader } from "../../shared/lazy-promise.js";
 import { normalizeSecretInput } from "../../utils/normalize-secret-input.js";
 import {
@@ -165,7 +166,13 @@ export async function postTrustedWebToolsJson<T>(
           maxBytes: params.maxErrorBytes ?? 64_000,
         });
         throw new Error(
-          `${params.errorLabel} API error (${response.status}): ${detail.text || response.statusText}`,
+          `${params.errorLabel} API error (${response.status}): ${redactToolPayloadText(
+            detail.text || response.statusText,
+            {
+              exactSecretValues: [params.apiKey],
+              sourceTruncated: detail.truncated,
+            },
+          )}`,
         );
       }
       return await parseResponse(response);
@@ -173,9 +180,16 @@ export async function postTrustedWebToolsJson<T>(
   );
 }
 
-export async function throwWebSearchApiError(res: Response, providerLabel: string): Promise<never> {
+export async function throwWebSearchApiError(
+  res: Response,
+  providerLabel: string,
+  sensitiveValues?: readonly string[],
+): Promise<never> {
   const detailResult = await readResponseText(res, { maxBytes: 64_000 });
-  const detail = detailResult.text;
+  const detail = redactToolPayloadText(detailResult.text || res.statusText, {
+    exactSecretValues: sensitiveValues,
+    sourceTruncated: detailResult.truncated,
+  });
   throw new Error(`${providerLabel} API error (${res.status}): ${detail || res.statusText}`);
 }
 
