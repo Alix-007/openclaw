@@ -7,6 +7,7 @@
 
 import * as fs from "node:fs";
 import path from "node:path";
+import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import { mimeTypeFromFilePath } from "openclaw/plugin-sdk/media-mime";
 import { finiteSecondsToTimerSafeMilliseconds } from "openclaw/plugin-sdk/number-runtime";
 import {
@@ -131,7 +132,9 @@ export async function transcribeAudio(
       const detail = await readResponseTextLimited(resp, STT_ERROR_BODY_LIMIT_BYTES).catch(
         () => "",
       );
-      throw new Error(`STT failed (HTTP ${resp.status}): ${truncateUtf16Safe(detail, 300)}`);
+      throw new Error(
+        `STT failed (HTTP ${resp.status}): ${truncateUtf16Safe(redactToolPayloadText(detail), 300)}`,
+      );
     }
 
     const result = await readProviderJsonResponse<{ text?: string }>(resp, "qqbot.stt");
