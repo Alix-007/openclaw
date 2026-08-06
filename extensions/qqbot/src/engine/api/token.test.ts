@@ -130,6 +130,60 @@ describe("QQBot token manager", () => {
     expect(logger.debug.mock.calls.join("\n")).not.toContain("tail");
   });
 
+  it("redacts a reflected client secret before logging or throwing token errors", async () => {
+    const logger = { debug: vi.fn(), info: vi.fn(), error: vi.fn() };
+    const clientSecret = "token-reflected-secret-1234567890";
+    const release = mockGuardedTokenResponse(
+      JSON.stringify({
+        code: 11244,
+        message: "credential rejected",
+        clientSecret,
+        client_secret: clientSecret,
+        request_id: "token-visible-123",
+      }),
+      {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      },
+    );
+
+    let error: unknown;
+    try {
+      await new TokenManager({ logger }).getAccessToken("app-id", clientSecret);
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    const message = error instanceof Error ? error.message : String(error);
+    const debugOutput = logger.debug.mock.calls.flat().join("\n");
+    for (const output of [debugOutput, message]) {
+      expect(output).toContain("token-visible-123");
+      expect(output).not.toContain(clientSecret);
+      expect(output).not.toContain("reflected-secret");
+    }
+    expect(release).toHaveBeenCalledTimes(1);
+
+    const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+    if (proofHeadSha) {
+      if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+        throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+      }
+      console.info(
+        `[qqbot token credential redaction proof] ${JSON.stringify({
+          exactHead: proofHeadSha,
+          status: 401,
+          debugSafeMarkerPresent: debugOutput.includes("token-visible-123"),
+          errorSafeMarkerPresent: message.includes("token-visible-123"),
+          debugSecretAbsent: !debugOutput.includes(clientSecret),
+          errorSecretAbsent: !message.includes(clientSecret),
+          debugFragmentAbsent: !debugOutput.includes("reflected-secret"),
+          errorFragmentAbsent: !message.includes("reflected-secret"),
+        })}`,
+      );
+    }
+  });
+
   it("passes the RFC2544 SSRF allowance to the token fetch (regression for #88984)", async () => {
     mockGuardedTokenResponse('{"access_token":"token-1","expires_in":7200}', {
       status: 200,
