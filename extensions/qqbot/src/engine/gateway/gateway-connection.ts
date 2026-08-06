@@ -19,6 +19,7 @@ import { flushRefIndex } from "../ref/store.js";
 import { flushKnownUsers } from "../session/known-users.js";
 import { clearSession, loadSession, saveSession } from "../session/session-store.js";
 import type { InteractionEvent } from "../types.js";
+import { redactQQBotCredentialText } from "../utils/credential-redaction.js";
 import { decodeGatewayMessageData } from "./codec.js";
 import { FULL_INTENTS, RATE_LIMIT_DELAY, GatewayOp } from "./constants.js";
 import { dispatchEvent } from "./event-dispatcher.js";
@@ -371,7 +372,8 @@ export class GatewayConnection {
 
       // ---- WebSocket: close ----
       ws.on("close", (code, reason) => {
-        log?.info(`WebSocket closed: ${code} ${reason.toString()}`);
+        const safeReason = redactQQBotCredentialText(reason.toString(), accessToken);
+        log?.info(`WebSocket closed: ${code} ${safeReason}`);
         // cleanup() clears currentWs before a server-driven reconnect. Ignore
         // the old socket's delayed close both during that gap and after the
         // replacement is live, or it can reschedule reconnect handling.
