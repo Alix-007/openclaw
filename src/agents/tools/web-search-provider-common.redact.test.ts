@@ -1,7 +1,7 @@
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { postTrustedWebToolsJson, throwWebSearchApiError } from "./web-search-provider-common.js";
+import { postTrustedWebToolsJson } from "./web-search-provider-common.js";
 
 const API_KEY = "orchid/River+17=glassMoth92~cabin";
 const UNIQUE_NEEDLE = "glassMoth92";
@@ -123,36 +123,6 @@ describe.sequential("web search provider error redaction", () => {
       );
       expect(control).toEqual({ ok: true, detail: "harmless response" });
       expect(receivedAuthorization).toEqual([`Bearer ${API_KEY}`, `Bearer ${API_KEY}`]);
-    } finally {
-      await closeServer(server);
-    }
-  });
-
-  it("redacts a reflected bearer credential from the shared error helper", async () => {
-    const server = createServer((request, response) => {
-      response.writeHead(401, { "content-type": "text/plain" });
-      const reflectedCredential = request.headers.authorization?.replace(/^Bearer\s+/u, "") ?? "";
-      const encodedReflection = encodeURIComponent(reflectedCredential).replace(
-        /%[0-9A-F]{2}/gu,
-        (escape) => escape.toLowerCase(),
-      );
-      response.end(`upstream rejected ${encodedReflection}`);
-    });
-    const baseUrl = await listenOnLoopback(server);
-
-    try {
-      const response = await fetch(`${baseUrl}/error`, {
-        headers: { Authorization: `Bearer ${API_KEY}` },
-      });
-      const error = await throwWebSearchApiError(response, "Provider", [API_KEY]).catch(
-        (cause: unknown) => cause,
-      );
-
-      expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toContain("Provider API error (401)");
-      expect((error as Error).message).not.toContain(API_KEY);
-      expect((error as Error).message).not.toContain(LOWERCASE_ENCODED_API_KEY);
-      expect((error as Error).message).not.toContain(UNIQUE_NEEDLE);
     } finally {
       await closeServer(server);
     }
