@@ -555,6 +555,38 @@ describe("preflightDiscordMessage", () => {
     },
   );
 
+  it("strips a complete runtime-context block after an unmatched opener before dispatch", async () => {
+    const literalPrefix = ["<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user prefix"].join(
+      "\n",
+    );
+    const result = await runDmPreflight({
+      channelId: "dm-runtime-context-unmatched-before-complete",
+      message: createDiscordMessage({
+        id: "m-runtime-context-unmatched-before-complete",
+        channelId: "dm-runtime-context-unmatched-before-complete",
+        content: [
+          literalPrefix,
+          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          '{"private":"runtime metadata"}',
+          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "Visible tail",
+        ].join("\n"),
+        author: {
+          id: "user-1",
+          bot: false,
+          username: "alice",
+        },
+      }),
+      discordConfig: {
+        dmPolicy: "open",
+      } as DiscordConfig,
+    });
+
+    expect(expectPreflightResult(result).baseText).toBe(
+      [literalPrefix, "", "Visible tail"].join("\n"),
+    );
+  });
+
   it("keeps native media when message text is only internal runtime context", async () => {
     const result = await runDmPreflight({
       channelId: "dm-runtime-context-media",

@@ -120,6 +120,21 @@ describe("internal runtime context codec", () => {
     ).toBe(["Visible intro", "", "Visible middle", incompleteBlock].join("\n"));
   });
 
+  it("strips complete blocks after preserving an earlier incomplete opener", () => {
+    const incompleteBlock = [INTERNAL_RUNTIME_CONTEXT_BEGIN, "Literal user prefix"].join("\n");
+    const completeBlock = [
+      INTERNAL_RUNTIME_CONTEXT_BEGIN,
+      "private runtime metadata",
+      INTERNAL_RUNTIME_CONTEXT_END,
+    ].join("\n");
+
+    expect(
+      stripCompleteInternalRuntimeContextBlocks(
+        [incompleteBlock, completeBlock, "Visible tail"].join("\n"),
+      ),
+    ).toBe([incompleteBlock, "", "Visible tail"].join("\n"));
+  });
+
   it("detects canonical runtime context and ignores inline marker mentions", () => {
     expect(
       hasInternalRuntimeContext(
