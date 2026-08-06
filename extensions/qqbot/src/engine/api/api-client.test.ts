@@ -30,20 +30,26 @@ async function startReflectedAuthorizationServer(): Promise<string> {
   const server = createServer((req, res) => {
     req.resume();
     const authorization = req.headers.authorization ?? "";
+    const reflectedCredential = authorization.startsWith("QQBot ")
+      ? authorization.slice("QQBot ".length)
+      : authorization;
+    const formEncodedCredential = new URLSearchParams([["echo", reflectedCredential]]).toString();
 
     if (req.url === "/json-error") {
       res.writeHead(429, { "content-type": "application/json" });
       res.end(
         JSON.stringify({
           code: 40093001,
-          message: `json-marker Authorization: ${authorization}`,
+          message: `json-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${formEncodedCredential}; Authorization: ${authorization}`,
         }),
       );
       return;
     }
     if (req.url === "/text-error") {
       res.writeHead(503, { "content-type": "text/plain" });
-      res.end(`plain-marker Authorization: ${authorization}`);
+      res.end(
+        `plain-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${formEncodedCredential}; Authorization: ${authorization}`,
+      );
       return;
     }
     if (req.url === "/success") {
@@ -134,7 +140,11 @@ describe("ApiClient", () => {
     );
 
     const logger = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
-    const accessToken = "qqbot_AAAAUNIQUEQQBOTSECRETBBBB111122223333";
+    const secretPrefix = "qQApiP";
+    const secretSuffix = "aSfQ";
+    const accessToken = `${secretPrefix}/UNIQUE~QQBOTSECRET+${secretSuffix}`;
+    const encodedCredential = encodeURIComponent(accessToken);
+    const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
     const authorization = `QQBot ${accessToken}`;
     const client = new ApiClient({ baseUrl, logger });
 
@@ -147,6 +157,12 @@ describe("ApiClient", () => {
     expect(jsonError.bizMessage).toContain("json-marker");
     expect(jsonError.message).not.toContain(accessToken);
     expect(jsonError.bizMessage).not.toContain(accessToken);
+    expect(jsonError.message).not.toContain(encodedCredential);
+    expect(jsonError.bizMessage).not.toContain(encodedCredential);
+    expect(jsonError.message).not.toContain(formEncodedCredential);
+    expect(jsonError.bizMessage).not.toContain(formEncodedCredential);
+    expect(jsonError.message).not.toContain(secretPrefix);
+    expect(jsonError.bizMessage).not.toContain(secretSuffix);
     expect(jsonError.message).not.toContain("UNIQUEQQBOTSECRET");
 
     const textError = await captureApiError(() =>
@@ -156,6 +172,10 @@ describe("ApiClient", () => {
     expect(textError.bizCode).toBeUndefined();
     expect(textError.message).toContain("plain-marker");
     expect(textError.message).not.toContain(accessToken);
+    expect(textError.message).not.toContain(encodedCredential);
+    expect(textError.message).not.toContain(formEncodedCredential);
+    expect(textError.message).not.toContain(secretPrefix);
+    expect(textError.message).not.toContain(secretSuffix);
     expect(textError.message).not.toContain("UNIQUEQQBOTSECRET");
 
     const success = await client.request<{ authorization: string; marker: string }>(
@@ -170,6 +190,10 @@ describe("ApiClient", () => {
     expect(debugOutput).toContain("plain-marker");
     expect(debugOutput).toContain("success-marker");
     expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain(encodedCredential);
+    expect(debugOutput).not.toContain(formEncodedCredential);
+    expect(debugOutput).not.toContain(secretPrefix);
+    expect(debugOutput).not.toContain(secretSuffix);
     expect(debugOutput).not.toContain("UNIQUEQQBOTSECRET");
 
     const redactedSurfaces = [
@@ -186,6 +210,7 @@ describe("ApiClient", () => {
       console.info(
         `[qqbot credential redaction proof] ${JSON.stringify({
           exactHead: proofHeadSha,
+          transport: "loopback-http",
           status: [jsonError.httpStatus, textError.httpStatus, 200],
           path: ["/json-error", "/text-error", "/success"],
           safeMarkerPresent:
@@ -193,6 +218,10 @@ describe("ApiClient", () => {
             redactedSurfaces.includes("plain-marker") &&
             redactedSurfaces.includes("success-marker"),
           tokenAbsent: !redactedSurfaces.includes(accessToken),
+          encodedAbsent: !redactedSurfaces.includes(encodedCredential),
+          formEncodedAbsent: !redactedSurfaces.includes(formEncodedCredential),
+          prefixAbsent: !redactedSurfaces.includes(secretPrefix),
+          suffixAbsent: !redactedSurfaces.includes(secretSuffix),
           fragmentAbsent: !redactedSurfaces.includes("UNIQUEQQBOTSECRET"),
         })}`,
       );

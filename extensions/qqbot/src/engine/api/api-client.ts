@@ -10,7 +10,6 @@
  */
 
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   readProviderTextResponse,
   readResponseTextLimited,
@@ -19,6 +18,7 @@ import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-ru
 import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
 import { qqbotApiGuidance, qqbotNetworkGuidance } from "../config/setup-guidance.js";
 import { ApiError, type ApiClientConfig, type EngineLogger } from "../types.js";
+import { redactQQBotCredentialText } from "../utils/credential-redaction.js";
 
 const DEFAULT_BASE_URL = "https://api.sgroup.qq.com";
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -186,7 +186,9 @@ export class ApiClient {
 
       const rawBody = res.ok ? await readBody() : await readBody(QQBOT_API_ERROR_BODY_LIMIT_BYTES);
       if (this.logger?.debug) {
-        this.logger.debug(`[qqbot:api] <<< Body: ${redactToolPayloadText(rawBody)}`);
+        this.logger.debug(
+          `[qqbot:api] <<< Body: ${redactQQBotCredentialText(rawBody, accessToken)}`,
+        );
       }
 
       // Detect non-JSON responses (HTML gateway errors, CDN rate-limit pages).
@@ -212,7 +214,7 @@ export class ApiClient {
           parsedError = JSON.parse(rawBody);
         } catch {
           throw new ApiError(
-            `API Error [${path}] HTTP ${res.status}: ${truncateUtf16Safe(redactToolPayloadText(rawBody), 200)}`,
+            `API Error [${path}] HTTP ${res.status}: ${truncateUtf16Safe(redactQQBotCredentialText(rawBody, accessToken), 200)}`,
             res.status,
             path,
           );
@@ -224,7 +226,7 @@ export class ApiClient {
             : undefined;
         const rawMessage = typeof error?.message === "string" ? error.message : undefined;
         const redactedMessage =
-          rawMessage === undefined ? undefined : redactToolPayloadText(rawMessage);
+          rawMessage === undefined ? undefined : redactQQBotCredentialText(rawMessage, accessToken);
         const bizCode =
           typeof error?.code === "number"
             ? error.code
@@ -232,7 +234,7 @@ export class ApiClient {
               ? error.err_code
               : undefined;
         throw new ApiError(
-          `API Error [${path}]: ${redactedMessage ?? redactToolPayloadText(rawBody)}. ${qqbotApiGuidance(res.status, bizCode)}`,
+          `API Error [${path}]: ${redactedMessage ?? redactQQBotCredentialText(rawBody, accessToken)}. ${qqbotApiGuidance(res.status, bizCode)}`,
           res.status,
           path,
           bizCode,

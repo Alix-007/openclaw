@@ -1,17 +1,33 @@
 // Qqbot tests cover token plugin behavior.
 import { getEventListeners } from "node:events";
+import type { IncomingMessage } from "node:http";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
 import { TokenManager } from "./token.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
+const ssrfRuntimeActual = vi.hoisted(() => ({
+  fetchWithSsrFGuard: undefined as
+    | typeof import("openclaw/plugin-sdk/ssrf-runtime").fetchWithSsrFGuard
+    | undefined,
+}));
 
 vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
   const actual = await importOriginal<typeof import("openclaw/plugin-sdk/ssrf-runtime")>();
+  ssrfRuntimeActual.fetchWithSsrFGuard = actual.fetchWithSsrFGuard;
   return {
     ...actual,
     fetchWithSsrFGuard: fetchWithSsrFGuardMock,
   };
 });
+
+async function readRequestBody(request: IncomingMessage): Promise<string> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of request) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
 
 function mockGuardedTokenResponse(body: BodyInit, init?: ResponseInit): ReturnType<typeof vi.fn> {
   const release = vi.fn(async () => {});
@@ -132,56 +148,105 @@ describe("QQBot token manager", () => {
 
   it("redacts a reflected client secret before logging or throwing token errors", async () => {
     const logger = { debug: vi.fn(), info: vi.fn(), error: vi.fn() };
-    const clientSecret = "token-reflected-secret-1234567890";
-    const release = mockGuardedTokenResponse(
-      JSON.stringify({
-        code: 11244,
-        message: "credential rejected",
-        clientSecret,
-        client_secret: clientSecret,
-        request_id: "token-visible-123",
-      }),
-      {
-        status: 401,
-        headers: { "content-type": "application/json" },
+    const secretPrefix = "qQTokP";
+    const secretSuffix = "tSfQ";
+    const clientSecret = `${secretPrefix}/reflected~secret+${secretSuffix}`;
+    const encodedCredential = encodeURIComponent(clientSecret);
+    const formEncodedCredential = new URLSearchParams([["echo", clientSecret]]).toString();
+    await withLoopbackHttpServer(
+      (request, response) => {
+        void readRequestBody(request).then(
+          (rawBody) => {
+            const parsed = JSON.parse(rawBody) as { clientSecret?: unknown };
+            const reflectedCredential =
+              typeof parsed.clientSecret === "string" ? parsed.clientSecret : "missing";
+            const reflectedFormCredential = new URLSearchParams([
+              ["echo", reflectedCredential],
+            ]).toString();
+            response.writeHead(401, { "content-type": "application/json" });
+            response.end(
+              JSON.stringify({
+                code: 11244,
+                message: "credential rejected",
+                clientSecret: reflectedCredential,
+                client_secret: reflectedCredential,
+                echoed: reflectedCredential,
+                encoded: encodeURIComponent(reflectedCredential),
+                form: reflectedFormCredential,
+                request_id: "token-visible-123",
+              }),
+            );
+          },
+          () => {
+            response.writeHead(500, { "content-type": "text/plain" });
+            response.end("request body read failed");
+          },
+        );
+      },
+      async (baseUrl) => {
+        const actualGuard = ssrfRuntimeActual.fetchWithSsrFGuard;
+        if (!actualGuard) {
+          throw new Error("expected the real SSRF guard implementation");
+        }
+        const loopbackFetch = vi.fn(
+          async (_input: RequestInfo | URL, init?: RequestInit) =>
+            await fetch(`${baseUrl}/token`, init),
+        );
+        fetchWithSsrFGuardMock.mockImplementationOnce(
+          async (request: Parameters<typeof actualGuard>[0]) =>
+            await actualGuard({ ...request, fetchImpl: loopbackFetch }),
+        );
+
+        let error: unknown;
+        try {
+          await new TokenManager({ logger }).getAccessToken("app-id", clientSecret);
+        } catch (caught) {
+          error = caught;
+        }
+
+        expect(error).toBeInstanceOf(Error);
+        const message = error instanceof Error ? error.message : String(error);
+        const debugOutput = logger.debug.mock.calls.flat().join("\n");
+        for (const output of [debugOutput, message]) {
+          expect(output).toContain("token-visible-123");
+          expect(output).not.toContain(clientSecret);
+          expect(output).not.toContain(encodedCredential);
+          expect(output).not.toContain(formEncodedCredential);
+          expect(output).not.toContain(secretPrefix);
+          expect(output).not.toContain(secretSuffix);
+          expect(output).not.toContain("reflected-secret");
+        }
+        expect(loopbackFetch).toHaveBeenCalledTimes(1);
+
+        const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+        if (proofHeadSha) {
+          if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+            throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+          }
+          console.info(
+            `[qqbot token credential redaction proof] ${JSON.stringify({
+              exactHead: proofHeadSha,
+              transport: "loopback-http",
+              status: 401,
+              debugSafeMarkerPresent: debugOutput.includes("token-visible-123"),
+              errorSafeMarkerPresent: message.includes("token-visible-123"),
+              debugSecretAbsent: !debugOutput.includes(clientSecret),
+              errorSecretAbsent: !message.includes(clientSecret),
+              debugEncodedAbsent: !debugOutput.includes(encodedCredential),
+              errorEncodedAbsent: !message.includes(encodedCredential),
+              debugFormEncodedAbsent: !debugOutput.includes(formEncodedCredential),
+              errorFormEncodedAbsent: !message.includes(formEncodedCredential),
+              debugPrefixAbsent: !debugOutput.includes(secretPrefix),
+              errorPrefixAbsent: !message.includes(secretPrefix),
+              debugSuffixAbsent: !debugOutput.includes(secretSuffix),
+              errorSuffixAbsent: !message.includes(secretSuffix),
+              debugFragmentAbsent: !debugOutput.includes("reflected-secret"),
+              errorFragmentAbsent: !message.includes("reflected-secret"),
+            })}`,
+          );
+        }
       },
     );
-
-    let error: unknown;
-    try {
-      await new TokenManager({ logger }).getAccessToken("app-id", clientSecret);
-    } catch (caught) {
-      error = caught;
-    }
-
-    expect(error).toBeInstanceOf(Error);
-    const message = error instanceof Error ? error.message : String(error);
-    const debugOutput = logger.debug.mock.calls.flat().join("\n");
-    for (const output of [debugOutput, message]) {
-      expect(output).toContain("token-visible-123");
-      expect(output).not.toContain(clientSecret);
-      expect(output).not.toContain("reflected-secret");
-    }
-    expect(release).toHaveBeenCalledTimes(1);
-
-    const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
-    if (proofHeadSha) {
-      if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
-        throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
-      }
-      console.info(
-        `[qqbot token credential redaction proof] ${JSON.stringify({
-          exactHead: proofHeadSha,
-          status: 401,
-          debugSafeMarkerPresent: debugOutput.includes("token-visible-123"),
-          errorSafeMarkerPresent: message.includes("token-visible-123"),
-          debugSecretAbsent: !debugOutput.includes(clientSecret),
-          errorSecretAbsent: !message.includes(clientSecret),
-          debugFragmentAbsent: !debugOutput.includes("reflected-secret"),
-          errorFragmentAbsent: !message.includes("reflected-secret"),
-        })}`,
-      );
-    }
   });
 
   it("passes the RFC2544 SSRF allowance to the token fetch (regression for #88984)", async () => {

@@ -7,7 +7,6 @@
 
 import * as fs from "node:fs";
 import path from "node:path";
-import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import { mimeTypeFromFilePath } from "openclaw/plugin-sdk/media-mime";
 import { finiteSecondsToTimerSafeMilliseconds } from "openclaw/plugin-sdk/number-runtime";
 import {
@@ -16,6 +15,7 @@ import {
 } from "openclaw/plugin-sdk/provider-http";
 import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
 import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { redactQQBotCredentialText } from "./credential-redaction.js";
 import {
   normalizeOptionalString,
   asOptionalObjectRecord as asRecord,
@@ -133,7 +133,7 @@ export async function transcribeAudio(
         () => "",
       );
       throw new Error(
-        `STT failed (HTTP ${resp.status}): ${truncateUtf16Safe(redactToolPayloadText(detail), 300)}`,
+        `STT failed (HTTP ${resp.status}): ${truncateUtf16Safe(redactQQBotCredentialText(detail, sttCfg.apiKey), 300)}`,
       );
     }
 
