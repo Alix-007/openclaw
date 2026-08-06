@@ -4,12 +4,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { filterHeartbeatTranscriptArtifacts } from "../../../auto-reply/heartbeat-filter.js";
 import { HEARTBEAT_PROMPT } from "../../../auto-reply/heartbeat.js";
 import type { BootstrapContextRunKind } from "../../bootstrap-mode.js";
+import { resolveBootstrapContextInjection } from "../../bootstrap-routing.js";
 import { limitHistoryTurns } from "../history.js";
 import { buildEmbeddedMessageActionDiscoveryInput } from "../message-action-discovery-input.js";
 import {
   assembleAttemptContextEngine,
   type AttemptContextEngine,
-  resolveAttemptBootstrapContext,
 } from "./attempt.context-engine-helpers.js";
 import { resetEmbeddedAttemptHarness } from "./attempt.spawn-workspace.test-support.js";
 
@@ -32,7 +32,7 @@ async function resolveBootstrapContext(params: {
       contextFiles: [],
     }));
 
-  const result = await resolveAttemptBootstrapContext({
+  const result = await resolveBootstrapContextInjection({
     contextInjectionMode: params.contextInjectionMode ?? "always",
     bootstrapContextMode: params.bootstrapContextMode ?? "full",
     bootstrapContextRunKind: params.bootstrapContextRunKind ?? "default",
