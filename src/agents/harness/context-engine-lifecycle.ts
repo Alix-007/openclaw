@@ -445,6 +445,22 @@ export async function runHarnessContextEngineMaintenance(params: {
   withSessionManagerRewriteLock?: <T>(operation: () => Promise<T> | T) => Promise<T>;
   config?: OpenClawConfig;
 }) {
+  return await runHarnessContextEngineMaintenanceWithOutcome(params);
+}
+
+type HarnessContextEngineMaintenanceWithOutcomeParams = Omit<
+  Parameters<typeof runHarnessContextEngineMaintenance>[0],
+  "onDeferredMaintenance"
+> & {
+  onDeferredMaintenance?: NonNullable<
+    Parameters<typeof runContextEngineMaintenance>[0]["onDeferredMaintenance"]
+  >;
+};
+
+/** Internal harness maintenance path that also exposes the authoritative rewrite outcome. */
+export async function runHarnessContextEngineMaintenanceWithOutcome(
+  params: HarnessContextEngineMaintenanceWithOutcomeParams,
+) {
   const runtimeSettings = buildHarnessContextEngineRuntimeSettings(params);
   return await runContextEngineMaintenance({
     contextEngine: params.contextEngine,

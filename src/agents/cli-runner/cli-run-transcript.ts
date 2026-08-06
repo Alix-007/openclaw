@@ -15,7 +15,7 @@ import {
 } from "../harness/agent-end-side-effects.js";
 import {
   finalizeHarnessContextEngineTurn,
-  runHarnessContextEngineMaintenance,
+  runHarnessContextEngineMaintenanceWithOutcome,
 } from "../harness/context-engine-lifecycle.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "../harness/hook-helpers.js";
 import type { AgentMessage } from "../runtime/index.js";
@@ -24,6 +24,27 @@ import { buildAssistantMessage, buildUsageWithNoCost } from "../stream-message-s
 import type { PreparedCliRunContext, RunCliAgentParams } from "./types.js";
 
 const log = createSubsystemLogger("agents/cli-runner");
+
+type CliDeferredTurnMaintenanceOutcomePromise = Parameters<
+  NonNullable<
+    Parameters<typeof runHarnessContextEngineMaintenanceWithOutcome>[0]["onDeferredMaintenance"]
+  >
+>[1];
+
+const cliDeferredTurnMaintenanceOutcomes = new WeakMap<
+  PreparedCliRunContext,
+  CliDeferredTurnMaintenanceOutcomePromise
+>();
+
+export function takeCliDeferredTurnMaintenanceOutcome(
+  context: PreparedCliRunContext,
+): CliDeferredTurnMaintenanceOutcomePromise | undefined {
+  const outcome = cliDeferredTurnMaintenanceOutcomes.get(context);
+  if (outcome) {
+    cliDeferredTurnMaintenanceOutcomes.delete(context);
+  }
+  return outcome;
+}
 
 export function buildCliHookUserMessage(prompt: string): unknown {
   return {
@@ -380,6 +401,7 @@ export async function finalizeCliContextEngineTurn(params: {
     withSessionManagerRewriteLock: <T>(operation: () => Promise<T> | T) => Promise<T>;
   }) => {
     let deferredTurnMaintenance: Promise<void> | undefined;
+    let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
     const result = await finalizeHarnessContextEngineTurn({
       contextEngine: context.contextEngine,
       promptError: false,
@@ -397,17 +419,23 @@ export async function finalizeCliContextEngineTurn(params: {
       providerId: runParams.provider,
       modelId: context.modelId,
       runMaintenance: async (maintenanceParams) =>
-        await runHarnessContextEngineMaintenance({
+        await runHarnessContextEngineMaintenanceWithOutcome({
           ...maintenanceParams,
           withSessionManagerRewriteLock: transcript.withSessionManagerRewriteLock,
-          onDeferredMaintenance: (promise) => {
+          onDeferredMaintenance: (promise, outcome) => {
             deferredTurnMaintenance = promise;
+            deferredTurnMaintenanceOutcome = outcome;
           },
         }),
       warn: (message) => log.warn(message),
     });
-    if (result.postTurnFinalizationSucceeded && deferredTurnMaintenance) {
+    if (
+      result.postTurnFinalizationSucceeded &&
+      deferredTurnMaintenance &&
+      deferredTurnMaintenanceOutcome
+    ) {
       context.contextEngineDeferredTurnMaintenance = deferredTurnMaintenance;
+      cliDeferredTurnMaintenanceOutcomes.set(context, deferredTurnMaintenanceOutcome);
     }
   };
   const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();

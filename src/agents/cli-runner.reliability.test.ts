@@ -18,6 +18,7 @@ import {
 } from "../config/sessions/session-accessor.js";
 import { CURRENT_SESSION_VERSION } from "../config/sessions/version.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { ContextEngine } from "../context-engine/types.js";
 import {
   markMcpLoopbackRequestClassified,
   markMcpLoopbackRequestFinished,
@@ -73,6 +74,7 @@ import * as sessionHistoryModule from "./cli-runner/session-history.js";
 import type { PreparedCliRunContext } from "./cli-runner/types.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "./harness/hook-helpers.js";
 import { MAX_AGENT_HOOK_HISTORY_MESSAGES } from "./harness/hook-history.js";
+import { SessionManager } from "./sessions/index.js";
 
 const MAX_CLI_SESSION_HISTORY_MESSAGES = MAX_AGENT_HOOK_HISTORY_MESSAGES;
 
@@ -501,6 +503,108 @@ describe("runCliAgent reliability", () => {
       fs.rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it.each(["no-rewrite", "compaction", "reset"] as const)(
+    "settles the CLI bootstrap marker after deferred %s maintenance",
+    async (maintenanceKind) => {
+      const { dir, sessionFile, storePath } = createSessionFile();
+      await seedSqliteSessionEntry({ sessionFile, storePath });
+      const sessionTarget = {
+        agentId: "main",
+        sessionId: "s1",
+        sessionKey: "agent:main:main",
+        storePath,
+      };
+      let releaseMaintenance: (() => void) | undefined;
+      const maintenanceGate = new Promise<void>((resolve) => {
+        releaseMaintenance = resolve;
+      });
+      let announceMaintenanceStarted: (() => void) | undefined;
+      const maintenanceStarted = new Promise<void>((resolve) => {
+        announceMaintenanceStarted = resolve;
+      });
+      const maintain = vi.fn<NonNullable<ContextEngine["maintain"]>>(async () => {
+        announceMaintenanceStarted?.();
+        await maintenanceGate;
+        const sessionManager = SessionManager.open(sessionTarget);
+        if (maintenanceKind === "compaction") {
+          const firstMessage = sessionManager.getBranch().find((entry) => entry.type === "message");
+          if (!firstMessage) {
+            throw new Error("expected persisted assistant message before deferred compaction");
+          }
+          sessionManager.appendCompaction("deferred maintenance", firstMessage.id, 1);
+        } else if (maintenanceKind === "reset") {
+          sessionManager.appendResetBoundary("reset");
+        }
+        const changed = maintenanceKind !== "no-rewrite";
+        return {
+          changed,
+          bytesFreed: changed ? 1 : 0,
+          rewrittenEntries: changed ? 1 : 0,
+        };
+      });
+      const contextEngine = {
+        info: {
+          id: "test-background-context-engine",
+          name: "Test background context engine",
+          turnMaintenanceMode: "background" as const,
+        },
+        ingest: async () => ({ ingested: true }),
+        assemble: async ({ messages }) => ({ messages, estimatedTokens: 0 }),
+        compact: async () => ({ ok: true, compacted: false }),
+        maintain,
+      } satisfies ContextEngine;
+      const context = buildPreparedContext({
+        sessionKey: sessionTarget.sessionKey,
+        runId: `run-cli-bootstrap-marker-${maintenanceKind}`,
+      });
+      context.params.agentId = "main";
+      context.params.persistAssistantTranscript = true;
+      context.params.sessionFile = sessionFile;
+      context.params.sessionTarget = sessionTarget;
+      context.params.storePath = storePath;
+      context.params.workspaceDir = dir;
+      context.contextEngine = contextEngine;
+      context.contextEngineTurnPrompt = context.params.prompt;
+      context.shouldRecordCompletedBootstrapTurn = true;
+      supervisorSpawnMock.mockResolvedValueOnce(
+        createManagedRun({
+          reason: "exit",
+          exitCode: 0,
+          exitSignal: null,
+          durationMs: 20,
+          stdout: "completed",
+          stderr: "",
+          timedOut: false,
+          noOutputTimedOut: false,
+        }),
+      );
+
+      try {
+        const result = await runPreparedCliAgent(context);
+        await maintenanceStarted;
+
+        expect(result.meta.bootstrapContextCompletionPending).toBeUndefined();
+        expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
+
+        releaseMaintenance?.();
+        await context.contextEngineDeferredTurnMaintenance;
+        await Promise.resolve();
+        expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(
+          maintenanceKind === "no-rewrite",
+        );
+        if (maintenanceKind !== "no-rewrite") {
+          expect(await loadTranscriptEvents(sessionTarget)).toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: maintenanceKind })]),
+          );
+        }
+      } finally {
+        releaseMaintenance?.();
+        await context.contextEngineDeferredTurnMaintenance;
+        fs.rmSync(dir, { recursive: true, force: true });
+      }
+    },
+  );
 
   it("defers the CLI bootstrap marker when command post-run owns the transcript", async () => {
     const { dir, sessionFile, storePath } = createSessionFile();
