@@ -138,8 +138,8 @@ const defaultPublicDeprecatedExportsByEntrypointBudget = Object.freeze({
   "agent-media-payload": 3,
   // +2: deprecated media projection type and builder.
   "reply-payload": 2,
-  // +1: flushLogger projected through the deprecated text-runtime barrel.
-  "text-runtime": 192,
+  // +2: flushLogger and request-scoped redaction options through deprecated text-runtime.
+  "text-runtime": 193,
   "agent-runtime": 2,
   "channel-secret-runtime": 23,
   // +4: session-write lease no-op compatibility stubs through the 2026.10 train.
