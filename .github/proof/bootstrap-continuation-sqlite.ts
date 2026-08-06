@@ -18,11 +18,10 @@ const { upsertSessionEntry } = await importTarget("src/config/sessions/session-a
 const { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, hasCompletedBootstrapTurn } = await importTarget(
   "src/agents/bootstrap-files.ts",
 );
-const { resolveWorkspaceBootstrapRouting } = await importTarget("src/agents/bootstrap-routing.ts");
-const { SessionManager } = await importTarget("src/agents/sessions/session-manager.ts");
-const { resolveAttemptBootstrapContext } = await importTarget(
-  "src/agents/embedded-agent-runner/run/attempt.context-engine-helpers.ts",
+const { resolveBootstrapContextInjection, resolveWorkspaceBootstrapRouting } = await importTarget(
+  "src/agents/bootstrap-routing.ts",
 );
+const { SessionManager } = await importTarget("src/agents/sessions/session-manager.ts");
 const { shouldPersistCompletedBootstrapTurn } = await importTarget(
   "src/agents/embedded-agent-runner/run/attempt.thread-helpers.ts",
 );
@@ -55,7 +54,7 @@ async function runTurn(params: {
     hasBootstrapFileAccess: true,
     bootstrapContextRunKind: params.runKind ?? "default",
   });
-  return await resolveAttemptBootstrapContext({
+  return await resolveBootstrapContextInjection({
     contextInjectionMode: "continuation-skip",
     bootstrapContextMode: "full",
     bootstrapContextRunKind: params.runKind ?? "default",
