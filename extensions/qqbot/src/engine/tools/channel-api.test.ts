@@ -3,12 +3,19 @@
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
+import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
+const ssrfRuntimeActual = vi.hoisted(() => ({
+  fetchWithSsrFGuard: undefined as
+    | typeof import("openclaw/plugin-sdk/ssrf-runtime").fetchWithSsrFGuard
+    | undefined,
+}));
 const originalDebug = process.env.QQBOT_DEBUG;
 
 vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
   const actual = await importOriginal<typeof import("openclaw/plugin-sdk/ssrf-runtime")>();
+  ssrfRuntimeActual.fetchWithSsrFGuard = actual.fetchWithSsrFGuard;
   return {
     ...actual,
     fetchWithSsrFGuard: fetchWithSsrFGuardMock,
@@ -316,68 +323,107 @@ describe("executeChannelApi", () => {
   it("redacts reflected authorization from error details and debug output", async () => {
     process.env.QQBOT_DEBUG = "1";
     const debugErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const release = vi.fn(async () => {});
-    const accessToken = "qqbot_AAAAUNIQUECHANNELSECRETBBBB111122223333";
-    const authorization = `QQBot ${accessToken}`;
-    fetchWithSsrFGuardMock.mockResolvedValueOnce({
-      response: new Response(
-        JSON.stringify({
-          message: `channel-marker Authorization: ${authorization}`,
-          nested: { reflected: `Authorization: ${authorization}` },
-        }),
-        {
-          status: 401,
-          statusText: "Unauthorized",
-          headers: { "content-type": "application/json" },
-        },
-      ),
-      release,
-    });
-
-    const result = await executeChannelApi(
-      { method: "GET", path: "/guilds/123/channels" },
-      { accessToken },
-    );
-
-    expect(result.details).toMatchObject({
-      error: expect.stringContaining("channel-marker"),
-      status: 401,
-      path: "/guilds/123/channels",
-      details: {
-        message: expect.stringContaining("channel-marker"),
-        nested: { reflected: expect.any(String) },
+    const secretPrefix = "qQChnP";
+    const secretSuffix = "cSfQ";
+    const accessToken = `${secretPrefix}/UNIQUE~CHANNELSECRET+${secretSuffix}`;
+    const encodedCredential = encodeURIComponent(accessToken);
+    const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
+    await withLoopbackHttpServer(
+      (req, res) => {
+        req.resume();
+        const authorization = req.headers.authorization ?? "";
+        const reflectedCredential = authorization.startsWith("QQBot ")
+          ? authorization.slice("QQBot ".length)
+          : authorization;
+        const reflectedFormCredential = new URLSearchParams([
+          ["echo", reflectedCredential],
+        ]).toString();
+        res.writeHead(401, { "content-type": "application/json" });
+        res.end(
+          JSON.stringify({
+            message: `channel-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${reflectedFormCredential}`,
+            nested: { reflected: `Authorization: ${authorization}` },
+          }),
+        );
       },
-    });
-    const toolOutput = JSON.stringify(result);
-    expect(toolOutput).toContain("channel-marker");
-    expect(toolOutput).not.toContain(accessToken);
-    expect(toolOutput).not.toContain("UNIQUECHANNELSECRET");
+      async (baseUrl) => {
+        const actualGuard = ssrfRuntimeActual.fetchWithSsrFGuard;
+        if (!actualGuard) {
+          throw new Error("expected the real SSRF guard implementation");
+        }
+        const loopbackFetch = vi.fn(
+          async (_input: RequestInfo | URL, init?: RequestInit) =>
+            await fetch(`${baseUrl}/channel-error`, init),
+        );
+        fetchWithSsrFGuardMock.mockImplementationOnce(
+          async (request: Parameters<typeof actualGuard>[0]) =>
+            await actualGuard({ ...request, fetchImpl: loopbackFetch }),
+        );
 
-    const debugOutput = debugErrorSpy.mock.calls.flat().join("\n");
-    expect(debugOutput).toContain("channel-marker");
-    expect(debugOutput).not.toContain(accessToken);
-    expect(debugOutput).not.toContain("UNIQUECHANNELSECRET");
-    expect(release).toHaveBeenCalledTimes(1);
+        const result = await executeChannelApi(
+          { method: "GET", path: "/guilds/123/channels" },
+          { accessToken },
+        );
 
-    const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
-    if (proofHeadSha) {
-      if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
-        throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
-      }
-      console.info(
-        `[qqbot credential redaction proof] ${JSON.stringify({
-          exactHead: proofHeadSha,
-          status: (result.details as { status?: number }).status,
-          path: (result.details as { path?: string }).path,
-          safeMarkerPresent:
-            toolOutput.includes("channel-marker") && debugOutput.includes("channel-marker"),
-          tokenAbsent: !toolOutput.includes(accessToken) && !debugOutput.includes(accessToken),
-          fragmentAbsent:
-            !toolOutput.includes("UNIQUECHANNELSECRET") &&
-            !debugOutput.includes("UNIQUECHANNELSECRET"),
-        })}`,
-      );
-    }
+        expect(result.details).toMatchObject({
+          error: expect.stringContaining("channel-marker"),
+          status: 401,
+          path: "/guilds/123/channels",
+          details: {
+            message: expect.stringContaining("channel-marker"),
+            nested: { reflected: expect.any(String) },
+          },
+        });
+        const toolOutput = JSON.stringify(result);
+        expect(toolOutput).toContain("channel-marker");
+        expect(toolOutput).not.toContain(accessToken);
+        expect(toolOutput).not.toContain(encodedCredential);
+        expect(toolOutput).not.toContain(formEncodedCredential);
+        expect(toolOutput).not.toContain(secretPrefix);
+        expect(toolOutput).not.toContain(secretSuffix);
+        expect(toolOutput).not.toContain("UNIQUECHANNELSECRET");
+
+        const debugOutput = debugErrorSpy.mock.calls.flat().join("\n");
+        expect(debugOutput).toContain("channel-marker");
+        expect(debugOutput).not.toContain(accessToken);
+        expect(debugOutput).not.toContain(encodedCredential);
+        expect(debugOutput).not.toContain(formEncodedCredential);
+        expect(debugOutput).not.toContain(secretPrefix);
+        expect(debugOutput).not.toContain(secretSuffix);
+        expect(debugOutput).not.toContain("UNIQUECHANNELSECRET");
+        expect(loopbackFetch).toHaveBeenCalledTimes(1);
+
+        const proofHeadSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+        if (proofHeadSha) {
+          if (!/^[0-9a-f]{40}$/.test(proofHeadSha)) {
+            throw new Error("OPENCLAW_PROOF_HEAD_SHA must be a full Git SHA");
+          }
+          console.info(
+            `[qqbot credential redaction proof] ${JSON.stringify({
+              exactHead: proofHeadSha,
+              transport: "loopback-http",
+              status: (result.details as { status?: number }).status,
+              path: (result.details as { path?: string }).path,
+              safeMarkerPresent:
+                toolOutput.includes("channel-marker") && debugOutput.includes("channel-marker"),
+              tokenAbsent: !toolOutput.includes(accessToken) && !debugOutput.includes(accessToken),
+              encodedAbsent:
+                !toolOutput.includes(encodedCredential) && !debugOutput.includes(encodedCredential),
+              formEncodedAbsent:
+                !toolOutput.includes(formEncodedCredential) &&
+                !debugOutput.includes(formEncodedCredential),
+              prefixAbsent:
+                !toolOutput.includes(secretPrefix) && !debugOutput.includes(secretPrefix),
+              suffixAbsent:
+                !toolOutput.includes(secretSuffix) && !debugOutput.includes(secretSuffix),
+              fragmentAbsent:
+                !toolOutput.includes("UNIQUECHANNELSECRET") &&
+                !debugOutput.includes("UNIQUECHANNELSECRET"),
+            })}`,
+          );
+        }
+      },
+    );
   });
 
   it("bounds successful response bodies without using response.text()", async () => {

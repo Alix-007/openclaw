@@ -7,7 +7,6 @@
  */
 
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 import {
   asDateTimestampMs,
   parseStrictPositiveInteger,
@@ -19,6 +18,7 @@ import { sleepWithAbort } from "openclaw/plugin-sdk/runtime-env";
 import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
 import { qqbotNetworkGuidance, qqbotTokenFailureMessage } from "../config/setup-guidance.js";
 import type { EngineLogger } from "../types.js";
+import { redactQQBotCredentialText } from "../utils/credential-redaction.js";
 
 const TOKEN_URL = "https://bots.qq.com/app/getAppAccessToken";
 const DEFAULT_TOKEN_EXPIRES_IN_SECONDS = 7200;
@@ -289,7 +289,7 @@ export class TokenManager {
           cause: err,
         });
       }
-      const presentedBody = redactToolPayloadText(rawBody);
+      const presentedBody = redactQQBotCredentialText(rawBody, clientSecret);
       this.logger?.debug?.(`[qqbot:token:${appId}] <<< Body: ${presentedBody}`);
 
       let data: { access_token?: string; expires_in?: unknown };
