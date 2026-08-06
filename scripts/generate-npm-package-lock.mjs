@@ -203,35 +203,23 @@ function pnpmLockOverrideVersionForVersions(versions) {
     return null;
   }
 
-  // npm patch ranges can float past the pnpm lock. Pin to the newest locked patch
-  // when the lock only contains one major/minor line, but keep true version forks free.
   return parsedVersions.toSorted((left, right) => right.parts.patch - left.parts.patch)[0].version;
-}
-
-function readPnpmLockVersionOverrides() {
-  const lockfile = parseYaml(readFileSync(path.join(ROOT_DIR, "pnpm-lock.yaml"), "utf8"));
-  const versionsByName = collectPnpmLockPackageVersions(lockfile);
-  if (versionsByName.size === 0) {
-    throw new Error("pnpm-lock.yaml is missing package resolution data.");
-  }
-  return Object.fromEntries(
-    [...versionsByName.entries()]
-      .map(([name, versions]) => [name, pnpmLockOverrideVersionForVersions(versions)])
-      .filter(([, version]) => version !== null)
-      .toSorted(([left], [right]) => left.localeCompare(right)),
-  );
 }
 
 function addNestedOverride(overrides, parentSelector, dependencyName, version, conflicts) {
   const current = overrides[parentSelector];
   if (current !== undefined && !isPlainObject(current)) {
-    conflicts.add(parentSelector);
+    const parentConflicts = conflicts.get(parentSelector) ?? new Set();
+    parentConflicts.add(dependencyName);
+    conflicts.set(parentSelector, parentConflicts);
     return;
   }
   const nested = current ?? {};
   const existing = nested[dependencyName];
   if (existing !== undefined && JSON.stringify(existing) !== JSON.stringify(version)) {
-    conflicts.add(parentSelector);
+    const parentConflicts = conflicts.get(parentSelector) ?? new Set();
+    parentConflicts.add(dependencyName);
+    conflicts.set(parentSelector, parentConflicts);
     return;
   }
   nested[dependencyName] = version;
@@ -295,26 +283,17 @@ function expandScopedOverrideChildren(overrides) {
   );
 }
 
-function readPnpmLockScopedVersionOverrides() {
-  const lockfile = parseYaml(readFileSync(path.join(ROOT_DIR, "pnpm-lock.yaml"), "utf8"));
+function resolvePnpmLockOverridePlan(lockfile) {
   const versionsByName = collectPnpmLockPackageVersions(lockfile);
   if (versionsByName.size === 0) {
     throw new Error("pnpm-lock.yaml is missing package resolution data.");
   }
-  const forkedPackageNames = new Set(
-    [...versionsByName.entries()]
-      .filter(
-        ([, versions]) =>
-          versions.size > 1 && pnpmLockOverrideVersionForVersions(versions) === null,
-      )
-      .map(([name]) => name),
+  const multiVersionPackageNames = new Set(
+    [...versionsByName.entries()].filter(([, versions]) => versions.size > 1).map(([name]) => name),
   );
-  if (forkedPackageNames.size === 0) {
-    return {};
-  }
 
   const overrides = {};
-  const conflicts = new Set();
+  const conflicts = new Map();
   for (const [snapshotKey, snapshot] of Object.entries(lockfile?.snapshots ?? {})) {
     const parent = parsePnpmPackageKey(snapshotKey);
     const dependencies = snapshot?.dependencies;
@@ -328,7 +307,7 @@ function readPnpmLockScopedVersionOverrides() {
     }
     const parentSelector = `${parent.name}@${parent.version}`;
     for (const [dependencyName, dependencySpec] of Object.entries(dependencies)) {
-      if (!forkedPackageNames.has(dependencyName)) {
+      if (!multiVersionPackageNames.has(dependencyName)) {
         continue;
       }
       const version = exactVersionFromOverrideSpec(String(dependencySpec));
@@ -339,10 +318,52 @@ function readPnpmLockScopedVersionOverrides() {
     }
   }
 
-  for (const parentSelector of conflicts) {
-    delete overrides[parentSelector];
+  const conflictingPackageNames = new Set();
+  for (const dependencyNames of conflicts.values()) {
+    for (const dependencyName of dependencyNames) {
+      conflictingPackageNames.add(dependencyName);
+    }
   }
-  return expandScopedOverrideChildren(overrides);
+  const versionOverrides = {};
+  const scopedPackageNames = new Set();
+  for (const [name, versions] of versionsByName.entries()) {
+    const version = pnpmLockOverrideVersionForVersions(versions);
+    if (versions.size === 1) {
+      if (version !== null) {
+        versionOverrides[name] = version;
+      }
+      continue;
+    }
+    if (version !== null && conflictingPackageNames.has(name)) {
+      versionOverrides[name] = version;
+      continue;
+    }
+    scopedPackageNames.add(name);
+  }
+
+  const scopedOverrides = {};
+  for (const [parentSelector, nestedOverrides] of Object.entries(overrides)) {
+    const parentConflicts = conflicts.get(parentSelector) ?? new Set();
+    const filtered = Object.fromEntries(
+      Object.entries(nestedOverrides).filter(
+        ([dependencyName]) =>
+          scopedPackageNames.has(dependencyName) && !parentConflicts.has(dependencyName),
+      ),
+    );
+    if (Object.keys(filtered).length > 0) {
+      scopedOverrides[parentSelector] = filtered;
+    }
+  }
+
+  return {
+    conflictingPackageNames: [...conflictingPackageNames].toSorted((left, right) =>
+      left.localeCompare(right),
+    ),
+    scopedVersionOverrides: expandScopedOverrideChildren(scopedOverrides),
+    versionOverrides: Object.fromEntries(
+      Object.entries(versionOverrides).toSorted(([left], [right]) => left.localeCompare(right)),
+    ),
+  };
 }
 function mergeOverrideEntry(merged, name, spec) {
   const current = merged[name];
@@ -422,17 +443,21 @@ function mergeOverrides(packageOverrides, workspaceOverrides, pnpmLockOverrides)
 }
 
 function readNpmLockOverrides() {
+  const lockfile = parseYaml(readFileSync(path.join(ROOT_DIR, "pnpm-lock.yaml"), "utf8"));
+  const plan = resolvePnpmLockOverridePlan(lockfile);
   return expandScopedOverrideChildren(
     mergeOverrides(
       undefined,
       readWorkspaceOverrides(),
-      mergeOverrides(readPnpmLockVersionOverrides(), readPnpmLockScopedVersionOverrides(), {}),
+      mergeOverrides(plan.versionOverrides, plan.scopedVersionOverrides, {}),
     ),
   );
 }
 
 function packageJsonForNpmLock(packageJson, npmLockOverrides) {
   const normalized = { ...packageJson };
+  delete normalized.bundleDependencies;
+  delete normalized.bundledDependencies;
   delete normalized.devDependencies;
   for (const field of ["dependencies", "optionalDependencies", "peerDependencies"]) {
     const dependencies = normalized[field];
@@ -536,9 +561,9 @@ export function createNpmLockExecOptions(invocation, cwd, env = process.env) {
   };
 }
 
-function runNpm(args, cwd) {
-  const npm = createNpmLockCommand(args);
-  execFileSync(npm.command, npm.args, createNpmLockExecOptions(npm, cwd));
+function runNpm(args, cwd, env = process.env) {
+  const npm = createNpmLockCommand(args, { env });
+  execFileSync(npm.command, npm.args, createNpmLockExecOptions(npm, cwd, env));
 }
 
 function packageExtensionAppliesToDependency(selector, dependencyName) {
@@ -741,7 +766,7 @@ function describeOverrideViolations(violations) {
     .join("; ");
 }
 
-function normalizeNpmLockOverrides(tempDir, npmLockOverrides, npmInstallArgs) {
+function normalizeNpmLockOverrides(tempDir, npmLockOverrides, npmInstallArgs, env) {
   const npmLockPath = path.join(tempDir, "package-lock.json");
   const overrideRules = exactOverrideRulesFromOverrides(npmLockOverrides);
   if (Object.keys(overrideRules).length === 0) {
@@ -764,7 +789,7 @@ function normalizeNpmLockOverrides(tempDir, npmLockOverrides, npmInstallArgs) {
   // shrinkwraps as inactive, drop their cached subtree, then ask npm to recalculate this
   // package's authoritative lock with registry integrity hashes.
   writeFileSync(npmLockPath, `${JSON.stringify(npmLock, null, 2)}\n`);
-  runNpm(npmInstallArgs, tempDir);
+  runNpm(npmInstallArgs, tempDir, env);
 
   const normalized = JSON.parse(readFileSync(npmLockPath, "utf8"));
   const remaining = collectOverrideViolations(normalized, overrideRules);
@@ -795,9 +820,21 @@ function normalizeNpmVersionDrift(lockfile) {
   return lockfile;
 }
 
-export function generateNpmPackageLock(packageDir) {
+export function createNpmPackageLockInstallStrategyArgs(options = {}) {
+  const installStrategy = options.installStrategy;
+  if (installStrategy === undefined || installStrategy === null || installStrategy === "") {
+    return [];
+  }
+  if (!["hoisted", "nested", "shallow", "linked"].includes(installStrategy)) {
+    throw new Error(`invalid npm package-lock install strategy: ${installStrategy}`);
+  }
+  return [`--install-strategy=${installStrategy}`];
+}
+
+export function generateNpmPackageLock(packageDir, options = {}) {
   const tempDir = mkdtempSync(path.join(tmpdir(), "openclaw-npm-lock-"));
   try {
+    const env = options.env ?? process.env;
     const packageJson = JSON.parse(readFileSync(path.join(packageDir, "package.json"), "utf8"));
     const npmLockOverrides = readNpmLockOverrides();
     const peerResolutionArgs = shouldUseLegacyPeerDepsForNpmLock(packageJson)
@@ -806,6 +843,7 @@ export function generateNpmPackageLock(packageDir) {
     const npmInstallArgs = [
       "install",
       "--package-lock-only",
+      ...createNpmPackageLockInstallStrategyArgs(options),
       "--ignore-scripts",
       "--no-audit",
       "--no-fund",
@@ -816,8 +854,8 @@ export function generateNpmPackageLock(packageDir) {
       `${JSON.stringify(packageJsonForNpmLock(packageJson, npmLockOverrides), null, 2)}\n`,
     );
     copyLocalFileDependencies(packageJson, packageDir, tempDir);
-    runNpm(npmInstallArgs, tempDir);
-    normalizeNpmLockOverrides(tempDir, npmLockOverrides, npmInstallArgs);
+    runNpm(npmInstallArgs, tempDir, env);
+    normalizeNpmLockOverrides(tempDir, npmLockOverrides, npmInstallArgs, env);
     const generated = normalizeNpmVersionDrift(
       applyPackageExtensionPeerMetadata(
         JSON.parse(readFileSync(path.join(tempDir, "package-lock.json"), "utf8")),
@@ -1172,6 +1210,7 @@ export {
   normalizeNpmVersionDrift,
   packageJsonForNpmLock,
   pnpmLockOverrideVersionForVersions,
+  resolvePnpmLockOverridePlan,
   parsePnpmPackageKey,
   parseLockPackagePath,
   readNpmLockOverrides,
