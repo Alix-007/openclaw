@@ -77,7 +77,7 @@ import {
 import {
   bootstrapHarnessContextEngine,
   finalizeHarnessContextEngineTurn,
-  runHarnessContextEngineMaintenance,
+  runHarnessContextEngineMaintenanceWithOutcome,
 } from "./harness/context-engine-lifecycle.js";
 import { buildAgentHookContext } from "./harness/hook-context.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "./harness/hook-helpers.js";
@@ -500,6 +500,17 @@ async function notifyCliUserMessagePersisted(
   }
 }
 
+type CliDeferredTurnMaintenanceOutcomePromise = Parameters<
+  NonNullable<
+    Parameters<typeof runHarnessContextEngineMaintenanceWithOutcome>[0]["onDeferredMaintenance"]
+  >
+>[1];
+
+const cliDeferredTurnMaintenanceOutcomes = new WeakMap<
+  PreparedCliRunContext,
+  CliDeferredTurnMaintenanceOutcomePromise
+>();
+
 async function finalizeCliContextEngineTurn(params: {
   context: PreparedCliRunContext;
   historyMessages: unknown[];
@@ -541,6 +552,7 @@ async function finalizeCliContextEngineTurn(params: {
     withSessionManagerRewriteLock: <T>(operation: () => Promise<T> | T) => Promise<T>;
   }) => {
     let deferredTurnMaintenance: Promise<void> | undefined;
+    let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
     const result = await finalizeHarnessContextEngineTurn({
       contextEngine: context.contextEngine,
       promptError: false,
@@ -558,17 +570,23 @@ async function finalizeCliContextEngineTurn(params: {
       providerId: runParams.provider,
       modelId: context.modelId,
       runMaintenance: async (maintenanceParams) =>
-        await runHarnessContextEngineMaintenance({
+        await runHarnessContextEngineMaintenanceWithOutcome({
           ...maintenanceParams,
           withSessionManagerRewriteLock: transcript.withSessionManagerRewriteLock,
-          onDeferredMaintenance: (promise) => {
+          onDeferredMaintenance: (promise, outcome) => {
             deferredTurnMaintenance = promise;
+            deferredTurnMaintenanceOutcome = outcome;
           },
         }),
       warn: (message) => log.warn(message),
     });
-    if (result.postTurnFinalizationSucceeded && deferredTurnMaintenance) {
+    if (
+      result.postTurnFinalizationSucceeded &&
+      deferredTurnMaintenance &&
+      deferredTurnMaintenanceOutcome
+    ) {
       context.contextEngineDeferredTurnMaintenance = deferredTurnMaintenance;
+      cliDeferredTurnMaintenanceOutcomes.set(context, deferredTurnMaintenanceOutcome);
     }
   };
   const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();
@@ -600,10 +618,10 @@ async function finalizeCliContextEngineTurn(params: {
 }
 
 /**
- * Records continuation state only after the runner-owned canonical transcript commit succeeds.
- * Command-owned transcript commits defer this marker to post-run finalization.
+ * Owns continuation state only after the runner transcript commits. Deferred
+ * maintenance must first prove it completed without rewriting that transcript.
  */
-function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolean {
+function handleCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolean {
   // Post-output transcript/finalization awaits can race with cancellation. Never
   // let an aborted turn suppress workspace context on the next eligible turn.
   if (
@@ -616,18 +634,44 @@ function recordCompletedCliBootstrapTurn(context: PreparedCliRunContext): boolea
   if (!sessionTarget) {
     return false;
   }
-  try {
-    persistCompletedBootstrapTurn({
-      sessionTarget,
-      sessionManager: context.params.sessionManager,
-      runId: context.params.runId,
-      runner: "cli",
-    });
-    return true;
-  } catch (error) {
-    log.warn(`failed to persist CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
-    return false;
+  const persistCompletion = (): boolean => {
+    if (context.params.abortSignal?.aborted === true) {
+      return false;
+    }
+    try {
+      if (context.params.lifecycleGeneration) {
+        assertAgentRunLifecycleGenerationCurrent(context.params.lifecycleGeneration);
+      }
+      persistCompletedBootstrapTurn({
+        sessionTarget,
+        sessionManager: context.params.sessionManager,
+        runId: context.params.runId,
+        runner: "cli",
+      });
+      return true;
+    } catch (error) {
+      log.warn(`failed to persist CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
+      return false;
+    }
+  };
+
+  const maintenanceOutcome = cliDeferredTurnMaintenanceOutcomes.get(context);
+  if (!maintenanceOutcome) {
+    return persistCompletion();
   }
+  cliDeferredTurnMaintenanceOutcomes.delete(context);
+  void maintenanceOutcome
+    .then((outcome) => {
+      if (outcome.status === "completed" && !outcome.changed) {
+        persistCompletion();
+      }
+    })
+    .catch((error: unknown) => {
+      log.warn(`failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`);
+    });
+  // Runner-owned transcript persistence also owns this deferred marker. Do not
+  // let command post-run race it by treating the marker as still pending.
+  return true;
 }
 
 /** Prepares and runs one CLI-backed agent turn. */
@@ -720,6 +764,12 @@ async function runCliAgentInternal(
         finalAssistantRawText: finalText,
       },
     };
+  }
+  // Preparation reads transcript/bootstrap state and must observe all rewrites
+  // from the preceding same-session turn.
+  if (!params.isolatedCompletion) {
+    await waitForDeferredTurnMaintenanceForSession(params.sessionKey ?? params.sessionId);
+    assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration!);
   }
   const { prepareCliRunContext } = await import("./cli-runner/prepare.runtime.js");
   let context: PreparedCliRunContext;
@@ -849,11 +899,6 @@ export async function runPreparedCliAgent(
   const hasAgentEndHooks = hookRunner?.hasHooks("agent_end") === true;
   const hasBeforeAgentRunHooks = hookRunner?.hasHooks("before_agent_run") === true;
   const needsHookHistory = hasLlmInputHooks || hasAgentEndHooks || hasBeforeAgentRunHooks;
-  // Prior turn maintenance can rewrite transcript entries after finalization.
-  // Reads for the next same-session inference must observe that rewrite.
-  if (!isolatedCompletion) {
-    await waitForDeferredTurnMaintenanceForSession(params.sessionKey ?? params.sessionId);
-  }
   const historyMessages = needsHookHistory
     ? await loadCliSessionHistoryMessages({
         sessionId: params.sessionId,
@@ -1316,7 +1361,7 @@ export async function runPreparedCliAgent(
     effectiveCliSessionId?: string;
     bindingFlushOk?: boolean;
     assistantTranscriptOwned?: boolean;
-    bootstrapCompletionRecorded?: boolean;
+    bootstrapCompletionHandled?: boolean;
     usedHistoryPrompt: boolean;
   }): EmbeddedAgentRunResult => {
     const text = resultParams.output.text?.trim();
@@ -1418,7 +1463,7 @@ export async function runPreparedCliAgent(
           : {}),
         systemPromptReport: context.systemPromptReport,
         ...(context.shouldRecordCompletedBootstrapTurn === true &&
-        resultParams.bootstrapCompletionRecorded !== true &&
+        resultParams.bootstrapCompletionHandled !== true &&
         params.abortSignal?.aborted !== true
           ? { bootstrapContextCompletionPending: true as const }
           : {}),
@@ -1590,15 +1635,15 @@ export async function runPreparedCliAgent(
           ctx: hookContext,
           hookRunner,
         });
-        const bootstrapCompletionRecorded = assistantTranscriptPersistence.persisted
-          ? recordCompletedCliBootstrapTurn(context)
+        const bootstrapCompletionHandled = assistantTranscriptPersistence.persisted
+          ? handleCompletedCliBootstrapTurn(context)
           : false;
         return buildCliRunResult({
           output,
           effectiveCliSessionId,
           bindingFlushOk,
           assistantTranscriptOwned: assistantTranscriptPersistence.owned,
-          bootstrapCompletionRecorded,
+          bootstrapCompletionHandled,
           usedHistoryPrompt,
         });
       } catch (error) {
