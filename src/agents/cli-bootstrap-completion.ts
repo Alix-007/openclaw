@@ -16,6 +16,7 @@ export type PendingCliBootstrapCompletion = {
   runId: string;
   sessionTarget: SessionTranscriptRuntimeTarget;
   sessionManager?: Pick<SessionManager, "appendCustomEntry">;
+  transcriptOwner?: "caller" | "runner";
 };
 
 type CliBootstrapCompletionResult = EmbeddedAgentRunResult & {
@@ -78,4 +79,17 @@ export function finalizePendingCliBootstrapCompletion(params: {
     trackPendingBootstrapCompletionSettlement(sessionTarget, settlement);
   }
   return settlement;
+}
+
+/** Finalizes only markers whose transcript was committed inside the CLI runner. */
+export function finalizeRunnerOwnedPendingCliBootstrapCompletion(params: {
+  result: EmbeddedAgentRunResult;
+  transcriptStable: boolean;
+  isStillEligible?: () => boolean;
+}): Promise<boolean> | undefined {
+  const pending = (params.result as CliBootstrapCompletionResult)[CLI_BOOTSTRAP_COMPLETION];
+  if (pending?.transcriptOwner !== "runner") {
+    return undefined;
+  }
+  return finalizePendingCliBootstrapCompletion(params);
 }
