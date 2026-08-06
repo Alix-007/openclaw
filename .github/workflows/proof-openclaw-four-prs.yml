@@ -236,11 +236,13 @@ jobs:
               ;;
             qqbot)
               node scripts/run-vitest.mjs \
+                extensions/qqbot/src/engine/gateway/gateway-connection.test.ts \
                 extensions/qqbot/src/engine/tools/channel-api.test.ts \
                 extensions/qqbot/src/engine/api/api-client.test.ts \
                 extensions/qqbot/src/engine/api/token.test.ts \
                 extensions/qqbot/src/engine/utils/stt.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F '[qqbot gateway credential redaction proof]' "$log_file"
               grep -F '[qqbot stt credential redaction proof]' "$log_file"
               grep -F '[qqbot token credential redaction proof]' "$log_file"
               marker='[qqbot credential redaction proof]'
