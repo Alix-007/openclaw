@@ -3,6 +3,10 @@
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
+import {
+  lowercasePercentEscapes,
+  stringifyWithSlashEscapedCredential,
+} from "../../test-support/credential-reflection.js";
 import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
@@ -328,6 +332,9 @@ describe("executeChannelApi", () => {
     const accessToken = `${secretPrefix}/UNIQUE~CHANNELSECRET+${secretSuffix}`;
     const encodedCredential = encodeURIComponent(accessToken);
     const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
+    const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
+    const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
+    const slashEscapedCredential = accessToken.replaceAll("/", "\\/");
     await withLoopbackHttpServer(
       (req, res) => {
         req.resume();
@@ -340,10 +347,13 @@ describe("executeChannelApi", () => {
         ]).toString();
         res.writeHead(401, { "content-type": "application/json" });
         res.end(
-          JSON.stringify({
-            message: `channel-marker reflected credential ${reflectedCredential}; encoded ${encodeURIComponent(reflectedCredential)}; form ${reflectedFormCredential}`,
-            nested: { reflected: `Authorization: ${authorization}` },
-          }),
+          stringifyWithSlashEscapedCredential(
+            {
+              message: `channel-marker reflected credential ${reflectedCredential}; encoded ${lowercasePercentEscapes(encodeURIComponent(reflectedCredential))}; form ${lowercasePercentEscapes(reflectedFormCredential)}`,
+              nested: { reflected: `Authorization: ${authorization}` },
+            },
+            reflectedCredential,
+          ),
         );
       },
       async (baseUrl) => {
@@ -379,6 +389,9 @@ describe("executeChannelApi", () => {
         expect(toolOutput).not.toContain(accessToken);
         expect(toolOutput).not.toContain(encodedCredential);
         expect(toolOutput).not.toContain(formEncodedCredential);
+        expect(toolOutput).not.toContain(lowercaseEncodedCredential);
+        expect(toolOutput).not.toContain(lowercaseFormEncodedCredential);
+        expect(toolOutput).not.toContain(slashEscapedCredential);
         expect(toolOutput).not.toContain(secretPrefix);
         expect(toolOutput).not.toContain(secretSuffix);
         expect(toolOutput).not.toContain("UNIQUECHANNELSECRET");
@@ -388,6 +401,9 @@ describe("executeChannelApi", () => {
         expect(debugOutput).not.toContain(accessToken);
         expect(debugOutput).not.toContain(encodedCredential);
         expect(debugOutput).not.toContain(formEncodedCredential);
+        expect(debugOutput).not.toContain(lowercaseEncodedCredential);
+        expect(debugOutput).not.toContain(lowercaseFormEncodedCredential);
+        expect(debugOutput).not.toContain(slashEscapedCredential);
         expect(debugOutput).not.toContain(secretPrefix);
         expect(debugOutput).not.toContain(secretSuffix);
         expect(debugOutput).not.toContain("UNIQUECHANNELSECRET");
@@ -412,6 +428,15 @@ describe("executeChannelApi", () => {
               formEncodedAbsent:
                 !toolOutput.includes(formEncodedCredential) &&
                 !debugOutput.includes(formEncodedCredential),
+              lowercaseEncodedAbsent:
+                !toolOutput.includes(lowercaseEncodedCredential) &&
+                !debugOutput.includes(lowercaseEncodedCredential),
+              lowercaseFormEncodedAbsent:
+                !toolOutput.includes(lowercaseFormEncodedCredential) &&
+                !debugOutput.includes(lowercaseFormEncodedCredential),
+              jsonSlashEscapedAbsent:
+                !toolOutput.includes(slashEscapedCredential) &&
+                !debugOutput.includes(slashEscapedCredential),
               prefixAbsent:
                 !toolOutput.includes(secretPrefix) && !debugOutput.includes(secretPrefix),
               suffixAbsent:

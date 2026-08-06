@@ -2,6 +2,10 @@
 import { getEventListeners } from "node:events";
 import type { IncomingMessage } from "node:http";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  lowercasePercentEscapes,
+  stringifyWithSlashEscapedCredential,
+} from "../../test-support/credential-reflection.js";
 import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
 import { TokenManager } from "./token.js";
 
@@ -153,6 +157,9 @@ describe("QQBot token manager", () => {
     const clientSecret = `${secretPrefix}/reflected~secret+${secretSuffix}`;
     const encodedCredential = encodeURIComponent(clientSecret);
     const formEncodedCredential = new URLSearchParams([["echo", clientSecret]]).toString();
+    const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
+    const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
+    const slashEscapedCredential = clientSecret.replaceAll("/", "\\/");
     await withLoopbackHttpServer(
       (request, response) => {
         void readRequestBody(request).then(
@@ -165,16 +172,19 @@ describe("QQBot token manager", () => {
             ]).toString();
             response.writeHead(401, { "content-type": "application/json" });
             response.end(
-              JSON.stringify({
-                code: 11244,
-                message: "credential rejected",
-                clientSecret: reflectedCredential,
-                client_secret: reflectedCredential,
-                echoed: reflectedCredential,
-                encoded: encodeURIComponent(reflectedCredential),
-                form: reflectedFormCredential,
-                request_id: "token-visible-123",
-              }),
+              stringifyWithSlashEscapedCredential(
+                {
+                  code: 11244,
+                  message: "credential rejected",
+                  clientSecret: reflectedCredential,
+                  client_secret: reflectedCredential,
+                  echoed: reflectedCredential,
+                  encoded: lowercasePercentEscapes(encodeURIComponent(reflectedCredential)),
+                  form: lowercasePercentEscapes(reflectedFormCredential),
+                  request_id: "token-visible-123",
+                },
+                reflectedCredential,
+              ),
             );
           },
           () => {
@@ -212,6 +222,9 @@ describe("QQBot token manager", () => {
           expect(output).not.toContain(clientSecret);
           expect(output).not.toContain(encodedCredential);
           expect(output).not.toContain(formEncodedCredential);
+          expect(output).not.toContain(lowercaseEncodedCredential);
+          expect(output).not.toContain(lowercaseFormEncodedCredential);
+          expect(output).not.toContain(slashEscapedCredential);
           expect(output).not.toContain(secretPrefix);
           expect(output).not.toContain(secretSuffix);
           expect(output).not.toContain("reflected-secret");
@@ -236,6 +249,14 @@ describe("QQBot token manager", () => {
               errorEncodedAbsent: !message.includes(encodedCredential),
               debugFormEncodedAbsent: !debugOutput.includes(formEncodedCredential),
               errorFormEncodedAbsent: !message.includes(formEncodedCredential),
+              debugLowercaseEncodedAbsent: !debugOutput.includes(lowercaseEncodedCredential),
+              errorLowercaseEncodedAbsent: !message.includes(lowercaseEncodedCredential),
+              debugLowercaseFormEncodedAbsent: !debugOutput.includes(
+                lowercaseFormEncodedCredential,
+              ),
+              errorLowercaseFormEncodedAbsent: !message.includes(lowercaseFormEncodedCredential),
+              debugJsonSlashEscapedAbsent: !debugOutput.includes(slashEscapedCredential),
+              errorJsonSlashEscapedAbsent: !message.includes(slashEscapedCredential),
               debugPrefixAbsent: !debugOutput.includes(secretPrefix),
               errorPrefixAbsent: !message.includes(secretPrefix),
               debugSuffixAbsent: !debugOutput.includes(secretSuffix),
