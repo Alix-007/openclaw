@@ -21,6 +21,8 @@ const { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, hasCompletedBootstrapTurn } = awai
 const { resolveBootstrapContextInjection, resolveWorkspaceBootstrapRouting } = await importTarget(
   "src/agents/bootstrap-routing.ts",
 );
+const { finalizePendingCliBootstrapCompletion, setPendingCliBootstrapCompletion } =
+  await importTarget("src/agents/cli-bootstrap-completion.ts");
 const { SessionManager } = await importTarget("src/agents/sessions/session-manager.ts");
 const { shouldPersistCompletedBootstrapTurn } = await importTarget(
   "src/agents/embedded-agent-runner/run/attempt.thread-helpers.ts",
@@ -99,6 +101,35 @@ try {
     assert.equal(background.contextFiles.length, 1);
     assert.equal(background.shouldRecordCompletedBootstrapTurn, false);
   }
+
+  let releaseDeferredMaintenance: (() => void) | undefined;
+  const deferredMaintenance = new Promise<boolean>((resolve) => {
+    releaseDeferredMaintenance = () => resolve(true);
+  });
+  const deferredResult = {
+    meta: {
+      durationMs: 0,
+      bootstrapContextCompletionPending: true,
+    },
+  };
+  setPendingCliBootstrapCompletion(deferredResult, {
+    maintenanceSettledWithoutRewrite: deferredMaintenance,
+    runId: "bootstrap-deferred-proof",
+    sessionTarget,
+  });
+  sessionManager.appendResetBoundary("command post-run reset proof");
+  const markerFinalized = await finalizePendingCliBootstrapCompletion({
+    result: deferredResult,
+    transcriptStable: false,
+  });
+  releaseDeferredMaintenance?.();
+  await deferredMaintenance;
+  assert.equal(markerFinalized, false);
+  assert.equal(await hasCompletedBootstrapTurn(sessionTarget), false);
+
+  console.log(
+    "[bootstrap deferred finalization proof] maintenance=no-rewrite command-post-run=reset marker=false",
+  );
 
   console.log(
     "[bootstrap continuation SQLite proof] sqlite-marker=true first=injected marker-write=true continuation=skipped memory=injected non-primary=injected cron=injected secret-output=false",
