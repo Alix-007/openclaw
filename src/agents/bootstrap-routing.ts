@@ -4,8 +4,12 @@
  * first reply on a pending BOOTSTRAP.md the same way.
  */
 import { isAcpSessionKey, isSubagentSessionKey } from "../routing/session-key.js";
-import type { BootstrapContextRunKind, BootstrapMode } from "./bootstrap-mode.js";
-import { resolveBootstrapMode } from "./bootstrap-mode.js";
+import {
+  isHeartbeatLifecycleRunKind,
+  type BootstrapContextRunKind,
+  type BootstrapMode,
+  resolveBootstrapMode,
+} from "./bootstrap-mode.js";
 import { DEFAULT_BOOTSTRAP_FILENAME, type WorkspaceBootstrapFile } from "./workspace.js";
 
 /**
@@ -42,6 +46,11 @@ type WorkspaceBootstrapRoutingInput = Omit<BootstrapRoutingInput, "workspaceBoot
   isWorkspaceBootstrapPending: (workspaceDir: string) => Promise<boolean>;
   bootstrapFiles?: readonly WorkspaceBootstrapFile[];
   bootstrapFilesProvideAccess?: boolean;
+};
+
+type BootstrapContextInjection<TBootstrapFile = unknown, TContextFile = unknown> = {
+  bootstrapFiles: TBootstrapFile[];
+  contextFiles: TContextFile[];
 };
 
 function resolveBootstrapRouting(params: BootstrapRoutingInput): WorkspaceBootstrapRouting {
@@ -94,4 +103,60 @@ export async function resolveWorkspaceBootstrapRouting(
       params.hasBootstrapFileAccess ||
       (params.bootstrapFilesProvideAccess !== false && hasBootstrapContent),
   });
+}
+
+/**
+ * Resolves the runtime-independent bootstrap injection decision shared by CLI
+ * and embedded runs. Lifecycle owners persist the returned marker separately.
+ */
+export async function resolveBootstrapContextInjection<TBootstrapFile, TContextFile>(params: {
+  contextInjectionMode: "always" | "continuation-skip" | "never";
+  bootstrapContextMode?: string;
+  bootstrapContextRunKind?: BootstrapContextRunKind;
+  bootstrapMode?: BootstrapMode;
+  isPrimaryInteractiveRun: boolean;
+  hasCompletedBootstrapTurn: () => Promise<boolean>;
+  resolveBootstrapContextForRun: () => Promise<
+    BootstrapContextInjection<TBootstrapFile, TContextFile>
+  >;
+}): Promise<
+  BootstrapContextInjection<TBootstrapFile, TContextFile> & {
+    isContinuationTurn: boolean;
+    shouldRecordCompletedBootstrapTurn: boolean;
+  }
+> {
+  const isHeartbeatLifecycleRun = isHeartbeatLifecycleRunKind(params.bootstrapContextRunKind);
+  const isPrimaryInteractiveBootstrapRun =
+    params.isPrimaryInteractiveRun && params.bootstrapContextRunKind !== "cron";
+  const isContinuationTurn =
+    params.bootstrapMode !== "full" &&
+    params.contextInjectionMode === "continuation-skip" &&
+    !isHeartbeatLifecycleRun &&
+    isPrimaryInteractiveBootstrapRun &&
+    (await params.hasCompletedBootstrapTurn());
+  // Continuation-skip and explicit never both produce an empty injection set,
+  // but only a clean full bootstrap later records a durable completion marker.
+  const shouldSkipBootstrapInjection =
+    params.contextInjectionMode === "never" || isContinuationTurn;
+  const shouldRecordEstablishedWorkspaceTurn =
+    params.bootstrapMode === "none" &&
+    params.contextInjectionMode === "continuation-skip" &&
+    isPrimaryInteractiveBootstrapRun;
+  const shouldRecordCompletedBootstrapTurn =
+    !shouldSkipBootstrapInjection &&
+    params.bootstrapContextMode !== "lightweight" &&
+    !isHeartbeatLifecycleRun &&
+    // Established workspaces still inject normal context once. Only a primary
+    // user/manual turn may establish state consumed by later continuations.
+    (params.bootstrapMode === "full" || shouldRecordEstablishedWorkspaceTurn);
+
+  const context = shouldSkipBootstrapInjection
+    ? { bootstrapFiles: [], contextFiles: [] }
+    : await params.resolveBootstrapContextForRun();
+
+  return {
+    ...context,
+    isContinuationTurn,
+    shouldRecordCompletedBootstrapTurn,
+  };
 }

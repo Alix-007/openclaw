@@ -11,6 +11,7 @@ import {
 import { isHeartbeatLifecycleRunKind } from "../../bootstrap-mode.js";
 import {
   isPrimaryBootstrapRun,
+  resolveBootstrapContextInjection,
   resolveWorkspaceBootstrapRouting,
 } from "../../bootstrap-routing.js";
 import {
@@ -105,7 +106,7 @@ export async function prepareEmbeddedAttemptBootstrap(params: {
     bootstrapFiles: hookAdjustedBootstrapFiles,
     contextFiles: resolvedContextFiles,
     shouldRecordCompletedBootstrapTurn,
-  } = await resolveAttemptBootstrapContext({
+  } = await resolveBootstrapContextInjection({
     // Raw probes and isolated finalization must not load AGENTS/BOOTSTRAP
     // context even though finalization preserves the settled transcript.
     contextInjectionMode: suppressAmbientContext ? "never" : contextInjectionMode,

@@ -5,6 +5,7 @@ import { filterHeartbeatTranscriptArtifacts } from "../../../auto-reply/heartbea
 import { HEARTBEAT_PROMPT } from "../../../auto-reply/heartbeat.js";
 import type { BootstrapContextRunKind } from "../../bootstrap-mode.js";
 import { assembleHarnessContextEngine } from "../../harness/context-engine-lifecycle.js";
+import { resolveBootstrapContextInjection } from "../../bootstrap-routing.js";
 import { limitHistoryTurns } from "../history.js";
 import { buildEmbeddedMessageActionDiscoveryInput } from "../message-action-discovery-input.js";
 import {
@@ -32,7 +33,7 @@ async function resolveBootstrapContext(params: {
       contextFiles: [],
     }));
 
-  const result = await resolveAttemptBootstrapContext({
+  const result = await resolveBootstrapContextInjection({
     contextInjectionMode: params.contextInjectionMode ?? "always",
     bootstrapContextMode: params.bootstrapContextMode ?? "full",
     bootstrapContextRunKind: params.bootstrapContextRunKind ?? "default",

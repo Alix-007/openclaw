@@ -14,9 +14,12 @@ import {
   type BootstrapContextRunKind,
   type BootstrapMode,
 } from "../bootstrap-mode.js";
-import { isPrimaryBootstrapRun, resolveWorkspaceBootstrapRouting } from "../bootstrap-routing.js";
+import {
+  isPrimaryBootstrapRun,
+  resolveBootstrapContextInjection,
+  resolveWorkspaceBootstrapRouting,
+} from "../bootstrap-routing.js";
 import type { EmbeddedContextFile } from "../embedded-agent-helpers.js";
-import { resolveAttemptBootstrapContext } from "../embedded-agent-runner/run/attempt.context-engine-helpers.js";
 import type { EmbeddedRunTrigger } from "../embedded-agent-runner/run/params.js";
 import { isWorkspaceBootstrapPending, type WorkspaceBootstrapFile } from "../workspace.js";
 
@@ -125,7 +128,7 @@ export async function prepareCliBootstrapContext(params: {
         contextFiles: [],
         shouldRecordCompletedBootstrapTurn: false,
       }
-    : await resolveAttemptBootstrapContext({
+    : await resolveBootstrapContextInjection({
         contextInjectionMode,
         bootstrapContextMode: params.bootstrapContextMode,
         bootstrapContextRunKind: params.bootstrapContextRunKind ?? "default",
