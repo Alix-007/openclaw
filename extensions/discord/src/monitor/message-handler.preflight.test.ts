@@ -518,6 +518,43 @@ describe("preflightDiscordMessage", () => {
     expect(saveRemoteMediaMock).not.toHaveBeenCalled();
   });
 
+  it.each([
+    {
+      label: "begin",
+      content: ["Visible intro", "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user tail"].join(
+        "\n",
+      ),
+    },
+    {
+      label: "end",
+      content: ["Visible intro", "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>", "Literal user tail"].join(
+        "\n",
+      ),
+    },
+  ])(
+    "dispatches literal user text containing an unmatched $label delimiter",
+    async ({ content, label }) => {
+      const result = await runDmPreflight({
+        channelId: `dm-runtime-context-unmatched-${label}`,
+        message: createDiscordMessage({
+          id: `m-runtime-context-unmatched-${label}`,
+          channelId: `dm-runtime-context-unmatched-${label}`,
+          content,
+          author: {
+            id: "user-1",
+            bot: false,
+            username: "alice",
+          },
+        }),
+        discordConfig: {
+          dmPolicy: "open",
+        } as DiscordConfig,
+      });
+
+      expect(expectPreflightResult(result).baseText).toBe(content);
+    },
+  );
+
   it("keeps native media when message text is only internal runtime context", async () => {
     const result = await runDmPreflight({
       channelId: "dm-runtime-context-media",
