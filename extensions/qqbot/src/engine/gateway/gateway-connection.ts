@@ -310,7 +310,7 @@ export class GatewayConnection {
       const accessToken = await getAccessToken(account.appId, account.clientSecret);
       log?.info(`✅ Access token obtained successfully`);
       const gatewayUrl = await getGatewayUrl(accessToken, account.appId);
-      log?.info(`Connecting to ${gatewayUrl}`);
+      log?.info(redactQQBotCredentialText(`Connecting to ${gatewayUrl}`, accessToken));
       const ws = await createQQWSClient({
         gatewayUrl,
         userAgent: getPluginUserAgent(),
@@ -419,7 +419,9 @@ export class GatewayConnection {
         break;
 
       case GatewayOp.DISPATCH: {
-        this.ctx.log?.debug?.(`Dispatch event: t=${t}, d=${JSON.stringify(d)}`);
+        this.ctx.log?.debug?.(
+          redactQQBotCredentialText(`Dispatch event: t=${t}, d=${JSON.stringify(d)}`, accessToken),
+        );
         if (isQQBotTurnEventType(t)) {
           if (!this.ingress) {
             throw new Error("QQBot ingress monitor is unavailable.");
