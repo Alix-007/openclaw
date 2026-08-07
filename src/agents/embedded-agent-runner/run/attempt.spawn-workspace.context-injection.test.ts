@@ -5,7 +5,10 @@ import { filterHeartbeatTranscriptArtifacts } from "../../../auto-reply/heartbea
 import { HEARTBEAT_PROMPT } from "../../../auto-reply/heartbeat.js";
 import type { BootstrapContextRunKind } from "../../bootstrap-mode.js";
 import { assembleHarnessContextEngine } from "../../harness/context-engine-lifecycle.js";
-import { resolveBootstrapContextInjection } from "../../bootstrap-routing.js";
+import {
+  isPrimaryInteractiveBootstrapRun,
+  resolveBootstrapContextInjection,
+} from "../../bootstrap-routing.js";
 import { limitHistoryTurns } from "../history.js";
 import { buildEmbeddedMessageActionDiscoveryInput } from "../message-action-discovery-input.js";
 import {
@@ -19,6 +22,7 @@ async function resolveBootstrapContext(params: {
   bootstrapContextMode?: string;
   bootstrapContextRunKind?: BootstrapContextRunKind;
   bootstrapMode?: "full" | "limited" | "none";
+  currentInboundEventKind?: "user_request" | "room_event";
   isPrimaryInteractiveRun?: boolean;
   completed?: boolean;
   resolver?: () => Promise<{ bootstrapFiles: unknown[]; contextFiles: unknown[] }>;
@@ -38,7 +42,13 @@ async function resolveBootstrapContext(params: {
     bootstrapContextMode: params.bootstrapContextMode ?? "full",
     bootstrapContextRunKind: params.bootstrapContextRunKind ?? "default",
     bootstrapMode: params.bootstrapMode ?? "none",
-    isPrimaryInteractiveRun: params.isPrimaryInteractiveRun ?? true,
+    isPrimaryInteractiveRun:
+      params.isPrimaryInteractiveRun ??
+      isPrimaryInteractiveBootstrapRun({
+        currentInboundEventKind: params.currentInboundEventKind,
+        isPrimaryRun: true,
+        trigger: "user",
+      }),
     hasCompletedBootstrapTurn,
     resolveBootstrapContextForRun,
   });
@@ -255,6 +265,28 @@ describe("embedded attempt context injection", () => {
     expect(result.isContinuationTurn).toBe(false);
     expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
     expect(result.contextFiles).toEqual([{ path: "AGENTS.md" }]);
+    expect(resolver).toHaveBeenCalledOnce();
+  });
+
+  it("does not let room events consume or write established-workspace bootstrap state", async () => {
+    const resolver = vi.fn(async () => ({
+      bootstrapFiles: [{ name: "AGENTS.md" }],
+      contextFiles: [{ path: "AGENTS.md" }],
+    }));
+    const { result, hasCompletedBootstrapTurn } = await resolveBootstrapContext({
+      contextInjectionMode: "continuation-skip",
+      bootstrapContextMode: "full",
+      bootstrapContextRunKind: "default",
+      bootstrapMode: "none",
+      currentInboundEventKind: "room_event",
+      completed: true,
+      resolver,
+    });
+
+    expect(result.isContinuationTurn).toBe(false);
+    expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
+    expect(result.contextFiles).toEqual([{ path: "AGENTS.md" }]);
+    expect(hasCompletedBootstrapTurn).not.toHaveBeenCalled();
     expect(resolver).toHaveBeenCalledOnce();
   });
 

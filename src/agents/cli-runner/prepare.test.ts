@@ -1811,6 +1811,50 @@ describe("prepareCliRunContext", () => {
     expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });
 
+  it("does not let room events consume or establish CLI continuation state", async () => {
+    const { dir } = fixture.session;
+    const hasCompletedBootstrapTurn = vi.fn(async () => true);
+    const resolveBootstrapContextForRun = vi.fn(async () => ({
+      bootstrapFiles: [
+        {
+          name: "AGENTS.md" as const,
+          path: path.join(dir, "AGENTS.md"),
+          content: "Room-event workspace context",
+          missing: false,
+        },
+      ],
+      contextFiles: [
+        {
+          path: path.join(dir, "AGENTS.md"),
+          content: "Room-event workspace context",
+        },
+      ],
+    }));
+    setCliRunnerPrepareTestDeps({
+      hasCompletedBootstrapTurn,
+      resolveBootstrapContextForRun,
+    });
+
+    const context = await fixture.prepare({
+      sessionKey: "agent:main:main",
+      config: {
+        agents: {
+          defaults: {
+            workspace: dir,
+            contextInjection: "continuation-skip",
+          },
+        },
+      },
+      trigger: "user",
+      currentInboundEventKind: "room_event",
+    });
+
+    expect(context.systemPrompt).toContain("Room-event workspace context");
+    expect(context.shouldRecordCompletedBootstrapTurn).toBeUndefined();
+    expect(hasCompletedBootstrapTurn).not.toHaveBeenCalled();
+    expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
+  });
+
   it("applies prompt-build hook context to Claude-style CLI preparation", async () => {
     const { dir } = fixture.session;
     fixture.appendTranscript({

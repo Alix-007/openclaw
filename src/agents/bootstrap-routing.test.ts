@@ -159,13 +159,30 @@ describe("resolveWorkspaceBootstrapRouting", () => {
   });
 
   it.each([
-    { label: "memory maintenance", trigger: "memory", isPrimaryRun: true },
-    { label: "a non-primary user run", trigger: "user", isPrimaryRun: false },
+    {
+      label: "memory maintenance",
+      trigger: "memory",
+      currentInboundEventKind: undefined,
+      isPrimaryRun: true,
+    },
+    {
+      label: "a non-primary user run",
+      trigger: "user",
+      currentInboundEventKind: undefined,
+      isPrimaryRun: false,
+    },
+    {
+      label: "an ambient room event",
+      trigger: "user",
+      currentInboundEventKind: "room_event" as const,
+      isPrimaryRun: true,
+    },
   ])(
     "marks $label as ineligible to establish continuation state",
-    async ({ trigger, isPrimaryRun }) => {
+    async ({ trigger, currentInboundEventKind, isPrimaryRun }) => {
       const routing = await resolveWorkspaceBootstrapRouting({
         isWorkspaceBootstrapPending: vi.fn(async () => false),
+        currentInboundEventKind,
         trigger,
         isPrimaryRun,
         isCanonicalWorkspace: true,

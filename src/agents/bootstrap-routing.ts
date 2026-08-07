@@ -3,6 +3,7 @@
  * embedded attempt runner and CLI-backend runs so both runtimes gate the
  * first reply on a pending BOOTSTRAP.md the same way.
  */
+import type { InboundEventKind } from "../channels/inbound-event/kind.js";
 import { isAcpSessionKey, isSubagentSessionKey } from "../routing/session-key.js";
 import {
   isHeartbeatLifecycleRunKind,
@@ -25,6 +26,7 @@ export function isPrimaryBootstrapRun(sessionKey?: string): boolean {
 type BootstrapRoutingInput = {
   workspaceBootstrapPending: boolean;
   bootstrapContextRunKind?: BootstrapContextRunKind;
+  currentInboundEventKind?: InboundEventKind;
   trigger?: string;
   sessionKey?: string;
   isPrimaryRun: boolean;
@@ -53,9 +55,22 @@ type BootstrapContextInjection<TBootstrapFile = unknown, TContextFile = unknown>
   contextFiles: TContextFile[];
 };
 
+export function isPrimaryInteractiveBootstrapRun(params: {
+  currentInboundEventKind?: InboundEventKind;
+  isPrimaryRun: boolean;
+  trigger?: string;
+}): boolean {
+  // Room events run under the user trigger but deliberately do not persist an
+  // assistant turn, so they cannot establish or consume continuation state.
+  return (
+    params.isPrimaryRun &&
+    params.currentInboundEventKind !== "room_event" &&
+    (params.trigger === "user" || params.trigger === "manual")
+  );
+}
+
 function resolveBootstrapRouting(params: BootstrapRoutingInput): WorkspaceBootstrapRouting {
-  const isPrimaryInteractiveRun =
-    params.isPrimaryRun && (params.trigger === "user" || params.trigger === "manual");
+  const isPrimaryInteractiveRun = isPrimaryInteractiveBootstrapRun(params);
   const bootstrapMode = resolveBootstrapMode({
     bootstrapPending: params.workspaceBootstrapPending,
     runKind: params.bootstrapContextRunKind ?? "default",
