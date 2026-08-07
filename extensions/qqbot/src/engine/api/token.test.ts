@@ -110,6 +110,7 @@ describe("QQBot token manager", () => {
   });
 
   it("adds account-neutral credential guidance when the token endpoint omits access_token", async () => {
+    const clientSecret = "guidance-credential-qQ7x9V2";
     const release = mockGuardedTokenResponse('{"code":4001,"message":"invalid app secret"}', {
       status: 200,
       headers: { "content-type": "application/json" },
@@ -117,7 +118,7 @@ describe("QQBot token manager", () => {
 
     let error: unknown;
     try {
-      await new TokenManager().getAccessToken("app-id", "secret");
+      await new TokenManager().getAccessToken("app-id", clientSecret);
     } catch (caught) {
       error = caught;
     }
