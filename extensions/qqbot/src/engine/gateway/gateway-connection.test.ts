@@ -2,8 +2,9 @@
 import { EventEmitter } from "node:events";
 import { expectDefined } from "@openclaw/normalization-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { lowercasePercentEscapes } from "../../test-support/credential-reflection.js";
 import type { EngineAdapters } from "../adapter/index.js";
-import { getAccessToken, stopBackgroundTokenRefresh } from "../messaging/sender.js";
+import { getAccessToken, getGatewayUrl, stopBackgroundTokenRefresh } from "../messaging/sender.js";
 import { flushRefIndex } from "../ref/store.js";
 import { flushKnownUsers } from "../session/known-users.js";
 import { GatewayEvent, GatewayOp, MAX_RECONNECT_ATTEMPTS } from "./constants.js";
@@ -68,6 +69,39 @@ function makeAccount(): GatewayAccount {
     markdownSupport: false,
     config: {},
   };
+}
+
+function makeCredentialReflectionFixture() {
+  const secretPrefix = "qQGwP";
+  const secretSuffix = "gSfQ";
+  const accessToken = `${secretPrefix}/UNIQUE~GATEWAYSECRET+${secretSuffix}`;
+  const encodedToken = encodeURIComponent(accessToken);
+  const formEncodedToken = new URLSearchParams([["credential", accessToken]])
+    .toString()
+    .slice("credential=".length);
+  const reflected = {
+    raw: accessToken,
+    encoded: lowercasePercentEscapes(encodedToken),
+    form: lowercasePercentEscapes(formEncodedToken),
+  };
+  return {
+    accessToken,
+    reflected,
+    forbidden: [
+      ...Object.values(reflected),
+      encodedToken,
+      formEncodedToken,
+      secretPrefix,
+      secretSuffix,
+      "UNIQUEGATEWAYSECRET",
+    ],
+  };
+}
+
+function expectCredentialsAbsent(output: string, forbidden: string[]): void {
+  for (const credential of forbidden) {
+    expect(output).not.toContain(credential);
+  }
 }
 
 async function startConnection(params: {
@@ -451,6 +485,69 @@ describe("GatewayConnection disconnect status", () => {
     await Promise.resolve();
     expect(receive).toHaveBeenCalledTimes(1);
     expect(onError).toHaveBeenCalledWith(admissionError);
+    controller.abort();
+    await started;
+  });
+});
+
+describe("GatewayConnection credential redaction", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    createQQWSClientMock.mockReset();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.clearAllMocks();
+  });
+
+  it("redacts raw and encoded access tokens reflected in the gateway URL log", async () => {
+    const { accessToken, reflected, forbidden } = makeCredentialReflectionFixture();
+    const gatewayUrl =
+      `wss://gateway.example.test/connect?marker=gateway-url-visible-123` +
+      `&raw=${reflected.raw}&encoded=${reflected.encoded}&form=${reflected.form}`;
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    vi.mocked(getGatewayUrl).mockResolvedValueOnce(gatewayUrl);
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+
+    const { controller, started } = await startConnection({ log });
+
+    expect(createQQWSClientMock).toHaveBeenCalledWith(expect.objectContaining({ gatewayUrl }));
+    const infoOutput = log.info.mock.calls.flat().join("\n");
+    expect(infoOutput).toContain("Connecting to wss://gateway.example.test/connect");
+    expect(infoOutput).toContain("gateway-url-visible-123");
+    expectCredentialsAbsent(infoOutput, forbidden);
+
+    controller.abort();
+    await started;
+  });
+
+  it("redacts raw and encoded access tokens reflected in DISPATCH diagnostics", async () => {
+    const { accessToken, reflected, forbidden } = makeCredentialReflectionFixture();
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const { ws, controller, started } = await startConnection({ log });
+
+    ws.emit(
+      "message",
+      JSON.stringify({
+        op: GatewayOp.DISPATCH,
+        t: "CREDENTIAL_REFLECTION_TEST",
+        d: {
+          marker: "dispatch-visible-123",
+          ...reflected,
+        },
+      }),
+    );
+
+    await vi.waitFor(() => {
+      expect(log.debug).toHaveBeenCalledWith(expect.stringContaining("dispatch-visible-123"));
+    });
+    const debugOutput = log.debug.mock.calls.flat().join("\n");
+    expect(debugOutput).toContain("Dispatch event: t=CREDENTIAL_REFLECTION_TEST");
+    expect(debugOutput).toContain("dispatch-visible-123");
+    expectCredentialsAbsent(debugOutput, forbidden);
+
     controller.abort();
     await started;
   });
