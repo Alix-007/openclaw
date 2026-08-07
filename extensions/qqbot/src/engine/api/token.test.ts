@@ -147,8 +147,34 @@ describe("QQBot token manager", () => {
     expect(tracked.wasCanceled()).toBe(true);
     expect(textSpy).not.toHaveBeenCalled();
     expect(tracked.release).toHaveBeenCalledTimes(1);
-    expect(logger.debug.mock.calls.join("\n")).toContain("qqbot token unavailable");
-    expect(logger.debug.mock.calls.join("\n")).not.toContain("tail");
+    const debugOutput = logger.debug.mock.calls.join("\n");
+    expect(debugOutput).toContain("<malformed JSON body omitted>");
+    expect(debugOutput).not.toContain("qqbot token unavailable");
+    expect(debugOutput).not.toContain("tail");
+  });
+
+  it("omits malformed token response bodies from diagnostics", async () => {
+    const logger = { debug: vi.fn(), info: vi.fn(), error: vi.fn() };
+    const tokenPrefix = "qQMalformedP";
+    const tokenFragment = "issued-token-fragment";
+    const tokenSuffix = "tSfQ";
+    const accessToken = [tokenPrefix, tokenFragment, tokenSuffix].join("/");
+    const malformedBody = ['{"access_token":"', accessToken, '",'].join("");
+    mockGuardedTokenResponse(malformedBody, {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+
+    await expect(new TokenManager({ logger }).getAccessToken("app-id", "secret")).rejects.toThrow(
+      "QQBot access_token response was malformed JSON",
+    );
+
+    const debugOutput = logger.debug.mock.calls.join("\n");
+    expect(debugOutput).toContain("<malformed JSON body omitted>");
+    expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain(tokenPrefix);
+    expect(debugOutput).not.toContain(tokenFragment);
+    expect(debugOutput).not.toContain(tokenSuffix);
   });
 
   it("redacts a reflected client secret before logging or throwing token errors", async () => {
@@ -269,6 +295,35 @@ describe("QQBot token manager", () => {
         }
       },
     );
+  });
+
+  it("fully redacts issued access tokens from successful token diagnostics", async () => {
+    const logger = { debug: vi.fn(), info: vi.fn(), error: vi.fn() };
+    const tokenPrefix = "qQIssuedP";
+    const tokenSuffix = "tSfQ";
+    const accessToken = [tokenPrefix, "UNIQUE-ISSUED-TOKEN", tokenSuffix].join("/");
+    mockGuardedTokenResponse(
+      JSON.stringify({
+        access_token: accessToken,
+        expires_in: 7200,
+        marker: "issued-token-visible-123",
+      }),
+      {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      },
+    );
+
+    await expect(
+      new TokenManager({ logger }).getAccessToken("app-id", "client-secret"),
+    ).resolves.toBe(accessToken);
+
+    const debugOutput = logger.debug.mock.calls.flat().join("\n");
+    expect(debugOutput).toContain("issued-token-visible-123");
+    expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain(tokenPrefix);
+    expect(debugOutput).not.toContain(tokenSuffix);
+    expect(debugOutput).not.toContain("UNIQUE-ISSUED-TOKEN");
   });
 
   it("passes the RFC2544 SSRF allowance to the token fetch (regression for #88984)", async () => {

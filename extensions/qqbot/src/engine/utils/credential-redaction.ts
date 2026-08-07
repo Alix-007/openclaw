@@ -12,16 +12,25 @@ function canonicalizePercentEscapes(text: string): string {
   return text.replace(PERCENT_ESCAPE_RE, (escape) => escape.toUpperCase());
 }
 
-function resolveCredentialForms(credential: string): CredentialForms {
-  const jsonEscaped = JSON.stringify(credential).slice(1, -1);
-  const literal = new Set([credential, jsonEscaped, jsonEscaped.replaceAll("/", "\\/")]);
-  const encoded = new Set([
-    new URLSearchParams([["credential", credential]]).toString().slice("credential=".length),
-  ]);
-  try {
-    encoded.add(encodeURIComponent(credential));
-  } catch {
-    // Raw and JSON forms still cover malformed UTF-16 credentials that URI encoding rejects.
+function resolveCredentialForms(credentials: readonly string[]): CredentialForms {
+  const literal = new Set<string>();
+  const encoded = new Set<string>();
+  for (const credential of credentials) {
+    if (!credential) {
+      continue;
+    }
+    const jsonEscaped = JSON.stringify(credential).slice(1, -1);
+    literal.add(credential);
+    literal.add(jsonEscaped);
+    literal.add(jsonEscaped.replaceAll("/", "\\/"));
+    encoded.add(
+      new URLSearchParams([["credential", credential]]).toString().slice("credential=".length),
+    );
+    try {
+      encoded.add(encodeURIComponent(credential));
+    } catch {
+      // Raw and JSON forms still cover malformed UTF-16 credentials that URI encoding rejects.
+    }
   }
   const longestFirst = (left: string, right: string) => right.length - left.length;
   return {
@@ -56,13 +65,13 @@ function redactJsonCredentialText(text: string, forms: CredentialForms): string 
   }
 }
 
-/** Remove raw, serialized, and encoded request credentials before generic redaction. */
-export function redactQQBotCredentialText(text: string, credential: string): string {
-  if (!credential) {
+/** Remove raw, serialized, and encoded credentials before generic redaction. */
+export function redactQQBotCredentialText(text: string, ...credentials: readonly string[]): string {
+  const credentialForms = resolveCredentialForms(credentials);
+  if (credentialForms.literal.length === 0 && credentialForms.encoded.length === 0) {
     return redactToolPayloadText(text);
   }
 
-  const credentialForms = resolveCredentialForms(credential);
   const withoutExactCredential =
     redactJsonCredentialText(text, credentialForms) ?? redactCredentialForms(text, credentialForms);
   return redactToolPayloadText(withoutExactCredential);
