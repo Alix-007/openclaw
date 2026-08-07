@@ -196,7 +196,10 @@ describe("deepinfra video generation provider", () => {
         request: requestPolicy,
       }),
     );
-    const postRequest = requireFirstPostJsonRequest();
+    const postRequest = requireFirstPostJsonRequest(
+      postJsonRequestMock,
+      "DeepInfra video submit request",
+    );
     expect(Reflect.get(postRequest ?? {}, "allowPrivateNetwork")).toBe(true);
     expect(Reflect.get(postRequest ?? {}, "dispatcherPolicy")).toBe(dispatcherPolicy);
     const postRequestHeaders = Reflect.get(postRequest ?? {}, "headers");
