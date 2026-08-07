@@ -447,7 +447,6 @@ async function persistCliAssistantTranscript(params: {
   if (!runParams.persistAssistantTranscript || !runParams.sessionKey) {
     return { owned: false, persisted: false };
   }
-  }
   try {
     const result = await appendExactAssistantMessageToSessionTranscript({
       sessionKey: runParams.sessionKey,

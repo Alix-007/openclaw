@@ -141,13 +141,13 @@ export async function resolveBootstrapContextInjection<TBootstrapFile, TContextF
   }
 > {
   const isHeartbeatLifecycleRun = isHeartbeatLifecycleRunKind(params.bootstrapContextRunKind);
-  const isPrimaryInteractiveBootstrapRun =
+  const isEligibleInteractiveBootstrapRun =
     params.isPrimaryInteractiveRun && params.bootstrapContextRunKind !== "cron";
   const isContinuationTurn =
     params.bootstrapMode !== "full" &&
     params.contextInjectionMode === "continuation-skip" &&
     !isHeartbeatLifecycleRun &&
-    isPrimaryInteractiveBootstrapRun &&
+    isEligibleInteractiveBootstrapRun &&
     (await params.hasCompletedBootstrapTurn());
   // Continuation-skip and explicit never both produce an empty injection set,
   // but only a clean full bootstrap later records a durable completion marker.
@@ -156,7 +156,7 @@ export async function resolveBootstrapContextInjection<TBootstrapFile, TContextF
   const shouldRecordEstablishedWorkspaceTurn =
     params.bootstrapMode === "none" &&
     params.contextInjectionMode === "continuation-skip" &&
-    isPrimaryInteractiveBootstrapRun;
+    isEligibleInteractiveBootstrapRun;
   const shouldRecordCompletedBootstrapTurn =
     !shouldSkipBootstrapInjection &&
     params.bootstrapContextMode !== "lightweight" &&
