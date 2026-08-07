@@ -6,7 +6,7 @@ import { runDiscordRuntimeContextRedactionProof, runDiscordScenario } from "./sc
 
 function createRuntimeContextHarness(
   options: {
-    delaySanitizedWrapperOnlyUntilAfterMixedRead?: boolean;
+    delaySanitizedWrapperOnlyUntilFinalQuietWindow?: boolean;
     delaySanitizedWrapperOnlyUntilMixed?: boolean;
     delayWrapperOnlyUntilMixed?: boolean;
     leakWrapperOnly?: boolean;
@@ -14,7 +14,7 @@ function createRuntimeContextHarness(
 ) {
   const sessionMessages: unknown[] = [];
   let delayedWrapperOnlyContent: string | undefined;
-  let releaseDelayedWrapperOnlyAfterMixedRead = false;
+  let mixedVisibleTurnObserved = false;
   let messageSequence = 0;
   const deletedMessageIds: string[] = [];
   const deleteMessage = vi.fn(async (messageId: string) => {
@@ -29,10 +29,18 @@ function createRuntimeContextHarness(
       deleteMessage,
       readSessionMessages: async () => {
         const snapshot = [...sessionMessages];
-        if (releaseDelayedWrapperOnlyAfterMixedRead && delayedWrapperOnlyContent !== undefined) {
-          sessionMessages.push({ role: "user", content: delayedWrapperOnlyContent });
-          delayedWrapperOnlyContent = undefined;
-          releaseDelayedWrapperOnlyAfterMixedRead = false;
+        if (
+          options.delaySanitizedWrapperOnlyUntilFinalQuietWindow &&
+          delayedWrapperOnlyContent !== undefined &&
+          snapshot.some(
+            (message) =>
+              message !== null &&
+              typeof message === "object" &&
+              "content" in message &&
+              (message as { content?: unknown }).content === "VISIBLE_TEXT_SECRET_MARKER",
+          )
+        ) {
+          mixedVisibleTurnObserved = true;
         }
         return snapshot;
       },
@@ -44,16 +52,13 @@ function createRuntimeContextHarness(
         if (content.startsWith("VISIBLE_TEXT_SECRET_MARKER")) {
           if (
             delayedWrapperOnlyContent !== undefined &&
-            !options.delaySanitizedWrapperOnlyUntilAfterMixedRead
+            !options.delaySanitizedWrapperOnlyUntilFinalQuietWindow
           ) {
             sessionMessages.push({ role: "user", content: delayedWrapperOnlyContent });
             delayedWrapperOnlyContent = undefined;
           }
           sessionMessages.push({ role: "user", content: "VISIBLE_TEXT_SECRET_MARKER" });
-          if (delayedWrapperOnlyContent !== undefined) {
-            releaseDelayedWrapperOnlyAfterMixedRead = true;
-          }
-        } else if (options.delaySanitizedWrapperOnlyUntilAfterMixedRead) {
+        } else if (options.delaySanitizedWrapperOnlyUntilFinalQuietWindow) {
           delayedWrapperOnlyContent = "";
         } else if (options.delaySanitizedWrapperOnlyUntilMixed) {
           delayedWrapperOnlyContent = "";
@@ -64,7 +69,12 @@ function createRuntimeContextHarness(
         }
         return nextMessage();
       },
-      sleep: async () => undefined,
+      sleep: async () => {
+        if (mixedVisibleTurnObserved && delayedWrapperOnlyContent !== undefined) {
+          sessionMessages.push({ role: "user", content: delayedWrapperOnlyContent });
+          delayedWrapperOnlyContent = undefined;
+        }
+      },
     },
   };
 }
@@ -183,9 +193,9 @@ describe("Discord runtime-context redaction scenario", () => {
     expect(harness.deletedMessageIds).toEqual(["message-3", "message-2", "message-1"]);
   });
 
-  it("rejects a sanitized empty wrapper-only turn appended after the mixed visible snapshot", async () => {
+  it("rejects a sanitized empty wrapper-only turn released in the final quiet window", async () => {
     const harness = createRuntimeContextHarness({
-      delaySanitizedWrapperOnlyUntilAfterMixedRead: true,
+      delaySanitizedWrapperOnlyUntilFinalQuietWindow: true,
     });
 
     const proof = await runDiscordRuntimeContextRedactionProof({
