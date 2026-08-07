@@ -701,7 +701,7 @@ describe("startDebugProxyServer", () => {
       expect(getDebugProxyCaptureStore().getSessionEvents(settings.sessionId, 10)).toContainEqual(
         expect.objectContaining({
           direction: "local",
-          errorText: "CONNECT upstream timed out after 30000ms",
+          errorText: "CONNECT upstream opening timed out after 30000ms of inactivity",
           kind: "error",
           protocol: "connect",
         }),

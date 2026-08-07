@@ -410,8 +410,8 @@ export async function startDebugProxyServer(params: {
       return;
     }
     const upstreamSocket = net.connect(port, hostname, () => {
-      // The deadline only protects opening the upstream socket. CONNECT tunnels
-      // are intentionally long-lived and must not inherit an idle timeout.
+      // This inactivity timeout only protects opening the upstream socket. CONNECT
+      // tunnels are intentionally long-lived and must not inherit it.
       upstreamSocket.setTimeout(0);
       upstreamSocket.off("timeout", onUpstreamConnectTimeout);
       clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
@@ -422,7 +422,7 @@ export async function startDebugProxyServer(params: {
       upstreamSocket.pipe(clientSocket);
     });
     function onUpstreamConnectTimeout() {
-      const message = `CONNECT upstream timed out after ${DEBUG_PROXY_CONNECT_TIMEOUT_MS}ms`;
+      const message = `CONNECT upstream opening timed out after ${DEBUG_PROXY_CONNECT_TIMEOUT_MS}ms of inactivity`;
       recordProxyEvent({
         protocol: "connect",
         direction: "local",
