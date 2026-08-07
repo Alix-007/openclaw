@@ -138,10 +138,8 @@ export async function runDiscordRuntimeContextRedactionProof(params: {
     sentMessageIds.push(wrapperOnlyMessage.id);
     await sleep(params.noTurnWindowMs ?? DISCORD_RUNTIME_CONTEXT_NO_TURN_WINDOW_MS);
     const afterWrapperOnly = await params.dependencies.readSessionMessages();
-    const wrapperOnlyChecks = {
-      userTurnCountUnchanged: readUserMessages(afterWrapperOnly).length === initialUserCount,
-      wrapperMarkerAbsent: !serializeUserMessages(afterWrapperOnly).includes(wrapperOnlyMarker),
-    };
+    const wrapperOnlyUserTurnCountUnchanged =
+      readUserMessages(afterWrapperOnly).length === initialUserCount;
 
     const mediaWrapperMarker = createMarker("MEDIA_WRAPPER");
     const beforeMediaCount = readUserMessages(afterWrapperOnly).length;
@@ -177,6 +175,13 @@ export async function runDiscordRuntimeContextRedactionProof(params: {
     const mixedChecks = {
       visibleTextPresent: mixedUsers.includes(visibleMarker),
       wrapperMarkerAbsent: !mixedUsers.includes(mixedWrapperMarker),
+    };
+
+    // The first Discord event can settle after its quiet window, so assert its
+    // marker against the final cumulative session snapshot from the later waits.
+    const wrapperOnlyChecks = {
+      userTurnCountUnchanged: wrapperOnlyUserTurnCountUnchanged,
+      wrapperMarkerAbsent: !serializeUserMessages(afterMixed).includes(wrapperOnlyMarker),
     };
 
     const cases: DiscordRuntimeContextCase[] = [

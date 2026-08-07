@@ -4,8 +4,11 @@ import { discordQaRuntimeContextRedactionScenario } from "./discord-live.runtime
 import type { DiscordQaScenarioEnvironment } from "./scenario-environment.js";
 import { runDiscordRuntimeContextRedactionProof, runDiscordScenario } from "./scenario-runtime.js";
 
-function createRuntimeContextHarness(options: { leakWrapperOnly?: boolean } = {}) {
+function createRuntimeContextHarness(
+  options: { delayWrapperOnlyUntilMixed?: boolean; leakWrapperOnly?: boolean } = {},
+) {
   const sessionMessages: unknown[] = [];
+  let delayedWrapperOnlyMessage: string | undefined;
   let messageSequence = 0;
   const deletedMessageIds: string[] = [];
   const deleteMessage = vi.fn(async (messageId: string) => {
@@ -25,7 +28,13 @@ function createRuntimeContextHarness(options: { leakWrapperOnly?: boolean } = {}
       },
       sendText: async (content: string) => {
         if (content.startsWith("VISIBLE_TEXT_SECRET_MARKER")) {
+          if (delayedWrapperOnlyMessage) {
+            sessionMessages.push({ role: "user", content: delayedWrapperOnlyMessage });
+            delayedWrapperOnlyMessage = undefined;
+          }
           sessionMessages.push({ role: "user", content: "VISIBLE_TEXT_SECRET_MARKER" });
+        } else if (options.delayWrapperOnlyUntilMixed) {
+          delayedWrapperOnlyMessage = content;
         } else if (options.leakWrapperOnly) {
           sessionMessages.push({ role: "user", content });
         }
@@ -93,6 +102,24 @@ describe("Discord runtime-context redaction scenario", () => {
     expect(proof.cases[0]).toEqual({
       id: "wrapper-only-text-dropped",
       checks: { userTurnCountUnchanged: false, wrapperMarkerAbsent: false },
+      pass: false,
+    });
+    expect(harness.deletedMessageIds).toEqual(["message-3", "message-2", "message-1"]);
+  });
+
+  it("rejects a wrapper-only session turn that arrives during a later case", async () => {
+    const harness = createRuntimeContextHarness({ delayWrapperOnlyUntilMixed: true });
+
+    const proof = await runDiscordRuntimeContextRedactionProof({
+      dependencies: harness.dependencies,
+      noTurnWindowMs: 0,
+      turnTimeoutMs: 10,
+    });
+
+    expect(proof.pass).toBe(false);
+    expect(proof.cases[0]).toEqual({
+      id: "wrapper-only-text-dropped",
+      checks: { userTurnCountUnchanged: true, wrapperMarkerAbsent: false },
       pass: false,
     });
     expect(harness.deletedMessageIds).toEqual(["message-3", "message-2", "message-1"]);
