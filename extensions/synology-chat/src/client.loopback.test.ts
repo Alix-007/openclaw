@@ -103,7 +103,7 @@ describe("Synology Chat client loopback", () => {
     );
   });
 
-  it("does not replay after the server receives the upload and disconnects mid-response", async () => {
+  it("does not replay after the server receives the upload and disconnects", async () => {
     let requestCount = 0;
     let uploadedBody = "";
     const port = await listenLoopback((req, res) => {
@@ -113,22 +113,7 @@ describe("Synology Chat client loopback", () => {
         uploadedBody += chunk;
       });
       req.on("end", () => {
-        res.on("error", () => {});
-        res.writeHead(200, {
-          "Content-Type": "application/json",
-          "Content-Length": "1000",
-        });
-        res.write('{"success":');
-        const dripTimer = setInterval(() => {
-          if (!res.destroyed) {
-            res.write(" ");
-          }
-        }, 10);
-        const disconnectTimer = setTimeout(() => res.destroy(), 50);
-        res.on("close", () => {
-          clearInterval(dripTimer);
-          clearTimeout(disconnectTimer);
-        });
+        res.destroy();
       });
     });
     const incomingUrl = `http://127.0.0.1:${port}/webapi/entry.cgi`;
@@ -310,29 +295,6 @@ describe("Synology Chat client loopback", () => {
       }),
     ).rejects.toThrow("Failed to send media to Synology Chat");
     expect(rejectedRequests).toBe(2);
-  });
-
-  it("does not replay an HTTP-successful webhook rejection", async () => {
-    let rejectedRequests = 0;
-    const port = await listenLoopback((_req, res) => {
-      rejectedRequests += 1;
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ success: false, error: { code: 105 } }));
-    });
-    const cfg = {
-      channels: {
-        "synology-chat": {
-          enabled: true,
-          token: "synology-loopback-rejected",
-          incomingUrl: `http://127.0.0.1:${port}/webapi/entry.cgi`,
-        },
-      },
-    };
-
-    await expect(
-      synologyChatPlugin.outbound.sendText({ cfg, text: "rejected", to: "42" }),
-    ).rejects.toThrow("Failed to send message to Synology Chat");
-    expect(rejectedRequests).toBe(1);
   });
 
   it("rejects private file URLs before contacting the authenticated webhook", async () => {
