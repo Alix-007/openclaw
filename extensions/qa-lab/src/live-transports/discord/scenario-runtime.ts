@@ -127,13 +127,14 @@ export async function runDiscordRuntimeContextRedactionProof(params: {
   try {
     const initialMessages = await params.dependencies.readSessionMessages();
     const initialUserCount = readUserMessages(initialMessages).length;
+    const noTurnWindowMs = params.noTurnWindowMs ?? DISCORD_RUNTIME_CONTEXT_NO_TURN_WINDOW_MS;
 
     const wrapperOnlyMarker = createMarker("WRAPPER_ONLY");
     const wrapperOnlyMessage = await params.dependencies.sendText(
       buildInternalRuntimeContext(wrapperOnlyMarker),
     );
     sentMessageIds.push(wrapperOnlyMessage.id);
-    await sleep(params.noTurnWindowMs ?? DISCORD_RUNTIME_CONTEXT_NO_TURN_WINDOW_MS);
+    await sleep(noTurnWindowMs);
     const afterWrapperOnly = await params.dependencies.readSessionMessages();
     const wrapperOnlyUserTurnCountUnchanged =
       readUserMessages(afterWrapperOnly).length === initialUserCount;
@@ -162,23 +163,32 @@ export async function runDiscordRuntimeContextRedactionProof(params: {
       `${visibleMarker}\n${buildInternalRuntimeContext(mixedWrapperMarker)}`,
     );
     sentMessageIds.push(mixedMessage.id);
-    const afterMixed = await waitForUserTurn({
+    await waitForUserTurn({
       dependencies: params.dependencies,
       previousCount: beforeMixedCount,
       requiredMarker: visibleMarker,
       timeoutMs: params.turnTimeoutMs ?? DISCORD_RUNTIME_CONTEXT_TURN_TIMEOUT_MS,
     });
-    const mixedUsers = JSON.stringify(readUserMessages(afterMixed).slice(beforeMixedCount));
+    // Seeing the mixed visible turn only proves that the expected turn arrived.
+    // Keep observing through a second quiet window before making assertions: a
+    // sanitized wrapper-only turn can otherwise be appended after this first
+    // snapshot and escape both marker and count checks.
+    await sleep(noTurnWindowMs);
+    const finalMessages = await params.dependencies.readSessionMessages();
+    const mixedUsers = JSON.stringify(readUserMessages(finalMessages).slice(beforeMixedCount));
     const mixedChecks = {
       visibleTextPresent: mixedUsers.includes(visibleMarker),
       wrapperMarkerAbsent: !mixedUsers.includes(mixedWrapperMarker),
     };
 
-    // The first Discord event can settle after its quiet window, so assert its
-    // marker against the final cumulative session snapshot from the later waits.
+    // The first Discord event can settle after its quiet window. The two later
+    // cases are the only expected post-baseline user turns, so count them as
+    // well as checking the marker: a sanitized empty turn has no marker.
     const wrapperOnlyChecks = {
+      finalUserTurnCountMatchesExpected:
+        readUserMessages(finalMessages).length === initialUserCount + 2,
       userTurnCountUnchanged: wrapperOnlyUserTurnCountUnchanged,
-      wrapperMarkerAbsent: !serializeUserMessages(afterMixed).includes(wrapperOnlyMarker),
+      wrapperMarkerAbsent: !serializeUserMessages(finalMessages).includes(wrapperOnlyMarker),
     };
 
     const cases: DiscordRuntimeContextCase[] = [
