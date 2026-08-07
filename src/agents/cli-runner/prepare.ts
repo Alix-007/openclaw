@@ -866,6 +866,7 @@ export async function prepareCliRunContext(
     canTransportSystemPrompt: canTransportSystemPrompt(backendResolved.config),
     chatType: runtimeChatType,
     config: params.config,
+    currentInboundEventKind: params.currentInboundEventKind,
     deps: {
       hasCompletedBootstrapTurn: prepareDeps.hasCompletedBootstrapTurn,
       isWorkspaceBootstrapPending: prepareDeps.isWorkspaceBootstrapPending,

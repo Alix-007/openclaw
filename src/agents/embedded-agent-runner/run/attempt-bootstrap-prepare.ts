@@ -10,6 +10,7 @@ import {
 import { isHeartbeatLifecycleRunKind } from "../../bootstrap-mode.js";
 import {
   isPrimaryBootstrapRun,
+  isPrimaryInteractiveBootstrapRun,
   resolveBootstrapContextInjection,
   resolveWorkspaceBootstrapRouting,
 } from "../../bootstrap-routing.js";
@@ -46,21 +47,29 @@ export async function prepareEmbeddedAttemptBootstrap(params: {
     completedBootstrapTurn ??= await hasCompletedBootstrapTurn(attempt.sessionTarget);
     return completedBootstrapTurn;
   };
+  const isPrimaryRun = isPrimaryBootstrapRun(attempt.sessionKey);
   const resolveBootstrapRouting = (bootstrapFiles?: readonly WorkspaceBootstrapFile[]) =>
     resolveWorkspaceBootstrapRouting({
       isWorkspaceBootstrapPending,
       bootstrapFiles,
       bootstrapContextRunKind: attempt.bootstrapContextRunKind,
+      currentInboundEventKind: attempt.currentInboundEventKind,
       trigger: attempt.trigger,
       sessionKey: attempt.sessionKey,
-      isPrimaryRun: isPrimaryBootstrapRun(attempt.sessionKey),
+      isPrimaryRun,
       isCanonicalWorkspace: attempt.isCanonicalWorkspace,
       effectiveWorkspace: params.effectiveWorkspace,
       resolvedWorkspace: params.resolvedWorkspace,
       hasBootstrapFileAccess: params.hasReadTool,
     });
+  const isPrimaryInteractiveRun = isPrimaryInteractiveBootstrapRun({
+    currentInboundEventKind: attempt.currentInboundEventKind,
+    isPrimaryRun,
+    trigger: attempt.trigger,
+  });
   const shouldProbeContinuationSkip =
     !suppressAmbientContext &&
+    isPrimaryInteractiveRun &&
     contextInjectionMode === "continuation-skip" &&
     !isHeartbeatLifecycleRunKind(attempt.bootstrapContextRunKind) &&
     (await hasCompletedBootstrapTurnForAttempt());

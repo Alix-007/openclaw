@@ -209,6 +209,7 @@ async function runEmbeddedAgentViaCliBackend(
         prompt: params.prompt,
         imagePrompt: params.prompt,
         media: params.media,
+        currentInboundEventKind: params.currentInboundEventKind,
         provider: dispatch.provider,
         model: params.model,
         thinkLevel: params.thinkLevel,

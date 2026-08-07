@@ -381,6 +381,16 @@ describe("runEmbeddedAgentViaCliBackendIfEligible execution", () => {
     },
   );
 
+  it("forwards room-event classification into CLI bootstrap routing", async () => {
+    await runEmbeddedAgentViaCliBackendIfEligible(
+      baseRunParams({ currentInboundEventKind: "room_event" }),
+    );
+
+    expect(runCliAgent.mock.calls[0]?.[0]).toMatchObject({
+      currentInboundEventKind: "room_event",
+    });
+  });
+
   // Fail-closed tool policy: only a non-empty named allowlist is expressible
   // on the CLI surface. Every other embedded tool state keeps the passthrough
   // so no closed state silently widens.

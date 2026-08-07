@@ -1,4 +1,5 @@
 import type { ChatType } from "../../channels/chat-type.js";
+import type { InboundEventKind } from "../../channels/inbound-event/kind.js";
 import { resolveStorePath } from "../../config/sessions/paths.js";
 import type { SessionTranscriptRuntimeTarget } from "../../config/sessions/session-accessor.types.js";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
@@ -16,6 +17,7 @@ import {
 } from "../bootstrap-mode.js";
 import {
   isPrimaryBootstrapRun,
+  isPrimaryInteractiveBootstrapRun,
   resolveBootstrapContextInjection,
   resolveWorkspaceBootstrapRouting,
 } from "../bootstrap-routing.js";
@@ -46,6 +48,7 @@ export async function prepareCliBootstrapContext(params: {
   canTransportSystemPrompt: boolean;
   chatType?: ChatType;
   config?: OpenClawConfig;
+  currentInboundEventKind?: InboundEventKind;
   deps: CliBootstrapContextDeps;
   hasBootstrapFileAccess: boolean;
   isCanonicalWorkspace: boolean;
@@ -98,8 +101,15 @@ export async function prepareCliBootstrapContext(params: {
       }),
     }));
   const canRouteBootstrap = params.canTransportSystemPrompt && !params.isSideQuestion;
+  const isPrimaryRun = isPrimaryBootstrapRun(params.sessionKey);
+  const isPrimaryInteractiveRun = isPrimaryInteractiveBootstrapRun({
+    currentInboundEventKind: params.currentInboundEventKind,
+    isPrimaryRun,
+    trigger: params.trigger,
+  });
   const shouldProbeContinuationSkip =
     canRouteBootstrap &&
+    isPrimaryInteractiveRun &&
     contextInjectionMode === "continuation-skip" &&
     !isHeartbeatLifecycleRunKind(params.bootstrapContextRunKind) &&
     (await hasCompletedBootstrapTurnForRun());
@@ -113,9 +123,10 @@ export async function prepareCliBootstrapContext(params: {
         bootstrapFiles: resolvedBootstrapContext?.bootstrapFiles,
         bootstrapFilesProvideAccess: false,
         bootstrapContextRunKind: params.bootstrapContextRunKind,
+        currentInboundEventKind: params.currentInboundEventKind,
         trigger: params.trigger,
         sessionKey: params.sessionKey,
-        isPrimaryRun: isPrimaryBootstrapRun(params.sessionKey),
+        isPrimaryRun,
         isCanonicalWorkspace: params.isCanonicalWorkspace,
         effectiveWorkspace: params.workspaceDir,
         resolvedWorkspace: params.resolvedWorkspace,
