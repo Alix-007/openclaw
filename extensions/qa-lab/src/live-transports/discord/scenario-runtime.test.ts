@@ -1,5 +1,6 @@
 // Qa Lab tests cover the Discord runtime-context live scenario contract.
 import { describe, expect, it, vi } from "vitest";
+import { buildQaGatewayConfig } from "../../qa-gateway-config.js";
 import { discordQaRuntimeContextRedactionScenario } from "./discord-live.runtime.js";
 import type { DiscordQaScenarioEnvironment } from "./scenario-environment.js";
 import { runDiscordRuntimeContextRedactionProof, runDiscordScenario } from "./scenario-runtime.js";
@@ -231,7 +232,7 @@ describe("Discord runtime-context redaction scenario", () => {
     expect(harness.deleteMessage).toHaveBeenCalledTimes(3);
   });
 
-  it("retains only a sanitized error cause when the live scenario fails", async () => {
+  it("reads the routed QA session and retains only a sanitized error cause", async () => {
     const sensitive = {
       channelId: "123456789012345678",
       driverBotToken: "driver-token-secret",
@@ -249,8 +250,14 @@ describe("Discord runtime-context redaction scenario", () => {
         ),
       },
     );
+    const cfg = buildQaGatewayConfig({
+      bind: "loopback",
+      gatewayPort: 18789,
+      gatewayToken: "test-token",
+      workspaceDir: "/tmp/discord-runtime-context-redaction-workspace",
+    });
     const environment = {
-      configureScenario: async () => ({ cfg: {}, run: { kind: "runtime-context-redaction" } }),
+      configureScenario: async () => ({ cfg, run: { kind: "runtime-context-redaction" } }),
       driverIdentity: { id: sensitive.driverUserId },
       gateway: {
         call: vi.fn(async () => {
@@ -279,6 +286,10 @@ describe("Discord runtime-context redaction scenario", () => {
     }
 
     const errorChain = readErrorChain(failure);
+    expect(environment.gateway.call).toHaveBeenCalledWith("sessions.get", {
+      key: `agent:qa:discord:channel:${sensitive.channelId}`,
+      limit: 200,
+    });
     expect(errorChain).toHaveLength(2);
     expect(errorChain[0]?.message).toBe("Discord runtime-context redaction scenario failed");
     expect(errorChain[1]?.message).toContain("<redacted>");
