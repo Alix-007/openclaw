@@ -476,12 +476,9 @@ describe("executeChannelApi", () => {
 
   it("redacts Unicode-escaped credentials from prefixed response text", async () => {
     const accessToken = "qQUnicode/UNIQUE~CHANNELSECRET+Proof";
-    const unicodeEscapedCredential = [...accessToken]
-      .map((character) =>
-        [...character]
-          .map((codeUnit) => `\\u${codeUnit.charCodeAt(0).toString(16).padStart(4, "0")}`)
-          .join(""),
-      )
+    const unicodeEscapedCredential = accessToken
+      .split("")
+      .map((codeUnit) => `\\u${codeUnit.charCodeAt(0).toString(16).padStart(4, "0")}`)
       .join("");
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
       response: new Response(`unicode-marker ${unicodeEscapedCredential}`, {
