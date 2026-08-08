@@ -2,13 +2,12 @@ import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 
 const AUTHORIZATION_SECRET_HEADERS = new Set(["authorization", "proxy-authorization"]);
 
-export function redactOllamaResponseErrorText(
-  text: string,
+export function collectOllamaRequestHeaderSecretValues(
   headers: Readonly<Record<string, string>>,
-): string {
+): string[] {
   // Arbitrary configured headers can carry credentials. Authorization intermediaries
   // can also reflect the credential without its scheme, so redact both scoped forms.
-  const exactSecretValues = Object.entries(headers).flatMap(([headerName, headerValue]) => {
+  return Object.entries(headers).flatMap(([headerName, headerValue]) => {
     const normalizedHeaderName = headerName.toLowerCase();
     if (normalizedHeaderName === "content-type" && headerValue === "application/json") {
       return [];
@@ -19,6 +18,15 @@ export function redactOllamaResponseErrorText(
     const credentialComponent = /^\s*\S+\s+(.+?)\s*$/u.exec(headerValue)?.[1];
     return credentialComponent ? [headerValue, credentialComponent] : [headerValue];
   });
+}
 
-  return redactToolPayloadText(text, { exactSecretValues });
+export function redactOllamaResponseErrorText(
+  text: string,
+  headers: Readonly<Record<string, string>>,
+  options?: { sourceTruncated?: boolean },
+): string {
+  return redactToolPayloadText(text, {
+    exactSecretValues: collectOllamaRequestHeaderSecretValues(headers),
+    sourceTruncated: options?.sourceTruncated,
+  });
 }

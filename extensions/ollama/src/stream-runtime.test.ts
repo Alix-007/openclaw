@@ -2740,6 +2740,42 @@ describe("createOllamaStreamFn", () => {
     }
   });
 
+  it("redacts a configured header prefix split by the 8 KiB error cap", async () => {
+    const configuredSecret = "stream-boundary-credential-secret";
+    const retainedPrefix = configuredSecret.slice(0, -5);
+    const safeMarker = "bounded stream diagnostic: ";
+    const tracked = cancelTrackedResponse(
+      `${safeMarker}${"x".repeat(8 * 1024 - safeMarker.length - retainedPrefix.length)}${configuredSecret} trailing text`,
+      { status: 503, statusText: "Service Unavailable" },
+    );
+    fetchWithSsrFGuardMock.mockResolvedValue({
+      response: tracked.response,
+      release: vi.fn(async () => undefined),
+    });
+    try {
+      const stream = await createOllamaTestStream({
+        baseUrl: "http://ollama-host:11434",
+        defaultHeaders: { "X-Proxy-Auth": configuredSecret },
+      });
+      const events = await collectStreamEvents(stream);
+      const errorEvent = events.find((event) => event.type === "error") as
+        | { type: "error"; error: { errorMessage?: string } }
+        | undefined;
+      if (!errorEvent) {
+        throw new Error("expected Ollama stream error event");
+      }
+
+      const message = errorEvent.error.errorMessage ?? "";
+      expect(message).toMatch(/^503\b/);
+      expect(message).toContain(safeMarker);
+      expect(message).not.toContain(retainedPrefix);
+      expect(message).not.toContain(configuredSecret);
+      expect(tracked.wasCanceled()).toBe(true);
+    } finally {
+      fetchWithSsrFGuardMock.mockReset();
+    }
+  });
+
   it("redacts reflected configured and bearer credentials from non-2xx response text", async () => {
     const configuredSecret = "stream-configured-header-secret";
     const staleAuthorization = "Bearer stale-stream-authorization";

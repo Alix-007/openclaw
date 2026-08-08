@@ -138,6 +138,8 @@ export type RedactOptions = {
 export type ToolPayloadRedactionOptions = {
   /** Exact secret values to mask even when their field or header names are unknown. */
   exactSecretValues?: readonly string[];
+  /** The supplied text ends at a byte cap that may split an exact secret representation. */
+  sourceTruncated?: boolean;
 };
 
 export type ResolvedRedactOptions = {
@@ -913,7 +915,9 @@ function resolveToolPayloadRedaction(
 // both apply.
 export function redactToolPayloadText(text: string, options?: ToolPayloadRedactionOptions): string {
   return redactToolPayloadTextWithConfig(
-    redactSuppliedSecretValues(text, options?.exactSecretValues, maskToken),
+    redactSuppliedSecretValues(text, options?.exactSecretValues, maskToken, {
+      sourceTruncated: options?.sourceTruncated,
+    }),
     readLoggingConfig(),
   );
 }

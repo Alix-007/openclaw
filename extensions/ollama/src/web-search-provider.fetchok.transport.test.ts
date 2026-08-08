@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 const loopback = vi.hoisted(() => ({
   baseUrl: "",
   status: 401,
+  boundaryCredentialAtCap: false,
   authorization: undefined as string | undefined,
   socketClosed: undefined as Promise<void> | undefined,
   releases: [] as Array<{
@@ -85,6 +86,11 @@ beforeAll(async () => {
     const bearerCredential = loopback.authorization?.replace(/^\S+\s+/u, "") ?? "";
     const responseBody = (() => {
       if (loopback.status === 429) {
+        if (loopback.boundaryCredentialAtCap) {
+          const retainedPrefix = bearerCredential.slice(0, -5);
+          const safeMarker = "bounded web-search diagnostic: ";
+          return `${safeMarker}${"x".repeat(64_000 - safeMarker.length - retainedPrefix.length)}${bearerCredential} trailing text`;
+        }
         return JSON.stringify({
           error: "rate limit exceeded",
           authorizationEcho: loopback.authorization,
@@ -133,6 +139,7 @@ afterAll(async () => {
 
 beforeEach(() => {
   loopback.status = 401;
+  loopback.boundaryCredentialAtCap = false;
   loopback.authorization = undefined;
   loopback.socketClosed = undefined;
   loopback.releases = [];
@@ -226,5 +233,40 @@ describe("ollama web search guarded fetch", () => {
     console.info(
       "[ollama credential redaction proof] surface=web-search status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true",
     );
+  });
+
+  it("redacts a bearer prefix split by the 64,000-byte error cap", async () => {
+    loopback.status = 429;
+    loopback.boundaryCredentialAtCap = true;
+    const bearerCredential = "web-search-boundary-credential-secret";
+    const retainedPrefix = bearerCredential.slice(0, -5);
+    const tool = createOllamaWebSearchProvider().createTool({
+      config: {
+        models: {
+          providers: {
+            ollama: {
+              baseUrl: "https://ollama.com",
+              api: "ollama",
+              models: [],
+              apiKey: bearerCredential,
+            },
+          },
+        },
+      },
+    } as never);
+    if (!tool) {
+      throw new Error("Expected Ollama web search tool");
+    }
+
+    const error = await tool
+      .execute({ query: "latest openclaw release" })
+      .catch((caught: unknown) => caught);
+    if (!(error instanceof Error)) {
+      throw new Error("expected Ollama web search error");
+    }
+
+    expect(error.message).toContain("bounded web-search diagnostic");
+    expect(error.message).not.toContain(retainedPrefix);
+    expect(error.message).not.toContain(bearerCredential);
   });
 });

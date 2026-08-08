@@ -27,7 +27,10 @@ import { DEFAULT_OLLAMA_EMBEDDING_MODEL, OLLAMA_CLOUD_BASE_URL } from "./default
 import { normalizeOllamaWireModelId } from "./model-id.js";
 import { readProviderBaseUrl } from "./provider-base-url.js";
 import { resolveOllamaApiBase } from "./provider-models.js";
-import { redactOllamaResponseErrorText } from "./request-header-redaction.js";
+import {
+  collectOllamaRequestHeaderSecretValues,
+  redactOllamaResponseErrorText,
+} from "./request-header-redaction.js";
 
 export type OllamaEmbeddingProvider = {
   id: string;
@@ -438,9 +441,9 @@ export async function createOllamaEmbeddingProvider(
             // Reflected provider text can include request credentials; force tool-payload
             // redaction even when the operator disables general log redaction.
             const detail = redactOllamaResponseErrorText(
-              await readResponseTextLimited(response, OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES).catch(
-                () => "unknown error",
-              ),
+              await readResponseTextLimited(response, OLLAMA_EMBED_ERROR_BODY_LIMIT_BYTES, {
+                exactSecretValues: collectOllamaRequestHeaderSecretValues(client.headers),
+              }).catch(() => "unknown error"),
               client.headers,
             );
             throw new Error(`Ollama embed HTTP ${response.status}: ${detail}`);

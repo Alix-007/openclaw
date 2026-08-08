@@ -229,7 +229,9 @@ async function runOllamaWebSearch(params: {
       }
       if (!response.ok) {
         const detail = await readResponseText(response, { maxBytes: 64_000 });
-        const detailText = redactOllamaResponseErrorText(detail.text, headers);
+        const detailText = redactOllamaResponseErrorText(detail.text, headers, {
+          sourceTruncated: detail.truncated,
+        });
         const message = `Ollama web search failed (${response.status}): ${detailText}`.trim();
         if (response.status === 404) {
           lastError = new Error(message);

@@ -23,6 +23,12 @@ type OllamaServer = {
 const servers: Array<{ close: () => Promise<void> }> = [];
 const PROOF_MARKER = "[ollama credential redaction proof]";
 
+function mixPercentEscapeCase(value: string): string {
+  return value.replace(/%[0-9A-F]{2}/gu, (escape, offset: number) =>
+    offset % 2 === 0 ? escape.toLowerCase() : escape,
+  );
+}
+
 function printProof(params: {
   status: number;
   safeMarkerPresent: boolean;
@@ -169,13 +175,16 @@ describe("Ollama embedding provider real transport", () => {
     const formEncodedProxyAuth = new URLSearchParams([["value", proxyAuth]])
       .toString()
       .slice("value=".length);
+    const reflectedFormEncodedProxyAuth = mixPercentEscapeCase(formEncodedProxyAuth);
     vi.stubEnv("OLLAMA_PROXY_AUTH", proxyAuth);
     const server = await startOllamaServer((request) => ({
       status: 403,
       body: JSON.stringify({
         error: "forbidden",
         upstreamEcho: request.proxyAuth
-          ? new URLSearchParams([["value", request.proxyAuth]]).toString().slice("value=".length)
+          ? mixPercentEscapeCase(
+              new URLSearchParams([["value", request.proxyAuth]]).toString().slice("value=".length),
+            )
           : undefined,
       }),
     }));
@@ -217,6 +226,7 @@ describe("Ollama embedding provider real transport", () => {
     expect(error?.message).toContain("forbidden");
     expect(error?.message).not.toContain(proxyAuth);
     expect(error?.message).not.toContain(formEncodedProxyAuth);
+    expect(error?.message).not.toContain(reflectedFormEncodedProxyAuth);
     expect(error?.message).not.toContain("UNIQUEOLLAMAPROXYSECRET");
     printProof({
       status: 403,
@@ -227,6 +237,26 @@ describe("Ollama embedding provider real transport", () => {
       proxyAuthorizationSecretAbsent: true,
       successVectorControl: false,
     });
+  });
+
+  it("redacts a configured header prefix split by the 8 KiB error cap", async () => {
+    const proxyAuth = "embedding-boundary-credential-secret";
+    const retainedPrefix = proxyAuth.slice(0, -5);
+    const safeMarker = "bounded embedding diagnostic: ";
+    const body = `${safeMarker}${"x".repeat(8 * 1024 - safeMarker.length - retainedPrefix.length)}${proxyAuth} trailing text`;
+    const server = await startOllamaServer(() => ({ status: 429, body }));
+
+    const error = await captureEmbeddingError({
+      config: {},
+      provider: "ollama",
+      model: "test-embedding",
+      fallback: "none",
+      remote: { baseUrl: server.baseUrl, headers: { "X-Proxy-Auth": proxyAuth } },
+    });
+
+    expect(error?.message).toContain(safeMarker);
+    expect(error?.message).not.toContain(retainedPrefix);
+    expect(error?.message).not.toContain(proxyAuth);
   });
 
   it("returns normalized vectors on a successful response", async () => {
