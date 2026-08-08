@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
 import {
   discordQaScenarioSupport,
   type DiscordQaScenarioImplementation,
@@ -361,7 +362,15 @@ export async function runDiscordScenario(
   }
   if (run.kind === "runtime-context-redaction") {
     try {
-      const sessionKey = `agent:main:discord:channel:${environment.runtimeEnv.channelId}`;
+      // Mirror Discord's production route inputs so the proof inspects the
+      // session that accepted the real transport turn, including QA's non-main default.
+      const sessionKey = resolveAgentRoute({
+        cfg,
+        channel: "discord",
+        accountId: environment.sutAccountId,
+        guildId: environment.runtimeEnv.guildId,
+        peer: { kind: "channel", id: environment.runtimeEnv.channelId },
+      }).sessionKey;
       const proof = await runDiscordRuntimeContextRedactionProof({
         dependencies: {
           async readSessionMessages() {
