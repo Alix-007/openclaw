@@ -1,6 +1,7 @@
 import { redactToolPayloadText } from "openclaw/plugin-sdk/logging-core";
 
 const PERCENT_ESCAPE_RE = /%[0-9a-f]{2}/gi;
+const UNICODE_ESCAPE_RE = /\\+u([0-9a-f]{4})/gi;
 const REDACTED_CREDENTIAL = "<redacted>";
 
 interface CredentialForms {
@@ -39,7 +40,7 @@ function resolveCredentialForms(credentials: readonly string[]): CredentialForms
   };
 }
 
-function redactCredentialForms(text: string, forms: CredentialForms): string {
+function redactDirectCredentialForms(text: string, forms: CredentialForms): string {
   let redacted = text;
   for (const form of forms.literal) {
     redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
@@ -49,6 +50,24 @@ function redactCredentialForms(text: string, forms: CredentialForms): string {
     redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
   }
   return redacted;
+}
+
+function redactCredentialForms(text: string, forms: CredentialForms): string {
+  const directlyRedacted = redactDirectCredentialForms(text, forms);
+  const unicodeCanonicalized = directlyRedacted.replace(
+    UNICODE_ESCAPE_RE,
+    (_escape, codeUnit: string) => String.fromCharCode(Number.parseInt(codeUnit, 16)),
+  );
+  if (unicodeCanonicalized === directlyRedacted) {
+    return directlyRedacted;
+  }
+
+  const canonicalizedRedaction = redactDirectCredentialForms(unicodeCanonicalized, forms);
+  // Preserve unrelated escaped diagnostic text unless decoding it reveals a
+  // request credential that must be removed before parsing or presentation.
+  return canonicalizedRedaction === unicodeCanonicalized
+    ? directlyRedacted
+    : canonicalizedRedaction;
 }
 
 function redactJsonCredentialText(text: string, forms: CredentialForms): string | undefined {

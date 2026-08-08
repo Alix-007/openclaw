@@ -451,6 +451,63 @@ describe("executeChannelApi", () => {
     );
   });
 
+  it("redacts reflected credentials from successful response data", async () => {
+    const accessToken = "qQSuccess/UNIQUE~CHANNELSECRET+Proof";
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(JSON.stringify({ marker: "success-marker", reflected: accessToken }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+      release: vi.fn(async () => {}),
+    });
+
+    const result = await executeChannelApi(
+      { method: "GET", path: "/guilds/123/channels" },
+      { accessToken },
+    );
+
+    expect(result.details).toMatchObject({
+      success: true,
+      status: 200,
+      data: { marker: "success-marker", reflected: "<redacted>" },
+    });
+    expect(JSON.stringify(result)).not.toContain(accessToken);
+  });
+
+  it("redacts Unicode-escaped credentials from prefixed response text", async () => {
+    const accessToken = "qQUnicode/UNIQUE~CHANNELSECRET+Proof";
+    const unicodeEscapedCredential = [...accessToken]
+      .map((character) =>
+        [...character]
+          .map((codeUnit) => `\\u${codeUnit.charCodeAt(0).toString(16).padStart(4, "0")}`)
+          .join(""),
+      )
+      .join("");
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(`unicode-marker ${unicodeEscapedCredential}`, {
+        status: 502,
+        statusText: "Bad Gateway",
+        headers: { "content-type": "text/plain" },
+      }),
+      release: vi.fn(async () => {}),
+    });
+
+    const result = await executeChannelApi(
+      { method: "GET", path: "/guilds/123/channels" },
+      { accessToken },
+    );
+
+    expect(result.details).toMatchObject({
+      error: "502 Bad Gateway",
+      status: 502,
+      details: "unicode-marker <redacted>",
+    });
+    const toolOutput = JSON.stringify(result);
+    expect(toolOutput).toContain("unicode-marker");
+    expect(toolOutput).not.toContain(accessToken);
+    expect(toolOutput).not.toContain(unicodeEscapedCredential);
+  });
+
   it("bounds successful response bodies without using response.text()", async () => {
     const release = vi.fn(async () => {});
     const streamed = createStreamingResponse({

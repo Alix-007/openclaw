@@ -357,11 +357,9 @@ export async function executeChannelApi(
         });
       }
 
-      // Error bodies are untrusted and become both debug output and an agent-visible
-      // tool result. Redact before parsing so every nested detail shares the boundary.
-      const presentedBody = res.ok
-        ? rawBody
-        : redactQQBotCredentialText(rawBody, options.accessToken);
+      // Provider bodies become agent-visible tool results for every status.
+      // Redact before parsing so successful reflections share the same boundary.
+      const presentedBody = redactQQBotCredentialText(rawBody, options.accessToken);
       let parsed: unknown;
       try {
         parsed = JSON.parse(presentedBody);
