@@ -53,6 +53,7 @@ import {
   type UploadPrepareHashes,
   type UploadPrepareResponse,
 } from "../types.js";
+import { redactQQBotCredentialText } from "../utils/credential-redaction.js";
 import { formatFileSize } from "../utils/file-utils.js";
 import type { ApiClient } from "./api-client.js";
 import type { SanitizeFileNameFn, UploadCacheAdapter } from "./media.js";
@@ -544,6 +545,14 @@ async function putToPresignedUrl(
   prefix: string,
 ): Promise<void> {
   let lastError: Error | null = null;
+  const parsedPresignedUrl = new URL(presignedUrl);
+  const presignedCredentials = [
+    presignedUrl,
+    parsedPresignedUrl.username,
+    parsedPresignedUrl.password,
+    ...parsedPresignedUrl.searchParams.values(),
+  ];
+  const present = (text: string) => redactQQBotCredentialText(text, ...presignedCredentials);
 
   for (let attempt = 0; attempt <= PART_UPLOAD_MAX_RETRIES; attempt++) {
     const controller = new AbortController();
@@ -570,19 +579,21 @@ async function putToPresignedUrl(
       });
       try {
         const elapsed = Date.now() - startTime;
-        const requestId = response.headers.get("x-cos-request-id") ?? "-";
-        const etag = response.headers.get("ETag") ?? "-";
+        const requestId = present(response.headers.get("x-cos-request-id") ?? "-");
+        const etag = present(response.headers.get("ETag") ?? "-");
+        const statusText = present(response.statusText);
 
         if (!response.ok) {
-          const body = await readResponseTextLimited(
-            response,
-            PART_UPLOAD_ERROR_BODY_LIMIT_BYTES,
-          ).catch(() => "");
+          const body = present(
+            await readResponseTextLimited(response, PART_UPLOAD_ERROR_BODY_LIMIT_BYTES).catch(
+              () => "",
+            ),
+          );
           logger?.error?.(
-            `${prefix} PUT part ${partIndex}/${totalParts}: HTTP ${response.status} ${response.statusText} (${elapsed}ms, requestId=${requestId}) body=${truncateUtf16Safe(body, 160)}`,
+            `${prefix} PUT part ${partIndex}/${totalParts}: HTTP ${response.status} ${statusText} (${elapsed}ms, requestId=${requestId}) body=${truncateUtf16Safe(body, 160)}`,
           );
           throw new Error(
-            `COS PUT failed: ${response.status} ${response.statusText} - ${truncateUtf16Safe(body, 120)}`,
+            `COS PUT failed: ${response.status} ${statusText} - ${truncateUtf16Safe(body, 120)}`,
           );
         }
 
@@ -594,11 +605,14 @@ async function putToPresignedUrl(
         await release();
       }
     } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
-      if (lastError.name === "AbortError") {
+      const caughtError = err instanceof Error ? err : new Error(String(err));
+      if (caughtError.name === "AbortError") {
         lastError = new Error(
           `Part ${partIndex}/${totalParts} upload timeout after ${PART_UPLOAD_TIMEOUT_MS}ms`,
         );
+      } else {
+        // Guard/network errors can include the request URL, including its signed query.
+        lastError = new Error(present(caughtError.message));
       }
       if (attempt < PART_UPLOAD_MAX_RETRIES) {
         const delay = 1000 * 2 ** attempt;

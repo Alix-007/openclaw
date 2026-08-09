@@ -284,9 +284,13 @@ describe("media-chunked: ChunkedMediaApi.uploadChunked", () => {
     const client = mockApiClient();
     const tm = mockTokenManager();
     const logger = { info: vi.fn(), error: vi.fn(), warn: vi.fn() };
+    const presignedCredential = "qQ-presigned/UNIQUE-COS-CREDENTIAL";
+    const encodedPresignedCredential = encodeURIComponent(presignedCredential);
     client.request.mockImplementation(async (_token, _method, pathLocal) => {
       if (pathLocal.endsWith("/upload_prepare")) {
-        return makePrepareResponse("uid-bounded", 1);
+        const prepared = makePrepareResponse("uid-bounded", 1);
+        prepared.parts[0]!.presigned_url = `https://cos.example.com/part-1?credential=${encodedPresignedCredential}`;
+        return prepared;
       }
       throw new Error(`unexpected path ${pathLocal}`);
     });
@@ -295,14 +299,17 @@ describe("media-chunked: ChunkedMediaApi.uploadChunked", () => {
     const safeErrorPrefix = "x".repeat(119);
     const safeLogPrefix = `${safeErrorPrefix}🎉${"y".repeat(38)}`;
     const trackedResponses = releases.map((release) => {
-      const tracked = cancelTrackedResponse(`${safeLogPrefix}🎉${"tail".repeat(4096)}`, {
-        status: 503,
-        statusText: "Service Unavailable",
-        headers: {
-          "content-type": "text/plain",
-          "x-cos-request-id": "req-bounded",
+      const tracked = cancelTrackedResponse(
+        `${safeLogPrefix} ${presignedCredential} 🎉${"tail".repeat(4096)}`,
+        {
+          status: 503,
+          statusText: `Service Unavailable ${presignedCredential}`,
+          headers: {
+            "content-type": "text/plain",
+            "x-cos-request-id": `req-bounded ${encodedPresignedCredential}`,
+          },
         },
-      });
+      );
       const textSpy = vi.spyOn(tracked.response, "text").mockRejectedValue(new Error("unbounded"));
       return {
         response: tracked.response,
@@ -337,17 +344,71 @@ describe("media-chunked: ChunkedMediaApi.uploadChunked", () => {
     await vi.runAllTimersAsync();
     const error = await upload;
 
-    expect((error as Error).message).toBe(
-      `COS PUT failed: 503 Service Unavailable - ${safeErrorPrefix}`,
-    );
+    expect((error as Error).message).toContain("COS PUT failed: 503 Service Unavailable");
+    expect((error as Error).message).toContain(safeErrorPrefix);
     expect(fetchWithSsrFGuardMock).toHaveBeenCalledTimes(3);
     for (const tracked of trackedResponses) {
       expect(tracked.wasCanceled()).toBe(true);
       expect(tracked.textSpy).not.toHaveBeenCalled();
       expect(tracked.release).toHaveBeenCalledTimes(1);
     }
-    expect(String(logger.error.mock.calls[0]?.[0]).split("body=")[1]).toBe(safeLogPrefix);
-    expect(JSON.stringify(logger.error.mock.calls)).not.toContain("tail");
+    expect(String(logger.error.mock.calls[0]?.[0]).split("body=")[1]).toContain(safeLogPrefix);
+    const diagnosticOutput = [
+      (error as Error).message,
+      ...logger.error.mock.calls.flat(),
+      ...logger.warn.mock.calls.flat(),
+    ].join("\n");
+    expect(diagnosticOutput).toContain("req-bounded");
+    expect(diagnosticOutput).not.toContain(presignedCredential);
+    expect(diagnosticOutput).not.toContain(encodedPresignedCredential);
+    expect(diagnosticOutput).not.toContain("UNIQUE-COS-CREDENTIAL");
+    expect(diagnosticOutput).not.toContain("tail");
+  });
+
+  it("redacts signed query credentials from COS transport failures", async () => {
+    vi.useFakeTimers();
+    const client = mockApiClient();
+    const tm = mockTokenManager();
+    const logger = { info: vi.fn(), error: vi.fn(), warn: vi.fn() };
+    const presignedCredential = "qQ-transport/UNIQUE-COS-CREDENTIAL";
+    const encodedPresignedCredential = encodeURIComponent(presignedCredential);
+    const presignedUrl = `https://cos.example.com/part-1?credential=${encodedPresignedCredential}`;
+    client.request.mockImplementation(async (_token, _method, pathLocal) => {
+      if (pathLocal.endsWith("/upload_prepare")) {
+        const prepared = makePrepareResponse("uid-transport", 1);
+        prepared.parts[0]!.presigned_url = presignedUrl;
+        return prepared;
+      }
+      throw new Error(`unexpected path ${pathLocal}`);
+    });
+    fetchWithSsrFGuardMock.mockRejectedValue(
+      new Error(`connect failed for ${presignedUrl} (${presignedCredential})`),
+    );
+
+    const api = new ChunkedMediaApi(client, tm, { logger });
+    const upload = api
+      .uploadChunked({
+        scope: "group",
+        targetId: "g1",
+        fileType: MediaFileType.FILE,
+        source: { kind: "buffer", buffer: Buffer.from("01234567"), fileName: "blob.bin" },
+        creds: { appId: "a", clientSecret: "s" },
+      })
+      .catch((error: unknown) => error);
+    await vi.runAllTimersAsync();
+    const error = await upload;
+
+    expect(fetchWithSsrFGuardMock).toHaveBeenCalledTimes(3);
+    const diagnosticOutput = [
+      (error as Error).message,
+      ...logger.error.mock.calls.flat(),
+      ...logger.warn.mock.calls.flat(),
+    ].join("\n");
+    expect(diagnosticOutput).toContain("connect failed");
+    expect(diagnosticOutput).not.toContain(presignedUrl);
+    expect(diagnosticOutput).not.toContain(presignedCredential);
+    expect(diagnosticOutput).not.toContain(encodedPresignedCredential);
+    expect(diagnosticOutput).not.toContain("UNIQUE-COS-CREDENTIAL");
   });
 
   it("maps UPLOAD_PREPARE_FALLBACK_CODE to UploadDailyLimitExceededError", async () => {

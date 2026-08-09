@@ -278,10 +278,6 @@ export class TokenManager {
 
     try {
       const traceId = response.headers.get("x-tps-trace-id") ?? "";
-      this.logger?.debug?.(
-        `[qqbot:token:${appId}] <<< ${response.status}${traceId ? ` | TraceId: ${traceId}` : ""}`,
-      );
-
       let rawBody: string;
       try {
         rawBody = await readResponseTextLimited(response, QQBOT_TOKEN_RESPONSE_LIMIT_BYTES);
@@ -294,12 +290,24 @@ export class TokenManager {
       try {
         data = JSON.parse(rawBody);
       } catch {
+        const presentedTraceId = redactQQBotCredentialText(traceId, clientSecret);
+        this.logger?.debug?.(
+          `[qqbot:token:${appId}] <<< ${response.status}${presentedTraceId ? ` | TraceId: ${presentedTraceId}` : ""}`,
+        );
         this.logger?.debug?.(
           `[qqbot:token:${appId}] <<< Body: ${MALFORMED_TOKEN_RESPONSE_BODY_DIAGNOSTIC}`,
         );
         throw new Error("QQBot access_token response was malformed JSON");
       }
 
+      const presentedTraceId = redactQQBotCredentialText(
+        traceId,
+        clientSecret,
+        data.access_token ?? "",
+      );
+      this.logger?.debug?.(
+        `[qqbot:token:${appId}] <<< ${response.status}${presentedTraceId ? ` | TraceId: ${presentedTraceId}` : ""}`,
+      );
       const presentedBody = redactQQBotCredentialText(
         rawBody,
         clientSecret,

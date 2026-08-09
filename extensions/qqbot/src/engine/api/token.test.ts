@@ -302,25 +302,51 @@ describe("QQBot token manager", () => {
     const tokenPrefix = "qQIssuedP";
     const tokenSuffix = "tSfQ";
     const accessToken = [tokenPrefix, "UNIQUE-ISSUED-TOKEN", tokenSuffix].join("/");
-    mockGuardedTokenResponse(
-      JSON.stringify({
-        access_token: accessToken,
-        expires_in: 7200,
-        marker: "issued-token-visible-123",
-      }),
-      {
-        status: 200,
-        headers: { "content-type": "application/json" },
+    const clientSecret = "qQ-issued-client-secret";
+    const encodedAccessToken = encodeURIComponent(accessToken);
+
+    await withLoopbackHttpServer(
+      (request, response) => {
+        void readRequestBody(request).then(() => {
+          response.writeHead(200, {
+            "content-type": "application/json",
+            "x-tps-trace-id": `issued-trace-visible-123 ${clientSecret} ${encodedAccessToken}`,
+          });
+          response.end(
+            JSON.stringify({
+              access_token: accessToken,
+              expires_in: 7200,
+              marker: "issued-token-visible-123",
+            }),
+          );
+        });
+      },
+      async (baseUrl) => {
+        const actualGuard = ssrfRuntimeActual.fetchWithSsrFGuard;
+        if (!actualGuard) {
+          throw new Error("expected the real SSRF guard implementation");
+        }
+        fetchWithSsrFGuardMock.mockImplementationOnce(
+          async (request: Parameters<typeof actualGuard>[0]) =>
+            await actualGuard({
+              ...request,
+              url: `${baseUrl}/token`,
+              policy: { dangerouslyAllowPrivateNetwork: true },
+            }),
+        );
+
+        await expect(
+          new TokenManager({ logger }).getAccessToken("app-id", clientSecret),
+        ).resolves.toBe(accessToken);
       },
     );
 
-    await expect(
-      new TokenManager({ logger }).getAccessToken("app-id", "client-secret"),
-    ).resolves.toBe(accessToken);
-
     const debugOutput = logger.debug.mock.calls.flat().join("\n");
     expect(debugOutput).toContain("issued-token-visible-123");
+    expect(debugOutput).toContain("issued-trace-visible-123");
+    expect(debugOutput).not.toContain(clientSecret);
     expect(debugOutput).not.toContain(accessToken);
+    expect(debugOutput).not.toContain(encodedAccessToken);
     expect(debugOutput).not.toContain(tokenPrefix);
     expect(debugOutput).not.toContain(tokenSuffix);
     expect(debugOutput).not.toContain("UNIQUE-ISSUED-TOKEN");
