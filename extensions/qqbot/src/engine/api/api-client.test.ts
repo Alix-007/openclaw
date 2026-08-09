@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
 import {
   lowercasePercentEscapes,
+  percentEncodeEveryUtf8Byte,
   stringifyWithSlashEscapedCredential,
 } from "../../test-support/credential-reflection.js";
 
@@ -38,6 +39,7 @@ async function startReflectedAuthorizationServer(): Promise<string> {
       ? authorization.slice("QQBot ".length)
       : authorization;
     const encodedCredential = lowercasePercentEscapes(encodeURIComponent(reflectedCredential));
+    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(reflectedCredential);
     const formEncodedCredential = lowercasePercentEscapes(
       new URLSearchParams([["echo", reflectedCredential]]).toString(),
     );
@@ -53,7 +55,7 @@ async function startReflectedAuthorizationServer(): Promise<string> {
         stringifyWithSlashEscapedCredential(
           {
             code: 40093001,
-            message: `json-marker reflected credential ${reflectedCredential}; encoded ${encodedCredential}; form ${formEncodedCredential}; Authorization: ${authorization}`,
+            message: `json-marker reflected credential ${reflectedCredential}; encoded ${encodedCredential}; fully encoded ${fullyEncodedCredential}; form ${formEncodedCredential}; Authorization: ${authorization}`,
           },
           reflectedCredential,
         ),
@@ -63,7 +65,7 @@ async function startReflectedAuthorizationServer(): Promise<string> {
     if (req.url === "/text-error") {
       res.writeHead(503, { "content-type": "text/plain" });
       res.end(
-        `plain-marker reflected credential ${slashEscapedCredential}; encoded ${encodedCredential}; form ${formEncodedCredential}; Authorization: ${slashEscapedAuthorization}`,
+        `plain-marker reflected credential ${slashEscapedCredential}; encoded ${encodedCredential}; fully encoded ${fullyEncodedCredential}; form ${formEncodedCredential}; Authorization: ${slashEscapedAuthorization}`,
       );
       return;
     }
@@ -159,6 +161,7 @@ describe("ApiClient", () => {
     const secretSuffix = "aSfQ";
     const accessToken = `${secretPrefix}/UNIQUE~QQBOTSECRET+${secretSuffix}`;
     const encodedCredential = encodeURIComponent(accessToken);
+    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(accessToken);
     const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
     const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
     const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
@@ -177,6 +180,8 @@ describe("ApiClient", () => {
     expect(jsonError.bizMessage).not.toContain(accessToken);
     expect(jsonError.message).not.toContain(encodedCredential);
     expect(jsonError.bizMessage).not.toContain(encodedCredential);
+    expect(jsonError.message).not.toContain(fullyEncodedCredential);
+    expect(jsonError.bizMessage).not.toContain(fullyEncodedCredential);
     expect(jsonError.message).not.toContain(formEncodedCredential);
     expect(jsonError.bizMessage).not.toContain(formEncodedCredential);
     expect(jsonError.message).not.toContain(lowercaseEncodedCredential);
@@ -197,6 +202,7 @@ describe("ApiClient", () => {
     expect(textError.message).toContain("plain-marker");
     expect(textError.message).not.toContain(accessToken);
     expect(textError.message).not.toContain(encodedCredential);
+    expect(textError.message).not.toContain(fullyEncodedCredential);
     expect(textError.message).not.toContain(formEncodedCredential);
     expect(textError.message).not.toContain(lowercaseEncodedCredential);
     expect(textError.message).not.toContain(lowercaseFormEncodedCredential);
@@ -218,6 +224,7 @@ describe("ApiClient", () => {
     expect(debugOutput).toContain("success-marker");
     expect(debugOutput).not.toContain(accessToken);
     expect(debugOutput).not.toContain(encodedCredential);
+    expect(debugOutput).not.toContain(fullyEncodedCredential);
     expect(debugOutput).not.toContain(formEncodedCredential);
     expect(debugOutput).not.toContain(lowercaseEncodedCredential);
     expect(debugOutput).not.toContain(lowercaseFormEncodedCredential);
@@ -249,6 +256,7 @@ describe("ApiClient", () => {
             redactedSurfaces.includes("success-marker"),
           tokenAbsent: !redactedSurfaces.includes(accessToken),
           encodedAbsent: !redactedSurfaces.includes(encodedCredential),
+          fullyEncodedAbsent: !redactedSurfaces.includes(fullyEncodedCredential),
           formEncodedAbsent: !redactedSurfaces.includes(formEncodedCredential),
           lowercaseEncodedAbsent: !redactedSurfaces.includes(lowercaseEncodedCredential),
           lowercaseFormEncodedAbsent: !redactedSurfaces.includes(lowercaseFormEncodedCredential),
@@ -259,6 +267,36 @@ describe("ApiClient", () => {
         })}`,
       );
     }
+  });
+
+  it("redacts credentials from response status and trace metadata", async () => {
+    const release = vi.fn(async () => {});
+    const accessToken = "qQMetadata/UNIQUE~QQBOTSECRET+Proof";
+    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(accessToken);
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response('{"code":40034025,"message":"safe-body-marker"}', {
+        status: 400,
+        statusText: `status-marker ${accessToken}`,
+        headers: {
+          "content-type": "application/json",
+          "x-tps-trace-id": `trace-marker ${fullyEncodedCredential}`,
+        },
+      }),
+      release,
+    });
+    const logger = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const client = new ApiClient({ baseUrl: "https://qqbot.test", logger });
+
+    const error = await captureApiError(() => client.request(accessToken, "GET", "/v2/users/@me"));
+
+    expect(error.message).toContain("safe-body-marker");
+    const infoOutput = logger.info.mock.calls.flat().join("\n");
+    expect(infoOutput).toContain("status-marker");
+    expect(infoOutput).toContain("trace-marker");
+    expect(infoOutput).not.toContain(accessToken);
+    expect(infoOutput).not.toContain(fullyEncodedCredential);
+    expect(infoOutput).not.toContain("UNIQUEQQBOTSECRET");
+    expect(release).toHaveBeenCalledTimes(1);
   });
 
   it("bounds error bodies on a UTF-16 boundary without using response.text()", async () => {

@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../../../test-support/streaming-error-response.js";
 import {
   lowercasePercentEscapes,
+  percentEncodeEveryUtf8Byte,
   stringifyWithSlashEscapedCredential,
 } from "../../test-support/credential-reflection.js";
 import { withLoopbackHttpServer } from "../../test-support/loopback-http.js";
@@ -331,6 +332,7 @@ describe("executeChannelApi", () => {
     const secretSuffix = "cSfQ";
     const accessToken = `${secretPrefix}/UNIQUE~CHANNELSECRET+${secretSuffix}`;
     const encodedCredential = encodeURIComponent(accessToken);
+    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(accessToken);
     const formEncodedCredential = new URLSearchParams([["echo", accessToken]]).toString();
     const lowercaseEncodedCredential = lowercasePercentEscapes(encodedCredential);
     const lowercaseFormEncodedCredential = lowercasePercentEscapes(formEncodedCredential);
@@ -349,7 +351,7 @@ describe("executeChannelApi", () => {
         res.end(
           stringifyWithSlashEscapedCredential(
             {
-              message: `channel-marker reflected credential ${reflectedCredential}; encoded ${lowercasePercentEscapes(encodeURIComponent(reflectedCredential))}; form ${lowercasePercentEscapes(reflectedFormCredential)}`,
+              message: `channel-marker reflected credential ${reflectedCredential}; encoded ${lowercasePercentEscapes(encodeURIComponent(reflectedCredential))}; fully encoded ${percentEncodeEveryUtf8Byte(reflectedCredential)}; form ${lowercasePercentEscapes(reflectedFormCredential)}`,
               nested: { reflected: `Authorization: ${authorization}` },
             },
             reflectedCredential,
@@ -388,6 +390,7 @@ describe("executeChannelApi", () => {
         expect(toolOutput).toContain("channel-marker");
         expect(toolOutput).not.toContain(accessToken);
         expect(toolOutput).not.toContain(encodedCredential);
+        expect(toolOutput).not.toContain(fullyEncodedCredential);
         expect(toolOutput).not.toContain(formEncodedCredential);
         expect(toolOutput).not.toContain(lowercaseEncodedCredential);
         expect(toolOutput).not.toContain(lowercaseFormEncodedCredential);
@@ -400,6 +403,7 @@ describe("executeChannelApi", () => {
         expect(debugOutput).toContain("channel-marker");
         expect(debugOutput).not.toContain(accessToken);
         expect(debugOutput).not.toContain(encodedCredential);
+        expect(debugOutput).not.toContain(fullyEncodedCredential);
         expect(debugOutput).not.toContain(formEncodedCredential);
         expect(debugOutput).not.toContain(lowercaseEncodedCredential);
         expect(debugOutput).not.toContain(lowercaseFormEncodedCredential);
@@ -425,6 +429,9 @@ describe("executeChannelApi", () => {
               tokenAbsent: !toolOutput.includes(accessToken) && !debugOutput.includes(accessToken),
               encodedAbsent:
                 !toolOutput.includes(encodedCredential) && !debugOutput.includes(encodedCredential),
+              fullyEncodedAbsent:
+                !toolOutput.includes(fullyEncodedCredential) &&
+                !debugOutput.includes(fullyEncodedCredential),
               formEncodedAbsent:
                 !toolOutput.includes(formEncodedCredential) &&
                 !debugOutput.includes(formEncodedCredential),
@@ -447,6 +454,59 @@ describe("executeChannelApi", () => {
             })}`,
           );
         }
+      },
+    );
+  });
+
+  it("redacts credentials from response status metadata", async () => {
+    process.env.QQBOT_DEBUG = "1";
+    const debugLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const accessToken = "qQStatus/UNIQUE~CHANNELSECRET+Proof";
+    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(accessToken);
+    await withLoopbackHttpServer(
+      (req, res) => {
+        req.resume();
+        const authorization = req.headers.authorization ?? "";
+        const reflectedCredential = authorization.startsWith("QQBot ")
+          ? authorization.slice("QQBot ".length)
+          : authorization;
+        res.writeHead(
+          401,
+          `status-marker ${reflectedCredential}; encoded ${percentEncodeEveryUtf8Byte(reflectedCredential)}`,
+          { "content-type": "text/plain" },
+        );
+        res.end();
+      },
+      async (baseUrl) => {
+        const actualGuard = ssrfRuntimeActual.fetchWithSsrFGuard;
+        if (!actualGuard) {
+          throw new Error("expected the real SSRF guard implementation");
+        }
+        const loopbackFetch = vi.fn(
+          async (_input: RequestInfo | URL, init?: RequestInit) =>
+            await fetch(`${baseUrl}/channel-status`, init),
+        );
+        fetchWithSsrFGuardMock.mockImplementationOnce(
+          async (request: Parameters<typeof actualGuard>[0]) =>
+            await actualGuard({ ...request, fetchImpl: loopbackFetch }),
+        );
+
+        const result = await executeChannelApi(
+          { method: "GET", path: "/guilds/123/channels" },
+          { accessToken },
+        );
+
+        const presented = `${JSON.stringify(result)}\n${debugLogSpy.mock.calls.flat().join("\n")}`;
+        expect(result.details).toMatchObject({
+          error: expect.stringContaining("status-marker"),
+          status: 401,
+          path: "/guilds/123/channels",
+        });
+        expect(presented).toContain("status-marker");
+        expect(presented).not.toContain(accessToken);
+        expect(presented).not.toContain(fullyEncodedCredential);
+        expect(presented).not.toContain("UNIQUECHANNELSECRET");
+        expect(loopbackFetch).toHaveBeenCalledTimes(1);
       },
     );
   });

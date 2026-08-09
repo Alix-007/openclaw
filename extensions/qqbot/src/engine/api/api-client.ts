@@ -161,9 +161,13 @@ export class ApiClient {
     const res = guarded.response;
     try {
       // Log response status and trace ID.
-      const traceId = res.headers.get("x-tps-trace-id") ?? "";
+      const statusText = redactQQBotCredentialText(res.statusText, accessToken);
+      const traceId = redactQQBotCredentialText(
+        res.headers.get("x-tps-trace-id") ?? "",
+        accessToken,
+      );
       this.logger?.info?.(
-        `[qqbot:api] <<< Status: ${res.status} ${res.statusText}${traceId ? ` | TraceId: ${traceId}` : ""}`,
+        `[qqbot:api] <<< Status: ${res.status} ${statusText}${traceId ? ` | TraceId: ${traceId}` : ""}`,
       );
 
       const readBody = async (limitBytes?: number): Promise<string> => {

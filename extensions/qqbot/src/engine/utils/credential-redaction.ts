@@ -13,6 +13,15 @@ function canonicalizePercentEscapes(text: string): string {
   return text.replace(PERCENT_ESCAPE_RE, (escape) => escape.toUpperCase());
 }
 
+function percentEncodeEveryUtf8Byte(text: string): string {
+  // encodeURIComponent leaves unreserved characters literal, but providers
+  // can reflect credentials with every UTF-8 byte percent-encoded.
+  return Array.from(
+    new TextEncoder().encode(text),
+    (byte) => `%${byte.toString(16).padStart(2, "0")}`,
+  ).join("");
+}
+
 function resolveCredentialForms(credentials: readonly string[]): CredentialForms {
   const literal = new Set<string>();
   const encoded = new Set<string>();
@@ -27,6 +36,7 @@ function resolveCredentialForms(credentials: readonly string[]): CredentialForms
     encoded.add(
       new URLSearchParams([["credential", credential]]).toString().slice("credential=".length),
     );
+    encoded.add(percentEncodeEveryUtf8Byte(credential));
     try {
       encoded.add(encodeURIComponent(credential));
     } catch {

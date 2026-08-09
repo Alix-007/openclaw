@@ -336,8 +336,9 @@ export async function executeChannelApi(
       release = guarded.release;
       receivedResponse = true;
       const res = guarded.response;
+      const statusText = redactQQBotCredentialText(res.statusText, options.accessToken);
 
-      debugLog(`[qqbot-channel-api] <<< Status: ${res.status} ${res.statusText}`);
+      debugLog(`[qqbot-channel-api] <<< Status: ${res.status} ${statusText}`);
 
       const rawBody = res.ok
         ? await readProviderTextResponse(res, "QQ channel API response", {
@@ -351,7 +352,7 @@ export async function executeChannelApi(
           return json({ success: true, status: res.status, path: params.path });
         }
         return json({
-          error: `API returned ${res.status} ${res.statusText}`,
+          error: `API returned ${res.status} ${statusText}`,
           status: res.status,
           path: params.path,
         });
@@ -371,7 +372,7 @@ export async function executeChannelApi(
         const errMsg =
           typeof parsed === "object" && parsed && "message" in parsed
             ? String((parsed as { message?: unknown }).message)
-            : `${res.status} ${res.statusText}`;
+            : `${res.status} ${statusText}`;
         debugError(`[qqbot-channel-api] Error [${method} ${params.path}]: ${errMsg}`);
         return json({
           error: errMsg,
