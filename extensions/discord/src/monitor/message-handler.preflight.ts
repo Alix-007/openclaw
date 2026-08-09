@@ -606,7 +606,9 @@ export async function preflightDiscordMessage(
     return null;
   }
 
-  const mentionText = hasTypedText ? baseText : "";
+  // Mention matching uses the selected sanitized text. The primary-content
+  // flag only controls whether audio needs preflight transcription.
+  const mentionText = baseText;
   const { implicitMentionKinds, wasMentioned } = resolveDiscordMentionState({
     authorIsBot: Boolean(author.bot),
     botId,

@@ -518,6 +518,52 @@ describe("preflightDiscordMessage", () => {
     expect(saveRemoteMediaMock).not.toHaveBeenCalled();
   });
 
+  it("matches required mentions in a visible fallback after wrapper-only content", async () => {
+    const channelId = "guild-runtime-context-mention-fallback";
+    const guildId = "guild-runtime-context-mention-fallback";
+    const fallbackText = "openclaw please handle this visible fallback";
+    const message = Object.assign(
+      createDiscordMessage({
+        id: "m-runtime-context-mention-fallback",
+        channelId,
+        content: [
+          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          '{"private":"runtime metadata"}',
+          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+        ].join("\n"),
+        author: {
+          id: "user-1",
+          bot: false,
+          username: "alice",
+        },
+      }),
+      { embeds: [{ description: fallbackText }] },
+    );
+
+    const result = await runGuildPreflight({
+      channelId,
+      guildId,
+      message,
+      discordConfig: {} as DiscordConfig,
+      cfg: {
+        ...DEFAULT_PREFLIGHT_CFG,
+        messages: { groupChat: { mentionPatterns: ["openclaw"] } },
+      },
+      guildEntries: {
+        [guildId]: {
+          channels: {
+            [channelId]: { enabled: true, requireMention: true },
+          },
+        },
+      },
+    });
+
+    const preflight = expectPreflightResult(result);
+    expect(preflight.baseText).toBe(fallbackText);
+    expect(preflight.shouldRequireMention).toBe(true);
+    expect(preflight.wasMentioned).toBe(true);
+  });
+
   it.each([
     {
       label: "begin",
