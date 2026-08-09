@@ -224,21 +224,22 @@ export async function handleSendChat(
     return;
   }
 
-  // Materialize hidden annotation context once after inline-edit classification.
-  // Delivery and retry consume this snapshot; they must not re-read or recompose attachments.
-  const message = composeBrowserAnnotationContext(userMessage, attachmentsToSend);
+  // Commands own the raw composer text. Annotation context is model input and must not
+  // turn a recognized command into an ordinary message.
+  const parsedCommand = parseSlashCommand(userMessage);
+  const message = parsedCommand
+    ? userMessage
+    : composeBrowserAnnotationContext(userMessage, attachmentsToSend);
 
   if (!message && !hasAttachments) {
     return;
   }
 
-  const parsedCommand = parseSlashCommand(message);
-
   {
     // Natural stop aliases require a run; explicit /stop is always available.
     if (
-      isChatStopCommand(message) &&
-      (message.trim().startsWith("/") || hasAbortableSessionRun(host))
+      isChatStopCommand(userMessage) &&
+      (userMessage.startsWith("/") || hasAbortableSessionRun(host))
     ) {
       if (host.connected && !requireChatSessionAction(host, "abort")) {
         return;
@@ -253,8 +254,8 @@ export async function handleSendChat(
 
     host.chatRunError = null;
     const parsed = parsedCommand;
-    if (/^\/(?:btw|side)(?::|\s|$)/i.test(message)) {
-      const question = extractCompanionCommandQuestion(message);
+    if (/^\/(?:btw|side)(?::|\s|$)/i.test(userMessage)) {
+      const question = extractCompanionCommandQuestion(userMessage);
       if (!question) {
         return;
       }

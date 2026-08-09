@@ -162,11 +162,11 @@ describe("handleSendChat browser annotation context", () => {
     expect(findChatSendPayload(host).message).toBe("Inspect this page");
   });
 
-  it("treats a slash-prefixed draft with an annotation as model input", async () => {
+  it("routes /new before materializing annotation context", async () => {
     const attachment = createBrowserAnnotationAttachment("slash", "Review the annotated page");
     const createChatSession = vi.fn(async () => true);
     const host = makeChatHost({
-      requestHandlers: { "chat.send": { runId: "annotation-slash-run", status: "started" } },
+      requestHandlers: {},
       chatAttachments: [attachment],
       chatMessage: "/new",
       createChatSession,
@@ -174,9 +174,52 @@ describe("handleSendChat browser annotation context", () => {
 
     await handleSendChat(host);
 
-    expect(createChatSession).not.toHaveBeenCalled();
-    expect(findChatSendPayload(host).message).toBe("Review the annotated page\n\n/new");
-    expect(host.chatLocalInputHistoryBySession[host.sessionKey]?.[0]?.text).toBe("/new");
+    expect(createChatSession).toHaveBeenCalledOnce();
+    expect(host.request).not.toHaveBeenCalledWith("chat.send", expect.anything());
+  });
+
+  it("routes /stop before materializing annotation context", async () => {
+    const attachment = createBrowserAnnotationAttachment("stop", "Review the annotated page");
+    const host = makeChatHost({
+      requestHandlers: { "chat.abort": { aborted: true } },
+      chatAttachments: [attachment],
+      chatMessage: "/stop",
+      chatRunId: "annotation-stop-run",
+    });
+
+    await handleSendChat(host);
+
+    expect(host.request).toHaveBeenCalledWith("chat.abort", {
+      runId: "annotation-stop-run",
+      sessionKey: "agent:main",
+    });
+    expect(host.request).not.toHaveBeenCalledWith("chat.send", expect.anything());
+  });
+
+  it("keeps annotation context out of recognized remote commands", async () => {
+    const attachment = createBrowserAnnotationAttachment("remote", "Review the annotated page");
+    const host = makeChatHost({
+      requestHandlers: { "chat.send": { runId: "annotation-command-run", status: "started" } },
+      chatAttachments: [attachment],
+      chatMessage: "/status",
+    });
+
+    await handleSendChat(host);
+
+    expect(findChatSendPayload(host).message).toBe("/status");
+  });
+
+  it("materializes annotation context for unrecognized slash-prefixed input", async () => {
+    const attachment = createBrowserAnnotationAttachment("unknown", "Review the annotated page");
+    const host = makeChatHost({
+      requestHandlers: { "chat.send": { runId: "annotation-model-run", status: "started" } },
+      chatAttachments: [attachment],
+      chatMessage: "/review-this",
+    });
+
+    await handleSendChat(host);
+
+    expect(findChatSendPayload(host).message).toBe("Review the annotated page\n\n/review-this");
   });
 
   it("keeps one materialized snapshot through delayed failed delivery", async () => {
