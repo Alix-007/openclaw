@@ -170,7 +170,11 @@ function handleCompletedCliBootstrapTurn(
       runId: context.params.runId,
       sessionTarget,
       sessionManager: context.params.sessionManager,
-      transcriptOwner: runnerTranscriptPersisted ? "runner" : "caller",
+      // Command post-run may still compact or reset after runner persistence.
+      transcriptOwner:
+        runnerTranscriptPersisted && context.params.deferBootstrapCompletionToPostRun !== true
+          ? "runner"
+          : "caller",
     },
   };
 }

@@ -928,6 +928,7 @@ export function runAgentAttempt(params: {
             storePath: params.storePath,
             persistAssistantTranscript:
               params.storePath !== undefined && params.sessionStore !== undefined,
+            deferBootstrapCompletionToPostRun: true,
             workspaceDir: params.workspaceDir,
             cwd: params.cwd,
             config: params.cfg,

@@ -844,7 +844,10 @@ describe("CLI attempt execution", () => {
       onExecutionStarted,
     });
 
-    expect(firstRunCliAgentArg().onExecutionStarted).toBe(onExecutionStarted);
+    expect(firstRunCliAgentArg()).toMatchObject({
+      onExecutionStarted,
+      deferBootstrapCompletionToPostRun: true,
+    });
   });
 
   it("forwards authoritative group type to CLI runs with opaque session keys", async () => {

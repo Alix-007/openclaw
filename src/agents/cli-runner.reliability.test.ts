@@ -668,8 +668,11 @@ describe("runCliAgent reliability", () => {
       sessionKey: sessionTarget.sessionKey,
       runId: "run-cli-bootstrap-marker-deferred",
     });
+    context.params.persistAssistantTranscript = true;
+    context.params.deferBootstrapCompletionToPostRun = true;
     context.params.sessionFile = sessionFile;
     context.params.sessionTarget = sessionTarget;
+    context.params.storePath = storePath;
     context.shouldRecordCompletedBootstrapTurn = true;
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
@@ -688,6 +691,9 @@ describe("runCliAgent reliability", () => {
       const result = await runPreparedCliAgent(context);
 
       expect(result.meta.bootstrapContextCompletionPending).toBe(true);
+      expect(await loadTranscriptEvents(sessionTarget)).toEqual(
+        expect.arrayContaining([expect.objectContaining({ type: "message" })]),
+      );
       expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
