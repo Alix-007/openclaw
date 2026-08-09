@@ -371,14 +371,20 @@ export function hasCronFormErrors(errors: CronFieldErrors): boolean {
   return Object.keys(errors).length > 0;
 }
 
-export async function loadCronStatus(state: CronState) {
+export async function loadCronStatus(state: CronState, isCurrent: () => boolean = () => true) {
   if (!state.client || !state.connected) {
     return;
   }
   try {
     const res = await state.client.request<CronStatus>("cron.status", {});
+    if (!isCurrent()) {
+      return;
+    }
     state.cronStatus = res;
   } catch (err) {
+    if (!isCurrent()) {
+      return;
+    }
     if (isMissingOperatorReadScopeError(err)) {
       state.cronStatus = null;
       state.cronError = formatMissingOperatorReadScopeMessage("cron status");

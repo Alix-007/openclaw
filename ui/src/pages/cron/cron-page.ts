@@ -55,6 +55,9 @@ class CronPage extends OpenClawLightDomElement {
   @state() private detailTab: CronDetailTab = "settings";
 
   private modelSuggestionsState: CronState | null = null;
+  // The overview cards share one refresh generation so late status/stat
+  // responses cannot assemble a header from different request rounds.
+  private cronOverviewGeneration = 0;
   private readonly gateway = new GatewayPageController(this, {
     getGateway: () => this.context?.gateway,
     invalidateRequests: (change) => this.resetGatewayState(change.snapshot),
@@ -114,11 +117,13 @@ class CronPage extends OpenClawLightDomElement {
     );
 
   override disconnectedCallback() {
+    this.cronOverviewGeneration += 1;
     this.subscriptions.clear();
     super.disconnectedCallback();
   }
 
   private resetGatewayState(snapshot?: ApplicationContext["gateway"]["snapshot"]) {
+    this.cronOverviewGeneration += 1;
     const connected = snapshot?.phase === "connected";
     this.cron = createInitialCronState({
       client: snapshot?.client ?? null,
@@ -185,13 +190,16 @@ class CronPage extends OpenClawLightDomElement {
     if (!cronState.connected || !cronState.client) {
       return;
     }
+    const overviewGeneration = ++this.cronOverviewGeneration;
+    const ownsOverview = () =>
+      this.cron === cronState && this.cronOverviewGeneration === overviewGeneration;
     const activeCronJobId = cronState.cronRunsScope === "job" ? cronState.cronRunsJobId : null;
     void this.loadRuns(activeCronJobId);
     void this.context.channels.refresh(false);
     await Promise.all([
-      this.runCronTask((current) => loadCronStatus(current)),
-      this.runCronTask((current) => loadCronFailingCount(current)),
-      this.runCronTask((current) => loadCronScopeStats(current)),
+      this.runCronTask((current) => loadCronStatus(current, ownsOverview)),
+      this.runCronTask((current) => loadCronFailingCount(current, ownsOverview)),
+      this.runCronTask((current) => loadCronScopeStats(current, ownsOverview)),
       this.runCronTask((current) =>
         loadCronJobsPage(current, { tableFilters: options.tableFilters }),
       ),

@@ -10,7 +10,10 @@ type CronScopeState = {
   cronScopedNextWakeAtMs: number | null;
 };
 
-export async function loadCronFailingCount(state: CronScopeState) {
+export async function loadCronFailingCount(
+  state: CronScopeState,
+  isCurrent: () => boolean = () => true,
+) {
   if (!state.client || !state.connected) {
     return;
   }
@@ -25,16 +28,26 @@ export async function loadCronFailingCount(state: CronScopeState) {
       limit: 1,
       offset: 0,
     });
+    if (!isCurrent()) {
+      return;
+    }
     state.cronFailingCount = typeof res?.total === "number" ? res.total : null;
   } catch {
-    state.cronFailingCount = null;
+    if (isCurrent()) {
+      state.cronFailingCount = null;
+    }
   }
 }
 
-export async function loadCronScopeStats(state: CronScopeState) {
+export async function loadCronScopeStats(
+  state: CronScopeState,
+  isCurrent: () => boolean = () => true,
+) {
   if (!state.client || !state.connected || !state.cronAgentId) {
-    state.cronScopedTotal = null;
-    state.cronScopedNextWakeAtMs = null;
+    if (isCurrent()) {
+      state.cronScopedTotal = null;
+      state.cronScopedNextWakeAtMs = null;
+    }
     return;
   }
   try {
@@ -56,12 +69,17 @@ export async function loadCronScopeStats(state: CronScopeState) {
         sortDir: "asc",
       }),
     ]);
+    if (!isCurrent()) {
+      return;
+    }
     state.cronScopedTotal = typeof allJobs.total === "number" ? allJobs.total : null;
     const nextRunAtMs = nextEnabledJob.jobs[0]?.state?.nextRunAtMs;
     state.cronScopedNextWakeAtMs =
       typeof nextRunAtMs === "number" && Number.isFinite(nextRunAtMs) ? nextRunAtMs : null;
   } catch {
-    state.cronScopedTotal = null;
-    state.cronScopedNextWakeAtMs = null;
+    if (isCurrent()) {
+      state.cronScopedTotal = null;
+      state.cronScopedNextWakeAtMs = null;
+    }
   }
 }

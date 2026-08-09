@@ -12,6 +12,7 @@ type CronTestPage = HTMLElement & {
   updateComplete: Promise<boolean>;
   requestUpdate: () => void;
   render: () => typeof nothing;
+  refreshCron: (options: { tableFilters: boolean }) => Promise<void>;
   cron: CronState;
   cronModelSuggestions: string[];
 };
@@ -575,6 +576,122 @@ describe("CronPage lifecycle", () => {
     await Promise.resolve();
 
     expect(page.cronModelSuggestions).toEqual(["fresh/model"]);
+  });
+
+  it("keeps overview fields owned by the latest refresh generation", async () => {
+    const staleStatus = createDeferred<{ enabled: boolean; jobs: number; nextWakeAtMs: number }>();
+    const staleFailing = createDeferred<CronJobsListResult>();
+    const staleScopedTotal = createDeferred<CronJobsListResult>();
+    const staleScopedNext = createDeferred<CronJobsListResult>();
+    const staleStatusError = createDeferred<never>();
+    let phase: "setup" | "results" | "error" = "setup";
+    let statusRequests = 0;
+    let failingRequests = 0;
+    let scopedTotalRequests = 0;
+    let scopedNextRequests = 0;
+    const scopedResponse = (value: number): CronJobsListResult =>
+      cronListResponse([
+        {
+          id: `job-${value}`,
+          name: `Job ${value}`,
+          enabled: true,
+          createdAtMs: 0,
+          updatedAtMs: 0,
+          schedule: { kind: "every", everyMs: 60_000 },
+          sessionTarget: "isolated",
+          wakeMode: "now",
+          payload: { kind: "agentTurn", message: "refresh" },
+          state: { nextRunAtMs: value * 1_000 },
+        },
+      ]);
+    const request = vi.fn((method: string, rawParams?: unknown) => {
+      const params = (rawParams ?? {}) as Record<string, unknown>;
+      if (method === "cron.status") {
+        statusRequests += 1;
+        if (phase === "results" && statusRequests === 1) {
+          return staleStatus.promise;
+        }
+        if (phase === "error" && statusRequests === 1) {
+          return staleStatusError.promise;
+        }
+        const value = phase === "setup" ? 0 : phase === "results" ? 2 : 4;
+        return Promise.resolve({ enabled: true, jobs: value, nextWakeAtMs: value * 1_000 });
+      }
+      if (method === "cron.list" && params.lastRunStatus === "error") {
+        failingRequests += 1;
+        if (phase === "results" && failingRequests === 1) {
+          return staleFailing.promise;
+        }
+        return Promise.resolve({ ...cronListResponse([]), total: phase === "results" ? 2 : 4 });
+      }
+      if (method === "cron.list" && params.includeDisabled === true && params.limit === 1) {
+        scopedTotalRequests += 1;
+        if (phase === "results" && scopedTotalRequests === 1) {
+          return staleScopedTotal.promise;
+        }
+        return Promise.resolve({ ...cronListResponse([]), total: phase === "results" ? 2 : 4 });
+      }
+      if (method === "cron.list" && params.sortBy === "nextRunAtMs" && params.limit === 1) {
+        scopedNextRequests += 1;
+        if (phase === "results" && scopedNextRequests === 1) {
+          return staleScopedNext.promise;
+        }
+        return Promise.resolve(scopedResponse(phase === "results" ? 2 : 4));
+      }
+      if (method === "cron.list") {
+        return Promise.resolve(cronListResponse([]));
+      }
+      if (method === "cron.runs") {
+        return Promise.resolve({ entries: [], total: 0, offset: 0, hasMore: false });
+      }
+      if (method === "models.list") {
+        return Promise.resolve({ models: [] });
+      }
+      return Promise.resolve({});
+    });
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const page = createPage(createContext(gateway, "writer"));
+    await waitForCronPage(() => expect(page.cron.cronStatus?.jobs).toBe(0));
+
+    phase = "results";
+    statusRequests = 0;
+    failingRequests = 0;
+    scopedTotalRequests = 0;
+    scopedNextRequests = 0;
+    const olderResults = page.refreshCron({ tableFilters: true });
+    await waitForCronPage(() => {
+      expect(statusRequests).toBe(1);
+      expect(failingRequests).toBe(1);
+      expect(scopedTotalRequests).toBe(1);
+      expect(scopedNextRequests).toBe(1);
+    });
+    await page.refreshCron({ tableFilters: true });
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+    expect(page.cron.cronScopedTotal).toBe(2);
+    expect(page.cron.cronScopedNextWakeAtMs).toBe(2_000);
+
+    staleStatus.resolve({ enabled: true, jobs: 99, nextWakeAtMs: 99_000 });
+    staleFailing.resolve({ ...cronListResponse([]), total: 99 });
+    staleScopedTotal.resolve({ ...cronListResponse([]), total: 99 });
+    staleScopedNext.resolve(scopedResponse(99));
+    await olderResults;
+
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+    expect(page.cron.cronScopedTotal).toBe(2);
+    expect(page.cron.cronScopedNextWakeAtMs).toBe(2_000);
+
+    phase = "error";
+    statusRequests = 0;
+    const olderError = page.refreshCron({ tableFilters: true });
+    await waitForCronPage(() => expect(statusRequests).toBe(1));
+    await page.refreshCron({ tableFilters: true });
+    staleStatusError.reject(new Error("stale cron status failure"));
+    await olderError;
+
+    expect(page.cron.cronStatus?.jobs).toBe(4);
+    expect(page.cron.cronError).toBeNull();
   });
 
   it("ignores a cron event callback retained by a replaced gateway source", async () => {
