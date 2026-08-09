@@ -117,7 +117,6 @@ async function startConnection(params: {
     account: makeAccount(),
     abortSignal: controller.signal,
     cfg: {},
-    log: params.log,
     runtime: {} as GatewayPluginRuntime,
     adapters: {} as EngineAdapters,
     log: params.log,
