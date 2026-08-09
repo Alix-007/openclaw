@@ -331,6 +331,12 @@ type FetchProxiedIconParams = {
   signal: AbortSignal;
 };
 
+async function cancelUnreadResponseBody(response: Response): Promise<void> {
+  if (!response.bodyUsed) {
+    await response.body?.cancel().catch(() => undefined);
+  }
+}
+
 async function fetchProxiedIconBlobUrl(
   params: FetchProxiedIconParams,
   routeUrl: string,
@@ -354,6 +360,9 @@ async function fetchProxiedIconBlobUrl(
       signal: params.signal,
     });
     if (!response.ok) {
+      // Retry and rejection paths never consume the stream. Cancel before
+      // switching attempts or returning so concurrent icon loads release it.
+      await cancelUnreadResponseBody(response);
       if (response.status === 401 || response.status === 403) {
         continue;
       }
@@ -361,6 +370,7 @@ async function fetchProxiedIconBlobUrl(
     }
     const contentType = normalizeMimeType(response.headers.get("content-type"));
     if (!ALLOWED_PLUGIN_ICON_MIME_TYPES.has(contentType)) {
+      await cancelUnreadResponseBody(response);
       return null;
     }
     const source = await response.blob();
