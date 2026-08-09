@@ -26,6 +26,7 @@ export type DiscordChannelPermissionsAudit = {
 };
 
 const REQUIRED_TEXT_CHANNEL_PERMISSIONS = ["ViewChannel", "SendMessages"] as const;
+const REQUIRED_THREAD_CHANNEL_PERMISSIONS = ["ViewChannel", "SendMessagesInThreads"] as const;
 const REQUIRED_VOICE_CHANNEL_PERMISSIONS = [
   "ViewChannel",
   "Connect",
@@ -35,6 +36,13 @@ const REQUIRED_VOICE_CHANNEL_PERMISSIONS = [
 ] as const;
 
 export function resolveRequiredDiscordChannelPermissions(channelType?: number): string[] {
+  if (
+    channelType === ChannelType.GuildNewsThread ||
+    channelType === ChannelType.GuildPublicThread ||
+    channelType === ChannelType.GuildPrivateThread
+  ) {
+    return [...REQUIRED_THREAD_CHANNEL_PERMISSIONS];
+  }
   if (channelType === ChannelType.GuildVoice || channelType === ChannelType.GuildStageVoice) {
     return [...REQUIRED_VOICE_CHANNEL_PERMISSIONS];
   }

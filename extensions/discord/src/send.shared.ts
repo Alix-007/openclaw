@@ -17,7 +17,7 @@ import type { ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
 import { resolveTextChunksWithFallback } from "openclaw/plugin-sdk/reply-payload";
 import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
-import { isDiscordThreadChannelType } from "./channel-type.js";
+import { resolveRequiredDiscordChannelPermissions } from "./audit-core.js";
 import { chunkDiscordTextWithMode } from "./chunk.js";
 import { createDiscordClient, resolveDiscordRest, type DiscordClientOpts } from "./client.js";
 import {
@@ -209,10 +209,7 @@ async function buildDiscordSendError(
     });
     probedChannelType = permissions.channelType;
     const current = new Set(permissions.permissions);
-    const required = ["ViewChannel", "SendMessages"];
-    if (isDiscordThreadChannelType(probedChannelType)) {
-      required.push("SendMessagesInThreads");
-    }
+    const required = resolveRequiredDiscordChannelPermissions(probedChannelType);
     if (ctx.hasMedia) {
       required.push("AttachFiles");
     }
@@ -225,10 +222,7 @@ async function buildDiscordSendError(
   const apiDetails = [`code=${code}`, status != null ? `status=${status}` : undefined]
     .filter(Boolean)
     .join(" ");
-  const probedPermissions = ["ViewChannel", "SendMessages"];
-  if (isDiscordThreadChannelType(probedChannelType)) {
-    probedPermissions.push("SendMessagesInThreads");
-  }
+  const probedPermissions = resolveRequiredDiscordChannelPermissions(probedChannelType);
   if (ctx.hasMedia) {
     probedPermissions.push("AttachFiles");
   }
