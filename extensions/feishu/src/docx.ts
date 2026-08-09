@@ -874,7 +874,8 @@ async function insertDoc(
   // parents require multiple requests.
   const items: FeishuDocxBlock[] = [];
   let pageToken: string | undefined;
-  do {
+  const seenPageTokens = new Set<string>();
+  while (true) {
     const childrenRes = await client.docx.documentBlockChildren.get({
       path: { document_id: docToken, block_id: parentId },
       params: pageToken ? { page_token: pageToken } : {},
@@ -883,8 +884,18 @@ async function insertDoc(
       throw new Error(childrenRes.msg);
     }
     items.push(...(childrenRes.data?.items ?? []));
-    pageToken = childrenRes.data?.page_token ?? undefined;
-  } while (pageToken);
+    const nextPageToken = childrenRes.data?.has_more ? childrenRes.data.page_token : undefined;
+    if (!nextPageToken) {
+      break;
+    }
+    if (seenPageTokens.has(nextPageToken)) {
+      throw new Error(
+        `Feishu document children pagination repeated token for parent block "${parentId}"`,
+      );
+    }
+    seenPageTokens.add(nextPageToken);
+    pageToken = nextPageToken;
+  }
 
   const blockIndex = items.findIndex((item) => item.block_id === afterBlockId);
   if (blockIndex === -1) {
