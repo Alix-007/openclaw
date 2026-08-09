@@ -17,6 +17,7 @@ import type { ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
 import { resolveTextChunksWithFallback } from "openclaw/plugin-sdk/reply-payload";
 import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+import { resolveRequiredDiscordChannelPermissions } from "./audit-core.js";
 import { chunkDiscordTextWithMode } from "./chunk.js";
 import { createDiscordClient, resolveDiscordRest, type DiscordClientOpts } from "./client.js";
 import {
@@ -28,7 +29,7 @@ import {
 import { parseAndResolveRecipient } from "./recipient-resolution.js";
 import { resolveDiscordReplyMessageId, type DiscordReplyReference } from "./reply-reference.js";
 import type { DiscordRetryRunner } from "./retry.js";
-import { fetchChannelPermissionsDiscord, isThreadChannelType } from "./send.permissions.js";
+import { fetchChannelPermissionsDiscord } from "./send.permissions.js";
 import { DiscordSendError } from "./send.types.js";
 
 const DISCORD_TEXT_LIMIT = 2000;
@@ -209,10 +210,7 @@ async function buildDiscordSendError(
     });
     probedChannelType = permissions.channelType;
     const current = new Set(permissions.permissions);
-    const required = ["ViewChannel", "SendMessages"];
-    if (isThreadChannelType(probedChannelType)) {
-      required.push("SendMessagesInThreads");
-    }
+    const required = resolveRequiredDiscordChannelPermissions(probedChannelType);
     if (ctx.hasMedia) {
       required.push("AttachFiles");
     }
@@ -225,10 +223,7 @@ async function buildDiscordSendError(
   const apiDetails = [`code=${code}`, status != null ? `status=${status}` : undefined]
     .filter(Boolean)
     .join(" ");
-  const probedPermissions = ["ViewChannel", "SendMessages"];
-  if (isThreadChannelType(probedChannelType)) {
-    probedPermissions.push("SendMessagesInThreads");
-  }
+  const probedPermissions = resolveRequiredDiscordChannelPermissions(probedChannelType);
   if (ctx.hasMedia) {
     probedPermissions.push("AttachFiles");
   }

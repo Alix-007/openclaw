@@ -399,7 +399,9 @@ export async function fetchChannelPermissionsDiscord(
   const channel = await getChannel(rest, channelId);
   opts.signal?.throwIfAborted();
   const channelType = "type" in channel ? channel.type : undefined;
-  const guildId = "guild_id" in channel ? channel.guild_id : undefined;
+  const permissionChannel = await resolveChannelPermissionSubject(rest, channel);
+  opts.signal?.throwIfAborted();
+  const guildId = "guild_id" in permissionChannel ? permissionChannel.guild_id : undefined;
   if (!guildId) {
     return {
       channelId,
@@ -423,7 +425,7 @@ export async function fetchChannelPermissionsDiscord(
     userId: botId,
     guild,
     member,
-    channel,
+    channel: permissionChannel,
   });
 
   return {
