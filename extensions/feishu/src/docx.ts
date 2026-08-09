@@ -884,9 +884,14 @@ async function insertDoc(
       throw new Error(childrenRes.msg);
     }
     items.push(...(childrenRes.data?.items ?? []));
-    const nextPageToken = childrenRes.data?.has_more ? childrenRes.data.page_token : undefined;
-    if (!nextPageToken) {
+    if (childrenRes.data?.has_more !== true) {
       break;
+    }
+    const nextPageToken = childrenRes.data.page_token?.trim();
+    if (!nextPageToken) {
+      throw new Error(
+        `Feishu document children pagination is missing its next page token for parent block "${parentId}"`,
+      );
     }
     if (seenPageTokens.has(nextPageToken)) {
       throw new Error(
