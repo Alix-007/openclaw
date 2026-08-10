@@ -19,6 +19,7 @@ on:
           - qqbot
           - responses
           - synology
+          - terminal-runtime
           - web-search
       target_sha:
         description: Immutable full SHA from the Alix fork
@@ -263,6 +264,23 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[synology webhook retry proof]'
               ;;
+            terminal-runtime)
+              mkdir -p .proof-runtime proof-artifacts
+              cp .proof-tooling/.github/proof/gateway-terminal-mcp.ts \
+                .proof-runtime/gateway-terminal-mcp.ts
+              node node_modules/tsdown/dist/run.mjs \
+                --no-config \
+                --platform node \
+                --format esm \
+                --target node24 \
+                --out-dir .proof-dist \
+                .proof-runtime/gateway-terminal-mcp.ts \
+                2>&1 | tee "$log_file"
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node .proof-dist/gateway-terminal-mcp.js \
+                2>&1 | tee -a "$log_file"
+              marker='[gateway terminal MCP proof]'
+              ;;
             web-search)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
               cp docs/.generated/plugin-sdk-api-baseline.sha256 \
@@ -324,5 +342,6 @@ jobs:
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
             proof-plugin-sdk-api-baseline.sha256
+            proof-artifacts/**
           if-no-files-found: warn
           retention-days: 30
