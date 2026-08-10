@@ -567,6 +567,7 @@ describe("GatewayConnection credential redaction", () => {
     expect(log.error).toHaveBeenCalledWith(expect.stringContaining("gateway-socket-visible-123"));
     expect(onError).toHaveBeenCalledTimes(1);
     const reportedError = expectDefined(onError.mock.calls[0]?.[0] as Error | undefined);
+    expect(reportedError.cause).toBeUndefined();
     const diagnosticOutput = [...log.error.mock.calls.flat(), reportedError.message].join("\n");
     expectCredentialsAbsent(diagnosticOutput, forbidden);
 

@@ -309,9 +309,10 @@ export class GatewayConnection {
       }
 
       accessToken = await getAccessToken(account.appId, account.clientSecret);
+      const activeAccessToken = accessToken;
       log?.info(`✅ Access token obtained successfully`);
-      const gatewayUrl = await getGatewayUrl(accessToken, account.appId);
-      log?.info(redactQQBotCredentialText(`Connecting to ${gatewayUrl}`, accessToken));
+      const gatewayUrl = await getGatewayUrl(activeAccessToken, account.appId);
+      log?.info(redactQQBotCredentialText(`Connecting to ${gatewayUrl}`, activeAccessToken));
       const ws = await createQQWSClient({
         gatewayUrl,
         userAgent: getPluginUserAgent(),
@@ -353,7 +354,7 @@ export class GatewayConnection {
           return;
         }
         this.socketMessageTail = this.socketMessageTail
-          .then(() => this.handleSocketMessage(ws, { rawData, payload }, accessToken))
+          .then(() => this.handleSocketMessage(ws, { rawData, payload }, activeAccessToken))
           .catch((error: unknown) => {
             const message = error instanceof Error ? error.message : String(error);
             if (error instanceof QQBotIngressAdmissionError) {
@@ -373,7 +374,7 @@ export class GatewayConnection {
 
       // ---- WebSocket: close ----
       ws.on("close", (code, reason) => {
-        const safeReason = redactQQBotCredentialText(reason.toString(), accessToken);
+        const safeReason = redactQQBotCredentialText(reason.toString(), activeAccessToken);
         log?.info(`WebSocket closed: ${code} ${safeReason}`);
         // cleanup() clears currentWs before a server-driven reconnect. Ignore
         // the old socket's delayed close both during that gap and after the
@@ -387,11 +388,9 @@ export class GatewayConnection {
 
       // ---- WebSocket: error ----
       ws.on("error", (err) => {
-        const safeMessage = redactQQBotCredentialText(err.message, accessToken);
+        const safeMessage = redactQQBotCredentialText(err.message, activeAccessToken);
         log?.error(`WebSocket error: ${safeMessage}`);
-        this.ctx.onError?.(
-          safeMessage === err.message ? err : new Error(safeMessage, { cause: err }),
-        );
+        this.ctx.onError?.(safeMessage === err.message ? err : new Error(safeMessage));
       });
     } catch (err) {
       this.isConnecting = false;
