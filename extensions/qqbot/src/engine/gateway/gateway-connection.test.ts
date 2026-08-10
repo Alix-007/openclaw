@@ -9,7 +9,12 @@ import { flushRefIndex } from "../ref/store.js";
 import { flushKnownUsers } from "../session/known-users.js";
 import { GatewayEvent, GatewayOp, MAX_RECONNECT_ATTEMPTS } from "./constants.js";
 import { GatewayConnection } from "./gateway-connection.js";
-import { QQBotIngressAdmissionError, type QQBotIngressMonitor } from "./ingress.js";
+import type { InboundPipelineDeps } from "./inbound-context.js";
+import { inspectQQBotIngressEnvelope } from "./ingress-envelope.js";
+import { createQQBotIngressMonitor, QQBotIngressAdmissionError } from "./ingress.js";
+import { withQQBotIngressQueue } from "./ingress.test-support.js";
+import type { QueuedMessage } from "./message-queue.js";
+import { buildAgentBody, buildUserContent, buildUserMessage } from "./stages/index.js";
 import type { EngineLogger, GatewayAccount, GatewayPluginRuntime } from "./types.js";
 
 const createQQWSClientMock = vi.hoisted(() => vi.fn());
@@ -108,7 +113,8 @@ async function startConnection(params: {
   log?: EngineLogger;
   onDisconnected?: (info: unknown) => void;
   onError?: (error: Error) => void;
-  createIngressMonitor?: () => QQBotIngressMonitor;
+  handleMessage?: (event: QueuedMessage) => Promise<void>;
+  createIngressMonitor?: typeof createQQBotIngressMonitor;
 }) {
   const ws = new FakeWebSocket();
   createQQWSClientMock.mockResolvedValue(ws);
@@ -120,7 +126,7 @@ async function startConnection(params: {
     runtime: {} as GatewayPluginRuntime,
     adapters: {} as EngineAdapters,
     log: params.log,
-    handleMessage: async () => {},
+    handleMessage: params.handleMessage ?? (async () => {}),
     createIngressMonitor: createNoopIngressMonitor,
     ...(params.createIngressMonitor ? { createIngressMonitor: params.createIngressMonitor } : {}),
     onDisconnected: params.onDisconnected,
@@ -633,6 +639,183 @@ describe("GatewayConnection credential redaction", () => {
     expect(debugOutput).toContain("Dispatch event: t=CREDENTIAL_REFLECTION_TEST");
     expect(debugOutput).toContain("dispatch-visible-123");
     expectCredentialsAbsent(debugOutput, forbidden);
+
+    controller.abort();
+    await started;
+  });
+
+  it.each([
+    {
+      name: "C2C",
+      eventType: GatewayEvent.C2C_MESSAGE_CREATE,
+      data: { id: "c2c%2fmessage", author: { user_openid: "c2c%afuser" } },
+    },
+    {
+      name: "guild",
+      eventType: GatewayEvent.AT_MESSAGE_CREATE,
+      data: {
+        id: "guild%2fmessage",
+        channel_id: "guild%afchannel",
+        guild_id: "guild%2fid",
+        author: { id: "guild-user", username: "Guild User" },
+      },
+    },
+    {
+      name: "DM",
+      eventType: GatewayEvent.DIRECT_MESSAGE_CREATE,
+      data: {
+        id: "dm%2fmessage",
+        guild_id: "dm-guild",
+        author: { id: "dm%afuser", username: "DM User" },
+      },
+    },
+    {
+      name: "group @",
+      eventType: GatewayEvent.GROUP_AT_MESSAGE_CREATE,
+      data: {
+        id: "group-at%2fmessage",
+        group_openid: "group-at%afid",
+        author: { member_openid: "group-at-user", username: "Group User" },
+      },
+    },
+    {
+      name: "group full-message",
+      eventType: GatewayEvent.GROUP_MESSAGE_CREATE,
+      data: {
+        id: "group-full%2fmessage",
+        group_openid: "group-full%afid",
+        author: { member_openid: "group-full-user", username: "Group User" },
+      },
+    },
+  ])("redacts $name credentials before durable and agent-visible delivery", async (turn) => {
+    vi.useRealTimers();
+    const { accessToken, reflected, forbidden } = makeCredentialReflectionFixture();
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    const visibleUserText = "sk-visible-user-content";
+    const event = {
+      op: GatewayOp.DISPATCH,
+      id: `delivery-${turn.name}%2fstable`,
+      s: 41,
+      t: turn.eventType,
+      d: {
+        ...turn.data,
+        content:
+          `turn-kind-visible raw=${reflected.raw} encoded=${reflected.encoded} ` +
+          `form=${reflected.form} generic-pattern=${visibleUserText}`,
+        timestamp: "2026-07-18T12:00:00Z",
+      },
+    };
+    const originalEnvelope = JSON.stringify(event);
+    const original = expectDefined(
+      inspectQQBotIngressEnvelope(originalEnvelope),
+      `${turn.name} original envelope facts`,
+    );
+
+    await withQQBotIngressQueue(async (queue) => {
+      let userContent = "";
+      let agentBody = "";
+      const handleMessage = vi.fn(async (queued: QueuedMessage) => {
+        ({ userContent } = buildUserContent({
+          event: queued,
+          attachmentInfo: "",
+          voiceTranscripts: [],
+        }));
+        const isGroupChat = queued.type === "guild" || queued.type === "group";
+        const userMessage = buildUserMessage({
+          event: queued,
+          userContent,
+          quotePart: "",
+          isGroupChat,
+        });
+        agentBody = buildAgentBody({
+          event: queued,
+          userContent,
+          userMessage,
+          dynamicCtx: "",
+          isGroupChat,
+          deps: {} as InboundPipelineDeps,
+        });
+      });
+      const { ws, controller, started } = await startConnection({
+        handleMessage,
+        createIngressMonitor: (options) =>
+          createQQBotIngressMonitor({ ...options, queue, pollIntervalMs: 10 }),
+      });
+
+      try {
+        ws.emit("message", originalEnvelope);
+        await vi.waitFor(() => expect(handleMessage).toHaveBeenCalledTimes(1));
+
+        const [claim] = await queue.listClaims();
+        const safeEnvelope = expectDefined(claim?.payload.rawEnvelope, "durable QQBot envelope");
+        const safe = expectDefined(
+          inspectQQBotIngressEnvelope(safeEnvelope),
+          `${turn.name} safe envelope facts`,
+        );
+        expect({
+          eventId: safe.eventId,
+          eventType: safe.eventType,
+          laneKey: safe.laneKey,
+          deliveryId: safe.payload.id,
+          sequence: safe.payload.s,
+        }).toEqual({
+          eventId: original.eventId,
+          eventType: original.eventType,
+          laneKey: original.laneKey,
+          deliveryId: original.payload.id,
+          sequence: original.payload.s,
+        });
+        expect(JSON.parse(safeEnvelope)).toMatchObject({ d: turn.data });
+        for (const output of [safeEnvelope, userContent, agentBody]) {
+          expect(output).toContain("turn-kind-visible");
+          expect(output).toContain("<redacted>");
+          // Generic logging patterns must not rewrite durable user content.
+          expect(output).toContain(visibleUserText);
+          expectCredentialsAbsent(output, forbidden);
+        }
+      } finally {
+        controller.abort();
+        await started;
+      }
+    });
+  });
+
+  it("refuses to persist a turn when the active credential overlaps its identity", async () => {
+    const accessToken = "credential-overlaps-user-id";
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    const receive = vi.fn(async () => {});
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const { ws, controller, started } = await startConnection({
+      log,
+      createIngressMonitor: () => ({
+        receive,
+        stop: vi.fn(async () => {}),
+        waitForIdle: vi.fn(async () => {}),
+      }),
+    });
+
+    ws.emit(
+      "message",
+      JSON.stringify({
+        op: GatewayOp.DISPATCH,
+        id: "identity-overlap-delivery",
+        s: 43,
+        t: GatewayEvent.C2C_MESSAGE_CREATE,
+        d: {
+          id: "identity-overlap-message",
+          content: "identity-overlap-visible",
+          timestamp: "2026-07-18T12:00:00Z",
+          author: { user_openid: accessToken },
+        },
+      }),
+    );
+
+    await vi.waitFor(() => {
+      expect(log.error).toHaveBeenCalledWith(
+        expect.stringContaining("credential overlaps the durable turn identity"),
+      );
+    });
+    expect(receive).not.toHaveBeenCalled();
 
     controller.abort();
     await started;

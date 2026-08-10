@@ -24,7 +24,7 @@ import { decodeGatewayMessageData } from "./codec.js";
 import { FULL_INTENTS, RATE_LIMIT_DELAY, GatewayOp } from "./constants.js";
 import { dispatchEvent } from "./event-dispatcher.js";
 import { createQQBotIngressEffectOnce } from "./ingress-effects.js";
-import { isQQBotTurnEventType } from "./ingress-envelope.js";
+import { isQQBotTurnEventType, redactQQBotIngressEnvelopeCredentials } from "./ingress-envelope.js";
 import {
   createQQBotIngressMonitor,
   QQBotIngressAdmissionError,
@@ -433,8 +433,11 @@ export class GatewayConnection {
           if (!this.ingress) {
             throw new Error("QQBot ingress monitor is unavailable.");
           }
-          // Resume sequence advances only after the raw turn is durable.
-          await this.ingress.receive(rawData);
+          // Strip the socket-scoped credential before the replayable envelope
+          // crosses into durable storage; required turn identity must stay exact.
+          const safeRawData = redactQQBotIngressEnvelopeCredentials(rawData, accessToken);
+          // Resume sequence advances only after the sanitized turn is durable.
+          await this.ingress.receive(safeRawData);
         } else {
           const result = dispatchEvent(t ?? "", d, this.ctx.account.accountId, this.ctx.log);
           if (result.action === "ready") {

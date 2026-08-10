@@ -137,23 +137,39 @@ function redactJsonCredentialText(text: string, forms: CredentialForms): string 
     // Decode valid JSON before matching so alternate escapes cannot reconstruct
     // the credential when a caller parses the presented body downstream.
     const parsed = JSON.parse(text) as unknown;
-    const serialized = JSON.stringify(parsed, (_key, value: unknown) =>
-      typeof value === "string" ? redactCredentialForms(value, forms) : value,
-    );
-    return serialized === undefined ? undefined : redactCredentialForms(serialized, forms);
+    let changed = false;
+    const serialized = JSON.stringify(parsed, (_key, value: unknown) => {
+      if (typeof value !== "string") {
+        return value;
+      }
+      const redacted = redactCredentialForms(value, forms);
+      changed ||= redacted !== value;
+      return redacted;
+    });
+    return changed && serialized !== undefined
+      ? redactCredentialForms(serialized, forms)
+      : undefined;
   } catch {
     return undefined;
   }
 }
 
-/** Remove raw, serialized, and encoded credentials before generic redaction. */
-export function redactQQBotCredentialText(text: string, ...credentials: readonly string[]): string {
+/** Remove only request-scoped raw, serialized, and encoded credential forms. */
+export function redactQQBotExactCredentialText(
+  text: string,
+  ...credentials: readonly string[]
+): string {
   const credentialForms = resolveCredentialForms(credentials);
   if (credentialForms.literal.length === 0) {
-    return redactToolPayloadText(text);
+    return text;
   }
 
-  const withoutExactCredential =
-    redactJsonCredentialText(text, credentialForms) ?? redactCredentialForms(text, credentialForms);
-  return redactToolPayloadText(withoutExactCredential);
+  return (
+    redactJsonCredentialText(text, credentialForms) ?? redactCredentialForms(text, credentialForms)
+  );
+}
+
+/** Remove request credentials before applying generic presentation redaction. */
+export function redactQQBotCredentialText(text: string, ...credentials: readonly string[]): string {
+  return redactToolPayloadText(redactQQBotExactCredentialText(text, ...credentials));
 }

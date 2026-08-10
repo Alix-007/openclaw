@@ -1,5 +1,6 @@
 // QQBot plugin module validates raw gateway envelopes for durable ingress.
 import { normalizeNullableString as nonEmptyString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { redactQQBotExactCredentialText } from "../utils/credential-redaction.js";
 import { GatewayEvent, GatewayOp } from "./constants.js";
 import type { WSPayload } from "./types.js";
 
@@ -105,4 +106,40 @@ export function inspectQQBotIngressEnvelope(rawEnvelope: string): QQBotIngressEn
     laneKey: `group:${requiredString(data.group_openid, "d.group_openid")}`,
     payload,
   };
+}
+
+export function redactQQBotIngressEnvelopeCredentials(
+  rawEnvelope: string,
+  ...credentials: readonly string[]
+): string {
+  const original = inspectQQBotIngressEnvelope(rawEnvelope);
+  if (!original) {
+    return rawEnvelope;
+  }
+  const redactedEnvelope = redactQQBotExactCredentialText(rawEnvelope, ...credentials);
+  if (redactedEnvelope === rawEnvelope) {
+    return rawEnvelope;
+  }
+
+  let redacted: QQBotIngressEnvelopeFacts | null;
+  try {
+    redacted = inspectQQBotIngressEnvelope(redactedEnvelope);
+  } catch {
+    redacted = null;
+  }
+  if (
+    !redacted ||
+    redacted.eventId !== original.eventId ||
+    redacted.eventType !== original.eventType ||
+    redacted.laneKey !== original.laneKey ||
+    redacted.payload.id !== original.payload.id ||
+    redacted.payload.s !== original.payload.s
+  ) {
+    // A reflected credential must never be persisted, but changing a durable
+    // identity would make retries route or deduplicate the turn incorrectly.
+    throw new QQBotIngressPayloadError(
+      "QQBot gateway credential overlaps the durable turn identity.",
+    );
+  }
+  return redactedEnvelope;
 }

@@ -96,7 +96,7 @@ export function createQQBotIngressMonitor(options: {
           `QQBot ingress row ${claim.id} no longer maps to a message turn.`,
         );
       }
-      // Stage mapping stays claim-side. Receive stores the exact transport envelope.
+      // Stage mapping stays claim-side. Receive stores the producer-sanitized transport envelope.
       const mapped = dispatchEvent(
         facts.eventType,
         facts.payload.d,
