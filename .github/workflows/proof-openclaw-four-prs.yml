@@ -274,7 +274,7 @@ jobs:
                 --format esm \
                 --target node24 \
                 --out-dir .proof-dist \
-                .proof-runtime/gateway-terminal-mcp.ts \
+                ./.proof-runtime/gateway-terminal-mcp.ts \
                 2>&1 | tee "$log_file"
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/gateway-terminal-mcp.js \
