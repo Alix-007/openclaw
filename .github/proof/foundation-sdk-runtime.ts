@@ -75,6 +75,15 @@ async function main(): Promise<void> {
   requireProof(targetSha?.match(/^[0-9a-f]{40}$/u), "exact-target-sha");
   requireProof(artifactDir, "artifact-directory");
   requireProof(process.env.OPENCLAW_PROOF_OPENAI_PLUGIN_TTS === "1", "openai-plugin-tts-test");
+  requireProof(process.env.OPENCLAW_PROOF_JSON_SLASH === "1", "json-optional-slash-test");
+  requireProof(process.env.OPENCLAW_PROOF_JSON_SLASH_DANGLING === "1", "json-slash-dangling-test");
+  requireProof(process.env.OPENCLAW_PROOF_OPENAI_REALTIME === "1", "openai-realtime-test");
+  requireProof(
+    process.env.OPENCLAW_PROOF_OPENAI_EMBEDDING_BATCH === "1",
+    "openai-embedding-batch-test",
+  );
+  requireProof(process.env.OPENCLAW_PROOF_OPENAI_IMAGE === "1", "openai-image-test");
+  requireProof(process.env.OPENCLAW_PROOF_OPENAI_VIDEO === "1", "openai-video-test");
   requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_NATIVE === "1", "perplexity-native-test");
   requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_CHAT === "1", "perplexity-chat-test");
 
@@ -93,16 +102,28 @@ async function main(): Promise<void> {
   );
   process.env.OPENCLAW_CONFIG_PATH = configFile;
 
-  const [{ createSubsystemLogger }, { createProviderHttpError, postJsonRequest }] =
-    await Promise.all([
-      import("openclaw/plugin-sdk/logging-core"),
-      import("openclaw/plugin-sdk/provider-http"),
-    ]);
+  const [
+    { createSubsystemLogger },
+    { createProviderHttpError, postJsonRequest, readResponseTextLimited },
+  ] = await Promise.all([
+    import("openclaw/plugin-sdk/logging-core"),
+    import("openclaw/plugin-sdk/provider-http"),
+  ]);
   requireProof(typeof createSubsystemLogger === "function", "public-logging-sdk-import");
   requireProof(typeof createProviderHttpError === "function", "provider-http-runtime-import");
   requireProof(typeof postJsonRequest === "function", "shared-provider-caller-runtime-import");
+  requireProof(
+    typeof readResponseTextLimited === "function",
+    "bounded-response-reader-runtime-import",
+  );
 
   const requestSecret = 'foundation proof A/B?C=D&E +"Q"\\R';
+  const slashSecret = "foundation/slash17/credential";
+  const slashEscapedSecret = slashSecret.replaceAll("/", String.raw`\/`);
+  const slashEscapes = [...slashEscapedSecret.matchAll(/\\\//gu)];
+  const danglingSlashIndex = slashEscapes[1]?.index;
+  requireProof(danglingSlashIndex !== undefined, "second-json-slash-escape");
+  const danglingSlashPrefix = slashEscapedSecret.slice(0, danglingSlashIndex + 1);
   const logSecret = "foundation-proof-bearer-4f1d9c7e2a6b8d03";
   const longSecret = `foundation-truncation-${"Z".repeat(20 * 1024)}`;
   const safeMarkers = [
@@ -111,6 +132,7 @@ async function main(): Promise<void> {
     "SAFE_URL",
     "SAFE_FORM",
     "SAFE_TRUNCATED",
+    "SAFE_JSON_SLASH",
     "SAFE_ACTIVE",
   ];
   const server = http.createServer((request, response) => {
@@ -142,6 +164,19 @@ async function main(): Promise<void> {
       );
       return;
     }
+    if (pathname === "/json-slash") {
+      response.setHeader("content-type", "application/json");
+      response.end(
+        JSON.stringify({
+          error: {
+            message: `SAFE_JSON_SLASH reflected=${slashEscapedSecret}`,
+            code: slashEscapedSecret,
+            type: slashEscapedSecret,
+          },
+        }).replaceAll(String.raw`\\/`, String.raw`\/`),
+      );
+      return;
+    }
     if (pathname === "/url") {
       response.end(
         `SAFE_URL https://provider.invalid/failure?echo=${encodeURIComponent(reflectedCredential)}`,
@@ -154,6 +189,12 @@ async function main(): Promise<void> {
     }
     if (pathname === "/truncated") {
       response.end(`SAFE_TRUNCATED reflected=${reflectedCredential}`);
+      return;
+    }
+    if (pathname === "/truncated-json-slash") {
+      response.end(
+        `${"x".repeat(16 * 1024 - danglingSlashPrefix.length)}${slashEscapedSecret} trailing text`,
+      );
       return;
     }
     if (pathname === "/active") {
@@ -177,8 +218,13 @@ async function main(): Promise<void> {
   const logger = createSubsystemLogger("proof/foundation-sdk");
   const normalizedErrors: ProviderErrorLike[] = [];
   try {
-    for (const caseName of ["raw", "json", "url", "form", "truncated"] as const) {
-      const sensitiveValue = caseName === "truncated" ? longSecret : requestSecret;
+    for (const caseName of ["raw", "json", "url", "form", "truncated", "json-slash"] as const) {
+      const sensitiveValue =
+        caseName === "truncated"
+          ? longSecret
+          : caseName === "json-slash"
+            ? slashSecret
+            : requestSecret;
       const requestHeaders =
         caseName === "truncated"
           ? undefined
@@ -187,20 +233,42 @@ async function main(): Promise<void> {
         `http://127.0.0.1:${port}/${caseName}`,
         requestHeaders ? { headers: requestHeaders } : undefined,
       );
+      const caseMarker = caseName.replaceAll("-", "_").toUpperCase();
       const error = (await createProviderHttpError(
         response,
-        `SAFE_${caseName.toUpperCase()}`,
+        `SAFE_${caseMarker}`,
         requestHeaders ? { requestHeaders } : { sensitiveValues: [sensitiveValue] },
       )) as ProviderErrorLike;
       requireProof(error.status === 429, `${caseName}-status`);
       normalizedErrors.push(error);
-      logger.info(`CASE_${caseName.toUpperCase()} ${error.message}`, {
+      logger.info(`CASE_${caseMarker} ${error.message}`, {
         status: error.status,
         body: error.errorBody,
         requestId: error.requestId,
         code: error.code,
       });
     }
+    const danglingSlashResponse = await fetch(`http://127.0.0.1:${port}/truncated-json-slash`, {
+      headers: new Headers({ authorization: `Bearer ${slashSecret}` }),
+    });
+    const danglingSlashDetail = await readResponseTextLimited(danglingSlashResponse, 16 * 1024, {
+      sensitiveValues: [slashSecret],
+    });
+    requireProof(
+      danglingSlashDetail.includes("truncated diagnostic omitted"),
+      "json-slash-dangling-truncation-marker",
+    );
+    requireProof(
+      !danglingSlashDetail.includes(danglingSlashPrefix),
+      "json-slash-dangling-prefix-absent",
+    );
+    requireProof(
+      !danglingSlashDetail.includes(slashEscapedSecret),
+      "json-slash-dangling-secret-absent",
+    );
+    logger.info("CASE_TRUNCATED_JSON_SLASH SAFE_TRUNCATED_JSON_SLASH", {
+      redacted: true,
+    });
     const activeError = await postJsonRequest({
       url: `http://127.0.0.1:${port}/active`,
       headers: new Headers({ authorization: `Bearer ${requestSecret}` }),
@@ -245,6 +313,9 @@ async function main(): Promise<void> {
   for (const variant of secretVariants(requestSecret)) {
     requireProof(!normalizedText.includes(variant), "normalized-request-secret-absent");
   }
+  for (const variant of [...secretVariants(slashSecret), slashEscapedSecret]) {
+    requireProof(!normalizedText.includes(variant), "normalized-json-slash-secret-absent");
+  }
   requireProof(
     !normalizedText.includes(longSecret.slice(0, 512)),
     "normalized-truncated-secret-prefix-absent",
@@ -255,10 +326,16 @@ async function main(): Promise<void> {
 
   const logMarkers = [
     ...safeMarkers.map((marker) => `CASE_${marker.slice("SAFE_".length)}`),
+    "CASE_TRUNCATED_JSON_SLASH",
     "SAFE_LOG",
   ];
   const sink = await waitForLog(logFile, logMarkers);
-  for (const variant of [...secretVariants(requestSecret), ...secretVariants(logSecret)]) {
+  for (const variant of [
+    ...secretVariants(requestSecret),
+    ...secretVariants(slashSecret),
+    slashEscapedSecret,
+    ...secretVariants(logSecret),
+  ]) {
     requireProof(!sink.includes(variant), "file-sink-secret-absent");
   }
   requireProof(!sink.includes(longSecret.slice(0, 512)), "file-sink-truncated-prefix-absent");
@@ -268,7 +345,7 @@ async function main(): Promise<void> {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line) as Record<string, unknown>);
-  requireProof(records.length === 7, "file-sink-record-count");
+  requireProof(records.length === 9, "file-sink-record-count");
 
   await fs.mkdir(artifactDir, { recursive: true });
   const sinkSha256 = createHash("sha256").update(sink).digest("hex");
@@ -291,10 +368,16 @@ async function main(): Promise<void> {
       finalRequestHeadersDerived: true,
       genericSharedCallerAdoptionProven: true,
       openAiPluginTtsAdoptionProven: true,
+      openAiRealtimeAdoptionProven: true,
+      openAiEmbeddingBatchAdoptionProven: true,
+      openAiImageAdoptionProven: true,
+      openAiVideoAdoptionProven: true,
       perplexitySearchApiAdoptionProven: true,
       perplexityChatCompletionsAdoptionProven: true,
       rawSecretRedacted: true,
       jsonEscapedSecretRedacted: true,
+      jsonOptionalSlashSecretRedacted: true,
+      jsonSlashDanglingTruncationRedacted: true,
       urlEncodedSecretRedacted: true,
       formEncodedSecretRedacted: true,
       truncationBoundaryPrefixRedacted: true,
@@ -304,7 +387,7 @@ async function main(): Promise<void> {
     },
     observations: {
       httpStatus: 429,
-      errorCases: 6,
+      errorCases: 7,
       logRecords: records.length,
       sinkSha256,
     },
@@ -313,10 +396,20 @@ async function main(): Promise<void> {
       providerHttpContract: "private-local-official-plugin-runtime",
       genericSharedCallerAdoptionProven: true,
       providerSpecificAdoptionProven: true,
-      providerSpecificOwners: ["openai-plugin-tts", "perplexity-native", "perplexity-chat"],
+      providerSpecificOwners: [
+        "openai-plugin-tts",
+        "openai-realtime",
+        "openai-embedding-batch",
+        "openai-image",
+        "openai-video",
+        "perplexity-native",
+        "perplexity-chat",
+      ],
     },
     redaction: {
       requestSecretsIncluded: false,
+      jsonOptionalSlashSecretsIncluded: false,
+      danglingJsonSlashPrefixesIncluded: false,
       encodedSecretsIncluded: false,
       truncationPrefixIncluded: false,
       filesystemPathsIncluded: false,
@@ -329,7 +422,7 @@ async function main(): Promise<void> {
     `${JSON.stringify(verdict, null, 2)}\n`,
   );
   console.log(
-    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true active-shared-caller=true final-request-headers=true openai-plugin-tts=true perplexity-native=true perplexity-chat=true file-sink=true raw=true json=true url=true form=true truncation-boundary=true secret-output=false",
+    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true active-shared-caller=true final-request-headers=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true file-sink=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true secret-output=false",
   );
 }
 

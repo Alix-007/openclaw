@@ -171,20 +171,44 @@ jobs:
                 extensions/openai/tts.test.ts \
                 extensions/perplexity/src/perplexity-web-search-provider.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
+              node scripts/run-vitest.mjs \
+                extensions/openai/realtime-provider-shared.test.ts \
+                extensions/openai/embedding-batch.test.ts \
+                extensions/openai/image-generation-provider.test.ts \
+                extensions/openai/video-generation-provider.test.ts \
+                -t 'redacts a reflected final auth token|redacts a reflected final authorization credential|forwards generation count and custom size overrides|forwards edit count, custom size, and multiple input images|falls back to Codex OAuth image generation through Responses streaming|uses api-key header and deployment-scoped URL for Azure \.openai\.azure\.com hosts|uses SDK-compatible multipart for text-only Sora requests|honors configured request allowPrivateNetwork for local video providers' \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
               grep -F 'redacts a reflected credential through the trusted guarded transport' "$log_file"
               grep -F 'redacts sensitive final request headers from transcript-bound metadata' "$log_file"
               grep -F 'redacts raw and encoded request secrets from provider metadata' "$log_file"
               grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
               grep -F 'suppresses a request-secret prefix truncated at' "$log_file"
               grep -F 'suppresses a request-secret prefix split by the provider error-body cap' "$log_file"
+              grep -F 'redacts JSON optional slash escapes before parsing provider metadata' "$log_file"
+              grep -F 'suppresses a slash-escaped request-secret prefix split by the error-body cap' "$log_file"
+              grep -F 'suppresses a request-secret prefix cut after JSON slash escape' "$log_file"
               grep -F 'redacts a raw or encoded request secret' "$log_file"
               grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
               grep -F 'redacts reflected outbound credentials from transient JSON POST errors' "$log_file"
               grep -F 'redacts reflected credentials from normal non-retry TTS errors' "$log_file"
+              grep -F 'redacts a reflected final auth token from realtime provider errors' "$log_file"
+              grep -F 'redacts a reflected final authorization credential from batch resource errors' "$log_file"
+              grep -F 'forwards generation count and custom size overrides' "$log_file"
+              grep -F 'forwards edit count, custom size, and multiple input images' "$log_file"
+              grep -F 'falls back to Codex OAuth image generation through Responses streaming' "$log_file"
+              grep -F 'uses api-key header and deployment-scoped URL for Azure .openai.azure.com hosts' "$log_file"
+              grep -F 'uses SDK-compatible multipart for text-only Sora requests' "$log_file"
+              grep -F 'honors configured request allowPrivateNetwork for local video providers' "$log_file"
               grep -F 'redacts reflected request credentials from provider diagnostics' "$log_file"
               grep -F "redacts reflected credentials from 'native Search API' diagnostics" "$log_file"
               grep -F "redacts reflected credentials from 'chat completions' diagnostics" "$log_file"
               export OPENCLAW_PROOF_OPENAI_PLUGIN_TTS=1
+              export OPENCLAW_PROOF_JSON_SLASH=1
+              export OPENCLAW_PROOF_JSON_SLASH_DANGLING=1
+              export OPENCLAW_PROOF_OPENAI_REALTIME=1
+              export OPENCLAW_PROOF_OPENAI_EMBEDDING_BATCH=1
+              export OPENCLAW_PROOF_OPENAI_IMAGE=1
+              export OPENCLAW_PROOF_OPENAI_VIDEO=1
               export OPENCLAW_PROOF_PERPLEXITY_NATIVE=1
               export OPENCLAW_PROOF_PERPLEXITY_CHAT=1
               cp .proof-tooling/.github/proof/foundation-sdk-runtime.ts \
@@ -202,7 +226,7 @@ jobs:
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/foundation-sdk-runtime.mjs \
                 2>&1 | tee -a "$log_file"
-              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true guarded-web-transport=true openai-plugin-tts=true perplexity-native=true perplexity-chat=true raw=true json=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
+              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
               marker='[foundation compiled SDK proof]'
               ;;
             matrix)
