@@ -534,6 +534,38 @@ describe("executeChannelApi", () => {
     expect(JSON.stringify(result)).not.toContain(accessToken);
   });
 
+  it("preserves unmatched percent escapes in successful response data", async () => {
+    const accessToken = "qQ%25/UNIQUE~CHANNELSECRET+Proof";
+    const encodedCredential = lowercasePercentEscapes(encodeURIComponent(accessToken));
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(
+        JSON.stringify({
+          id: "id%2fpart",
+          marker: "keep%afcase",
+          reflected: encodedCredential,
+        }),
+        {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        },
+      ),
+      release: vi.fn(async () => {}),
+    });
+
+    const result = await executeChannelApi(
+      { method: "GET", path: "/guilds/123/channels" },
+      { accessToken },
+    );
+
+    expect(result.details).toMatchObject({
+      success: true,
+      status: 200,
+      data: { id: "id%2fpart", marker: "keep%afcase", reflected: "<redacted>" },
+    });
+    expect(JSON.stringify(result)).not.toContain(accessToken);
+    expect(JSON.stringify(result)).not.toContain(encodedCredential);
+  });
+
   it("redacts Unicode-escaped credentials from prefixed response text", async () => {
     const accessToken = "qQUnicode/UNIQUE~CHANNELSECRET+Proof";
     const unicodeEscapedCredential = accessToken

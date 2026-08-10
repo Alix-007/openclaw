@@ -6,7 +6,6 @@ const REDACTED_CREDENTIAL = "<redacted>";
 
 interface CredentialForms {
   literal: readonly string[];
-  encoded: readonly string[];
   mixedPercent: readonly (readonly CredentialUnit[])[];
 }
 
@@ -42,24 +41,29 @@ function matchCredentialUnits(
   start: number,
   units: readonly CredentialUnit[],
 ): number | undefined {
-  let offset = start;
+  let offsets = new Set([start]);
   for (const unit of units) {
-    if (text.startsWith(unit.literal, offset)) {
-      offset += unit.literal.length;
-      continue;
+    const nextOffsets = new Set<number>();
+    for (const offset of offsets) {
+      if (text.startsWith(unit.literal, offset)) {
+        nextOffsets.add(offset + unit.literal.length);
+      }
+      const percentCandidate = text.slice(offset, offset + unit.percentEncoded.length);
+      if (canonicalizePercentEscapes(percentCandidate) === unit.percentEncoded) {
+        nextOffsets.add(offset + unit.percentEncoded.length);
+      }
+      if (unit.formEncoded && text.startsWith(unit.formEncoded, offset)) {
+        nextOffsets.add(offset + unit.formEncoded.length);
+      }
     }
-    const percentCandidate = text.slice(offset, offset + unit.percentEncoded.length);
-    if (canonicalizePercentEscapes(percentCandidate) === unit.percentEncoded) {
-      offset += unit.percentEncoded.length;
-      continue;
+    if (nextOffsets.size === 0) {
+      return undefined;
     }
-    if (unit.formEncoded && text.startsWith(unit.formEncoded, offset)) {
-      offset += unit.formEncoded.length;
-      continue;
-    }
-    return undefined;
+    // A literal "%" and its encoded form share a prefix. Keep both positions
+    // so partially encoded credentials cannot escape the exact-secret boundary.
+    offsets = nextOffsets;
   }
-  return offset;
+  return Math.max(...offsets);
 }
 
 function redactMixedPercentCredentialForms(
@@ -86,7 +90,6 @@ function redactMixedPercentCredentialForms(
 
 function resolveCredentialForms(credentials: readonly string[]): CredentialForms {
   const literal = new Set<string>();
-  const encoded = new Set<string>();
   for (const credential of credentials) {
     if (!credential) {
       continue;
@@ -95,20 +98,10 @@ function resolveCredentialForms(credentials: readonly string[]): CredentialForms
     literal.add(credential);
     literal.add(jsonEscaped);
     literal.add(jsonEscaped.replaceAll("/", "\\/"));
-    encoded.add(
-      new URLSearchParams([["credential", credential]]).toString().slice("credential=".length),
-    );
-    encoded.add(percentEncodeEveryUtf8Byte(credential));
-    try {
-      encoded.add(encodeURIComponent(credential));
-    } catch {
-      // Raw and JSON forms still cover malformed UTF-16 credentials that URI encoding rejects.
-    }
   }
   const longestFirst = (left: string, right: string) => right.length - left.length;
   return {
     literal: [...literal].filter(Boolean).toSorted(longestFirst),
-    encoded: [...encoded].filter(Boolean).map(canonicalizePercentEscapes).toSorted(longestFirst),
     mixedPercent: [...literal].filter(Boolean).toSorted(longestFirst).map(resolveCredentialUnits),
   };
 }
@@ -118,12 +111,7 @@ function redactDirectCredentialForms(text: string, forms: CredentialForms): stri
   for (const form of forms.literal) {
     redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
   }
-  redacted = redactMixedPercentCredentialForms(redacted, forms.mixedPercent);
-  redacted = canonicalizePercentEscapes(redacted);
-  for (const form of forms.encoded) {
-    redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
-  }
-  return redacted;
+  return redactMixedPercentCredentialForms(redacted, forms.mixedPercent);
 }
 
 function redactCredentialForms(text: string, forms: CredentialForms): string {
@@ -161,7 +149,7 @@ function redactJsonCredentialText(text: string, forms: CredentialForms): string 
 /** Remove raw, serialized, and encoded credentials before generic redaction. */
 export function redactQQBotCredentialText(text: string, ...credentials: readonly string[]): string {
   const credentialForms = resolveCredentialForms(credentials);
-  if (credentialForms.literal.length === 0 && credentialForms.encoded.length === 0) {
+  if (credentialForms.literal.length === 0) {
     return redactToolPayloadText(text);
   }
 
