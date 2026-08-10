@@ -24,6 +24,7 @@ type HeldResponseEvidence = {
   cronStatusRequests: number;
   cronUpdateRequests: number;
   heldSnapshotJobs: number | null;
+  modelListFixtureRequests: number;
   releasedSha256: string | null;
 };
 
@@ -131,6 +132,14 @@ function startProxyConnection(params: {
         ) {
           params.setHeldRequestId(frame.id);
         }
+      } else if (frame.method === "models.list" && typeof frame.id === "string") {
+        // Model discovery is unrelated to the Cron ordering invariant and can
+        // dominate constrained CI. Keep that peripheral dependency controlled.
+        params.evidence.modelListFixtureRequests += 1;
+        params.browserSocket.send(
+          JSON.stringify({ type: "res", id: frame.id, ok: true, payload: { models: [] } }),
+        );
+        return;
       }
     }
     if (upstream.readyState === WebSocket.OPEN) {
@@ -197,6 +206,7 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
     cronStatusRequests: 0,
     cronUpdateRequests: 0,
     heldSnapshotJobs: null,
+    modelListFixtureRequests: 0,
     releasedSha256: null,
   };
   const activeSockets = new Set<WebSocket>();
@@ -494,6 +504,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
     const firstJobId = await mountCronPage(page, proxy.url);
     await expect.poll(() => pageStatusJobs(page), { timeout: 30_000 }).toBe(1);
     await page.locator(`[data-test-id="cron-row-${firstJobId}"]`).waitFor({ timeout: 30_000 });
+    expect(proxy.evidence.modelListFixtureRequests).toBe(1);
 
     proxy.armCronStatusHold();
     await page
@@ -554,6 +565,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
             gateway: "production-startGatewayServer-cron-store",
             transport: "production-GatewayBrowserClient-real-websocket",
             orderingFixture: "one-unmodified-cron.status-response-delayed",
+            peripheralFixture: "models.list-empty-result",
           },
           assertions: {
             initialJobs: 1,
@@ -564,6 +576,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
             cronAddRequests: proxy.evidence.cronAddRequests,
             cronUpdateRequests: proxy.evidence.cronUpdateRequests,
             cronStatusRequests: proxy.evidence.cronStatusRequests,
+            modelListFixtureRequests: proxy.evidence.modelListFixtureRequests,
           },
           responseSha256: proxy.evidence.capturedSha256,
           secretOutput: false,
@@ -574,7 +587,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
       "utf8",
     );
     console.info(
-      "[cron stale response proof] vite=true chromium=true real-gateway=true real-websocket=true unmodified-response=true stale-overwrite=false",
+      "[cron stale response proof] vite=true chromium=true real-gateway=true real-websocket=true model-list-fixture=true unmodified-cron-response=true stale-overwrite=false",
     );
     await page.evaluate(() => Reflect.get(window, "cronProofClient")?.stop());
     await page.close();

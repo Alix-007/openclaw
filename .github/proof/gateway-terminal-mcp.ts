@@ -38,40 +38,34 @@ process.env.OPENCLAW_SKIP_CHANNELS = "1";
 process.env.OPENCLAW_SKIP_PROVIDERS = "1";
 process.env.OPENCLAW_TEST_MINIMAL_GATEWAY = "1";
 
-const [
-  { TerminalSessionManager },
-  { spawnTerminalPty },
-  { setFallbackGatewayContext },
-  { ensureMcpLoopbackServer, closeMcpLoopbackServer },
-  { getActiveMcpLoopbackRuntime },
-  {
-    activateMcpLoopbackClientGrantCapture,
-    mintMcpLoopbackClientGrant,
-    revokeMcpLoopbackClientGrant,
-  },
-  { beginMcpLoopbackToolCallCapture, clearMcpLoopbackToolCallCapture },
-  { createTaskRecord, markTaskTerminalById },
-  { getTaskRegistryObservers },
-  { startGatewayEventSubscriptions },
-  {
-    createChatRunState,
-    createSessionEventSubscriberRegistry,
-    createSessionMessageSubscriberRegistry,
-    createToolEventRecipientRegistry,
-  },
-] = await Promise.all([
-  import("../src/gateway/terminal/session-manager.js"),
-  import("../src/process/terminal-pty.js"),
-  import("../src/gateway/server-plugin-fallback-context.js"),
-  import("../src/gateway/mcp-http.js"),
-  import("../src/gateway/mcp-http.loopback-runtime.js"),
-  import("../src/gateway/mcp-grant-store.js"),
-  import("../src/gateway/mcp-http.loopback-runtime.js"),
-  import("../src/tasks/task-registry.js"),
-  import("../src/tasks/task-registry.store.js"),
-  import("../src/gateway/server-runtime-subscriptions.js"),
-  import("../src/gateway/server-chat-state.js"),
-]);
+// Load the production owners in order. Node 24 rejects simultaneous ESM and
+// compatibility-require loading of a shared dependency as an ESM race.
+const { TerminalSessionManager } = await import("../src/gateway/terminal/session-manager.js");
+const { spawnTerminalPty } = await import("../src/process/terminal-pty.js");
+const { setFallbackGatewayContext } =
+  await import("../src/gateway/server-plugin-fallback-context.js");
+const { ensureMcpLoopbackServer, closeMcpLoopbackServer } =
+  await import("../src/gateway/mcp-http.js");
+const {
+  beginMcpLoopbackToolCallCapture,
+  clearMcpLoopbackToolCallCapture,
+  getActiveMcpLoopbackRuntime,
+} = await import("../src/gateway/mcp-http.loopback-runtime.js");
+const {
+  activateMcpLoopbackClientGrantCapture,
+  mintMcpLoopbackClientGrant,
+  revokeMcpLoopbackClientGrant,
+} = await import("../src/gateway/mcp-grant-store.js");
+const { createTaskRecord, markTaskTerminalById } = await import("../src/tasks/task-registry.js");
+const { getTaskRegistryObservers } = await import("../src/tasks/task-registry.store.js");
+const { startGatewayEventSubscriptions } =
+  await import("../src/gateway/server-runtime-subscriptions.js");
+const {
+  createChatRunState,
+  createSessionEventSubscriberRegistry,
+  createSessionMessageSubscriberRegistry,
+  createToolEventRecipientRegistry,
+} = await import("../src/gateway/server-chat-state.js");
 
 const spawnedPids: number[] = [];
 const emittedEvents: string[] = [];
