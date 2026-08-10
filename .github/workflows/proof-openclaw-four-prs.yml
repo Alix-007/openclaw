@@ -245,7 +245,12 @@ jobs:
               grep -F '[qqbot gateway credential redaction proof]' "$log_file"
               grep -F '[qqbot stt credential redaction proof]' "$log_file"
               grep -F '[qqbot token credential redaction proof]' "$log_file"
-              marker='[qqbot credential redaction proof]'
+              OPENCLAW_BUILD_PRIVATE_QA=1 pnpm build 2>&1 | tee -a "$log_file"
+              node --import tsx \
+                .proof-tooling/.github/proof/qqbot-durable-gateway-e2e.ts \
+                2>&1 | tee -a "$log_file"
+              test -s proof-qqbot-durable-verdict.json
+              marker='[qqbot durable gateway real-behavior proof]'
               ;;
             responses)
               node scripts/run-vitest.mjs \
@@ -323,6 +328,7 @@ jobs:
           path: |
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
+            proof-qqbot-durable-verdict.json
             proof-plugin-sdk-api-baseline.sha256
           if-no-files-found: warn
           retention-days: 30
