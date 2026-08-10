@@ -1,4 +1,7 @@
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
+import {
+  createProviderHttpError,
+  readProviderJsonResponse,
+} from "openclaw/plugin-sdk/provider-http";
 // Perplexity provider module implements model/runtime integration.
 import {
   readPositiveIntegerParam,
@@ -19,7 +22,6 @@ import {
   resolveSearchCount,
   resolveSearchTimeoutSeconds,
   resolveSiteName,
-  throwWebSearchApiError,
   type SearchConfigRecord,
   withTrustedWebSearchEndpoint,
   wrapWebContent,
@@ -253,7 +255,9 @@ async function runPerplexitySearchApi(params: {
     },
     async (res) => {
       if (!res.ok) {
-        return await throwWebSearchApiError(res, "Perplexity Search");
+        throw await createProviderHttpError(res, "Perplexity Search API error", {
+          sensitiveValues: [params.apiKey],
+        });
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchApiResponse>(
         res,
@@ -301,7 +305,9 @@ async function runPerplexitySearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        return await throwWebSearchApiError(res, "Perplexity");
+        throw await createProviderHttpError(res, "Perplexity API error", {
+          sensitiveValues: [params.apiKey],
+        });
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchResponse>(res, "Perplexity");
       return {

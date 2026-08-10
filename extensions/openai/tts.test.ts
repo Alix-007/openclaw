@@ -289,6 +289,51 @@ describe("openai tts", () => {
       );
     });
 
+    it("redacts reflected request credentials from provider diagnostics", async () => {
+      const apiKey = "orchid-openai-tts-secret-123456";
+      globalThis.fetch = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            error: {
+              message: `safe=quota-exceeded ${apiKey}`,
+              type: apiKey,
+              code: apiKey,
+            },
+          }),
+          { status: 401, headers: { "x-request-id": apiKey } },
+        ),
+      ) as unknown as typeof fetch;
+
+      const failure = await openaiTTS({
+        text: "hello",
+        apiKey,
+        baseUrl: "https://api.openai.com/v1",
+        model: "gpt-4o-mini-tts",
+        voice: "alloy",
+        responseFormat: "mp3",
+        timeoutMs: 5_000,
+      }).catch((error: unknown) => error);
+
+      expect(failure).toBeInstanceOf(Error);
+      const providerError = failure as Error & {
+        code?: string;
+        errorBody?: string;
+        errorCode?: string;
+        errorType?: string;
+        requestId?: string;
+      };
+      const diagnostics = [
+        providerError.message,
+        providerError.code,
+        providerError.errorBody,
+        providerError.errorCode,
+        providerError.errorType,
+        providerError.requestId,
+      ].join("\n");
+      expect(diagnostics).toContain("safe=quota-exceeded");
+      expect(diagnostics).not.toContain(apiKey);
+    });
+
     it("falls back to raw body text when the error body is non-JSON", async () => {
       const fetchMock = vi.fn(
         async () => new Response("temporary upstream outage", { status: 503 }),

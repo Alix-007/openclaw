@@ -255,6 +255,64 @@ describe("perplexity web search provider", () => {
   });
 
   it.each([
+    { name: "native Search API", webSearch: { apiKey: directPerplexityApiKey } },
+    {
+      name: "chat completions",
+      webSearch: {
+        apiKey: directPerplexityApiKey,
+        baseUrl: "https://api.perplexity.ai",
+      },
+    },
+  ])("redacts reflected credentials from $name diagnostics", async ({ name, webSearch }) => {
+    withTrustedWebSearchEndpointMock.mockReset();
+    withTrustedWebSearchEndpointMock.mockImplementationOnce(
+      async (_params: unknown, run: (response: Response) => Promise<unknown>) =>
+        await run(
+          new Response(
+            JSON.stringify({
+              error: {
+                message: `safe=quota-exceeded ${directPerplexityApiKey}`,
+                type: directPerplexityApiKey,
+                code: directPerplexityApiKey,
+              },
+            }),
+            { status: 401, headers: { "x-request-id": directPerplexityApiKey } },
+          ),
+        ),
+    );
+    const tool = createPerplexityWebSearchProvider().createTool({
+      config: { plugins: { entries: { perplexity: { config: { webSearch } } } } },
+      searchConfig: {},
+    });
+    if (!tool) {
+      throw new Error("Expected tool definition");
+    }
+
+    const failure = await tool
+      .execute({ query: `reflected credential ${name}` })
+      .catch((error: unknown) => error);
+
+    expect(failure).toBeInstanceOf(Error);
+    const providerError = failure as Error & {
+      code?: string;
+      errorBody?: string;
+      errorCode?: string;
+      errorType?: string;
+      requestId?: string;
+    };
+    const diagnostics = [
+      providerError.message,
+      providerError.code,
+      providerError.errorBody,
+      providerError.errorCode,
+      providerError.errorType,
+      providerError.requestId,
+    ].join("\n");
+    expect(diagnostics).toContain("safe=quota-exceeded");
+    expect(diagnostics).not.toContain(directPerplexityApiKey);
+  });
+
+  it.each([
     ["max_tokens", 0, "max_tokens must be a positive integer."],
     ["max_tokens", 1.5, "max_tokens must be a positive integer."],
     ["max_tokens", 1_000_001, "max_tokens must be a positive integer."],
