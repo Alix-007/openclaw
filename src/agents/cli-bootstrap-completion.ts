@@ -49,14 +49,10 @@ export function finalizePendingCliBootstrapCompletion(params: {
   const runId = params.runId ?? pending?.runId;
   const settlement = (async () => {
     try {
-      if (
-        result.meta.bootstrapContextCompletionPending !== true ||
-        !params.transcriptStable ||
-        params.isStillEligible?.() === false
-      ) {
+      if (!pending || !params.transcriptStable || params.isStillEligible?.() === false) {
         return false;
       }
-      if (pending && !(await pending.maintenanceSettledWithoutRewrite)) {
+      if (!(await pending.maintenanceSettledWithoutRewrite)) {
         return false;
       }
       if (params.isStillEligible?.() === false || !sessionTarget || !runId) {

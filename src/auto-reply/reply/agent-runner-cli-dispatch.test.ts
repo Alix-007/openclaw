@@ -446,7 +446,7 @@ describe("runCliAgentWithLifecycle", () => {
   it("returns the completed CLI reply while deferred bootstrap maintenance is pending", async () => {
     const result = {
       payloads: [{ text: "Visible answer" }],
-      meta: { durationMs: 1, bootstrapContextCompletionPending: true },
+      meta: { durationMs: 1 },
     } satisfies EmbeddedAgentRunResult;
     let releaseMaintenance: ((settledWithoutRewrite: boolean) => void) | undefined;
     const maintenanceSettledWithoutRewrite = new Promise<boolean>((resolve) => {

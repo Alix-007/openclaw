@@ -604,7 +604,7 @@ describe("runEmbeddedAgentViaCliBackendIfEligible execution", () => {
 
   it("finalizes a pending bootstrap marker after the transcript mirror commits", async () => {
     const appendCustomEntry = vi.fn();
-    const result = cliRunResult({ bootstrapContextCompletionPending: true });
+    const result = cliRunResult();
     setPendingCliBootstrapCompletion(result, {
       maintenanceSettledWithoutRewrite: Promise.resolve(true),
       runId: "run-cli-dispatch-bootstrap",
@@ -626,7 +626,7 @@ describe("runEmbeddedAgentViaCliBackendIfEligible execution", () => {
 
   it("does not finalize a pending bootstrap marker when transcript mirroring fails", async () => {
     const appendCustomEntry = vi.fn();
-    const result = cliRunResult({ bootstrapContextCompletionPending: true });
+    const result = cliRunResult();
     setPendingCliBootstrapCompletion(result, {
       maintenanceSettledWithoutRewrite: Promise.resolve(true),
       runId: "run-cli-dispatch-bootstrap-mirror-failure",
@@ -650,7 +650,7 @@ describe("runEmbeddedAgentViaCliBackendIfEligible execution", () => {
   it("does not finalize a pending bootstrap marker after the dispatched run aborts", async () => {
     const abortController = new AbortController();
     const appendCustomEntry = vi.fn();
-    const result = cliRunResult({ bootstrapContextCompletionPending: true });
+    const result = cliRunResult();
     setPendingCliBootstrapCompletion(result, {
       maintenanceSettledWithoutRewrite: Promise.resolve(true),
       runId: "run-cli-dispatch-bootstrap-abort",

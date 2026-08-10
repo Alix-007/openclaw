@@ -189,8 +189,6 @@ export type EmbeddedAgentRunMeta = {
   /** An exact, successfully settled tool batch intentionally completed the turn without a reply. */
   intentionalTerminalCompletion?: "tool-batch";
   terminalReply?: AgentRunTerminalReplySnapshot;
-  /** CLI continuation marker awaiting the command owner's canonical transcript commit. */
-  bootstrapContextCompletionPending?: true;
   yielded?: boolean;
   /** Explicit user-facing waiting status supplied to sessions_yield. */
   yieldAcknowledgment?: string;

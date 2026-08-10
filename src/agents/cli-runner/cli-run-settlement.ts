@@ -562,12 +562,6 @@ export function buildCliRunResult(params: {
           }
         : {}),
       systemPromptReport: context.systemPromptReport,
-      ...(context.shouldRecordCompletedBootstrapTurn === true &&
-      bootstrapCompletion?.handled !== true &&
-      bootstrapCompletion?.pending !== undefined &&
-      runParams.abortSignal?.aborted !== true
-        ? { bootstrapContextCompletionPending: true as const }
-        : {}),
       ...(yielded ? { yielded: true, livenessState: "paused" as const, stopReason } : {}),
       ...(output.yieldAcknowledgment ? { yieldAcknowledgment: output.yieldAcknowledgment } : {}),
       executionTrace: {
@@ -650,8 +644,10 @@ export function buildCliRunResult(params: {
       : {}),
   };
   if (
-    result.meta.bootstrapContextCompletionPending === true &&
-    bootstrapCompletion?.pending
+    context.shouldRecordCompletedBootstrapTurn === true &&
+    bootstrapCompletion?.handled !== true &&
+    bootstrapCompletion?.pending !== undefined &&
+    runParams.abortSignal?.aborted !== true
   ) {
     setPendingCliBootstrapCompletion(result, bootstrapCompletion.pending);
   }

@@ -799,6 +799,22 @@ function makeSuccessResult(provider: string, model: string) {
   };
 }
 
+function setDefaultPendingCliBootstrapCompletion(
+  result: Parameters<typeof setPendingCliBootstrapCompletion>[0],
+  maintenanceSettledWithoutRewrite: Promise<boolean> = Promise.resolve(true),
+): void {
+  setPendingCliBootstrapCompletion(result, {
+    maintenanceSettledWithoutRewrite,
+    runId: "session-1",
+    sessionTarget: {
+      agentId: "default",
+      sessionId: "session-1",
+      sessionKey: "agent:main:main",
+      storePath: "/tmp/openclaw-sessions.json",
+    },
+  });
+}
+
 function makeEmptyResult(provider: string, model: string) {
   return {
     payloads: [],
@@ -2318,7 +2334,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
+    setDefaultPendingCliBootstrapCompletion(result);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "persisted",
@@ -2359,7 +2375,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
+    setDefaultPendingCliBootstrapCompletion(result);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "persisted",
@@ -2399,21 +2415,11 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
     let releaseMaintenance: ((settledWithoutRewrite: boolean) => void) | undefined;
     const maintenanceSettledWithoutRewrite = new Promise<boolean>((resolve) => {
       releaseMaintenance = resolve;
     });
-    setPendingCliBootstrapCompletion(result, {
-      maintenanceSettledWithoutRewrite,
-      runId: "session-1",
-      sessionTarget: {
-        agentId: "default",
-        sessionId: "session-1",
-        sessionKey: "agent:main:main",
-        storePath: "/tmp/openclaw-sessions.json",
-      },
-    });
+    setDefaultPendingCliBootstrapCompletion(result, maintenanceSettledWithoutRewrite);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "persisted",
@@ -2444,7 +2450,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
+    setDefaultPendingCliBootstrapCompletion(result);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "persisted",
@@ -2474,21 +2480,11 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
     let releaseMaintenance: (() => void) | undefined;
     const maintenanceSettledWithoutRewrite = new Promise<boolean>((resolve) => {
       releaseMaintenance = () => resolve(true);
     });
-    setPendingCliBootstrapCompletion(result, {
-      maintenanceSettledWithoutRewrite,
-      runId: "session-1",
-      sessionTarget: {
-        agentId: "default",
-        sessionId: "session-1",
-        sessionKey: "agent:main:main",
-        storePath: "/tmp/openclaw-sessions.json",
-      },
-    });
+    setDefaultPendingCliBootstrapCompletion(result, maintenanceSettledWithoutRewrite);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "persisted",
@@ -2521,7 +2517,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
+    setDefaultPendingCliBootstrapCompletion(result);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockRejectedValue(new Error("transcript write failed"));
 
@@ -2544,7 +2540,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       winnerProvider: "openai",
       winnerModel: "gpt-5.4",
     };
-    result.meta.bootstrapContextCompletionPending = true;
+    setDefaultPendingCliBootstrapCompletion(result);
     state.runAgentAttemptMock.mockResolvedValue(result);
     state.persistCliTurnTranscriptMock.mockResolvedValue({
       kind: "session-rebound",

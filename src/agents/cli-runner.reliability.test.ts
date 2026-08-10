@@ -629,7 +629,7 @@ describe("runCliAgent reliability", () => {
         const result = await runPreparedCliAgent(context);
         await maintenanceStarted;
 
-        expect(result.meta.bootstrapContextCompletionPending).toBe(true);
+        expect(result.meta).not.toHaveProperty("bootstrapContextCompletionPending");
         expect(await loadTranscriptEvents(sessionTarget)).not.toEqual(
           expect.arrayContaining([
             expect.objectContaining({ customType: FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE }),
@@ -690,7 +690,7 @@ describe("runCliAgent reliability", () => {
     try {
       const result = await runPreparedCliAgent(context);
 
-      expect(result.meta.bootstrapContextCompletionPending).toBe(true);
+      expect(result.meta).not.toHaveProperty("bootstrapContextCompletionPending");
       expect(await loadTranscriptEvents(sessionTarget)).toEqual(
         expect.arrayContaining([expect.objectContaining({ type: "message" })]),
       );
