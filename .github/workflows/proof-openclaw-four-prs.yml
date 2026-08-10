@@ -188,6 +188,8 @@ jobs:
               node node_modules/tsdown/dist/run.mjs \
                 --config .proof-runtime/foundation-sdk.tsdown.config.ts \
                 2>&1 | tee -a "$log_file"
+              cp src/state/openclaw-state-schema.sql dist/openclaw-state-schema.sql
+              cp src/state/openclaw-agent-schema.sql dist/openclaw-agent-schema.sql
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/foundation-sdk-runtime.mjs \
                 2>&1 | tee -a "$log_file"
