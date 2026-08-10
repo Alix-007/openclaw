@@ -181,10 +181,12 @@ jobs:
               ;;
             ollama)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
-                proof-plugin-sdk-api-baseline.sha256
+              cp docs/.generated/plugin-sdk-api-baseline.jsonl \
+                proof-plugin-sdk-api-baseline.jsonl
               git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
               git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
+              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.jsonl \
+                2>&1 | tee -a "$log_file"
               pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
               node scripts/run-vitest.mjs \
                 extensions/ollama/src/embedding-provider.fetchok.transport.test.ts \
@@ -323,6 +325,6 @@ jobs:
           path: |
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
-            proof-plugin-sdk-api-baseline.sha256
+            proof-plugin-sdk-api-baseline.*
           if-no-files-found: warn
           retention-days: 30
