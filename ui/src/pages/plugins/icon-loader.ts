@@ -331,9 +331,11 @@ type FetchProxiedIconParams = {
   signal: AbortSignal;
 };
 
-async function cancelUnreadResponseBody(response: Response): Promise<void> {
+function cancelUnreadResponseBody(response: Response): void {
   if (!response.bodyUsed) {
-    await response.body?.cancel().catch(() => undefined);
+    // Cancellation is best-effort cleanup; a stalled stream must not block
+    // auth fallback or completion of the rejected icon request.
+    void response.body?.cancel().catch(() => undefined);
   }
 }
 
@@ -360,9 +362,9 @@ async function fetchProxiedIconBlobUrl(
       signal: params.signal,
     });
     if (!response.ok) {
-      // Retry and rejection paths never consume the stream. Cancel before
-      // switching attempts or returning so concurrent icon loads release it.
-      await cancelUnreadResponseBody(response);
+      // Retry and rejection paths never consume the stream. Release it without
+      // delaying the auth fallback or the rejected icon result.
+      cancelUnreadResponseBody(response);
       if (response.status === 401 || response.status === 403) {
         continue;
       }
@@ -370,7 +372,7 @@ async function fetchProxiedIconBlobUrl(
     }
     const contentType = normalizeMimeType(response.headers.get("content-type"));
     if (!ALLOWED_PLUGIN_ICON_MIME_TYPES.has(contentType)) {
-      await cancelUnreadResponseBody(response);
+      cancelUnreadResponseBody(response);
       return null;
     }
     const source = await response.blob();

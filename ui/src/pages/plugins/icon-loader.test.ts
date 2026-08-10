@@ -48,6 +48,15 @@ function useLoopbackFetch(baseUrl: string): void {
   });
 }
 
+function rejectedResponse(status: number, cancel: () => Promise<void>): Response {
+  return {
+    body: { cancel },
+    bodyUsed: false,
+    ok: false,
+    status,
+  } as unknown as Response;
+}
+
 describe("catalog icon loader", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -175,5 +184,35 @@ describe("catalog icon loader", () => {
     } finally {
       await closeServer(server);
     }
+  });
+
+  it("does not wait for a stalled response cancellation before auth fallback", async () => {
+    let resolveCancellation!: () => void;
+    const cancellation = new Promise<void>((resolve) => {
+      resolveCancellation = resolve;
+    });
+    const cancel = vi.fn(() => cancellation);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(rejectedResponse(401, cancel))
+      .mockResolvedValueOnce(rejectedResponse(404, cancel));
+    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
+
+    await expect(
+      fetchPluginIconBlobUrl({
+        auth: {
+          hello: { auth: { deviceToken: "stale-device-token" } },
+          settings: { token: "fallback-token" },
+        },
+        basePath: "",
+        gatewayUrl: window.location.origin.replace(/^http/u, "ws"),
+        pluginId: "stalled-cancellation",
+        signal: new AbortController().signal,
+      }),
+    ).resolves.toBeNull();
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(cancel).toHaveBeenCalledTimes(2);
+    resolveCancellation();
   });
 });
