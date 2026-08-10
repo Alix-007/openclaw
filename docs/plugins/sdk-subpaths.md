@@ -273,7 +273,7 @@ Use `isLoopbackHost(host)` when a plugin must accept only the local machine. It 
     | `plugin-sdk/tool-send` | Extract canonical send target fields from tool args |
     | `plugin-sdk/sandbox` | Private-local after July 2026; Sandbox backend types and SSH/OpenShell command helpers, including fail-fast exec command preflight |
     | `plugin-sdk/temp-path` | Shared temp-download path helpers and private secure temp workspaces |
-    | `plugin-sdk/logging-core` | Subsystem logger and redaction helpers, including exact request-value redaction and safe handling of already-truncated sources |
+    | `plugin-sdk/logging-core` | Subsystem logger and redaction helpers |
     | `plugin-sdk/markdown-table-runtime` | Private-local after July 2026; Markdown table mode and conversion helpers |
     | `plugin-sdk/model-session-runtime` | Model/session override helpers such as `applyModelOverrideToSessionEntry` and `resolveAgentMaxConcurrent` |
     | `plugin-sdk/talk-config-runtime` | Private-local after July 2026; Talk provider config resolution helpers |

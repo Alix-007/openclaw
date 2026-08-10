@@ -13,7 +13,9 @@ import {
   readResponseWithLimit,
   type ReadResponseTextPrefixOptions,
 } from "../infra/http-body.js";
-import { redactSensitiveText, redactToolPayloadText } from "../logging/redact.js";
+import { redactSensitiveText } from "../logging/redact.js";
+import { redactSuppliedSecretValues } from "../logging/secret-redaction-registry.js";
+import { isLikelySensitiveModelProviderHeaderName } from "../secrets/model-provider-header-policy.js";
 export { asBoolean } from "../utils/boolean.js";
 export { normalizeOptionalString as trimToUndefined } from "../../packages/normalization-core/src/string-coerce.js";
 
@@ -33,6 +35,7 @@ type ProviderHttpErrorOptions = {
   statusPrefix?: string;
   bodyTimeoutMs?: ReadResponseTextPrefixOptions["timeoutMs"];
   onBodyTimeout?: NonNullable<ReadResponseTextPrefixOptions["onTimeout"]>;
+  requestHeaders?: HeadersInit;
   sensitiveValues?: readonly string[];
 };
 
@@ -53,10 +56,37 @@ export function truncateErrorDetail(detail: string, limit = 220): string {
   return detail.length <= limit ? detail : `${truncateUtf16Safe(detail, limit - 1)}…`;
 }
 
-function redactProviderErrorText(body: string, sensitiveValues?: readonly string[]): string {
-  return sensitiveValues?.length
-    ? redactToolPayloadText(body, { exactSecretValues: sensitiveValues })
-    : redactSensitiveText(body);
+function collectProviderHttpSensitiveValues(
+  options?: ProviderHttpErrorOptions,
+): string[] | undefined {
+  const values = new Set(options?.sensitiveValues?.filter(Boolean));
+  if (options?.requestHeaders) {
+    for (const [name, rawValue] of new Headers(options.requestHeaders).entries()) {
+      if (!isLikelySensitiveModelProviderHeaderName(name)) {
+        continue;
+      }
+      const value = rawValue.trim();
+      if (!value) {
+        continue;
+      }
+      values.add(value);
+      if (name === "authorization" || name === "proxy-authorization") {
+        const credential = /^\S+\s+(.+)$/u.exec(value)?.[1]?.trim();
+        if (credential) {
+          values.add(credential);
+        }
+      }
+    }
+  }
+  return values.size > 0 ? [...values] : undefined;
+}
+
+function redactProviderErrorText(
+  body: string,
+  sensitiveValues?: readonly string[],
+  options?: { sourceTruncated?: boolean },
+): string {
+  return redactSensitiveText(redactSuppliedSecretValues(body, sensitiveValues, options));
 }
 
 async function readResponseTextLimitedResult(
@@ -75,11 +105,8 @@ async function readResponseTextLimitedResult(
 }
 
 /** Redacts secrets before preserving a bounded provider error body preview. */
-function redactProviderErrorBody(body: string, sensitiveValues?: readonly string[]): string {
-  return truncateErrorDetail(
-    redactProviderErrorText(body, sensitiveValues),
-    ERROR_BODY_METADATA_LIMIT,
-  );
+function redactProviderErrorBody(body: string): string {
+  return truncateErrorDetail(redactSensitiveText(body), ERROR_BODY_METADATA_LIMIT);
 }
 
 /**
@@ -96,8 +123,7 @@ export async function readResponseTextLimited(
   }
   const result = await readResponseTextLimitedResult(response, limitBytes, options);
   return options?.sensitiveValues?.length
-    ? redactToolPayloadText(result.text, {
-        exactSecretValues: options.sensitiveValues,
+    ? redactProviderErrorText(result.text, options.sensitiveValues, {
         sourceTruncated: result.truncated,
       })
     : result.text;
@@ -124,15 +150,8 @@ export async function readProviderTextResponse(
   return new TextDecoder().decode(bytes);
 }
 
-type ProviderErrorPayloadFields = {
-  message?: string;
-  code?: string;
-  type?: string;
-};
-
-function extractProviderErrorPayloadFields(
-  payload: unknown,
-): ProviderErrorPayloadFields | undefined {
+/** Formats common provider JSON error payload shapes into one readable detail string. */
+export function formatProviderErrorPayload(payload: unknown): string | undefined {
   const root = asOptionalRecord(payload);
   const detailObject = asOptionalRecord(root?.detail);
   const subject = asOptionalRecord(root?.error) ?? detailObject ?? root;
@@ -151,36 +170,19 @@ function extractProviderErrorPayloadFields(
     trimToUndefined(root?.detail);
   const type = trimToUndefined(subject.type);
   const code = trimToUndefined(subject.code) ?? trimToUndefined(subject.status) ?? oauthCode;
-  return {
-    ...(message ? { message } : {}),
-    ...(code ? { code } : {}),
-    ...(type ? { type } : {}),
-  };
-}
-
-function formatProviderErrorFields(fields: ProviderErrorPayloadFields): string | undefined {
-  const metadata = [
-    fields.type ? `type=${fields.type}` : undefined,
-    fields.code ? `code=${fields.code}` : undefined,
-  ]
+  const metadata = [type ? `type=${type}` : undefined, code ? `code=${code}` : undefined]
     .filter((value): value is string => Boolean(value))
     .join(", ");
-  if (fields.message && metadata) {
-    return `${truncateErrorDetail(fields.message)} [${metadata}]`;
+  if (message && metadata) {
+    return `${truncateErrorDetail(message)} [${metadata}]`;
   }
-  if (fields.message) {
-    return truncateErrorDetail(fields.message);
+  if (message) {
+    return truncateErrorDetail(message);
   }
   if (metadata) {
     return `[${metadata}]`;
   }
   return undefined;
-}
-
-/** Formats common provider JSON error payload shapes into one readable detail string. */
-export function formatProviderErrorPayload(payload: unknown): string | undefined {
-  const fields = extractProviderErrorPayloadFields(payload);
-  return fields ? formatProviderErrorFields(fields) : undefined;
 }
 
 type ProviderErrorPayloadMetadata = {
@@ -189,23 +191,22 @@ type ProviderErrorPayloadMetadata = {
   type?: string;
 };
 
-function extractProviderErrorPayloadMetadata(
-  payload: unknown,
-  sensitiveValues?: readonly string[],
-): ProviderErrorPayloadMetadata {
-  const fields = extractProviderErrorPayloadFields(payload);
-  if (!fields) {
+function extractProviderErrorPayloadMetadata(payload: unknown): ProviderErrorPayloadMetadata {
+  const root = asOptionalRecord(payload);
+  const detailObject = asOptionalRecord(root?.detail);
+  const subject = asOptionalRecord(root?.error) ?? detailObject ?? root;
+  if (!subject) {
     return {};
   }
-  // Redact before the detail cap; truncating first can retain an unmatched secret prefix.
-  const message = fields.message
-    ? redactProviderErrorText(fields.message, sensitiveValues)
-    : undefined;
-  const code = fields.code ? redactProviderErrorText(fields.code, sensitiveValues) : undefined;
-  const type = fields.type ? redactProviderErrorText(fields.type, sensitiveValues) : undefined;
-  const detail = formatProviderErrorFields({ message, code, type });
+
+  const detail = formatProviderErrorPayload(payload);
+  const type = trimToUndefined(subject.type);
+  const errorDescription =
+    trimToUndefined(subject.error_description) ?? trimToUndefined(root?.error_description);
+  const oauthCode = errorDescription ? trimToUndefined(root?.error) : undefined;
+  const code = trimToUndefined(subject.code) ?? trimToUndefined(subject.status) ?? oauthCode;
   return {
-    ...(detail ? { detail } : {}),
+    ...(detail ? { detail: redactSensitiveText(detail) } : {}),
     ...(code ? { code } : {}),
     ...(type ? { type } : {}),
   };
@@ -226,6 +227,9 @@ async function extractProviderErrorInfo(
   options?: ProviderHttpErrorOptions,
 ): Promise<ProviderHttpErrorInfo> {
   const bodyTimeoutMs = options?.bodyTimeoutMs;
+  // Final outbound headers are authoritative; deriving here keeps credential
+  // policy generic while preventing provider callers from passing stale keys.
+  const sensitiveValues = collectProviderHttpSensitiveValues(options);
   const bodyRead = await readResponseTextLimitedResult(response, 16 * 1024, {
     timeoutMs:
       typeof bodyTimeoutMs === "function"
@@ -251,15 +255,14 @@ async function extractProviderErrorInfo(
   const rawBody = trimToUndefined(bodyRead.text);
   const rawRequestId = extractProviderRequestId(response);
   const requestId = rawRequestId
-    ? redactProviderErrorText(rawRequestId, options?.sensitiveValues)
+    ? redactProviderErrorText(rawRequestId, sensitiveValues)
     : undefined;
   if (!rawBody) {
     return requestId ? { requestId } : {};
   }
-  if (bodyRead.truncated && options?.sensitiveValues?.length) {
+  if (bodyRead.truncated && sensitiveValues?.length) {
     const body = truncateErrorDetail(
-      redactToolPayloadText(rawBody, {
-        exactSecretValues: options.sensitiveValues,
+      redactProviderErrorText(rawBody, sensitiveValues, {
         sourceTruncated: true,
       }),
       ERROR_BODY_METADATA_LIMIT,
@@ -270,12 +273,12 @@ async function extractProviderErrorInfo(
       ...(requestId ? { requestId } : {}),
     };
   }
-  const body = redactProviderErrorBody(rawBody, options?.sensitiveValues);
+  // Redact the exact request values before JSON parsing or detail truncation so
+  // every derived metadata field starts from the same safe source.
+  const exactBody = redactSuppliedSecretValues(rawBody, sensitiveValues);
+  const body = redactProviderErrorBody(exactBody);
   try {
-    const metadata = extractProviderErrorPayloadMetadata(
-      JSON.parse(rawBody),
-      options?.sensitiveValues,
-    );
+    const metadata = extractProviderErrorPayloadMetadata(JSON.parse(exactBody));
     return {
       ...(metadata.detail ? { detail: metadata.detail } : { detail: body }),
       ...(metadata.code ? { code: metadata.code } : {}),

@@ -23,10 +23,7 @@ import {
   PAYMENT_CREDENTIAL_QUERY_KEYS,
   SHELL_REFERENCE_PRESERVING_PATTERN_SOURCES,
 } from "./redact-patterns.js";
-import {
-  redactRegisteredSecretValues,
-  redactSuppliedSecretValues,
-} from "./secret-redaction-registry.js";
+import { redactRegisteredSecretValues } from "./secret-redaction-registry.js";
 
 export type RedactSensitiveMode = "off" | "tools";
 export type RedactPattern = string | RegExp;
@@ -133,13 +130,6 @@ const DEFAULT_REDACT_PREFILTER_RE = new RegExp(
 export type RedactOptions = {
   mode?: RedactSensitiveMode;
   patterns?: RedactPattern[];
-};
-
-export type ToolPayloadRedactionOptions = {
-  /** Exact request-scoped secrets to redact without retaining them in process state. */
-  exactSecretValues?: readonly string[];
-  /** Whether the source ended at a byte cap and may contain only a secret prefix. */
-  sourceTruncated?: boolean;
 };
 
 export type ResolvedRedactOptions = {
@@ -913,24 +903,18 @@ function resolveToolPayloadRedaction(
 // Forces tools-mode so UI/tool payloads never inherit a caller-supplied "off"
 // mode, and merges user `logging.redactPatterns` with the built-in defaults so
 // both apply.
-export function redactToolPayloadText(text: string, options?: ToolPayloadRedactionOptions): string {
-  return redactToolPayloadTextWithConfig(text, readLoggingConfig(), options);
+export function redactToolPayloadText(text: string): string {
+  return redactToolPayloadTextWithConfig(text, readLoggingConfig());
 }
 
 export function redactToolPayloadTextWithConfig(
   text: string,
   loggingConfig?: LoggingConfig,
-  options?: ToolPayloadRedactionOptions,
 ): string {
   if (!text) {
     return text;
   }
-  const exactRedacted = redactRegisteredSecretValues(
-    redactSuppliedSecretValues(text, options?.exactSecretValues, maskToken, {
-      sourceTruncated: options?.sourceTruncated,
-    }),
-    maskToken,
-  );
+  const exactRedacted = redactRegisteredSecretValues(text, maskToken);
   if (isFullContextToolPayloadRedaction(loggingConfig)) {
     const resolved = resolveRedactOptions(resolveToolPayloadRedaction(loggingConfig));
     return redactText(exactRedacted, resolved.patterns, {
@@ -939,7 +923,7 @@ export function redactToolPayloadTextWithConfig(
       redactStructuredAuthHeaders: resolved.redactStructuredAuthHeaders,
     });
   }
-  return redactSensitiveText(exactRedacted, resolveToolPayloadRedaction(loggingConfig));
+  return redactSensitiveText(text, resolveToolPayloadRedaction(loggingConfig));
 }
 
 export function isSensitiveFieldKey(key: string): boolean {

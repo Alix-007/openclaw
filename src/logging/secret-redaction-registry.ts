@@ -24,85 +24,51 @@ function registerOneSecretValue(value: string): void {
   rebuildProbe();
 }
 
-type SuppliedSecretReplacement = {
+type SuppliedSecretCandidate = {
   candidate: string;
-  replacement: string;
   percentEscapesCaseInsensitive: boolean;
 };
 
-function encodeFormComponentFromUriComponent(uriEncoded: string): string {
-  return uriEncoded
-    .replace(/%20/gu, "+")
-    .replace(
-      /[!'()~]/gu,
-      (character) => `%${character.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0")}`,
-    );
-}
-
-function collectSuppliedSecretReplacements(
+function collectSuppliedSecretCandidates(
   values: readonly string[] | undefined,
-  mask: (value: string) => string,
-): SuppliedSecretReplacement[] {
-  const replacements = new Map<string, SuppliedSecretReplacement>();
-  const addCandidate = (params: {
-    candidate: string;
-    replacement: string;
-    percentEscapesCaseInsensitive?: boolean;
-  }) => {
-    if (!params.candidate) {
+): SuppliedSecretCandidate[] {
+  const candidates = new Map<string, boolean>();
+  const addCandidate = (candidate: string, percentEscapesCaseInsensitive: boolean) => {
+    if (!candidate) {
       return;
     }
-    const existing = replacements.get(params.candidate);
-    replacements.set(params.candidate, {
-      candidate: params.candidate,
-      replacement: params.replacement,
-      percentEscapesCaseInsensitive:
-        existing?.percentEscapesCaseInsensitive === true ||
-        params.percentEscapesCaseInsensitive === true,
-    });
+    candidates.set(candidate, candidates.get(candidate) === true || percentEscapesCaseInsensitive);
   };
-  const addRepresentation = (params: {
-    candidate: string;
-    replacement: string;
-    percentEscapesCaseInsensitive?: boolean;
-  }) => {
-    addCandidate(params);
-    // A provider can reflect an already-encoded value inside a JSON error
-    // string, adding one more escaping layer around quotes and backslashes.
-    addCandidate({
-      ...params,
-      candidate: JSON.stringify(params.candidate).slice(1, -1),
-    });
+  const addJsonLayers = (value: string, percentEscapesCaseInsensitive: boolean) => {
+    let candidate = value;
+    for (let depth = 0; depth < 3; depth += 1) {
+      addCandidate(candidate, percentEscapesCaseInsensitive);
+      const escaped = JSON.stringify(candidate).slice(1, -1);
+      if (escaped === candidate) {
+        break;
+      }
+      candidate = escaped;
+    }
   };
 
   for (const value of values ?? []) {
     if (!value) {
       continue;
     }
-    const replacement = mask(value);
-    addRepresentation({ candidate: value, replacement });
-    addRepresentation({
-      candidate: JSON.stringify(value).slice(1, -1),
-      replacement,
-    });
+    addJsonLayers(value, false);
     try {
-      const urlEncoded = encodeURIComponent(value);
-      addRepresentation({
-        candidate: urlEncoded,
-        replacement,
-        percentEscapesCaseInsensitive: true,
-      });
-      addRepresentation({
-        candidate: encodeFormComponentFromUriComponent(urlEncoded),
-        replacement,
-        percentEscapesCaseInsensitive: true,
-      });
+      addJsonLayers(encodeURIComponent(value), true);
     } catch {
       // Lone UTF-16 surrogates cannot be URL encoded; raw and JSON forms still apply.
     }
+    const formEncoded = new URLSearchParams([["value", value]]).toString().slice("value=".length);
+    addJsonLayers(formEncoded, true);
   }
 
-  return [...replacements.values()];
+  return [...candidates].map(([candidate, percentEscapesCaseInsensitive]) => ({
+    candidate,
+    percentEscapesCaseInsensitive,
+  }));
 }
 
 function buildPercentEscapeCaseInsensitivePattern(candidate: string): RegExp {
@@ -125,19 +91,18 @@ function normalizePercentEscapeHexCase(value: string): string {
 
 function redactTruncatedSuppliedSecretSuffix(
   text: string,
-  replacements: readonly SuppliedSecretReplacement[],
+  candidates: readonly SuppliedSecretCandidate[],
 ): string {
   let longestPartialSuffix = 0;
-  for (const replacement of replacements) {
-    if (replacement.candidate.length < 2) {
+  const normalizedText = normalizePercentEscapeHexCase(text);
+  for (const candidate of candidates) {
+    if (candidate.candidate.length < 2) {
       continue;
     }
-    const comparableText = replacement.percentEscapesCaseInsensitive
-      ? normalizePercentEscapeHexCase(text)
-      : text;
-    const comparableCandidate = replacement.percentEscapesCaseInsensitive
-      ? normalizePercentEscapeHexCase(replacement.candidate)
-      : replacement.candidate;
+    const comparableText = candidate.percentEscapesCaseInsensitive ? normalizedText : text;
+    const comparableCandidate = candidate.percentEscapesCaseInsensitive
+      ? normalizePercentEscapeHexCase(candidate.candidate)
+      : candidate.candidate;
     // Complete values are already redacted. Require a meaningful prefix so an
     // ordinary one-character suffix does not suppress an otherwise safe diagnostic.
     if (comparableText.endsWith(comparableCandidate)) {
@@ -169,26 +134,22 @@ function redactTruncatedSuppliedSecretSuffix(
 export function redactSuppliedSecretValues(
   text: string,
   values: readonly string[] | undefined,
-  mask: (value: string) => string,
   options?: { sourceTruncated?: boolean },
 ): string {
   if (!text || !values?.length) {
     return text;
   }
-  const replacements = collectSuppliedSecretReplacements(values, mask).toSorted(
+  const candidates = collectSuppliedSecretCandidates(values).toSorted(
     (left, right) => right.candidate.length - left.candidate.length,
   );
   let redacted = text;
-  for (const replacement of replacements) {
-    redacted = replacement.percentEscapesCaseInsensitive
-      ? redacted.replace(
-          buildPercentEscapeCaseInsensitivePattern(replacement.candidate),
-          () => replacement.replacement,
-        )
-      : redacted.replaceAll(replacement.candidate, () => replacement.replacement);
+  for (const candidate of candidates) {
+    redacted = candidate.percentEscapesCaseInsensitive
+      ? redacted.replace(buildPercentEscapeCaseInsensitivePattern(candidate.candidate), () => "***")
+      : redacted.replaceAll(candidate.candidate, () => "***");
   }
   return options?.sourceTruncated
-    ? redactTruncatedSuppliedSecretSuffix(redacted, replacements)
+    ? redactTruncatedSuppliedSecretSuffix(redacted, candidates)
     : redacted;
 }
 
@@ -198,13 +159,9 @@ export function registerSecretValueForRedaction(value: string): void {
     return;
   }
   // URL egress percent-encodes injected values; redact that surface form too.
-  try {
-    const encoded = encodeURIComponent(value);
-    if (encoded !== value) {
-      registerOneSecretValue(encoded);
-    }
-  } catch {
-    // Lone UTF-16 surrogates still retain raw and JSON exact-value coverage.
+  const encoded = encodeURIComponent(value);
+  if (encoded !== value) {
+    registerOneSecretValue(encoded);
   }
   // Captured structured payloads are serialized before persistence, so retain
   // the JSON string-content form for credentials with escaped characters.

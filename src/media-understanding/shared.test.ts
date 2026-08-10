@@ -911,6 +911,60 @@ describe("fetchWithTimeoutGuarded", () => {
     expect(sleep).toHaveBeenCalledWith(0, undefined);
   });
 
+  it("redacts reflected outbound credentials from transient JSON POST errors", async () => {
+    fetchWithSsrFGuardMock.mockReset();
+    const release = vi.fn(async () => undefined);
+    const credential = "orchid-request-secret-123456";
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(
+        JSON.stringify({
+          error: {
+            message: `upstream reflected ${credential}; safe=rate-limited`,
+            code: credential,
+            type: `quota-${credential}`,
+          },
+        }),
+        {
+          status: 429,
+          headers: { "x-request-id": `request-${credential}` },
+        },
+      ),
+      finalUrl: "https://api.example.com/v1/analyze",
+      release,
+    });
+
+    const error = await postJsonRequest({
+      url: "https://api.example.com/v1/analyze",
+      headers: new Headers({ authorization: `Bearer ${credential}` }),
+      body: { media: "base64" },
+      fetchFn: fetch,
+      retryStage: "read",
+      retry: { attempts: 1 },
+    }).then(
+      () => undefined,
+      (caught: unknown) => caught,
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    const providerError = error as Error & {
+      errorBody?: string;
+      errorCode?: string;
+      errorType?: string;
+      requestId?: string;
+    };
+    expect(providerError.message).toContain("safe=rate-limited");
+    for (const surface of [
+      providerError.message,
+      providerError.errorBody,
+      providerError.errorCode,
+      providerError.errorType,
+      providerError.requestId,
+    ]) {
+      expect(surface).not.toContain(credential);
+    }
+    expect(release).toHaveBeenCalledOnce();
+  });
+
   it("forwards explicit pinDns overrides to transcription requests", async () => {
     fetchWithSsrFGuardMock.mockResolvedValue({
       response: new Response(null, { status: 200 }),

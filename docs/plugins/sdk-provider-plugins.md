@@ -779,11 +779,10 @@ catalog, API-key auth, and dynamic model resolution.
 
         Use `assertOkOrThrowProviderError(...)` for provider HTTP failures so
         plugins share capped error-body reads, JSON error parsing, and
-        request-id suffixes. When an upstream can reflect a request credential,
-        pass it through `sensitiveValues`. For manually formatted provider
-        errors, pass the same values to `readResponseTextLimited(...)`; if the
-        bounded read truncates, OpenClaw omits a matching credential prefix at
-        the byte boundary while retaining the preceding safe diagnostic.
+        request-id suffixes. Pass final outbound headers through
+        `requestHeaders` so reflected credentials are redacted; pass URL- or
+        body-only credentials through `sensitiveValues`. For manually formatted
+        provider errors, pass those values to `readResponseTextLimited(...)`.
       </Tab>
       <Tab title="Realtime transcription">
         Prefer `createRealtimeTranscriptionWebSocketSession(...)` - the shared

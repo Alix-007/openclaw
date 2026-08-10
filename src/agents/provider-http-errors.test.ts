@@ -304,7 +304,7 @@ describe("provider error utils", () => {
     expect(providerError.errorBody).not.toContain("sk-secret1234567890abcd");
   });
 
-  it("redacts request secrets from errors and transcript-bound metadata", async () => {
+  it("redacts sensitive final request headers from transcript-bound metadata", async () => {
     const sensitiveValue = "orchidRiver17glassMoth92cabin";
     const response = new Response(
       JSON.stringify({
@@ -321,7 +321,7 @@ describe("provider error utils", () => {
     );
 
     const providerError = (await createProviderHttpError(response, "Provider API error", {
-      sensitiveValues: [sensitiveValue],
+      requestHeaders: new Headers({ authorization: `Bearer ${sensitiveValue}` }),
     })) as ProviderHttpError;
     const transcriptFields = {
       errorMessage: providerError.message,
@@ -331,10 +331,10 @@ describe("provider error utils", () => {
     };
 
     expect(providerError).toMatchObject({
-      code: "orchid…abin",
-      errorCode: "orchid…abin",
-      errorType: "orchid…abin",
-      requestId: "orchid…abin",
+      code: "***",
+      errorCode: "***",
+      errorType: "***",
+      requestId: "***",
     } satisfies Partial<ProviderHttpError>);
     expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
     expect(JSON.stringify(transcriptFields)).not.toContain(sensitiveValue);
@@ -381,7 +381,7 @@ describe("provider error utils", () => {
       sensitiveValues: [sensitiveValue],
     });
 
-    expect(providerError.message).toContain(`${reflectedPrefix}orchid…abin`);
+    expect(providerError.message).toContain(`${reflectedPrefix}***`);
     expect(providerError.message).not.toContain("orchidRiver17");
     expect(JSON.stringify(providerError)).not.toContain("orchidRiver17");
   });

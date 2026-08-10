@@ -13,12 +13,14 @@ import {
   redactSensitiveLines,
   redactSensitiveText,
   redactToolDetail,
-  redactToolPayloadText,
   redactToolPayloadTextWithConfig,
   resolveRedactOptions,
 } from "./redact.js";
 import { withFullContextToolPayloadRedaction } from "./redact.test-support.js";
-import { registerSecretValueForRedaction } from "./secret-redaction-registry.js";
+import {
+  redactSuppliedSecretValues,
+  registerSecretValueForRedaction,
+} from "./secret-redaction-registry.js";
 import { resetSecretRedactionRegistryForTest } from "./secret-redaction-registry.test-support.js";
 
 const defaults = getDefaultRedactPatterns();
@@ -132,9 +134,7 @@ describe("request-scoped exact secret values", () => {
   ];
 
   it.each(variants)("redacts a raw or encoded request secret", (reflected) => {
-    const output = redactToolPayloadText(`provider reflected ${reflected}`, {
-      exactSecretValues: [secret],
-    });
+    const output = redactSuppliedSecretValues(`provider reflected ${reflected}`, [secret]);
 
     expect(output).not.toContain(reflected);
     expect(output).not.toContain(uniqueNeedle);
@@ -142,11 +142,9 @@ describe("request-scoped exact secret values", () => {
 
   it.each(variants)("removes a request-secret prefix at a truncation boundary", (reflected) => {
     const retainedPrefix = reflected.slice(0, -5);
-    const output = redactToolPayloadTextWithConfig(
-      `provider unavailable: ${retainedPrefix}`,
-      undefined,
-      { exactSecretValues: [secret], sourceTruncated: true },
-    );
+    const output = redactSuppliedSecretValues(`provider unavailable: ${retainedPrefix}`, [secret], {
+      sourceTruncated: true,
+    });
 
     expect(output).toContain("provider unavailable:");
     expect(output).toContain("truncated diagnostic omitted");
@@ -156,27 +154,24 @@ describe("request-scoped exact secret values", () => {
 
   it("matches lowercase percent escapes without making the raw secret case-insensitive", () => {
     const encoded = lowerPercentEscapes(encodeURIComponent(secret));
-    const output = redactToolPayloadText(`encoded=${encoded} raw=${secret.toUpperCase()}`, {
-      exactSecretValues: [secret],
-    });
+    const output = redactSuppliedSecretValues(`encoded=${encoded} raw=${secret.toUpperCase()}`, [
+      secret,
+    ]);
 
     expect(output).not.toContain(encoded);
     expect(output).toContain(secret.toUpperCase());
   });
 
-  it("does not interpret replacement metacharacters from the secret mask", () => {
-    const output = redactToolPayloadText(`provider reflected ${secret}`, {
-      exactSecretValues: [secret],
-    });
+  it("redacts secret values containing replacement metacharacters", () => {
+    const output = redactSuppliedSecretValues(`provider reflected ${secret}`, [secret]);
 
-    expect(output).toBe("provider reflected $&orch…abin");
+    expect(output).toBe("provider reflected ***");
     expect(output).not.toContain(secret);
   });
 
   it("retains a truncated diagnostic ending in only a short coincidental prefix", () => {
     expect(
-      redactToolPayloadText("provider unavailable: $&orc", {
-        exactSecretValues: [secret],
+      redactSuppliedSecretValues("provider unavailable: $&orc", [secret], {
         sourceTruncated: true,
       }),
     ).toBe("provider unavailable: $&orc");

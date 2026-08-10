@@ -313,6 +313,7 @@ export async function fetchProviderOperationResponse(params: {
       );
       if (params.requestFailedMessage) {
         await assertOkOrThrowHttpError(response, params.requestFailedMessage, {
+          requestHeaders: params.init?.headers,
           bodyTimeoutMs: createProviderOperationTimeoutResolver({
             deadline: requestDeadline,
             defaultTimeoutMs: timeoutMs,
@@ -622,6 +623,7 @@ async function fetchGuardedProviderOperationResponse(params: {
       try {
         if (params.requestFailedMessage) {
           await assertOkOrThrowHttpError(result.response, params.requestFailedMessage, {
+            requestHeaders: params.init.headers,
             bodyTimeoutMs: createProviderOperationTimeoutResolver({
               deadline: requestDeadline,
               defaultTimeoutMs: timeoutMs,
@@ -696,6 +698,7 @@ async function postGuardedRequest(params: {
       try {
         throw await createProviderHttpError(result.response, "provider POST request failed", {
           statusPrefix: "HTTP ",
+          requestHeaders: params.init.headers,
         });
       } finally {
         await result.release();
