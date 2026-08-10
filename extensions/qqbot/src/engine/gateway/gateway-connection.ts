@@ -390,7 +390,8 @@ export class GatewayConnection {
       ws.on("error", (err) => {
         const safeMessage = redactQQBotCredentialText(err.message, activeAccessToken);
         log?.error(`WebSocket error: ${safeMessage}`);
-        this.ctx.onError?.(safeMessage === err.message ? err : new Error(safeMessage));
+        // Safe messages can still carry credential-bearing causes on provider-owned errors.
+        this.ctx.onError?.(new Error(safeMessage));
       });
     } catch (err) {
       this.isConnecting = false;

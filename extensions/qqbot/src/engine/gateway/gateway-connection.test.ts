@@ -578,6 +578,36 @@ describe("GatewayConnection credential redaction", () => {
     await started;
   });
 
+  it("drops credential-bearing causes before reporting gateway socket errors", async () => {
+    const { accessToken, forbidden } = makeCredentialReflectionFixture();
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const onError = vi.fn();
+    const { ws, controller, started } = await startConnection({ log, onError });
+    const rawError = new Error("gateway-socket-cause-visible-123", {
+      cause: new Error(`nested credential ${accessToken}`),
+    });
+
+    ws.emit("error", rawError);
+
+    expect(log.error).toHaveBeenCalledWith(
+      expect.stringContaining("gateway-socket-cause-visible-123"),
+    );
+    expect(onError).toHaveBeenCalledTimes(1);
+    const reportedError = expectDefined(
+      onError.mock.calls[0]?.[0] as Error | undefined,
+      "reported gateway error",
+    );
+    expect(reportedError).not.toBe(rawError);
+    expect(reportedError.message).toBe("gateway-socket-cause-visible-123");
+    expect(reportedError.cause).toBeUndefined();
+    const diagnosticOutput = [...log.error.mock.calls.flat(), reportedError.message].join("\n");
+    expectCredentialsAbsent(diagnosticOutput, forbidden);
+
+    controller.abort();
+    await started;
+  });
+
   it("redacts raw and encoded access tokens reflected in DISPATCH diagnostics", async () => {
     const { accessToken, reflected, forbidden } = makeCredentialReflectionFixture();
     vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
