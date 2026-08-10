@@ -713,6 +713,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
       })
       .toBeGreaterThan(activityBeforeRelease);
     await expect.poll(() => pageStatusJobs(page), { timeout: 30_000 }).toBe(2);
+    const statusAfterDelayedReleaseJobs = await pageStatusJobs(page);
     expect(proxy.evidence.releasedSha256).toBe(proxy.evidence.capturedSha256);
     expect(proxy.evidence.cronAddRequests).toBe(2);
 
@@ -820,7 +821,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
             initialJobs: 1,
             delayedSnapshotJobs: proxy.evidence.heldSnapshotJobs,
             newerRefreshJobs: 2,
-            afterDelayedReleaseJobs: await pageStatusJobs(page),
+            afterDelayedReleaseJobs: statusAfterDelayedReleaseJobs,
             responseBytesUnchanged: proxy.evidence.releasedSha256 === proxy.evidence.capturedSha256,
             cronAddRequests: proxy.evidence.cronAddRequests,
             cronListRequests: proxy.evidence.cronListRequests,
