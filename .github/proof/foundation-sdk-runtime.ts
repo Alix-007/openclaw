@@ -74,6 +74,9 @@ async function main(): Promise<void> {
   const artifactDir = process.env.OPENCLAW_PROOF_ARTIFACT_DIR;
   requireProof(targetSha?.match(/^[0-9a-f]{40}$/u), "exact-target-sha");
   requireProof(artifactDir, "artifact-directory");
+  requireProof(process.env.OPENCLAW_PROOF_OPENAI_PLUGIN_TTS === "1", "openai-plugin-tts-test");
+  requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_NATIVE === "1", "perplexity-native-test");
+  requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_CHAT === "1", "perplexity-chat-test");
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-foundation-proof-"));
   const logFile = path.join(tempDir, "foundation.jsonl");
@@ -278,6 +281,7 @@ async function main(): Promise<void> {
       "public-logging-core-package-subpath",
       "private-local-provider-http-runtime-subpath",
       "compiled-shared-provider-caller",
+      "official-plugin-owner-regressions",
       "real-loopback-http-error-responses",
       "production-provider-error-normalization",
       "production-jsonl-file-log-sink",
@@ -286,6 +290,9 @@ async function main(): Promise<void> {
       packageSubpathImportsResolved: true,
       finalRequestHeadersDerived: true,
       genericSharedCallerAdoptionProven: true,
+      openAiPluginTtsAdoptionProven: true,
+      perplexitySearchApiAdoptionProven: true,
+      perplexityChatCompletionsAdoptionProven: true,
       rawSecretRedacted: true,
       jsonEscapedSecretRedacted: true,
       urlEncodedSecretRedacted: true,
@@ -305,7 +312,8 @@ async function main(): Promise<void> {
       loggingContract: "existing-public-plugin-sdk-log-sink",
       providerHttpContract: "private-local-official-plugin-runtime",
       genericSharedCallerAdoptionProven: true,
-      providerSpecificAdoptionProven: false,
+      providerSpecificAdoptionProven: true,
+      providerSpecificOwners: ["openai-plugin-tts", "perplexity-native", "perplexity-chat"],
     },
     redaction: {
       requestSecretsIncluded: false,
@@ -321,7 +329,7 @@ async function main(): Promise<void> {
     `${JSON.stringify(verdict, null, 2)}\n`,
   );
   console.log(
-    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true active-shared-caller=true final-request-headers=true file-sink=true raw=true json=true url=true form=true truncation-boundary=true secret-output=false",
+    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true active-shared-caller=true final-request-headers=true openai-plugin-tts=true perplexity-native=true perplexity-chat=true file-sink=true raw=true json=true url=true form=true truncation-boundary=true secret-output=false",
   );
 }
 
