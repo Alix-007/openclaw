@@ -183,7 +183,7 @@ jobs:
               cp .proof-tooling/.github/proof/foundation-sdk.tsdown.config.ts \
                 .proof-runtime/foundation-sdk.tsdown.config.ts
               OPENCLAW_RUN_NODE_SKIP_DTS_BUILD=1 \
-                node --import tsx scripts/tsdown-build.mts --config tsdown.ai.config.ts \
+                node scripts/tsdown-build.mjs --config tsdown.ai.config.ts \
                 2>&1 | tee -a "$log_file"
               node node_modules/tsdown/dist/run.mjs \
                 --config .proof-runtime/foundation-sdk.tsdown.config.ts \
