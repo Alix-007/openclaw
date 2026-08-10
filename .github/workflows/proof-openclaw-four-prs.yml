@@ -94,6 +94,21 @@ jobs:
           fi
           nginx -v
 
+      - name: Install pinned public-tunnel proof dependency
+        if: inputs.proof_kind == 'qqbot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cloudflared="$RUNNER_TEMP/cloudflared-2026.7.3"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --output "$cloudflared" \
+            https://github.com/cloudflare/cloudflared/releases/download/2026.7.3/cloudflared-linux-amd64
+          echo '9d71c677db00134c1bd4144b7783486b654ad281b1ea62b4972098d19f770f17  '"$cloudflared" \
+            | sha256sum --check
+          chmod 0755 "$cloudflared"
+          echo "CLOUDFLARED_BIN=$cloudflared" >> "$GITHUB_ENV"
+          "$cloudflared" version
+
       - name: Run exact-head behavior proof
         shell: bash
         run: |
@@ -245,6 +260,17 @@ jobs:
               grep -F '[qqbot gateway credential redaction proof]' "$log_file"
               grep -F '[qqbot stt credential redaction proof]' "$log_file"
               grep -F '[qqbot token credential redaction proof]' "$log_file"
+              node --import tsx \
+                .proof-tooling/.github/proof/qqbot-public-stt.ts \
+                2>&1 | tee -a "$log_file"
+              grep -F '[qqbot public-tls stt proof]' "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const verdict = JSON.parse(fs.readFileSync("qqbot-public-stt-verdict.json", "utf8"));
+                if (verdict.exactHead !== process.env.TARGET_SHA || verdict.passed !== true || verdict.officialProviderClaim !== false || verdict.secretOutput !== false) {
+                  throw new Error("QQBot public STT verdict did not match the immutable proof contract");
+                }
+              '
               marker='[qqbot credential redaction proof]'
               ;;
             responses)
@@ -324,5 +350,6 @@ jobs:
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
             proof-plugin-sdk-api-baseline.sha256
+            qqbot-public-stt-verdict.json
           if-no-files-found: warn
           retention-days: 30
