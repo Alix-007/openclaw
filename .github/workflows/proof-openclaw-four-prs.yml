@@ -271,11 +271,13 @@ jobs:
               marker='[qqbot credential redaction proof]'
               ;;
             responses)
-              node scripts/run-vitest.mjs \
-                src/agents/openai-transport-stream.streaming.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'keeps internal Responses web-search events alive beyond the model idle timeout' "$log_file"
-              echo '[responses idle-activity proof] loopback-sse=true internal-window-exceeded=true final-text=true idle-timeout=false' | tee -a "$log_file"
+              mkdir -p proof-artifacts
+              cp .proof-tooling/.github/proof/responses-idle-activity-http.test.ts \
+                src/agents/responses-idle-activity-http.proof.test.ts
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node scripts/run-vitest.mjs \
+                  src/agents/responses-idle-activity-http.proof.test.ts \
+                  --reporter=verbose 2>&1 | tee "$log_file"
               marker='[responses idle-activity proof]'
               ;;
             synology)
@@ -301,6 +303,7 @@ jobs:
                 --out-dir .proof-dist \
                 ./.proof-runtime/gateway-terminal-mcp.ts \
                 2>&1 | tee -a "$log_file"
+              cp src/state/openclaw-state-schema.sql .proof-dist/openclaw-state-schema.sql
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/gateway-terminal-mcp.mjs \
                 2>&1 | tee -a "$log_file"
