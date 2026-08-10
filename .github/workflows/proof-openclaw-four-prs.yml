@@ -102,7 +102,7 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir ui exec playwright install --with-deps chromium
-          node scripts/ensure-playwright-chromium.mjs
+          node --import tsx scripts/ensure-playwright-chromium.mts
 
       - name: Run exact-head behavior proof
         shell: bash
@@ -291,7 +291,7 @@ jobs:
               cp .proof-tooling/.github/proof/gateway-terminal-mcp.ts \
                 .proof-runtime/gateway-terminal-mcp.ts
               OPENCLAW_RUN_NODE_SKIP_DTS_BUILD=1 \
-                node scripts/tsdown-build.mjs --config tsdown.ai.config.ts \
+                node --import tsx scripts/tsdown-build.mts --config tsdown.ai.config.ts \
                 2>&1 | tee "$log_file"
               node node_modules/tsdown/dist/run.mjs \
                 --no-config \
