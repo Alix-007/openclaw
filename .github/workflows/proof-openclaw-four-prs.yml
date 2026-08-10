@@ -157,6 +157,7 @@ jobs:
               marker='[discord credential redaction proof]'
               ;;
             foundation)
+              mkdir -p .proof-runtime .proof-dist proof-artifacts
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
               cp docs/.generated/plugin-sdk-api-baseline.sha256 \
                 proof-plugin-sdk-api-baseline.sha256
@@ -177,8 +178,21 @@ jobs:
               grep -F 'suppresses a request-secret prefix split by the provider error-body cap' "$log_file"
               grep -F 'redacts a raw or encoded request secret' "$log_file"
               grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
+              cp .proof-tooling/.github/proof/foundation-sdk-runtime.ts \
+                .proof-runtime/foundation-sdk-runtime.ts
+              cp .proof-tooling/.github/proof/foundation-sdk.tsdown.config.ts \
+                .proof-runtime/foundation-sdk.tsdown.config.ts
+              OPENCLAW_RUN_NODE_SKIP_DTS_BUILD=1 \
+                node --import tsx scripts/tsdown-build.mts --config tsdown.ai.config.ts \
+                2>&1 | tee -a "$log_file"
+              node node_modules/tsdown/dist/run.mjs \
+                --config .proof-runtime/foundation-sdk.tsdown.config.ts \
+                2>&1 | tee -a "$log_file"
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node .proof-dist/foundation-sdk-runtime.mjs \
+                2>&1 | tee -a "$log_file"
               echo '[foundation credential redaction proof] shared-logging=true provider-http=true guarded-web-transport=true raw=true json=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
-              marker='[foundation credential redaction proof]'
+              marker='[foundation compiled SDK proof]'
               ;;
             matrix)
               node scripts/run-vitest.mjs \
