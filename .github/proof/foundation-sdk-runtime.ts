@@ -90,26 +90,41 @@ async function main(): Promise<void> {
   );
   process.env.OPENCLAW_CONFIG_PATH = configFile;
 
-  const [{ createSubsystemLogger }, { createProviderHttpError }] = await Promise.all([
-    import("openclaw/plugin-sdk/logging-core"),
-    import("openclaw/plugin-sdk/provider-http"),
-  ]);
+  const [{ createSubsystemLogger }, { createProviderHttpError, postJsonRequest }] =
+    await Promise.all([
+      import("openclaw/plugin-sdk/logging-core"),
+      import("openclaw/plugin-sdk/provider-http"),
+    ]);
   requireProof(typeof createSubsystemLogger === "function", "public-logging-sdk-import");
   requireProof(typeof createProviderHttpError === "function", "provider-http-runtime-import");
+  requireProof(typeof postJsonRequest === "function", "shared-provider-caller-runtime-import");
 
   const requestSecret = 'foundation proof A/B?C=D&E +"Q"\\R';
   const logSecret = "foundation-proof-bearer-4f1d9c7e2a6b8d03";
   const longSecret = `foundation-truncation-${"Z".repeat(20 * 1024)}`;
-  const safeMarkers = ["SAFE_RAW", "SAFE_JSON", "SAFE_URL", "SAFE_FORM", "SAFE_TRUNCATED"];
+  const safeMarkers = [
+    "SAFE_RAW",
+    "SAFE_JSON",
+    "SAFE_URL",
+    "SAFE_FORM",
+    "SAFE_TRUNCATED",
+    "SAFE_ACTIVE",
+  ];
   const server = http.createServer((request, response) => {
     const pathname = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
+    // The oversized value cannot be transported in a request header; that case isolates the
+    // response-body cap while all other cases reflect the credential actually sent on the wire.
+    const reflectedCredential =
+      pathname === "/truncated"
+        ? longSecret
+        : (request.headers.authorization?.replace(/^Bearer /u, "") ?? "");
     response.statusCode = 429;
     response.setHeader(
       "x-request-id",
-      pathname === "/truncated" ? "safe-request-truncated" : `safe-request-${requestSecret}`,
+      pathname === "/truncated" ? "safe-request-truncated" : `safe-request-${reflectedCredential}`,
     );
     if (pathname === "/raw") {
-      response.end(`SAFE_RAW reflected=${requestSecret}`);
+      response.end(`SAFE_RAW reflected=${reflectedCredential}`);
       return;
     }
     if (pathname === "/json") {
@@ -117,8 +132,8 @@ async function main(): Promise<void> {
       response.end(
         JSON.stringify({
           error: {
-            message: `SAFE_JSON reflected=${requestSecret}`,
-            code: `code-${requestSecret}`,
+            message: `SAFE_JSON reflected=${reflectedCredential}`,
+            code: `code-${reflectedCredential}`,
           },
         }),
       );
@@ -126,16 +141,29 @@ async function main(): Promise<void> {
     }
     if (pathname === "/url") {
       response.end(
-        `SAFE_URL https://provider.invalid/failure?echo=${encodeURIComponent(requestSecret)}`,
+        `SAFE_URL https://provider.invalid/failure?echo=${encodeURIComponent(reflectedCredential)}`,
       );
       return;
     }
     if (pathname === "/form") {
-      response.end(`SAFE_FORM echo=${formEncodedValue(requestSecret)}&control=ok`);
+      response.end(`SAFE_FORM echo=${formEncodedValue(reflectedCredential)}&control=ok`);
       return;
     }
     if (pathname === "/truncated") {
-      response.end(`SAFE_TRUNCATED reflected=${longSecret}`);
+      response.end(`SAFE_TRUNCATED reflected=${reflectedCredential}`);
+      return;
+    }
+    if (pathname === "/active") {
+      response.setHeader("content-type", "application/json");
+      response.end(
+        JSON.stringify({
+          error: {
+            message: `SAFE_ACTIVE reflected=${reflectedCredential}`,
+            code: reflectedCredential,
+            type: `quota-${reflectedCredential}`,
+          },
+        }),
+      );
       return;
     }
     response.statusCode = 404;
@@ -147,11 +175,20 @@ async function main(): Promise<void> {
   const normalizedErrors: ProviderErrorLike[] = [];
   try {
     for (const caseName of ["raw", "json", "url", "form", "truncated"] as const) {
-      const response = await fetch(`http://127.0.0.1:${port}/${caseName}`);
       const sensitiveValue = caseName === "truncated" ? longSecret : requestSecret;
-      const error = (await createProviderHttpError(response, `SAFE_${caseName.toUpperCase()}`, {
-        sensitiveValues: [sensitiveValue],
-      })) as ProviderErrorLike;
+      const requestHeaders =
+        caseName === "truncated"
+          ? undefined
+          : new Headers({ authorization: `Bearer ${sensitiveValue}` });
+      const response = await fetch(
+        `http://127.0.0.1:${port}/${caseName}`,
+        requestHeaders ? { headers: requestHeaders } : undefined,
+      );
+      const error = (await createProviderHttpError(
+        response,
+        `SAFE_${caseName.toUpperCase()}`,
+        requestHeaders ? { requestHeaders } : { sensitiveValues: [sensitiveValue] },
+      )) as ProviderErrorLike;
       requireProof(error.status === 429, `${caseName}-status`);
       normalizedErrors.push(error);
       logger.info(`CASE_${caseName.toUpperCase()} ${error.message}`, {
@@ -161,6 +198,27 @@ async function main(): Promise<void> {
         code: error.code,
       });
     }
+    const activeError = await postJsonRequest({
+      url: `http://127.0.0.1:${port}/active`,
+      headers: new Headers({ authorization: `Bearer ${requestSecret}` }),
+      body: { proof: true },
+      fetchFn: fetch,
+      allowPrivateNetwork: true,
+      retryStage: "read",
+      retry: { attempts: 1 },
+    }).then(
+      () => undefined,
+      (error: unknown) => error as ProviderErrorLike,
+    );
+    requireProof(activeError instanceof Error, "active-shared-caller-error");
+    requireProof(activeError.status === 429, "active-shared-caller-status");
+    normalizedErrors.push(activeError);
+    logger.info(`CASE_ACTIVE ${activeError.message}`, {
+      status: activeError.status,
+      body: activeError.errorBody,
+      requestId: activeError.requestId,
+      code: activeError.code,
+    });
     logger.info(`SAFE_LOG Authorization: Bearer ${logSecret}`, {
       authorization: `Bearer ${logSecret}`,
     });
@@ -207,7 +265,7 @@ async function main(): Promise<void> {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line) as Record<string, unknown>);
-  requireProof(records.length === 6, "file-sink-record-count");
+  requireProof(records.length === 7, "file-sink-record-count");
 
   await fs.mkdir(artifactDir, { recursive: true });
   const sinkSha256 = createHash("sha256").update(sink).digest("hex");
@@ -219,12 +277,15 @@ async function main(): Promise<void> {
       "compiled-external-plugin-sdk-consumer",
       "public-logging-core-package-subpath",
       "private-local-provider-http-runtime-subpath",
+      "compiled-shared-provider-caller",
       "real-loopback-http-error-responses",
       "production-provider-error-normalization",
       "production-jsonl-file-log-sink",
     ],
     assertions: {
       packageSubpathImportsResolved: true,
+      finalRequestHeadersDerived: true,
+      genericSharedCallerAdoptionProven: true,
       rawSecretRedacted: true,
       jsonEscapedSecretRedacted: true,
       urlEncodedSecretRedacted: true,
@@ -236,13 +297,14 @@ async function main(): Promise<void> {
     },
     observations: {
       httpStatus: 429,
-      errorCases: 5,
+      errorCases: 6,
       logRecords: records.length,
       sinkSha256,
     },
     scope: {
-      loggingContract: "public-plugin-sdk",
+      loggingContract: "existing-public-plugin-sdk-log-sink",
       providerHttpContract: "private-local-official-plugin-runtime",
+      genericSharedCallerAdoptionProven: true,
       providerSpecificAdoptionProven: false,
     },
     redaction: {
@@ -259,7 +321,7 @@ async function main(): Promise<void> {
     `${JSON.stringify(verdict, null, 2)}\n`,
   );
   console.log(
-    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true file-sink=true raw=true json=true url=true form=true truncation-boundary=true secret-output=false",
+    "[foundation compiled SDK proof] consumer=true loopback-http=true provider-error=true active-shared-caller=true final-request-headers=true file-sink=true raw=true json=true url=true form=true truncation-boundary=true secret-output=false",
   );
 }
 
