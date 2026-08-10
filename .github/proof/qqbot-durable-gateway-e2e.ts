@@ -291,13 +291,9 @@ async function run(): Promise<void> {
     const ingressBeforeAdoption = await waitFor(
       async () => {
         const row = await readIngressRow(databasePath, originalFacts.eventId);
-        return row &&
-          (row.status === "pending" || row.status === "claimed") &&
-          row.payload_json !== "null"
-          ? row
-          : null;
+        return row?.status === "claimed" && row.payload_json !== "null" ? row : null;
       },
-      "durable ingress payload before adoption",
+      "claimed durable ingress payload before adoption",
       60_000,
       5,
     );
@@ -385,10 +381,10 @@ async function run(): Promise<void> {
         actualLoopbackWebSocket: websocketClient !== null,
         gatewayConnectionIdentify: identifyToken === `QQBot ${credential.token}`,
         sqliteEnqueueClaimDispatch:
-          (ingressBeforeAdoption.status === "pending" ||
-            ingressBeforeAdoption.status === "claimed") &&
+          ingressBeforeAdoption.status === "claimed" &&
+          ingressBeforeAdoption.lane_key === originalFacts.laneKey &&
           ingressTombstone.status === "completed" &&
-          ingressTombstone.attempts >= 1 &&
+          ingressTombstone.attempts === 0 &&
           ingressTombstone.completed_at !== null &&
           ingressTombstone.payload_json === "null",
         duplicateCompletedIgnored:
@@ -408,9 +404,12 @@ async function run(): Promise<void> {
       ingressLifecycle: {
         beforeAdoptionStatus: ingressBeforeAdoption.status,
         completedStatus: ingressTombstone.status,
+        retryAttempts: ingressTombstone.attempts,
         completedPayloadCleared: ingressTombstone.payload_json === "null",
-        duplicateProviderDispatches: providerVisibleCountAfterDuplicate,
-        duplicateVisibleOutboundTurns: visibleOutboundCountAfterDuplicate,
+        duplicateProviderDispatches:
+          providerVisibleCountAfterDuplicate - providerVisibleCountBeforeDuplicate,
+        duplicateVisibleOutboundTurns:
+          visibleOutboundCountAfterDuplicate - visibleOutboundCountBeforeDuplicate,
       },
       durable: {
         visibleMarker: storedEnvelope.includes(visibleInputMarker),
@@ -428,6 +427,12 @@ async function run(): Promise<void> {
         secretOutput: !credentialsAbsent(allOutboundText),
       },
     };
+    await fs.writeFile(
+      path.join(targetRoot, "proof-qqbot-durable-verdict.json"),
+      `${JSON.stringify(verdict, null, 2)}\n`,
+      "utf8",
+    );
+
     const requiredBooleans = [
       ...Object.values(verdict.productionBoundaries),
       verdict.identityUnchanged,
@@ -438,12 +443,6 @@ async function run(): Promise<void> {
       !verdict.output.secretOutput,
     ];
     assert(requiredBooleans.every(Boolean), "production-boundary verdict contains a false gate");
-
-    await fs.writeFile(
-      path.join(targetRoot, "proof-qqbot-durable-verdict.json"),
-      `${JSON.stringify(verdict, null, 2)}\n`,
-      "utf8",
-    );
     console.info(`${PROOF_MARKER} ${JSON.stringify(verdict)}`);
   } finally {
     await gateway?.stop().catch(() => undefined);
