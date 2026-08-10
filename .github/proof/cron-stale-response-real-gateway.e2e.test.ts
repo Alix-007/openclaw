@@ -21,11 +21,21 @@ import {
 type HeldResponseEvidence = {
   capturedSha256: string | null;
   cronAddRequests: number;
+  cronListRequests: number;
   cronStatusRequests: number;
   cronUpdateRequests: number;
   heldSnapshotJobs: number | null;
+  heldScopeNextWakeAtMs: number | null;
+  heldScopeNextWakeCapturedSha256: string | null;
+  heldScopeNextWakeReleasedSha256: string | null;
+  heldScopeTotal: number | null;
+  heldScopeTotalCapturedSha256: string | null;
+  heldScopeTotalReleasedSha256: string | null;
   modelListFixtureRequests: number;
   releasedSha256: string | null;
+  scopedNextWakeRequests: number;
+  scopedRequestsAfterLatestCronUpdate: number;
+  scopedTotalRequests: number;
 };
 
 type HeldFrame = {
@@ -33,11 +43,16 @@ type HeldFrame = {
   isBinary: boolean;
 };
 
+type CronScopeResponseKind = "next-wake" | "total";
+
 type DelayProxy = {
+  armCronScopeHold: () => void;
   armCronStatusHold: () => void;
   close: () => Promise<void>;
   evidence: HeldResponseEvidence;
+  releaseHeldScopeResponses: () => void;
   releaseHeldResponse: () => void;
+  waitForHeldScopeResponses: () => Promise<void>;
   waitForHeldResponse: () => Promise<void>;
   url: string;
 };
@@ -104,9 +119,17 @@ function startProxyConnection(params: {
   evidence: HeldResponseEvidence;
   getArmed: () => boolean;
   getHeldRequestId: () => string | null;
+  getHeldScopeRequestKind: (id: string) => CronScopeResponseKind | null;
+  getScopeArmed: () => boolean;
   request: IncomingMessage;
   setHeldFrame: (frame: HeldFrame, jobs: number | null) => void;
   setHeldRequestId: (id: string) => void;
+  setHeldScopeFrame: (
+    kind: CronScopeResponseKind,
+    frame: HeldFrame,
+    payload: Record<string, unknown> | null,
+  ) => void;
+  setHeldScopeRequest: (id: string, kind: CronScopeResponseKind) => void;
   upstreamUrl: string;
 }): void {
   const origin =
@@ -123,6 +146,7 @@ function startProxyConnection(params: {
         params.evidence.cronAddRequests += 1;
       } else if (frame.method === "cron.update") {
         params.evidence.cronUpdateRequests += 1;
+        params.evidence.scopedRequestsAfterLatestCronUpdate = 0;
       } else if (frame.method === "cron.status") {
         params.evidence.cronStatusRequests += 1;
         if (
@@ -131,6 +155,36 @@ function startProxyConnection(params: {
           typeof frame.id === "string"
         ) {
           params.setHeldRequestId(frame.id);
+        }
+      } else if (frame.method === "cron.list") {
+        params.evidence.cronListRequests += 1;
+        const requestParams = asRecord(frame.params);
+        const scopeKind: CronScopeResponseKind | null =
+          requestParams?.agentId === "main" &&
+          requestParams.limit === 1 &&
+          requestParams.includeDisabled === true
+            ? "total"
+            : requestParams?.agentId === "main" &&
+                requestParams.limit === 1 &&
+                requestParams.sortBy === "nextRunAtMs"
+              ? "next-wake"
+              : null;
+        if (scopeKind) {
+          if (scopeKind === "total") {
+            params.evidence.scopedTotalRequests += 1;
+          } else {
+            params.evidence.scopedNextWakeRequests += 1;
+          }
+          if (params.evidence.cronUpdateRequests > 0) {
+            params.evidence.scopedRequestsAfterLatestCronUpdate += 1;
+          }
+          if (
+            params.getScopeArmed() &&
+            typeof frame.id === "string" &&
+            params.getHeldScopeRequestKind(frame.id) === null
+          ) {
+            params.setHeldScopeRequest(frame.id, scopeKind);
+          }
         }
       } else if (frame.method === "models.list" && typeof frame.id === "string") {
         // Model discovery is unrelated to the Cron ordering invariant and can
@@ -157,6 +211,23 @@ function startProxyConnection(params: {
 
   upstream.on("message", (data, isBinary) => {
     const frame = parseFrame(data);
+    const scopeKind =
+      frame?.type === "res" && typeof frame.id === "string"
+        ? params.getHeldScopeRequestKind(frame.id)
+        : null;
+    if (scopeKind) {
+      const bytes = Array.isArray(data)
+        ? Buffer.concat(data)
+        : data instanceof ArrayBuffer
+          ? Buffer.from(data)
+          : Buffer.from(data);
+      params.setHeldScopeFrame(
+        scopeKind,
+        bytes.length > 0 ? { data: bytes, isBinary } : { data: Buffer.alloc(0), isBinary },
+        asRecord(frame?.payload),
+      );
+      return;
+    }
     if (
       frame?.type === "res" &&
       typeof frame.id === "string" &&
@@ -203,11 +274,21 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
   const evidence: HeldResponseEvidence = {
     capturedSha256: null,
     cronAddRequests: 0,
+    cronListRequests: 0,
     cronStatusRequests: 0,
     cronUpdateRequests: 0,
     heldSnapshotJobs: null,
+    heldScopeNextWakeAtMs: null,
+    heldScopeNextWakeCapturedSha256: null,
+    heldScopeNextWakeReleasedSha256: null,
+    heldScopeTotal: null,
+    heldScopeTotalCapturedSha256: null,
+    heldScopeTotalReleasedSha256: null,
     modelListFixtureRequests: 0,
     releasedSha256: null,
+    scopedNextWakeRequests: 0,
+    scopedRequestsAfterLatestCronUpdate: 0,
+    scopedTotalRequests: 0,
   };
   const activeSockets = new Set<WebSocket>();
   const websocketServer = new WebSocketServer({ noServer: true });
@@ -216,8 +297,13 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
   let browserSocket: WebSocket | null = null;
   let heldFrame: HeldFrame | null = null;
   let heldRequestId: string | null = null;
+  const heldScopeFrames = new Map<CronScopeResponseKind, HeldFrame>();
+  const heldScopeRequestKinds = new Map<string, CronScopeResponseKind>();
   let resolveHeld: (() => void) | null = null;
+  let resolveHeldScope: (() => void) | null = null;
   let heldPromise: Promise<void> | null = null;
+  let heldScopePromise: Promise<void> | null = null;
+  let scopeArmed = false;
 
   server.on("upgrade", (request, socket, head) => {
     websocketServer.handleUpgrade(request, socket, head, (acceptedSocket) => {
@@ -228,6 +314,8 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
         evidence,
         getArmed: () => armed,
         getHeldRequestId: () => heldRequestId,
+        getHeldScopeRequestKind: (id) => heldScopeRequestKinds.get(id) ?? null,
+        getScopeArmed: () => scopeArmed,
         request,
         setHeldFrame: (frame, jobs) => {
           heldFrame = frame;
@@ -237,6 +325,29 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
         },
         setHeldRequestId: (id) => {
           heldRequestId = id;
+        },
+        setHeldScopeFrame: (kind, frame, payload) => {
+          heldScopeFrames.set(kind, frame);
+          const digest = sha256(frame.data);
+          if (kind === "total") {
+            evidence.heldScopeTotalCapturedSha256 = digest;
+            evidence.heldScopeTotal = typeof payload?.total === "number" ? payload.total : null;
+          } else {
+            evidence.heldScopeNextWakeCapturedSha256 = digest;
+            const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
+            const first = asRecord(jobs[0]);
+            const jobState = asRecord(first?.state);
+            evidence.heldScopeNextWakeAtMs =
+              typeof jobState?.nextRunAtMs === "number" ? jobState.nextRunAtMs : null;
+          }
+          if (heldScopeFrames.size === 2) {
+            resolveHeldScope?.();
+          }
+        },
+        setHeldScopeRequest: (id, kind) => {
+          if (![...heldScopeRequestKinds.values()].includes(kind)) {
+            heldScopeRequestKinds.set(id, kind);
+          }
         },
         upstreamUrl,
       });
@@ -252,6 +363,15 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
   }
 
   return {
+    armCronScopeHold() {
+      if (scopeArmed || heldScopeFrames.size > 0) {
+        throw new Error("cron scoped response hold already armed");
+      }
+      scopeArmed = true;
+      heldScopePromise = new Promise<void>((resolve) => {
+        resolveHeldScope = resolve;
+      });
+    },
     armCronStatusHold() {
       if (armed || heldFrame) {
         throw new Error("cron response hold already armed");
@@ -272,6 +392,27 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
       });
     },
     evidence,
+    releaseHeldScopeResponses() {
+      if (!browserSocket || browserSocket.readyState !== WebSocket.OPEN) {
+        throw new Error("browser socket is not ready for scoped response release");
+      }
+      for (const kind of ["total", "next-wake"] as const) {
+        const frame = heldScopeFrames.get(kind);
+        if (!frame) {
+          throw new Error(`held cron ${kind} response is not ready for release`);
+        }
+        const digest = sha256(frame.data);
+        if (kind === "total") {
+          evidence.heldScopeTotalReleasedSha256 = digest;
+        } else {
+          evidence.heldScopeNextWakeReleasedSha256 = digest;
+        }
+        browserSocket.send(frame.data, { binary: frame.isBinary });
+      }
+      heldScopeFrames.clear();
+      heldScopeRequestKinds.clear();
+      scopeArmed = false;
+    },
     releaseHeldResponse() {
       if (!heldFrame || !browserSocket || browserSocket.readyState !== WebSocket.OPEN) {
         throw new Error("held cron response is not ready for release");
@@ -286,6 +427,12 @@ async function startCronStatusDelayProxy(upstreamUrl: string): Promise<DelayProx
         throw new Error("cron response hold is not armed");
       }
       await withTimeout(heldPromise, "real cron.status response");
+    },
+    async waitForHeldScopeResponses() {
+      if (!heldScopePromise) {
+        throw new Error("cron scoped response hold is not armed");
+      }
+      await withTimeout(heldScopePromise, "real agent-scoped cron.list responses");
     },
     url: `ws://127.0.0.1:${address.port}`,
   };
@@ -340,11 +487,12 @@ window.CronProofGatewayBrowserClient = GatewayBrowserClient;
         }),
       ]);
       const first = await client.request("cron.add", {
+        agentId: "main",
         name: "Proof job one",
         schedule: { kind: "every", everyMs: 86_400_000 },
-        sessionTarget: "main",
+        sessionTarget: "isolated",
         wakeMode: "now",
-        payload: { kind: "systemEvent", text: "Proof job one event" },
+        payload: { kind: "agentTurn", message: "Proof job one event" },
       });
       const firstRecord = first && typeof first === "object" ? first : {};
       const nestedJob =
@@ -440,6 +588,25 @@ async function pageStatusJobs(page: Page): Promise<number | null> {
   });
 }
 
+async function pageScopedOverview(page: Page) {
+  return await page.evaluate(() => {
+    const cronPage = Reflect.get(window, "cronProofPage");
+    const cronState = cronPage ? Reflect.get(cronPage, "cron") : null;
+    const visibleValues = [...document.querySelectorAll(".cron-stat__value")].map((node) =>
+      node.textContent?.trim(),
+    );
+    return {
+      busy: cronState?.cronBusy === true,
+      nextWakeAtMs:
+        typeof cronState?.cronScopedNextWakeAtMs === "number"
+          ? cronState.cronScopedNextWakeAtMs
+          : null,
+      total: typeof cronState?.cronScopedTotal === "number" ? cronState.cronScopedTotal : null,
+      visibleValues,
+    };
+  });
+}
+
 describeRuntimeProof("Cron stale response production-boundary proof", () => {
   beforeAll(async () => {
     if (!chromiumAvailable) {
@@ -521,11 +688,12 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
     await page.evaluate(async () => {
       const client = Reflect.get(window, "cronProofClient");
       await client.request("cron.add", {
+        agentId: "main",
         name: "Proof job two",
         schedule: { kind: "every", everyMs: 86_400_000 },
-        sessionTarget: "main",
+        sessionTarget: "isolated",
         wakeMode: "now",
-        payload: { kind: "systemEvent", text: "Proof job two event" },
+        payload: { kind: "agentTurn", message: "Proof job two event" },
       });
       const cronPage = Reflect.get(window, "cronProofPage");
       await Reflect.get(cronPage, "refreshCron").call(cronPage, { tableFilters: true });
@@ -548,9 +716,89 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
     expect(proxy.evidence.releasedSha256).toBe(proxy.evidence.capturedSha256);
     expect(proxy.evidence.cronAddRequests).toBe(2);
 
+    await expect
+      .poll(() => pageScopedOverview(page), { timeout: 30_000 })
+      .toMatchObject({
+        busy: false,
+        total: 2,
+      });
+    const scopedBeforeHold = await pageScopedOverview(page);
+    expect(scopedBeforeHold.nextWakeAtMs).not.toBeNull();
+
+    proxy.armCronScopeHold();
+    await page.evaluate(() => {
+      const cronPage = Reflect.get(window, "cronProofPage");
+      const pending = Reflect.get(cronPage, "refreshCron").call(cronPage, { tableFilters: true });
+      Reflect.set(window, "cronProofOlderScopedRefresh", pending);
+    });
+    await proxy.waitForHeldScopeResponses();
+    const scopedHoldCapturedAtMs = Date.now();
+    expect(proxy.evidence.heldScopeTotal).toBe(2);
+    expect(proxy.evidence.heldScopeNextWakeAtMs).toBe(scopedBeforeHold.nextWakeAtMs);
+
+    await page.evaluate(async () => {
+      const client = Reflect.get(window, "cronProofClient");
+      await client.request("cron.add", {
+        agentId: "main",
+        name: "Proof job three",
+        schedule: { kind: "every", everyMs: 60_000 },
+        sessionTarget: "isolated",
+        wakeMode: "now",
+        payload: { kind: "agentTurn", message: "Proof job three event" },
+      });
+    });
+    await page
+      .locator(`[data-test-id="cron-row-toggle-${firstJobId}"] wa-switch`)
+      .evaluate((node) => {
+        const toggle = node as HTMLElement & { checked: boolean };
+        toggle.checked = true;
+        toggle.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    await expect
+      .poll(() => pageScopedOverview(page), { timeout: 30_000 })
+      .toMatchObject({
+        busy: false,
+        total: 3,
+      });
+    const scopedAfterMutation = await pageScopedOverview(page);
+    expect(scopedAfterMutation.nextWakeAtMs).not.toBeNull();
+    expect(proxy.evidence.cronUpdateRequests).toBe(2);
+    expect(proxy.evidence.scopedRequestsAfterLatestCronUpdate).toBeGreaterThanOrEqual(2);
     await page.screenshot({
       fullPage: true,
-      path: path.join(artifactDir, "cron-stale-response.png"),
+      path: path.join(artifactDir, "cron-scoped-mutation-before-stale-release.png"),
+    });
+
+    const activityBeforeScopeRelease = await page.evaluate(
+      () => Reflect.get(window, "cronProofClient").inboundActivitySeq,
+    );
+    const scopedHoldReleasedAtMs = Date.now();
+    proxy.releaseHeldScopeResponses();
+    await page.evaluate(async () => {
+      await Reflect.get(window, "cronProofOlderScopedRefresh");
+    });
+    await expect
+      .poll(() => page.evaluate(() => Reflect.get(window, "cronProofClient").inboundActivitySeq), {
+        timeout: 30_000,
+      })
+      .toBeGreaterThanOrEqual(activityBeforeScopeRelease + 2);
+    const scopedAfterStaleRelease = await pageScopedOverview(page);
+    expect(scopedAfterStaleRelease).toMatchObject({
+      busy: false,
+      nextWakeAtMs: scopedAfterMutation.nextWakeAtMs,
+      total: 3,
+    });
+    expect(scopedAfterStaleRelease.visibleValues[0]).toBe("3");
+    expect(proxy.evidence.heldScopeTotalReleasedSha256).toBe(
+      proxy.evidence.heldScopeTotalCapturedSha256,
+    );
+    expect(proxy.evidence.heldScopeNextWakeReleasedSha256).toBe(
+      proxy.evidence.heldScopeNextWakeCapturedSha256,
+    );
+
+    await page.screenshot({
+      fullPage: true,
+      path: path.join(artifactDir, "cron-scoped-mutation-stale-response.png"),
     });
     await fs.writeFile(
       path.join(artifactDir, "proof-cron-stale-response.json"),
@@ -564,7 +812,8 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
             controlUi: "vite-source-mounted-production-cron-page",
             gateway: "production-startGatewayServer-cron-store",
             transport: "production-GatewayBrowserClient-real-websocket",
-            orderingFixture: "one-unmodified-cron.status-response-delayed",
+            orderingFixture:
+              "one-unmodified-cron.status-response-and-two-agent-scoped-cron.list-responses-delayed",
             peripheralFixture: "models.list-empty-result",
           },
           assertions: {
@@ -574,11 +823,37 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
             afterDelayedReleaseJobs: await pageStatusJobs(page),
             responseBytesUnchanged: proxy.evidence.releasedSha256 === proxy.evidence.capturedSha256,
             cronAddRequests: proxy.evidence.cronAddRequests,
+            cronListRequests: proxy.evidence.cronListRequests,
             cronUpdateRequests: proxy.evidence.cronUpdateRequests,
             cronStatusRequests: proxy.evidence.cronStatusRequests,
             modelListFixtureRequests: proxy.evidence.modelListFixtureRequests,
+            scopedMutation: {
+              beforeHold: scopedBeforeHold,
+              heldNextWakeAtMs: proxy.evidence.heldScopeNextWakeAtMs,
+              heldTotal: proxy.evidence.heldScopeTotal,
+              afterMutation: scopedAfterMutation,
+              afterStaleRelease: scopedAfterStaleRelease,
+              replacementRequestsAfterCronUpdate:
+                proxy.evidence.scopedRequestsAfterLatestCronUpdate,
+              scopedNextWakeRequests: proxy.evidence.scopedNextWakeRequests,
+              scopedTotalRequests: proxy.evidence.scopedTotalRequests,
+              timing: {
+                capturedAt: new Date(scopedHoldCapturedAtMs).toISOString(),
+                heldMs: scopedHoldReleasedAtMs - scopedHoldCapturedAtMs,
+                releasedAt: new Date(scopedHoldReleasedAtMs).toISOString(),
+              },
+              responseBytesUnchanged:
+                proxy.evidence.heldScopeTotalReleasedSha256 ===
+                  proxy.evidence.heldScopeTotalCapturedSha256 &&
+                proxy.evidence.heldScopeNextWakeReleasedSha256 ===
+                  proxy.evidence.heldScopeNextWakeCapturedSha256,
+            },
           },
-          responseSha256: proxy.evidence.capturedSha256,
+          responseSha256: {
+            cronStatus: proxy.evidence.capturedSha256,
+            scopedNextWake: proxy.evidence.heldScopeNextWakeCapturedSha256,
+            scopedTotal: proxy.evidence.heldScopeTotalCapturedSha256,
+          },
           secretOutput: false,
         },
         null,
@@ -587,7 +862,7 @@ describeRuntimeProof("Cron stale response production-boundary proof", () => {
       "utf8",
     );
     console.info(
-      "[cron stale response proof] vite=true chromium=true real-gateway=true real-websocket=true model-list-fixture=true unmodified-cron-response=true stale-overwrite=false",
+      "[cron stale response proof] vite=true chromium=true real-gateway=true real-websocket=true agent-scoped-mutation=true replacement-scope-queries=true model-list-fixture=true unmodified-cron-responses=true stale-overwrite=false",
     );
     await page.evaluate(() => Reflect.get(window, "cronProofClient")?.stop());
     await page.close();
