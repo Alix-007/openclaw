@@ -71,22 +71,22 @@ function collectSuppliedSecretCandidates(
   }));
 }
 
-function buildPercentEscapeCaseInsensitivePattern(candidate: string): RegExp {
-  const source = escapeRegExp(candidate).replace(
-    /%([0-9A-Fa-f])([0-9A-Fa-f])/gu,
-    (_match, first: string, second: string) => {
-      const hexPattern = (character: string) => {
-        const upper = character.toUpperCase();
-        return /[A-F]/u.test(upper) ? `[${upper}${upper.toLowerCase()}]` : upper;
-      };
-      return `%${hexPattern(first)}${hexPattern(second)}`;
-    },
-  );
-  return new RegExp(source, "gu");
-}
-
-function normalizePercentEscapeHexCase(value: string): string {
-  return value.replace(/%([0-9A-Fa-f]{1,2})/gu, (_escape, hex: string) => `%${hex.toUpperCase()}`);
+function buildSuppliedSecretPatternSource(
+  candidate: string,
+  percentEscapesCaseInsensitive: boolean,
+): string {
+  // JSON permits each slash to carry one optional escape. Match that exact form
+  // without decoding the surrounding diagnostic or changing non-matching bytes.
+  const source = escapeRegExp(candidate).replaceAll("/", String.raw`\\?/`);
+  return percentEscapesCaseInsensitive
+    ? source.replace(/%([0-9A-Fa-f])([0-9A-Fa-f])?/gu, (_match, first: string, second: string) => {
+        const hexPattern = (character: string) => {
+          const upper = character.toUpperCase();
+          return /[A-F]/u.test(upper) ? `[${upper}${upper.toLowerCase()}]` : upper;
+        };
+        return `%${hexPattern(first)}${second ? hexPattern(second) : ""}`;
+      })
+    : source;
 }
 
 function redactTruncatedSuppliedSecretSuffix(
@@ -94,32 +94,39 @@ function redactTruncatedSuppliedSecretSuffix(
   candidates: readonly SuppliedSecretCandidate[],
 ): string {
   let longestPartialSuffix = 0;
-  const normalizedText = normalizePercentEscapeHexCase(text);
   for (const candidate of candidates) {
     if (candidate.candidate.length < 2) {
       continue;
     }
-    const comparableText = candidate.percentEscapesCaseInsensitive ? normalizedText : text;
-    const comparableCandidate = candidate.percentEscapesCaseInsensitive
-      ? normalizePercentEscapeHexCase(candidate.candidate)
-      : candidate.candidate;
     // Complete values are already redacted. Require a meaningful prefix so an
     // ordinary one-character suffix does not suppress an otherwise safe diagnostic.
-    if (comparableText.endsWith(comparableCandidate)) {
-      continue;
-    }
     const minimumPrefixLength = Math.min(
       MIN_TRUNCATED_SENSITIVE_PREFIX_LENGTH,
-      comparableCandidate.length - 1,
+      candidate.candidate.length - 1,
     );
-    const maxPrefixLength = Math.min(comparableCandidate.length - 1, comparableText.length);
+    const maxPrefixLength = Math.min(candidate.candidate.length - 1, text.length);
     for (
       let prefixLength = maxPrefixLength;
-      prefixLength >= minimumPrefixLength && prefixLength > longestPartialSuffix;
+      prefixLength >= minimumPrefixLength;
       prefixLength -= 1
     ) {
-      if (comparableText.endsWith(comparableCandidate.slice(0, prefixLength))) {
-        longestPartialSuffix = prefixLength;
+      const prefix = candidate.candidate.slice(0, prefixLength);
+      const prefixPattern = buildSuppliedSecretPatternSource(
+        prefix,
+        candidate.percentEscapesCaseInsensitive,
+      );
+      // A truncated JSON string may end after the optional escape's backslash.
+      // Accept it only when the next exact candidate character is the escaped slash.
+      const endsInsideJsonSlashEscape = candidate.candidate[prefixLength] === "/";
+      const suffixPattern = endsInsideJsonSlashEscape
+        ? `${prefixPattern}(?:${escapeRegExp("\\")})?`
+        : prefixPattern;
+      const suffixProbe = text.slice(
+        -(prefix.length + (prefix.match(/\//gu)?.length ?? 0) + Number(endsInsideJsonSlashEscape)),
+      );
+      const match = new RegExp(`${suffixPattern}$`, "u").exec(suffixProbe);
+      if (match && match.index + match[0].length === suffixProbe.length) {
+        longestPartialSuffix = Math.max(longestPartialSuffix, match[0].length);
         break;
       }
     }
@@ -144,9 +151,11 @@ export function redactSuppliedSecretValues(
   );
   let redacted = text;
   for (const candidate of candidates) {
-    redacted = candidate.percentEscapesCaseInsensitive
-      ? redacted.replace(buildPercentEscapeCaseInsensitivePattern(candidate.candidate), () => "***")
-      : redacted.replaceAll(candidate.candidate, () => "***");
+    const pattern = buildSuppliedSecretPatternSource(
+      candidate.candidate,
+      candidate.percentEscapesCaseInsensitive,
+    );
+    redacted = redacted.replace(new RegExp(pattern, "gu"), () => "***");
   }
   return options?.sourceTruncated
     ? redactTruncatedSuppliedSecretSuffix(redacted, candidates)

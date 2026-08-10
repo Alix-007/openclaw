@@ -143,16 +143,17 @@ async function fetchOpenAiBatchResource<T>(params: {
   parse: (res: Response) => Promise<T>;
 }): Promise<T> {
   const baseUrl = normalizeBatchBaseUrl(params.openAi);
+  const requestHeaders = buildBatchHeaders(params.openAi, { json: true });
   return await withRemoteHttpResponse({
     url: `${baseUrl}${params.path}`,
     ssrfPolicy: params.openAi.ssrfPolicy,
     fetchImpl: params.openAi.fetchImpl,
     signal: params.signal,
     init: {
-      headers: buildBatchHeaders(params.openAi, { json: true }),
+      headers: requestHeaders,
     },
     onResponse: async (res) => {
-      await assertOkOrThrowProviderError(res, params.label);
+      await assertOkOrThrowProviderError(res, params.label, { requestHeaders });
       return await params.parse(res);
     },
   });

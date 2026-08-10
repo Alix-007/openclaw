@@ -141,4 +141,30 @@ describe("createOpenAIRealtimeClientSecret", () => {
       }),
     ).rejects.toThrow("Update the transcription API key");
   });
+
+  it("redacts a reflected final auth token from realtime provider errors", async () => {
+    const authToken = "orchid/River17glassMoth92cabin";
+    guardedFetch(
+      new Response(
+        JSON.stringify({
+          error: {
+            message: `provider reflected ${authToken}`,
+            code: authToken,
+            type: authToken,
+          },
+        }),
+        { status: 400, headers: { "x-request-id": authToken } },
+      ),
+    );
+
+    const error = await createOpenAIRealtimeClientSecret({
+      authToken,
+      auditContext: "test",
+      session: { model: "gpt-4o-realtime-preview" },
+    }).catch((cause: unknown) => cause);
+    const diagnostics = `${error instanceof Error ? error.message : String(error)}\n${JSON.stringify(error)}`;
+
+    expect(diagnostics).not.toContain(authToken);
+    expect(diagnostics).toContain("***");
+  });
 });

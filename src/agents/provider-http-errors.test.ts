@@ -369,6 +369,38 @@ describe("provider error utils", () => {
     expect(JSON.stringify(providerError)).not.toContain("glassMoth92");
   });
 
+  it("redacts JSON optional slash escapes before parsing provider metadata", async () => {
+    const sensitiveValue = "orchid/River17glassMoth92cabin";
+    const reflectedValue = sensitiveValue.replaceAll("/", String.raw`\/`);
+    const responseBody = JSON.stringify({
+      error: {
+        message: reflectedValue,
+        code: reflectedValue,
+        type: reflectedValue,
+      },
+    }).replaceAll(String.raw`\\/`, String.raw`\/`);
+    expect(JSON.parse(responseBody)).toMatchObject({
+      error: {
+        message: sensitiveValue,
+        code: sensitiveValue,
+        type: sensitiveValue,
+      },
+    });
+
+    const providerError = await createProviderHttpError(
+      new Response(responseBody, {
+        status: 401,
+        headers: { "x-request-id": reflectedValue },
+      }),
+      "Provider API error",
+      { sensitiveValues: [sensitiveValue] },
+    );
+    const diagnostics = `${providerError.message}\n${JSON.stringify(providerError)}`;
+
+    expect(diagnostics).not.toContain(sensitiveValue);
+    expect(diagnostics).not.toContain(reflectedValue);
+  });
+
   it("redacts request secrets before truncating JSON error details", async () => {
     const sensitiveValue = "orchidRiver17glassMoth92cabin";
     const reflectedPrefix = "x".repeat(205);
@@ -423,6 +455,51 @@ describe("provider error utils", () => {
     expect(JSON.stringify(providerError)).not.toContain(retainedPrefix);
     expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
   });
+
+  it("suppresses a slash-escaped request-secret prefix split by the error-body cap", async () => {
+    const sensitiveValue = "orchid/River17/glassMoth92cabin";
+    const reflectedValue = sensitiveValue.replace("/", String.raw`\/`);
+    const retainedPrefix = reflectedValue.slice(0, -5);
+    const limitBytes = 16 * 1024;
+    const response = new Response(
+      `${"x".repeat(limitBytes - retainedPrefix.length)}${reflectedValue} trailing text`,
+      { status: 401 },
+    );
+
+    const detail = await readResponseTextLimited(response, limitBytes, {
+      sensitiveValues: [sensitiveValue],
+    });
+
+    expect(detail).toContain("truncated diagnostic omitted");
+    expect(detail).not.toContain(retainedPrefix);
+    expect(detail).not.toContain("orchid\\/River17/glassMoth");
+  });
+
+  it.each([0, 1])(
+    "suppresses a request-secret prefix cut after JSON slash escape %i",
+    async (slashIndex) => {
+      const sensitiveValue = "orchid/River17/glassMoth92cabin";
+      const reflectedValue = sensitiveValue.replaceAll("/", String.raw`\/`);
+      const slashEscapes = [...reflectedValue.matchAll(/\\\//gu)];
+      const escapeIndex = slashEscapes[slashIndex]?.index;
+      if (escapeIndex === undefined) {
+        throw new Error(`missing slash escape ${slashIndex}`);
+      }
+      const retainedPrefix = reflectedValue.slice(0, escapeIndex + 1);
+      const limitBytes = 16 * 1024;
+      const response = new Response(
+        `${"x".repeat(limitBytes - retainedPrefix.length)}${reflectedValue} trailing text`,
+        { status: 401 },
+      );
+
+      const detail = await readResponseTextLimited(response, limitBytes, {
+        sensitiveValues: [sensitiveValue],
+      });
+
+      expect(detail).toContain("truncated diagnostic omitted");
+      expect(detail).not.toContain(retainedPrefix);
+    },
+  );
 
   it("keeps legacy HTTP status formatting while sharing provider parsing", async () => {
     const response = new Response(

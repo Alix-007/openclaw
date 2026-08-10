@@ -96,23 +96,24 @@ function readStringField(value: unknown, key: string): string | undefined {
 async function createOpenAIRealtimeSecret(
   params: OpenAIRealtimeSecretRequest,
 ): Promise<OpenAIRealtimeClientSecretResult> {
+  const requestHeaders = resolveProviderRequestHeaders({
+    provider: "openai",
+    baseUrl: params.url,
+    capability: "audio",
+    transport: "http",
+    defaultHeaders: {
+      Authorization: `Bearer ${params.authToken}`,
+      "Content-Type": "application/json",
+    },
+  }) ?? {
+    Authorization: `Bearer ${params.authToken}`,
+    "Content-Type": "application/json",
+  };
   const { response, release } = await fetchWithSsrFGuard({
     url: params.url,
     init: {
       method: "POST",
-      headers: resolveProviderRequestHeaders({
-        provider: "openai",
-        baseUrl: params.url,
-        capability: "audio",
-        transport: "http",
-        defaultHeaders: {
-          Authorization: `Bearer ${params.authToken}`,
-          "Content-Type": "application/json",
-        },
-      }) ?? {
-        Authorization: `Bearer ${params.authToken}`,
-        "Content-Type": "application/json",
-      },
+      headers: requestHeaders,
       body: JSON.stringify(params.body),
     },
     policy: OPENAI_REALTIME_SSRF_POLICY,
@@ -122,7 +123,9 @@ async function createOpenAIRealtimeSecret(
   const payload = await (async () => {
     try {
       if (!response.ok) {
-        const error = await createProviderHttpError(response, params.errorMessage);
+        const error = await createProviderHttpError(response, params.errorMessage, {
+          requestHeaders,
+        });
         // Provider details can echo a masked credential while hiding which
         // OpenClaw auth source won. Keep the status metadata, but give callers
         // a bounded remediation for an explicitly configured key.

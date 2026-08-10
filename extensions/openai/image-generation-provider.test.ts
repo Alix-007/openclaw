@@ -671,6 +671,11 @@ describe("openai image generation provider", () => {
     });
 
     const request = jsonRequestCall();
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI image generation failed",
+      { requestHeaders: request.headers },
+    );
     expect(request.url).toBe("https://api.openai.com/v1/images/generations");
     expect(request.body).toEqual({
       model: "gpt-image-2",
@@ -1053,6 +1058,11 @@ describe("openai image generation provider", () => {
     expect(editCallArgs.dispatcherPolicy).toBeUndefined();
     expect(editCallArgs.fetchFn).toBe(fetch);
     expect(editCallArgs.headers.has("Content-Type")).toBe(false);
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI image edit failed",
+      { requestHeaders: editCallArgs.headers },
+    );
     const form = editCallArgs.body;
     expect(form.get("model")).toBe("gpt-image-2");
     expect(form.get("prompt")).toBe("Change only the background to pale blue");
@@ -1193,6 +1203,11 @@ describe("openai image generation provider", () => {
     expect(configCall.api).toBe("openai-chatgpt-responses");
     expect(configCall.capability).toBe("image");
     const request = jsonRequestCall();
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI Codex image generation failed",
+      { requestHeaders: request.headers },
+    );
     const body = request.body as Record<string, unknown>;
     expect(request.url).toBe("https://chatgpt.com/backend-api/codex/responses");
     expect(request.timeoutMs).toBe(180_000);
@@ -2439,7 +2454,13 @@ describe("openai image generation provider", () => {
       });
 
       expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": "openai-key" });
-      expect(jsonRequestCall().url).toBe(
+      const request = jsonRequestCall();
+      expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+        expect.anything(),
+        "OpenAI image generation failed",
+        { requestHeaders: request.headers },
+      );
+      expect(request.url).toBe(
         "https://myresource.openai.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-12-01-preview",
       );
     });

@@ -234,6 +234,11 @@ describe("openai video generation provider", () => {
     });
 
     const createRequest = postMultipartRequest();
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI video generation failed",
+      { requestHeaders: createRequest.headers },
+    );
     expect(createRequest.url).toBe("https://api.openai.com/v1/videos");
     const form = createRequest.body as FormData;
     expect(form.get("prompt")).toBe("A paper airplane gliding through golden hour light");
@@ -754,6 +759,16 @@ describe("openai video generation provider", () => {
     expect(statusRequest.auditContext).toBe("openai-video-status");
     const [downloadUrl, downloadInit, downloadTimeout, downloadFetch, downloadOptions] =
       fetchWithTimeoutGuardedCall();
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI video generation failed",
+      { requestHeaders: createRequest.headers },
+    );
+    expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
+      expect.anything(),
+      "OpenAI video download failed",
+      { requestHeaders: downloadInit?.headers },
+    );
     expect(downloadUrl).toBe("http://127.0.0.1:44080/v1/videos/vid_local/content?variant=video");
     expect(downloadInit?.method).toBe("GET");
     // Download shares the generation deadline, so earlier phases consume part of this budget.

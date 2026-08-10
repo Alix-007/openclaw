@@ -177,7 +177,7 @@ async function pollOpenAIVideo(
 async function fetchOpenAIVideoDownload(
   params: {
     url: string;
-    init: RequestInit;
+    init: RequestInit & { headers: HeadersInit };
     deadline: ReturnType<typeof createProviderOperationDeadline>;
     fetchFn: typeof fetch;
   } & OpenAIVideoRequestPolicy,
@@ -217,7 +217,9 @@ async function fetchOpenAIVideoDownload(
         },
       );
       try {
-        await assertOkOrThrowHttpError(result.response, "OpenAI video download failed");
+        await assertOkOrThrowHttpError(result.response, "OpenAI video download failed", {
+          requestHeaders: params.init.headers,
+        });
         return result;
       } catch (error) {
         await result.release();
@@ -374,7 +376,9 @@ export function buildOpenAIVideoGenerationProvider(): VideoGenerationProvider {
       });
 
       try {
-        await assertOkOrThrowHttpError(response, "OpenAI video generation failed");
+        await assertOkOrThrowHttpError(response, "OpenAI video generation failed", {
+          requestHeaders: multipartHeaders,
+        });
         const submitted = await readProviderJsonResponse<OpenAIVideoResponse>(
           response,
           "OpenAI video generation failed",

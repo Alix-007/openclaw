@@ -868,7 +868,9 @@ async function generateOpenAICodexImage(params: {
     });
     const { response, release } = requestResult;
     try {
-      await assertOkOrThrowHttpError(response, "OpenAI Codex image generation failed");
+      await assertOkOrThrowHttpError(response, "OpenAI Codex image generation failed", {
+        requestHeaders: headers,
+      });
       results.push(
         extractCodexImageGenerationResult({
           body: await readResponseBodyText(response),
@@ -1038,6 +1040,12 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
       const url = isAzure
         ? buildAzureImageUrl(rawBaseUrl, model, isEdit ? "edits" : "generations")
         : `${baseUrl}/images/${isEdit ? "edits" : "generations"}`;
+      const requestHeaders = new Headers(headers);
+      if (isEdit) {
+        requestHeaders.delete("Content-Type");
+      } else {
+        requestHeaders.set("Content-Type", "application/json");
+      }
       const requestResult = isEdit
         ? await (() => {
             const form = new FormData();
@@ -1060,12 +1068,9 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
                 }),
               );
             }
-
-            const multipartHeaders = new Headers(headers);
-            multipartHeaders.delete("Content-Type");
             return postMultipartRequest({
               url,
-              headers: multipartHeaders,
+              headers: requestHeaders,
               body: form,
               timeoutMs,
               fetchFn: fetch,
@@ -1075,8 +1080,6 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
             });
           })()
         : await (() => {
-            const jsonHeaders = new Headers(headers);
-            jsonHeaders.set("Content-Type", "application/json");
             const body: Record<string, unknown> = {
               prompt: req.prompt,
               n: count,
@@ -1088,7 +1091,7 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
             appendOpenAIImageOptions(body, req);
             return postJsonRequest({
               url,
-              headers: jsonHeaders,
+              headers: requestHeaders,
               body,
               timeoutMs,
               fetchFn: fetch,
@@ -1102,6 +1105,7 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
         await assertOkOrThrowHttpError(
           response,
           isEdit ? "OpenAI image edit failed" : "OpenAI image generation failed",
+          { requestHeaders },
         );
 
         const data = await readProviderJsonResponse(response, "openai.image-generation", {

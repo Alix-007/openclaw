@@ -842,4 +842,56 @@ describe("OpenAI embedding batch output", () => {
     expect(tracked.wasCanceled()).toBe(true);
     expect(textSpy).not.toHaveBeenCalled();
   });
+
+  it("redacts a reflected final authorization credential from batch resource errors", async () => {
+    const apiKey = "orchid/River17glassMoth92cabin";
+    const fetchImpl = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = fetchInputUrl(input);
+      if (url.endsWith("/files") && init?.method === "POST") {
+        return jsonResponse({ id: "file-0" });
+      }
+      if (url.endsWith("/batches") && init?.method === "POST") {
+        return jsonResponse({ id: "batch-0", status: "in_progress" });
+      }
+      if (url.endsWith("/batches/batch-0")) {
+        return jsonResponse(
+          {
+            error: {
+              message: `provider reflected ${apiKey}`,
+              code: apiKey,
+              type: apiKey,
+            },
+          },
+          400,
+        );
+      }
+      return new Response("unexpected request", { status: 500 });
+    });
+
+    const error = await runOpenAiEmbeddingBatches({
+      openAi: {
+        baseUrl: "https://openai-compatible.example/v1",
+        headers: { Authorization: `Bearer ${apiKey}` },
+        model: "text-embedding-3-small",
+        fetchImpl,
+      },
+      agentId: "main",
+      requests: [
+        {
+          custom_id: "0",
+          method: "POST",
+          url: "/v1/embeddings",
+          body: { model: "text-embedding-3-small", input: "payload" },
+        },
+      ],
+      wait: true,
+      concurrency: 1,
+      pollIntervalMs: 1,
+      timeoutMs: 60_000,
+    }).catch((cause: unknown) => cause);
+    const diagnostics = `${error instanceof Error ? error.message : String(error)}\n${JSON.stringify(error)}`;
+
+    expect(diagnostics).not.toContain(apiKey);
+    expect(diagnostics).toContain("***");
+  });
 });
