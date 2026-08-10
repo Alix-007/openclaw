@@ -14,7 +14,6 @@ import type {
 import { createAssistantMessageEventStream } from "openclaw/plugin-sdk/llm";
 import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
 import { isNonSecretApiKeyMarker } from "openclaw/plugin-sdk/provider-auth";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
 import { createPlainTextToolCallCompatWrapper } from "openclaw/plugin-sdk/provider-stream-shared";
 import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
 import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
@@ -27,6 +26,7 @@ import {
   parseJsonPreservingUnsafeIntegers,
 } from "./ollama-json.js";
 import { buildOllamaBaseUrlSsrFPolicy, isOllamaCloudModel } from "./provider-models.js";
+import { readOllamaResponseErrorText } from "./request-header-redaction.js";
 import {
   createOllamaVisibleContentSanitizer,
   sanitizeOllamaFinalVisibleContent,
@@ -1021,9 +1021,10 @@ function createRawOllamaStreamFn(
 
         try {
           if (!response.ok) {
-            const errorText = await readResponseTextLimited(
+            const errorText = await readOllamaResponseErrorText(
               response,
               OLLAMA_STREAM_ERROR_BODY_LIMIT_BYTES,
+              headers,
             ).catch(() => "unknown error");
             throw new Error(`${response.status} ${errorText}`);
           }
