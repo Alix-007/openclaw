@@ -92,6 +92,7 @@ async function waitFor<T>(
   read: () => Promise<T | null> | T | null,
   label: string,
   timeoutMs = 60_000,
+  pollIntervalMs = 100,
 ): Promise<T> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -99,13 +100,16 @@ async function waitFor<T>(
     if (value !== null) {
       return value;
     }
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
   }
   throw new Error(`${label} did not settle within ${timeoutMs}ms`);
 }
 
 type IngressRow = {
+  queue_name: string;
   event_id: string;
+  channel_id: string;
+  account_id: string;
   lane_key: string | null;
   status: string;
   payload_json: string;
@@ -113,25 +117,24 @@ type IngressRow = {
   completed_at: number | null;
 };
 
-async function readCompletedIngressRow(databasePath: string): Promise<IngressRow | null> {
+async function readIngressRow(databasePath: string, eventId: string): Promise<IngressRow | null> {
   try {
     await fs.access(databasePath);
   } catch {
     return null;
   }
-  const database = new DatabaseSync(databasePath);
+  const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
     return (
       (database
         .prepare(
-          `SELECT event_id, lane_key, status, payload_json, attempts, completed_at
+          `SELECT queue_name, event_id, channel_id, account_id, lane_key, status,
+                  payload_json, attempts, completed_at
              FROM channel_ingress_events
             WHERE channel_id = ? AND account_id = ? AND event_id = ?`,
         )
-        .get("qqbot", "default", `message:${messageId}`) as IngressRow | undefined) ?? null
+        .get("qqbot", "default", eventId) as IngressRow | undefined) ?? null
     );
-  } catch {
-    return null;
   } finally {
     database.close();
   }
@@ -283,17 +286,24 @@ async function run(): Promise<void> {
     });
 
     const identify = await waitFor(() => identifyPayload, "QQBot IDENTIFY");
-    const finalOutbound = await waitFor(
-      () => outboundRequests.find((request) => request.body.includes(visibleOutputMarker)) ?? null,
-      "QQBot visible outbound",
-      90_000,
+    // OPENCLAW_STATE_DIR is <tempRoot>/state; the shared DB owns its own state/ child.
+    const databasePath = path.join(gateway.tempRoot, "state", "state", "openclaw.sqlite");
+    const ingressBeforeAdoption = await waitFor(
+      async () => {
+        const row = await readIngressRow(databasePath, originalFacts.eventId);
+        return row &&
+          (row.status === "pending" || row.status === "claimed") &&
+          row.payload_json !== "null"
+          ? row
+          : null;
+      },
+      "durable ingress payload before adoption",
+      60_000,
+      5,
     );
-    const databasePath = path.join(gateway.tempRoot, "state", "openclaw.sqlite");
-    const ingressRow = await waitFor(async () => {
-      const row = await readCompletedIngressRow(databasePath);
-      return row?.status === "completed" && row.completed_at !== null ? row : null;
-    }, "completed durable ingress row");
-    const storedPayload = JSON.parse(ingressRow.payload_json) as { rawEnvelope?: unknown };
+    const storedPayload = JSON.parse(ingressBeforeAdoption.payload_json) as {
+      rawEnvelope?: unknown;
+    };
     if (typeof storedPayload.rawEnvelope !== "string") {
       throw new Error("durable ingress payload omitted rawEnvelope");
     }
@@ -301,10 +311,21 @@ async function run(): Promise<void> {
     const storedFacts = ingressEnvelope.inspectQQBotIngressEnvelope(storedEnvelope);
     assert(storedFacts, "stored envelope must remain a QQBot turn");
 
-    const providerRequests = (await (
+    const finalOutbound = await waitFor(
+      () => outboundRequests.find((request) => request.body.includes(visibleOutputMarker)) ?? null,
+      "QQBot visible outbound",
+      90_000,
+    );
+    const ingressTombstone = await waitFor(async () => {
+      const row = await readIngressRow(databasePath, originalFacts.eventId);
+      return row?.status === "completed" && row.completed_at !== null ? row : null;
+    }, "completed durable ingress row");
+    assert.equal(ingressTombstone.payload_json, "null", "completed tombstone must clear payload");
+
+    const providerRequestsBeforeDuplicate = (await (
       await fetch(`${mock.baseUrl}/debug/requests`)
     ).json()) as Array<{ allInputText?: unknown; prompt?: unknown }>;
-    const providerRequest = providerRequests.find((request) => {
+    const providerRequest = providerRequestsBeforeDuplicate.find((request) => {
       const text = `${optionalString(request.allInputText)}\n${optionalString(request.prompt)}`;
       return text.includes(visibleInputMarker);
     });
@@ -312,6 +333,32 @@ async function run(): Promise<void> {
     const agentVisibleText = `${optionalString(providerRequest.allInputText)}\n${optionalString(
       providerRequest.prompt,
     )}`;
+    const providerVisibleCountBeforeDuplicate = providerRequestsBeforeDuplicate.filter((request) =>
+      `${optionalString(request.allInputText)}\n${optionalString(request.prompt)}`.includes(
+        visibleInputMarker,
+      ),
+    ).length;
+    const visibleOutboundCountBeforeDuplicate = outboundRequests.filter((request) =>
+      request.body.includes(visibleOutputMarker),
+    ).length;
+
+    assert(websocketClient, "QQBot WebSocket client must remain connected for duplicate proof");
+    websocketClient.send(originalEnvelope);
+    await new Promise((resolve) => setTimeout(resolve, 3_000));
+
+    const ingressAfterDuplicate = await readIngressRow(databasePath, originalFacts.eventId);
+    assert(ingressAfterDuplicate, "durable ingress tombstone disappeared after duplicate DISPATCH");
+    const providerRequestsAfterDuplicate = (await (
+      await fetch(`${mock.baseUrl}/debug/requests`)
+    ).json()) as Array<{ allInputText?: unknown; prompt?: unknown }>;
+    const providerVisibleCountAfterDuplicate = providerRequestsAfterDuplicate.filter((request) =>
+      `${optionalString(request.allInputText)}\n${optionalString(request.prompt)}`.includes(
+        visibleInputMarker,
+      ),
+    ).length;
+    const visibleOutboundCountAfterDuplicate = outboundRequests.filter((request) =>
+      request.body.includes(visibleOutputMarker),
+    ).length;
     const allOutboundText = outboundRequests.map((request) => request.body).join("\n");
     const identifyToken = identify.token;
     const healthResponse = await fetch(`${gateway.baseUrl}/healthz`, { method: "HEAD" });
@@ -338,9 +385,18 @@ async function run(): Promise<void> {
         actualLoopbackWebSocket: websocketClient !== null,
         gatewayConnectionIdentify: identifyToken === `QQBot ${credential.token}`,
         sqliteEnqueueClaimDispatch:
-          ingressRow.status === "completed" &&
-          ingressRow.attempts >= 1 &&
-          ingressRow.completed_at !== null,
+          (ingressBeforeAdoption.status === "pending" ||
+            ingressBeforeAdoption.status === "claimed") &&
+          ingressTombstone.status === "completed" &&
+          ingressTombstone.attempts >= 1 &&
+          ingressTombstone.completed_at !== null &&
+          ingressTombstone.payload_json === "null",
+        duplicateCompletedIgnored:
+          ingressAfterDuplicate.status === "completed" &&
+          ingressAfterDuplicate.completed_at === ingressTombstone.completed_at &&
+          ingressAfterDuplicate.attempts === ingressTombstone.attempts &&
+          providerVisibleCountAfterDuplicate === providerVisibleCountBeforeDuplicate &&
+          visibleOutboundCountAfterDuplicate === visibleOutboundCountBeforeDuplicate,
         buildAgentBodyProviderVisible: agentVisibleText.includes(visibleInputMarker),
         visibleOutboundTurn: finalOutbound.body.includes(visibleOutputMarker),
         gatewayHealth: healthResponse.ok,
@@ -349,6 +405,13 @@ async function run(): Promise<void> {
       identityBefore: beforeIdentity,
       identityAfter: afterIdentity,
       identityUnchanged: JSON.stringify(beforeIdentity) === JSON.stringify(afterIdentity),
+      ingressLifecycle: {
+        beforeAdoptionStatus: ingressBeforeAdoption.status,
+        completedStatus: ingressTombstone.status,
+        completedPayloadCleared: ingressTombstone.payload_json === "null",
+        duplicateProviderDispatches: providerVisibleCountAfterDuplicate,
+        duplicateVisibleOutboundTurns: visibleOutboundCountAfterDuplicate,
+      },
       durable: {
         visibleMarker: storedEnvelope.includes(visibleInputMarker),
         redactionMarker: storedEnvelope.includes("<redacted>"),
