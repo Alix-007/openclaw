@@ -522,6 +522,58 @@ describe("GatewayConnection credential redaction", () => {
     await started;
   });
 
+  it("redacts an active token from gateway construction failures", async () => {
+    const { accessToken, forbidden } = makeCredentialReflectionFixture();
+    const gatewayUrl = `wss://gateway.example.test/connect?token=${encodeURIComponent(accessToken)}`;
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    vi.mocked(getGatewayUrl).mockResolvedValueOnce(gatewayUrl);
+    createQQWSClientMock.mockRejectedValueOnce(
+      new Error(`gateway-construction-visible-123 failed for ${gatewayUrl}`),
+    );
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const controller = new AbortController();
+    const connection = new GatewayConnection({
+      account: makeAccount(),
+      abortSignal: controller.signal,
+      cfg: {},
+      runtime: {} as GatewayPluginRuntime,
+      adapters: {} as EngineAdapters,
+      log,
+      handleMessage: async () => {},
+      createIngressMonitor: createNoopIngressMonitor,
+    });
+
+    const started = connection.start();
+    await vi.waitFor(() => {
+      expect(log.error).toHaveBeenCalledWith(
+        expect.stringContaining("gateway-construction-visible-123"),
+      );
+    });
+    expectCredentialsAbsent(log.error.mock.calls.flat().join("\n"), [...forbidden, gatewayUrl]);
+
+    controller.abort();
+    await started;
+  });
+
+  it("redacts an active token before reporting gateway socket errors", async () => {
+    const { accessToken, forbidden } = makeCredentialReflectionFixture();
+    vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);
+    const log = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
+    const onError = vi.fn();
+    const { ws, controller, started } = await startConnection({ log, onError });
+
+    ws.emit("error", new Error(`gateway-socket-visible-123 reflected ${accessToken}`));
+
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining("gateway-socket-visible-123"));
+    expect(onError).toHaveBeenCalledTimes(1);
+    const reportedError = expectDefined(onError.mock.calls[0]?.[0] as Error | undefined);
+    const diagnosticOutput = [...log.error.mock.calls.flat(), reportedError.message].join("\n");
+    expectCredentialsAbsent(diagnosticOutput, forbidden);
+
+    controller.abort();
+    await started;
+  });
+
   it("redacts raw and encoded access tokens reflected in DISPATCH diagnostics", async () => {
     const { accessToken, reflected, forbidden } = makeCredentialReflectionFixture();
     vi.mocked(getAccessToken).mockResolvedValueOnce(accessToken);

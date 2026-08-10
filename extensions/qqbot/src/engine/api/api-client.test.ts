@@ -272,16 +272,19 @@ describe("ApiClient", () => {
   it("redacts credentials from response status and trace metadata", async () => {
     const release = vi.fn(async () => {});
     const accessToken = "qQMetadata/UNIQUE~QQBOTSECRET+Proof";
-    const fullyEncodedCredential = percentEncodeEveryUtf8Byte(accessToken);
+    const mixedEncodedCredential = "q%51Metadata%2fUNIQUE%7eQQBOTSECRET%2bProof";
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
-      response: new Response('{"code":40034025,"message":"safe-body-marker"}', {
-        status: 400,
-        statusText: `status-marker ${accessToken}`,
-        headers: {
-          "content-type": "application/json",
-          "x-tps-trace-id": `trace-marker ${fullyEncodedCredential}`,
+      response: new Response(
+        JSON.stringify({ code: 40034025, message: `safe-body-marker ${mixedEncodedCredential}` }),
+        {
+          status: 400,
+          statusText: `status-marker ${mixedEncodedCredential}`,
+          headers: {
+            "content-type": "application/json",
+            "x-tps-trace-id": `trace-marker ${mixedEncodedCredential}`,
+          },
         },
-      }),
+      ),
       release,
     });
     const logger = { info: vi.fn(), error: vi.fn(), debug: vi.fn() };
@@ -294,8 +297,10 @@ describe("ApiClient", () => {
     expect(infoOutput).toContain("status-marker");
     expect(infoOutput).toContain("trace-marker");
     expect(infoOutput).not.toContain(accessToken);
-    expect(infoOutput).not.toContain(fullyEncodedCredential);
+    expect(infoOutput).not.toContain(mixedEncodedCredential);
+    expect(error.message).not.toContain(mixedEncodedCredential);
     expect(infoOutput).not.toContain("UNIQUEQQBOTSECRET");
+    expect(error.message).not.toContain("UNIQUEQQBOTSECRET");
     expect(release).toHaveBeenCalledTimes(1);
   });
 

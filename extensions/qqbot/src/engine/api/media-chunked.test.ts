@@ -411,6 +411,39 @@ describe("media-chunked: ChunkedMediaApi.uploadChunked", () => {
     expect(diagnosticOutput).not.toContain("UNIQUE-COS-CREDENTIAL");
   });
 
+  it("keeps malformed presigned URLs inside the controlled retry path", async () => {
+    vi.useFakeTimers();
+    const client = mockApiClient();
+    const tm = mockTokenManager();
+    const logger = { info: vi.fn(), error: vi.fn(), warn: vi.fn() };
+    client.request.mockImplementation(async (_token, _method, pathLocal) => {
+      if (pathLocal.endsWith("/upload_prepare")) {
+        const prepared = makePrepareResponse("uid-malformed", 1);
+        prepared.parts[0]!.presigned_url = "not-a-valid-presigned-url";
+        return prepared;
+      }
+      throw new Error(`unexpected path ${pathLocal}`);
+    });
+
+    const api = new ChunkedMediaApi(client, tm, { logger });
+    const upload = api
+      .uploadChunked({
+        scope: "group",
+        targetId: "g1",
+        fileType: MediaFileType.FILE,
+        source: { kind: "buffer", buffer: Buffer.from("01234567"), fileName: "blob.bin" },
+        creds: { appId: "a", clientSecret: "s" },
+      })
+      .catch((error: unknown) => error);
+    await vi.runAllTimersAsync();
+    const error = await upload;
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("Invalid URL");
+    expect(logger.warn).toHaveBeenCalledTimes(2);
+    expect(fetchWithSsrFGuardMock).not.toHaveBeenCalled();
+  });
+
   it("maps UPLOAD_PREPARE_FALLBACK_CODE to UploadDailyLimitExceededError", async () => {
     const client = mockApiClient();
     const tm = mockTokenManager();

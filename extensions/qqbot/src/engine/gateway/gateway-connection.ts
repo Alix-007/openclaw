@@ -292,6 +292,7 @@ export class GatewayConnection {
 
   private async connect(): Promise<void> {
     const { account, log } = this.ctx;
+    let accessToken: string | undefined;
 
     if (this.isConnecting) {
       log?.debug?.(`Already connecting, skip`);
@@ -307,7 +308,7 @@ export class GatewayConnection {
         this.shouldRefreshToken = false;
       }
 
-      const accessToken = await getAccessToken(account.appId, account.clientSecret);
+      accessToken = await getAccessToken(account.appId, account.clientSecret);
       log?.info(`✅ Access token obtained successfully`);
       const gatewayUrl = await getGatewayUrl(accessToken, account.appId);
       log?.info(redactQQBotCredentialText(`Connecting to ${gatewayUrl}`, accessToken));
@@ -386,12 +387,18 @@ export class GatewayConnection {
 
       // ---- WebSocket: error ----
       ws.on("error", (err) => {
-        log?.error(`WebSocket error: ${err.message}`);
-        this.ctx.onError?.(err);
+        const safeMessage = redactQQBotCredentialText(err.message, accessToken);
+        log?.error(`WebSocket error: ${safeMessage}`);
+        this.ctx.onError?.(
+          safeMessage === err.message ? err : new Error(safeMessage, { cause: err }),
+        );
       });
     } catch (err) {
       this.isConnecting = false;
-      const errMsg = err instanceof Error ? err.message : String(err);
+      const errMsg = redactQQBotCredentialText(
+        err instanceof Error ? err.message : String(err),
+        accessToken ?? "",
+      );
       log?.error(`Connection failed: ${errMsg}`);
       if (errMsg.includes("Too many requests") || errMsg.includes("100001")) {
         this.scheduleReconnect(RATE_LIMIT_DELAY);

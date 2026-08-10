@@ -545,20 +545,22 @@ async function putToPresignedUrl(
   prefix: string,
 ): Promise<void> {
   let lastError: Error | null = null;
-  const parsedPresignedUrl = new URL(presignedUrl);
-  const presignedCredentials = [
-    presignedUrl,
-    parsedPresignedUrl.username,
-    parsedPresignedUrl.password,
-    ...parsedPresignedUrl.searchParams.values(),
-  ];
-  const present = (text: string) => redactQQBotCredentialText(text, ...presignedCredentials);
 
   for (let attempt = 0; attempt <= PART_UPLOAD_MAX_RETRIES; attempt++) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), PART_UPLOAD_TIMEOUT_MS);
+    let present = (text: string) => redactQQBotCredentialText(text, presignedUrl);
 
     try {
+      const parsedPresignedUrl = new URL(presignedUrl);
+      const presignedCredentials = [
+        presignedUrl,
+        parsedPresignedUrl.username,
+        parsedPresignedUrl.password,
+        ...parsedPresignedUrl.searchParams.values(),
+      ];
+      present = (text: string) => redactQQBotCredentialText(text, ...presignedCredentials);
+
       // Convert to a standard ArrayBuffer before wrapping in Blob so type
       // definitions (incl. bun-types) accept the argument.
       const ab = data.buffer.slice(

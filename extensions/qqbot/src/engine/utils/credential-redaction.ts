@@ -7,6 +7,13 @@ const REDACTED_CREDENTIAL = "<redacted>";
 interface CredentialForms {
   literal: readonly string[];
   encoded: readonly string[];
+  mixedPercent: readonly (readonly CredentialUnit[])[];
+}
+
+interface CredentialUnit {
+  literal: string;
+  percentEncoded: string;
+  formEncoded?: string;
 }
 
 function canonicalizePercentEscapes(text: string): string {
@@ -20,6 +27,61 @@ function percentEncodeEveryUtf8Byte(text: string): string {
     new TextEncoder().encode(text),
     (byte) => `%${byte.toString(16).padStart(2, "0")}`,
   ).join("");
+}
+
+function resolveCredentialUnits(text: string): readonly CredentialUnit[] {
+  return Array.from(text, (literal) => ({
+    literal,
+    percentEncoded: canonicalizePercentEscapes(percentEncodeEveryUtf8Byte(literal)),
+    ...(literal === " " ? { formEncoded: "+" } : {}),
+  }));
+}
+
+function matchCredentialUnits(
+  text: string,
+  start: number,
+  units: readonly CredentialUnit[],
+): number | undefined {
+  let offset = start;
+  for (const unit of units) {
+    if (text.startsWith(unit.literal, offset)) {
+      offset += unit.literal.length;
+      continue;
+    }
+    const percentCandidate = text.slice(offset, offset + unit.percentEncoded.length);
+    if (canonicalizePercentEscapes(percentCandidate) === unit.percentEncoded) {
+      offset += unit.percentEncoded.length;
+      continue;
+    }
+    if (unit.formEncoded && text.startsWith(unit.formEncoded, offset)) {
+      offset += unit.formEncoded.length;
+      continue;
+    }
+    return undefined;
+  }
+  return offset;
+}
+
+function redactMixedPercentCredentialForms(
+  text: string,
+  forms: readonly (readonly CredentialUnit[])[],
+): string {
+  let redacted = "";
+  let copiedThrough = 0;
+  let offset = 0;
+  while (offset < text.length) {
+    const matchEnd = forms
+      .map((form) => matchCredentialUnits(text, offset, form))
+      .find((end): end is number => end !== undefined);
+    if (matchEnd === undefined) {
+      offset += 1;
+      continue;
+    }
+    redacted += `${text.slice(copiedThrough, offset)}${REDACTED_CREDENTIAL}`;
+    copiedThrough = matchEnd;
+    offset = matchEnd;
+  }
+  return copiedThrough === 0 ? text : redacted + text.slice(copiedThrough);
 }
 
 function resolveCredentialForms(credentials: readonly string[]): CredentialForms {
@@ -47,6 +109,7 @@ function resolveCredentialForms(credentials: readonly string[]): CredentialForms
   return {
     literal: [...literal].filter(Boolean).toSorted(longestFirst),
     encoded: [...encoded].filter(Boolean).map(canonicalizePercentEscapes).toSorted(longestFirst),
+    mixedPercent: [...literal].filter(Boolean).toSorted(longestFirst).map(resolveCredentialUnits),
   };
 }
 
@@ -55,6 +118,7 @@ function redactDirectCredentialForms(text: string, forms: CredentialForms): stri
   for (const form of forms.literal) {
     redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
   }
+  redacted = redactMixedPercentCredentialForms(redacted, forms.mixedPercent);
   redacted = canonicalizePercentEscapes(redacted);
   for (const form of forms.encoded) {
     redacted = redacted.replaceAll(form, REDACTED_CREDENTIAL);
