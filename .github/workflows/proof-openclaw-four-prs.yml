@@ -277,7 +277,7 @@ jobs:
                 ./.proof-runtime/gateway-terminal-mcp.ts \
                 2>&1 | tee "$log_file"
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
-                node .proof-dist/gateway-terminal-mcp.js \
+                node .proof-dist/gateway-terminal-mcp.mjs \
                 2>&1 | tee -a "$log_file"
               marker='[gateway terminal MCP proof]'
               ;;
