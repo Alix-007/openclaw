@@ -164,6 +164,11 @@ class CronPage extends OpenClawLightDomElement {
     }
   }
 
+  private claimCronOverview(cronState: CronState) {
+    const overviewGeneration = ++this.cronOverviewGeneration;
+    return () => this.cron === cronState && this.cronOverviewGeneration === overviewGeneration;
+  }
+
   private lastPanelKey: string | null = null;
 
   override updated() {
@@ -190,9 +195,7 @@ class CronPage extends OpenClawLightDomElement {
     if (!cronState.connected || !cronState.client) {
       return;
     }
-    const overviewGeneration = ++this.cronOverviewGeneration;
-    const ownsOverview = () =>
-      this.cron === cronState && this.cronOverviewGeneration === overviewGeneration;
+    const ownsOverview = this.claimCronOverview(cronState);
     const activeCronJobId = cronState.cronRunsScope === "job" ? cronState.cronRunsJobId : null;
     void this.loadRuns(activeCronJobId);
     void this.context.channels.refresh(false);
@@ -308,7 +311,7 @@ class CronPage extends OpenClawLightDomElement {
   private submitForm(options: { runNow?: boolean } = {}) {
     this.runCronAdminTask(async (cronState) => {
       const editingJobId = cronState.cronEditingJobId;
-      const result = await addCronJob(cronState);
+      const result = await addCronJob(cronState, () => this.claimCronOverview(cronState));
       if (!result.saved) {
         return;
       }
@@ -423,7 +426,9 @@ class CronPage extends OpenClawLightDomElement {
           onClone: (job) => this.cloneJob(job),
           onToggle: (job, enabled) =>
             this.runCronAdminTask(async (cronState) => {
-              const updated = await toggleCronJob(cronState, job, enabled);
+              const updated = await toggleCronJob(cronState, job, enabled, () =>
+                this.claimCronOverview(cronState),
+              );
               // Header pause/resume must not be undone by a later Save: the
               // editor form still carries the pre-toggle enabled value. Sync
               // to the confirmed write, not the jobs cache — the reload can be
@@ -436,7 +441,7 @@ class CronPage extends OpenClawLightDomElement {
             this.runCronAdminTask((cronState) => runCronJob(cronState, job.id, mode ?? "force")),
           onRemove: (job) =>
             this.runCronAdminTask(async (cronState) => {
-              await removeCronJob(cronState, job);
+              await removeCronJob(cronState, job, () => this.claimCronOverview(cronState));
               // Removing the selected task drops the panel back to overview;
               // the runs scope must follow or recent activity stays empty.
               if (cronState.cronRunsScope === "job" && cronState.cronRunsJobId === null) {

@@ -1067,6 +1067,9 @@ function buildFailureAlert(form: CronFormState, existing?: CronJob["failureAlert
 }
 
 type CronSaveResult = { saved: false } | { saved: true; jobId: string | null };
+type ClaimCronOverview = () => () => boolean;
+
+const claimCronOverviewUnconditionally: ClaimCronOverview = () => () => true;
 
 // cron.add responds with either { created, job } or the bare job read view.
 function extractSavedCronJobId(response: unknown): string | null {
@@ -1081,7 +1084,10 @@ function extractSavedCronJobId(response: unknown): string | null {
   return typeof id === "string" && id.length > 0 ? id : null;
 }
 
-export async function addCronJob(state: CronState): Promise<CronSaveResult> {
+export async function addCronJob(
+  state: CronState,
+  claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
+): Promise<CronSaveResult> {
   let result: CronSaveResult = { saved: false };
   await withCronBusy(state, async (client) => {
     const form = normalizeCronFormState(state.cronForm);
@@ -1209,23 +1215,25 @@ export async function addCronJob(state: CronState): Promise<CronSaveResult> {
       resetCronFormToDefaults(state);
       result = { saved: true, jobId: extractSavedCronJobId(response) };
     }
-    await reloadCronJobsSnapshot(state);
+    await reloadCronJobsSnapshot(state, claimOverview);
   });
   return result;
 }
 
-// Every mutation reloads the same trio so the table, scheduler status, and
-// the failing-count stat card can never drift apart after add/toggle/remove.
-async function reloadCronJobsSnapshot(state: CronState) {
+// Claim once before the mutation snapshot starts so a later page refresh
+// invalidates every overview writer from this request round together.
+async function reloadCronJobsSnapshot(state: CronState, claimOverview: ClaimCronOverview) {
+  const isCurrent = claimOverview();
   await loadCronJobsPage(state, { tableFilters: true });
-  await loadCronStatus(state);
-  await loadCronFailingCount(state);
+  await loadCronStatus(state, isCurrent);
+  await loadCronFailingCount(state, isCurrent);
 }
 
 export async function toggleCronJob(
   state: CronState,
   job: CronJob,
   enabled: boolean,
+  claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
 ): Promise<boolean> {
   // Report whether the update RPC itself succeeded; the follow-up list reload
   // can be queued or fail without invalidating the confirmed toggle.
@@ -1233,7 +1241,7 @@ export async function toggleCronJob(
   await withCronBusy(state, async (client) => {
     await client.request("cron.update", { id: job.id, patch: { enabled } });
     updated = true;
-    await reloadCronJobsSnapshot(state);
+    await reloadCronJobsSnapshot(state, claimOverview);
   });
   return updated;
 }
@@ -1273,7 +1281,11 @@ export async function runCronJob(state: CronState, jobId: string, mode: "force" 
   });
 }
 
-export async function removeCronJob(state: CronState, job: CronJob) {
+export async function removeCronJob(
+  state: CronState,
+  job: CronJob,
+  claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
+) {
   await withCronBusy(state, async (client) => {
     await client.request("cron.remove", { id: job.id });
     if (state.cronEditingJobId === job.id) {
@@ -1283,7 +1295,7 @@ export async function removeCronJob(state: CronState, job: CronJob) {
       state.cronRunsJobId = null;
       clearCronRunsPage(state);
     }
-    await reloadCronJobsSnapshot(state);
+    await reloadCronJobsSnapshot(state, claimOverview);
   });
 }
 

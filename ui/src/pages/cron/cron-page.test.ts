@@ -694,6 +694,86 @@ describe("CronPage lifecycle", () => {
     expect(page.cron.cronError).toBeNull();
   });
 
+  it("keeps a newer refresh ahead of a late mutation snapshot", async () => {
+    const staleMutationStatus = createDeferred<{
+      enabled: boolean;
+      jobs: number;
+      nextWakeAtMs: number;
+    }>();
+    const job: CronJob = {
+      id: "job-1",
+      name: "Nightly digest",
+      enabled: true,
+      createdAtMs: 0,
+      updatedAtMs: 0,
+      schedule: { kind: "every", everyMs: 60_000 },
+      sessionTarget: "isolated",
+      wakeMode: "now",
+      payload: { kind: "agentTurn", message: "digest" },
+      state: { nextRunAtMs: 1_000 },
+    };
+    let phase: "setup" | "mutation" | "refresh" = "setup";
+    let failingRequests = 0;
+    let mutationStatusRequests = 0;
+    const request = vi.fn((method: string, rawParams?: unknown) => {
+      const params = (rawParams ?? {}) as Record<string, unknown>;
+      if (method === "cron.update") {
+        phase = "mutation";
+        return Promise.resolve({});
+      }
+      if (method === "cron.status") {
+        if (phase === "mutation") {
+          mutationStatusRequests += 1;
+          return staleMutationStatus.promise;
+        }
+        const jobs = phase === "refresh" ? 2 : 0;
+        return Promise.resolve({ enabled: true, jobs, nextWakeAtMs: jobs * 1_000 });
+      }
+      if (method === "cron.list" && params.lastRunStatus === "error") {
+        failingRequests += 1;
+        return Promise.resolve({
+          ...cronListResponse([]),
+          total: phase === "refresh" && failingRequests === 1 ? 2 : 99,
+        });
+      }
+      if (method === "cron.list") {
+        return Promise.resolve(cronListResponse([job]));
+      }
+      if (method === "cron.runs") {
+        return Promise.resolve({ entries: [], total: 0, offset: 0, hasMore: false });
+      }
+      if (method === "models.list") {
+        return Promise.resolve({ models: [] });
+      }
+      return Promise.resolve({});
+    });
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const page = createPage(createContext(gateway), { render: true });
+    await waitForCronPage(() => {
+      expect(page.cron.cronStatus?.jobs).toBe(0);
+      expect(page.querySelector('[data-test-id="cron-row-toggle-job-1"] wa-switch')).not.toBeNull();
+    });
+    failingRequests = 0;
+
+    const toggle = page.querySelector(
+      '[data-test-id="cron-row-toggle-job-1"] wa-switch',
+    ) as HTMLElement & { checked: boolean };
+    toggle.checked = false;
+    toggle.dispatchEvent(new Event("change", { bubbles: true }));
+    await waitForCronPage(() => expect(mutationStatusRequests).toBe(1));
+
+    phase = "refresh";
+    await page.refreshCron({ tableFilters: true });
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+
+    staleMutationStatus.resolve({ enabled: true, jobs: 99, nextWakeAtMs: 99_000 });
+    await waitForCronPage(() => expect(page.cron.cronBusy).toBe(false));
+
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+  });
+
   it("ignores a cron event callback retained by a replaced gateway source", async () => {
     const request = createRequest();
     const client = { request } as unknown as GatewayBrowserClient;
