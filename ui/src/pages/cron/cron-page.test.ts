@@ -694,6 +694,103 @@ describe("CronPage lifecycle", () => {
     expect(page.cron.cronError).toBeNull();
   });
 
+  it("replaces scoped stats when a mutation invalidates an older refresh", async () => {
+    const staleScopedTotal = createDeferred<CronJobsListResult>();
+    const staleScopedNext = createDeferred<CronJobsListResult>();
+    const job: CronJob = {
+      id: "job-1",
+      name: "Nightly digest",
+      enabled: true,
+      createdAtMs: 0,
+      updatedAtMs: 0,
+      schedule: { kind: "every", everyMs: 60_000 },
+      sessionTarget: "isolated",
+      wakeMode: "now",
+      payload: { kind: "agentTurn", message: "digest" },
+      state: { nextRunAtMs: 1_000 },
+    };
+    let phase: "setup" | "stale-refresh" | "mutation" = "setup";
+    let staleScopedRequests = 0;
+    let mutationScopedRequests = 0;
+    const request = vi.fn((method: string, rawParams?: unknown) => {
+      const params = (rawParams ?? {}) as Record<string, unknown>;
+      if (method === "cron.update") {
+        phase = "mutation";
+        return Promise.resolve({});
+      }
+      if (method === "cron.status") {
+        const jobs = phase === "mutation" ? 2 : 1;
+        return Promise.resolve({ enabled: true, jobs, nextWakeAtMs: jobs * 1_000 });
+      }
+      if (method === "cron.list" && params.lastRunStatus === "error") {
+        return Promise.resolve({
+          ...cronListResponse([]),
+          total: phase === "mutation" ? 2 : 1,
+        });
+      }
+      if (method === "cron.list" && params.includeDisabled === true && params.limit === 1) {
+        if (phase === "stale-refresh") {
+          staleScopedRequests += 1;
+          return staleScopedTotal.promise;
+        }
+        if (phase === "mutation") {
+          mutationScopedRequests += 1;
+        }
+        return Promise.resolve({
+          ...cronListResponse([]),
+          total: phase === "mutation" ? 2 : 1,
+        });
+      }
+      if (method === "cron.list" && params.sortBy === "nextRunAtMs" && params.limit === 1) {
+        if (phase === "stale-refresh") {
+          staleScopedRequests += 1;
+          return staleScopedNext.promise;
+        }
+        if (phase === "mutation") {
+          mutationScopedRequests += 1;
+        }
+        const nextRunAtMs = phase === "mutation" ? 2_000 : 1_000;
+        return Promise.resolve(cronListResponse([{ ...job, state: { nextRunAtMs } }]));
+      }
+      if (method === "cron.list") {
+        return Promise.resolve(cronListResponse([job]));
+      }
+      if (method === "cron.runs") {
+        return Promise.resolve({ entries: [], total: 0, offset: 0, hasMore: false });
+      }
+      if (method === "models.list") {
+        return Promise.resolve({ models: [] });
+      }
+      return Promise.resolve({});
+    });
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const page = createPage(createContext(gateway, "writer"), { render: true });
+    await waitForCronPage(() => {
+      expect(page.cron.cronScopedTotal).toBe(1);
+      expect(page.cron.cronScopedNextWakeAtMs).toBe(1_000);
+      expect(page.querySelector('[data-test-id="cron-row-toggle-job-1"] wa-switch')).not.toBeNull();
+    });
+
+    phase = "stale-refresh";
+    const staleRefresh = page.refreshCron({ tableFilters: true });
+    await waitForCronPage(() => expect(staleScopedRequests).toBe(2));
+
+    const toggle = page.querySelector(
+      '[data-test-id="cron-row-toggle-job-1"] wa-switch',
+    ) as HTMLElement & { checked: boolean };
+    toggle.checked = false;
+    toggle.dispatchEvent(new Event("change", { bubbles: true }));
+    await waitForCronPage(() => expect(page.cron.cronBusy).toBe(false));
+
+    staleScopedTotal.resolve({ ...cronListResponse([]), total: 99 });
+    staleScopedNext.resolve(cronListResponse([{ ...job, state: { nextRunAtMs: 99_000 } }]));
+    await staleRefresh;
+
+    expect(mutationScopedRequests).toBe(2);
+    expect(page.cron.cronScopedTotal).toBe(2);
+    expect(page.cron.cronScopedNextWakeAtMs).toBe(2_000);
+  });
+
   it("keeps a newer refresh ahead of a late mutation snapshot", async () => {
     const staleMutationStatus = createDeferred<{
       enabled: boolean;

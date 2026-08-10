@@ -26,7 +26,7 @@ import {
 } from "../gateway-errors.ts";
 import { normalizeLowercaseStringOrEmpty, sortUniqueStrings } from "../string-coerce.ts";
 import { parseCronEveryMs } from "./decimal.ts";
-import { loadCronFailingCount } from "./scope.ts";
+import { loadCronFailingCount, loadCronScopeStats } from "./scope.ts";
 
 export { loadCronFailingCount, loadCronScopeStats } from "./scope.ts";
 
@@ -1227,6 +1227,7 @@ async function reloadCronJobsSnapshot(state: CronState, claimOverview: ClaimCron
   await loadCronJobsPage(state, { tableFilters: true });
   await loadCronStatus(state, isCurrent);
   await loadCronFailingCount(state, isCurrent);
+  await loadCronScopeStats(state, isCurrent);
 }
 
 export async function toggleCronJob(
