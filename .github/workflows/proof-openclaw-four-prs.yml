@@ -166,6 +166,7 @@ jobs:
                 src/logging/redact.test.ts \
                 src/agents/provider-http-errors.test.ts \
                 src/media-understanding/shared.provider-error-redaction.test.ts \
+                src/tts/openai-compatible-speech-provider.test.ts \
                 src/agents/tools/web-search-provider-common.redact.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               grep -F 'redacts a reflected credential through the trusted guarded transport' "$log_file"
@@ -177,6 +178,7 @@ jobs:
               grep -F 'redacts a raw or encoded request secret' "$log_file"
               grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
               grep -F 'redacts reflected outbound credentials from transient JSON POST errors' "$log_file"
+              grep -F 'redacts reflected credentials from normal non-retry TTS errors' "$log_file"
               cp .proof-tooling/.github/proof/foundation-sdk-runtime.ts \
                 .proof-runtime/foundation-sdk-runtime.ts
               cp .proof-tooling/.github/proof/foundation-sdk.tsdown.config.ts \
