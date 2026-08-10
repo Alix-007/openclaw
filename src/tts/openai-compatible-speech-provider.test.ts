@@ -3,12 +3,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createOpenAiCompatibleSpeechProvider } from "./openai-compatible-speech-provider.js";
 
 const {
-  assertOkOrThrowHttpErrorMock,
   postJsonRequestMock,
   readProviderBinaryResponseMock,
   resolveProviderHttpRequestConfigMock,
 } = vi.hoisted(() => ({
-  assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),
   postJsonRequestMock: vi.fn(),
   readProviderBinaryResponseMock: vi.fn(async (response: Response, label: string) => {
     const contentType = response.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase();
@@ -29,12 +27,17 @@ const {
   })),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
-  assertOkOrThrowHttpError: assertOkOrThrowHttpErrorMock,
-  postJsonRequest: postJsonRequestMock,
-  readProviderBinaryResponse: readProviderBinaryResponseMock,
-  resolveProviderHttpRequestConfig: resolveProviderHttpRequestConfigMock,
-}));
+vi.mock("openclaw/plugin-sdk/provider-http", async () => {
+  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/provider-http")>(
+    "openclaw/plugin-sdk/provider-http",
+  );
+  return {
+    ...actual,
+    postJsonRequest: postJsonRequestMock,
+    readProviderBinaryResponse: readProviderBinaryResponseMock,
+    resolveProviderHttpRequestConfig: resolveProviderHttpRequestConfigMock,
+  };
+});
 
 function requireFirstMockArg(mock: ReturnType<typeof vi.fn>): Record<string, unknown> {
   const [call] = mock.mock.calls;
@@ -50,7 +53,6 @@ function requireFirstMockArg(mock: ReturnType<typeof vi.fn>): Record<string, unk
 
 describe("createOpenAiCompatibleSpeechProvider", () => {
   afterEach(() => {
-    assertOkOrThrowHttpErrorMock.mockClear();
     postJsonRequestMock.mockReset();
     readProviderBinaryResponseMock.mockClear();
     resolveProviderHttpRequestConfigMock.mockClear();
@@ -176,6 +178,59 @@ describe("createOpenAiCompatibleSpeechProvider", () => {
     expect(result.outputFormat).toBe("opus");
     expect(result.fileExtension).toBe(".opus");
     expect(result.voiceCompatible).toBe(true);
+    expect(release).toHaveBeenCalledOnce();
+  });
+
+  it("redacts reflected credentials from normal non-retry TTS errors", async () => {
+    const release = vi.fn(async () => {});
+    const credential = "orchid-tts-request-secret-123456";
+    postJsonRequestMock.mockResolvedValue({
+      response: new Response(
+        JSON.stringify({
+          error: {
+            message: `safe=quota-exceeded reflected=${credential}`,
+            code: credential,
+            type: `quota-${credential}`,
+          },
+        }),
+        { status: 401, headers: { "x-request-id": `request-${credential}` } },
+      ),
+      release,
+    });
+    vi.stubEnv("DEMO_API_KEY", credential);
+
+    const provider = createOpenAiCompatibleSpeechProvider({
+      id: "demo",
+      label: "Demo",
+      autoSelectOrder: 40,
+      models: ["demo-tts"],
+      voices: ["alloy"],
+      defaultModel: "demo-tts",
+      defaultVoice: "alloy",
+      defaultBaseUrl: "https://example.test/v1",
+      envKey: "DEMO_API_KEY",
+      responseFormats: ["mp3"],
+      defaultResponseFormat: "mp3",
+      voiceCompatibleResponseFormats: ["mp3"],
+    });
+
+    const error = await provider
+      .synthesize({
+        text: "hello",
+        cfg: {} as never,
+        providerConfig: {},
+        target: "voice-note",
+        timeoutMs: 1234,
+      })
+      .then(
+        () => undefined,
+        (caught: unknown) => caught,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("safe=quota-exceeded");
+    expect(JSON.stringify(error)).not.toContain(credential);
+    expect(requireFirstMockArg(postJsonRequestMock)).not.toHaveProperty("retryStage");
     expect(release).toHaveBeenCalledOnce();
   });
 
