@@ -14,7 +14,7 @@ import {
 } from "./run.overflow-compaction.harness.js";
 import { loadSharedRunIntegrationHarness } from "./run.shared-integration-harness.test-support.js";
 
-const TARGET_HEAD = "accb41acfb7e696d9f738d394e284c6706f65882";
+const TARGET_HEAD = "57159573ee341db69b624384af9556dd795fd65d";
 const GENERIC_TIMEOUT = "LLM request timed out.";
 const DETAILED_TIMEOUT =
   "Provider timed out after the request started. Retry the turn, or increase `agents.defaults.timeoutSeconds` if this model routinely needs longer.";

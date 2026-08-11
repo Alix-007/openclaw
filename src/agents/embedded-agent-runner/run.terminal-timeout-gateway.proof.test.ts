@@ -12,7 +12,7 @@ import {
 } from "../../test-utils/openclaw-test-state.js";
 import { getDeterministicFreePortBlock } from "../../test-utils/ports.js";
 
-const TARGET_HEAD = "accb41acfb7e696d9f738d394e284c6706f65882";
+const TARGET_HEAD = "57159573ee341db69b624384af9556dd795fd65d";
 const GENERIC_TIMEOUT = "LLM request timed out.";
 const AUTHORITATIVE_TIMEOUT = "Request timed out before a response was generated.";
 const MODEL_REF = "timeout-proof/timeout-proof";
