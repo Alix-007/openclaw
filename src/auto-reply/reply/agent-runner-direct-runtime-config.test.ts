@@ -2,8 +2,13 @@
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FailoverError } from "../../agents/failover-error.js";
-import { replaceSessionEntry } from "../../config/sessions/session-accessor.js";
+import {
+  loadTranscriptEvents,
+  replaceSessionEntry,
+} from "../../config/sessions/session-accessor.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
+import { createUserTurnTranscriptRecorder } from "../../sessions/user-turn-transcript.js";
+import { createTestUserTurnTranscriptTarget } from "../../sessions/user-turn-transcript.test-support.js";
 import { withTestDir } from "../../test-helpers/temp-dir.js";
 import { getReplyPayloadMetadata } from "../reply-payload.js";
 import type { TemplateContext } from "../templating.js";
@@ -242,6 +247,19 @@ function requireMaintenanceCall(mock: MockCallSource, name: string, index = 0) {
   return call;
 }
 
+function createTrackingUserTurnRecorder() {
+  const recorder = createUserTurnTranscriptRecorder({
+    input: { text: "hello", idempotencyKey: "telegram:msg-1" },
+    target: createTestUserTurnTranscriptTarget(),
+    updateMode: "none",
+  });
+  const persistApproved = vi.spyOn(recorder, "persistApproved").mockImplementation(async () => {
+    recorder.markRuntimePersisted(recorder.message);
+    return undefined;
+  });
+  return { persistApproved, recorder };
+}
+
 describe("runReplyAgent runtime config", () => {
   beforeEach(() => {
     resolveQueuedReplyExecutionConfigMock.mockReset();
@@ -313,6 +331,24 @@ describe("runReplyAgent runtime config", () => {
     expect(preflightCall.followupRun).toBe(followupRun);
   });
 
+  it("persists the approved user turn before a required preflight failure", async () => {
+    const { followupRun, replyParams } = createDirectRuntimeReplyParams({
+      shouldFollowup: false,
+      isActive: false,
+    });
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder();
+    followupRun.userTurnTranscriptRecorder = recorder;
+
+    await expect(runReplyAgent(replyParams)).rejects.toBe(sentinelError);
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(recorder.hasPersisted()).toBe(true);
+    expect(persistApproved.mock.invocationCallOrder[0]).toBeLessThan(
+      runPreflightCompactionIfNeededMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
+    );
+    expect(executeAgentTurnMock).not.toHaveBeenCalled();
+  });
+
   it("passes the derived runtime-policy key to pre-run maintenance", async () => {
     const { followupRun, replyParams } = createDirectRuntimeReplyParams({
       shouldFollowup: false,
@@ -372,7 +408,7 @@ describe("runReplyAgent runtime config", () => {
     expect(replyOperation.setPhase).toHaveBeenLastCalledWith("running");
   });
 
-  it("rotates, rebinds, and optionally notifies when memory flush is exhausted", async () => {
+  it("persists once before preflight and resets in place when memory flush is exhausted", async () => {
     await withTestDir({ prefix: "openclaw-direct-runtime-" }, async (tempDir) => {
       const { replyParams, followupRun } = createDirectRuntimeReplyParams({
         shouldFollowup: false,
@@ -392,6 +428,20 @@ describe("runReplyAgent runtime config", () => {
       replyParams.storePath = storePath;
       replyParams.sessionEntry = sessionEntry;
       replyParams.sessionStore = sessionStore;
+      const recorder = createUserTurnTranscriptRecorder({
+        input: { text: "hello", idempotencyKey: "telegram:msg-1" },
+        target: {
+          agentId: "main",
+          sessionEntry,
+          sessionId: sessionEntry.sessionId,
+          sessionKey,
+          sessionStore,
+          storePath,
+        },
+        updateMode: "none",
+      });
+      const persistApproved = vi.spyOn(recorder, "persistApproved");
+      followupRun.userTurnTranscriptRecorder = recorder;
       resolveQueuedReplyExecutionConfigMock.mockResolvedValue({
         ...freshCfg,
         agents: { defaults: { compaction: { notifyUser: true } } },
@@ -401,7 +451,10 @@ describe("runReplyAgent runtime config", () => {
       const replyOperation = createReplyOperation();
       replyParams.replyOperation = replyOperation;
       runPreflightCompactionIfNeededMock.mockImplementation(
-        async (params: { sessionEntry?: unknown }) => params.sessionEntry,
+        async (params: { sessionEntry?: unknown }) => {
+          expect(recorder.hasPersisted()).toBe(true);
+          return params.sessionEntry;
+        },
       );
       runMemoryFlushIfNeededMock.mockImplementation(
         async (params: {
@@ -431,10 +484,11 @@ describe("runReplyAgent runtime config", () => {
           onActiveSessionEntry: (entry: SessionEntry) => void;
           onNewSession: (sessionId: string, sessionFile: string) => void;
         };
-        const sessionFile = "/tmp/session-rotated.jsonl";
+        expect(recorder.hasPersisted()).toBe(true);
+        const sessionFile = sessionKey;
         const nextEntry = {
           ...resetParams.activeSessionEntry,
-          sessionId: "session-rotated",
+          sessionId: sessionEntry.sessionId,
           updatedAt: 1,
           compactionCount: 0,
         };
@@ -461,8 +515,26 @@ describe("runReplyAgent runtime config", () => {
         sessionKey,
         queueKey: "main",
       });
-      expect(followupRun.run.sessionId).toBe("session-rotated");
-      expect(replyOperation.sessionId).toBe("session-rotated");
+      expect(persistApproved).toHaveBeenCalledTimes(1);
+      expect(persistApproved.mock.invocationCallOrder[0]).toBeLessThan(
+        runPreflightCompactionIfNeededMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
+      );
+      expect(followupRun.run.sessionId).toBe("session-1");
+      expect(replyOperation.sessionId).toBe("session-1");
+      const persistedUserTurns = (
+        await loadTranscriptEvents({
+          agentId: "main",
+          sessionId: "session-1",
+          sessionKey,
+          storePath,
+        })
+      ).filter(
+        (event) =>
+          event.type === "message" &&
+          (event.message as { role?: unknown }).role === "user" &&
+          event.message.content === "hello",
+      );
+      expect(persistedUserTurns).toHaveLength(1);
       expect(onBlockReply).toHaveBeenCalledWith(
         expect.objectContaining({
           text: "⚠️ Memory maintenance temporarily failed; continuing your reply.",

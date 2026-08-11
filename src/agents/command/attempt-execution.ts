@@ -438,6 +438,7 @@ export async function persistAcpTurnTranscript(params: {
   body: string;
   transcriptBody?: string;
   userInput?: UserTurnInput;
+  skipUserTurn?: boolean;
   finalText: string;
   sessionId: string;
   sessionKey: string;
@@ -450,9 +451,14 @@ export async function persistAcpTurnTranscript(params: {
   sessionCwd: string;
   config: OpenClawConfig;
 }): Promise<PersistTextTurnTranscriptResult> {
+  const { skipUserTurn, userInput, ...transcript } = params;
   return await persistTextTurnTranscript({
-    ...params,
-    ...(params.userInput ? { userMessage: buildPersistedUserTurnMessage(params.userInput) } : {}),
+    ...transcript,
+    body: skipUserTurn ? "" : transcript.body,
+    transcriptBody: skipUserTurn ? undefined : transcript.transcriptBody,
+    ...(!skipUserTurn && userInput
+      ? { userMessage: buildPersistedUserTurnMessage(userInput) }
+      : {}),
     assistant: {
       api: "openai-responses",
       provider: "openclaw",

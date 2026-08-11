@@ -156,6 +156,34 @@ vi.mock("./command/attempt-execution.runtime.js", () => ({
   sessionFileHasContent: vi.fn(async () => false),
 }));
 
+vi.mock("./command/user-turn-transcript.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./command/user-turn-transcript.js")>();
+  return {
+    ...actual,
+    prepareAgentCommandUserTurnTranscript: (
+      params: Parameters<typeof actual.prepareAgentCommandUserTurnTranscript>[0],
+    ) => {
+      const prepared = actual.prepareAgentCommandUserTurnTranscript(params);
+      if (prepared.userTurnTranscriptRecorder !== params.opts.userTurnTranscriptRecorder) {
+        vi.spyOn(prepared.userTurnTranscriptRecorder, "persistApproved").mockImplementation(
+          async () => {
+            if (
+              !prepared.userTurnTranscriptRecorder.isBlocked() &&
+              !prepared.userTurnTranscriptRecorder.hasPersisted()
+            ) {
+              prepared.userTurnTranscriptRecorder.markRuntimePersisted(
+                prepared.userTurnTranscriptRecorder.message,
+              );
+            }
+            return undefined;
+          },
+        );
+      }
+      return prepared;
+    },
+  };
+});
+
 vi.mock("./command/attempt-execution.shared.js", async () => {
   const actual = await vi.importActual<typeof import("./command/attempt-execution.shared.js")>(
     "./command/attempt-execution.shared.js",
@@ -778,6 +806,26 @@ function setupAcpSession(): void {
     kind: "ready",
     meta: { agent: "claude", cwd: "/tmp/workspace" },
   });
+}
+
+function createTrackingUserTurnRecorder(text: string) {
+  const recorder = createUserTurnTranscriptRecorder({
+    input: { text, idempotencyKey: `test:${text}` },
+    target: {
+      agentId: "main",
+      sessionEntry: undefined,
+      sessionId: "session-1",
+      sessionKey: "agent:main:main",
+    },
+    updateMode: "none",
+  });
+  const persistApproved = vi.spyOn(recorder, "persistApproved").mockImplementation(async () => {
+    if (!recorder.isBlocked() && !recorder.hasPersisted()) {
+      recorder.markRuntimePersisted(recorder.message);
+    }
+    return undefined;
+  });
+  return { persistApproved, recorder };
 }
 
 const requireRecord = createRequireRecord("object", "expected-label-object");
@@ -4536,6 +4584,87 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     expect(onExecutionStarted).toHaveBeenCalledTimes(1);
   });
 
+  it("persists an approved direct ACP user turn before runTurn rejects", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("failed ACP turn");
+    state.acpRunTurnMock.mockRejectedValueOnce(new Error("ACP provider unavailable"));
+
+    await expect(
+      agentCommand({
+        message: "failed ACP turn",
+        sessionKey: "agent:main:main",
+        userTurnTranscriptRecorder: recorder,
+      }),
+    ).rejects.toThrow("ACP provider unavailable");
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(recorder.hasPersisted()).toBe(true);
+    expect(persistApproved.mock.invocationCallOrder[0]).toBeLessThan(
+      state.acpRunTurnMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
+    );
+    expect(state.persistAcpTurnTranscriptMock).not.toHaveBeenCalled();
+  });
+
+  it("mirrors only the assistant after direct ACP admits the user turn", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("successful ACP turn");
+
+    await agentCommand({
+      message: "successful ACP turn",
+      sessionKey: "agent:main:main",
+      userTurnTranscriptRecorder: recorder,
+    });
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(persistApproved.mock.invocationCallOrder[0]).toBeLessThan(
+      state.acpRunTurnMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
+    );
+    expect(state.persistAcpTurnTranscriptMock).toHaveBeenCalledWith(
+      expect.objectContaining({ finalText: "done", skipUserTurn: true }),
+    );
+  });
+
+  it("keeps suppressed direct ACP prompts out of the transcript", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("internal handoff");
+
+    await agentCommand({
+      message: "internal handoff",
+      sessionKey: "agent:main:main",
+      suppressPromptPersistence: true,
+      userTurnTranscriptRecorder: recorder,
+    });
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(recorder.isBlocked()).toBe(true);
+    expect(recorder.hasPersisted()).toBe(false);
+    expect(state.persistAcpTurnTranscriptMock).toHaveBeenCalledWith(
+      expect.objectContaining({ finalText: "done", skipUserTurn: true }),
+    );
+  });
+
+  it("keeps internal direct ACP turns on their private transcript target", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("private ACP turn");
+
+    await agentCommand({
+      message: "private ACP turn",
+      sessionEffects: "internal",
+      sessionKey: "agent:main:main",
+      userTurnTranscriptRecorder: recorder,
+    });
+
+    expect(persistApproved).not.toHaveBeenCalled();
+    expect(recorder.hasPersisted()).toBe(false);
+    expect(state.persistAcpTurnTranscriptMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sessionId: "internal-session",
+        sessionKey: "agent:default:internal-session-effects:run",
+        skipUserTurn: true,
+      }),
+    );
+  });
+
   it("keeps session provenance for internal ACP turns", async () => {
     setupAcpSession();
 
@@ -4574,6 +4703,7 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
 
   it("keeps ordinary ACP turns blocked when ACP dispatch is disabled", async () => {
     setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("automatic ACP turn");
     state.resolveAcpDispatchPolicyErrorMock.mockReturnValue(
       new Error("ACP dispatch is disabled by policy (`acp.dispatch.enabled=false`)."),
     );
@@ -4582,11 +4712,14 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
       agentCommand({
         message: "automatic ACP turn",
         sessionKey: "agent:main:main",
+        userTurnTranscriptRecorder: recorder,
       }),
     ).rejects.toThrow("ACP dispatch is disabled");
 
     expect(state.resolveAcpExplicitTurnPolicyErrorMock).not.toHaveBeenCalled();
     expect(state.resolveAcpDispatchPolicyErrorMock).toHaveBeenCalledTimes(1);
+    expect(persistApproved).not.toHaveBeenCalled();
+    expect(recorder.hasPersisted()).toBe(false);
     expect(state.acpRunTurnMock).not.toHaveBeenCalled();
     expect(state.emitAcpLifecycleErrorMock).toHaveBeenCalledWith(
       expect.objectContaining({ terminalOutcome: "blocked" }),

@@ -1964,6 +1964,44 @@ describe("CLI attempt execution", () => {
     },
   );
 
+  it("mirrors an ACP assistant without duplicating an admitted user turn", async () => {
+    const sessionKey = "agent:main:direct:acp-admitted-user";
+    const sessionEntry = makeSessionEntry("session-acp-admitted-user");
+    await appendTranscriptMessage(
+      { agentId: "main", sessionId: sessionEntry.sessionId, sessionKey, storePath },
+      {
+        message: { role: "user", content: "already admitted", timestamp: Date.now() },
+        cwd: tmpDir,
+      },
+    );
+
+    await persistAcpTurnTranscript({
+      body: "already admitted",
+      finalText: "ACP reply",
+      sessionId: sessionEntry.sessionId,
+      sessionKey,
+      sessionEntry,
+      storePath,
+      sessionAgentId: "main",
+      sessionCwd: tmpDir,
+      config: {},
+      skipUserTurn: true,
+    });
+
+    const messages = await readSessionMessages(
+      formatSqliteSessionFileMarker({
+        agentId: "main",
+        sessionId: sessionEntry.sessionId,
+        storePath,
+      }),
+    );
+    expect(messages.map((message) => message.role)).toEqual(["user", "assistant"]);
+    expect(messages[1]).toMatchObject({
+      content: [{ type: "text", text: "ACP reply" }],
+      role: "assistant",
+    });
+  });
+
   it("persists CLI replies into the session transcript", async () => {
     const sessionKey = "agent:main:subagent:cli-transcript";
     const sessionFile = path.join(tmpDir, "session-cli-transcript.jsonl");

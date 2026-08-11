@@ -8,6 +8,7 @@ import { formatErrorMessage } from "../../infra/errors.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import { normalizeAgentId, resolveAgentIdFromSessionKey } from "../../routing/session-key.js";
 import type { RuntimeEnv } from "../../runtime.js";
+import type { UserTurnTranscriptRecorder } from "../../sessions/user-turn-transcript.js";
 import type { PreparedAgentRunAdmission } from "../admitted-run-context.js";
 import { prepareInternalSessionEffectsSession } from "../internal-session-effects.js";
 import type { AgentRunSessionTarget } from "../run-session-target.js";
@@ -23,6 +24,7 @@ import {
 } from "./runtime-loaders.js";
 import { resolveInternalSessionEffectsSource } from "./session-helpers.js";
 import type { AgentCommandOpts } from "./types.js";
+import { prepareAgentCommandUserTurnTranscript } from "./user-turn-transcript.js";
 
 const log = createSubsystemLogger("agents/agent-command");
 
@@ -76,6 +78,15 @@ export async function runAcpAgentCommand(params: {
   let stopReason: string | undefined;
   let resultStatus: "completed" | "cancelled" | undefined;
   let terminalOutcome: "blocked" | undefined;
+  let sessionEntry = params.sessionEntry;
+  let transcriptContext:
+    | {
+        internalTarget: AgentRunSessionTarget | undefined;
+        sessionCwd: string;
+        suppressUserTurnPersistence: boolean;
+        userTurnTranscriptRecorder: UserTurnTranscriptRecorder;
+      }
+    | undefined;
   try {
     const {
       resolveAcpAgentPolicyError,
@@ -99,9 +110,55 @@ export async function runAcpAgentCommand(params: {
       throw agentPolicyError;
     }
 
-    const acpImageAttachments = resolveInlineAgentImageAttachments(params.opts.images);
     assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
     const admittedRunContext = await params.preparedRunAdmission.admit("acp");
+    const { resolveAcpSessionCwd } = await loadAcpSessionIdentifiersRuntime();
+    const sessionCwd = resolveAcpSessionCwd(params.acpResolution.meta) ?? params.workspaceDir;
+    const internalSource = params.suppressVisibleSessionEffects
+      ? resolveInternalSessionEffectsSource({
+          agentId: params.sessionAgentId,
+          sessionId: params.sessionId,
+          sessionKey: params.sessionKey,
+          storePath: params.storePath,
+        })
+      : undefined;
+    const internalTarget = params.suppressVisibleSessionEffects
+      ? await prepareInternalSessionEffectsSession({
+          agentId: params.sessionAgentId,
+          cwd: sessionCwd,
+          runId: params.runId,
+          source: internalSource,
+          storePath: params.storePath,
+        })
+      : undefined;
+    params.trackInternalModelRunTarget(internalTarget);
+    const { suppressUserTurnPersistence, userTurnTranscriptRecorder } =
+      prepareAgentCommandUserTurnTranscript({
+        opts: params.opts,
+        transcriptBody: params.transcriptBody,
+        useProvidedRecorder: !internalTarget,
+        target: {
+          sessionId: internalTarget?.sessionId ?? params.sessionId,
+          agentId: internalTarget?.agentId ?? params.sessionAgentId,
+          sessionKey: internalTarget?.sessionKey ?? params.sessionKey,
+          sessionEntry: internalTarget?.sessionEntry ?? sessionEntry,
+          sessionStore: params.suppressVisibleSessionEffects ? undefined : params.sessionStore,
+          storePath: internalTarget?.storePath ?? params.storePath,
+          cwd: sessionCwd,
+          config: params.cfg,
+        },
+      });
+    transcriptContext = {
+      internalTarget,
+      sessionCwd,
+      suppressUserTurnPersistence,
+      userTurnTranscriptRecorder,
+    };
+    const userTurnResult = await userTurnTranscriptRecorder.persistApproved();
+    if (!internalTarget && userTurnResult?.sessionEntry) {
+      sessionEntry = userTurnResult.sessionEntry;
+    }
+    const acpImageAttachments = resolveInlineAgentImageAttachments(params.opts.images);
     await params.acpManager.runTurn({
       admittedRunContext,
       cfg: params.cfg,
@@ -181,30 +238,19 @@ export async function runAcpAgentCommand(params: {
   const finalTextRaw = visibleTextAccumulator.finalizeRaw();
   const finalText = visibleTextAccumulator.finalize();
   const terminalReply = visibleTextAccumulator.finalizeReplySnapshot();
-  let sessionEntry = params.sessionEntry;
+  if (!transcriptContext) {
+    throw new Error("ACP turn completed without transcript admission");
+  }
+  const { internalTarget, sessionCwd, suppressUserTurnPersistence, userTurnTranscriptRecorder } =
+    transcriptContext;
   try {
-    const { resolveAcpSessionCwd } = await loadAcpSessionIdentifiersRuntime();
-    const internalSource = params.suppressVisibleSessionEffects
-      ? resolveInternalSessionEffectsSource({
-          agentId: params.sessionAgentId,
-          sessionId: params.sessionId,
-          sessionKey: params.sessionKey,
-          storePath: params.storePath,
-        })
-      : undefined;
-    const internalTarget = params.suppressVisibleSessionEffects
-      ? await prepareInternalSessionEffectsSession({
-          agentId: params.sessionAgentId,
-          cwd: resolveAcpSessionCwd(params.acpResolution.meta) ?? params.workspaceDir,
-          runId: params.runId,
-          source: internalSource,
-          storePath: params.storePath,
-        })
-      : undefined;
-    params.trackInternalModelRunTarget(internalTarget);
     const transcriptResult = await attemptExecutionRuntime.persistAcpTurnTranscript({
       body: params.body,
       transcriptBody: params.transcriptBody,
+      skipUserTurn:
+        suppressUserTurnPersistence ||
+        userTurnTranscriptRecorder.hasPersisted() ||
+        userTurnTranscriptRecorder.isBlocked(),
       ...(params.opts.suppressPromptPersistence !== true && params.opts.transcriptMedia?.length
         ? {
             userInput: {
@@ -221,7 +267,7 @@ export async function runAcpAgentCommand(params: {
       storePath: internalTarget?.storePath ?? params.storePath,
       sessionAgentId: internalTarget?.agentId ?? params.sessionAgentId,
       threadId: params.opts.threadId,
-      sessionCwd: resolveAcpSessionCwd(params.acpResolution.meta) ?? params.workspaceDir,
+      sessionCwd,
       config: params.cfg,
     });
     if (!internalTarget) {
