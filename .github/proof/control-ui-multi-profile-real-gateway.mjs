@@ -199,8 +199,8 @@ try {
     NO_COLOR: "1",
   };
   for (const [profileId, token] of [
-    [readyProfileId, "proof-ready-subscription-token-not-used"],
     [rejectedProfileId, "proof-rejected-subscription-token-not-used"],
+    [readyProfileId, "proof-ready-subscription-token-not-used"],
   ]) {
     await run(
       process.execPath,
@@ -271,6 +271,11 @@ try {
   }
   if (!rpcProfiles.includes(readyProfileId) || !rpcProfiles.includes(rejectedProfileId)) {
     throw new Error(`Missing saved token profiles: ${JSON.stringify(rpcProfiles)}`);
+  }
+  if (rpcProfiles[0] !== readyProfileId) {
+    throw new Error(
+      `Expected ready profile to be selected first, got ${JSON.stringify(rpcProfiles)}`,
+    );
   }
   if (rpcProviderModel?.available !== true) {
     throw new Error(
