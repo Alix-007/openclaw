@@ -1,0 +1,43 @@
+{
+  "schema": "openclaw.pr-real-behavior-proof/v1",
+  "result": "pass",
+  "target": {
+    "repository": "openclaw/openclaw",
+    "pullRequest": 122036,
+    "immutableHead": "accb41acfb7e696d9f738d394e284c6706f65882"
+  },
+  "proofHarnessCommit": "3816acf4b4ff1b9833eca12a4826b1a8a8673dba",
+  "environment": {
+    "node": "v24.15.0",
+    "credentials": "none",
+    "provider": "mock",
+    "channelApi": "mock"
+  },
+  "productionBoundary": [
+    "mock provider attempt",
+    "runEmbeddedAgent",
+    "terminal preparation and timeout finalization",
+    "tool-media payload merge",
+    "shared reply dispatcher",
+    "mock channel API"
+  ],
+  "observed": {
+    "physicalSends": 2,
+    "genericTimeoutTextSends": 0,
+    "authoritativeDetailedTimeoutSends": 1,
+    "toolMediaSends": 1,
+    "mediaPayloadTextRemoved": true,
+    "mediaPayloadErrorFlagRemoved": true,
+    "deliveryMetadataPreserved": true,
+    "failedSends": {
+      "tool": 0,
+      "block": 0,
+      "final": 0
+    }
+  },
+  "redaction": {
+    "containsCredentials": false,
+    "containsLocalPaths": false,
+    "containsSessionIdentifiers": false
+  }
+}
