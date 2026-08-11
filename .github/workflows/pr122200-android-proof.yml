@@ -94,6 +94,20 @@ jobs:
             fi
           }
 
+          append_pairing_log() {
+            local label="$1"
+            local source="$2"
+            printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$label" >>"$RUNNER_TEMP/pairing-orchestration-raw.log"
+            if [[ -s "$source" ]]; then
+              sed \
+                -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
+                -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
+                -E -e 's/[[:xdigit:]]{8}-[[:xdigit:]-]{27,}/[ID]/g' \
+                -E -e 's/[[:xdigit:]]{16,}/[ID]/g' \
+                "$source" >>"$RUNNER_TEMP/pairing-orchestration-raw.log"
+            fi
+          }
+
           dump_ui() {
             adb shell uiautomator dump /sdcard/window.xml >/dev/null 2>&1 || return 1
             adb exec-out cat /sdcard/window.xml >"$RUNNER_TEMP/window.xml"
@@ -181,11 +195,16 @@ jobs:
 
           approve_pending_devices() {
             local output="$RUNNER_TEMP/devices.json"
+            local stderr="$RUNNER_TEMP/devices.stderr"
             if ! openclaw devices list --json \
               --url "ws://127.0.0.1:${GATEWAY_PORT}" \
-              --token "$PROOF_TOKEN" >"$output" 2>/dev/null; then
+              --token "$PROOF_TOKEN" >"$output" 2>"$stderr"; then
+              append_pairing_log "devices-list-failed stdout" "$output"
+              append_pairing_log "devices-list-failed stderr" "$stderr"
               return 0
             fi
+            append_pairing_log "devices-list-ok stdout" "$output"
+            append_pairing_log "devices-list-ok stderr" "$stderr"
             DEVICES_JSON="$output" node <<'NODE' | while IFS= read -r request_id; do
           const fs = require("node:fs");
           const text = fs.readFileSync(process.env.DEVICES_JSON, "utf8");
@@ -196,20 +215,34 @@ jobs:
             if (typeof pending.requestId === "string") console.log(pending.requestId);
           }
           NODE
-              openclaw devices approve "$request_id" \
+              phase "device-pairing-request-observed"
+              if openclaw devices approve "$request_id" \
                 --url "ws://127.0.0.1:${GATEWAY_PORT}" \
-                --token "$PROOF_TOKEN" >/dev/null
+                --token "$PROOF_TOKEN" >"$RUNNER_TEMP/device-approve.stdout" 2>"$RUNNER_TEMP/device-approve.stderr"; then
+                append_pairing_log "devices-approve-ok stdout" "$RUNNER_TEMP/device-approve.stdout"
+                append_pairing_log "devices-approve-ok stderr" "$RUNNER_TEMP/device-approve.stderr"
+                phase "device-pairing-approved"
+              else
+                append_pairing_log "devices-approve-failed stdout" "$RUNNER_TEMP/device-approve.stdout"
+                append_pairing_log "devices-approve-failed stderr" "$RUNNER_TEMP/device-approve.stderr"
+                return 1
+              fi
             done
           }
 
           approve_pending_nodes() {
             local output="$RUNNER_TEMP/nodes.json"
+            local stderr="$RUNNER_TEMP/nodes.stderr"
             local request_ids="$RUNNER_TEMP/node-request-ids.txt"
             if ! openclaw nodes pending --json \
               --url "ws://127.0.0.1:${GATEWAY_PORT}" \
-              --token "$PROOF_TOKEN" >"$output" 2>/dev/null; then
+              --token "$PROOF_TOKEN" >"$output" 2>"$stderr"; then
+              append_pairing_log "nodes-pending-failed stdout" "$output"
+              append_pairing_log "nodes-pending-failed stderr" "$stderr"
               return 1
             fi
+            append_pairing_log "nodes-pending-ok stdout" "$output"
+            append_pairing_log "nodes-pending-ok stderr" "$stderr"
             NODES_JSON="$output" node <<'NODE' >"$request_ids"
           const fs = require("node:fs");
           const value = JSON.parse(fs.readFileSync(process.env.NODES_JSON, "utf8"));
@@ -220,9 +253,18 @@ jobs:
           NODE
             [[ -s "$request_ids" ]] || return 1
             while IFS= read -r request_id; do
-              openclaw nodes approve "$request_id" \
+              phase "node-pairing-request-observed"
+              if openclaw nodes approve "$request_id" \
                 --url "ws://127.0.0.1:${GATEWAY_PORT}" \
-                --token "$PROOF_TOKEN" >/dev/null
+                --token "$PROOF_TOKEN" >"$RUNNER_TEMP/node-approve.stdout" 2>"$RUNNER_TEMP/node-approve.stderr"; then
+                append_pairing_log "nodes-approve-ok stdout" "$RUNNER_TEMP/node-approve.stdout"
+                append_pairing_log "nodes-approve-ok stderr" "$RUNNER_TEMP/node-approve.stderr"
+                phase "node-pairing-approved"
+              else
+                append_pairing_log "nodes-approve-failed stdout" "$RUNNER_TEMP/node-approve.stdout"
+                append_pairing_log "nodes-approve-failed stderr" "$RUNNER_TEMP/node-approve.stderr"
+                return 1
+              fi
             done <"$request_ids"
           }
 
@@ -253,6 +295,7 @@ jobs:
             redact_file "$RUNNER_TEMP/logcat-raw.txt" "$ARTIFACT_DIR/android-logcat-redacted.txt"
             redact_file "$RUNNER_TEMP/gateway-raw.log" "$ARTIFACT_DIR/gateway-redacted.log"
             redact_file "$RUNNER_TEMP/mock-raw.log" "$ARTIFACT_DIR/mock-redacted.log"
+            redact_file "$RUNNER_TEMP/pairing-orchestration-raw.log" "$ARTIFACT_DIR/pairing-orchestration-redacted.log"
             if [[ -f "$RUNNER_TEMP/mock-requests.jsonl" ]]; then
               MOCK_REQUESTS="$RUNNER_TEMP/mock-requests.jsonl" node <<'NODE' >"$ARTIFACT_DIR/mock-request-summary.txt" || true
           const fs = require("node:fs");
@@ -448,6 +491,7 @@ jobs:
             node_pair_deadline=$((SECONDS + 180))
             node_pair_approved=false
             while (( SECONDS < node_pair_deadline )); do
+              approve_pending_devices || true
               if approve_pending_nodes; then
                 node_pair_approved=true
                 break
