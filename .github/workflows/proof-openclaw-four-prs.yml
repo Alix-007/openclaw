@@ -409,5 +409,6 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
