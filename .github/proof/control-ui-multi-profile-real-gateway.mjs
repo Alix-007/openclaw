@@ -176,9 +176,9 @@ try {
     OPENCLAW_GATEWAY_TOKEN: gatewayToken,
     NO_COLOR: "1",
   };
-  for (const [profileId, token] of [
-    [readyProfileId, "fixture-ready-token"],
-    [rejectedProfileId, "fixture-rejected-token"],
+  for (const [profileId, apiKey] of [
+    [readyProfileId, ["sk", "proof", "ready", "key", "not", "used"].join("-")],
+    [rejectedProfileId, ["sk", "proof", "rejected", "key", "not", "used"].join("-")],
   ]) {
     await run(
       process.execPath,
@@ -186,13 +186,13 @@ try {
         "openclaw.mjs",
         "models",
         "auth",
-        "paste-token",
+        "paste-api-key",
         "--provider",
         providerId,
         "--profile-id",
         profileId,
       ],
-      { env: proofEnv, input: `${token}\n` },
+      { env: proofEnv, input: `${apiKey}\n` },
     );
   }
 
@@ -245,12 +245,48 @@ try {
   }
   const card = page.locator(`[data-provider-id="${providerId}"]`);
   await card.waitFor({ state: "visible", timeout: 30_000 });
-  await page.waitForFunction(
-    (id) => document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
-    providerId,
-    { timeout: 30_000 },
-  );
-  const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
+  const captureObservedState = async (label) => {
+    const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
+    const modelsList = responsePayload(gatewayFrames.modelsList);
+    const authStatus = responsePayload(gatewayFrames.authStatus);
+    await page.screenshot({
+      path: path.join(artifactDir, `provider-card-${label}.png`),
+      fullPage: true,
+    });
+    await writeFile(path.join(artifactDir, `page-${label}.html`), await page.content(), "utf8");
+    await writeFile(
+      path.join(artifactDir, `observed-${label}.json`),
+      `${JSON.stringify(
+        {
+          targetSha,
+          route: new URL(page.url()).pathname,
+          cardText,
+          authStatus,
+          modelsList,
+          providerAuth: authStatus?.providers?.find((item) => item.provider === providerId),
+          providerModel: modelsList?.models?.find((item) => item.provider === providerId),
+          providerOutcomes: modelsList?.providerOutcomes?.filter(
+            (item) => item.provider === providerId,
+          ),
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    return cardText;
+  };
+  try {
+    await page.waitForFunction(
+      (id) => document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
+      providerId,
+      { timeout: 30_000 },
+    );
+  } catch (error) {
+    await captureObservedState("failure");
+    throw error;
+  }
+  const cardText = await captureObservedState("ready");
   if (!cardText.includes("Ready") || cardText.includes("Credentials rejected")) {
     throw new Error(`Unexpected provider card state: ${cardText}`);
   }
@@ -277,10 +313,6 @@ try {
     throw new Error(`Missing multi-profile evidence: ${JSON.stringify({ outcomes, profiles })}`);
   }
 
-  await page.screenshot({
-    path: path.join(artifactDir, "provider-card-ready.png"),
-    fullPage: true,
-  });
   await writeFile(
     path.join(artifactDir, "gateway-frames.json"),
     `${JSON.stringify({ authStatus: gatewayFrames.authStatus, modelsList: gatewayFrames.modelsList }, null, 2)}\n`,
