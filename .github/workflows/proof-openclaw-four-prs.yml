@@ -172,6 +172,24 @@ jobs:
                 extensions/perplexity/src/perplexity-web-search-provider.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               node scripts/run-vitest.mjs \
+                src/infra/net/fetch-guard.request-context.test.ts \
+                src/agents/provider-http-error-request-context.test.ts \
+                src/agents/provider-transport-fetch.integration.test.ts \
+                src/agents/provider-http-error-callsite-inventory.test.ts \
+                src/plugin-sdk/fetch-runtime.test.ts \
+                src/media-understanding/shared.request-context.test.ts \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              node scripts/run-vitest.mjs \
+                extensions/chutes/oauth.test.ts \
+                extensions/msteams/src/oauth.test.ts \
+                extensions/openai/openai-chatgpt-oauth-flow.runtime.test.ts \
+                extensions/inworld/tts.test.ts \
+                extensions/voice-call/src/providers/shared/guarded-json-api.test.ts \
+                extensions/voice-call/src/providers/telnyx.test.ts \
+                extensions/voice-call/src/providers/twilio.test.ts \
+                extensions/voice-call/src/providers/twilio/api.test.ts \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              node scripts/run-vitest.mjs \
                 extensions/openai/realtime-provider-shared.test.ts \
                 extensions/openai/embedding-batch.test.ts \
                 extensions/openai/image-generation-provider.test.ts \
@@ -202,6 +220,36 @@ jobs:
               grep -F 'redacts reflected request credentials from provider diagnostics' "$log_file"
               grep -F "redacts reflected credentials from 'native Search API' diagnostics" "$log_file"
               grep -F "redacts reflected credentials from 'chat completions' diagnostics" "$log_file"
+              grep -F 'records redirect-adjusted final headers and sensitive URL values' "$log_file"
+              grep -F 'does not record credentials stripped by a cross-origin redirect' "$log_file"
+              grep -F 'redacts final header, query, and userinfo credentials without caller options' "$log_file"
+              grep -F 'snapshots headers and inherits context across a reconstructed response' "$log_file"
+              grep -F 'omits provider diagnostics when a sensitive URL value is too short to redact exactly' "$log_file"
+              grep -F 'redacts reflected configured header values with arbitrary names' "$log_file"
+              grep -F 'redacts final request credentials from invalid streamed response bodies' "$log_file"
+              grep -F 'requires context for raw responses even alongside guarded calls' "$log_file"
+              grep -F 'rejects bounded context gaps at canonical helper callsites' "$log_file"
+              grep -F 'preserves guarded request context when wrapping a response body' "$log_file"
+              grep -F 'redacts request headers and initial/final signed URL values from reflected errors' "$log_file"
+              grep -F 'redacts exact authorization-code form credentials from token errors' "$log_file"
+              grep -F 'redacts exact refresh form credentials from token errors' "$log_file"
+              grep -F 'bounds and redacts token refresh errors' "$log_file"
+              grep -F "redacts 'raw' request values from failed token 'exchange' responses" "$log_file"
+              grep -F "redacts 'short' request values from failed token 'refresh' responses" "$log_file"
+              grep -F "redacts 'raw' credentials from 'tts' failures using the guarded request context" "$log_file"
+              grep -F "redacts 'short' credentials from 'voices' failures using the guarded request context" "$log_file"
+              grep -F 'redacts credential-bearing content from provider error bodies' "$log_file"
+              grep -F 'redacts a reflected stream auth token from provider errors' "$log_file"
+              grep -F 'redacts a reflected turn token while preserving the outbound form value' "$log_file"
+              grep -F 'retries startListening when Twilio briefly rejects a live-call update as not in progress' "$log_file"
+              export OPENCLAW_PROOF_GUARDED_REQUEST_CONTEXT=1
+              export OPENCLAW_PROOF_CONFIGURED_HEADER=1
+              export OPENCLAW_PROOF_INVALID_CONTENT=1
+              export OPENCLAW_PROOF_SHORT_FAIL_CLOSED=1
+              export OPENCLAW_PROOF_MANUAL_OAUTH=1
+              export OPENCLAW_PROOF_MANUAL_VOICE=1
+              export OPENCLAW_PROOF_INWORLD=1
+              export OPENCLAW_PROOF_CALLSITE_INVENTORY=1
               export OPENCLAW_PROOF_OPENAI_PLUGIN_TTS=1
               export OPENCLAW_PROOF_JSON_SLASH=1
               export OPENCLAW_PROOF_JSON_SLASH_DANGLING=1
@@ -226,7 +274,7 @@ jobs:
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/foundation-sdk-runtime.mjs \
                 2>&1 | tee -a "$log_file"
-              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
+              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true redirect-final-context=true configured-header=true invalid-content=true short-fail-closed=true manual-oauth=true manual-voice=true inworld=true inventory=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
               marker='[foundation compiled SDK proof]'
               ;;
             matrix)
