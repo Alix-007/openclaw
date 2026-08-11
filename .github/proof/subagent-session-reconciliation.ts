@@ -150,7 +150,7 @@ async function runScenario(scenario: Scenario): Promise<ScenarioResult> {
     closeDatabases();
 
     const runs = registryStore.loadSubagentRegistryFromSqlite();
-    const sessionRows = sessionAccessor.listSessionEntries({ storePath }).length;
+    const sessionRows = sessionAccessor.countSessionEntryRowsReadOnly({ storePath });
     const registryRows = runs.size;
     if (sessionRows !== (scenario.siblingSessionKey ? 2 : 1) || registryRows !== 1) {
       throw new Error(`${scenario.name} SQLite row counts are not canonical`);
