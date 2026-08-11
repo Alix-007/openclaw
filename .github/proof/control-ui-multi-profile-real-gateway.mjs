@@ -50,6 +50,29 @@ function run(command, args, options = {}) {
   });
 }
 
+async function callGateway(method, params, env) {
+  const result = await run(
+    process.execPath,
+    [
+      "openclaw.mjs",
+      "gateway",
+      "call",
+      method,
+      "--url",
+      `ws://127.0.0.1:${port}`,
+      "--token",
+      gatewayToken,
+      "--params",
+      JSON.stringify(params),
+      "--timeout",
+      "30000",
+      "--json",
+    ],
+    { env },
+  );
+  return JSON.parse(result.stdout);
+}
+
 async function waitForGateway(gateway) {
   for (let attempt = 0; attempt < 120; attempt += 1) {
     if (gateway.exitCode !== null) {
@@ -125,9 +148,8 @@ try {
         async run() {
           return {
             provider: {
-              baseUrl: "http://127.0.0.1:9",
-              api: "openai-responses",
-              apiKey: "proof-catalog-key-not-used",
+              baseUrl: "https://chatgpt.com/backend-api/codex",
+              api: "openai-chatgpt-responses",
               models: [{
                 id: ${JSON.stringify(modelId)},
                 name: "Proof Model",
@@ -176,9 +198,9 @@ try {
     OPENCLAW_GATEWAY_TOKEN: gatewayToken,
     NO_COLOR: "1",
   };
-  for (const [profileId, apiKey] of [
-    [readyProfileId, ["sk", "proof", "ready", "key", "not", "used"].join("-")],
-    [rejectedProfileId, ["sk", "proof", "rejected", "key", "not", "used"].join("-")],
+  for (const [profileId, token] of [
+    [readyProfileId, "proof-ready-subscription-token-not-used"],
+    [rejectedProfileId, "proof-rejected-subscription-token-not-used"],
   ]) {
     await run(
       process.execPath,
@@ -186,13 +208,15 @@ try {
         "openclaw.mjs",
         "models",
         "auth",
-        "paste-api-key",
+        "paste-token",
         "--provider",
         providerId,
         "--profile-id",
         profileId,
+        "--expires-in",
+        "365d",
       ],
-      { env: proofEnv, input: `${apiKey}\n` },
+      { env: proofEnv, input: `${token}\n` },
     );
   }
 
@@ -208,6 +232,60 @@ try {
     gatewayStderr += chunk;
   });
   await waitForGateway(gateway);
+
+  const rpcAuthStatus = await callGateway("models.authStatus", {}, proofEnv);
+  const rpcModelsList = await callGateway(
+    "models.list",
+    { view: "all", includeProviderCapabilities: true },
+    proofEnv,
+  );
+  const rpcProviderAuth = rpcAuthStatus.providers?.find((item) => item.provider === providerId);
+  const rpcProviderModel = rpcModelsList.models?.find(
+    (item) => item.provider === providerId && item.id === modelId,
+  );
+  const rpcProfiles = rpcProviderAuth?.profiles?.map((item) => item.profileId) ?? [];
+  const rpcOutcomes = rpcModelsList.providerOutcomes?.filter(
+    (item) => item.provider === providerId,
+  );
+  await writeFile(
+    path.join(artifactDir, "rpc-preflight.json"),
+    `${JSON.stringify(
+      {
+        targetSha,
+        authStatus: rpcAuthStatus,
+        modelsList: rpcModelsList,
+        providerAuth: rpcProviderAuth,
+        providerModel: rpcProviderModel,
+        savedProfiles: rpcProfiles,
+        providerOutcomes: rpcOutcomes,
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
+  if (rpcProviderAuth?.status !== "ok") {
+    throw new Error(
+      `Expected healthy saved-profile auth, got ${rpcProviderAuth?.status ?? "missing"}`,
+    );
+  }
+  if (!rpcProfiles.includes(readyProfileId) || !rpcProfiles.includes(rejectedProfileId)) {
+    throw new Error(`Missing saved token profiles: ${JSON.stringify(rpcProfiles)}`);
+  }
+  if (rpcProviderModel?.available !== true) {
+    throw new Error(
+      `Expected proof model to be available before Chromium, got ${JSON.stringify(rpcProviderModel)}`,
+    );
+  }
+  if (
+    rpcOutcomes?.length !== 2 ||
+    !rpcOutcomes.some((item) => item.profileId === readyProfileId && item.status === "ready") ||
+    !rpcOutcomes.some(
+      (item) => item.profileId === rejectedProfileId && item.status === "auth-rejected",
+    )
+  ) {
+    throw new Error(`Missing preflight provider outcomes: ${JSON.stringify(rpcOutcomes)}`);
+  }
 
   browser = await chromium.launch();
   context = await browser.newContext({
@@ -324,7 +402,7 @@ try {
         targetSha,
         realGateway: true,
         realChromium: true,
-        savedProfiles: profiles.sort(),
+        savedProfiles: profiles.toSorted(),
         providerOutcomes: outcomes,
         providerCard: { containsReady: true, containsCredentialsRejected: false, text: cardText },
         verdict: "pass",
