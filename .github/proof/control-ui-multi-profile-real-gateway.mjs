@@ -127,6 +127,7 @@ try {
             provider: {
               baseUrl: "http://127.0.0.1:9",
               api: "openai-responses",
+              apiKey: "proof-catalog-key-not-used",
               models: [{
                 id: ${JSON.stringify(modelId)},
                 name: "Proof Model",
