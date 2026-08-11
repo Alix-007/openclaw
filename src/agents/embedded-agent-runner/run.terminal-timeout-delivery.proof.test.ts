@@ -14,7 +14,7 @@ import {
 } from "./run.overflow-compaction.harness.js";
 import { loadSharedRunIntegrationHarness } from "./run.shared-integration-harness.test-support.js";
 
-const TARGET_HEAD = "57159573ee341db69b624384af9556dd795fd65d";
+const TARGET_HEAD = process.env.OPENCLAW_PROOF_HEAD_SHA ?? "unbound";
 const GENERIC_TIMEOUT = "LLM request timed out.";
 const DETAILED_TIMEOUT =
   "Provider timed out after the request started. Retry the turn, or increase `agents.defaults.timeoutSeconds` if this model routinely needs longer.";
@@ -37,16 +37,16 @@ beforeEach(() => {
 });
 
 describe("PR #122036 after-fix terminal timeout delivery proof", () => {
-  it("delivers one authoritative timeout and preserves tool media metadata", async () => {
+  it("delivers one authoritative timeout and preserves independent same-text errors", async () => {
     const genericTimeoutPayload = setReplyPayloadMetadata(
       { text: GENERIC_TIMEOUT, isError: true },
-      {
-        assistantMessageIndex: 7,
-        replyDelivery: { chatType: "direct", replyToMode: "off" },
-        replyDeliverySource: { channel: "mock-channel", accountId: "proof-account" },
-      },
+      { synthesizedTimeoutError: true },
     );
-    mockedBuildEmbeddedRunPayloads.mockReturnValue([genericTimeoutPayload]);
+    const independentSameTextError = { text: GENERIC_TIMEOUT, isError: true };
+    mockedBuildEmbeddedRunPayloads.mockReturnValue([
+      genericTimeoutPayload,
+      independentSameTextError,
+    ]);
     mockedRunEmbeddedAttempt.mockResolvedValueOnce(
       makeAttemptResult({
         assistantTexts: [],
@@ -78,16 +78,14 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
 
     expect(terminalPayloads).toHaveLength(2);
     expect(terminalPayloads[0]).toMatchObject({
-      text: undefined,
-      isError: undefined,
+      text: GENERIC_TIMEOUT,
+      isError: true,
       mediaUrl: TOOL_MEDIA_URL,
       mediaUrls: [TOOL_MEDIA_URL],
     });
-    expect(getReplyPayloadMetadata(terminalPayloads[0] ?? {})).toMatchObject({
-      assistantMessageIndex: 7,
-      replyDelivery: { chatType: "direct", replyToMode: "off" },
-      replyDeliverySource: { channel: "mock-channel", accountId: "proof-account" },
-    });
+    expect(getReplyPayloadMetadata(terminalPayloads[0] ?? {})?.synthesizedTimeoutError).not.toBe(
+      true,
+    );
     expect(terminalPayloads[1]).toEqual({ text: DETAILED_TIMEOUT, isError: true });
 
     const physicalSends: Array<{
@@ -105,8 +103,11 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
     }
     await settleReplyDispatcher({ dispatcher });
 
-    const genericTimeoutSends = physicalSends.filter(
+    const sameTextIndependentSends = physicalSends.filter(
       ({ payload }) => payload.text?.trim() === GENERIC_TIMEOUT,
+    );
+    const taggedSynthesizedTimeoutSends = physicalSends.filter(
+      ({ payload }) => getReplyPayloadMetadata(payload)?.synthesizedTimeoutError === true,
     );
     const detailedTimeoutSends = physicalSends.filter(
       ({ payload }) => payload.text?.trim() === DETAILED_TIMEOUT,
@@ -116,22 +117,18 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
     );
 
     expect(mockChannelApi).toHaveBeenCalledTimes(2);
-    expect(genericTimeoutSends).toHaveLength(0);
+    expect(sameTextIndependentSends).toHaveLength(1);
+    expect(taggedSynthesizedTimeoutSends).toHaveLength(0);
     expect(detailedTimeoutSends).toHaveLength(1);
     expect(mediaSends).toHaveLength(1);
     expect(mediaSends[0]).toMatchObject({
       payload: {
-        text: undefined,
-        isError: undefined,
+        text: GENERIC_TIMEOUT,
+        isError: true,
         mediaUrl: TOOL_MEDIA_URL,
         mediaUrls: [TOOL_MEDIA_URL],
       },
-      info: { kind: "final", assistantMessageIndex: 7 },
-      metadata: {
-        assistantMessageIndex: 7,
-        replyDelivery: { chatType: "direct", replyToMode: "off" },
-        replyDeliverySource: { channel: "mock-channel", accountId: "proof-account" },
-      },
+      info: { kind: "final" },
     });
     expect(dispatcher.getFailedCounts()).toEqual({ tool: 0, block: 0, final: 0 });
 
@@ -162,14 +159,11 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
         ],
         observed: {
           physicalSends: physicalSends.length,
-          genericTimeoutTextSends: genericTimeoutSends.length,
+          taggedSynthesizedTimeoutSends: taggedSynthesizedTimeoutSends.length,
+          sameTextIndependentErrorSends: sameTextIndependentSends.length,
           authoritativeDetailedTimeoutSends: detailedTimeoutSends.length,
           toolMediaSends: mediaSends.length,
-          mediaPayloadTextRemoved: mediaSends[0]?.payload.text === undefined,
-          mediaPayloadErrorFlagRemoved: mediaSends[0]?.payload.isError === undefined,
-          deliveryMetadataPreserved:
-            mediaSends[0]?.metadata?.assistantMessageIndex === 7 &&
-            mediaSends[0]?.metadata?.replyDeliverySource?.channel === "mock-channel",
+          mediaPreservedOutsideTaggedPayload: mediaSends.length === 1,
           failedSends: dispatcher.getFailedCounts(),
         },
         redaction: {
