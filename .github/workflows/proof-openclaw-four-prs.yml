@@ -311,6 +311,8 @@ jobs:
                 src/agents/embedded-agent-runner/run/tool-media-payloads.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               pnpm plugin-sdk:api:gen 2>&1 | tee -a "$log_file"
+              cp docs/.generated/plugin-sdk-api-baseline.json \
+                "$output_dir/plugin-sdk-api-baseline.json"
               git diff -- docs/.generated/plugin-sdk-api-baseline \
                 | tee "$output_dir/plugin-sdk-api.diff" | tee -a "$log_file"
               git diff --quiet -- docs/.generated/plugin-sdk-api-baseline
