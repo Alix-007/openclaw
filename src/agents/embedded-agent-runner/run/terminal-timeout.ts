@@ -1,3 +1,4 @@
+import { copyReplyPayloadMetadata } from "../../../auto-reply/reply-payload.js";
 import { projectAgentRunAttemptTerminal } from "../../agent-run-terminal-outcome.js";
 import { hasMessagingToolDeliveryEvidence } from "../delivery-evidence.js";
 import type { EmbeddedAgentMeta, EmbeddedAgentRunResult } from "../types.js";
@@ -68,9 +69,24 @@ export function resolveEmbeddedRunTerminalTimeout(input: {
     ...(typeof providerStarted === "boolean" ? { providerStarted } : {}),
   };
   input.setTerminalLifecycleMeta({ replayInvalid, livenessState, ...timeoutAttribution });
+  const retainedPayloads = (input.payloadsWithToolMedia ?? []).flatMap((payload) => {
+    if (payload.isError !== true || payload.text?.trim() !== "LLM request timed out.") {
+      return [payload];
+    }
+    if (!payload.mediaUrl && !payload.mediaUrls?.length) {
+      return [];
+    }
+    return [
+      copyReplyPayloadMetadata(payload, {
+        ...payload,
+        text: undefined,
+        isError: undefined,
+      }),
+    ];
+  });
   return {
     payloads: [
-      ...(input.hasPartialAssistantTextAfterPromptTimeout ? [] : input.payloadsWithToolMedia || []),
+      ...(input.hasPartialAssistantTextAfterPromptTimeout ? [] : retainedPayloads),
       { text: timeoutText, isError: true },
     ],
     meta: {

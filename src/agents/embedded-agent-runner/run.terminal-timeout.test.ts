@@ -138,4 +138,41 @@ describe("resolveEmbeddedRunTerminalTimeout", () => {
       { text: expect.stringContaining("timed out"), isError: true },
     ]);
   });
+
+  it("replaces an earlier generic timeout error while preserving tool media", () => {
+    const genericTimeoutPayload = {
+      text: "LLM request timed out.",
+      isError: true,
+      mediaUrl: "https://example.test/generic-timeout-tool-output.png",
+      mediaUrls: ["https://example.test/generic-timeout-tool-output.png"],
+    };
+    const toolErrorPayload = { text: "The tool failed before timeout.", isError: true };
+    const visiblePayload = { text: "A tool completed before the provider timed out." };
+    const mediaPayload = {
+      mediaUrl: "https://example.test/tool-output.png",
+      mediaUrls: ["https://example.test/tool-output.png"],
+    };
+    const result = resolveEmbeddedRunTerminalTimeout(
+      makeTimeoutInput(makeTimedOutAttempt(), {
+        payloads: [genericTimeoutPayload, toolErrorPayload, visiblePayload, mediaPayload],
+        payloadsWithToolMedia: [
+          genericTimeoutPayload,
+          toolErrorPayload,
+          visiblePayload,
+          mediaPayload,
+        ],
+      }),
+    );
+
+    expect(result?.payloads).toEqual([
+      {
+        mediaUrl: "https://example.test/generic-timeout-tool-output.png",
+        mediaUrls: ["https://example.test/generic-timeout-tool-output.png"],
+      },
+      toolErrorPayload,
+      visiblePayload,
+      mediaPayload,
+      { text: expect.stringContaining("timed out"), isError: true },
+    ]);
+  });
 });
