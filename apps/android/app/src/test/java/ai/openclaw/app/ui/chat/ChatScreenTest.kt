@@ -241,6 +241,22 @@ class ChatScreenTest {
       )
     }
 
+  @Test
+  fun assistantDisclosureRequiresGatewayMethodSupport() {
+    val preview =
+      ChatMessage(
+        id = "preview",
+        role = "assistant",
+        content = listOf(ChatMessageContent(text = "truncated response")),
+        timestampMs = null,
+        entryId = "message-long",
+        isTruncated = true,
+      )
+
+    assertNull(assistantDisclosureMessageId(preview, supported = false))
+    assertEquals("message-long", assistantDisclosureMessageId(preview, supported = true))
+  }
+
   private fun assistantMessage(text: String): ChatMessage =
     ChatMessage(
       id = "full-message",

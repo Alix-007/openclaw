@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 internal val chatControllerTestJson = Json { ignoreUnknownKeys = true }
 
 internal fun CoroutineScope.createChatController(
+  supportsChatMessageGet: () -> Boolean = { true },
   requestGatewayForGateway: (suspend (gatewayId: String, method: String, paramsJson: String?) -> String)? = null,
   captureSettingsRequestLease: ((gatewayScope: ChatCacheScope?) -> GatewaySession.RequestLease?)? = null,
   transcriptCache: ChatTranscriptCache? = null,
@@ -41,6 +42,7 @@ internal fun CoroutineScope.createChatController(
     scope = this,
     json = chatControllerTestJson,
     requestGateway = requestGateway,
+    supportsChatMessageGet = supportsChatMessageGet,
     requestGatewayForGateway = scopedRequest,
     captureSettingsRequestLease = settingsLease,
     transcriptCache = transcriptCache,
