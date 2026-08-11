@@ -251,9 +251,15 @@ jobs:
           sudo usermod -aG kvm "$USER" || true
           test -r /dev/kvm -a -w /dev/kvm
 
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "emulator" "$SYSTEM_IMAGE"
-          printf 'no\n' | avdmanager create avd \
+          android_sdk_root="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          sdkmanager_bin="$(find "$android_sdk_root/cmdline-tools" -type f -path '*/bin/sdkmanager' -print | sort | tail -1)"
+          test -x "$sdkmanager_bin"
+          avdmanager_bin="$(dirname "$sdkmanager_bin")/avdmanager"
+          test -x "$avdmanager_bin"
+          export PATH="$android_sdk_root/platform-tools:$android_sdk_root/emulator:$(dirname "$sdkmanager_bin"):$PATH"
+          yes | "$sdkmanager_bin" --licenses >/dev/null || true
+          "$sdkmanager_bin" "platform-tools" "emulator" "$SYSTEM_IMAGE"
+          printf 'no\n' | "$avdmanager_bin" create avd \
             --force \
             --name "$AVD_NAME" \
             --package "$SYSTEM_IMAGE" \
