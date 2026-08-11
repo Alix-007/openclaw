@@ -168,6 +168,8 @@ jobs:
               ;;
             electron-tool-search)
               mkdir -p .proof-runtime .proof-dist proof-artifacts
+              node node_modules/tsdown/dist/run.mjs --config tsdown.ai.config.ts \
+                2>&1 | tee "$log_file"
               cp .proof-tooling/.github/proof/electron-tool-search.ts \
                 .proof-runtime/electron-tool-search.ts
               cp .proof-tooling/.github/proof/electron-tool-search.tsdown.config.ts \
@@ -180,7 +182,7 @@ jobs:
               cp src/state/openclaw-state-schema.sql src/state/openclaw-agent-schema.sql \
                 .proof-dist/
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
-                /usr/bin/env -u ELECTRON_RUN_AS_NODE \
+                /usr/bin/env -u DISPLAY -u WAYLAND_DISPLAY -u ELECTRON_RUN_AS_NODE \
                   .electron-proof/node_modules/.bin/electron \
                     --no-sandbox --disable-gpu \
                     .proof-dist \
