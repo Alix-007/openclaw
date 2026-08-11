@@ -78,6 +78,11 @@ jobs:
           transcript_path=""
           transcript_backup=""
 
+          phase() {
+            printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1" >>"$ARTIFACT_DIR/phase.log"
+            echo "::notice title=PR 122200 proof phase::$1"
+          }
+
           redact_file() {
             local source="$1"
             local target="$2"
@@ -241,6 +246,7 @@ jobs:
             [[ -n "$emulator_pid" ]] && kill "$emulator_pid" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
+          phase "proof-step-started"
 
           if [[ ! -c /dev/kvm ]]; then
             echo "/dev/kvm is unavailable" >&2
@@ -259,12 +265,20 @@ jobs:
           export PATH="$android_sdk_root/platform-tools:$android_sdk_root/emulator:$(dirname "$sdkmanager_bin"):$PATH"
           yes | "$sdkmanager_bin" --licenses >/dev/null || true
           "$sdkmanager_bin" "platform-tools" "emulator" "$SYSTEM_IMAGE"
+          phase "android-sdk-ready"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/pr122200-avd"
+          mkdir -p "$ANDROID_AVD_HOME"
           printf 'no\n' | "$avdmanager_bin" create avd \
             --force \
             --name "$AVD_NAME" \
             --package "$SYSTEM_IMAGE" \
             --device pixel_6
-          nohup emulator \
+          emulator_bin="$android_sdk_root/emulator/emulator"
+          test -x "$emulator_bin"
+          "$emulator_bin" -list-avds | tee "$ARTIFACT_DIR/available-avds.txt"
+          grep -Fxq "$AVD_NAME" "$ARTIFACT_DIR/available-avds.txt"
+          phase "avd-created"
+          nohup "$emulator_bin" \
             -avd "$AVD_NAME" \
             -no-window \
             -no-audio \
@@ -274,7 +288,22 @@ jobs:
             -wipe-data \
             >"$ARTIFACT_DIR/emulator.log" 2>&1 &
           emulator_pid=$!
-          adb wait-for-device
+          phase "emulator-launched"
+          adb start-server
+          device_deadline=$((SECONDS + 180))
+          until adb devices | awk 'NR > 1 && $2 == "device" { found = 1 } END { exit(found ? 0 : 1) }'; do
+            if ! kill -0 "$emulator_pid" 2>/dev/null; then
+              wait "$emulator_pid" || true
+              echo "Emulator exited before adb came online" >&2
+              exit 1
+            fi
+            if (( SECONDS >= device_deadline )); then
+              echo "Timed out waiting for adb device" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+          phase "adb-device-online"
           boot_deadline=$((SECONDS + 240))
           until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
             if (( SECONDS >= boot_deadline )); then
@@ -283,6 +312,7 @@ jobs:
             fi
             sleep 2
           done
+          phase "android-boot-complete"
           adb shell settings put global window_animation_scale 0
           adb shell settings put global transition_animation_scale 0
           adb shell settings put global animator_duration_scale 0
@@ -363,6 +393,7 @@ jobs:
             redact_file "$RUNNER_TEMP/gateway-raw.log" "$ARTIFACT_DIR/gateway-start-failure.log"
             exit 1
           fi
+          phase "released-gateway-ready"
 
           adb reverse "tcp:${GATEWAY_PORT}" "tcp:${GATEWAY_PORT}"
           apk_path="$(find apps/android/app/build/outputs/apk/play/debug -name '*.apk' -type f -print -quit)"
@@ -393,6 +424,7 @@ jobs:
             tap_text "Continue" 30
           fi
           wait_text "Message OpenClaw" 180 exact
+          phase "android-chat-ready"
 
           adb shell screenrecord --time-limit 180 /sdcard/pr122200-proof.mp4 \
             >"$RUNNER_TEMP/screenrecord.log" 2>&1 &
@@ -406,14 +438,17 @@ jobs:
             wait_text "View all" 120 exact
           fi
           screenshot "01-preview-view-all.png"
+          phase "preview-captured"
 
           tap_text "View all" 30
           wait_text "Close" 120 exact
           screenshot "02-expanded.png"
+          phase "expanded-captured"
 
           tap_text "Close" 30
           wait_text "View all" 60 exact
           screenshot "03-collapsed.png"
+          phase "collapsed-captured"
 
           adb shell am force-stop ai.openclaw.app
           adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
@@ -426,12 +461,14 @@ jobs:
           tap_text "View all" 30
           wait_text "Retry" 120 exact
           screenshot "04-failed-request-retryable.png"
+          phase "retryable-failure-captured"
 
           mv "$transcript_backup" "$transcript_path"
           transcript_backup=""
           tap_text "Retry" 30
           wait_text "Close" 120 exact
           screenshot "05-retry-success.png"
+          phase "retry-success-captured"
 
           adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
           wait "$screenrecord_pid" 2>/dev/null || true
