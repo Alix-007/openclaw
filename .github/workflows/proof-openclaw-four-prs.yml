@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: Alix-007/openclaw
-          ref: 6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6
+          ref: 9af4f079faa1e605f3d9cf26a52f2820aa4d0c65
           path: .timeout-proof-tooling
           sparse-checkout: |
             src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts
@@ -310,12 +310,17 @@ jobs:
                 src/agents/embedded-agent-runner/run/payloads.errors.test.ts \
                 src/agents/embedded-agent-runner/run/tool-media-payloads.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
-              OPENCLAW_PROOF_HARNESS_COMMIT=6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6 \
+              pnpm plugin-sdk:api:gen 2>&1 | tee -a "$log_file"
+              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.sha256 \
+                2>&1 | tee -a "$log_file"
+              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
+              pnpm plugin-sdk:surface:check 2>&1 | tee -a "$log_file"
+              OPENCLAW_PROOF_HARNESS_COMMIT=9af4f079faa1e605f3d9cf26a52f2820aa4d0c65 \
                 OPENCLAW_PROOF_VERDICT_PATH="$output_dir/delivery.json" \
                 node scripts/run-vitest.mjs \
                   src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts \
                   --reporter=verbose 2>&1 | tee -a "$log_file"
-              OPENCLAW_PROOF_HARNESS_COMMIT=6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6 \
+              OPENCLAW_PROOF_HARNESS_COMMIT=9af4f079faa1e605f3d9cf26a52f2820aa4d0c65 \
                 OPENCLAW_PROOF_VERDICT_PATH="$output_dir/gateway.json" \
                 node scripts/run-vitest.mjs \
                   src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts \
