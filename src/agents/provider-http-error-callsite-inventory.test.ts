@@ -108,9 +108,13 @@ function canonicalHelper(expression: ts.Expression, model: SourceModel): string 
   return model.filePath === MSTEAMS_OWNER && local === WRAPPER ? WRAPPER : undefined;
 }
 
+function isFunctionOwner(node: ts.Node): node is ts.FunctionLikeDeclaration {
+  return ts.isFunctionLike(node) && "body" in node;
+}
+
 function nearestOwner(node: ts.Node): ts.FunctionLikeDeclaration | undefined {
   for (let current = node.parent; current; current = current.parent) {
-    if (ts.isFunctionLike(current)) {
+    if (isFunctionOwner(current)) {
       return current;
     }
   }
@@ -134,7 +138,7 @@ function localInitializer(identifier: ts.Identifier, from: ts.Node): ts.Expressi
   }
   let initializer: ts.Expression | undefined;
   const visit = (node: ts.Node) => {
-    if (node.getStart() >= from.getStart() || (node !== owner && ts.isFunctionLike(node))) {
+    if (node.getStart() >= from.getStart() || (node !== owner && isFunctionOwner(node))) {
       return;
     }
     if (

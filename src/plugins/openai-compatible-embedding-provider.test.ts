@@ -104,7 +104,7 @@ async function startEmbeddingServer(params?: {
           ({
             object: "list",
             data: [{ object: "embedding", embedding: [0.1, 0.2, 0.3], index: 0 }],
-            model: body.model,
+            model: typeof body.model === "string" ? body.model : undefined,
           } satisfies FixtureResponse);
         res.writeHead(params?.status ?? 200, {
           "content-type": typeof payload === "string" ? "text/plain" : "application/json",

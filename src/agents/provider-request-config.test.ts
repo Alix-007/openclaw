@@ -67,11 +67,15 @@ describe("provider request config", () => {
     const bearerModel = applyPreparedRuntimeAuthToModel(model, {
       request: { auth: { mode: "authorization-bearer", token: "entra-token" } },
     });
-    expect(bearerModel.headers).toEqual({
+    const bearerHeaders = bearerModel.headers;
+    if (!bearerHeaders) {
+      throw new Error("expected bearer request headers");
+    }
+    expect(bearerHeaders).toEqual({
       "X-Tenant": "tenant-a",
       Authorization: "Bearer entra-token",
     });
-    expect(getProviderRequestSensitiveHeaderNames(bearerModel.headers)).toEqual([
+    expect(getProviderRequestSensitiveHeaderNames(bearerHeaders)).toEqual([
       "authorization",
       "x-api-key",
       "x-tenant",
@@ -82,11 +86,15 @@ describe("provider request config", () => {
         auth: { mode: "header", headerName: "x-api-key", value: "profile-key" },
       },
     });
-    expect(apiKeyModel.headers).toEqual({
+    const apiKeyHeaders = apiKeyModel.headers;
+    if (!apiKeyHeaders) {
+      throw new Error("expected API key request headers");
+    }
+    expect(apiKeyHeaders).toEqual({
       "X-Tenant": "tenant-a",
       "x-api-key": "profile-key",
     });
-    expect(getProviderRequestSensitiveHeaderNames(apiKeyModel.headers)).toEqual([
+    expect(getProviderRequestSensitiveHeaderNames(apiKeyHeaders)).toEqual([
       "authorization",
       "x-api-key",
       "x-tenant",
