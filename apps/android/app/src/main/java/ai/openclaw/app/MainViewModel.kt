@@ -1688,6 +1688,8 @@ class MainViewModel private constructor(
 
   suspend fun forkChatAtEntry(entryId: String): SessionForkResult? = ensureRuntime().forkChatAtEntry(entryId)
 
+  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? = ensureRuntime().loadFullAssistantMessage(entryId)
+
   suspend fun refreshChatSessionBranches(): Boolean = ensureRuntime().refreshChatSessionBranches()
 
   suspend fun switchChatSessionBranch(leafEntryId: String): Boolean = ensureRuntime().switchChatSessionBranch(leafEntryId)

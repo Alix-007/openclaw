@@ -139,6 +139,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -261,6 +262,49 @@ internal fun shouldUseUserMessageDisclosure(
     content.isNotEmpty() &&
     content.all { it.type == "text" } &&
     ChatUserMessageDisclosurePolicy.collapsedPreview(chatMessagePlainText(content)) != null
+
+internal sealed interface AssistantMessageDisclosureState {
+  data object Loading : AssistantMessageDisclosureState
+
+  data object Error : AssistantMessageDisclosureState
+
+  data class Loaded(
+    val message: ChatMessage,
+    val expanded: Boolean,
+  ) : AssistantMessageDisclosureState
+}
+
+internal class ChatAssistantMessageDisclosureStore {
+  private val states = mutableStateMapOf<String, AssistantMessageDisclosureState>()
+
+  fun state(messageId: String): AssistantMessageDisclosureState? = states[messageId]
+
+  suspend fun toggle(
+    messageId: String,
+    load: suspend () -> ChatMessage?,
+  ) {
+    when (val current = states[messageId]) {
+      is AssistantMessageDisclosureState.Loaded -> {
+        states[messageId] = current.copy(expanded = !current.expanded)
+        return
+      }
+      AssistantMessageDisclosureState.Loading -> return
+      AssistantMessageDisclosureState.Error, null -> Unit
+    }
+
+    states[messageId] = AssistantMessageDisclosureState.Loading
+    states[messageId] =
+      try {
+        load()?.let { AssistantMessageDisclosureState.Loaded(it, expanded = true) }
+          ?: AssistantMessageDisclosureState.Error
+      } catch (err: CancellationException) {
+        states.remove(messageId)
+        throw err
+      } catch (_: Throwable) {
+        AssistantMessageDisclosureState.Error
+      }
+  }
+}
 
 /** Full chat surface that wires MainViewModel state to messages, attachments, voice, and composer actions. */
 @Composable
@@ -771,6 +815,7 @@ fun ChatScreen(
           )
         }
       },
+      loadFullAssistantMessage = viewModel::loadFullAssistantMessage,
       speechState = messageSpeechState,
       onToggleListen = viewModel::toggleChatMessageSpeech,
       inlineMediaPlaybackBlocked = inlineMediaPlaybackBlocked,
@@ -1309,6 +1354,7 @@ private fun ChatMessageList(
   sessionActionsEnabled: Boolean,
   onRewindMessage: (String) -> Unit,
   onForkMessage: (String) -> Unit,
+  loadFullAssistantMessage: suspend (String) -> ChatMessage?,
   speechState: MessageSpeechState?,
   onToggleListen: (String, String) -> Unit,
   inlineMediaPlaybackBlocked: Boolean,
@@ -1361,6 +1407,8 @@ private fun ChatMessageList(
       timeline = timeline,
       historyLoading = historyLoading,
     )
+  val assistantDisclosureStore = remember(sessionKey) { ChatAssistantMessageDisclosureStore() }
+  val disclosureScope = rememberCoroutineScope()
   DisposableEffect(sessionKey, turnRecapResolver) {
     onDispose { turnRecapResolver.abandonActiveWatch(sessionKey) }
   }
@@ -1385,6 +1433,18 @@ private fun ChatMessageList(
               role = item.message.role,
               live = false,
               content = item.message.content,
+              isTruncated = item.message.isTruncated,
+              assistantDisclosureState = item.message.entryId?.let(assistantDisclosureStore::state),
+              onToggleAssistantDisclosure =
+                item.message.entryId?.let { messageId ->
+                  {
+                    disclosureScope.launch {
+                      assistantDisclosureStore.toggle(messageId) {
+                        loadFullAssistantMessage(messageId)
+                      }
+                    }
+                  }
+                },
               timestampMs = item.message.timestampMs,
               onReplyMessage = onReplyMessage,
               sessionActionsEnabled = sessionActionsEnabled,
@@ -1702,12 +1762,21 @@ internal fun ChatBubble(
   resolveInlineWidgetResource: suspend (String, ChatWidgetResource?) -> ChatWidgetResource?,
   loadImageArtifact: suspend (String) -> GatewayLoadedImage?,
   loadMediaArtifact: suspend (String, GatewayMediaKind, Boolean) -> GatewayLoadedMedia?,
+  isTruncated: Boolean = false,
+  assistantDisclosureState: AssistantMessageDisclosureState? = null,
+  onToggleAssistantDisclosure: (() -> Unit)? = null,
 ) {
   val normalizedRole = role.trim().lowercase(Locale.US)
   val isUser = normalizedRole == "user"
   var visibleImageCount = 0
+  val visibleContent =
+    (assistantDisclosureState as? AssistantMessageDisclosureState.Loaded)
+      ?.takeIf { it.expanded }
+      ?.message
+      ?.content
+      ?: content
   val displayableContent =
-    content.filter { part ->
+    visibleContent.filter { part ->
       when (part.type) {
         "text" -> !part.text.isNullOrBlank()
         "image" -> {
@@ -1819,6 +1888,18 @@ internal fun ChatBubble(
               else -> Text(text = part.fileName ?: nativeString("Attachment"), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
             }
           }
+          if (
+            normalizedRole == "assistant" &&
+            !live &&
+            isTruncated &&
+            entryId != null &&
+            onToggleAssistantDisclosure != null
+          ) {
+            ChatAssistantMessageDisclosure(
+              state = assistantDisclosureState,
+              onToggle = onToggleAssistantDisclosure,
+            )
+          }
           if (omittedImageCount > 0) {
             Text(
               text = nativeString("Additional images hidden: \${omittedImageCount}", omittedImageCount),
@@ -1847,6 +1928,25 @@ internal fun ChatBubble(
       }
     }
   }
+}
+
+@Composable
+private fun ChatAssistantMessageDisclosure(
+  state: AssistantMessageDisclosureState?,
+  onToggle: () -> Unit,
+) {
+  val label =
+    when (state) {
+      is AssistantMessageDisclosureState.Loaded -> if (state.expanded) nativeString("Close") else nativeString("View all")
+      AssistantMessageDisclosureState.Error -> nativeString("Retry")
+      AssistantMessageDisclosureState.Loading -> nativeString("Loading")
+      null -> nativeString("View all")
+    }
+  ChatDisclosureButton(
+    label = label,
+    enabled = state != AssistantMessageDisclosureState.Loading,
+    onClick = onToggle,
+  )
 }
 
 @Composable
@@ -1908,19 +2008,29 @@ private fun ChatUserMessageText(
 
   if (preview != null) {
     val toggleLabel = if (expanded) nativeString("Close") else nativeString("View all")
-    Surface(
-      onClick = onToggleExpanded,
-      shape = RoundedCornerShape(8.dp),
-      color = ClawTheme.colors.surfaceRaised.copy(alpha = 0.72f),
-      contentColor = ClawTheme.colors.textMuted,
-      border = BorderStroke(1.dp, ClawTheme.colors.border.copy(alpha = 0.6f)),
-    ) {
-      Text(
-        text = toggleLabel,
-        style = mobileCallout.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold),
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-      )
-    }
+    ChatDisclosureButton(label = toggleLabel, onClick = onToggleExpanded)
+  }
+}
+
+@Composable
+private fun ChatDisclosureButton(
+  label: String,
+  enabled: Boolean = true,
+  onClick: () -> Unit,
+) {
+  Surface(
+    onClick = onClick,
+    enabled = enabled,
+    shape = RoundedCornerShape(8.dp),
+    color = ClawTheme.colors.surfaceRaised.copy(alpha = 0.72f),
+    contentColor = ClawTheme.colors.textMuted,
+    border = BorderStroke(1.dp, ClawTheme.colors.border.copy(alpha = 0.6f)),
+  ) {
+    Text(
+      text = label,
+      style = mobileCallout.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold),
+      modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+    )
   }
 }
 

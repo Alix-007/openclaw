@@ -58,6 +58,7 @@ import java.util.concurrent.atomic.AtomicLong
 internal const val SESSION_LIST_FETCH_LIMIT = 200
 private val QUESTION_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
 private val SWARM_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
+private const val FULL_CHAT_MESSAGE_MAX_CHARS = 500_000
 private const val SUBAGENT_ACTIVITY_RETENTION_MS = 60_000L
 private const val SESSION_EDITOR_MAX_BASE64_CHARS = ((OUTBOX_MAX_COMMAND_ATTACHMENT_BYTES + 2) / 3) * 4
 private val MANAGED_MEDIA_PATH_REGEX =
@@ -1387,6 +1388,41 @@ class ChatController internal constructor(
         BranchRefreshPurpose.ReadOnly
       }
     return refreshSessionBranches(snapshot, previousState = previousState, purpose = purpose)
+  }
+
+  /** Loads the canonical row only when the current transcript identifies it as a truncated assistant preview. */
+  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? {
+    val messageId = entryId.trim().takeIf { it.isNotEmpty() } ?: return null
+    val snapshot = currentSessionActionSnapshot(_sessionKey.value) ?: return null
+    val markedPreview =
+      _messages.value.any { message ->
+        message.role == "assistant" && message.entryId == messageId && message.isTruncated
+      }
+    if (!markedPreview) return null
+    val params =
+      buildJsonObject {
+        put("sessionKey", JsonPrimitive(snapshot.sessionKey))
+        put("agentId", JsonPrimitive(snapshot.ownerAgentId))
+        put("messageId", JsonPrimitive(messageId))
+        put("maxChars", JsonPrimitive(FULL_CHAT_MESSAGE_MAX_CHARS))
+      }
+    return try {
+      val root =
+        json
+          .parseToJsonElement(
+            requestGatewayBound(snapshot.gatewayScope?.gatewayId, "chat.message.get", params.toString()),
+          ).asObjectOrNull()
+      if (!isCurrentSessionAction(snapshot) || root?.get("ok").asBooleanOrNull() != true) return null
+      root
+        ?.get("message")
+        .asObjectOrNull()
+        ?.let(::parseVisibleChatMessage)
+        ?.takeIf { it.role == "assistant" }
+    } catch (err: CancellationException) {
+      throw err
+    } catch (_: Throwable) {
+      null
+    }
   }
 
   private fun currentSessionActionSnapshot(requestedSessionKey: String): SessionActionSnapshot? {
@@ -6349,19 +6385,7 @@ class ChatController internal constructor(
     val messages =
       array.mapNotNull { item ->
         val obj = item.asObjectOrNull() ?: return@mapNotNull null
-        val role = normalizeVisibleChatMessageRole(obj["role"].asStringOrNull()) ?: return@mapNotNull null
-        val content = parseChatMessageContents(obj)
-        val ts = obj["timestamp"].asLongOrNull()
-        ChatMessage(
-          id = UUID.randomUUID().toString(),
-          role = role,
-          content = content,
-          timestampMs = ts,
-          idempotencyKey = obj["idempotencyKey"].asStringOrNull(),
-          entryId = obj["__openclaw"].asObjectOrNull()?.get("id").asStringOrNull(),
-          provenance = parseChatMessageProvenance(obj["provenance"]),
-          transcriptMarker = parseChatTranscriptMarker(obj["__openclaw"]),
-        )
+        parseVisibleChatMessage(obj)
       }
 
     return ChatHistory(
@@ -6391,6 +6415,22 @@ class ChatController internal constructor(
       id = obj["id"].asJsonStringOrNull(),
       tokensBefore = obj["tokensBefore"].asJsonNumberOrNull(),
       tokensAfter = obj["tokensAfter"].asJsonNumberOrNull(),
+    )
+  }
+
+  private fun parseVisibleChatMessage(obj: JsonObject): ChatMessage? {
+    val role = normalizeVisibleChatMessageRole(obj["role"].asStringOrNull()) ?: return null
+    val metadata = obj["__openclaw"].asObjectOrNull()
+    return ChatMessage(
+      id = UUID.randomUUID().toString(),
+      role = role,
+      content = parseChatMessageContents(obj),
+      timestampMs = obj["timestamp"].asLongOrNull(),
+      idempotencyKey = obj["idempotencyKey"].asStringOrNull(),
+      entryId = metadata?.get("id").asStringOrNull(),
+      provenance = parseChatMessageProvenance(obj["provenance"]),
+      transcriptMarker = parseChatTranscriptMarker(metadata),
+      isTruncated = metadata?.get("truncated").asBooleanOrNull() == true,
     )
   }
 

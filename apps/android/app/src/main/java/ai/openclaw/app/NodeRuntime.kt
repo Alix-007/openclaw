@@ -5103,6 +5103,8 @@ class NodeRuntime private constructor(
 
   suspend fun forkChatAtEntry(entryId: String): SessionForkResult? = chat.forkSessionAtEntry(chatSessionKey.value, entryId)
 
+  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? = chat.loadFullAssistantMessage(entryId)
+
   suspend fun refreshChatSessionBranches(): Boolean = chat.refreshSessionBranches()
 
   suspend fun switchChatSessionBranch(leafEntryId: String): Boolean = chat.switchSessionBranch(chatSessionKey.value, leafEntryId)

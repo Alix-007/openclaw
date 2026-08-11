@@ -30,6 +30,8 @@ data class ChatMessage(
   val entryId: String? = null,
   val provenance: ChatMessageProvenance? = null,
   val transcriptMarker: ChatTranscriptMarker? = null,
+  /** True when chat.history projected this row as a bounded preview. */
+  val isTruncated: Boolean = false,
 )
 
 data class ChatMessageProvenance(
