@@ -1,0 +1,459 @@
+name: PR 122200 Android interaction proof
+
+on:
+  push:
+    branches:
+      - proof/pr122200-android-4d-kvm
+
+permissions: {}
+
+concurrency:
+  group: pr122200-android-proof
+  cancel-in-progress: true
+
+jobs:
+  android-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      PRODUCT_SHA: 4d7dce9382ef2f9db837d10f905f46d7f614a12b
+      GATEWAY_VERSION: 2026.7.1-2
+      GATEWAY_PORT: "18791"
+      MOCK_PORT: "18881"
+      PROOF_TOKEN: pr122200proof
+      PROOF_API_KEY: proof-dummy-key
+      AVD_NAME: pr122200
+      SYSTEM_IMAGE: system-images;android-35;google_apis;x86_64
+
+    steps:
+      - name: Check out exact product head
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ env.PRODUCT_SHA }}
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up repository toolchain
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "true"
+          use-actions-cache: "false"
+
+      - name: Build exact-head Android APK
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
+          cd apps/android
+          ./gradlew --no-daemon :app:assemblePlayDebug
+
+      - name: Exercise released Gateway in a real emulator
+        id: proof
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          artifact_dir="$RUNNER_TEMP/pr122200-artifacts"
+          state_dir="$RUNNER_TEMP/pr122200-state"
+          workspace_dir="$RUNNER_TEMP/pr122200-workspace"
+          mkdir -p "$artifact_dir" "$state_dir" "$workspace_dir"
+          export ARTIFACT_DIR="$artifact_dir"
+          export OPENCLAW_STATE_DIR="$state_dir"
+          export OPENCLAW_CONFIG_PATH="$state_dir/openclaw.json"
+          export OPENAI_API_KEY="$PROOF_API_KEY"
+          export OPENCLAW_GATEWAY_TOKEN="$PROOF_TOKEN"
+          export OPENCLAW_DISABLE_BONJOUR=1
+
+          emulator_pid=""
+          gateway_pid=""
+          mock_pid=""
+          screenrecord_pid=""
+          transcript_path=""
+          transcript_backup=""
+
+          redact_file() {
+            local source="$1"
+            local target="$2"
+            if [[ -f "$source" ]]; then
+              sed \
+                -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
+                -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
+                "$source" >"$target"
+            fi
+          }
+
+          dump_ui() {
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null 2>&1 || return 1
+            adb exec-out cat /sdcard/window.xml >"$RUNNER_TEMP/window.xml"
+          }
+
+          ui_point() {
+            local target="$1"
+            local mode="${2:-exact}"
+            dump_ui || return 1
+            TARGET="$target" MATCH_MODE="$mode" node <<'NODE'
+          const fs = require("node:fs");
+          const xml = fs.readFileSync(process.env.RUNNER_TEMP + "/window.xml", "utf8");
+          const target = process.env.TARGET ?? "";
+          const exact = process.env.MATCH_MODE !== "contains";
+          const decode = (value) =>
+            value
+              .replaceAll("&quot;", '"')
+              .replaceAll("&apos;", "'")
+              .replaceAll("&lt;", "<")
+              .replaceAll("&gt;", ">")
+              .replaceAll("&amp;", "&");
+          const attr = (tag, name) => {
+            const match = tag.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`));
+            return match ? decode(match[1]) : "";
+          };
+          const matches = [];
+          for (const tag of xml.match(/<node\b[^>]*>/g) ?? []) {
+            const labels = [attr(tag, "text"), attr(tag, "content-desc")].filter(Boolean);
+            if (!labels.some((label) => (exact ? label === target : label.includes(target)))) continue;
+            const bounds = attr(tag, "bounds").match(/^\[(\d+),(\d+)]\[(\d+),(\d+)]$/);
+            if (!bounds) continue;
+            const [, left, top, right, bottom] = bounds.map(Number);
+            matches.push({ x: Math.round((left + right) / 2), y: Math.round((top + bottom) / 2) });
+          }
+          matches.sort((a, b) => b.y - a.y || a.x - b.x);
+          if (!matches.length) process.exit(1);
+          process.stdout.write(`${matches[0].x} ${matches[0].y}`);
+          NODE
+          }
+
+          wait_text() {
+            local target="$1"
+            local timeout_seconds="${2:-120}"
+            local mode="${3:-exact}"
+            local deadline=$((SECONDS + timeout_seconds))
+            while (( SECONDS < deadline )); do
+              if ui_point "$target" "$mode" >/dev/null 2>&1; then
+                return 0
+              fi
+              sleep 2
+            done
+            dump_ui || true
+            cp "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/timeout-window.xml" 2>/dev/null || true
+            echo "Timed out waiting for UI text: $target" >&2
+            return 1
+          }
+
+          tap_text() {
+            local target="$1"
+            local timeout_seconds="${2:-120}"
+            local mode="${3:-exact}"
+            wait_text "$target" "$timeout_seconds" "$mode"
+            local point
+            point="$(ui_point "$target" "$mode")"
+            read -r x y <<<"$point"
+            adb shell input tap "$x" "$y"
+          }
+
+          type_into() {
+            local field="$1"
+            local value="$2"
+            tap_text "$field" 60 exact
+            adb shell input keyevent KEYCODE_MOVE_END
+            for _ in $(seq 1 40); do adb shell input keyevent KEYCODE_DEL; done
+            adb shell input text "$value"
+            adb shell input keyevent KEYCODE_ESCAPE
+          }
+
+          screenshot() {
+            local name="$1"
+            adb exec-out screencap -p >"$ARTIFACT_DIR/$name"
+            dump_ui || true
+            cp "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/${name%.png}.xml" 2>/dev/null || true
+          }
+
+          approve_pending_devices() {
+            local output="$RUNNER_TEMP/devices.json"
+            if ! openclaw devices list --json \
+              --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+              --token "$PROOF_TOKEN" >"$output" 2>/dev/null; then
+              return 0
+            fi
+            DEVICES_JSON="$output" node <<'NODE' | while IFS= read -r request_id; do
+          const fs = require("node:fs");
+          const text = fs.readFileSync(process.env.DEVICES_JSON, "utf8");
+          const start = text.indexOf("{");
+          if (start < 0) process.exit(0);
+          const value = JSON.parse(text.slice(start));
+          for (const pending of value.pending ?? []) {
+            if (typeof pending.requestId === "string") console.log(pending.requestId);
+          }
+          NODE
+              openclaw devices approve "$request_id" \
+                --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+                --token "$PROOF_TOKEN" >/dev/null
+            done
+          }
+
+          wait_tcp() {
+            local host="$1"
+            local port="$2"
+            local timeout_seconds="${3:-120}"
+            local deadline=$((SECONDS + timeout_seconds))
+            while (( SECONDS < deadline )); do
+              if (echo >/dev/tcp/"$host"/"$port") >/dev/null 2>&1; then return 0; fi
+              sleep 2
+            done
+            return 1
+          }
+
+          cleanup() {
+            set +e
+            if [[ -n "$transcript_backup" && -f "$transcript_backup" && -n "$transcript_path" ]]; then
+              mv "$transcript_backup" "$transcript_path"
+            fi
+            adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
+            if [[ -n "$screenrecord_pid" ]]; then wait "$screenrecord_pid" 2>/dev/null || true; fi
+            adb pull /sdcard/pr122200-proof.mp4 "$ARTIFACT_DIR/pr122200-proof.mp4" >/dev/null 2>&1 || true
+            adb exec-out screencap -p >"$ARTIFACT_DIR/final-state.png" 2>/dev/null || true
+            adb shell uiautomator dump /sdcard/final-window.xml >/dev/null 2>&1 || true
+            adb exec-out cat /sdcard/final-window.xml >"$ARTIFACT_DIR/final-window.xml" 2>/dev/null || true
+            adb logcat -d >"$RUNNER_TEMP/logcat-raw.txt" 2>/dev/null || true
+            redact_file "$RUNNER_TEMP/logcat-raw.txt" "$ARTIFACT_DIR/android-logcat-redacted.txt"
+            redact_file "$RUNNER_TEMP/gateway-raw.log" "$ARTIFACT_DIR/gateway-redacted.log"
+            redact_file "$RUNNER_TEMP/mock-raw.log" "$ARTIFACT_DIR/mock-redacted.log"
+            if [[ -f "$RUNNER_TEMP/mock-requests.jsonl" ]]; then
+              MOCK_REQUESTS="$RUNNER_TEMP/mock-requests.jsonl" node <<'NODE' >"$ARTIFACT_DIR/mock-request-summary.txt" || true
+          const fs = require("node:fs");
+          const lines = fs.readFileSync(process.env.MOCK_REQUESTS, "utf8").trim().split(/\n/u).filter(Boolean);
+          console.log(`request_count=${lines.length}`);
+          for (const [index, line] of lines.entries()) {
+            const entry = JSON.parse(line);
+            console.log(`${index + 1}: ${entry.method ?? "?"} ${entry.path ?? "?"}`);
+          }
+          NODE
+            fi
+            [[ -n "$gateway_pid" ]] && kill "$gateway_pid" >/dev/null 2>&1 || true
+            [[ -n "$mock_pid" ]] && kill "$mock_pid" >/dev/null 2>&1 || true
+            adb emu kill >/dev/null 2>&1 || true
+            [[ -n "$emulator_pid" ]] && kill "$emulator_pid" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          if [[ ! -c /dev/kvm ]]; then
+            echo "/dev/kvm is unavailable" >&2
+            exit 1
+          fi
+          sudo chown root:kvm /dev/kvm
+          sudo chmod 666 /dev/kvm
+          sudo usermod -aG kvm "$USER" || true
+          test -r /dev/kvm -a -w /dev/kvm
+
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "emulator" "$SYSTEM_IMAGE"
+          printf 'no\n' | avdmanager create avd \
+            --force \
+            --name "$AVD_NAME" \
+            --package "$SYSTEM_IMAGE" \
+            --device pixel_6
+          nohup emulator \
+            -avd "$AVD_NAME" \
+            -no-window \
+            -no-audio \
+            -no-boot-anim \
+            -gpu swiftshader_indirect \
+            -no-snapshot \
+            -wipe-data \
+            >"$ARTIFACT_DIR/emulator.log" 2>&1 &
+          emulator_pid=$!
+          adb wait-for-device
+          boot_deadline=$((SECONDS + 240))
+          until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+            if (( SECONDS >= boot_deadline )); then
+              echo "Emulator boot timed out" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+          adb shell input keyevent 82
+
+          npm install --global "openclaw@${GATEWAY_VERSION}"
+          openclaw --version >"$ARTIFACT_DIR/gateway-version.txt"
+
+          success_marker="$(node -e 'process.stdout.write("PR122200_FULL_MESSAGE_START\\n" + "A".repeat(9000) + "\\nPR122200_FULL_MESSAGE_END")')"
+          SUCCESS_MARKER="$success_marker" \
+            MOCK_PORT="$MOCK_PORT" \
+            MOCK_REQUEST_LOG="$RUNNER_TEMP/mock-requests.jsonl" \
+            node scripts/e2e/mock-openai-server.mjs >"$RUNNER_TEMP/mock-raw.log" 2>&1 &
+          mock_pid=$!
+          wait_tcp 127.0.0.1 "$MOCK_PORT" 60
+
+          WORKSPACE_DIR="$workspace_dir" node <<'NODE'
+          const fs = require("node:fs");
+          const config = {
+            gateway: {
+              mode: "local",
+              port: Number(process.env.GATEWAY_PORT),
+              bind: "loopback",
+              auth: { mode: "token", token: process.env.PROOF_TOKEN },
+              controlUi: { enabled: false },
+              nodes: {
+                pairing: { autoApproveCidrs: ["127.0.0.1/32", "::1/128"] },
+              },
+            },
+            models: {
+              mode: "merge",
+              providers: {
+                openai: {
+                  baseUrl: `http://127.0.0.1:${process.env.MOCK_PORT}/v1`,
+                  apiKey: { source: "env", provider: "default", id: "OPENAI_API_KEY" },
+                  api: "openai-responses",
+                  agentRuntime: { id: "openclaw" },
+                  request: { allowPrivateNetwork: true },
+                  models: [
+                    {
+                      id: "pr122200-proof",
+                      name: "PR 122200 proof",
+                      api: "openai-responses",
+                      agentRuntime: { id: "openclaw" },
+                      reasoning: false,
+                      input: ["text"],
+                      cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+                      contextWindow: 128000,
+                      contextTokens: 96000,
+                      maxTokens: 12000,
+                    },
+                  ],
+                },
+              },
+            },
+            agents: {
+              defaults: {
+                model: { primary: "openai/pr122200-proof" },
+                models: {
+                  "openai/pr122200-proof": {
+                    agentRuntime: { id: "openclaw" },
+                    params: { transport: "sse", openaiWsWarmup: false },
+                  },
+                },
+                workspace: process.env.WORKSPACE_DIR,
+                skipBootstrap: true,
+              },
+            },
+            plugins: { enabled: true },
+          };
+          fs.writeFileSync(process.env.OPENCLAW_CONFIG_PATH, JSON.stringify(config, null, 2) + "\n", { mode: 0o600 });
+          NODE
+
+          openclaw gateway run --port "$GATEWAY_PORT" --bind loopback \
+            >"$RUNNER_TEMP/gateway-raw.log" 2>&1 &
+          gateway_pid=$!
+          if ! wait_tcp 127.0.0.1 "$GATEWAY_PORT" 120; then
+            redact_file "$RUNNER_TEMP/gateway-raw.log" "$ARTIFACT_DIR/gateway-start-failure.log"
+            exit 1
+          fi
+
+          adb reverse "tcp:${GATEWAY_PORT}" "tcp:${GATEWAY_PORT}"
+          apk_path="$(find apps/android/app/build/outputs/apk/play/debug -name '*.apk' -type f -print -quit)"
+          test -n "$apk_path"
+          adb install -r "$apk_path"
+          sha256sum "$apk_path" >"$ARTIFACT_DIR/apk-sha256.txt"
+          adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+
+          tap_text "Continue" 90
+          tap_text "Set up manually" 60
+          type_into "Host" "127.0.0.1"
+          type_into "Port" "$GATEWAY_PORT"
+          adb shell input swipe 500 1500 500 500 300
+          type_into "Paste token" "$PROOF_TOKEN"
+          tap_text "Unencrypted" 60
+          tap_text "Test connection" 60
+
+          pairing_deadline=$((SECONDS + 180))
+          while (( SECONDS < pairing_deadline )); do
+            approve_pending_devices || true
+            if ui_point "Gateway paired" contains >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          wait_text "Gateway paired" 5 contains
+          tap_text "Continue" 30
+
+          if wait_text "Permissions" 30 exact; then
+            tap_text "Continue" 30
+          fi
+          wait_text "Message OpenClaw" 180 exact
+
+          adb shell screenrecord --time-limit 180 /sdcard/pr122200-proof.mp4 \
+            >"$RUNNER_TEMP/screenrecord.log" 2>&1 &
+          screenrecord_pid=$!
+
+          type_into "Message OpenClaw" "PR122200_PROOF_REQUEST"
+          tap_text "Send" 60
+          if ! wait_text "View all" 120 exact; then
+            adb shell am force-stop ai.openclaw.app
+            adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+            wait_text "View all" 120 exact
+          fi
+          screenshot "01-preview-view-all.png"
+
+          tap_text "View all" 30
+          wait_text "Close" 120 exact
+          screenshot "02-expanded.png"
+
+          tap_text "Close" 30
+          wait_text "View all" 60 exact
+          screenshot "03-collapsed.png"
+
+          adb shell am force-stop ai.openclaw.app
+          adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+          wait_text "View all" 120 exact
+          transcript_path="$(find "$OPENCLAW_STATE_DIR/agents" -type f -name '*.jsonl' -print0 | xargs -0 grep -l -m1 'PR122200_FULL_MESSAGE_START' | head -1)"
+          test -n "$transcript_path"
+          transcript_backup="${transcript_path}.proof-backup"
+          mv "$transcript_path" "$transcript_backup"
+
+          tap_text "View all" 30
+          wait_text "Retry" 120 exact
+          screenshot "04-failed-request-retryable.png"
+
+          mv "$transcript_backup" "$transcript_path"
+          transcript_backup=""
+          tap_text "Retry" 30
+          wait_text "Close" 120 exact
+          screenshot "05-retry-success.png"
+
+          adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
+          wait "$screenrecord_pid" 2>/dev/null || true
+          screenrecord_pid=""
+          adb pull /sdcard/pr122200-proof.mp4 "$ARTIFACT_DIR/pr122200-proof.mp4" >/dev/null
+
+          {
+            echo "product_sha=$(git rev-parse HEAD)"
+            echo "gateway_version=$(openclaw --version | tr -d '\r')"
+            echo "android_release=$(adb shell getprop ro.build.version.release | tr -d '\r')"
+            echo "android_sdk=$(adb shell getprop ro.build.version.sdk | tr -d '\r')"
+            echo "android_model=$(adb shell getprop ro.product.model | tr -d '\r')"
+            adb shell dumpsys package ai.openclaw.app | sed -n '/versionCode=/p;/versionName=/p' | tr -d '\r'
+            echo "proof_states=preview,expanded,collapsed,failed-request-retryable,retry-success"
+            echo "gateway_contract=v${GATEWAY_VERSION} advertises and handles chat.message.get"
+          } >"$ARTIFACT_DIR/proof-summary.txt"
+          test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
+          test -s "$ARTIFACT_DIR/01-preview-view-all.png"
+          test -s "$ARTIFACT_DIR/02-expanded.png"
+          test -s "$ARTIFACT_DIR/03-collapsed.png"
+          test -s "$ARTIFACT_DIR/04-failed-request-retryable.png"
+          test -s "$ARTIFACT_DIR/05-retry-success.png"
+
+      - name: Upload redacted proof artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr122200-android-exact-head-proof
+          path: ${{ runner.temp }}/pr122200-artifacts
+          if-no-files-found: error
+          retention-days: 30
