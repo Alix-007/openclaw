@@ -13,6 +13,7 @@ on:
           - bootstrap
           - discord
           - foundation
+          - heartbeat
           - matrix
           - memory
           - ollama
@@ -156,6 +157,25 @@ jobs:
               grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
               echo '[foundation credential redaction proof] shared-logging=true provider-http=true guarded-web-transport=true raw=true json=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
               marker='[foundation credential redaction proof]'
+              ;;
+            heartbeat)
+              output_dir='.artifacts/qa-e2e/pr-122075-heartbeat'
+              pnpm openclaw qa suite \
+                --provider-mode mock-openai \
+                --scenario heartbeat-inbound-metadata \
+                --channel-driver qa-channel \
+                --concurrency 1 \
+                --output-dir "$output_dir" \
+                2>&1 | tee "$log_file"
+              report="$output_dir/qa-suite-report.md"
+              test -f "$report"
+              grep -F '"heartbeatConversationInfoPresent":false' "$report"
+              grep -F '"heartbeatRawRoutePresent":false' "$report"
+              grep -F '"deliveredTo":"direct:qa-heartbeat-metadata-route"' "$report"
+              grep -F '"normalConversationInfoPresent":true' "$report"
+              grep -F '"normalRawRoutePresent":true' "$report"
+              echo '[heartbeat inbound metadata proof] configured=true gateway=ephemeral-child provider=mock-openai heartbeat-metadata=false route-delivered=true normal-metadata=true' | tee -a "$log_file"
+              marker='[heartbeat inbound metadata proof]'
               ;;
             matrix)
               node scripts/run-vitest.mjs \
@@ -324,5 +344,6 @@ jobs:
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
             proof-plugin-sdk-api-baseline.sha256
+            .artifacts/qa-e2e/pr-122075-heartbeat
           if-no-files-found: warn
           retention-days: 30
