@@ -6,7 +6,8 @@ import path from "node:path";
 import process from "node:process";
 import { chromium } from "playwright";
 
-const providerId = "proof-multi-profile";
+const pluginId = "proof-multi-profile-plugin";
+const providerId = "openai";
 const readyProfileId = `${providerId}:ready`;
 const rejectedProfileId = `${providerId}:rejected`;
 const modelId = "proof-model";
@@ -78,7 +79,8 @@ function parseFrame(payload) {
 const responsePayload = (frame) => frame?.payload ?? frame?.result;
 const runtimeDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-pr-122300-proof-"));
 const stateDir = path.join(runtimeDir, "state");
-const pluginPath = path.join(runtimeDir, "proof-multi-profile-plugin.mjs");
+const pluginDir = path.join(runtimeDir, "plugin");
+const pluginPath = path.join(pluginDir, "index.mjs");
 const configPath = path.join(stateDir, "openclaw.json");
 const gatewayLogPath = path.join(artifactDir, "gateway.log");
 let browser;
@@ -89,17 +91,34 @@ let gatewayStderr = "";
 
 try {
   await mkdir(stateDir, { recursive: true });
+  await mkdir(pluginDir, { recursive: true });
   await mkdir(artifactDir, { recursive: true });
+  await writeFile(
+    path.join(pluginDir, "openclaw.plugin.json"),
+    `${JSON.stringify(
+      {
+        id: pluginId,
+        name: "PR 122300 profile-scope proof",
+        activation: { onStartup: true },
+        enabledByDefault: true,
+        providers: [providerId],
+        modelCatalog: { discovery: { [providerId]: "runtime" } },
+        configSchema: { type: "object", additionalProperties: false, properties: {} },
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
   await writeFile(
     pluginPath,
     `export default {
-  id: "proof-multi-profile-plugin",
+  id: ${JSON.stringify(pluginId)},
   name: "PR 122300 proof provider",
-  configSchema: { type: "object", additionalProperties: false, properties: {} },
   register(api) {
     api.registerProvider({
       id: ${JSON.stringify(providerId)},
-      label: "Proof Multi Profile",
+      label: "OpenAI",
       auth: [],
       catalog: {
         order: "profile",
@@ -107,7 +126,7 @@ try {
           return {
             provider: {
               baseUrl: "http://127.0.0.1:9",
-              api: "openai-completions",
+              api: "openai-responses",
               models: [{
                 id: ${JSON.stringify(modelId)},
                 name: "Proof Model",
@@ -136,8 +155,11 @@ try {
         auth: { order: { [providerId]: [readyProfileId, rejectedProfileId] } },
         gateway: { mode: "local", auth: { mode: "token" } },
         plugins: {
-          load: { paths: [pluginPath] },
-          entries: { "proof-multi-profile-plugin": { enabled: true } },
+          enabled: true,
+          allow: [pluginId],
+          load: { paths: [pluginDir] },
+          entries: { [pluginId]: { enabled: true } },
+          slots: { memory: "none" },
         },
       },
       null,
