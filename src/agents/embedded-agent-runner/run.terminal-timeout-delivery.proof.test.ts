@@ -20,15 +20,17 @@ const DETAILED_TIMEOUT =
   "Provider timed out after the request started. Retry the turn, or increase `agents.defaults.timeoutSeconds` if this model routinely needs longer.";
 const TOOL_MEDIA_URL = "https://example.test/redacted-tool-output.png";
 
+type TimeoutPayloadProvenance = typeof import("./run/timeout-payload-provenance.js");
+
 let runEmbeddedAgent: Awaited<ReturnType<typeof loadSharedRunIntegrationHarness>>;
-let getReplyPayloadMetadata: typeof import("../../auto-reply/reply-payload.js").getReplyPayloadMetadata;
-let setReplyPayloadMetadata: typeof import("../../auto-reply/reply-payload.js").setReplyPayloadMetadata;
+let isReplyPayloadSynthesizedTimeoutError: TimeoutPayloadProvenance["isReplyPayloadSynthesizedTimeoutError"];
+let markReplyPayloadAsSynthesizedTimeoutError: TimeoutPayloadProvenance["markReplyPayloadAsSynthesizedTimeoutError"];
 let createReplyDispatcher: typeof import("../../auto-reply/reply/reply-dispatcher.js").createReplyDispatcher;
 
 beforeAll(async () => {
   runEmbeddedAgent = await loadSharedRunIntegrationHarness();
-  ({ getReplyPayloadMetadata, setReplyPayloadMetadata } =
-    await import("../../auto-reply/reply-payload.js"));
+  ({ isReplyPayloadSynthesizedTimeoutError, markReplyPayloadAsSynthesizedTimeoutError } =
+    await import("./run/timeout-payload-provenance.js"));
   ({ createReplyDispatcher } = await import("../../auto-reply/reply/reply-dispatcher.js"));
 });
 
@@ -38,10 +40,10 @@ beforeEach(() => {
 
 describe("PR #122036 after-fix terminal timeout delivery proof", () => {
   it("delivers one authoritative timeout and preserves independent same-text errors", async () => {
-    const genericTimeoutPayload = setReplyPayloadMetadata(
-      { text: GENERIC_TIMEOUT, isError: true },
-      { synthesizedTimeoutError: true },
-    );
+    const genericTimeoutPayload = markReplyPayloadAsSynthesizedTimeoutError({
+      text: GENERIC_TIMEOUT,
+      isError: true,
+    });
     const independentSameTextError = { text: GENERIC_TIMEOUT, isError: true };
     mockedBuildEmbeddedRunPayloads.mockReturnValue([
       genericTimeoutPayload,
@@ -83,18 +85,15 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
       mediaUrl: TOOL_MEDIA_URL,
       mediaUrls: [TOOL_MEDIA_URL],
     });
-    expect(getReplyPayloadMetadata(terminalPayloads[0] ?? {})?.synthesizedTimeoutError).not.toBe(
-      true,
-    );
+    expect(isReplyPayloadSynthesizedTimeoutError(terminalPayloads[0] ?? {})).toBe(false);
     expect(terminalPayloads[1]).toEqual({ text: DETAILED_TIMEOUT, isError: true });
 
     const physicalSends: Array<{
       payload: ReplyPayload;
       info: ReplyDispatchRuntimeInfo;
-      metadata: ReturnType<typeof getReplyPayloadMetadata>;
     }> = [];
     const mockChannelApi = vi.fn(async (payload: ReplyPayload, info: ReplyDispatchRuntimeInfo) => {
-      physicalSends.push({ payload, info, metadata: getReplyPayloadMetadata(payload) });
+      physicalSends.push({ payload, info });
       return { visibleReplySent: true, messageId: `mock-send-${physicalSends.length}` };
     });
     const dispatcher = createReplyDispatcher({ deliver: mockChannelApi });
@@ -106,8 +105,8 @@ describe("PR #122036 after-fix terminal timeout delivery proof", () => {
     const sameTextIndependentSends = physicalSends.filter(
       ({ payload }) => payload.text?.trim() === GENERIC_TIMEOUT,
     );
-    const taggedSynthesizedTimeoutSends = physicalSends.filter(
-      ({ payload }) => getReplyPayloadMetadata(payload)?.synthesizedTimeoutError === true,
+    const taggedSynthesizedTimeoutSends = physicalSends.filter(({ payload }) =>
+      isReplyPayloadSynthesizedTimeoutError(payload),
     );
     const detailedTimeoutSends = physicalSends.filter(
       ({ payload }) => payload.text?.trim() === DETAILED_TIMEOUT,
