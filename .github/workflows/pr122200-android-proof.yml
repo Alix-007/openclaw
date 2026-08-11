@@ -405,7 +405,7 @@ jobs:
           tap_text "Continue" 90
           tap_text "Set up manually" 60
           type_into "Host" "127.0.0.1"
-          type_into "Port" "$GATEWAY_PORT"
+          type_into "18789" "$GATEWAY_PORT"
           adb shell input swipe 500 1500 500 500 300
           type_into "Paste token" "$PROOF_TOKEN"
           tap_text "Unencrypted" 60
