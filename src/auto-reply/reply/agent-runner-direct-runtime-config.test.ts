@@ -1,5 +1,6 @@
 // Tests direct runtime config overrides passed into agent runner execution.
 import { join } from "node:path";
+import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FailoverError } from "../../agents/failover-error.js";
 import {
@@ -528,12 +529,13 @@ describe("runReplyAgent runtime config", () => {
           sessionKey,
           storePath,
         })
-      ).filter(
-        (event) =>
-          event.type === "message" &&
-          (event.message as { role?: unknown }).role === "user" &&
-          event.message.content === "hello",
-      );
+      ).filter((event) => {
+        const eventRecord = asOptionalRecord(event);
+        const message = asOptionalRecord(eventRecord?.message);
+        return (
+          eventRecord?.type === "message" && message?.role === "user" && message.content === "hello"
+        );
+      });
       expect(persistedUserTurns).toHaveLength(1);
       expect(onBlockReply).toHaveBeenCalledWith(
         expect.objectContaining({

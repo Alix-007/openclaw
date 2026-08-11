@@ -81,7 +81,9 @@ export async function runAcpAgentCommand(params: {
   let sessionEntry = params.sessionEntry;
   let transcriptContext:
     | {
-        internalTarget: AgentRunSessionTarget | undefined;
+        internalTarget:
+          | Awaited<ReturnType<typeof prepareInternalSessionEffectsSession>>
+          | undefined;
         sessionCwd: string;
         suppressUserTurnPersistence: boolean;
         userTurnTranscriptRecorder: UserTurnTranscriptRecorder;

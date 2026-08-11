@@ -1,7 +1,5 @@
-import {
-  createUserTurnTranscriptRecorder,
-  type UserTurnTranscriptTarget,
-} from "../../sessions/user-turn-transcript.js";
+import { createUserTurnTranscriptRecorder } from "../../sessions/user-turn-transcript.js";
+import type { UserTurnTranscriptTarget } from "../../sessions/user-turn-transcript.types.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "../harness/hook-helpers.js";
 import type { AgentCommandOpts } from "./types.js";
 
