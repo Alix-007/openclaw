@@ -5,9 +5,8 @@ scenario:
   surface: cron
   category: automation.heartbeat
   coverage:
-    primary:
-      - automation.wake-and-cooldown-handling
     secondary:
+      - automation.wake-and-cooldown-handling
       - channels.qa-channel-final-reply
   regressionRefs:
     - openclaw/openclaw#97067
