@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - bootstrap
+          - chat-quota-runtime
           - cron-runtime
           - discord
           - electron-tool-search
@@ -98,7 +99,7 @@ jobs:
           nginx -v
 
       - name: Install Chromium for configured UI proof
-        if: inputs.proof_kind == 'cron-runtime'
+        if: inputs.proof_kind == 'cron-runtime' || inputs.proof_kind == 'chat-quota-runtime'
         shell: bash
         run: |
           set -euo pipefail
@@ -146,6 +147,19 @@ jobs:
               grep -F '[bootstrap deferred finalization proof]' "$log_file"
               echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
+              ;;
+            chat-quota-runtime)
+              mkdir -p .proof-runtime proof-artifacts
+              OPENCLAW_BUILD_PRIVATE_QA=1 pnpm build 2>&1 | tee "$log_file"
+              pnpm ui:build 2>&1 | tee -a "$log_file"
+              cp .proof-tooling/.github/proof/chat-quota-real-gateway.ts \
+                .proof-runtime/chat-quota-real-gateway.ts
+              cp .proof-tooling/.github/proof/chat-quota-usage-preload.mjs \
+                .proof-runtime/chat-quota-usage-preload.mjs
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node --import tsx .proof-runtime/chat-quota-real-gateway.ts \
+                2>&1 | tee -a "$log_file"
+              marker='[chat quota real-gateway proof]'
               ;;
             cron-runtime)
               mkdir -p proof-artifacts
