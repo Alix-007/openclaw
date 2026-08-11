@@ -157,6 +157,15 @@ export async function runAcpAgentCommand(params: {
       userTurnTranscriptRecorder,
     };
     const userTurnResult = await userTurnTranscriptRecorder.persistApproved();
+    if (
+      !userTurnResult &&
+      !userTurnTranscriptRecorder.hasPersisted() &&
+      (await userTurnTranscriptRecorder.resolveMessage())
+    ) {
+      // A hook-rejected user row is terminal for this turn. The assistant mirror
+      // must not retry the same write and bypass a stateful suppression decision.
+      userTurnTranscriptRecorder.markBlocked();
+    }
     if (!internalTarget && userTurnResult?.sessionEntry) {
       sessionEntry = userTurnResult.sessionEntry;
     }

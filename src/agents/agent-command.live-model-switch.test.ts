@@ -4624,6 +4624,25 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     );
   });
 
+  it("does not retry a hook-rejected direct ACP user turn in the success mirror", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("blocked ACP turn");
+    persistApproved.mockImplementationOnce(async () => undefined);
+
+    await agentCommand({
+      message: "blocked ACP turn",
+      sessionKey: "agent:main:main",
+      userTurnTranscriptRecorder: recorder,
+    });
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(recorder.isBlocked()).toBe(true);
+    expect(recorder.hasPersisted()).toBe(false);
+    expect(state.persistAcpTurnTranscriptMock).toHaveBeenCalledWith(
+      expect.objectContaining({ finalText: "done", skipUserTurn: true }),
+    );
+  });
+
   it("keeps suppressed direct ACP prompts out of the transcript", async () => {
     setupAcpSession();
     const { persistApproved, recorder } = createTrackingUserTurnRecorder("internal handoff");
