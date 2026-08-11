@@ -429,7 +429,8 @@ describe("xai video generation provider", () => {
       headers,
       dispatcherPolicy: undefined,
     }));
-    postJsonRequestMock.mockImplementationOnce(async (params) => {
+    postJsonRequestMock.mockImplementationOnce(async (rawParams) => {
+      const params = rawParams as { headers: Headers };
       submittedIdempotencyKey = params.headers.get("x-idempotency-key");
       throw new Error("submit failed");
     });

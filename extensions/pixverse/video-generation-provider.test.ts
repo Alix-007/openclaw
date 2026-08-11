@@ -480,7 +480,8 @@ describe("pixverse video generation provider", () => {
     const traceIds: Array<string | null> = [];
     fetchWithTimeoutMock
       .mockImplementationOnce(async (_url, init) => {
-        traceIds.push(new Headers(init?.headers).get("Ai-trace-id"));
+        const headers = (init as { headers?: HeadersInit } | undefined)?.headers;
+        traceIds.push(new Headers(headers).get("Ai-trace-id"));
         return {
           json: async () => ({
             ErrCode: 0,
@@ -491,7 +492,8 @@ describe("pixverse video generation provider", () => {
         };
       })
       .mockImplementationOnce(async (_url, init) => {
-        traceIds.push(new Headers(init?.headers).get("Ai-trace-id"));
+        const headers = (init as { headers?: HeadersInit } | undefined)?.headers;
+        traceIds.push(new Headers(headers).get("Ai-trace-id"));
         return {
           json: async () => ({
             ErrCode: 0,
