@@ -6,12 +6,21 @@ import {
   createProviderHttpError,
   extractProviderErrorDetail,
   extractProviderRequestId,
-  ProviderHttpError,
   readProviderBinaryResponse,
   readProviderJsonResponse,
   readProviderTextResponse,
   readResponseTextLimited,
 } from "./provider-http-errors.js";
+
+type ProviderHttpErrorShape = Error & {
+  code?: string;
+  errorBody?: string;
+  errorCode?: string;
+  errorType?: string;
+  requestId?: string;
+  status: number;
+  statusCode: number;
+};
 
 function createStreamingBinaryResponse(params: {
   chunkCount: number;
@@ -173,7 +182,7 @@ describe("provider error utils", () => {
       status: 503,
       statusCode: 503,
       message: "Provider API error (503)",
-    } satisfies Partial<ProviderHttpError>);
+    } satisfies Partial<ProviderHttpErrorShape>);
   });
 
   it("propagates a bounded error-body timeout instead of hanging normalization", async () => {
@@ -297,8 +306,8 @@ describe("provider error utils", () => {
       errorCode: "insufficient_quota",
       errorType: "rate_limit_error",
       requestId: "req_456",
-    } satisfies Partial<ProviderHttpError>);
-    const providerError = error as ProviderHttpError;
+    } satisfies Partial<ProviderHttpErrorShape>);
+    const providerError = error as ProviderHttpErrorShape;
     expect(providerError.message).toContain("Quota exceeded");
     expect(providerError.errorBody).toContain("Quota exceeded");
     expect(providerError.errorBody).not.toContain("sk-secret1234567890abcd");
@@ -322,7 +331,7 @@ describe("provider error utils", () => {
 
     const providerError = (await createProviderHttpError(response, "Provider API error", {
       requestHeaders: new Headers({ authorization: `Bearer ${sensitiveValue}` }),
-    })) as ProviderHttpError;
+    })) as ProviderHttpErrorShape;
     const transcriptFields = {
       errorMessage: providerError.message,
       errorCode: providerError.errorCode,
@@ -335,7 +344,7 @@ describe("provider error utils", () => {
       errorCode: "***",
       errorType: "***",
       requestId: "***",
-    } satisfies Partial<ProviderHttpError>);
+    } satisfies Partial<ProviderHttpErrorShape>);
     expect(JSON.stringify(providerError)).not.toContain(sensitiveValue);
     expect(JSON.stringify(transcriptFields)).not.toContain(sensitiveValue);
   });

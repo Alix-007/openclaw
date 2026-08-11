@@ -1,6 +1,6 @@
 import { isSensitiveUrlQueryParamName } from "@openclaw/net-policy/redact-sensitive-url";
 
-export type GuardedResponseRequestContext = {
+type GuardedResponseRequestContext = {
   requestHeaderEntries: readonly (readonly [string, string])[];
   sensitiveRequestHeaderNames: readonly string[];
   sensitiveUrlValues: readonly string[];

@@ -4,7 +4,15 @@ import {
   inheritGuardedResponseRequestContext,
   recordGuardedResponseRequestContext,
 } from "../infra/net/guarded-response-request-context.js";
-import { createProviderHttpError, ProviderHttpError } from "./provider-http-errors.js";
+import { createProviderHttpError } from "./provider-http-errors.js";
+
+type ProviderHttpErrorShape = Error & {
+  code?: string;
+  errorBody?: string;
+  errorCode?: string;
+  errorType?: string;
+  requestId?: string;
+};
 
 describe("provider HTTP guarded request context", () => {
   it("redacts final header, query, and userinfo credentials without caller options", async () => {
@@ -32,7 +40,7 @@ describe("provider HTTP guarded request context", () => {
     const error = (await createProviderHttpError(
       response,
       "Provider API error",
-    )) as ProviderHttpError;
+    )) as ProviderHttpErrorShape;
     const diagnostics = `${error.message}\n${JSON.stringify(error)}`;
 
     for (const secret of [bearer, queryToken, username, password]) {
@@ -111,7 +119,7 @@ describe("provider HTTP guarded request context", () => {
     const error = (await createProviderHttpError(
       response,
       "Provider API error",
-    )) as ProviderHttpError;
+    )) as ProviderHttpErrorShape;
 
     expect(error.message).toContain(
       "diagnostic omitted because it may contain a short sensitive value",

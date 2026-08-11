@@ -347,7 +347,7 @@ export function extractProviderRequestId(response: Response): string | undefined
 }
 
 /** Error type carrying normalized provider status, request id, code, type, and body metadata. */
-export class ProviderHttpError extends Error {
+class ProviderHttpError extends Error {
   readonly status: number;
   readonly statusCode: number;
   readonly code?: string;
