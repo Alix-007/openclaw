@@ -12,6 +12,7 @@ on:
         options:
           - bootstrap
           - control-ui-multi-profile
+          - control-ui-multi-profile-rpc
           - discord
           - foundation
           - heartbeat
@@ -153,6 +154,13 @@ jobs:
               node .proof-tooling/.github/proof/control-ui-multi-profile-real-gateway.mjs \
                 2>&1 | tee -a "$log_file"
               marker='[control-ui multi-profile real-gateway proof]'
+              ;;
+            control-ui-multi-profile-rpc)
+              pnpm build 2>&1 | tee "$log_file"
+              OPENCLAW_PROOF_RPC_ONLY=1 \
+                node .proof-tooling/.github/proof/control-ui-multi-profile-real-gateway.mjs \
+                2>&1 | tee -a "$log_file"
+              marker='[control-ui multi-profile rpc preflight proof]'
               ;;
             discord)
               node scripts/run-vitest.mjs \

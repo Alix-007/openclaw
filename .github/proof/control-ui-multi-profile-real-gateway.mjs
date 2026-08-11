@@ -7,7 +7,7 @@ import process from "node:process";
 import { chromium } from "playwright";
 
 const pluginId = "proof-multi-profile-plugin";
-const providerId = "openai";
+const providerId = "proof-multi-profile";
 const readyProfileId = `${providerId}:ready`;
 const rejectedProfileId = `${providerId}:rejected`;
 const modelId = "proof-model";
@@ -15,6 +15,7 @@ const port = 19821;
 const baseUrl = `http://127.0.0.1:${port}/`;
 const gatewayToken = "proof-only-gateway-token";
 const targetSha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+const rpcOnly = process.env.OPENCLAW_PROOF_RPC_ONLY === "1";
 const artifactDir = path.resolve(".artifacts/control-ui-e2e/pr-122300-real-gateway");
 
 if (!targetSha || !/^[0-9a-f]{40}$/.test(targetSha)) {
@@ -141,15 +142,15 @@ try {
   register(api) {
     api.registerProvider({
       id: ${JSON.stringify(providerId)},
-      label: "OpenAI",
+      label: "Proof Multi-Profile",
       auth: [],
       catalog: {
         order: "profile",
         async run() {
           return {
             provider: {
-              baseUrl: "https://chatgpt.com/backend-api/codex",
-              api: "openai-chatgpt-responses",
+              baseUrl: "http://127.0.0.1:9",
+              api: "openai-completions",
               models: [{
                 id: ${JSON.stringify(modelId)},
                 name: "Proof Model",
@@ -292,133 +293,157 @@ try {
     throw new Error(`Missing preflight provider outcomes: ${JSON.stringify(rpcOutcomes)}`);
   }
 
-  browser = await chromium.launch();
-  context = await browser.newContext({
-    colorScheme: "dark",
-    locale: "en-US",
-    recordVideo: { dir: artifactDir, size: { width: 1440, height: 1000 } },
-    serviceWorkers: "block",
-    viewport: { width: 1440, height: 1000 },
-  });
-  const page = await context.newPage();
-  const pendingMethods = new Map();
-  const gatewayFrames = {};
-  page.on("websocket", (socket) => {
-    socket.on("framesent", ({ payload }) => {
-      const frame = parseFrame(payload);
-      if (frame?.id && frame?.method) {
-        pendingMethods.set(frame.id, frame.method);
-      }
-    });
-    socket.on("framereceived", ({ payload }) => {
-      const frame = parseFrame(payload);
-      const method = frame?.id ? pendingMethods.get(frame.id) : undefined;
-      if (method === "models.authStatus") {
-        gatewayFrames.authStatus = frame;
-      }
-      if (method === "models.list" && responsePayload(frame)?.providerOutcomes) {
-        gatewayFrames.modelsList = frame;
-      }
-    });
-  });
-
-  const response = await page.goto(`${baseUrl}settings/model-providers#token=${gatewayToken}`);
-  if (!response?.ok()) {
-    throw new Error(`Control UI returned ${response?.status() ?? "no response"}`);
-  }
-  const card = page.locator(`[data-provider-id="${providerId}"]`);
-  await card.waitFor({ state: "visible", timeout: 30_000 });
-  const captureObservedState = async (label) => {
-    const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
-    const modelsList = responsePayload(gatewayFrames.modelsList);
-    const authStatus = responsePayload(gatewayFrames.authStatus);
-    await page.screenshot({
-      path: path.join(artifactDir, `provider-card-${label}.png`),
-      fullPage: true,
-    });
-    await writeFile(path.join(artifactDir, `page-${label}.html`), await page.content(), "utf8");
+  if (rpcOnly) {
     await writeFile(
-      path.join(artifactDir, `observed-${label}.json`),
+      path.join(artifactDir, "rpc-verdict.json"),
       `${JSON.stringify(
         {
           targetSha,
-          route: new URL(page.url()).pathname,
-          cardText,
-          authStatus,
-          modelsList,
-          providerAuth: authStatus?.providers?.find((item) => item.provider === providerId),
-          providerModel: modelsList?.models?.find((item) => item.provider === providerId),
-          providerOutcomes: modelsList?.providerOutcomes?.filter(
-            (item) => item.provider === providerId,
-          ),
+          realGateway: true,
+          savedProfiles: rpcProfiles,
+          providerOutcomes: rpcOutcomes,
+          providerModel: rpcProviderModel,
+          providerAuth: rpcProviderAuth,
+          verdict: "pass",
         },
         null,
         2,
       )}\n`,
       "utf8",
     );
-    return cardText;
-  };
-  try {
-    await page.waitForFunction(
-      (id) => document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
-      providerId,
-      { timeout: 30_000 },
+    console.log(
+      `[control-ui multi-profile rpc preflight proof] exact-head=${targetSha} saved-profiles=2 auth-ok=true model-available=true ready-outcome=true rejected-outcome=true real-gateway=true`,
     );
-  } catch (error) {
-    await captureObservedState("failure");
-    throw error;
-  }
-  const cardText = await captureObservedState("ready");
-  if (!cardText.includes("Ready") || cardText.includes("Credentials rejected")) {
-    throw new Error(`Unexpected provider card state: ${cardText}`);
-  }
-  if (!gatewayFrames.modelsList || !gatewayFrames.authStatus) {
-    throw new Error("Did not capture real Gateway models.list and models.authStatus frames");
-  }
+  } else {
+    browser = await chromium.launch();
+    context = await browser.newContext({
+      colorScheme: "dark",
+      locale: "en-US",
+      recordVideo: { dir: artifactDir, size: { width: 1440, height: 1000 } },
+      serviceWorkers: "block",
+      viewport: { width: 1440, height: 1000 },
+    });
+    const page = await context.newPage();
+    const pendingMethods = new Map();
+    const gatewayFrames = {};
+    page.on("websocket", (socket) => {
+      socket.on("framesent", ({ payload }) => {
+        const frame = parseFrame(payload);
+        if (frame?.id && frame?.method) {
+          pendingMethods.set(frame.id, frame.method);
+        }
+      });
+      socket.on("framereceived", ({ payload }) => {
+        const frame = parseFrame(payload);
+        const method = frame?.id ? pendingMethods.get(frame.id) : undefined;
+        if (method === "models.authStatus") {
+          gatewayFrames.authStatus = frame;
+        }
+        if (method === "models.list" && responsePayload(frame)?.providerOutcomes) {
+          gatewayFrames.modelsList = frame;
+        }
+      });
+    });
 
-  const modelsList = responsePayload(gatewayFrames.modelsList);
-  const authStatus = responsePayload(gatewayFrames.authStatus);
-  const outcomes = modelsList.providerOutcomes.filter((item) => item.provider === providerId);
-  const profiles =
-    authStatus.providers
-      .find((item) => item.provider === providerId)
-      ?.profiles?.map((item) => item.profileId) ?? [];
-  if (
-    outcomes.length !== 2 ||
-    !outcomes.some((item) => item.profileId === readyProfileId && item.status === "ready") ||
-    !outcomes.some(
-      (item) => item.profileId === rejectedProfileId && item.status === "auth-rejected",
-    ) ||
-    !profiles.includes(readyProfileId) ||
-    !profiles.includes(rejectedProfileId)
-  ) {
-    throw new Error(`Missing multi-profile evidence: ${JSON.stringify({ outcomes, profiles })}`);
-  }
+    const response = await page.goto(`${baseUrl}settings/model-providers#token=${gatewayToken}`);
+    if (!response?.ok()) {
+      throw new Error(`Control UI returned ${response?.status() ?? "no response"}`);
+    }
+    const card = page.locator(`[data-provider-id="${providerId}"]`);
+    await card.waitFor({ state: "visible", timeout: 30_000 });
+    const captureObservedState = async (label) => {
+      const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
+      const modelsList = responsePayload(gatewayFrames.modelsList);
+      const authStatus = responsePayload(gatewayFrames.authStatus);
+      await page.screenshot({
+        path: path.join(artifactDir, `provider-card-${label}.png`),
+        fullPage: true,
+      });
+      await writeFile(path.join(artifactDir, `page-${label}.html`), await page.content(), "utf8");
+      await writeFile(
+        path.join(artifactDir, `observed-${label}.json`),
+        `${JSON.stringify(
+          {
+            targetSha,
+            route: new URL(page.url()).pathname,
+            cardText,
+            authStatus,
+            modelsList,
+            providerAuth: authStatus?.providers?.find((item) => item.provider === providerId),
+            providerModel: modelsList?.models?.find((item) => item.provider === providerId),
+            providerOutcomes: modelsList?.providerOutcomes?.filter(
+              (item) => item.provider === providerId,
+            ),
+          },
+          null,
+          2,
+        )}\n`,
+        "utf8",
+      );
+      return cardText;
+    };
+    try {
+      await page.waitForFunction(
+        (id) =>
+          document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
+        providerId,
+        { timeout: 30_000 },
+      );
+    } catch (error) {
+      await captureObservedState("failure");
+      throw error;
+    }
+    const cardText = await captureObservedState("ready");
+    if (!cardText.includes("Ready") || cardText.includes("Credentials rejected")) {
+      throw new Error(`Unexpected provider card state: ${cardText}`);
+    }
+    if (!gatewayFrames.modelsList || !gatewayFrames.authStatus) {
+      throw new Error("Did not capture real Gateway models.list and models.authStatus frames");
+    }
 
-  await writeFile(
-    path.join(artifactDir, "gateway-frames.json"),
-    `${JSON.stringify({ authStatus: gatewayFrames.authStatus, modelsList: gatewayFrames.modelsList }, null, 2)}\n`,
-  );
-  await writeFile(
-    path.join(artifactDir, "verdict.json"),
-    `${JSON.stringify(
-      {
-        targetSha,
-        realGateway: true,
-        realChromium: true,
-        savedProfiles: profiles.toSorted(),
-        providerOutcomes: outcomes,
-        providerCard: { containsReady: true, containsCredentialsRejected: false, text: cardText },
-        verdict: "pass",
-      },
-      null,
-      2,
-    )}\n`,
-  );
-  console.log(
-    `[control-ui multi-profile real-gateway proof] exact-head=${targetSha} saved-profiles=2 ready-outcome=true rejected-outcome=true provider-card-ready=true credentials-rejected=false real-gateway=true real-chromium=true`,
-  );
+    const modelsList = responsePayload(gatewayFrames.modelsList);
+    const authStatus = responsePayload(gatewayFrames.authStatus);
+    const outcomes = modelsList.providerOutcomes.filter((item) => item.provider === providerId);
+    const profiles =
+      authStatus.providers
+        .find((item) => item.provider === providerId)
+        ?.profiles?.map((item) => item.profileId) ?? [];
+    if (
+      outcomes.length !== 2 ||
+      !outcomes.some((item) => item.profileId === readyProfileId && item.status === "ready") ||
+      !outcomes.some(
+        (item) => item.profileId === rejectedProfileId && item.status === "auth-rejected",
+      ) ||
+      !profiles.includes(readyProfileId) ||
+      !profiles.includes(rejectedProfileId)
+    ) {
+      throw new Error(`Missing multi-profile evidence: ${JSON.stringify({ outcomes, profiles })}`);
+    }
+
+    await writeFile(
+      path.join(artifactDir, "gateway-frames.json"),
+      `${JSON.stringify({ authStatus: gatewayFrames.authStatus, modelsList: gatewayFrames.modelsList }, null, 2)}\n`,
+    );
+    await writeFile(
+      path.join(artifactDir, "verdict.json"),
+      `${JSON.stringify(
+        {
+          targetSha,
+          realGateway: true,
+          realChromium: true,
+          savedProfiles: profiles.toSorted(),
+          providerOutcomes: outcomes,
+          providerCard: { containsReady: true, containsCredentialsRejected: false, text: cardText },
+          verdict: "pass",
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    console.log(
+      `[control-ui multi-profile real-gateway proof] exact-head=${targetSha} saved-profiles=2 ready-outcome=true rejected-outcome=true provider-card-ready=true credentials-rejected=false real-gateway=true real-chromium=true`,
+    );
+  }
 } finally {
   await context?.close().catch(() => {});
   await browser?.close().catch(() => {});
