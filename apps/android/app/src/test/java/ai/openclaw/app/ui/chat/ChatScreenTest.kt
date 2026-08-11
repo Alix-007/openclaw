@@ -3,9 +3,11 @@ package ai.openclaw.app.ui.chat
 import ai.openclaw.app.GatewayAgentSummary
 import ai.openclaw.app.PendingAssistantAutoSend
 import ai.openclaw.app.chat.ChatComposerOwner
+import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.chat.SessionBranch
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -183,4 +185,68 @@ class ChatScreenTest {
       ),
     )
   }
+
+  @Test
+  fun assistantDisclosureCachesLoadedMessageAcrossCollapseAndReexpand() =
+    runTest {
+      val store = ChatAssistantMessageDisclosureStore()
+      val fullMessage = assistantMessage("complete response")
+      var loads = 0
+      val load =
+        suspend {
+          loads += 1
+          fullMessage
+        }
+
+      store.toggle("message-long", load)
+      assertEquals(
+        AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
+        store.state("message-long"),
+      )
+      store.toggle("message-long", load)
+      assertEquals(
+        AssistantMessageDisclosureState.Loaded(fullMessage, expanded = false),
+        store.state("message-long"),
+      )
+      store.toggle("message-long", load)
+
+      assertEquals(1, loads)
+      assertEquals(
+        AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
+        store.state("message-long"),
+      )
+    }
+
+  @Test
+  fun assistantDisclosureFailureRemainsRetryable() =
+    runTest {
+      val store = ChatAssistantMessageDisclosureStore()
+      val fullMessage = assistantMessage("recovered response")
+      var loads = 0
+      val load =
+        suspend {
+          loads += 1
+          if (loads == 1) throw IllegalStateException("offline")
+          fullMessage
+        }
+
+      store.toggle("message-long", load)
+      assertEquals(AssistantMessageDisclosureState.Error, store.state("message-long"))
+      store.toggle("message-long", load)
+
+      assertEquals(2, loads)
+      assertEquals(
+        AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
+        store.state("message-long"),
+      )
+    }
+
+  private fun assistantMessage(text: String): ChatMessage =
+    ChatMessage(
+      id = "full-message",
+      role = "assistant",
+      content = listOf(ChatMessageContent(text = text)),
+      timestampMs = null,
+      entryId = "message-long",
+    )
 }

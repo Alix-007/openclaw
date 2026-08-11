@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -1215,5 +1216,91 @@ class ChatControllerTranscriptCacheTest {
       advanceUntilIdle()
 
       assertEquals(GatewayDefaultAgentOwner("gateway-a", "agent-a"), controller.composerDefaultAgentOwner.value)
+    }
+
+  @Test
+  fun truncatedAssistantMessageLoadsFullContentForItsCurrentOwner() =
+    runTest {
+      val cache = FakeTranscriptCache()
+      val requests = mutableListOf<Pair<String, String?>>()
+      val controller =
+        createCachedController(cache) { method, paramsJson ->
+          requests += method to paramsJson
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "preview\n...(truncated)...",
+                  "__openclaw": {"id": "message-long", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            "chat.message.get" ->
+              """
+              {
+                "ok": true,
+                "message": {
+                  "role": "assistant",
+                  "content": "complete assistant response",
+                  "__openclaw": {"id": "message-long"}
+                }
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val preview = controller.messages.value.single()
+      assertTrue(preview.isTruncated)
+      val full = controller.loadFullAssistantMessage("message-long")
+
+      assertEquals("complete assistant response", full?.content?.single()?.text)
+      val params = requests.single { it.first == "chat.message.get" }.second.orEmpty()
+      assertTrue(params.contains("\"sessionKey\":\"global\""))
+      assertTrue(params.contains("\"agentId\":\"work\""))
+      assertTrue(params.contains("\"messageId\":\"message-long\""))
+      assertTrue(params.contains("\"maxChars\":500000"))
+    }
+
+  @Test
+  fun unmarkedAssistantMessageDoesNotRequestFullContent() =
+    runTest {
+      val cache = FakeTranscriptCache()
+      val requests = mutableListOf<Pair<String, String?>>()
+      val controller =
+        createCachedController(cache) { method, paramsJson ->
+          requests += method to paramsJson
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "complete assistant response",
+                  "__openclaw": {"id": "message-complete"}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      assertFalse(
+        controller.messages.value
+          .single()
+          .isTruncated,
+      )
+      assertNull(controller.loadFullAssistantMessage("message-complete"))
+      assertFalse(requests.any { it.first == "chat.message.get" })
     }
 }

@@ -28,6 +28,8 @@ data class ChatMessage(
   val idempotencyKey: String? = null,
   /** Canonical transcript-tree identity supplied by chat.history. */
   val entryId: String? = null,
+  /** True when chat.history projected this row as a bounded preview. */
+  val isTruncated: Boolean = false,
 )
 
 /** One selectable transcript branch returned by sessions.branches.list. */
