@@ -4,6 +4,7 @@ import {
   type AiProviderRequestCapabilities,
 } from "@openclaw/ai";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { inheritProviderRequestHeadersContext } from "../infra/net/provider-request-header-context.js";
 import "../llm/ai-transport-host.js";
 import { getModelProviderRuntimePluginHandle } from "../plugins/provider-hook-runtime.js";
 import type { ProviderRuntimeModel } from "../plugins/provider-runtime-model.types.js";
@@ -92,11 +93,14 @@ export function configureAiTransportRuntimeHost(): void {
       return Boolean(request?.proxy || request?.tls || getModelProviderLocalService(model));
     },
     inheritManagedTransport: (source, target) =>
-      inheritModelProviderMetadataOwners(
+      inheritProviderRequestHeadersContext(
         source,
-        attachModelProviderLocalService(
-          attachModelProviderRequestTransport(target, getModelProviderRequestTransport(source)),
-          getModelProviderLocalService(source),
+        inheritModelProviderMetadataOwners(
+          source,
+          attachModelProviderLocalService(
+            attachModelProviderRequestTransport(target, getModelProviderRequestTransport(source)),
+            getModelProviderLocalService(source),
+          ),
         ),
       ),
     transformTransportMessages,

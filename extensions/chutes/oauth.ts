@@ -134,7 +134,12 @@ async function requestChutesTokenGrant(params: {
       ...(params.signal ? { signal: params.signal } : {}),
     }),
   });
-  await assertOkOrThrowProviderError(response, `${params.responseLabel} failed`);
+  await assertOkOrThrowProviderError(response, `${params.responseLabel} failed`, {
+    sensitiveValues: ["code", "code_verifier", "refresh_token", "client_secret"].flatMap((name) => {
+      const value = params.body.get(name);
+      return value ? [value] : [];
+    }),
+  });
 
   const data = await readProviderJsonResponse<{
     access_token?: string;

@@ -99,6 +99,34 @@ describe("azure speech tts", () => {
     expect(init.signal).toBeInstanceOf(AbortSignal);
   });
 
+  it("redacts the Azure subscription key from reflected error diagnostics", async () => {
+    const apiKey = "orchidRiver17glassMoth92cabin";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ error: { message: apiKey, code: apiKey, type: apiKey } }), {
+          status: 401,
+          headers: { "x-request-id": apiKey },
+        }),
+      ),
+    );
+
+    let error: unknown;
+    try {
+      await azureSpeechTTS({
+        text: "hello",
+        apiKey,
+        region: "eastus",
+        timeoutMs: 5_000,
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    expect(`${(error as Error).message}\n${JSON.stringify(error)}`).not.toContain(apiKey);
+  });
+
   it("caps streamed audio responses instead of buffering oversized TTS output", async () => {
     const streamed = createStreamingAudioResponse({
       chunkCount: 20,

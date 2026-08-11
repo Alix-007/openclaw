@@ -1,10 +1,7 @@
 // Voice Call API module exposes the plugin public contract.
+import { createProviderHttpError } from "openclaw/plugin-sdk/provider-http";
 import { fetchWithSsrFGuard } from "../../../api.js";
-import {
-  cancelProviderResponseBody,
-  readProviderErrorResponseSnippet,
-  readVoiceCallProviderJsonResponse,
-} from "./response-body.js";
+import { cancelProviderResponseBody, readVoiceCallProviderJsonResponse } from "./response-body.js";
 
 // Shared guarded JSON API client for voice-call providers.
 
@@ -20,6 +17,7 @@ type GuardedJsonApiRequestParams = {
   allowedHostnames: string[];
   auditContext: string;
   errorPrefix: string;
+  sensitiveValues?: readonly string[];
 };
 
 /** Send a provider JSON request through the SSRF guard and parse bounded JSON responses. */
@@ -44,8 +42,9 @@ export async function guardedJsonApiRequest<T = unknown>(
         await cancelProviderResponseBody(response);
         return undefined as T;
       }
-      const errorText = await readProviderErrorResponseSnippet(response);
-      throw new Error(`${params.errorPrefix}: ${response.status} ${errorText}`);
+      throw await createProviderHttpError(response, params.errorPrefix, {
+        sensitiveValues: params.sensitiveValues,
+      });
     }
 
     return (await readVoiceCallProviderJsonResponse<T>(

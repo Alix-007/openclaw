@@ -477,22 +477,29 @@ describe("pixverse video generation provider", () => {
 
   it("uses a fresh trace id for each status poll", async () => {
     mockPixVerseVideoSubmit();
+    const traceIds: Array<string | null> = [];
     fetchWithTimeoutMock
-      .mockResolvedValueOnce({
-        json: async () => ({
-          ErrCode: 0,
-          ErrMsg: "success",
-          Resp: { id: 123, status: 5 },
-        }),
-        headers: new Headers(),
+      .mockImplementationOnce(async (_url, init) => {
+        traceIds.push(new Headers(init?.headers).get("Ai-trace-id"));
+        return {
+          json: async () => ({
+            ErrCode: 0,
+            ErrMsg: "success",
+            Resp: { id: 123, status: 5 },
+          }),
+          headers: new Headers(),
+        };
       })
-      .mockResolvedValueOnce({
-        json: async () => ({
-          ErrCode: 0,
-          ErrMsg: "success",
-          Resp: { id: 123, status: 1, url: "https://media.pixverse.ai/out.mp4" },
-        }),
-        headers: new Headers(),
+      .mockImplementationOnce(async (_url, init) => {
+        traceIds.push(new Headers(init?.headers).get("Ai-trace-id"));
+        return {
+          json: async () => ({
+            ErrCode: 0,
+            ErrMsg: "success",
+            Resp: { id: 123, status: 1, url: "https://media.pixverse.ai/out.mp4" },
+          }),
+          headers: new Headers(),
+        };
       });
 
     const provider = buildPixVerseVideoGenerationProvider();
@@ -503,10 +510,8 @@ describe("pixverse video generation provider", () => {
       cfg: {},
     });
 
-    const firstHeaders = pollFetchHeaders(0);
-    const secondHeaders = pollFetchHeaders(1);
-    expect(firstHeaders?.get("Ai-trace-id")).toMatch(/^[0-9a-f-]{36}$/u);
-    expect(secondHeaders?.get("Ai-trace-id")).toMatch(/^[0-9a-f-]{36}$/u);
-    expect(secondHeaders?.get("Ai-trace-id")).not.toBe(firstHeaders?.get("Ai-trace-id"));
+    expect(traceIds[0]).toMatch(/^[0-9a-f-]{36}$/u);
+    expect(traceIds[1]).toMatch(/^[0-9a-f-]{36}$/u);
+    expect(traceIds[1]).not.toBe(traceIds[0]);
   });
 });

@@ -77,6 +77,11 @@ type TwilioProviderConfig = {
   region?: TwilioRegion;
 };
 
+type TwilioApiRequestOptions = {
+  allowNotFound?: boolean;
+  sensitiveValues?: readonly string[];
+};
+
 export class TwilioProvider implements VoiceCallProvider {
   readonly name = "twilio" as const;
 
@@ -228,7 +233,7 @@ export class TwilioProvider implements VoiceCallProvider {
   private async apiRequest<T = unknown>(
     endpoint: string,
     params: Record<string, string | string[]>,
-    options?: { allowNotFound?: boolean },
+    options?: TwilioApiRequestOptions,
   ): Promise<T> {
     return await twilioApiRequest<T>({
       baseUrl: this.baseUrl,
@@ -237,6 +242,7 @@ export class TwilioProvider implements VoiceCallProvider {
       endpoint,
       body: params,
       allowNotFound: options?.allowNotFound,
+      sensitiveValues: options?.sensitiveValues,
     });
   }
 
@@ -244,10 +250,15 @@ export class TwilioProvider implements VoiceCallProvider {
     providerCallId: string,
     twiml: string,
     operation: string,
+    sensitiveValues?: readonly string[],
   ): Promise<void> {
     for (const retryDelayMs of TWILIO_CALL_UPDATE_RETRY_DELAYS_MS) {
       try {
-        await this.apiRequest(`/Calls/${providerCallId}.json`, { Twiml: twiml });
+        await this.apiRequest(
+          `/Calls/${providerCallId}.json`,
+          { Twiml: twiml },
+          { sensitiveValues },
+        );
         return;
       } catch (err) {
         if (!isTwilioCallNotInProgressError(err)) {
@@ -259,7 +270,7 @@ export class TwilioProvider implements VoiceCallProvider {
         await sleep(retryDelayMs);
       }
     }
-    await this.apiRequest(`/Calls/${providerCallId}.json`, { Twiml: twiml });
+    await this.apiRequest(`/Calls/${providerCallId}.json`, { Twiml: twiml }, { sensitiveValues });
   }
 
   /**
@@ -817,7 +828,12 @@ export class TwilioProvider implements VoiceCallProvider {
   </Gather>
 </Response>`;
 
-    await this.updateLiveCallTwiml(input.providerCallId, twiml, "startListening");
+    await this.updateLiveCallTwiml(
+      input.providerCallId,
+      twiml,
+      "startListening",
+      input.turnToken ? [input.turnToken] : undefined,
+    );
   }
 
   /**

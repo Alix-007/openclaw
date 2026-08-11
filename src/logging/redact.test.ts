@@ -176,6 +176,12 @@ describe("request-scoped exact secret values", () => {
       }),
     ).toBe("provider unavailable: $&orc");
   });
+
+  it("fails closed instead of replacing every occurrence of a short sensitive value", () => {
+    expect(redactSuppliedSecretValues("provider code 1, retry in 10 seconds", ["1"])).toBe(
+      "[diagnostic omitted because it may contain a short sensitive value]",
+    );
+  });
 });
 
 describe("redactSensitiveText", () => {

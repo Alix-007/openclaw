@@ -3,6 +3,10 @@ import { describe, expect, it } from "vitest";
 import type { ConfiguredProviderRequest } from "../config/types.provider-request.js";
 import type { SecretRef } from "../config/types.secrets.js";
 import {
+  getProviderRequestSensitiveHeaderNames,
+  inheritProviderRequestHeadersContext,
+} from "../infra/net/provider-request-header-context.js";
+import {
   applyPreparedRuntimeAuthToModel,
   attachModelProviderMetadataOwners,
   buildProviderRequestDispatcherPolicy,
@@ -47,11 +51,17 @@ describe("provider request config", () => {
   });
 
   it("applies prepared runtime auth without retaining stale credential headers", () => {
+    const initialRequest = resolveProviderRequestConfig({
+      provider: "microsoft-foundry",
+      api: "anthropic-messages",
+      baseUrl: "https://example.services.ai.azure.com/anthropic",
+      providerHeaders: { "X-Tenant": "tenant-a", "x-api-key": "old-key" },
+    });
     const model = {
       provider: "microsoft-foundry",
       api: "anthropic-messages" as const,
       baseUrl: "https://example.services.ai.azure.com/anthropic",
-      headers: { "X-Tenant": "tenant-a", "x-api-key": "old-key" },
+      headers: initialRequest.headers,
     };
 
     const bearerModel = applyPreparedRuntimeAuthToModel(model, {
@@ -61,6 +71,11 @@ describe("provider request config", () => {
       "X-Tenant": "tenant-a",
       Authorization: "Bearer entra-token",
     });
+    expect(getProviderRequestSensitiveHeaderNames(bearerModel.headers)).toEqual([
+      "authorization",
+      "x-api-key",
+      "x-tenant",
+    ]);
 
     const apiKeyModel = applyPreparedRuntimeAuthToModel(bearerModel, {
       request: {
@@ -71,6 +86,11 @@ describe("provider request config", () => {
       "X-Tenant": "tenant-a",
       "x-api-key": "profile-key",
     });
+    expect(getProviderRequestSensitiveHeaderNames(apiKeyModel.headers)).toEqual([
+      "authorization",
+      "x-api-key",
+      "x-tenant",
+    ]);
   });
 
   it("merges discovered, provider, and model headers in precedence order", () => {
@@ -101,6 +121,29 @@ describe("provider request config", () => {
       "X-Model": "3",
       "X-Shared": "model",
     });
+  });
+
+  it("carries only schema-sensitive configured header names through header projections", () => {
+    const resolved = resolveProviderRequestConfig({
+      provider: "custom-openai",
+      discoveredHeaders: { "X-Discovered": "ordinary-discovery" },
+      providerHeaders: { "X-Provider-Proof": "provider-secret" },
+      modelHeaders: { "X-Model-Option": "ordinary-model-value" },
+      request: {
+        headers: { "X-Request-Proof": "request-secret" },
+        auth: { mode: "header", headerName: "X-Cloud-Access", value: "auth-secret" },
+      },
+    });
+    const prepared = { id: "prepared", headers: resolved.headers };
+    const projected = inheritProviderRequestHeadersContext(prepared, {
+      id: "projected",
+      headers: { ...resolved.headers },
+    });
+    const names = getProviderRequestSensitiveHeaderNames(projected.headers);
+
+    expect(names).toEqual(["x-cloud-access", "x-provider-proof", "x-request-proof"]);
+    expect(names).not.toContain("x-discovered");
+    expect(names).not.toContain("x-model-option");
   });
 
   it("surfaces authHeader intent without mutating headers yet", () => {

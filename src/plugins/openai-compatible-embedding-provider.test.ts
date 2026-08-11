@@ -77,7 +77,7 @@ async function readJsonBody(req: IncomingMessage): Promise<Record<string, unknow
 
 async function startEmbeddingServer(params?: {
   token?: string;
-  respond?: (request: CapturedRequest) => FixtureResponse | Record<string, unknown>;
+  respond?: (request: CapturedRequest) => FixtureResponse | Record<string, unknown> | string;
   status?: number;
 }): Promise<{ baseUrl: string; requests: CapturedRequest[] }> {
   const requests: CapturedRequest[] = [];
@@ -99,16 +99,17 @@ async function startEmbeddingServer(params?: {
           expect(req.headers.authorization).toBeUndefined();
         }
 
-        res.writeHead(params?.status ?? 200, { "content-type": "application/json" });
-        res.end(
-          JSON.stringify(
-            params?.respond?.(captured) ?? {
-              object: "list",
-              data: [{ object: "embedding", embedding: [0.1, 0.2, 0.3], index: 0 }],
-              model: body.model,
-            },
-          ),
-        );
+        const payload =
+          params?.respond?.(captured) ??
+          ({
+            object: "list",
+            data: [{ object: "embedding", embedding: [0.1, 0.2, 0.3], index: 0 }],
+            model: body.model,
+          } satisfies FixtureResponse);
+        res.writeHead(params?.status ?? 200, {
+          "content-type": typeof payload === "string" ? "text/plain" : "application/json",
+        });
+        res.end(typeof payload === "string" ? payload : JSON.stringify(payload));
       } catch (error) {
         res.writeHead(500, { "content-type": "application/json" });
         res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
@@ -138,9 +139,9 @@ async function startEmbeddingServer(params?: {
   };
 }
 
-const EMBEDDING_ERROR_BOUNDARY_PREFIX = "x".repeat(999);
+const EMBEDDING_ERROR_BOUNDARY_PREFIX = "x".repeat(219);
 const EMBEDDING_ERROR_BOUNDARY_BODY = `${EMBEDDING_ERROR_BOUNDARY_PREFIX}😀${"x".repeat(
-  8 * 1024 - EMBEDDING_ERROR_BOUNDARY_PREFIX.length - 4,
+  16 * 1024 - EMBEDDING_ERROR_BOUNDARY_PREFIX.length - 4,
 )}`;
 
 async function startHangingErrorEmbeddingServer(): Promise<{
@@ -520,9 +521,13 @@ describe("openai-compatible generic embedding provider", () => {
       throw new Error(`expected embedding request to reject, got ${outcome.type}`);
     }
     expect(outcome.error).toBeInstanceOf(Error);
-    expect((outcome.error as Error).message).toBe(
-      `openai-compatible embeddings failed: HTTP 502: ${EMBEDDING_ERROR_BOUNDARY_PREFIX}... [truncated]`,
+    expect((outcome.error as Error).message).toContain(
+      `openai-compatible embeddings failed (HTTP 502): ${EMBEDDING_ERROR_BOUNDARY_PREFIX}`,
     );
+    expect((outcome.error as Error & { errorBody?: string }).errorBody?.length).toBeLessThanOrEqual(
+      500,
+    );
+    expect((outcome.error as Error).message.length).toBeLessThanOrEqual(600);
     await expect(
       withTestTimeout(
         server.closed.then(() => "closed" as const),
@@ -554,6 +559,56 @@ describe("openai-compatible generic embedding provider", () => {
     );
     expect(error).toBeInstanceOf(Error);
     expect((error as Error).message).not.toMatch(loneSurrogate);
+  });
+
+  it.each(["raw", "json"])(
+    "redacts arbitrary configured headers from %s embedding errors",
+    async (shape) => {
+      const reflectedSecret = "embedding-provider-proof-314159";
+      const server = await startEmbeddingServer({
+        status: 502,
+        respond: () =>
+          shape === "json"
+            ? { error: { message: `safe=quota ${reflectedSecret}`, code: reflectedSecret } }
+            : `safe=quota ${reflectedSecret}`,
+      });
+      const { provider } = await createOpenAICompatibleEmbeddingProvider(
+        createOptions({
+          model: "text-embedding-bge-m3",
+          remote: {
+            baseUrl: server.baseUrl,
+            headers: { "X-Provider-Proof": reflectedSecret },
+          },
+        }),
+      );
+
+      const error = await provider.embed("hello").catch((caught: unknown) => caught);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("safe=quota");
+      expect((error as Error).message).not.toContain(reflectedSecret);
+      expect(server.requests).toHaveLength(1);
+      expect(server.requests[0]?.headers["x-provider-proof"]).toBe(reflectedSecret);
+    },
+  );
+
+  it("omits embedding diagnostics that may contain a short configured secret", async () => {
+    const server = await startEmbeddingServer({
+      status: 502,
+      respond: () => "retry after 1 second",
+    });
+    const { provider } = await createOpenAICompatibleEmbeddingProvider(
+      createOptions({
+        model: "text-embedding-bge-m3",
+        remote: { baseUrl: server.baseUrl, headers: { "X-Route-Code": "1" } },
+      }),
+    );
+
+    const error = await provider.embed("hello").catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("diagnostic omitted");
+    expect((error as Error).message).not.toContain("retry after 1 second");
   });
 
   it("bounds and cancels oversized successful embedding JSON bodies", async () => {

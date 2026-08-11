@@ -342,6 +342,38 @@ describe("TelnyxProvider answer control", () => {
 });
 
 describe("TelnyxProvider Media Streaming (PCMU)", () => {
+  it("redacts a reflected stream auth token from provider errors", async () => {
+    const streamAuthToken = "67bdc410-8c7e-49d3-8963-dcab4e9df42f";
+    apiMocks.fetchWithSsrFGuard.mockResolvedValue({
+      response: new Response(`rejected stream_auth_token=${streamAuthToken}`, { status: 400 }),
+      release: vi.fn(async () => {}),
+    });
+    const provider = new TelnyxProvider({
+      apiKey: "KEY123",
+      connectionId: "CONN456",
+      publicKey: undefined,
+    });
+
+    let caught: Error | undefined;
+    try {
+      await provider.initiateCall({
+        callId: "call-1",
+        from: "+15550000001",
+        to: "+15550000002",
+        webhookUrl: "https://example.test/voice/webhook",
+        streamUrl: "wss://example.test/voice/stream",
+        streamAuthToken,
+      });
+    } catch (error) {
+      caught = error as Error;
+    }
+
+    const body = JSON.parse(requireFetchRequest().init?.body as string) as Record<string, unknown>;
+    expect(body.stream_auth_token).toBe(streamAuthToken);
+    expect(caught?.message).toContain("stream_auth_token=***");
+    expect(caught?.message).not.toContain(streamAuthToken);
+  });
+
   it("embeds streaming fields in the dial payload when streamUrl is provided", async () => {
     const release = vi.fn(async () => {});
     apiMocks.fetchWithSsrFGuard.mockResolvedValue({

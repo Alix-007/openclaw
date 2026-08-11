@@ -4,6 +4,8 @@ import { escapeRegExp } from "../shared/regexp.js";
 const MIN_SECRET_VALUE_LENGTH = 6;
 const MAX_SECRET_VALUES = 512;
 const MIN_TRUNCATED_SENSITIVE_PREFIX_LENGTH = 6;
+const SHORT_SENSITIVE_VALUE_OMISSION =
+  "[diagnostic omitted because it may contain a short sensitive value]";
 
 const registeredValues = new Map<string, true>();
 let compiledMatcher: RegExp | undefined;
@@ -145,6 +147,11 @@ export function redactSuppliedSecretValues(
 ): string {
   if (!text || !values?.length) {
     return text;
+  }
+  // Replacing a one-character credential would corrupt unrelated diagnostics.
+  // Fail closed for short request-scoped values instead of retaining or guessing.
+  if (values.some((value) => value.length > 0 && value.length < MIN_SECRET_VALUE_LENGTH)) {
+    return SHORT_SENSITIVE_VALUE_OMISSION;
   }
   const candidates = collectSuppliedSecretCandidates(values).toSorted(
     (left, right) => right.candidate.length - left.candidate.length,

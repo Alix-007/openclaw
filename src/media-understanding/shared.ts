@@ -29,6 +29,11 @@ import {
 } from "../agents/provider-request-config.js";
 import type { GuardedFetchMode, GuardedFetchResult } from "../infra/net/fetch-guard.js";
 import { fetchWithSsrFGuard, GUARDED_FETCH_MODE } from "../infra/net/fetch-guard.js";
+import { extractSensitiveRequestUrlValues } from "../infra/net/guarded-response-request-context.js";
+import {
+  getProviderRequestSensitiveHeaderNames,
+  inheritProviderRequestHeaderContext,
+} from "../infra/net/provider-request-header-context.js";
 import { shouldUseEnvHttpProxyForUrl } from "../infra/net/proxy-env.js";
 import type { LookupFn, PinnedDispatcherPolicy, SsrFPolicy } from "../infra/net/ssrf.js";
 import {
@@ -314,6 +319,10 @@ export async function fetchProviderOperationResponse(params: {
       if (params.requestFailedMessage) {
         await assertOkOrThrowHttpError(response, params.requestFailedMessage, {
           requestHeaders: params.init?.headers,
+          sensitiveValues: [
+            ...extractSensitiveRequestUrlValues(params.url),
+            ...(response.url ? extractSensitiveRequestUrlValues(response.url) : []),
+          ],
           bodyTimeoutMs: createProviderOperationTimeoutResolver({
             deadline: requestDeadline,
             defaultTimeoutMs: timeoutMs,
@@ -421,7 +430,11 @@ function resolveProviderHttpRequestConfigWithOriginTrustInternal(params: {
     api: params.api,
     request: params.request,
   });
-  const headers = new Headers(requestConfig.headers);
+  const headers = inheritProviderRequestHeaderContext(
+    requestConfig,
+    new Headers(requestConfig.headers),
+    params.headers ? [...new Headers(params.headers).keys()] : [],
+  );
   if (!requestConfig.baseUrl) {
     throw new Error("Missing baseUrl: provide baseUrl or defaultBaseUrl");
   }
@@ -537,6 +550,10 @@ export async function fetchWithTimeoutGuarded(
     })
       ? GUARDED_FETCH_MODE.TRUSTED_ENV_PROXY
       : undefined);
+  const sensitiveRequestHeaderNames =
+    init.headers && typeof init.headers === "object"
+      ? (getProviderRequestSensitiveHeaderNames(init.headers) ?? [])
+      : [];
   return await fetchWithSsrFGuard({
     url,
     fetchImpl: fetchFn,
@@ -547,6 +564,7 @@ export async function fetchWithTimeoutGuarded(
     pinDns: options?.pinDns,
     dispatcherPolicy: options?.dispatcherPolicy,
     auditContext: sanitizeAuditContext(options?.auditContext),
+    ...(sensitiveRequestHeaderNames.length > 0 ? { capture: { sensitiveRequestHeaderNames } } : {}),
     ...(resolvedMode ? { mode: resolvedMode } : {}),
   });
 }
@@ -623,7 +641,6 @@ async function fetchGuardedProviderOperationResponse(params: {
       try {
         if (params.requestFailedMessage) {
           await assertOkOrThrowHttpError(result.response, params.requestFailedMessage, {
-            requestHeaders: params.init.headers,
             bodyTimeoutMs: createProviderOperationTimeoutResolver({
               deadline: requestDeadline,
               defaultTimeoutMs: timeoutMs,
@@ -698,7 +715,6 @@ async function postGuardedRequest(params: {
       try {
         throw await createProviderHttpError(result.response, "provider POST request failed", {
           statusPrefix: "HTTP ",
-          requestHeaders: params.init.headers,
         });
       } finally {
         await result.release();

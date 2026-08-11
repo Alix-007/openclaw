@@ -1,3 +1,4 @@
+import { inheritProviderRequestHeaderContext } from "../infra/net/provider-request-header-context.js";
 import {
   looksLikeSecretSentinel,
   mintSecretSentinel,
@@ -105,7 +106,7 @@ export function unwrapHeaderSentinelsForProviderEgress<T extends Record<string, 
       headers[name] = resolved;
     }
   }
-  return headers ? (headers as T) : input;
+  return headers ? inheritProviderRequestHeaderContext(input, headers as T) : input;
 }
 
 export function unwrapHeadersInitSentinelsForProviderEgress(
@@ -124,7 +125,11 @@ export function unwrapHeadersInitSentinelsForProviderEgress(
       changed = true;
     }
   }
-  return changed ? headers : input;
+  return changed && typeof input === "object"
+    ? inheritProviderRequestHeaderContext(input, headers)
+    : changed
+      ? headers
+      : input;
 }
 
 function unwrapRequestTransportSentinelsForProviderEgress(

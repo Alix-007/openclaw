@@ -13,7 +13,7 @@ const DEFAULT_BUFFER = Buffer.from("world");
 const DEFAULT_UPLOAD_RESULT = { id: "item-1", webUrl: "https://example.com/1", name: "a.txt" };
 const tokenProvider = { getAccessToken: vi.fn(async () => "graph-token") };
 
-type FetchCall = [string, { method?: string; headers?: Record<string, string> } | undefined];
+type FetchCall = [string, RequestInit | undefined];
 
 function requireFetchCall(fetchFn: ReturnType<typeof vi.fn>, index = 0): FetchCall {
   const call = fetchFn.mock.calls[index] as unknown as FetchCall | undefined;
@@ -25,11 +25,12 @@ function requireFetchCall(fetchFn: ReturnType<typeof vi.fn>, index = 0): FetchCa
 
 function expectGraphUploadFetch(fetchFn: ReturnType<typeof vi.fn>, expectedUrl: string): void {
   const [url, init] = requireFetchCall(fetchFn);
+  const headers = new Headers(init?.headers);
   expect(url).toBe(expectedUrl);
   expect(init?.method).toBe("PUT");
-  expect(init?.headers?.Authorization).toBe("Bearer graph-token");
-  expect(init?.headers?.["Content-Type"]).toBe("application/octet-stream");
-  expect(init?.headers?.["User-Agent"]).toMatch(/^teams\.ts\[apps\]\/.+ OpenClaw\/.+$/);
+  expect(headers.get("authorization")).toBe("Bearer graph-token");
+  expect(headers.get("content-type")).toBe("application/octet-stream");
+  expect(headers.get("user-agent")).toMatch(/^teams\.ts\[apps\]\/.+ OpenClaw\/.+$/);
 }
 
 function bodyOnlyErrorResponse(body: string, status = 500): Response {
@@ -297,6 +298,25 @@ describe("graph upload helpers", () => {
     expect(message).toContain("SharePoint upload failed (413): upload-denied");
     expect(message).not.toContain("tail-marker");
     expect(message.length).toBeLessThan(700);
+  });
+
+  it("redacts the final bearer credential from raw upload errors", async () => {
+    const accessToken = "orchidBearer71silverMeadow";
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({ error: { message: accessToken, code: accessToken, type: accessToken } }, 401),
+    );
+
+    let error: unknown;
+    try {
+      await runGraphUpload(fetchFn, {
+        tokenProvider: { getAccessToken: vi.fn(async () => accessToken) },
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    expect(`${(error as Error).message}\n${JSON.stringify(error)}`).not.toContain(accessToken);
   });
 });
 

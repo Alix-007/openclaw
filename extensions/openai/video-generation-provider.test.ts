@@ -237,7 +237,6 @@ describe("openai video generation provider", () => {
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI video generation failed",
-      { requestHeaders: createRequest.headers },
     );
     expect(createRequest.url).toBe("https://api.openai.com/v1/videos");
     const form = createRequest.body as FormData;
@@ -762,12 +761,10 @@ describe("openai video generation provider", () => {
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI video generation failed",
-      { requestHeaders: createRequest.headers },
     );
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI video download failed",
-      { requestHeaders: downloadInit?.headers },
     );
     expect(downloadUrl).toBe("http://127.0.0.1:44080/v1/videos/vid_local/content?variant=video");
     expect(downloadInit?.method).toBe("GET");

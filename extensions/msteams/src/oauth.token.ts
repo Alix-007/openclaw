@@ -103,7 +103,14 @@ async function fetchMSTeamsTokens(params: {
 
   try {
     if (!response.ok) {
-      throw await createMSTeamsHttpError(response, `MSTeams ${params.failureLabel} failed`);
+      throw await createMSTeamsHttpError(response, `MSTeams ${params.failureLabel} failed`, {
+        sensitiveValues: ["code", "code_verifier", "refresh_token", "client_secret"].flatMap(
+          (name) => {
+            const value = params.body.get(name);
+            return value ? [value] : [];
+          },
+        ),
+      });
     }
     const data = await readProviderJsonResponse<unknown>(
       response,

@@ -701,7 +701,11 @@ describe("OpenAI embedding batch output", () => {
         `${originalUrl.pathname}${originalUrl.search}`,
         `http://127.0.0.1:${port}`,
       );
-      return await realFetch(loopbackUrl, init);
+      // This fixture substitutes a loopback transport, so the dispatcher pinned
+      // to the original hostname cannot be forwarded to the replacement target.
+      const loopbackInit = { ...init } as RequestInit & { dispatcher?: unknown };
+      delete loopbackInit.dispatcher;
+      return await realFetch(loopbackUrl, loopbackInit);
     });
 
     try {

@@ -1,4 +1,8 @@
 import { describe, expect, it } from "vitest";
+import {
+  getProviderRequestSensitiveHeaderNames,
+  recordProviderRequestHeaderContext,
+} from "../infra/net/provider-request-header-context.js";
 import { isSecretValueRegisteredForRedaction } from "../logging/secret-redaction-registry.js";
 import { looksLikeSecretSentinel, mintSecretSentinel } from "../secrets/sentinel.js";
 import {
@@ -50,9 +54,13 @@ describe("unwrapModelHeaderSentinelsForProviderEgress", () => {
     const model = attachModelProviderRequestTransport(
       {
         id: "test-model",
-        headers: {
-          "x-api-key": mintSecretSentinel(headerSecret, { label: "egress-test:visible" }),
-        },
+        headers: recordProviderRequestHeaderContext(
+          {
+            "x-api-key": mintSecretSentinel(headerSecret, { label: "egress-test:visible" }),
+            "X-Provider-Proof": "arbitrary-config-secret",
+          },
+          ["X-Provider-Proof"],
+        ),
       },
       {
         headers: {
@@ -68,6 +76,10 @@ describe("unwrapModelHeaderSentinelsForProviderEgress", () => {
     const unwrapped = unwrapModelHeaderSentinelsForProviderEgress(model, "egress test");
 
     expect(unwrapped.headers?.["x-api-key"]).toBe(headerSecret);
+    expect(unwrapped.headers?.["X-Provider-Proof"]).toBe("arbitrary-config-secret");
+    expect(getProviderRequestSensitiveHeaderNames(unwrapped.headers ?? {})).toEqual([
+      "x-provider-proof",
+    ]);
     const request = getModelProviderRequestTransport(unwrapped);
     expect(request?.headers?.["x-extra"]).toBe(overrideHeaderSecret);
     expect(request?.auth).toEqual({ mode: "authorization-bearer", token: bearerSecret });

@@ -13,6 +13,8 @@ import {
   readResponseWithLimit,
   type ReadResponseTextPrefixOptions,
 } from "../infra/http-body.js";
+import { getGuardedResponseRequestContext } from "../infra/net/guarded-response-request-context.js";
+import { getProviderRequestSensitiveHeaderNames } from "../infra/net/provider-request-header-context.js";
 import { redactSensitiveText } from "../logging/redact.js";
 import { redactSuppliedSecretValues } from "../logging/secret-redaction-registry.js";
 import { isLikelySensitiveModelProviderHeaderName } from "../secrets/model-provider-header-policy.js";
@@ -56,27 +58,59 @@ export function truncateErrorDetail(detail: string, limit = 220): string {
   return detail.length <= limit ? detail : `${truncateUtf16Safe(detail, limit - 1)}…`;
 }
 
+function collectSensitiveHeaderValues(
+  values: Set<string>,
+  entries: Iterable<readonly [string, string]>,
+  sensitiveHeaderNames?: ReadonlySet<string>,
+): void {
+  for (const [name, rawValue] of entries) {
+    const normalizedName = name.trim().toLowerCase();
+    if (
+      !isLikelySensitiveModelProviderHeaderName(normalizedName) &&
+      !sensitiveHeaderNames?.has(normalizedName)
+    ) {
+      continue;
+    }
+    const value = rawValue.trim();
+    if (!value) {
+      continue;
+    }
+    values.add(value);
+    if (normalizedName === "authorization" || normalizedName === "proxy-authorization") {
+      const credential = /^\S+\s+(.+)$/u.exec(value)?.[1]?.trim();
+      if (credential) {
+        values.add(credential);
+      }
+    }
+  }
+}
+
 function collectProviderHttpSensitiveValues(
+  response: Response,
   options?: ProviderHttpErrorOptions,
 ): string[] | undefined {
   const values = new Set(options?.sensitiveValues?.filter(Boolean));
-  if (options?.requestHeaders) {
-    for (const [name, rawValue] of new Headers(options.requestHeaders).entries()) {
-      if (!isLikelySensitiveModelProviderHeaderName(name)) {
-        continue;
-      }
-      const value = rawValue.trim();
-      if (!value) {
-        continue;
-      }
+  const guardedContext = getGuardedResponseRequestContext(response);
+  if (guardedContext) {
+    for (const value of guardedContext.sensitiveUrlValues) {
       values.add(value);
-      if (name === "authorization" || name === "proxy-authorization") {
-        const credential = /^\S+\s+(.+)$/u.exec(value)?.[1]?.trim();
-        if (credential) {
-          values.add(credential);
-        }
-      }
     }
+    collectSensitiveHeaderValues(
+      values,
+      guardedContext.requestHeaderEntries,
+      new Set(guardedContext.sensitiveRequestHeaderNames),
+    );
+  }
+  if (options?.requestHeaders) {
+    const sensitiveHeaderNames =
+      typeof options.requestHeaders === "object"
+        ? new Set(getProviderRequestSensitiveHeaderNames(options.requestHeaders) ?? [])
+        : undefined;
+    collectSensitiveHeaderValues(
+      values,
+      new Headers(options.requestHeaders).entries(),
+      sensitiveHeaderNames,
+    );
   }
   return values.size > 0 ? [...values] : undefined;
 }
@@ -227,9 +261,9 @@ async function extractProviderErrorInfo(
   options?: ProviderHttpErrorOptions,
 ): Promise<ProviderHttpErrorInfo> {
   const bodyTimeoutMs = options?.bodyTimeoutMs;
-  // Final outbound headers are authoritative; deriving here keeps credential
-  // policy generic while preventing provider callers from passing stale keys.
-  const sensitiveValues = collectProviderHttpSensitiveValues(options);
+  // The guarded transport records the redirect-adjusted request facts on the
+  // final Response. Explicit values remain for raw fetches and body credentials.
+  const sensitiveValues = collectProviderHttpSensitiveValues(response, options);
   const bodyRead = await readResponseTextLimitedResult(response, 16 * 1024, {
     timeoutMs:
       typeof bodyTimeoutMs === "function"
@@ -307,7 +341,8 @@ export async function extractProviderErrorDetail(
 export function extractProviderRequestId(response: Response): string | undefined {
   return (
     trimToUndefined(response.headers.get("x-request-id")) ??
-    trimToUndefined(response.headers.get("request-id"))
+    trimToUndefined(response.headers.get("request-id")) ??
+    trimToUndefined(response.headers.get("trace-id"))
   );
 }
 
@@ -382,6 +417,22 @@ export async function createProviderHttpError(
       requestId: info.requestId,
     },
   );
+}
+
+/** Builds a fixed provider response-contract error with canonically redacted response metadata. */
+export async function createProviderResponseContractError(
+  response: Response,
+  message: string,
+  metadata: { code: string; type: string },
+): Promise<ProviderHttpError> {
+  const info = await extractProviderErrorInfo(response);
+  return new ProviderHttpError(message, {
+    status: response.status,
+    code: metadata.code,
+    type: metadata.type,
+    body: info.body,
+    requestId: info.requestId,
+  });
 }
 
 /** Throws a normalized provider error when a fetch response is not OK. */

@@ -192,9 +192,13 @@ let resolveSecretSentinel: typeof import("../secrets/sentinel.js").resolveSecret
 let setActiveDegradedSecretOwners: typeof import("../secrets/runtime-degraded-state.js").setActiveDegradedSecretOwners;
 let clearRuntimeAuthProfileStoreSnapshots: typeof import("./auth-profiles/runtime-snapshots.js").clearRuntimeAuthProfileStoreSnapshots;
 let setRuntimeAuthProfileStoreSnapshot: typeof import("./auth-profiles/runtime-snapshots.js").setRuntimeAuthProfileStoreSnapshot;
+let getProviderRequestSensitiveHeaderNames: typeof import("../infra/net/provider-request-header-context.js").getProviderRequestSensitiveHeaderNames;
+let recordProviderRequestHeaderContext: typeof import("../infra/net/provider-request-header-context.js").recordProviderRequestHeaderContext;
 
 beforeAll(async () => {
   vi.resetModules();
+  ({ getProviderRequestSensitiveHeaderNames, recordProviderRequestHeaderContext } =
+    await import("../infra/net/provider-request-header-context.js"));
   ({ clearRuntimeConfigSnapshot, setRuntimeConfigSnapshot } = await import("../config/config.js"));
   ({ looksLikeSecretSentinel, resolveSecretSentinel } = await import("../secrets/sentinel.js"));
   ({ setActiveDegradedSecretOwners } = await import("../secrets/runtime-degraded-state.js"));
@@ -2293,7 +2297,7 @@ describe("applyLocalNoAuthHeaderOverride", () => {
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
         contextWindow: 8192,
         maxTokens: 4096,
-        headers: { "X-Test": "1" },
+        headers: recordProviderRequestHeaderContext({ "X-Test": "1" }, ["X-Test"]),
       } as Model<"openai-completions">,
       {
         apiKey: CUSTOM_LOCAL_AUTH_MARKER,
@@ -2304,6 +2308,7 @@ describe("applyLocalNoAuthHeaderOverride", () => {
 
     expect(model.headers?.Authorization).toBeNull();
     expect(model.headers?.["X-Test"]).toBe("1");
+    expect(getProviderRequestSensitiveHeaderNames(model.headers ?? {})).toEqual(["x-test"]);
   });
 });
 
@@ -2344,7 +2349,10 @@ describe("applyAuthHeaderOverride", () => {
 
   it("preserves existing model headers when injecting Authorization", () => {
     const result = applyAuthHeaderOverride(
-      { ...baseModel, headers: { "X-Custom": "value" } },
+      {
+        ...baseModel,
+        headers: recordProviderRequestHeaderContext({ "X-Custom": "value" }, ["X-Custom"]),
+      },
       { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
@@ -2364,6 +2372,7 @@ describe("applyAuthHeaderOverride", () => {
       "X-Custom": "value",
       Authorization: "Bearer test-api-key",
     });
+    expect(getProviderRequestSensitiveHeaderNames(result.headers ?? {})).toEqual(["x-custom"]);
   });
 
   it("sentinelizes SecretRef-managed provider headers from the runtime snapshot", () => {
@@ -2400,11 +2409,15 @@ describe("applyAuthHeaderOverride", () => {
     const result = applyAuthHeaderOverride(
       {
         ...baseModel,
-        headers: {
-          Authorization: "Bearer runtime-google-secret",
-          "X-Managed": "runtime-managed-secret",
-          "X-Plain": "visible",
-        },
+        headers: recordProviderRequestHeaderContext(
+          {
+            Authorization: "Bearer runtime-google-secret",
+            "X-Managed": "runtime-managed-secret",
+            "X-Provider-Proof": "provider-proof-secret",
+            "X-Plain": "visible",
+          },
+          ["Authorization", "X-Managed", "X-Provider-Proof"],
+        ),
       },
       null,
       sourceConfig,
@@ -2419,6 +2432,11 @@ describe("applyAuthHeaderOverride", () => {
       "runtime-managed-secret",
     );
     expect(result.headers?.["X-Plain"]).toBe("visible");
+    expect(getProviderRequestSensitiveHeaderNames(result.headers ?? {})).toEqual([
+      "authorization",
+      "x-managed",
+      "x-provider-proof",
+    ]);
   });
 
   it("sentinelizes SecretRef-managed request headers and composed auth", () => {

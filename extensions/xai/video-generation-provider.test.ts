@@ -420,6 +420,33 @@ describe("xai video generation provider", () => {
     expect(downloadInit?.headers).toBeUndefined();
   });
 
+  it("removes the submit-only idempotency header when submission throws", async () => {
+    const headers = new Headers({ Authorization: "Bearer test-key" });
+    let submittedIdempotencyKey: string | null = null;
+    resolveProviderHttpRequestConfigMock.mockImplementationOnce((params) => ({
+      baseUrl: params.baseUrl ?? params.defaultBaseUrl,
+      allowPrivateNetwork: false,
+      headers,
+      dispatcherPolicy: undefined,
+    }));
+    postJsonRequestMock.mockImplementationOnce(async (params) => {
+      submittedIdempotencyKey = params.headers.get("x-idempotency-key");
+      throw new Error("submit failed");
+    });
+
+    await expect(
+      buildXaiVideoGenerationProvider().generateVideo({
+        provider: "xai",
+        model: "grok-imagine-video",
+        prompt: "Failed submission",
+        cfg: {},
+      }),
+    ).rejects.toThrow("submit failed");
+
+    expect(submittedIdempotencyKey).toMatch(/[0-9a-f-]{36}/u);
+    expect(headers.has("x-idempotency-key")).toBe(false);
+  });
+
   it("rejects generated video downloads that exceed the configured media cap", async () => {
     mockXaiVideoRequest("req_too_large");
     fetchWithTimeoutMock

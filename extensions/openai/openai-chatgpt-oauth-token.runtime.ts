@@ -1,3 +1,4 @@
+import { extractProviderErrorDetail } from "openclaw/plugin-sdk/provider-http";
 import {
   resolveOAuthTokenExpiresAt,
   resolveOAuthTokenLifetimeMs,
@@ -29,6 +30,16 @@ type TokenRequestOptions = {
   signal?: AbortSignal;
   timeoutMs?: number;
 };
+type TokenHttpResponse = {
+  response: Response;
+  sensitiveValues: readonly string[];
+};
+
+const TOKEN_SENSITIVE_FORM_FIELDS = ["code", "code_verifier", "refresh_token"] as const;
+
+function collectTokenFormSensitiveValues(body: URLSearchParams): string[] {
+  return TOKEN_SENSITIVE_FORM_FIELDS.flatMap((field) => body.getAll(field)).filter(Boolean);
+}
 
 function formatMissingTokenResponseFields(json: TokenResponseJson): string {
   const missing: string[] = [];
@@ -62,7 +73,7 @@ function formatTokenRequestError(
 async function postTokenForm(
   body: URLSearchParams,
   options: TokenRequestOptions = {},
-): Promise<Response> {
+): Promise<TokenHttpResponse> {
   const timeoutMs = options.timeoutMs ?? TOKEN_REQUEST_TIMEOUT_MS;
   throwIfOAuthLoginAborted(options.signal);
   const { response, release } = await fetchWithSsrFGuard({
@@ -90,26 +101,30 @@ async function postTokenForm(
           ),
       },
     );
-    return new Response(new Uint8Array(responseBody), {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-    });
+    return {
+      response: new Response(new Uint8Array(responseBody), {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+      }),
+      sensitiveValues: collectTokenFormSensitiveValues(body),
+    };
   } finally {
     await release();
   }
 }
 
 async function readOpenAITokenResponse(
-  response: Response,
+  tokenResponse: TokenHttpResponse,
   operation: "exchange" | "refresh",
 ): Promise<TokenResult> {
+  const { response, sensitiveValues } = tokenResponse;
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
+    const detail = await extractProviderErrorDetail(response, { sensitiveValues }).catch(() => "");
     return {
       type: "failed",
       status: response.status,
-      message: `OpenAI Codex token ${operation} failed (${response.status}): ${text || response.statusText}`,
+      message: `OpenAI Codex token ${operation} failed (${response.status}): ${detail || response.statusText}`,
     };
   }
   const json = (await response.json()) as TokenResponseJson;
@@ -141,9 +156,9 @@ export async function exchangeOpenAIAuthorizationCode(
   options: TokenRequestOptions = {},
 ): Promise<TokenResult> {
   const timeoutMs = options.timeoutMs ?? TOKEN_REQUEST_TIMEOUT_MS;
-  let response: Response;
+  let tokenResponse: TokenHttpResponse;
   try {
-    response = await postTokenForm(
+    tokenResponse = await postTokenForm(
       new URLSearchParams({
         grant_type: "authorization_code",
         client_id: CLIENT_ID,
@@ -159,7 +174,7 @@ export async function exchangeOpenAIAuthorizationCode(
       message: formatTokenRequestError("exchange", error, timeoutMs, options.signal),
     };
   }
-  return await readOpenAITokenResponse(response, "exchange");
+  return await readOpenAITokenResponse(tokenResponse, "exchange");
 }
 
 export async function refreshOpenAIAccessToken(
@@ -168,7 +183,7 @@ export async function refreshOpenAIAccessToken(
 ): Promise<TokenResult> {
   try {
     const timeoutMs = options.timeoutMs ?? TOKEN_REQUEST_TIMEOUT_MS;
-    const response = await postTokenForm(
+    const tokenResponse = await postTokenForm(
       new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: refreshToken,
@@ -176,7 +191,7 @@ export async function refreshOpenAIAccessToken(
       }),
       { signal: options.signal, timeoutMs },
     );
-    return await readOpenAITokenResponse(response, "refresh");
+    return await readOpenAITokenResponse(tokenResponse, "refresh");
   } catch (error) {
     return {
       type: "failed",

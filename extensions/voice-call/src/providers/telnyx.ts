@@ -92,6 +92,8 @@ export class TelnyxProvider implements VoiceCallProvider {
     body: Record<string, unknown>,
     options?: { allowNotFound?: boolean },
   ): Promise<T> {
+    const streamAuthToken =
+      typeof body.stream_auth_token === "string" ? body.stream_auth_token : undefined;
     return await guardedJsonApiRequest<T>({
       url: `${this.baseUrl}${endpoint}`,
       method: "POST",
@@ -104,6 +106,7 @@ export class TelnyxProvider implements VoiceCallProvider {
       allowedHostnames: [this.apiHost],
       auditContext: "voice-call.telnyx.api",
       errorPrefix: "Telnyx API error",
+      sensitiveValues: streamAuthToken ? [streamAuthToken] : undefined,
     });
   }
 

@@ -674,7 +674,6 @@ describe("openai image generation provider", () => {
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI image generation failed",
-      { requestHeaders: request.headers },
     );
     expect(request.url).toBe("https://api.openai.com/v1/images/generations");
     expect(request.body).toEqual({
@@ -1061,7 +1060,6 @@ describe("openai image generation provider", () => {
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI image edit failed",
-      { requestHeaders: editCallArgs.headers },
     );
     const form = editCallArgs.body;
     expect(form.get("model")).toBe("gpt-image-2");
@@ -1206,7 +1204,6 @@ describe("openai image generation provider", () => {
     expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
       expect.anything(),
       "OpenAI Codex image generation failed",
-      { requestHeaders: request.headers },
     );
     const body = request.body as Record<string, unknown>;
     expect(request.url).toBe("https://chatgpt.com/backend-api/codex/responses");
@@ -2458,7 +2455,6 @@ describe("openai image generation provider", () => {
       expect(assertOkOrThrowHttpErrorMock).toHaveBeenCalledWith(
         expect.anything(),
         "OpenAI image generation failed",
-        { requestHeaders: request.headers },
       );
       expect(request.url).toBe(
         "https://myresource.openai.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-12-01-preview",

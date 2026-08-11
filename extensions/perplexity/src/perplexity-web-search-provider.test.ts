@@ -1,6 +1,7 @@
 // Perplexity tests cover perplexity web search provider plugin behavior.
 import { withEnv, withEnvAsync } from "openclaw/plugin-sdk/test-env";
-import { describe, expect, it, vi } from "vitest";
+import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-media-understanding";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../test-support/streaming-error-response.js";
 
 const withTrustedWebSearchEndpointMock = vi.hoisted(() => vi.fn());
@@ -23,6 +24,12 @@ const directPerplexityApiKey = ["pplx", "test"].join("-");
 const enterprisePerplexityApiKey = ["enterprise", "perplexity", "test"].join("-");
 
 describe("perplexity web search provider", () => {
+  installPinnedHostnameTestHooks();
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("points missing-key users to fetch/browser alternatives", async () => {
     await withEnvAsync(
       { [perplexityApiKeyEnv]: undefined, [openRouterApiKeyEnv]: undefined },
@@ -264,10 +271,17 @@ describe("perplexity web search provider", () => {
       },
     },
   ])("redacts reflected credentials from $name diagnostics", async ({ name, webSearch }) => {
+    const providerWebSearch = await vi.importActual<
+      typeof import("openclaw/plugin-sdk/provider-web-search")
+    >("openclaw/plugin-sdk/provider-web-search");
     withTrustedWebSearchEndpointMock.mockReset();
     withTrustedWebSearchEndpointMock.mockImplementationOnce(
-      async (_params: unknown, run: (response: Response) => Promise<unknown>) =>
-        await run(
+      providerWebSearch.withTrustedWebSearchEndpoint,
+    );
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
           new Response(
             JSON.stringify({
               error: {
@@ -278,7 +292,7 @@ describe("perplexity web search provider", () => {
             }),
             { status: 401, headers: { "x-request-id": directPerplexityApiKey } },
           ),
-        ),
+      ),
     );
     const tool = createPerplexityWebSearchProvider().createTool({
       config: { plugins: { entries: { perplexity: { config: { webSearch } } } } },

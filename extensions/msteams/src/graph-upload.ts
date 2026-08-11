@@ -98,7 +98,9 @@ async function uploadToSharePoint(params: {
       });
 
       if (!res.ok) {
-        throw await createMSTeamsHttpError(res, "SharePoint upload failed");
+        throw await createMSTeamsHttpError(res, "SharePoint upload failed", {
+          sensitiveValues: [token],
+        });
       }
 
       return await readProviderJsonResponse<{
@@ -165,7 +167,9 @@ export async function getDriveItemProperties(params: {
       );
 
       if (!res.ok) {
-        throw await createMSTeamsHttpError(res, "Get driveItem properties failed");
+        throw await createMSTeamsHttpError(res, "Get driveItem properties failed", {
+          sensitiveValues: [token],
+        });
       }
 
       return await readProviderJsonResponse<{
@@ -214,7 +218,7 @@ async function getChatMembers(params: {
           res.status === 403
             ? "Get chat members failed; verify Graph chat-member permissions and tenant access policies"
             : "Get chat members failed";
-        throw await createMSTeamsHttpError(res, message);
+        throw await createMSTeamsHttpError(res, message, { sensitiveValues: [token] });
       }
 
       const data = await readProviderJsonResponse<{
@@ -278,7 +282,9 @@ async function createSharePointSharingLink(params: {
       );
 
       if (!res.ok) {
-        throw await createMSTeamsHttpError(res, "Create SharePoint sharing link failed");
+        throw await createMSTeamsHttpError(res, "Create SharePoint sharing link failed", {
+          sensitiveValues: [token],
+        });
       }
 
       return await readProviderJsonResponse<{

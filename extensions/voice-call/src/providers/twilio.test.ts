@@ -125,7 +125,7 @@ function requireEvent<T>(event: T | undefined, message: string): T {
 type TwilioApiRequest = (
   endpoint: string,
   params: Record<string, string | string[]>,
-  options?: { allowNotFound?: boolean },
+  options?: { allowNotFound?: boolean; sensitiveValues?: readonly string[] },
 ) => Promise<unknown>;
 
 function createApiRequestMock(impl?: TwilioApiRequest) {
@@ -708,6 +708,7 @@ describe("TwilioProvider", () => {
       const listening = provider.startListening({
         callId: "call-race-listen",
         providerCallId: "CA-race-listen",
+        turnToken: "263a75d0-67f3-4408-ac5b-5e9d33f29bfa",
       });
       await Promise.resolve();
       expect(apiRequest).toHaveBeenCalledTimes(1);
@@ -718,6 +719,9 @@ describe("TwilioProvider", () => {
       expect(apiRequest).toHaveBeenCalledTimes(2);
       expectApiRequestEndpoint(apiRequest, 0, "/Calls/CA-race-listen.json");
       expectApiRequestEndpoint(apiRequest, 1, "/Calls/CA-race-listen.json");
+      const [, params, options] = requireApiRequestCall(apiRequest, 0);
+      expect(params.Twiml).toContain("turnToken=263a75d0-67f3-4408-ac5b-5e9d33f29bfa");
+      expect(options?.sensitiveValues).toEqual(["263a75d0-67f3-4408-ac5b-5e9d33f29bfa"]);
       expect(warn).toHaveBeenCalledWith(
         "[voice-call] Twilio startListening update hit call state race (21220); retrying in 250ms",
       );

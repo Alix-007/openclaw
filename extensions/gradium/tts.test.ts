@@ -72,6 +72,36 @@ describe("gradium tts diagnostics", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
+  it("redacts the final x-api-key from reflected provider diagnostics", async () => {
+    const apiKey = "orchidRiver17glassMoth92cabin";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ error: { message: apiKey, code: apiKey, type: apiKey } }), {
+          status: 401,
+          headers: { "x-request-id": apiKey },
+        }),
+      ),
+    );
+
+    let error: unknown;
+    try {
+      await gradiumTTS({
+        text: "hello",
+        apiKey,
+        baseUrl: "https://api.gradium.ai",
+        voiceId: "YTpq7expH9539ERJ",
+        outputFormat: "wav",
+        timeoutMs: 5_000,
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    expect(`${(error as Error).message}\n${JSON.stringify(error)}`).not.toContain(apiKey);
+  });
+
   it("falls back to raw body text when the error body is non-JSON", async () => {
     vi.stubGlobal(
       "fetch",

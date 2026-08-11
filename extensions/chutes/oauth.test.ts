@@ -195,6 +195,59 @@ describe("chutes plugin OAuth", () => {
     expect(errorResponse.releaseLock).toHaveBeenCalledTimes(1);
   });
 
+  it("redacts exact authorization-code form credentials from token errors", async () => {
+    const code = "orchidCode71silverMeadow";
+    const clientSecret = "cobaltClient83hiddenHarbor";
+    let reflectedSecrets: string[] = [];
+    const fetchFn = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (fetchInputUrl(input) !== CHUTES_TOKEN_ENDPOINT) {
+        return new Response("not found", { status: 404 });
+      }
+      if (!(init?.body instanceof URLSearchParams)) {
+        throw new Error("expected Chutes token form body");
+      }
+      reflectedSecrets = ["code", "code_verifier", "client_secret"].flatMap((name) => {
+        const value = init.body instanceof URLSearchParams ? init.body.get(name) : null;
+        return value ? [value] : [];
+      });
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: reflectedSecrets.join(" "),
+            code: reflectedSecrets[0],
+            type: reflectedSecrets[1],
+          },
+        }),
+        { status: 400, headers: { "x-request-id": reflectedSecrets[2] ?? "" } },
+      );
+    });
+
+    let error: unknown;
+    try {
+      await loginChutes({
+        app: {
+          clientId: "cid_test",
+          clientSecret,
+          redirectUri: REDIRECT_URI,
+          scopes: ["openid"],
+        },
+        manual: true,
+        createState: () => "state_test",
+        onAuth: vi.fn(async () => {}),
+        onPrompt: vi.fn(async () => `${REDIRECT_URI}?code=${code}&state=state_test`),
+        fetchFn,
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    const diagnostics = `${(error as Error).message}\n${JSON.stringify(error)}`;
+    for (const secret of reflectedSecrets) {
+      expect(diagnostics).not.toContain(secret);
+    }
+  });
+
   it("cancels oversized token exchange JSON body via the 16 MiB provider cap", async () => {
     const ONE_MIB = 1024 * 1024;
     const TOTAL_CHUNKS = 32;

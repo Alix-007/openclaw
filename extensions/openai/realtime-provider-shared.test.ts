@@ -1,17 +1,10 @@
 // Openai tests cover realtime session secret creation behavior.
-import { describe, expect, it, vi } from "vitest";
+import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-media-understanding";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createOpenAIRealtimeClientSecret,
   createOpenAIRealtimeTranscriptionClientSecret,
 } from "./realtime-provider-shared.js";
-
-const { fetchWithSsrFGuardMock } = vi.hoisted(() => ({
-  fetchWithSsrFGuardMock: vi.fn(),
-}));
-
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
-  fetchWithSsrFGuard: fetchWithSsrFGuardMock,
-}));
 
 function makeStreamingResponse(params: { chunkCount: number; chunkSize: number }): {
   response: Response;
@@ -40,13 +33,22 @@ function makeStreamingResponse(params: { chunkCount: number; chunkSize: number }
   return { response, getReadCount: () => readCount, wasCanceled: () => canceled };
 }
 
-function guardedFetch(response: Response): void {
-  fetchWithSsrFGuardMock.mockResolvedValue({ response, release: vi.fn() });
+function guardedFetch(response: Response): ReturnType<typeof vi.fn> {
+  const fetchMock = vi.fn(async () => response);
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
 }
 
 describe("createOpenAIRealtimeClientSecret", () => {
+  installPinnedHostnameTestHooks();
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
   it("returns client secret from a well-formed response", async () => {
-    guardedFetch(
+    const fetchMock = guardedFetch(
       new Response(
         JSON.stringify({
           client_secret: { value: "eph-secret-abc" },
@@ -64,9 +66,8 @@ describe("createOpenAIRealtimeClientSecret", () => {
 
     expect(result.value).toBe("eph-secret-abc");
     expect(typeof result.expiresAt).toBe("number");
-    expect(fetchWithSsrFGuardMock).toHaveBeenLastCalledWith(
-      expect.objectContaining({ timeoutMs: 30_000 }),
-    );
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit | undefined;
+    expect(init?.signal).toBeInstanceOf(AbortSignal);
   });
 
   it("bounds oversized success response and cancels the stream", async () => {
@@ -102,7 +103,7 @@ describe("createOpenAIRealtimeClientSecret", () => {
   });
 
   it("creates transcription secrets through the current client-secrets endpoint", async () => {
-    guardedFetch(
+    const fetchMock = guardedFetch(
       new Response(JSON.stringify({ value: "ek-transcription", expires_at: 1_800_000_000 }), {
         status: 200,
       }),
@@ -114,13 +115,10 @@ describe("createOpenAIRealtimeClientSecret", () => {
       session: { type: "transcription" },
     });
 
-    expect(fetchWithSsrFGuardMock).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.openai.com/v1/realtime/client_secrets",
       expect.objectContaining({
-        url: "https://api.openai.com/v1/realtime/client_secrets",
-        timeoutMs: 30_000,
-        init: expect.objectContaining({
-          body: JSON.stringify({ session: { type: "transcription" } }),
-        }),
+        body: JSON.stringify({ session: { type: "transcription" } }),
       }),
     );
   });

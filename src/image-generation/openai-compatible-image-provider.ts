@@ -246,7 +246,7 @@ export function createOpenAiCompatibleImageGenerationProvider(
           ? postMultipartRequest({
               url: appendImagesPath(baseUrl, mode),
               headers: (() => {
-                const multipartHeaders = new Headers(headers);
+                const multipartHeaders = headers;
                 multipartHeaders.delete("Content-Type");
                 return multipartHeaders;
               })(),
@@ -260,7 +260,7 @@ export function createOpenAiCompatibleImageGenerationProvider(
           : postJsonRequest({
               url: appendImagesPath(baseUrl, mode),
               headers: (() => {
-                const jsonHeaders = new Headers(headers);
+                const jsonHeaders = headers;
                 jsonHeaders.set("Content-Type", "application/json");
                 return jsonHeaders;
               })(),

@@ -5,6 +5,10 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createDeferred } from "../../test/helpers/promise.js";
+import {
+  getGuardedResponseRequestContext,
+  recordGuardedResponseRequestContext,
+} from "../infra/net/guarded-response-request-context.js";
 import { execNodeEvalSync } from "../test-utils/node-process.js";
 import { responseWithRelease } from "./fetch-runtime.js";
 
@@ -83,6 +87,20 @@ describe("plugin SDK fetch runtime", () => {
     await expect(eof).resolves.toEqual({ done: true, value: undefined });
     releaseGate.resolve();
     await releaseFinished.promise;
+  });
+
+  it("preserves guarded request context when wrapping a response body", () => {
+    const source = recordGuardedResponseRequestContext(new Response("body", { status: 401 }), {
+      headers: { authorization: "Bearer context-secret" },
+      url: "https://api.example.test/fail?access_token=query-secret",
+    });
+
+    const wrapped = responseWithRelease(source, async () => {});
+
+    expect(wrapped).not.toBe(source);
+    expect(getGuardedResponseRequestContext(wrapped)).toEqual(
+      getGuardedResponseRequestContext(source),
+    );
   });
 
   it("awaits upstream cancellation before release", async () => {

@@ -430,11 +430,10 @@ export function buildXaiVideoGenerationProvider(): VideoGenerationProvider {
         });
       // Per-submit idempotency key prevents accidental double-charging if
       // the request is replayed. Polls intentionally reuse `headers` without it.
-      const submitHeaders = new Headers(headers);
-      submitHeaders.set("x-idempotency-key", crypto.randomUUID());
+      headers.set("x-idempotency-key", crypto.randomUUID());
       const { response, release } = await postJsonRequest({
         url: `${baseUrl}${createEndpoint}`,
-        headers: submitHeaders,
+        headers,
         body: createBody,
         timeoutMs: resolveProviderOperationTimeoutMs({
           deadline,
@@ -443,6 +442,8 @@ export function buildXaiVideoGenerationProvider(): VideoGenerationProvider {
         fetchFn,
         allowPrivateNetwork,
         dispatcherPolicy,
+      }).finally(() => {
+        headers.delete("x-idempotency-key");
       });
       try {
         await assertOkOrThrowHttpError(response, "xAI video generation failed");

@@ -1,5 +1,6 @@
 import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { inheritProviderRequestHeadersContext } from "../../infra/net/provider-request-header-context.js";
 import type { Api, Model } from "../../llm/types.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
 import {
@@ -232,12 +233,15 @@ export function normalizeResolvedModel(params: {
     normalizedInputModel.requestTimeoutMs !== undefined
       ? { ...normalizedModel, requestTimeoutMs: normalizedInputModel.requestTimeoutMs }
       : normalizedModel;
-  return inheritModelProviderMetadataOwners(
+  return inheritProviderRequestHeadersContext(
     params.model,
-    canonicalizeLegacyResolvedModel({
-      provider: params.provider,
-      model: modelWithProviderTimeout,
-    }),
+    inheritModelProviderMetadataOwners(
+      params.model,
+      canonicalizeLegacyResolvedModel({
+        provider: params.provider,
+        model: modelWithProviderTimeout,
+      }),
+    ),
   );
 }
 

@@ -155,14 +155,14 @@ describe("guardedJsonApiRequest", () => {
         auditContext: "voice-call:test",
         errorPrefix: "provider error",
       }),
-    ).rejects.toThrow("provider error: 500 boom");
+    ).rejects.toThrow("provider error (500): boom");
 
     expect(release).toHaveBeenCalledTimes(1);
   });
 
   it("bounds provider error bodies on complete UTF-8 characters and cancels overflow", async () => {
     const release = vi.fn(async () => {});
-    const tracked = cancelTrackedTextResponse(`${"x".repeat(8 * 1024 - 2)}😀tail`, {
+    const tracked = cancelTrackedTextResponse(`${"x".repeat(16 * 1024 - 2)}😀tail`, {
       status: 500,
     });
     fetchWithSsrFGuardMock.mockResolvedValue({
@@ -184,11 +184,11 @@ describe("guardedJsonApiRequest", () => {
       caught = error as Error;
     }
 
-    expect(caught?.message).toContain("provider error: 500 ");
-    expect(caught?.message).toContain("... [truncated]");
+    expect(caught?.message).toContain("provider error (500): ");
+    expect(caught?.message).toContain("…");
     expect(caught?.message).not.toContain("�");
     expect(caught?.message).not.toContain("tail");
-    expect(caught?.message.length).toBeLessThan(8_300);
+    expect(caught?.message.length).toBeLessThan(600);
     expect(tracked.wasCanceled()).toBe(true);
     expect(release).toHaveBeenCalledTimes(1);
   });
@@ -222,10 +222,10 @@ describe("guardedJsonApiRequest", () => {
       caught = error as Error;
     }
 
-    expect(caught?.message).toContain("provider error: 401 ");
+    expect(caught?.message).toContain("provider error (401): ");
     expect(caught?.message).not.toContain(secretBasic);
     expect(caught?.message).not.toContain(secretApiKey);
-    expect(caught?.message).toContain("***");
+    expect((caught as (Error & { errorBody?: string }) | undefined)?.errorBody).toContain("***");
     expect(release).toHaveBeenCalledTimes(1);
   });
 

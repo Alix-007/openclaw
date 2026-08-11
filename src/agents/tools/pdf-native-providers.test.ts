@@ -39,6 +39,7 @@ function makeGeminiAnalyzeParams(
     prompt: string;
     pdfs: Array<{ base64: string; filename: string }>;
     baseUrl: string;
+    requestConfig: Parameters<typeof pdfNativeProviders.geminiAnalyzePdf>[0]["requestConfig"];
   }> = {},
 ) {
   return {
@@ -165,7 +166,7 @@ describe("native PDF provider API calls", () => {
     let canceled = false;
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
-        controller.enqueue(new TextEncoder().encode(`${"x".repeat(9_000)}tail-marker`));
+        controller.enqueue(new TextEncoder().encode(`${"x".repeat(17_000)}tail-marker`));
       },
       cancel() {
         canceled = true;
@@ -187,7 +188,8 @@ describe("native PDF provider API calls", () => {
     }
     expect(error.message).toContain("Anthropic PDF request failed");
     expect(error.message).not.toContain("tail-marker");
-    expect(error.message.length).toBeLessThan(500);
+    expect((error as Error & { errorBody?: string }).errorBody?.length).toBeLessThanOrEqual(500);
+    expect(error.message.length).toBeLessThanOrEqual(600);
     expect(canceled).toBe(true);
   });
 
@@ -195,7 +197,7 @@ describe("native PDF provider API calls", () => {
     let canceled = false;
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
-        controller.enqueue(new TextEncoder().encode("x".repeat(8 * 1024)));
+        controller.enqueue(new TextEncoder().encode("x".repeat(16 * 1024)));
       },
       cancel() {
         canceled = true;
@@ -369,6 +371,56 @@ describe("native PDF provider API calls", () => {
     await expect(pdfNativeProviders.geminiAnalyzePdf(makeGeminiAnalyzeParams())).rejects.toThrow(
       "Gemini PDF request failed",
     );
+  });
+
+  it("redacts configured arbitrary headers from native PDF provider errors", async () => {
+    const reflectedSecret = "native-pdf-provider-proof-314159";
+    const cases = [
+      {
+        invoke: () =>
+          pdfNativeProviders.anthropicAnalyzePdf(
+            makeAnthropicAnalyzeParams({
+              requestConfig: { headers: { "X-Provider-Proof": reflectedSecret } },
+            }),
+          ),
+        response: () =>
+          jsonResponse(
+            { error: { message: `safe=quota ${reflectedSecret}`, code: reflectedSecret } },
+            { status: 401 },
+          ),
+      },
+      {
+        invoke: () =>
+          pdfNativeProviders.geminiAnalyzePdf(
+            makeGeminiAnalyzeParams({
+              requestConfig: { headers: { "X-Provider-Proof": reflectedSecret } },
+            }),
+          ),
+        response: () => textResponse(`safe=quota ${reflectedSecret}`, { status: 401 }),
+      },
+    ];
+
+    for (const testCase of cases) {
+      mockFetchResponse(testCase.response());
+      const error = await testCase.invoke().catch((caught: unknown) => caught);
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("safe=quota");
+      expect((error as Error).message).not.toContain(reflectedSecret);
+    }
+  });
+
+  it("omits native PDF diagnostics that may contain a short configured secret", async () => {
+    mockFetchResponse(textResponse("retry after 1 second", { status: 401 }));
+
+    const error = await pdfNativeProviders
+      .anthropicAnalyzePdf(
+        makeAnthropicAnalyzeParams({ requestConfig: { headers: { "X-Route-Code": "1" } } }),
+      )
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("diagnostic omitted");
+    expect((error as Error).message).not.toContain("retry after 1 second");
   });
 
   it("geminiAnalyzePdf throws when no candidates returned", async () => {

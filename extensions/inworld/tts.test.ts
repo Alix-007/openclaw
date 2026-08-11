@@ -30,6 +30,37 @@ function queueGuardedResponse(response: Response): { release: ReturnType<typeof 
   return { release };
 }
 
+function queueContextualGuardedResponse(response: Response): void {
+  fetchWithSsrFGuardMock.mockImplementationOnce(async (params) => {
+    const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/ssrf-runtime")>(
+      "openclaw/plugin-sdk/ssrf-runtime",
+    );
+    return await actual.fetchWithSsrFGuard({
+      ...params,
+      fetchImpl: async () => response,
+      lookupFn: async () => [{ address: "93.184.216.34", family: 4 as const }],
+    });
+  });
+}
+
+function collectProviderErrorText(error: unknown): string {
+  const providerError = error as Error & {
+    errorBody?: string;
+    errorCode?: string;
+    errorType?: string;
+    requestId?: string;
+  };
+  return [
+    providerError.message,
+    providerError.errorBody,
+    providerError.errorCode,
+    providerError.errorType,
+    providerError.requestId,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 function lastGuardRequest(): GuardRequest {
   const calls = fetchWithSsrFGuardMock.mock.calls;
   const call = calls[calls.length - 1];
@@ -157,7 +188,7 @@ describe("listInworldVoices", () => {
     queueGuardedResponse(new Response("service unavailable", { status: 503 }));
 
     await expect(listInworldVoices({ apiKey: "test-key" })).rejects.toThrow(
-      "Inworld voices API error (503): service unavailable",
+      "Inworld voices API error (HTTP 503): service unavailable",
     );
   });
 
@@ -211,6 +242,60 @@ describe("listInworldVoices", () => {
   });
 });
 
+describe("Inworld provider error redaction", () => {
+  afterEach(() => {
+    fetchWithSsrFGuardMock.mockReset();
+    vi.restoreAllMocks();
+  });
+
+  it.each([
+    { operation: "tts", variant: "raw" },
+    { operation: "tts", variant: "json" },
+    { operation: "tts", variant: "short" },
+    { operation: "voices", variant: "raw" },
+    { operation: "voices", variant: "json" },
+    { operation: "voices", variant: "short" },
+  ] as const)(
+    "redacts $variant credentials from $operation failures using the guarded request context",
+    async ({ operation, variant }) => {
+      const apiKey = variant === "short" ? "1" : "inworld/plain + key 4187";
+      const errorBody =
+        variant === "json"
+          ? JSON.stringify({ error: { message: `rejected ${apiKey}` } })
+          : variant === "short"
+            ? `provider code ${apiKey}, retry in 10 seconds`
+            : `rejected ${apiKey}`;
+      queueContextualGuardedResponse(new Response(errorBody, { status: 401 }));
+
+      let caught: unknown;
+      try {
+        if (operation === "tts") {
+          await inworldTTS({ text: "test", apiKey });
+        } else {
+          await listInworldVoices({ apiKey });
+        }
+      } catch (error) {
+        caught = error;
+      }
+
+      expect(caught).toBeInstanceOf(Error);
+      const diagnostics = collectProviderErrorText(caught);
+      if (variant === "short") {
+        expect(diagnostics).toContain(
+          "diagnostic omitted because it may contain a short sensitive value",
+        );
+        expect(diagnostics).not.toContain(`provider code ${apiKey}`);
+      } else {
+        expect(diagnostics).not.toContain(apiKey);
+        expect(diagnostics).toContain("***");
+      }
+      expect(new Headers(lastGuardRequest().init?.headers).get("authorization")).toBe(
+        `Basic ${apiKey}`,
+      );
+    },
+  );
+});
+
 describe("inworldTTS", () => {
   afterEach(() => {
     fetchWithSsrFGuardMock.mockReset();
@@ -250,15 +335,15 @@ describe("inworldTTS", () => {
     queueGuardedResponse(new Response("bad request body", { status: 400 }));
 
     await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
-      "Inworld TTS API error (400): bad request body",
+      "Inworld TTS API error (HTTP 400): bad request body",
     );
   });
 
   it("keeps truncated HTTP error bodies UTF-16 safe", async () => {
-    queueGuardedResponse(new Response(`${"e".repeat(399)}😀tail`, { status: 400 }));
+    queueGuardedResponse(new Response(`${"e".repeat(499)}😀tail`, { status: 400 }));
 
     await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toMatchObject({
-      message: `Inworld TTS API error (400): ${"e".repeat(399)}…`,
+      message: `Inworld TTS API error (HTTP 400): ${"e".repeat(499)}…`,
     });
   });
 
@@ -372,7 +457,7 @@ describe("inworldTTS", () => {
     const { release } = queueGuardedResponse(new Response("fail", { status: 500 }));
 
     await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
-      "Inworld TTS API error (500): fail",
+      "Inworld TTS API error (HTTP 500): fail",
     );
     expect(release).toHaveBeenCalledTimes(1);
   });
@@ -469,16 +554,16 @@ describe("Inworld response read bounding", () => {
 
     expect(captured).toBeInstanceOf(Error);
     const message = (captured as Error).message;
-    expect(message.startsWith("Inworld TTS API error (500): ")).toBe(true);
-    // Never the full 64 KiB hostile body: it collapses to a fixed marker.
-    expect(message).toContain("(error body exceeded diagnostic limit; truncated)");
-    expect(message.length).toBeLessThan(512);
+    expect(message.startsWith("Inworld TTS API error (HTTP 500): ")).toBe(true);
+    // Never the full 64 KiB hostile body: canonical provider metadata stays bounded.
+    expect(message).toContain("…");
+    expect(message.length).toBeLessThan(600);
   });
 
   it("edge: a small error body is preserved verbatim in the thrown message", async () => {
     queueGuardedResponse(new Response("invalid api key", { status: 401 }));
     await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
-      "Inworld TTS API error (401): invalid api key",
+      "Inworld TTS API error (HTTP 401): invalid api key",
     );
   });
 

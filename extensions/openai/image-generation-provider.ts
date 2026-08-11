@@ -868,9 +868,7 @@ async function generateOpenAICodexImage(params: {
     });
     const { response, release } = requestResult;
     try {
-      await assertOkOrThrowHttpError(response, "OpenAI Codex image generation failed", {
-        requestHeaders: headers,
-      });
+      await assertOkOrThrowHttpError(response, "OpenAI Codex image generation failed");
       results.push(
         extractCodexImageGenerationResult({
           body: await readResponseBodyText(response),
@@ -1040,7 +1038,9 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
       const url = isAzure
         ? buildAzureImageUrl(rawBaseUrl, model, isEdit ? "edits" : "generations")
         : `${baseUrl}/images/${isEdit ? "edits" : "generations"}`;
-      const requestHeaders = new Headers(headers);
+      // This operation owns the resolver-created Headers instance. Mutate it so
+      // request-secret provenance stays attached to the exact outbound object.
+      const requestHeaders = headers;
       if (isEdit) {
         requestHeaders.delete("Content-Type");
       } else {
@@ -1105,7 +1105,6 @@ export function buildOpenAIImageGenerationProvider(): ImageGenerationProvider {
         await assertOkOrThrowHttpError(
           response,
           isEdit ? "OpenAI image edit failed" : "OpenAI image generation failed",
-          { requestHeaders },
         );
 
         const data = await readProviderJsonResponse(response, "openai.image-generation", {

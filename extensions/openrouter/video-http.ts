@@ -13,9 +13,10 @@ function headersForOpenRouterGet(url: string, baseUrl: string, requestHeaders: H
   } catch {
     return new Headers();
   }
-  const headers = new Headers(requestHeaders);
-  headers.delete("content-type");
-  return headers;
+  // Submit has completed before polling/download. Reuse its operation-owned
+  // Headers object so request-secret provenance survives the GET projection.
+  requestHeaders.delete("content-type");
+  return requestHeaders;
 }
 
 export function resolveOpenRouterVideoUrl(url: string, baseUrl: string): string {

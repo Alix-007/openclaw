@@ -10,6 +10,7 @@ import {
 } from "../config/config.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { coerceSecretRef } from "../config/types.secrets.js";
+import { inheritProviderRequestHeadersContext } from "../infra/net/provider-request-header-context.js";
 import type { Model } from "../llm/types.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { mintSecretSentinel } from "../secrets/sentinel.js";
@@ -281,10 +282,10 @@ export function applyLocalNoAuthHeaderOverride<T extends Model>(
     Authorization: null,
   } as unknown as Record<string, string>;
 
-  return {
+  return inheritProviderRequestHeadersContext(model, {
     ...model,
     headers,
-  };
+  });
 }
 
 export function applySecretRefHeaderSentinels<T extends Model>(
@@ -419,7 +420,9 @@ export function applySecretRefHeaderSentinels<T extends Model>(
     headers ??= { ...model.headers };
     headers[name] = replacement.replacement;
   }
-  const protectedModel = headers ? { ...model, headers } : model;
+  const protectedModel = headers
+    ? inheritProviderRequestHeadersContext(model, { ...model, headers })
+    : model;
   return protectedRequest && protectedRequest !== attachedRequest
     ? attachModelProviderRequestTransport(protectedModel, protectedRequest)
     : protectedModel;
@@ -465,8 +468,8 @@ export function applyAuthHeaderOverride<T extends Model>(
   }
   headers.Authorization = `Bearer ${auth.apiKey}`;
 
-  return {
+  return inheritProviderRequestHeadersContext(sentinelModel, {
     ...sentinelModel,
     headers,
-  };
+  });
 }

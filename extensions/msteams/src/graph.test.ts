@@ -620,6 +620,31 @@ describe("msteams graph helpers", () => {
       expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     });
 
+    it("does not expose a second-page cursor in an error label", async () => {
+      const cursor = "secret-pagination-cursor";
+      let callCount = 0;
+      mockFetch(async () => {
+        callCount += 1;
+        return callCount === 1
+          ? jsonResponse(
+              pagedResponse(
+                [{ id: "1", name: "a" }],
+                `https://graph.microsoft.com/v1.0/items?$skiptoken=${cursor}`,
+              ),
+            )
+          : textResponse("forbidden", { status: 403 });
+      });
+
+      const error = await fetchAllGraphPages<Item>({
+        token: graphToken,
+        path: "/items",
+      }).catch((cause: unknown) => cause);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe("Graph /items failed (403): forbidden");
+      expect((error as Error).message).not.toContain(cursor);
+    });
+
     it("truncation at maxPages", async () => {
       mockFetch(async () =>
         jsonResponse(

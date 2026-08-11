@@ -1,6 +1,7 @@
 // Public fetch/proxy helpers for plugins that need wrapped fetch behavior.
 
 import type { GuardedFetchOptions } from "../infra/net/fetch-guard.js";
+import { inheritGuardedResponseRequestContext } from "../infra/net/guarded-response-request-context.js";
 
 export { resolveFetch, wrapFetchWithAbortSignal } from "../infra/fetch.js";
 export {
@@ -85,11 +86,14 @@ export function responseWithRelease(response: Response, release: () => Promise<v
     },
   });
 
-  return new Response(body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: response.headers,
-  });
+  return inheritGuardedResponseRequestContext(
+    response,
+    new Response(body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    }),
+  );
 }
 
 /** Apply the trusted-env-proxy guarded fetch preset without exposing raw mode strings to plugins. */

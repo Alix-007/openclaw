@@ -4,6 +4,7 @@ import {
   getDebugProxyCaptureStore,
   initializeDebugProxyCapture,
 } from "openclaw/plugin-sdk/proxy-capture";
+import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-media-understanding";
 import { createOpenClawTestState, type OpenClawTestState } from "openclaw/plugin-sdk/test-state";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { installDebugProxyTestResetHooks } from "../test-support/debug-proxy-env-test-helpers.js";
@@ -15,20 +16,6 @@ import {
   OPENAI_TTS_VOICES,
   openaiTTS,
 } from "./tts.js";
-
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
-  fetchWithSsrFGuard: async ({
-    url,
-    init,
-  }: {
-    url: string;
-    init?: RequestInit;
-  }): Promise<{ response: Response; release: () => Promise<void> }> => ({
-    response: await globalThis.fetch(url, init),
-    release: vi.fn(async () => {}),
-  }),
-  ssrfPolicyFromHttpBaseUrlAllowedHostname: () => undefined,
-}));
 
 const officialEndpointValidationCases = [
   {
@@ -58,6 +45,8 @@ function firstFetchInit(fetchMock: ReturnType<typeof vi.fn>): RequestInit {
 }
 
 describe("openai tts", () => {
+  installPinnedHostnameTestHooks();
+
   const originalFetch = globalThis.fetch;
   let openClawState: OpenClawTestState;
 

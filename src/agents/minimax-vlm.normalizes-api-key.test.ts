@@ -1,6 +1,7 @@
 // Covers MiniMax VLM auth/header normalization and provider-specific routing.
 import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { recordGuardedResponseRequestContext } from "../infra/net/guarded-response-request-context.js";
 import { isMinimaxVlmModel, minimaxUnderstandImage } from "./minimax-vlm.js";
 
 const fetchWithSsrFGuardMock = vi.hoisted(() => vi.fn());
@@ -31,6 +32,34 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
       release: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
       finalUrl: "https://api.minimax.io/v1/coding_plan/vlm",
     };
+  }
+
+  function mockGuardedError(
+    body: string,
+    contentType = "text/plain",
+    responseHeaders?: Record<string, string>,
+  ) {
+    fetchWithSsrFGuardMock.mockImplementationOnce(
+      async (options: {
+        url: string;
+        init?: RequestInit;
+        capture?: { sensitiveRequestHeaderNames?: readonly string[] };
+      }) => ({
+        response: recordGuardedResponseRequestContext(
+          new Response(body, {
+            status: 500,
+            headers: { "Content-Type": contentType, ...responseHeaders },
+          }),
+          {
+            headers: options.init?.headers,
+            sensitiveRequestHeaderNames: options.capture?.sensitiveRequestHeaderNames,
+            url: options.url,
+          },
+        ),
+        release: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+        finalUrl: options.url,
+      }),
+    );
   }
 
   afterEach(() => {
@@ -386,7 +415,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
     let canceled = false;
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
-        controller.enqueue(new TextEncoder().encode(`${"x".repeat(9_000)}tail-marker`));
+        controller.enqueue(new TextEncoder().encode(`${"x".repeat(17_000)}tail-marker`));
       },
       cancel() {
         canceled = true;
@@ -413,10 +442,58 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
       throw new Error("expected MiniMax VLM request to throw an Error");
     }
     expect(error.message).toContain("MiniMax VLM request failed");
-    expect(error.message).toContain("Trace-Id: trace-123");
+    expect(error.message).toContain("request_id=trace-123");
     expect(error.message).not.toContain("tail-marker");
-    expect(error.message.length).toBeLessThan(520);
+    expect((error as Error & { errorBody?: string }).errorBody?.length).toBeLessThanOrEqual(500);
+    expect(error.message.length).toBeLessThanOrEqual(600);
     expect(canceled).toBe(true);
+  });
+
+  it.each(["raw", "json"])(
+    "redacts configured request headers from %s MiniMax errors",
+    async (shape) => {
+      const reflectedSecret = "minimax-provider-proof-271828";
+      mockGuardedError(
+        shape === "json"
+          ? JSON.stringify({
+              error: { message: `safe=quota ${reflectedSecret}`, code: reflectedSecret },
+            })
+          : `safe=quota ${reflectedSecret}`,
+        shape === "json" ? "application/json" : "text/plain",
+        { "Trace-Id": "trace-redaction-proof" },
+      );
+
+      const error = await minimaxUnderstandImage({
+        apiKey: "minimax-test-key",
+        prompt: "hi",
+        imageDataUrl: "data:image/png;base64,AAAA",
+        apiHost: "https://api.minimax.io",
+        request: { headers: { "X-Provider-Proof": reflectedSecret } },
+      }).catch((caught: unknown) => caught);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain("safe=quota");
+      expect((error as Error).message).toContain("request_id=trace-redaction-proof");
+      expect((error as Error).message).not.toContain(reflectedSecret);
+      const request = fetchWithSsrFGuardMock.mock.calls.at(-1)?.[0];
+      expect(new Headers(request?.init?.headers).get("x-provider-proof")).toBe(reflectedSecret);
+    },
+  );
+
+  it("omits MiniMax diagnostics that may contain a short configured secret", async () => {
+    mockGuardedError("retry after 1 second");
+
+    const error = await minimaxUnderstandImage({
+      apiKey: "minimax-test-key",
+      prompt: "hi",
+      imageDataUrl: "data:image/png;base64,AAAA",
+      apiHost: "https://api.minimax.io",
+      request: { headers: { "X-Route-Code": "1" } },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toContain("diagnostic omitted");
+    expect((error as Error).message).not.toContain("retry after 1 second");
   });
 
   it("bounds large successful response bodies before parsing JSON", async () => {

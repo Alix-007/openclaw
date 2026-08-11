@@ -87,6 +87,23 @@ function mockTokenResponseText(body: string, status = 200): void {
   });
 }
 
+function requireTokenFailureMessage(result: Awaited<ReturnType<typeof refreshOpenAIAccessToken>>) {
+  if (result.type !== "failed") {
+    throw new Error("expected token request to fail");
+  }
+  return result.message;
+}
+
+function requireTokenRequestBody(): URLSearchParams {
+  const call = ssrfMocks.fetchWithSsrFGuard.mock.calls.at(-1)?.[0] as
+    | { init?: RequestInit }
+    | undefined;
+  if (!(call?.init?.body instanceof URLSearchParams)) {
+    throw new Error("expected token request to send URLSearchParams");
+  }
+  return call.init.body;
+}
+
 function mockFakeIpTokenResponse(params: { address: string; family: 4 | 6 }): void {
   ssrfMocks.fetchWithSsrFGuard.mockImplementationOnce(
     async ({ policy }: { policy?: SsrFPolicy }) => {
@@ -387,6 +404,69 @@ describe("OpenAI Codex OAuth flow", () => {
       message: "OpenAI Codex token refresh response missing fields: expires_in",
     });
   });
+
+  it.each([
+    { operation: "exchange", variant: "raw" },
+    { operation: "exchange", variant: "json" },
+    { operation: "exchange", variant: "form" },
+    { operation: "exchange", variant: "truncated" },
+    { operation: "exchange", variant: "short" },
+    { operation: "refresh", variant: "raw" },
+    { operation: "refresh", variant: "json" },
+    { operation: "refresh", variant: "form" },
+    { operation: "refresh", variant: "truncated" },
+    { operation: "refresh", variant: "short" },
+  ] as const)(
+    "redacts $variant request values from failed token $operation responses",
+    async ({ operation, variant }) => {
+      const code = variant === "short" ? "1" : "oauth/code + 4187";
+      const verifier = "pkce/verifier + 9137";
+      const refreshToken = variant === "short" ? "1" : "refresh/token + 6253";
+      const reflectedValues = operation === "exchange" ? [code, verifier] : [refreshToken];
+      const reflected = reflectedValues.join(" and ");
+      const body =
+        variant === "json"
+          ? JSON.stringify({ error: { message: `rejected ${reflected}` } })
+          : variant === "form"
+            ? `detail=${encodeURIComponent(reflected)}`
+            : variant === "truncated"
+              ? `${reflected}${"x".repeat(20 * 1024)}`
+              : variant === "short"
+                ? `provider code ${reflected}, retry in 10 seconds`
+                : `rejected ${reflected}`;
+      mockTokenResponseText(body, 400);
+
+      const result =
+        operation === "exchange"
+          ? await exchangeOpenAIAuthorizationCode(
+              code,
+              verifier,
+              resolveOpenAIRedirectUri("localhost"),
+            )
+          : await refreshOpenAIAccessToken(refreshToken);
+
+      const message = requireTokenFailureMessage(result);
+      for (const value of reflectedValues) {
+        expect(message).not.toContain(value);
+        expect(message).not.toContain(encodeURIComponent(value));
+      }
+      if (variant === "short") {
+        expect(message).toContain(
+          "diagnostic omitted because it may contain a short sensitive value",
+        );
+      } else {
+        expect(message).toContain("***");
+      }
+
+      const requestBody = requireTokenRequestBody();
+      if (operation === "exchange") {
+        expect(requestBody.get("code")).toBe(code);
+        expect(requestBody.get("code_verifier")).toBe(verifier);
+      } else {
+        expect(requestBody.get("refresh_token")).toBe(refreshToken);
+      }
+    },
+  );
 });
 
 async function listenLoopbackServer(server: Server): Promise<number> {

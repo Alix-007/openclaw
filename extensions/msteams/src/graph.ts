@@ -45,6 +45,14 @@ export function escapeOData(value: string): string {
   return value.replace(/'/g, "''");
 }
 
+function graphPathLabel(path: string): string {
+  try {
+    return new URL(path, GRAPH_ROOT).pathname;
+  } catch {
+    return "request";
+  }
+}
+
 async function requestGraph(params: {
   token: string;
   path: string;
@@ -77,7 +85,7 @@ async function requestGraph(params: {
     if (!response.ok) {
       throw await createMSTeamsHttpError(
         response,
-        `${params.errorPrefix ?? "Graph"} ${params.path} failed`,
+        `${params.errorPrefix ?? "Graph"} ${graphPathLabel(params.path)} failed`,
       );
     }
     releaseInFinally = false;
@@ -112,7 +120,7 @@ export async function mutateGraphJson<T>(params: {
     root: params.beta ? GRAPH_BETA : undefined,
     errorPrefix,
   });
-  return readOptionalGraphJson<T>(response, `${errorPrefix} ${params.path} failed`);
+  return readOptionalGraphJson<T>(response, `${errorPrefix} ${graphPathLabel(params.path)} failed`);
 }
 
 export async function fetchGraphJson<T>(params: {
@@ -128,7 +136,7 @@ export async function fetchGraphJson<T>(params: {
     headers: params.headers,
     deadline: params.deadline,
   });
-  return await readOptionalGraphJson<T>(res, `Graph ${params.path} failed`);
+  return await readOptionalGraphJson<T>(res, `Graph ${graphPathLabel(params.path)} failed`);
 }
 
 /**
@@ -140,6 +148,7 @@ export async function fetchGraphAbsoluteUrl<T>(params: {
   url: string;
   headers?: Record<string, string>;
 }): Promise<T> {
+  const failureLabel = "Graph paginated request failed";
   const { response, release } = await fetchWithSsrFGuard({
     url: params.url,
     init: {
@@ -154,9 +163,9 @@ export async function fetchGraphAbsoluteUrl<T>(params: {
   });
   try {
     if (!response.ok) {
-      throw await createMSTeamsHttpError(response, `Graph ${params.url} failed`);
+      throw await createMSTeamsHttpError(response, failureLabel);
     }
-    return await readProviderJsonResponse<T>(response, `Graph ${params.url} failed`);
+    return await readProviderJsonResponse<T>(response, failureLabel);
   } finally {
     await release();
   }

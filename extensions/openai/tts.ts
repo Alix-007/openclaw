@@ -185,9 +185,7 @@ export async function openaiTTS(params: {
       });
     }
 
-    await assertOkOrThrowProviderError(response, "OpenAI TTS API error", {
-      requestHeaders,
-    });
+    await assertOkOrThrowProviderError(response, "OpenAI TTS API error");
 
     return Buffer.from(
       await readProviderBinaryResponse(response, "OpenAI TTS API error", "audio", {

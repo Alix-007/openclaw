@@ -14,6 +14,7 @@ import {
   shouldResolveConfiguredLocalOriginManagedProxyBypass,
   type ConfiguredLocalOriginManagedProxyBypass,
 } from "./configured-local-origin-bypass.js";
+import { recordGuardedResponseRequestContext } from "./guarded-response-request-context.js";
 import { PinnedDispatcherPool, type PinnedDispatcherLease } from "./pinned-dispatcher-pool.js";
 import { shouldUseEnvHttpProxyForUrl } from "./proxy-env.js";
 import { retainSafeHeadersForCrossOriginRedirect as retainSafeRedirectHeaders } from "./redirect-headers.js";
@@ -761,7 +762,12 @@ async function fetchWithSsrFGuardInternal(
       }
 
       return {
-        response,
+        response: recordGuardedResponseRequestContext(response, {
+          headers: currentInit?.headers,
+          sensitiveRequestHeaderNames:
+            params.capture === false ? undefined : params.capture?.sensitiveRequestHeaderNames,
+          url: currentUrl,
+        }),
         finalUrl: currentUrl,
         release: async () => finishRequest(releaseDispatcher),
         refreshTimeout: refresh,

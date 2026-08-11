@@ -1,5 +1,6 @@
 // OpenAI-compatible speech provider tests cover speech request and file output.
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { installPinnedHostnameTestHooks } from "../media-understanding/audio.test-helpers.js";
 import { createOpenAiCompatibleSpeechProvider } from "./openai-compatible-speech-provider.js";
 
 const {
@@ -52,11 +53,14 @@ function requireFirstMockArg(mock: ReturnType<typeof vi.fn>): Record<string, unk
 }
 
 describe("createOpenAiCompatibleSpeechProvider", () => {
+  installPinnedHostnameTestHooks();
+
   afterEach(() => {
     postJsonRequestMock.mockReset();
     readProviderBinaryResponseMock.mockClear();
     resolveProviderHttpRequestConfigMock.mockClear();
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   it("normalizes config with built-in base URL policies", () => {
@@ -182,21 +186,27 @@ describe("createOpenAiCompatibleSpeechProvider", () => {
   });
 
   it("redacts reflected credentials from normal non-retry TTS errors", async () => {
-    const release = vi.fn(async () => {});
     const credential = "orchid-tts-request-secret-123456";
-    postJsonRequestMock.mockResolvedValue({
-      response: new Response(
-        JSON.stringify({
-          error: {
-            message: `safe=quota-exceeded reflected=${credential}`,
-            code: credential,
-            type: `quota-${credential}`,
-          },
-        }),
-        { status: 401, headers: { "x-request-id": `request-${credential}` } },
+    const providerHttp = await vi.importActual<typeof import("openclaw/plugin-sdk/provider-http")>(
+      "openclaw/plugin-sdk/provider-http",
+    );
+    postJsonRequestMock.mockImplementationOnce(providerHttp.postJsonRequest);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              error: {
+                message: `safe=quota-exceeded reflected=${credential}`,
+                code: credential,
+                type: `quota-${credential}`,
+              },
+            }),
+            { status: 401, headers: { "x-request-id": `request-${credential}` } },
+          ),
       ),
-      release,
-    });
+    );
     vi.stubEnv("DEMO_API_KEY", credential);
 
     const provider = createOpenAiCompatibleSpeechProvider({
@@ -231,7 +241,6 @@ describe("createOpenAiCompatibleSpeechProvider", () => {
     expect((error as Error).message).toContain("safe=quota-exceeded");
     expect(JSON.stringify(error)).not.toContain(credential);
     expect(requireFirstMockArg(postJsonRequestMock)).not.toHaveProperty("retryStage");
-    expect(release).toHaveBeenCalledOnce();
   });
 
   it("rejects JSON success bodies from TTS responses as malformed audio", async () => {

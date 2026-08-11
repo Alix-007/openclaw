@@ -4,7 +4,6 @@
  */
 
 import { resolveAnthropicMessagesUrl } from "@openclaw/ai/transports";
-import { readResponseBodySnippet } from "../../infra/http-error-body.js";
 import {
   postJsonRequest,
   readProviderJsonResponse,
@@ -13,6 +12,7 @@ import {
 import { normalizeProviderTransportWithPlugin } from "../../plugins/provider-runtime.js";
 import { isRecord } from "../../utils.js";
 import { normalizeSecretInput } from "../../utils/normalize-secret-input.js";
+import { assertOkOrThrowHttpError } from "../provider-http-errors.js";
 import type { ModelProviderRequestTransportOverrides } from "../provider-request-config.js";
 import { unwrapSecretSentinelsForProviderEgress } from "../provider-secret-egress.js";
 import { resolveProviderTransportSsrFPolicy } from "../provider-transport-fetch.js";
@@ -23,9 +23,6 @@ type PdfInput = {
 };
 
 const NATIVE_PDF_PROVIDER_FETCH_TIMEOUT_MS = 120_000;
-const NATIVE_PDF_ERROR_BODY_MAX_BYTES = 8 * 1024;
-const NATIVE_PDF_ERROR_BODY_MAX_CHARS = 400;
-
 type NativePdfProviderRequestConfig = {
   headers?: Record<string, string>;
   request?: ModelProviderRequestTransportOverrides;
@@ -45,7 +42,9 @@ type NativePdfJsonRequest = {
 };
 
 async function postNativePdfJson(params: NativePdfJsonRequest): Promise<Record<string, unknown>> {
-  const headers = new Headers(params.headers);
+  // The resolver returns request-scoped Headers. Mutate that instance so its
+  // exact configured-header provenance reaches the guarded response context.
+  const headers = params.headers;
   for (const [name, value] of headers.entries()) {
     headers.set(
       name,
@@ -65,15 +64,7 @@ async function postNativePdfJson(params: NativePdfJsonRequest): Promise<Record<s
   });
 
   try {
-    if (!response.ok) {
-      const body = await readResponseBodySnippet(response, {
-        maxBytes: NATIVE_PDF_ERROR_BODY_MAX_BYTES,
-        maxChars: NATIVE_PDF_ERROR_BODY_MAX_CHARS,
-      });
-      throw new Error(
-        `${params.failureLabel} (${response.status} ${response.statusText})${body ? `: ${body}` : ""}`,
-      );
-    }
+    await assertOkOrThrowHttpError(response, params.failureLabel);
 
     const json = await readProviderJsonResponse<unknown>(response, params.responseLabel);
     if (!isRecord(json)) {
@@ -139,8 +130,8 @@ export async function anthropicAnalyzePdf(params: {
     resolveProviderHttpRequestConfigWithOriginTrust({
       baseUrl: params.baseUrl,
       defaultBaseUrl: resolveAnthropicMessagesUrl(undefined).replace(/\/messages$/u, ""),
+      headers: params.requestConfig?.headers,
       defaultHeaders: {
-        ...params.requestConfig?.headers,
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "anthropic-beta": "pdfs-2024-09-25",
@@ -240,8 +231,8 @@ export async function geminiAnalyzePdf(params: {
     resolveProviderHttpRequestConfigWithOriginTrust({
       baseUrl: transport.baseUrl,
       defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
+      headers: params.requestConfig?.headers,
       defaultHeaders: {
-        ...params.requestConfig?.headers,
         "x-goog-api-key": apiKey,
       },
       request: params.requestConfig?.request,

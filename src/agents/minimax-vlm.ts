@@ -1,4 +1,3 @@
-import { readResponseBodySnippet } from "../infra/http-error-body.js";
 /**
  * Adapts MiniMax VLM image-understanding requests for agent image inputs.
  */
@@ -9,7 +8,7 @@ import {
 import { resolvePositiveTimerTimeoutMs } from "../shared/number-coercion.js";
 import { isRecord } from "../utils.js";
 import { normalizeSecretInput } from "../utils/normalize-secret-input.js";
-import { readProviderJsonResponse } from "./provider-http-errors.js";
+import { assertOkOrThrowHttpError, readProviderJsonResponse } from "./provider-http-errors.js";
 import type { ModelProviderRequestTransportOverrides } from "./provider-request-config.js";
 import { resolveProviderTransportSsrFPolicy } from "./provider-transport-fetch.js";
 
@@ -18,8 +17,6 @@ type MinimaxBaseResp = {
   status_msg?: string;
 };
 
-const MINIMAX_VLM_ERROR_BODY_MAX_BYTES = 8 * 1024;
-const MINIMAX_VLM_ERROR_BODY_MAX_CHARS = 400;
 const DEFAULT_MINIMAX_VLM_TIMEOUT_MS = 60_000;
 
 export function isMinimaxVlmProvider(provider: string): boolean {
@@ -164,18 +161,7 @@ export async function minimaxUnderstandImage(params: {
 
   try {
     const traceId = res.headers.get("Trace-Id") ?? "";
-    if (!res.ok) {
-      const body = await readResponseBodySnippet(res, {
-        maxBytes: MINIMAX_VLM_ERROR_BODY_MAX_BYTES,
-        maxChars: MINIMAX_VLM_ERROR_BODY_MAX_CHARS,
-      });
-      const trace = traceId ? ` Trace-Id: ${traceId}` : "";
-      throw new Error(
-        `MiniMax VLM request failed (${res.status} ${res.statusText}).${trace}${
-          body ? ` Body: ${body}` : ""
-        }`,
-      );
-    }
+    await assertOkOrThrowHttpError(res, "MiniMax VLM request failed");
 
     const responseLabel = traceId
       ? `MiniMax VLM response [Trace-Id=${traceId}]`

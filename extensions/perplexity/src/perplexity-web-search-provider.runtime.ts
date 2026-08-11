@@ -255,9 +255,7 @@ async function runPerplexitySearchApi(params: {
     },
     async (res) => {
       if (!res.ok) {
-        throw await createProviderHttpError(res, "Perplexity Search API error", {
-          sensitiveValues: [params.apiKey],
-        });
+        throw await createProviderHttpError(res, "Perplexity Search API error");
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchApiResponse>(
         res,
@@ -305,9 +303,7 @@ async function runPerplexitySearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        throw await createProviderHttpError(res, "Perplexity API error", {
-          sensitiveValues: [params.apiKey],
-        });
+        throw await createProviderHttpError(res, "Perplexity API error");
       }
       const data = await readPerplexityJsonResponse<PerplexitySearchResponse>(res, "Perplexity");
       return {

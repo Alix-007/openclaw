@@ -123,9 +123,7 @@ async function createOpenAIRealtimeSecret(
   const payload = await (async () => {
     try {
       if (!response.ok) {
-        const error = await createProviderHttpError(response, params.errorMessage, {
-          requestHeaders,
-        });
+        const error = await createProviderHttpError(response, params.errorMessage);
         // Provider details can echo a masked credential while hiding which
         // OpenClaw auth source won. Keep the status metadata, but give callers
         // a bounded remediation for an explicitly configured key.

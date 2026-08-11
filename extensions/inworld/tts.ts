@@ -1,5 +1,6 @@
 // Inworld plugin module implements tts behavior.
 import { canonicalizeBase64, MAX_AUDIO_BYTES } from "openclaw/plugin-sdk/media-runtime";
+import { assertOkOrThrowHttpError } from "openclaw/plugin-sdk/provider-http";
 import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
 import type { SpeechVoiceOption } from "openclaw/plugin-sdk/speech-core";
 import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
@@ -23,46 +24,6 @@ const INWORLD_VOICES_BODY_MAX_BYTES = MAX_AUDIO_BYTES;
 // Abort the read if the upstream stalls mid-body so a hung stream cannot pin the
 // socket and buffers open indefinitely.
 const INWORLD_UPSTREAM_IDLE_TIMEOUT_MS = 30_000;
-// Error responses only need a short diagnostic snippet, never the whole body.
-const INWORLD_ERROR_BODY_MAX_BYTES = 8 * 1024;
-const INWORLD_ERROR_BODY_MAX_CHARS = 400;
-const INWORLD_ERROR_BODY_READ_IDLE_TIMEOUT_MS = 10_000;
-
-// Sentinel so the error-snippet reader can tell a cap overflow apart from an
-// unrelated read failure without leaking the (possibly hostile) body.
-class InworldErrorBodyOverflow extends Error {}
-
-/**
- * Reads a bounded, whitespace-collapsed diagnostic snippet from a non-OK
- * response body. A misbehaving or hostile endpoint can stream an arbitrarily
- * large error body, so this never buffers it whole: it reuses the shared
- * `readResponseWithLimit` reader (which cancels the underlying stream on
- * overflow and enforces an idle timeout) with a small cap. On overflow it
- * returns a fixed marker instead of echoing attacker-controlled bytes into the
- * thrown error. Kept local to this extension so it depends only on the
- * already-exported `response-limit-runtime` entry and adds no shared plugin-SDK
- * surface.
- */
-async function readInworldErrorBodySnippet(response: Response): Promise<string> {
-  let buffer: Buffer;
-  try {
-    buffer = await readResponseWithLimit(response, INWORLD_ERROR_BODY_MAX_BYTES, {
-      chunkTimeoutMs: INWORLD_ERROR_BODY_READ_IDLE_TIMEOUT_MS,
-      onOverflow: () => new InworldErrorBodyOverflow(),
-    });
-  } catch (error) {
-    return error instanceof InworldErrorBodyOverflow
-      ? "(error body exceeded diagnostic limit; truncated)"
-      : "";
-  }
-
-  const collapsed = buffer.toString("utf8").replace(/\s+/g, " ").trim();
-  if (collapsed.length > INWORLD_ERROR_BODY_MAX_CHARS) {
-    return `${truncateUtf16Safe(collapsed, INWORLD_ERROR_BODY_MAX_CHARS)}…`;
-  }
-  return collapsed;
-}
-
 export const INWORLD_TTS_MODELS = [
   "inworld-tts-1.5-max",
   "inworld-tts-1.5-mini",
@@ -146,10 +107,7 @@ export async function inworldTTS(params: {
   });
 
   try {
-    if (!response.ok) {
-      const errorBody = await readInworldErrorBodySnippet(response);
-      throw new Error(`Inworld TTS API error (${response.status}): ${errorBody}`);
-    }
+    await assertOkOrThrowHttpError(response, "Inworld TTS API error");
 
     const body = (
       await readResponseWithLimit(response, INWORLD_TTS_BODY_MAX_BYTES, {
@@ -238,10 +196,7 @@ export async function listInworldVoices(params: {
   });
 
   try {
-    if (!response.ok) {
-      const errorBody = await readInworldErrorBodySnippet(response);
-      throw new Error(`Inworld voices API error (${response.status}): ${errorBody}`);
-    }
+    await assertOkOrThrowHttpError(response, "Inworld voices API error");
 
     const voicesBody = (
       await readResponseWithLimit(response, INWORLD_VOICES_BODY_MAX_BYTES, {

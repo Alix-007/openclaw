@@ -217,9 +217,7 @@ async function fetchOpenAIVideoDownload(
         },
       );
       try {
-        await assertOkOrThrowHttpError(result.response, "OpenAI video download failed", {
-          requestHeaders: params.init.headers,
-        });
+        await assertOkOrThrowHttpError(result.response, "OpenAI video download failed");
         return result;
       } catch (error) {
         await result.release();
@@ -256,10 +254,10 @@ async function downloadOpenAIVideo(
         url: url.toString(),
         init: {
           method: "GET",
-          headers: new Headers({
-            ...Object.fromEntries(params.headers.entries()),
-            Accept: "application/binary",
-          }),
+          headers: (() => {
+            params.headers.set("Accept", "application/binary");
+            return params.headers;
+          })(),
         },
         deadline,
         fetchFn: params.fetchFn,
@@ -360,7 +358,9 @@ export function buildOpenAIVideoGenerationProvider(): VideoGenerationProvider {
           form.set("input_reference", referenceAsset.file);
         }
       }
-      const multipartHeaders = new Headers(headers);
+      // This operation owns the resolver-created Headers instance. Mutate it so
+      // request-secret provenance stays attached to the exact outbound object.
+      const multipartHeaders = headers;
       multipartHeaders.delete("Content-Type");
       const { response, release } = await postMultipartRequest({
         url: `${baseUrl}/videos${isVideoEdit ? "/edits" : ""}`,
@@ -376,9 +376,7 @@ export function buildOpenAIVideoGenerationProvider(): VideoGenerationProvider {
       });
 
       try {
-        await assertOkOrThrowHttpError(response, "OpenAI video generation failed", {
-          requestHeaders: multipartHeaders,
-        });
+        await assertOkOrThrowHttpError(response, "OpenAI video generation failed");
         const submitted = await readProviderJsonResponse<OpenAIVideoResponse>(
           response,
           "OpenAI video generation failed",

@@ -1,16 +1,21 @@
 // Builds OpenAI-compatible embedding provider entries for plugins.
 import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
 import { asOptionalRecord as asRecord } from "@openclaw/normalization-core/record-coerce";
-import { truncateUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
-import { readProviderJsonResponse } from "../agents/provider-http-errors.js";
+import {
+  assertOkOrThrowHttpError,
+  readProviderJsonResponse,
+} from "../agents/provider-http-errors.js";
 import type {
   AcquireConfiguredProviderLocalService,
   ConfiguredProviderLocalServiceTarget,
 } from "../agents/provider-local-service.js";
 import type { ModelProviderLocalServiceConfig } from "../config/types.models.js";
 import { normalizeResolvedSecretInputString } from "../config/types.secrets.js";
-import { readResponseTextPrefix } from "../infra/http-body.js";
 import { fetchWithSsrFGuard } from "../infra/net/fetch-guard.js";
+import {
+  getProviderRequestSensitiveHeaderNames,
+  recordProviderRequestHeaderContext,
+} from "../infra/net/provider-request-header-context.js";
 import { ssrfPolicyFromHttpBaseUrlAllowedHostname, type SsrFPolicy } from "../infra/net/ssrf.js";
 import type {
   EmbeddingInput,
@@ -23,9 +28,6 @@ import type {
 /** Provider id for OpenAI-compatible remote embedding servers. */
 const OPENAI_COMPATIBLE_EMBEDDING_PROVIDER_ID = "openai-compatible";
 const OPENAI_COMPATIBLE_MODEL_APIS = new Set(["openai-completions", "openai-responses"]);
-const EMBEDDING_ERROR_BODY_MAX_BYTES = 8 * 1024;
-const EMBEDDING_ERROR_BODY_MAX_CHARS = 1_000;
-const EMBEDDING_ERROR_TRUNCATED_SUFFIX = "... [truncated]";
 
 /** Normalized OpenAI-compatible embedding client configuration. */
 type OpenAICompatibleEmbeddingClient = {
@@ -152,6 +154,7 @@ function buildHeaders(params: {
     accept: "application/json",
     "content-type": "application/json",
   };
+  const sensitiveHeaderNames: string[] = [];
   for (const [name, rawValue] of Object.entries(params.extra ?? {})) {
     const normalizedName = normalizeHeaderName(name);
     if (!normalizedName || normalizedName === "authorization") {
@@ -165,11 +168,12 @@ function buildHeaders(params: {
       continue;
     }
     headers[normalizedName] = value;
+    sensitiveHeaderNames.push(normalizedName);
   }
   if (params.apiKey) {
     headers.authorization = `Bearer ${params.apiKey}`;
   }
-  return headers;
+  return recordProviderRequestHeaderContext(headers, sensitiveHeaderNames);
 }
 
 function isSensitiveHeaderName(name: string): boolean {
@@ -294,30 +298,6 @@ async function readJsonResponse(response: Response): Promise<unknown> {
   return await readProviderJsonResponse(response, "openai-compatible embeddings failed");
 }
 
-async function readEmbeddingErrorBodySnippet(response: Response): Promise<string | undefined> {
-  if (!response.body || response.bodyUsed) {
-    return undefined;
-  }
-  const prefix = await readResponseTextPrefix(response, EMBEDDING_ERROR_BODY_MAX_BYTES).catch(
-    () => undefined,
-  );
-  if (!prefix?.text) {
-    return undefined;
-  }
-  const { text, truncated } = prefix;
-  if (text.length > EMBEDDING_ERROR_BODY_MAX_CHARS) {
-    return `${truncateUtf16Safe(text, EMBEDDING_ERROR_BODY_MAX_CHARS)}${EMBEDDING_ERROR_TRUNCATED_SUFFIX}`;
-  }
-  return truncated ? `${text}${EMBEDDING_ERROR_TRUNCATED_SUFFIX}` : text;
-}
-
-async function createEmbeddingHttpError(response: Response): Promise<Error> {
-  const snippet = await readEmbeddingErrorBodySnippet(response);
-  return new Error(
-    `openai-compatible embeddings failed: HTTP ${response.status}${snippet ? `: ${snippet}` : ""}`,
-  );
-}
-
 async function postEmbeddingRequest(params: {
   client: OpenAICompatibleEmbeddingClient;
   input: string[];
@@ -347,11 +327,12 @@ async function postEmbeddingRequest(params: {
       signal: params.signal,
       policy: client.ssrfPolicy,
       auditContext: "embedding-provider:openai-compatible",
+      capture: {
+        sensitiveRequestHeaderNames: getProviderRequestSensitiveHeaderNames(client.headers) ?? [],
+      },
     });
     try {
-      if (!response.ok) {
-        throw await createEmbeddingHttpError(response);
-      }
+      await assertOkOrThrowHttpError(response, "openai-compatible embeddings failed");
       return readEmbeddingVectors(
         (await readJsonResponse(response)) as OpenAICompatibleEmbeddingResponse,
         input.length,

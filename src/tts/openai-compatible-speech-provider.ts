@@ -397,7 +397,6 @@ export function createOpenAiCompatibleSpeechProvider<
         await assertOkOrThrowHttpError(
           response,
           options.apiErrorLabel ?? `${options.label} TTS API error`,
-          { requestHeaders: headers },
         );
         return {
           audioBuffer: Buffer.from(

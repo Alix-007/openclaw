@@ -153,7 +153,7 @@ async function fetchOpenAiBatchResource<T>(params: {
       headers: requestHeaders,
     },
     onResponse: async (res) => {
-      await assertOkOrThrowProviderError(res, params.label, { requestHeaders });
+      await assertOkOrThrowProviderError(res, params.label);
       return await params.parse(res);
     },
   });

@@ -298,7 +298,7 @@ function buildMinimaxMusicProvider(providerId: string): MusicGenerationProvider 
           ),
         });
       const requestPolicy: MinimaxRequestPolicy = { allowPrivateNetwork, dispatcherPolicy };
-      const jsonHeaders = new Headers(headers);
+      const jsonHeaders = headers;
       jsonHeaders.set("Content-Type", "application/json");
 
       const model = resolveMinimaxMusicModel(req.model);

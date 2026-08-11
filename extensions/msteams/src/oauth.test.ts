@@ -155,6 +155,44 @@ describe("exchangeMSTeamsCodeForTokens", () => {
     ).rejects.toThrow(/MSTeams token exchange failed \(400\)/);
   });
 
+  it("redacts exact authorization-code form credentials from token errors", async () => {
+    const clientSecret = "cobaltClient83hiddenHarbor";
+    const code = "orchidCode71silverMeadow";
+    const verifier = "violetVerifier52quietRidge";
+    const reflectedSecrets = [clientSecret, code, verifier];
+    fetchSpy.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          error: {
+            message: reflectedSecrets.join(" "),
+            code,
+            type: verifier,
+          },
+        }),
+        { status: 400, headers: { "x-request-id": clientSecret } },
+      ),
+    );
+
+    let error: unknown;
+    try {
+      await exchangeMSTeamsCodeForTokens({
+        tenantId: "t",
+        clientId: "c",
+        clientSecret,
+        code,
+        verifier,
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    const diagnostics = `${(error as Error).message}\n${JSON.stringify(error)}`;
+    for (const secret of reflectedSecrets) {
+      expect(diagnostics).not.toContain(secret);
+    }
+  });
+
   it("reports malformed token exchange JSON with a stable OAuth error", async () => {
     fetchSpy.mockResolvedValueOnce(
       new Response("{ nope", {
@@ -290,6 +328,34 @@ describe("refreshMSTeamsDelegatedTokens", () => {
         refreshToken: "expired-rt",
       }),
     ).rejects.toThrow(/MSTeams token refresh failed \(401\)/);
+  });
+
+  it("redacts exact refresh form credentials from token errors", async () => {
+    const clientSecret = "cobaltClient83hiddenHarbor";
+    const refreshToken = "amberRefresh64quietForest";
+    fetchSpy.mockResolvedValueOnce(
+      new Response(JSON.stringify({ error: { message: `${clientSecret} ${refreshToken}` } }), {
+        status: 401,
+        headers: { "x-request-id": refreshToken },
+      }),
+    );
+
+    let error: unknown;
+    try {
+      await refreshMSTeamsDelegatedTokens({
+        tenantId: "t",
+        clientId: "c",
+        clientSecret,
+        refreshToken,
+      });
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error).toBeInstanceOf(Error);
+    const diagnostics = `${(error as Error).message}\n${JSON.stringify(error)}`;
+    expect(diagnostics).not.toContain(clientSecret);
+    expect(diagnostics).not.toContain(refreshToken);
   });
 
   it("reports malformed token refresh JSON with a stable OAuth error", async () => {

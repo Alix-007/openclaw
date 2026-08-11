@@ -159,14 +159,13 @@ function appendOptionalString(body: Record<string, unknown>, key: string, value:
 }
 
 function buildPixVerseHeaders(headers: Headers, contentType?: string): Headers {
-  const next = new Headers(headers);
-  next.set("Ai-trace-id", randomUUID());
+  headers.set("Ai-trace-id", randomUUID());
   if (contentType) {
-    next.set("Content-Type", contentType);
+    headers.set("Content-Type", contentType);
   } else {
-    next.delete("Content-Type");
+    headers.delete("Content-Type");
   }
-  return next;
+  return headers;
 }
 
 function readPixVerseSuccess<T>(payload: PixVerseEnvelope<T>, label: string): T {

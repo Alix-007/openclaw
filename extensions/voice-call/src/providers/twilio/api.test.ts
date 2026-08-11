@@ -226,7 +226,7 @@ describe("twilioApiRequest", () => {
 
   it("bounds twilio error bodies and cancels unread overflow", async () => {
     const release = vi.fn(async () => {});
-    const tracked = cancelTrackedTextResponse("x".repeat(9 * 1024), { status: 400 });
+    const tracked = cancelTrackedTextResponse("x".repeat(17 * 1024), { status: 400 });
     fetchWithSsrFGuardMock.mockResolvedValue({
       response: tracked.response,
       release,
@@ -245,8 +245,8 @@ describe("twilioApiRequest", () => {
       expect(error).toBeInstanceOf(TwilioApiError);
       const twilioError = error as TwilioApiError;
       expect(twilioError.message).toContain("Twilio API error: 400 ");
-      expect(twilioError.message).toContain("... [truncated]");
-      expect(twilioError.responseText.length).toBeLessThan(8_300);
+      expect(twilioError.message).toContain("…");
+      expect(twilioError.responseText.length).toBeLessThan(600);
     }
     expect(tracked.wasCanceled()).toBe(true);
     expect(release).toHaveBeenCalledTimes(1);
@@ -303,6 +303,39 @@ describe("twilioApiRequest", () => {
         "Twilio API error: 400 Call is not in-progress. Cannot redirect.",
       );
     }
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it("redacts a reflected turn token while preserving the outbound form value", async () => {
+    const release = vi.fn(async () => {});
+    const turnToken = "263a75d0-67f3-4408-ac5b-5e9d33f29bfa";
+    fetchWithSsrFGuardMock.mockResolvedValue({
+      response: new Response(`Twiml rejected turnToken=${turnToken}`, { status: 400 }),
+      release,
+    });
+
+    let caught: TwilioApiError | undefined;
+    try {
+      await twilioApiRequest({
+        baseUrl: DEFAULT_BASE_URL,
+        accountSid: "AC123",
+        authToken: "secret",
+        endpoint: "/Calls/CA123.json",
+        body: {
+          Twiml: `<Gather action="https://example.test/voice?turnToken=${turnToken}" />`,
+        },
+        sensitiveValues: [turnToken],
+      });
+    } catch (error) {
+      caught = error as TwilioApiError;
+    }
+
+    const requestBody = requireFirstFetchGuardRequest().init?.body;
+    expect(requestBody).toBeInstanceOf(URLSearchParams);
+    expect((requestBody as URLSearchParams).get("Twiml")).toContain(turnToken);
+    expect(caught).toBeInstanceOf(TwilioApiError);
+    expect(caught?.message).toContain("turnToken=***");
+    expect(caught?.message).not.toContain(turnToken);
     expect(release).toHaveBeenCalledTimes(1);
   });
 });

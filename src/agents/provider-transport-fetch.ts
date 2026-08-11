@@ -22,6 +22,8 @@ import {
   withTrustedEnvProxyGuardedFetchMode,
 } from "../infra/net/fetch-guard.js";
 import { wrapGuardedBodyStream } from "../infra/net/guarded-body-stream.js";
+import { inheritGuardedResponseRequestContext } from "../infra/net/guarded-response-request-context.js";
+import { getProviderRequestSensitiveHeaderNames } from "../infra/net/provider-request-header-context.js";
 import { shouldUseEnvHttpProxyForUrl } from "../infra/net/proxy-env.js";
 import {
   mergeSsrFPolicies,
@@ -38,7 +40,7 @@ import {
   SECRET_SENTINEL_PATTERN,
   swapSecretSentinelsInText,
 } from "../secrets/sentinel.js";
-import { ProviderHttpError, readResponseTextLimited } from "./provider-http-errors.js";
+import { createProviderResponseContractError } from "./provider-http-errors.js";
 import {
   ensureModelProviderLocalService,
   type ProviderLocalServiceLease,
@@ -420,19 +422,23 @@ async function normalizeOpenAISdkStreamContentType(params: {
       return withOpenAISdkStreamContentType(params.response, "application/json; charset=utf-8");
     }
   }
-  const body = await readResponseTextLimited(params.response).catch(() => "");
-  await params.release().catch(() => undefined);
-  params.localServiceLease?.release();
   const hint =
     "OpenAI-compatible streamed responses must be text/event-stream or JSON; got " +
     `${contentType || "missing content-type"}. Check the provider baseUrl; ` +
     "OpenAI-compatible APIs commonly require a /v1 path prefix.";
-  throw new ProviderHttpError(`${params.model.provider}/${params.model.id}: ${hint}`, {
-    status: params.response.status,
-    code: "invalid_provider_content_type",
-    type: "invalid_response",
-    body,
-  });
+  try {
+    throw await createProviderResponseContractError(
+      params.response,
+      `${params.model.provider}/${params.model.id}: ${hint}`,
+      {
+        code: "invalid_provider_content_type",
+        type: "invalid_response",
+      },
+    );
+  } finally {
+    await params.release().catch(() => undefined);
+    params.localServiceLease?.release();
+  }
 }
 
 function requestBodyHasStreamTrue(
@@ -788,6 +794,9 @@ export function buildGuardedModelFetch(
   options?: { sanitizeSse?: boolean },
 ): typeof fetch {
   const requestConfig = resolveModelRequestPolicy(model);
+  const sensitiveRequestHeaderNames = model.headers
+    ? (getProviderRequestSensitiveHeaderNames(model.headers) ?? [])
+    : [];
   const dispatcherPolicy = buildProviderRequestDispatcherPolicy(requestConfig);
   const requestTimeoutMs = resolveModelRequestTimeoutMs(model, timeoutMs);
   const summarizeError = (error: unknown): string => {
@@ -861,6 +870,7 @@ export function buildGuardedModelFetch(
           api: model.api,
           model: model.id,
         },
+        ...(sensitiveRequestHeaderNames.length > 0 ? { sensitiveRequestHeaderNames } : {}),
       },
       dispatcherPolicy,
       dispatcherPool: getProviderTransportDispatcherPool(),
@@ -936,9 +946,11 @@ export function buildGuardedModelFetch(
       result.refreshTimeout,
       localServiceLease,
     );
-    return options?.sanitizeSse === false || !shouldSanitizeOpenAISdkSseResponse(model)
-      ? response
-      : sanitizeOpenAISdkSseResponse(response, { synthesizeJsonAsSse });
+    const finalResponse =
+      options?.sanitizeSse === false || !shouldSanitizeOpenAISdkSseResponse(model)
+        ? response
+        : sanitizeOpenAISdkSseResponse(response, { synthesizeJsonAsSse });
+    return inheritGuardedResponseRequestContext(result.response, finalResponse);
   };
 }
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */

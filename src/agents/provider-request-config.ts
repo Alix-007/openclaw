@@ -10,6 +10,11 @@ import type {
   ConfiguredProviderRequest,
 } from "../config/types.provider-request.js";
 import { assertSecretInputResolved } from "../config/types.secrets.js";
+import {
+  inheritProviderRequestHeaderContext,
+  inheritProviderRequestHeadersContext,
+  recordProviderRequestHeaderContext,
+} from "../infra/net/provider-request-header-context.js";
 import type { PinnedDispatcherPolicy } from "../infra/net/ssrf.js";
 import type { Api } from "../llm/types.js";
 import type { PluginMetadataSnapshotOwnerMaps } from "../plugins/plugin-metadata-snapshot.types.js";
@@ -555,7 +560,7 @@ export function applyPreparedRuntimeAuthToModel<
   if (!preparedAuth?.baseUrl && !preparedAuth?.request) {
     return model;
   }
-  const providerHeaders = preparedAuth.request?.auth
+  const modelHeaders = preparedAuth.request?.auth
     ? Object.fromEntries(
         Object.entries(model.headers ?? {}).filter(
           ([key]) => !["authorization", "api-key", "x-api-key"].includes(key.toLowerCase()),
@@ -566,16 +571,16 @@ export function applyPreparedRuntimeAuthToModel<
     provider: model.provider,
     api: model.api,
     baseUrl: preparedAuth.baseUrl ?? model.baseUrl,
-    providerHeaders,
+    modelHeaders,
     request: sanitizeRuntimeProviderRequestOverrides(preparedAuth.request),
     capability: "llm",
     transport: "stream",
   });
-  return {
+  return inheritProviderRequestHeadersContext(model, {
     ...model,
     ...(preparedAuth.baseUrl ? { baseUrl: preparedAuth.baseUrl } : {}),
     headers: requestConfig.headers,
-  };
+  });
 }
 
 function resolveProxyOverride(
@@ -733,22 +738,25 @@ export function resolveProviderRequestPolicyConfig(
       : mergeProviderRequestHeaders(unprotectedCallerHeaders, mergedDefaults);
   const privateNetworkAccess = resolvePrivateNetworkAccess(params);
 
-  return {
-    api: params.api,
-    baseUrl,
-    headers,
-    extraHeaders: {
-      configured: Boolean(extraHeaders),
-      headers: extraHeaders,
+  return recordProviderRequestHeaderContext(
+    {
+      api: params.api,
+      baseUrl,
+      headers,
+      extraHeaders: {
+        configured: Boolean(extraHeaders),
+        headers: extraHeaders,
+      },
+      auth,
+      proxy: resolveProxyOverride(params.request),
+      tls: resolveTlsOverride(params.request?.tls),
+      policy,
+      capabilities,
+      allowPrivateNetwork: privateNetworkAccess.allowPrivateNetwork,
+      privateNetworkExplicitlyDenied: privateNetworkAccess.explicitlyDenied,
     },
-    auth,
-    proxy: resolveProxyOverride(params.request),
-    tls: resolveTlsOverride(params.request?.tls),
-    policy,
-    capabilities,
-    allowPrivateNetwork: privateNetworkAccess.allowPrivateNetwork,
-    privateNetworkExplicitlyDenied: privateNetworkAccess.explicitlyDenied,
-  };
+    [...Object.keys(params.request?.headers ?? {}), ...(auth.configured ? [auth.headerName] : [])],
+  );
 }
 
 /** Resolves request config used during model/catalog setup paths. */
@@ -766,19 +774,23 @@ export function resolveProviderRequestConfig(params: {
   request?: ProviderRequestTransportOverrides;
 }): ResolvedProviderRequestConfig {
   const resolved = resolveProviderRequestPolicyConfig(params);
-  return {
-    api: resolved.api,
-    baseUrl: resolved.baseUrl,
-    // Model resolution intentionally excludes attribution headers. Those are
-    // applied later at transport/request time so native-host gating stays tied
-    // to the final resolved route instead of the catalog/config merge step.
-    headers: resolved.extraHeaders.headers,
-    extraHeaders: resolved.extraHeaders,
-    auth: resolved.auth,
-    proxy: resolved.proxy,
-    tls: resolved.tls,
-    policy: resolved.policy,
-  };
+  return inheritProviderRequestHeaderContext(
+    resolved,
+    {
+      api: resolved.api,
+      baseUrl: resolved.baseUrl,
+      // Model resolution intentionally excludes attribution headers. Those are
+      // applied later at transport/request time so native-host gating stays tied
+      // to the final resolved route instead of the catalog/config merge step.
+      headers: resolved.extraHeaders.headers,
+      extraHeaders: resolved.extraHeaders,
+      auth: resolved.auth,
+      proxy: resolved.proxy,
+      tls: resolved.tls,
+      policy: resolved.policy,
+    },
+    Object.keys(params.providerHeaders ?? {}),
+  );
 }
 
 /** Resolves final headers for one provider request route. */

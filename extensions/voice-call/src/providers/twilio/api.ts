@@ -1,8 +1,8 @@
 // Voice Call API module exposes the plugin public contract.
+import { createProviderHttpError } from "openclaw/plugin-sdk/provider-http";
 import { fetchWithSsrFGuard } from "../../../api.js";
 import {
   cancelProviderResponseBody,
-  readProviderErrorResponseSnippet,
   readVoiceCallProviderJsonResponse,
 } from "../shared/response-body.js";
 import { requireSupportedTwilioApiHostname } from "../twilio-region.js";
@@ -40,14 +40,14 @@ export class TwilioApiError extends Error {
   readonly responseText: string;
   readonly twilioCode?: number;
 
-  constructor(httpStatus: number, responseText: string) {
+  constructor(httpStatus: number, responseText: string, twilioCode?: number) {
     const parsed = parseTwilioApiError(responseText);
     const detail = parsed.message ?? responseText;
     super(`Twilio API error: ${httpStatus} ${detail}`);
     this.name = "TwilioApiError";
     this.httpStatus = httpStatus;
     this.responseText = responseText;
-    this.twilioCode = parsed.code;
+    this.twilioCode = twilioCode ?? parsed.code;
   }
 }
 
@@ -59,6 +59,7 @@ export async function twilioApiRequest<T = unknown>(params: {
   endpoint: string;
   body: URLSearchParams | Record<string, string | string[]>;
   allowNotFound?: boolean;
+  sensitiveValues?: readonly string[];
 }): Promise<T> {
   const bodyParams =
     params.body instanceof URLSearchParams
@@ -96,8 +97,22 @@ export async function twilioApiRequest<T = unknown>(params: {
         await cancelProviderResponseBody(response);
         return undefined as T;
       }
-      const errorText = await readProviderErrorResponseSnippet(response);
-      throw new TwilioApiError(response.status, errorText);
+      const normalized = await createProviderHttpError(response, "Twilio API error", {
+        sensitiveValues: params.sensitiveValues,
+      });
+      const metadata = normalized as Error & {
+        errorBody?: unknown;
+        errorCode?: unknown;
+      };
+      const responseText =
+        typeof metadata.errorBody === "string" ? metadata.errorBody : "request failed";
+      const parsedCode =
+        typeof metadata.errorCode === "string" ? Number(metadata.errorCode) : undefined;
+      throw new TwilioApiError(
+        response.status,
+        responseText,
+        Number.isFinite(parsedCode) ? parsedCode : undefined,
+      );
     }
 
     return (await readVoiceCallProviderJsonResponse<T>(
