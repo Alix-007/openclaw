@@ -20,6 +20,7 @@ on:
           - qqbot
           - responses
           - synology
+          - terminal-timeout
           - web-search
       target_sha:
         description: Immutable full SHA from the Alix fork
@@ -69,6 +70,18 @@ jobs:
           ref: ${{ github.sha }}
           path: .proof-tooling
           sparse-checkout: .github/proof
+          persist-credentials: false
+
+      - name: Check out terminal-timeout proof harness
+        if: inputs.proof_kind == 'terminal-timeout'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: 6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6
+          path: .timeout-proof-tooling
+          sparse-checkout: |
+            src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts
+            src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts
           persist-credentials: false
 
       - name: Set up Node
@@ -283,6 +296,48 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[synology webhook retry proof]'
               ;;
+            terminal-timeout)
+              output_dir='.artifacts/qa-e2e/pr-122036-terminal-timeout'
+              mkdir -p "$output_dir"
+              cp \
+                .timeout-proof-tooling/src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts \
+                src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts
+              cp \
+                .timeout-proof-tooling/src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts \
+                src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts
+              node scripts/run-vitest.mjs \
+                src/agents/embedded-agent-runner/run.terminal-timeout.test.ts \
+                src/agents/embedded-agent-runner/run/payloads.errors.test.ts \
+                src/agents/embedded-agent-runner/run/tool-media-payloads.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              OPENCLAW_PROOF_HARNESS_COMMIT=6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6 \
+                OPENCLAW_PROOF_VERDICT_PATH="$output_dir/delivery.json" \
+                node scripts/run-vitest.mjs \
+                  src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts \
+                  --reporter=verbose 2>&1 | tee -a "$log_file"
+              OPENCLAW_PROOF_HARNESS_COMMIT=6dad473b0604f0c6aae4aa2d1c573b99a05c3eb6 \
+                OPENCLAW_PROOF_VERDICT_PATH="$output_dir/gateway.json" \
+                node scripts/run-vitest.mjs \
+                  src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts \
+                  --reporter=verbose 2>&1 | tee -a "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const delivery = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+                const gateway = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+                const sha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+                if (delivery.result !== "pass" || delivery.target.immutableHead !== sha ||
+                    delivery.observed.taggedSynthesizedTimeoutSends !== 0 ||
+                    delivery.observed.sameTextIndependentErrorSends !== 1 ||
+                    delivery.observed.authoritativeDetailedTimeoutSends !== 1 ||
+                    delivery.observed.toolMediaSends !== 1) process.exit(1);
+                if (gateway.result !== "pass" || gateway.target.immutableHead !== sha ||
+                    gateway.observed.genericTimeoutPayloads !== 0 ||
+                    gateway.observed.authoritativeTimeoutPayloads !== 1 ||
+                    gateway.observed.providerRequestsStarted !== 1) process.exit(1);
+              ' "$output_dir/delivery.json" "$output_dir/gateway.json"
+              echo '[terminal timeout provenance proof] exact-head=true tagged-synthesized-sends=0 same-text-independent-sends=1 authoritative-sends=1 tool-media-sends=1 gateway-generic-payloads=0 gateway-authoritative-payloads=1' | tee -a "$log_file"
+              marker='[terminal timeout provenance proof]'
+              ;;
             web-search)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
               cp docs/.generated/plugin-sdk-api-baseline.sha256 \
@@ -345,5 +400,6 @@ jobs:
             proof-${{ inputs.proof_kind }}.log
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
+            .artifacts/qa-e2e/pr-122036-terminal-timeout
           if-no-files-found: warn
           retention-days: 30
