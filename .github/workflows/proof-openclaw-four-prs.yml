@@ -111,8 +111,8 @@ jobs:
         run: |
           set -euo pipefail
           npm install --prefix .electron-proof electron@43.3.0
-          /usr/bin/env -u ELECTRON_RUN_AS_NODE \
-            .electron-proof/node_modules/.bin/electron --version
+          test "$(node -p "require('./.electron-proof/node_modules/electron/package.json').version")" = \
+            "43.3.0"
 
       - name: Run exact-head behavior proof
         shell: bash
