@@ -1252,6 +1252,8 @@ class NodeRuntime private constructor(
   val skillsErrorText: StateFlow<String?> = _skillsErrorText.resolveOptionalNativeText()
   private val _clawHubSkillMethodsAvailable = MutableStateFlow(false)
   val clawHubSkillMethodsAvailable: StateFlow<Boolean> = _clawHubSkillMethodsAvailable.asStateFlow()
+  private val _chatMessageGetAvailable = MutableStateFlow(false)
+  val chatMessageGetAvailable: StateFlow<Boolean> = _chatMessageGetAvailable.asStateFlow()
   private val systemAgentChatSupported = MutableStateFlow<Boolean?>(null)
   private val _skillMutationKeys = MutableStateFlow<Set<String>>(emptySet())
   val skillMutationKeys: StateFlow<Set<String>> = _skillMutationKeys.asStateFlow()
@@ -1853,6 +1855,7 @@ class NodeRuntime private constructor(
           scope = scope,
           session = operatorSession,
           json = json,
+          supportsChatMessageGet = { chatMessageGetAvailable.value },
           transcriptCache = chatTranscriptCache,
           cacheScope = ::chatCacheScope,
           currentDefaultAgentId = { gatewayDefaultAgentId.value },
@@ -7523,6 +7526,7 @@ class NodeRuntime private constructor(
     synchronized(gatewayMethodsLock) {
       gatewayApprovalRpcFamily = selectGatewayApprovalRpcFamily(methods)
       _clawHubSkillMethodsAvailable.value = supportsClawHubSkillManagement(methods)
+      _chatMessageGetAvailable.value = GatewayMethod.ChatMessageGet.rawValue in methods
       systemAgentChatSupported.value = GatewayMethod.OpenclawChat.rawValue in methods
       gatewayMethodsEpoch += 1
     }

@@ -4,6 +4,7 @@ import ai.openclaw.app.GatewayModelSummary
 import ai.openclaw.app.gateway.GatewayLoadedImage
 import ai.openclaw.app.gateway.GatewayLoadedMedia
 import ai.openclaw.app.gateway.GatewayMediaKind
+import ai.openclaw.app.gateway.GatewayMethod
 import ai.openclaw.app.gateway.GatewayRequestDefinitiveFailure
 import ai.openclaw.app.gateway.GatewayRequestNotEnqueued
 import ai.openclaw.app.gateway.GatewayRequestOutcomeUnknown
@@ -102,6 +103,7 @@ class ChatController internal constructor(
   private val scope: CoroutineScope,
   private val json: Json,
   private val requestGateway: suspend (method: String, paramsJson: String?) -> String,
+  private val supportsChatMessageGet: () -> Boolean = { false },
   private val requestGatewayForGateway: suspend (gatewayId: String, method: String, paramsJson: String?) -> String =
     { _, method, paramsJson -> requestGateway(method, paramsJson) },
   private val captureSettingsRequestLease: (gatewayScope: ChatCacheScope?) -> GatewaySession.RequestLease? =
@@ -142,6 +144,7 @@ class ChatController internal constructor(
     scope: CoroutineScope,
     session: GatewaySession,
     json: Json,
+    supportsChatMessageGet: () -> Boolean = { false },
     transcriptCache: ChatTranscriptCache? = null,
     cacheScope: () -> ChatCacheScope? = { null },
     currentDefaultAgentId: () -> String? = { "main" },
@@ -155,6 +158,7 @@ class ChatController internal constructor(
     scope = scope,
     json = json,
     requestGateway = { method, paramsJson -> session.request(method, paramsJson) },
+    supportsChatMessageGet = supportsChatMessageGet,
     requestGatewayForGateway = { gatewayId, method, paramsJson ->
       session.requestForEndpoint(gatewayId, method, paramsJson)
     },
@@ -1382,7 +1386,7 @@ class ChatController internal constructor(
       _messages.value.any { message ->
         message.role == "assistant" && message.entryId == messageId && message.isTruncated
       }
-    if (!markedPreview) return null
+    if (!markedPreview || !supportsChatMessageGet()) return null
     val params =
       buildJsonObject {
         put("sessionKey", JsonPrimitive(snapshot.sessionKey))
@@ -1394,7 +1398,11 @@ class ChatController internal constructor(
       val root =
         json
           .parseToJsonElement(
-            requestGatewayBound(snapshot.gatewayScope?.gatewayId, "chat.message.get", params.toString()),
+            requestGatewayBound(
+              snapshot.gatewayScope?.gatewayId,
+              GatewayMethod.ChatMessageGet.rawValue,
+              params.toString(),
+            ),
           ).asObjectOrNull()
       if (!isCurrentSessionAction(snapshot) || root?.get("ok").asBooleanOrNull() != true) return null
       root

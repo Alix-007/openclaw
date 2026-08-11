@@ -319,6 +319,7 @@ fun ChatScreen(
   onOpenGatewaySettings: () -> Unit,
 ) {
   val messages by viewModel.chatMessages.collectAsState()
+  val chatMessageGetAvailable by viewModel.chatMessageGetAvailable.collectAsState()
   val transcriptAnchor by viewModel.chatTranscriptAnchor.collectAsState()
   val historyLoading by viewModel.chatHistoryLoading.collectAsState()
   val errorText by viewModel.chatError.collectAsState()
@@ -815,6 +816,7 @@ fun ChatScreen(
           )
         }
       },
+      assistantMessageDisclosureSupported = chatMessageGetAvailable,
       loadFullAssistantMessage = viewModel::loadFullAssistantMessage,
       speechState = messageSpeechState,
       onToggleListen = viewModel::toggleChatMessageSpeech,
@@ -1354,6 +1356,7 @@ private fun ChatMessageList(
   sessionActionsEnabled: Boolean,
   onRewindMessage: (String) -> Unit,
   onForkMessage: (String) -> Unit,
+  assistantMessageDisclosureSupported: Boolean,
   loadFullAssistantMessage: suspend (String) -> ChatMessage?,
   speechState: MessageSpeechState?,
   onToggleListen: (String, String) -> Unit,
@@ -1426,17 +1429,22 @@ private fun ChatMessageList(
     ) {
       itemsIndexed(items = timeline.items, key = { _, item -> chatTimelineItemKey(item) }) { _, item ->
         when (item) {
-          is ChatTimelineItem.Message ->
+          is ChatTimelineItem.Message -> {
+            val disclosureMessageId =
+              assistantDisclosureMessageId(
+                item.message,
+                supported = assistantMessageDisclosureSupported,
+              )
             ChatBubble(
               messageId = item.message.id,
               entryId = item.message.entryId,
               role = item.message.role,
               live = false,
               content = item.message.content,
-              isTruncated = item.message.isTruncated,
-              assistantDisclosureState = item.message.entryId?.let(assistantDisclosureStore::state),
+              isTruncated = disclosureMessageId != null,
+              assistantDisclosureState = disclosureMessageId?.let(assistantDisclosureStore::state),
               onToggleAssistantDisclosure =
-                item.message.entryId?.let { messageId ->
+                disclosureMessageId?.let { messageId ->
                   {
                     disclosureScope.launch {
                       assistantDisclosureStore.toggle(messageId) {
@@ -1458,6 +1466,7 @@ private fun ChatMessageList(
               loadImageArtifact = loadImageArtifact,
               loadMediaArtifact = loadMediaArtifact,
             )
+          }
           is ChatTimelineItem.OutboxCommand ->
             ChatOutboxBubble(
               item = item.item,
@@ -1568,6 +1577,11 @@ private fun ChatMessageList(
     }
   }
 }
+
+internal fun assistantDisclosureMessageId(
+  message: ChatMessage,
+  supported: Boolean,
+): String? = message.entryId?.takeIf { supported && message.role == "assistant" && message.isTruncated }
 
 internal data class ChatWorkingRun(
   val clockKey: String,

@@ -19,6 +19,7 @@ class ChatControllerTranscriptCacheTest {
 
   private fun CoroutineScope.createCachedController(
     cache: ChatTranscriptCache,
+    supportsChatMessageGet: () -> Boolean = { true },
     cacheScope: () -> ChatCacheScope? = { gatewayScope },
     currentDefaultAgentId: () -> String? = { "main" },
     currentDefaultAgentRevision: () -> Long = { 0L },
@@ -27,6 +28,7 @@ class ChatControllerTranscriptCacheTest {
     requestGateway: suspend (method: String, paramsJson: String?) -> String,
   ): ChatController =
     createChatController(
+      supportsChatMessageGet = supportsChatMessageGet,
       transcriptCache = cache,
       cacheScope = cacheScope,
       currentDefaultAgentId = currentDefaultAgentId,
@@ -1301,6 +1303,44 @@ class ChatControllerTranscriptCacheTest {
           .isTruncated,
       )
       assertNull(controller.loadFullAssistantMessage("message-complete"))
+      assertFalse(requests.any { it.first == "chat.message.get" })
+    }
+
+  @Test
+  fun markedAssistantMessageDoesNotRequestFullContentWhenGatewayMethodSupportIsRevoked() =
+    runTest {
+      val cache = FakeTranscriptCache()
+      val requests = mutableListOf<Pair<String, String?>>()
+      var supportsChatMessageGet = true
+      val controller =
+        createCachedController(cache, supportsChatMessageGet = { supportsChatMessageGet }) { method, paramsJson ->
+          requests += method to paramsJson
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "preview\n...(truncated)...",
+                  "__openclaw": {"id": "message-long", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      assertTrue(
+        controller.messages.value
+          .single()
+          .isTruncated,
+      )
+      supportsChatMessageGet = false
+      assertNull(controller.loadFullAssistantMessage("message-long"))
       assertFalse(requests.any { it.first == "chat.message.get" })
     }
 }
