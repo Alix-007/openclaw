@@ -1,30 +1,9 @@
 // Exa tests cover exa web search provider plugin behavior.
-import { describe, expect, it, vi } from "vitest";
+import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-media-understanding";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { testing } from "../test-api.js";
 import { createExaWebSearchProvider as createContractExaWebSearchProvider } from "../web-search-contract-api.js";
 import { createExaWebSearchProvider } from "./exa-web-search-provider.js";
-
-function cancelTrackedResponse(
-  text: string,
-  init: ResponseInit,
-): {
-  response: Response;
-  wasCanceled: () => boolean;
-} {
-  let canceled = false;
-  const stream = new ReadableStream<Uint8Array>({
-    start(controller) {
-      controller.enqueue(new TextEncoder().encode(text));
-    },
-    cancel() {
-      canceled = true;
-    },
-  });
-  return {
-    response: new Response(stream, init),
-    wasCanceled: () => canceled,
-  };
-}
 
 function streamingJsonResponse(params: { chunkCount: number; chunkSize: number }): {
   response: Response;
@@ -54,6 +33,12 @@ function streamingJsonResponse(params: { chunkCount: number; chunkSize: number }
 }
 
 describe("exa web search provider", () => {
+  installPinnedHostnameTestHooks();
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("does not send or cache an already canceled search", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ results: [] }), {
@@ -421,19 +406,41 @@ describe("exa web search provider", () => {
     expect(streamed.getReadCount()).toBeLessThan(64);
   });
 
-  it("bounds Exa API error bodies without using response.text()", async () => {
-    const tracked = cancelTrackedResponse(`${"exa upstream unavailable ".repeat(1024)}tail`, {
-      status: 503,
-      headers: { "content-type": "text/plain" },
+  it("redacts reflected API keys from Exa error diagnostics", async () => {
+    const apiKey = "exa-reflected-request-key-123456";
+    let outboundApiKey: string | null = null;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+        outboundApiKey = new Headers(init?.headers).get("x-api-key");
+        return new Response(
+          JSON.stringify({
+            error: `safe=quota-exceeded ${apiKey}`,
+            tag: apiKey,
+            requestId: apiKey,
+          }),
+          { status: 401, headers: { "x-request-id": apiKey } },
+        );
+      }),
+    );
+    const tool = createExaWebSearchProvider().createTool({
+      config: {
+        plugins: { entries: { exa: { config: { webSearch: { apiKey } } } } },
+      },
+      searchConfig: {},
     });
-    const textSpy = vi.spyOn(tracked.response, "text").mockRejectedValue(new Error("unbounded"));
+    if (!tool) {
+      throw new Error("Expected tool definition");
+    }
 
-    const detail = await testing.readExaErrorDetail(tracked.response);
+    const failure = await tool
+      .execute({ query: `exa-reflected-key-${Date.now()}` })
+      .catch((error: unknown) => error);
 
-    expect(detail).toContain("exa upstream unavailable");
-    expect(detail).not.toContain("tail");
-    expect(await testing.readExaErrorDetail(new Response("short"))).toBe("short");
-    expect(tracked.wasCanceled()).toBe(true);
-    expect(textSpy).not.toHaveBeenCalled();
+    expect(outboundApiKey).toBe(apiKey);
+    expect(failure).toBeInstanceOf(Error);
+    const diagnostics = `${(failure as Error).message}\n${JSON.stringify(failure)}`;
+    expect(diagnostics).toContain("safe=quota-exceeded");
+    expect(diagnostics).not.toContain(apiKey);
   });
 });

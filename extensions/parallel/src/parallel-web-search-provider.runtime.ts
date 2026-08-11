@@ -1,8 +1,8 @@
 import { createRequire } from "node:module";
 import { readPluginPackageVersion } from "openclaw/plugin-sdk/extension-shared";
 import {
+  createProviderHttpError,
   readProviderJsonResponse,
-  readResponseTextLimited,
 } from "openclaw/plugin-sdk/provider-http";
 import {
   mergeScopedSearchConfig,
@@ -36,7 +36,6 @@ import {
 
 const PARALLEL_BASE_URL = "https://api.parallel.ai";
 const PARALLEL_SEARCH_PATHNAME = "/v1/search";
-const PARALLEL_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 // Parallel's /v1/search returns a bounded result set, but the body is external
 // (web-search upstream) and untrusted. Cap the successful JSON read so a
 // hostile or malfunctioning endpoint streaming an unbounded body cannot force
@@ -157,10 +156,7 @@ async function runParallelSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const detail = await readResponseTextLimited(res, PARALLEL_ERROR_BODY_LIMIT_BYTES).catch(
-          () => "",
-        );
-        throw new Error(`Parallel API error (${res.status}): ${detail || res.statusText}`);
+        throw await createProviderHttpError(res, "Parallel API error");
       }
       return await readProviderJsonResponse<ParallelSearchResponse>(res, "Parallel API", {
         maxBytes: PARALLEL_SEARCH_RESPONSE_LIMIT_BYTES,

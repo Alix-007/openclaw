@@ -1,6 +1,6 @@
 // Exa provider module implements model/runtime integration.
 import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
+import { createProviderHttpError } from "openclaw/plugin-sdk/provider-http";
 import {
   buildSearchCacheKey,
   DEFAULT_SEARCH_COUNT,
@@ -30,7 +30,6 @@ const EXA_SEARCH_ENDPOINT = "https://api.exa.ai/search";
 const EXA_SEARCH_TYPES = ["auto", "neural", "fast", "deep", "deep-reasoning", "instant"] as const;
 const EXA_FRESHNESS_VALUES = ["day", "week", "month", "year"] as const;
 const EXA_MAX_SEARCH_COUNT = 100;
-const EXA_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 // Exa search responses are untrusted external bodies. Cap the success JSON the
 // same way other bundled providers do (16 MiB) so a misbehaving or hostile
 // endpoint cannot stream an unbounded body into memory before we parse it.
@@ -89,10 +88,6 @@ async function readExaSearchResults(
   } catch (cause) {
     throw new Error("Exa API returned malformed JSON", { cause });
   }
-}
-
-async function readExaErrorDetail(response: Response): Promise<string> {
-  return await readResponseTextLimited(response, EXA_ERROR_BODY_LIMIT_BYTES);
 }
 
 function normalizeExaFreshness(value: string | undefined): ExaFreshness | undefined {
@@ -428,8 +423,7 @@ async function runExaSearch(params: {
     },
     async (res) => {
       if (!res.ok) {
-        const detail = await readExaErrorDetail(res);
-        throw new Error(`Exa API error (${res.status}): ${detail || res.statusText}`);
+        throw await createProviderHttpError(res, "Exa API error");
       }
       return readExaSearchResults(res);
     },
@@ -628,6 +622,5 @@ export const testing = {
   resolveExaSearchCount,
   resolveExaSearchEndpoint,
   resolveFreshnessStartDate,
-  readExaErrorDetail,
   readExaSearchResults,
 } as const;

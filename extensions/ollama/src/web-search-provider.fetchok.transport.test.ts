@@ -4,7 +4,10 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 
 const loopback = vi.hoisted(() => ({
   baseUrl: "",
+  responseBody: '{"error":"unauthorized"}',
   status: 401,
+  stallBody: true,
+  authorization: undefined as string | undefined,
   socketClosed: undefined as Promise<void> | undefined,
   releases: [] as Array<{
     bodyIsNull: boolean;
@@ -68,21 +71,24 @@ vi.mock("openclaw/plugin-sdk/ssrf-runtime", async (importOriginal) => {
 
 const { createOllamaWebSearchProvider } = await import("./web-search-provider.js");
 
-const RESPONSE_BODY = '{"error":"unauthorized"}';
-
 let server: Server;
 const sockets = new Set<Socket>();
 
 beforeAll(async () => {
   server = createServer((request, response) => {
+    loopback.authorization = request.headers.authorization;
     loopback.socketClosed = new Promise<void>((resolve) => {
       request.socket.once("close", resolve);
     });
     response.writeHead(loopback.status, {
-      "content-length": String(RESPONSE_BODY.length + 1_024),
+      connection: "close",
+      "content-length": String(loopback.responseBody.length + (loopback.stallBody ? 1_024 : 0)),
       "content-type": "application/json",
     });
-    response.write(RESPONSE_BODY);
+    response.write(loopback.responseBody);
+    if (!loopback.stallBody) {
+      response.end();
+    }
   });
   server.on("connection", (socket) => {
     sockets.add(socket);
@@ -105,7 +111,10 @@ afterAll(async () => {
 });
 
 beforeEach(() => {
+  loopback.responseBody = '{"error":"unauthorized"}';
   loopback.status = 401;
+  loopback.stallBody = true;
+  loopback.authorization = undefined;
   loopback.socketClosed = undefined;
   loopback.releases = [];
 });
@@ -148,5 +157,39 @@ describe("ollama web search guarded fetch", () => {
         socketClosedBeforeGuardRelease: true,
       });
     }
+  });
+
+  it("redacts a reflected Ollama API key from completed error diagnostics", async () => {
+    const apiKey = "ollama-reflected-request-key-123456";
+    loopback.status = 429;
+    loopback.stallBody = false;
+    loopback.responseBody = JSON.stringify({ error: `safe=quota-exceeded ${apiKey}` });
+    const tool = createOllamaWebSearchProvider().createTool({
+      config: {
+        models: {
+          providers: {
+            ollama: {
+              api: "ollama",
+              apiKey,
+              baseUrl: "https://ollama.com",
+              models: [],
+            },
+          },
+        },
+      },
+    } as never);
+    if (!tool) {
+      throw new Error("Expected Ollama web search tool");
+    }
+
+    const failure = await tool
+      .execute({ query: "latest openclaw release" })
+      .catch((error: unknown) => error);
+
+    expect(loopback.authorization).toBe(`Bearer ${apiKey}`);
+    expect(failure).toBeInstanceOf(Error);
+    const diagnostics = `${(failure as Error).message}\n${JSON.stringify(failure)}`;
+    expect(diagnostics).toContain("safe=quota-exceeded");
+    expect(diagnostics).not.toContain(apiKey);
   });
 });

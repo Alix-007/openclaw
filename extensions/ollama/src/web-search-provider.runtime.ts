@@ -5,11 +5,13 @@ import {
   normalizeOptionalSecretInput,
 } from "openclaw/plugin-sdk/provider-auth";
 import { resolveEnvApiKey } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
+import {
+  createProviderHttpError,
+  readProviderJsonResponse,
+} from "openclaw/plugin-sdk/provider-http";
 import {
   enablePluginInConfig,
   readPositiveIntegerParam,
-  readResponseText,
   readStringParam,
   resolveProviderWebSearchPluginConfig,
   resolveSearchCount,
@@ -227,14 +229,12 @@ async function runOllamaWebSearch(params: {
         );
       }
       if (!response.ok) {
-        const detail = await readResponseText(response, { maxBytes: 64_000 });
-        const message =
-          `Ollama web search failed (${response.status}): ${detail.text || ""}`.trim();
+        const error = await createProviderHttpError(response, "Ollama web search failed");
         if (response.status === 404) {
-          lastError = new Error(message);
+          lastError = error;
           continue;
         }
-        throw new Error(message);
+        throw error;
       }
       payload = await readOllamaWebSearchResponse(response);
       params.signal?.throwIfAborted();

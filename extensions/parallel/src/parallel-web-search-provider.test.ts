@@ -1,5 +1,7 @@
 import { expectDefined } from "@openclaw/normalization-core";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { withTrustedWebSearchEndpoint } from "openclaw/plugin-sdk/provider-web-search";
+import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-media-understanding";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../test-support/streaming-error-response.js";
 type EndpointCall = {
   url: string;
@@ -123,6 +125,12 @@ beforeEach(() => {
   endpointMockState.responses = [];
 });
 describe("parallel web search provider", () => {
+  installPinnedHostnameTestHooks();
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("exposes the expected metadata and selection wiring", () => {
     const provider = createParallelWebSearchProvider();
     const applied = expectDefined(provider.applySelectionConfig, "applySelectionConfig")({});
@@ -459,6 +467,43 @@ describe("parallel web search provider", () => {
     expect((error as Error).message).not.toContain("tail");
     expect(tracked.wasCanceled()).toBe(true);
     expect(textSpy).not.toHaveBeenCalled();
+  });
+  it("redacts reflected API keys from Parallel error diagnostics", async () => {
+    const apiKey = "parallel-reflected-request-key-123456";
+    const providerWebSearch = await vi.importActual<
+      typeof import("openclaw/plugin-sdk/provider-web-search")
+    >("openclaw/plugin-sdk/provider-web-search");
+    vi.mocked(withTrustedWebSearchEndpoint).mockImplementationOnce(
+      providerWebSearch.withTrustedWebSearchEndpoint,
+    );
+    let outboundApiKey: string | null = null;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+        outboundApiKey = new Headers(init?.headers).get("x-api-key");
+        return new Response(
+          JSON.stringify({
+            message: `safe=quota-exceeded ${apiKey}`,
+            type: apiKey,
+            code: apiKey,
+          }),
+          { status: 401, headers: { "x-request-id": apiKey } },
+        );
+      }),
+    );
+
+    const failure = await paidTool({ parallel: { apiKey } })
+      .execute({
+        objective: `parallel-reflected-key-${Date.now()}`,
+        search_queries: ["openclaw"],
+      })
+      .catch((error: unknown) => error);
+
+    expect(outboundApiKey).toBe(apiKey);
+    expect(failure).toBeInstanceOf(Error);
+    const diagnostics = `${(failure as Error).message}\n${JSON.stringify(failure)}`;
+    expect(diagnostics).toContain("safe=quota-exceeded");
+    expect(diagnostics).not.toContain(apiKey);
   });
   it("bounds successful Parallel JSON bodies instead of buffering the whole response", async () => {
     const streamed = createStreamingResponse({
