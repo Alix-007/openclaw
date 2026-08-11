@@ -1,0 +1,6 @@
+{
+  "name": "openclaw-electron-tool-search-proof",
+  "private": true,
+  "type": "module",
+  "main": "electron-tool-search.mjs"
+}

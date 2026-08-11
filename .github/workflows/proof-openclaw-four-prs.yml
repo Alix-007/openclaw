@@ -13,6 +13,7 @@ on:
           - bootstrap
           - cron-runtime
           - discord
+          - electron-tool-search
           - foundation
           - matrix
           - memory
@@ -104,6 +105,15 @@ jobs:
           pnpm --dir ui exec playwright install --with-deps chromium
           node --import tsx scripts/ensure-playwright-chromium.mts
 
+      - name: Install Electron for actual-host proof
+        if: inputs.proof_kind == 'electron-tool-search'
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix .electron-proof electron@43.3.0
+          /usr/bin/env -u ELECTRON_RUN_AS_NODE \
+            .electron-proof/node_modules/.bin/electron --version
+
       - name: Run exact-head behavior proof
         shell: bash
         run: |
@@ -155,6 +165,27 @@ jobs:
                 extensions/discord/src/api.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[discord credential redaction proof]'
+              ;;
+            electron-tool-search)
+              mkdir -p .proof-runtime .proof-dist proof-artifacts
+              cp .proof-tooling/.github/proof/electron-tool-search.ts \
+                .proof-runtime/electron-tool-search.ts
+              cp .proof-tooling/.github/proof/electron-tool-search.tsdown.config.ts \
+                .proof-runtime/electron-tool-search.tsdown.config.ts
+              node node_modules/tsdown/dist/run.mjs \
+                --config .proof-runtime/electron-tool-search.tsdown.config.ts \
+                2>&1 | tee "$log_file"
+              cp .proof-tooling/.github/proof/electron-tool-search.package.json \
+                .proof-dist/package.json
+              cp src/state/openclaw-state-schema.sql src/state/openclaw-agent-schema.sql \
+                .proof-dist/
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                /usr/bin/env -u ELECTRON_RUN_AS_NODE \
+                  .electron-proof/node_modules/.bin/electron \
+                    --no-sandbox --disable-gpu \
+                    .proof-dist \
+                  2>&1 | tee -a "$log_file"
+              marker='[electron tool-search proof]'
               ;;
             foundation)
               mkdir -p .proof-runtime .proof-dist proof-artifacts
