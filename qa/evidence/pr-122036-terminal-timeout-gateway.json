@@ -4,9 +4,9 @@
   "target": {
     "repository": "openclaw/openclaw",
     "pullRequest": 122036,
-    "immutableHead": "accb41acfb7e696d9f738d394e284c6706f65882"
+    "immutableHead": "57159573ee341db69b624384af9556dd795fd65d"
   },
-  "proofHarnessCommit": "7b3a9ddc4714",
+  "proofHarnessCommit": "37ae7f0f8c9c",
   "environment": {
     "credentials": "none",
     "gateway": "ephemeral in-process Gateway",

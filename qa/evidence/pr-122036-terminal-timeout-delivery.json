@@ -4,9 +4,9 @@
   "target": {
     "repository": "openclaw/openclaw",
     "pullRequest": 122036,
-    "immutableHead": "accb41acfb7e696d9f738d394e284c6706f65882"
+    "immutableHead": "57159573ee341db69b624384af9556dd795fd65d"
   },
-  "proofHarnessCommit": "3816acf4b4ff1b9833eca12a4826b1a8a8673dba",
+  "proofHarnessCommit": "37ae7f0f8c9c",
   "environment": {
     "node": "v24.15.0",
     "credentials": "none",
