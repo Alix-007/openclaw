@@ -21,6 +21,7 @@ on:
           - ollama
           - qqbot
           - responses
+          - subagent-session
           - synology
           - terminal-runtime
           - web-search
@@ -342,6 +343,62 @@ jobs:
                   src/agents/responses-idle-activity-http.proof.test.ts \
                   --reporter=verbose 2>&1 | tee "$log_file"
               marker='[responses idle-activity proof]'
+              ;;
+            subagent-session)
+              readonly parent_sha='93f686f68124ffa256f773822ea299cffdefee72'
+              readonly head_sha='0b60ab9ec57458e0f0d2b403f6428a28611e9dbd'
+              readonly source_path='src/agents/subagents/registry/subagent-session-reconciliation.ts'
+              mkdir -p proof-artifacts
+              if [[ "$TARGET_SHA" != "$head_sha" ]]; then
+                echo "subagent proof requires exact PR head: $head_sha" >&2
+                exit 1
+              fi
+              harness_blob="$(git -C .proof-tooling rev-parse \
+                HEAD:.github/proof/subagent-session-reconciliation.ts)"
+              head_blob="$(git rev-parse "HEAD:$source_path")"
+              git fetch --no-tags --depth=1 origin "$parent_sha"
+              parent_file="$RUNNER_TEMP/subagent-session-reconciliation.parent.ts"
+              head_file="$RUNNER_TEMP/subagent-session-reconciliation.head.ts"
+              git show "$parent_sha:$source_path" >"$parent_file"
+              cp "$source_path" "$head_file"
+              parent_blob="$(git hash-object "$parent_file")"
+              restore_head() {
+                cp "$head_file" "$source_path"
+              }
+              trap restore_head EXIT
+              cp "$parent_file" "$source_path"
+              OPENCLAW_PROOF_EXPECTATION=parent-red \
+                OPENCLAW_PROOF_SOURCE_SHA="$parent_sha" \
+                OPENCLAW_PROOF_SOURCE_BLOB="$parent_blob" \
+                OPENCLAW_PROOF_HARNESS_BLOB="$harness_blob" \
+                OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node --import tsx \
+                  .proof-tooling/.github/proof/subagent-session-reconciliation.ts \
+                  2>&1 | tee "$log_file"
+              restore_head
+              if [[ "$(git hash-object "$source_path")" != "$head_blob" ]]; then
+                echo "failed to restore exact PR-head owner source" >&2
+                exit 1
+              fi
+              OPENCLAW_PROOF_EXPECTATION=head-green \
+                OPENCLAW_PROOF_SOURCE_SHA="$head_sha" \
+                OPENCLAW_PROOF_SOURCE_BLOB="$head_blob" \
+                OPENCLAW_PROOF_HARNESS_BLOB="$harness_blob" \
+                OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                node --import tsx \
+                  .proof-tooling/.github/proof/subagent-session-reconciliation.ts \
+                  2>&1 | tee -a "$log_file"
+              trap - EXIT
+              {
+                echo "proof_tooling_sha=$(git -C .proof-tooling rev-parse HEAD)"
+                echo "harness_blob=$harness_blob"
+                echo "parent_sha=$parent_sha"
+                echo "parent_source_blob=$parent_blob"
+                echo "head_sha=$head_sha"
+                echo "head_source_blob=$head_blob"
+              } | tee -a proof-metadata.txt
+              grep -F '[subagent session SQLite proof] expectation=parent-red matrix=true signal=true structural-control=true' "$log_file"
+              marker='[subagent session SQLite proof] expectation=head-green matrix=true signal=true structural-control=true'
               ;;
             synology)
               node scripts/run-vitest.mjs \
