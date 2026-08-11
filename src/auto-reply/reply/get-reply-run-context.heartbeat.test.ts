@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { prepareReplyRunContext } from "./get-reply-run-context.js";
 import type { RunPreparedReplyParams } from "./get-reply-run.types.js";
+import { createFastTestModelSelectionState } from "./model-selection.js";
 
 const buildInboundUserContextPrefix = vi.hoisted(() => vi.fn());
 
@@ -75,10 +76,11 @@ function createParams(
     elevatedAllowed: false,
     blockStreamingEnabled: false,
     resolvedBlockStreamingBreak: "message_end",
-    modelState: {
-      resolveDefaultThinkingLevel: async () => "off",
-      resolveThinkingCatalog: async () => [],
-    } as RunPreparedReplyParams["modelState"],
+    modelState: createFastTestModelSelectionState({
+      agentCfg: {},
+      provider: "anthropic",
+      model: "claude-opus-4-1",
+    }),
     provider: "anthropic",
     model: "claude-opus-4-1",
     typing: {
