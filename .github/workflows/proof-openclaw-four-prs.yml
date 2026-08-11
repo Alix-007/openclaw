@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - bootstrap
+          - control-ui-multi-profile
           - discord
           - foundation
           - heartbeat
@@ -108,6 +109,11 @@ jobs:
           fi
           nginx -v
 
+      - name: Install Chromium for real Control UI proof
+        if: inputs.proof_kind == 'control-ui-multi-profile'
+        shell: bash
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Run exact-head behavior proof
         shell: bash
         run: |
@@ -140,6 +146,13 @@ jobs:
               grep -F '[bootstrap deferred finalization proof]' "$log_file"
               echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
+              ;;
+            control-ui-multi-profile)
+              pnpm build 2>&1 | tee "$log_file"
+              pnpm ui:build 2>&1 | tee -a "$log_file"
+              node .proof-tooling/.github/proof/control-ui-multi-profile-real-gateway.mjs \
+                2>&1 | tee -a "$log_file"
+              marker='[control-ui multi-profile real-gateway proof]'
               ;;
             discord)
               node scripts/run-vitest.mjs \
@@ -409,6 +422,7 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            .artifacts/control-ui-e2e/pr-122300-real-gateway
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
