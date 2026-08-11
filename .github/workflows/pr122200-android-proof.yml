@@ -202,6 +202,30 @@ jobs:
             done
           }
 
+          approve_pending_nodes() {
+            local output="$RUNNER_TEMP/nodes.json"
+            local request_ids="$RUNNER_TEMP/node-request-ids.txt"
+            if ! openclaw nodes pending --json \
+              --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+              --token "$PROOF_TOKEN" >"$output" 2>/dev/null; then
+              return 1
+            fi
+            NODES_JSON="$output" node <<'NODE' >"$request_ids"
+          const fs = require("node:fs");
+          const value = JSON.parse(fs.readFileSync(process.env.NODES_JSON, "utf8"));
+          const pending = Array.isArray(value) ? value : (value.pending ?? []);
+          for (const request of pending) {
+            if (typeof request.requestId === "string") console.log(request.requestId);
+          }
+          NODE
+            [[ -s "$request_ids" ]] || return 1
+            while IFS= read -r request_id; do
+              openclaw nodes approve "$request_id" \
+                --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+                --token "$PROOF_TOKEN" >/dev/null
+            done <"$request_ids"
+          }
+
           wait_tcp() {
             local host="$1"
             local port="$2"
@@ -419,6 +443,21 @@ jobs:
           done
           wait_text "Gateway paired" 5 contains
           tap_text "Continue" 30
+
+          if wait_text "Approve node access" 60 exact; then
+            node_pair_deadline=$((SECONDS + 180))
+            node_pair_approved=false
+            while (( SECONDS < node_pair_deadline )); do
+              if approve_pending_nodes; then
+                node_pair_approved=true
+                break
+              fi
+              sleep 2
+            done
+            [[ "$node_pair_approved" == true ]]
+            phase "node-access-approved"
+            tap_text "I have approved" 30
+          fi
 
           if wait_text "Permissions" 30 exact; then
             tap_text "Continue" 30
