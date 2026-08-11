@@ -1,0 +1,39 @@
+{
+  "schema": "openclaw.pr-real-behavior-proof/v1",
+  "result": "pass",
+  "target": {
+    "repository": "openclaw/openclaw",
+    "pullRequest": 122036,
+    "immutableHead": "accb41acfb7e696d9f738d394e284c6706f65882"
+  },
+  "proofHarnessCommit": "7b3a9ddc4714",
+  "environment": {
+    "credentials": "none",
+    "gateway": "ephemeral in-process Gateway",
+    "provider": "loopback OpenAI-compatible stalled HTTP response",
+    "transport": "authenticated Gateway WebSocket agent RPC",
+    "node": "v24.15.0"
+  },
+  "productionBoundary": [
+    "authenticated Gateway WebSocket agent RPC",
+    "production embedded agent runner",
+    "OpenAI-compatible provider HTTP request",
+    "agent timeout and terminal finalization",
+    "final Gateway RPC result payloads"
+  ],
+  "observed": {
+    "gatewayStatus": "timeout",
+    "timeoutPhase": "provider",
+    "providerStarted": true,
+    "providerRequestsStarted": 1,
+    "providerRequestsClosedAfterTimeout": 1,
+    "finalPayloads": 1,
+    "genericTimeoutPayloads": 0,
+    "authoritativeTimeoutPayloads": 1
+  },
+  "redaction": {
+    "containsCredentials": false,
+    "containsLocalPaths": false,
+    "containsSessionIdentifiers": false
+  }
+}
