@@ -168,7 +168,10 @@ jobs:
                 src/media-understanding/shared.provider-error-redaction.test.ts \
                 src/tts/openai-compatible-speech-provider.test.ts \
                 src/agents/tools/web-search-provider-common.redact.test.ts \
+                extensions/exa/src/exa-web-search-provider.test.ts \
+                extensions/ollama/src/web-search-provider.fetchok.transport.test.ts \
                 extensions/openai/tts.test.ts \
+                extensions/parallel/src/parallel-web-search-provider.test.ts \
                 extensions/perplexity/src/perplexity-web-search-provider.test.ts \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               node scripts/run-vitest.mjs \
@@ -220,6 +223,9 @@ jobs:
               grep -F 'redacts reflected request credentials from provider diagnostics' "$log_file"
               grep -F "redacts reflected credentials from 'native Search API' diagnostics" "$log_file"
               grep -F "redacts reflected credentials from 'chat completions' diagnostics" "$log_file"
+              grep -F 'redacts reflected API keys from Exa error diagnostics' "$log_file"
+              grep -F 'redacts a reflected Ollama API key from completed error diagnostics' "$log_file"
+              grep -F 'redacts reflected API keys from Parallel error diagnostics' "$log_file"
               grep -F 'records redirect-adjusted final headers and sensitive URL values' "$log_file"
               grep -F 'does not record credentials stripped by a cross-origin redirect' "$log_file"
               grep -F 'redacts final header, query, and userinfo credentials without caller options' "$log_file"
@@ -259,6 +265,9 @@ jobs:
               export OPENCLAW_PROOF_OPENAI_VIDEO=1
               export OPENCLAW_PROOF_PERPLEXITY_NATIVE=1
               export OPENCLAW_PROOF_PERPLEXITY_CHAT=1
+              export OPENCLAW_PROOF_EXA_WEB_SEARCH=1
+              export OPENCLAW_PROOF_OLLAMA_WEB_SEARCH=1
+              export OPENCLAW_PROOF_PARALLEL_WEB_SEARCH=1
               cp .proof-tooling/.github/proof/foundation-sdk-runtime.ts \
                 .proof-runtime/foundation-sdk-runtime.ts
               cp .proof-tooling/.github/proof/foundation-sdk.tsdown.config.ts \
@@ -274,7 +283,7 @@ jobs:
               OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
                 node .proof-dist/foundation-sdk-runtime.mjs \
                 2>&1 | tee -a "$log_file"
-              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true redirect-final-context=true configured-header=true invalid-content=true short-fail-closed=true manual-oauth=true manual-voice=true inworld=true inventory=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
+              echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true redirect-final-context=true configured-header=true invalid-content=true short-fail-closed=true manual-oauth=true manual-voice=true inworld=true inventory=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true exa-web-search=true ollama-web-search=true parallel-web-search=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
               marker='[foundation compiled SDK proof]'
               ;;
             matrix)

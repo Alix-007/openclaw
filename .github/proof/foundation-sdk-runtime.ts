@@ -86,6 +86,9 @@ async function main(): Promise<void> {
   requireProof(process.env.OPENCLAW_PROOF_OPENAI_VIDEO === "1", "openai-video-test");
   requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_NATIVE === "1", "perplexity-native-test");
   requireProof(process.env.OPENCLAW_PROOF_PERPLEXITY_CHAT === "1", "perplexity-chat-test");
+  requireProof(process.env.OPENCLAW_PROOF_EXA_WEB_SEARCH === "1", "exa-web-search-test");
+  requireProof(process.env.OPENCLAW_PROOF_OLLAMA_WEB_SEARCH === "1", "ollama-web-search-test");
+  requireProof(process.env.OPENCLAW_PROOF_PARALLEL_WEB_SEARCH === "1", "parallel-web-search-test");
   requireProof(
     process.env.OPENCLAW_PROOF_GUARDED_REQUEST_CONTEXT === "1",
     "guarded-request-context-test",
@@ -473,6 +476,9 @@ async function main(): Promise<void> {
       openAiVideoAdoptionProven: true,
       perplexitySearchApiAdoptionProven: true,
       perplexityChatCompletionsAdoptionProven: true,
+      exaWebSearchAdoptionProven: true,
+      ollamaWebSearchAdoptionProven: true,
+      parallelWebSearchAdoptionProven: true,
       finalRedirectAdjustedHeaderRedactionProven: true,
       finalRedirectAdjustedQueryRedactionProven: true,
       crossOriginCredentialStrippingProven: true,
@@ -503,7 +509,7 @@ async function main(): Promise<void> {
       logRecords: records.length,
       sinkSha256,
       nodeVersion: process.version,
-      retainedProviderOwnerAssertions: 7,
+      retainedProviderOwnerAssertions: 10,
       manualOwnerAssertions: 7,
     },
     scope: {
@@ -530,6 +536,9 @@ async function main(): Promise<void> {
         "openai-video",
         "perplexity-native",
         "perplexity-chat",
+        "exa-web-search",
+        "ollama-web-search",
+        "parallel-web-search",
       ],
     },
     redaction: {
