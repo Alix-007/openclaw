@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 20
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      PRODUCT_SHA: 1629a35256fc496ba821d92c2c3b814d4e198c51
+      PRODUCT_SHA: ac483019b2dad9b1548499ab2bbcdc719edf81b8
 
     steps:
       - name: Check out exact product head
@@ -44,6 +44,15 @@ jobs:
           test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
           pnpm native:i18n:verify
 
+      - name: Prove Gateway truncation contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
+          node scripts/run-vitest.mjs src/gateway/chat-display-projection.test.ts
+          node scripts/run-vitest.mjs src/gateway/server.chat.gateway-server-chat-b.test.ts \
+            -t 'chat.message.get (returns the full projected message|preserves a still-truncated projection state)'
+
       - name: Prove negotiated capability and disclosure states
         working-directory: apps/android
         shell: bash
@@ -53,12 +62,14 @@ jobs:
           ./gradlew --no-daemon :app:testPlayDebugUnitTest \
             --tests 'ai.openclaw.app.GatewayChatMessageCapabilityTest.chatMessageGetCapabilityFailsClosedAcrossOldDisconnectAndReconnectMethodSets' \
             --tests 'ai.openclaw.app.chat.ChatControllerTranscriptCacheTest.truncatedAssistantMessageLoadsFullContentForItsCurrentOwner' \
+            --tests 'ai.openclaw.app.chat.ChatControllerTranscriptCacheTest.stillTruncatedFullMessageRemainsRetryable' \
             --tests 'ai.openclaw.app.chat.ChatControllerTranscriptCacheTest.markedAssistantMessageDoesNotRequestFullContentWhenGatewayMethodSupportIsRevoked' \
             --tests 'ai.openclaw.app.ui.chat.ChatScreenTest.assistantDisclosureCachesLoadedMessageAcrossCollapseAndReexpand' \
             --tests 'ai.openclaw.app.ui.chat.ChatScreenTest.assistantDisclosureFailureRemainsRetryable' \
+            --tests 'ai.openclaw.app.ui.chat.ChatScreenTest.assistantDisclosureDoesNotCrossGatewaySessionAgentOrReconnectScope' \
             --tests 'ai.openclaw.app.ui.chat.ChatScreenTest.assistantDisclosureRequiresGatewayMethodSupport'
 
-      - name: Verify exact head and six passing tests
+      - name: Verify exact head and eight passing Android tests
         if: always()
         shell: bash
         run: |
@@ -70,14 +81,16 @@ jobs:
           for test_name in \
             chatMessageGetCapabilityFailsClosedAcrossOldDisconnectAndReconnectMethodSets \
             truncatedAssistantMessageLoadsFullContentForItsCurrentOwner \
+            stillTruncatedFullMessageRemainsRetryable \
             markedAssistantMessageDoesNotRequestFullContentWhenGatewayMethodSupportIsRevoked \
             assistantDisclosureCachesLoadedMessageAcrossCollapseAndReexpand \
             assistantDisclosureFailureRemainsRetryable \
+            assistantDisclosureDoesNotCrossGatewaySessionAgentOrReconnectScope \
             assistantDisclosureRequiresGatewayMethodSupport
           do
             grep -R -q "name=\"${test_name}\"" "$results"
           done
-          echo "exact-head focused proof: 6 tests passed"
+          echo "exact-head focused proof: 8 Android tests passed"
 
       - name: Upload focused test results
         if: always()
