@@ -59,8 +59,7 @@ export function buildCronSuggestions(params: {
       ? Object.values(params.channels.channelsSnapshot?.channelAccounts ?? {}).flat()
       : (params.channels.channelsSnapshot?.channelAccounts?.[channel] ?? [])
   )
-    .flatMap((account) => [account.accountId, account.name])
-    .filter((value): value is string => typeof value === "string")
+    .map((account) => account.accountId)
     .map((value) => value.trim())
     .filter(Boolean);
   return {

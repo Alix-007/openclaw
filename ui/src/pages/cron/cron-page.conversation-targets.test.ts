@@ -15,6 +15,16 @@ import "./cron-page.ts";
 
 vi.mock("../../components/confirm-dialog.ts", () => ({ showConfirmDialog: vi.fn() }));
 
+function addWorkAccount(context: ReturnType<typeof createContext>) {
+  context.channels.state.channelsSnapshot?.channelAccounts.telegram?.push({
+    accountId: "work",
+    name: "Work Bot",
+    configured: true,
+    enabled: true,
+    running: true,
+  });
+}
+
 afterEach(() => {
   document.body.replaceChildren();
   vi.mocked(showConfirmDialog).mockReset();
@@ -74,6 +84,7 @@ describe("CronPage conversation target suggestions", () => {
     context.agentSelection.setScope("editor");
     expect(context.agentSelection.state).toEqual({ selectedId: "writer", scopeId: "editor" });
     setChannelFixtures(context);
+    addWorkAccount(context);
     const page = createPage(context, { render: true });
 
     await waitForCronPage(() =>
@@ -115,7 +126,9 @@ describe("CronPage conversation target suggestions", () => {
     expect(recipientOptions.join(" ")).not.toContain("writer-target");
     expect(recipientOptions).not.toContain("gmail-cleaner");
     expect(recipientOptions).not.toContain("Gmail Cleaner");
-    expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);
+    expect(accountOptions).toEqual(["gmail-cleaner", "work"]);
+    expect(accountOptions).not.toContain("Gmail Cleaner");
+    expect(accountOptions).not.toContain("Work Bot");
   });
 
   it("selects duplicate topics atomically and clears stale delivery threads", async () => {
@@ -189,6 +202,7 @@ describe("CronPage conversation target suggestions", () => {
     const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
     const context = createContext(gateway, "writer");
     setChannelFixtures(context);
+    addWorkAccount(context);
     const page = createPage(context, { render: true });
 
     await waitForCronPage(() =>
@@ -304,6 +318,7 @@ describe("CronPage conversation target suggestions", () => {
         "cron.add",
         expect.objectContaining({
           delivery: expect.objectContaining({
+            accountId: "work",
             channel: "telegram",
             to: "-1001",
             threadId: "22",

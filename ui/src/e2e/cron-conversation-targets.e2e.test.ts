@@ -47,6 +47,13 @@ suite.define(() => {
                     enabled: true,
                     running: true,
                   },
+                  {
+                    accountId: "work",
+                    name: "Work Bot",
+                    configured: true,
+                    enabled: true,
+                    running: true,
+                  },
                 ],
               },
               channelDefaultAccountId: { telegram: "gmail-cleaner" },
@@ -133,7 +140,9 @@ suite.define(() => {
         expect(defaultRecipientOptions).toEqual(["Default room (-1000)"]);
         expect(defaultRecipientOptions).not.toContain("gmail-cleaner");
         expect(defaultRecipientOptions).not.toContain("Gmail Cleaner");
-        expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);
+        expect(accountOptions).toEqual(["gmail-cleaner", "work"]);
+        expect(accountOptions).not.toContain("Gmail Cleaner");
+        expect(accountOptions).not.toContain("Work Bot");
 
         await page.locator(".cron-advanced > summary").click();
         await page.locator("#cron-delivery-account-id").fill("work");
