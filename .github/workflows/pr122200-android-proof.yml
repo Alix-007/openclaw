@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 20
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      PRODUCT_SHA: 1d0346396ad589dd046b818c702fbdd6224f262b
+      PRODUCT_SHA: 1629a35256fc496ba821d92c2c3b814d4e198c51
 
     steps:
       - name: Check out exact product head
@@ -36,6 +36,13 @@ jobs:
           install-bun: "false"
           install-deps: "true"
           use-actions-cache: "false"
+
+      - name: Verify native i18n baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
+          pnpm native:i18n:verify
 
       - name: Prove negotiated capability and disclosure states
         working-directory: apps/android
