@@ -80,7 +80,7 @@ export async function runAcpAgentCommand(params: {
   const visibleTextAccumulator = attemptExecutionRuntime.createAcpVisibleTextAccumulator();
   let stopReason: string | undefined;
   let resultStatus: "completed" | "cancelled" | undefined;
-  let duplicateSource = false;
+  let duplicateSource: boolean;
   let terminalOutcome: "blocked" | undefined;
   let sessionEntry = params.sessionEntry;
   let transcriptContext:
