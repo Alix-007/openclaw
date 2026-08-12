@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - bootstrap
+          - cron-removal
           - discord
           - foundation
           - heartbeat
@@ -33,7 +34,7 @@ jobs:
   proof:
     name: ${{ inputs.proof_kind }} exact-head runtime proof
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: ${{ inputs.proof_kind == 'cron-removal' && 20 || 45 }}
     env:
       OPENCLAW_PROOF_HEAD_SHA: ${{ inputs.target_sha }}
       PROOF_KIND: ${{ inputs.proof_kind }}
@@ -108,6 +109,16 @@ jobs:
           fi
           nginx -v
 
+      - name: Install Chromium for Cron removal proof
+        if: inputs.proof_kind == 'cron-removal'
+        shell: bash
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/playwright-browsers
+        run: |
+          set -euo pipefail
+          pnpm --dir ui exec playwright install --with-deps chromium
+          node --import tsx scripts/ensure-playwright-chromium.mts
+
       - name: Run exact-head behavior proof
         shell: bash
         run: |
@@ -140,6 +151,33 @@ jobs:
               grep -F '[bootstrap deferred finalization proof]' "$log_file"
               echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
+              ;;
+            cron-removal)
+              mkdir -p proof-artifacts "$RUNNER_TEMP/cron-proof-home"
+              cp .proof-tooling/.github/proof/cron-removal-generation.e2e.test.ts \
+                ui/src/e2e/cron-removal-generation.proof.e2e.test.ts
+              harness_sha="$(git -C .proof-tooling rev-parse HEAD)"
+              env -i \
+                PATH="$PATH" \
+                HOME="$RUNNER_TEMP/cron-proof-home" \
+                TMPDIR="$RUNNER_TEMP" \
+                LANG=C.UTF-8 \
+                CI=1 \
+                NO_COLOR=1 \
+                PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/playwright-browsers" \
+                OPENCLAW_CAPTURE_UI_PROOF=1 \
+                OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                OPENCLAW_PROOF_VIDEO_TEMP_DIR="$RUNNER_TEMP/cron-proof-video" \
+                OPENCLAW_PROOF_HEAD_SHA="$TARGET_SHA" \
+                OPENCLAW_PROOF_HARNESS_SHA="$harness_sha" \
+                OPENCLAW_VITEST_MAX_WORKERS=1 \
+                timeout --signal=TERM --kill-after=15s 150s \
+                  node scripts/run-vitest.mjs run \
+                    --config test/vitest/vitest.ui-e2e.config.ts \
+                    --configLoader runner \
+                    ui/src/e2e/cron-removal-generation.proof.e2e.test.ts \
+                    --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[cron removal generation proof]'
               ;;
             discord)
               node scripts/run-vitest.mjs \
@@ -398,8 +436,48 @@ jobs:
           grep -F "$marker" "$log_file"
           echo "proof_marker_verified=true" | tee -a "$log_file" proof-metadata.txt
 
+      - name: Validate and redact Cron removal artifact
+        if: inputs.proof_kind == 'cron-removal'
+        shell: bash
+        run: |
+          set -euo pipefail
+          verdict=proof-artifacts/verdict.json
+          test -s "$verdict"
+          test -s proof-artifacts/cron-removal-generation.webm
+          test "$(find proof-artifacts -maxdepth 1 -name '*.png' -type f | wc -l)" -eq 4
+          node -e '
+            const fs = require("node:fs");
+            const verdict = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (verdict.verdict !== "pass" || verdict.targetHeadSha !== process.env.TARGET_SHA ||
+                verdict.assertions.confirmationStayedOpenDuringRefresh !== true ||
+                verdict.assertions.removalStatusWasHeld !== true ||
+                verdict.assertions.staleRemovalSnapshotOverwroteNewerGeneration !== false ||
+                verdict.assertions.finalVisible.tasks !== 2 ||
+                verdict.assertions.finalVisible.failing !== 2 || verdict.secretOutput !== false) {
+              process.exit(1);
+            }
+          ' "$verdict"
+          cp proof-metadata.txt proof-artifacts/proof-metadata.txt
+          cp proof-cron-removal.log proof-artifacts/proof-cron-removal.log
+          scan_file="$(mktemp)"
+          find proof-artifacts -type f -exec strings {} \; >"$scan_file"
+          credential_pattern='(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|[Bb]earer[[:space:]]+[A-Za-z0-9._~+/-]{12,}|[Aa]uthorization[[:space:]"'"']*[:=]|[Aa]pi[_-]?[Kk]ey[[:space:]"'"']*[:=]|[Pp]assword[[:space:]"'"']*[:=])'
+          if rg -n "$credential_pattern" proof-artifacts "$scan_file"; then
+            echo "credential-shaped output found in proof artifact" >&2
+            exit 1
+          fi
+          echo "redaction_scan=pass" | tee -a proof-artifacts/proof-metadata.txt
+          manifest="$(mktemp)"
+          (
+            cd proof-artifacts
+            find . -type f ! -name SHA256SUMS -print0 | LC_ALL=C sort -z | xargs -0 sha256sum
+          ) >"$manifest"
+          mv "$manifest" proof-artifacts/SHA256SUMS
+          sha256sum proof-artifacts/verdict.json proof-artifacts/cron-removal-generation.webm
+
       - name: Upload terminal proof
         if: always()
+        id: upload-proof
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: openclaw-${{ inputs.proof_kind }}-${{ inputs.target_sha }}
@@ -409,6 +487,19 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            proof-artifacts/**
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Publish artifact identity
+        if: always() && steps.upload-proof.outputs.artifact-url != ''
+        shell: bash
+        env:
+          ARTIFACT_DIGEST: ${{ steps.upload-proof.outputs.artifact-digest }}
+          ARTIFACT_URL: ${{ steps.upload-proof.outputs.artifact-url }}
+        run: |
+          {
+            echo "artifact_url=$ARTIFACT_URL"
+            echo "artifact_digest=$ARTIFACT_DIGEST"
+          } | tee -a proof-metadata.txt "$GITHUB_STEP_SUMMARY"
