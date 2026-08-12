@@ -6,7 +6,7 @@ import type { CronJob, CronJobsListResult } from "../../api/types.ts";
 import type { ApplicationContext, ApplicationGatewaySnapshot } from "../../app/context.ts";
 import type { CronState } from "../../lib/cron/index.ts";
 
-export type CronTestPage = HTMLElement & {
+type CronTestPage = HTMLElement & {
   context: ApplicationContext;
   updateComplete: Promise<boolean>;
   requestUpdate: () => void;
@@ -23,7 +23,7 @@ export function waitForCronPage(assertion: () => void) {
   return vi.waitFor(assertion, { interval: 1 });
 }
 
-export type TestGateway = ApplicationContext["gateway"] & {
+type TestGateway = ApplicationContext["gateway"] & {
   emitSnapshot: (patch: Partial<ApplicationGatewaySnapshot>) => void;
   emitRetiredEvent: (event: Parameters<GatewayEventListener>[0]) => void;
 };
