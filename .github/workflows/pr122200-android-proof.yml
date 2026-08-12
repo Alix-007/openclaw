@@ -75,6 +75,7 @@ jobs:
           gateway_pid=""
           mock_pid=""
           screenrecord_pid=""
+          session_label_redacted=false
           transcript_path=""
           transcript_backup=""
 
@@ -95,6 +96,9 @@ jobs:
                 -E -e 's/(Sending adb public key ).*/\1[REDACTED]/g' \
                 -E -e 's/(androidboot\.qemu\.adb\.pubkey=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/(androidboot\.vbmeta\.digest=)[^[:space:]]+/\1[REDACTED]/g' \
+                -E -e 's/[[:xdigit:]]{8}-[[:xdigit:]-]{27,}/[ID]/g' \
+                -E -e 's/[[:xdigit:]]{16,}/[ID]/g' \
+                -E -e 's/(OpenClaw App[^"<]* · )[^"<]*/\1[ID]/g' \
                 "$source" >"$target"
             fi
           }
@@ -167,7 +171,7 @@ jobs:
               sleep 2
             done
             dump_ui || true
-            cp "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/timeout-window.xml" 2>/dev/null || true
+            redact_file "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/timeout-window.xml"
             echo "Timed out waiting for UI text: $target" >&2
             return 1
           }
@@ -181,6 +185,21 @@ jobs:
             point="$(ui_point "$target" "$mode")"
             read -r x y <<<"$point"
             adb shell input tap "$x" "$y"
+          }
+
+          ensure_chat() {
+            local deadline=$((SECONDS + 90))
+            while (( SECONDS < deadline )); do
+              if ui_point "Message OpenClaw" exact >/dev/null 2>&1; then
+                return 0
+              fi
+              if ui_point "Chat" exact >/dev/null 2>&1; then
+                tap_text "Chat" 15 exact
+                phase "dashboard-chat-opened"
+              fi
+              sleep 2
+            done
+            wait_text "Message OpenClaw" 5 exact
           }
 
           type_into() {
@@ -197,7 +216,40 @@ jobs:
             local name="$1"
             adb exec-out screencap -p >"$ARTIFACT_DIR/$name"
             dump_ui || true
-            cp "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/${name%.png}.xml" 2>/dev/null || true
+            redact_file "$RUNNER_TEMP/window.xml" "$ARTIFACT_DIR/${name%.png}.xml"
+          }
+
+          label_android_session() {
+            local sessions_json="$RUNNER_TEMP/sessions-list.json"
+            local patch_json="$RUNNER_TEMP/session-label-patch.json"
+            openclaw gateway call sessions.list \
+              --params '{"includeGlobal":true,"includeUnknown":false,"agentId":"main","limit":100}' \
+              --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+              --token "$PROOF_TOKEN" \
+              --json >"$sessions_json"
+            SESSIONS_JSON="$sessions_json" PATCH_JSON="$patch_json" node <<'NODE'
+          const fs = require("node:fs");
+          const value = JSON.parse(fs.readFileSync(process.env.SESSIONS_JSON, "utf8"));
+          const sessions = Array.isArray(value.sessions) ? value.sessions : [];
+          const target = sessions.find((session) =>
+            typeof session?.key === "string" &&
+            typeof session?.label === "string" &&
+            session.label.startsWith("OpenClaw App")
+          );
+          if (!target) process.exit(1);
+          fs.writeFileSync(
+            process.env.PATCH_JSON,
+            JSON.stringify({ key: target.key, agentId: "main", label: "PR 122200 proof" }),
+            { mode: 0o600 },
+          );
+          NODE
+            openclaw gateway call sessions.patch \
+              --params "$(cat "$patch_json")" \
+              --url "ws://127.0.0.1:${GATEWAY_PORT}" \
+              --token "$PROOF_TOKEN" \
+              --json >"$RUNNER_TEMP/session-label-patch-result.json"
+            session_label_redacted=true
+            phase "android-session-label-redacted"
           }
 
           approve_pending_devices() {
@@ -295,9 +347,12 @@ jobs:
             adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
             if [[ -n "$screenrecord_pid" ]]; then wait "$screenrecord_pid" 2>/dev/null || true; fi
             adb pull /sdcard/pr122200-proof.mp4 "$ARTIFACT_DIR/pr122200-proof.mp4" >/dev/null 2>&1 || true
-            adb exec-out screencap -p >"$ARTIFACT_DIR/final-state.png" 2>/dev/null || true
+            if [[ "$session_label_redacted" == true ]]; then
+              adb exec-out screencap -p >"$ARTIFACT_DIR/final-state.png" 2>/dev/null || true
+            fi
             adb shell uiautomator dump /sdcard/final-window.xml >/dev/null 2>&1 || true
-            adb exec-out cat /sdcard/final-window.xml >"$ARTIFACT_DIR/final-window.xml" 2>/dev/null || true
+            adb exec-out cat /sdcard/final-window.xml >"$RUNNER_TEMP/final-window.xml" 2>/dev/null || true
+            redact_file "$RUNNER_TEMP/final-window.xml" "$ARTIFACT_DIR/final-window.xml"
             app_pid="$(adb shell pidof ai.openclaw.app 2>/dev/null | tr -d '\r' | awk '{ print $1 }')"
             if [[ -n "$app_pid" ]]; then
               adb logcat -d --pid="$app_pid" \
@@ -556,32 +611,35 @@ jobs:
           if wait_text "Permissions" 30 exact; then
             tap_text "Continue" 30
           fi
-          chat_navigation_deadline=$((SECONDS + 90))
-          while (( SECONDS < chat_navigation_deadline )); do
-            if ui_point "Message OpenClaw" exact >/dev/null 2>&1; then
-              break
-            fi
-            if ui_point "Chat" exact >/dev/null 2>&1; then
-              tap_text "Chat" 15 exact
-              phase "dashboard-chat-opened"
-              break
-            fi
+          ensure_chat
+          phase "android-chat-ready"
+
+          label_android_session
+          adb shell am force-stop ai.openclaw.app
+          adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+          ensure_chat
+          wait_text "PR 122200 proof" 60 exact
+
+          type_into "Message OpenClaw" "PR122200_PROOF_REQUEST"
+          tap_text "Send" 60
+          transcript_deadline=$((SECONDS + 120))
+          while (( SECONDS < transcript_deadline )); do
+            transcript_path="$(find "$OPENCLAW_STATE_DIR/agents" -type f -name '*.jsonl' -print0 | xargs -0 grep -l -m1 'PR122200_FULL_MESSAGE_START' | head -1)"
+            if [[ -n "$transcript_path" ]]; then break; fi
             sleep 2
           done
-          wait_text "Message OpenClaw" 180 exact
-          phase "android-chat-ready"
+          test -n "$transcript_path"
+          phase "full-message-transcript-persisted"
+
+          adb shell am force-stop ai.openclaw.app
+          adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+          ensure_chat
+          wait_text "View all" 120 exact
 
           adb shell screenrecord --time-limit 180 /sdcard/pr122200-proof.mp4 \
             >"$RUNNER_TEMP/screenrecord.log" 2>&1 &
           screenrecord_pid=$!
 
-          type_into "Message OpenClaw" "PR122200_PROOF_REQUEST"
-          tap_text "Send" 60
-          if ! wait_text "View all" 120 exact; then
-            adb shell am force-stop ai.openclaw.app
-            adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
-            wait_text "View all" 120 exact
-          fi
           screenshot "01-preview-view-all.png"
           phase "preview-captured"
 
@@ -597,9 +655,8 @@ jobs:
 
           adb shell am force-stop ai.openclaw.app
           adb shell monkey -p ai.openclaw.app -c android.intent.category.LAUNCHER 1 >/dev/null
+          ensure_chat
           wait_text "View all" 120 exact
-          transcript_path="$(find "$OPENCLAW_STATE_DIR/agents" -type f -name '*.jsonl' -print0 | xargs -0 grep -l -m1 'PR122200_FULL_MESSAGE_START' | head -1)"
-          test -n "$transcript_path"
           transcript_backup="${transcript_path}.proof-backup"
           mv "$transcript_path" "$transcript_backup"
 
