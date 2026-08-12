@@ -22,6 +22,7 @@ export function buildCronSuggestions(params: {
   cron: CronState;
   agentsList: AgentsListResult | null;
   modelSuggestions: string[];
+  conversationTargets: string[];
 }) {
   const configValue = currentConfigObject(params.runtimeConfig);
   const channel = params.cron.cronForm.deliveryChannel.trim() || "last";
@@ -60,7 +61,7 @@ export function buildCronSuggestions(params: {
     .filter((value): value is string => typeof value === "string")
     .map((value) => value.trim())
     .filter(Boolean);
-  const deliveryTargets = unique([...jobTargets, ...accountTargets]);
+  const deliveryTargets = unique([...jobTargets, ...params.conversationTargets]);
   return {
     agentSuggestions,
     modelSuggestions,

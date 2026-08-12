@@ -17,6 +17,7 @@ type CronTestPage = HTMLElement & {
   render: () => typeof nothing;
   cron: CronState;
   cronModelSuggestions: string[];
+  conversationTargets: string[];
 };
 
 function waitForCronPage(assertion: () => void) {
@@ -120,6 +121,32 @@ function createContext(gateway: TestGateway, scopeId: string | null = "main"): A
     navigate: vi.fn(),
     preload: vi.fn(async () => undefined),
   } as unknown as ApplicationContext;
+}
+
+function setChannelFixtures(context: ApplicationContext) {
+  context.channels.state.channelsSnapshot = {
+    ts: 0,
+    channelOrder: ["telegram", "discord"],
+    channelLabels: { telegram: "Telegram", discord: "Discord" },
+    channelMeta: [
+      { id: "telegram", label: "Telegram", detailLabel: "Telegram Bot" },
+      { id: "discord", label: "Discord", detailLabel: "Discord Bot" },
+    ],
+    channels: {},
+    channelAccounts: {
+      telegram: [
+        {
+          accountId: "gmail-cleaner",
+          name: "Gmail Cleaner",
+          configured: true,
+          enabled: true,
+          running: true,
+        },
+      ],
+      discord: [],
+    },
+    channelDefaultAccountId: { telegram: "gmail-cleaner", discord: "default" },
+  };
 }
 
 function createPage(context: ApplicationContext, options: { render?: boolean } = {}): CronTestPage {
@@ -324,6 +351,213 @@ describe("CronPage editor state sync", () => {
         expect.objectContaining({ agentId: "writer" }),
       );
     });
+  });
+
+  it("suggests canonical conversation targets for the selected announce channel", async () => {
+    const request = vi.fn(async (method: string) => {
+      if (method === "conversations.list") {
+        return {
+          conversations: [
+            {
+              conversationRef: "conversation:telegram:work:group:-1001234567890",
+              channel: "telegram",
+              accountId: "work",
+              kind: "group",
+              target: "-1001234567890:topic:42",
+              label: "Release room",
+              firstSeenAt: 0,
+              lastSeenAt: 0,
+            },
+          ],
+        };
+      }
+      if (method === "cron.list") {
+        return cronListResponse([]);
+      }
+      if (method === "cron.runs") {
+        return { entries: [], total: 0, offset: 0, hasMore: false };
+      }
+      if (method === "models.list") {
+        return { models: [] };
+      }
+      return {};
+    });
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const context = createContext(gateway, "writer");
+    setChannelFixtures(context);
+    const page = createPage(context, { render: true });
+
+    await waitForCronPage(() =>
+      expect(page.querySelector('[data-test-id="cron-new-task"]')).not.toBeNull(),
+    );
+    expect(request.mock.calls.some(([method]) => method === "conversations.list")).toBe(false);
+    (page.querySelector('[data-test-id="cron-new-task"]') as HTMLButtonElement).click();
+    await waitForCronPage(() =>
+      expect(page.querySelector("#cron-delivery-channel")).not.toBeNull(),
+    );
+
+    const channel = page.querySelector("#cron-delivery-channel") as HTMLSelectElement;
+    channel.value = "telegram";
+    channel.dispatchEvent(new Event("change", { bubbles: true }));
+    const recipient = page.querySelector("#cron-delivery-to") as HTMLInputElement;
+    recipient.value = "plugin-owned:free-form-target";
+    recipient.dispatchEvent(new Event("input", { bubbles: true }));
+    await waitForCronPage(() => expect(recipient.value).toBe("plugin-owned:free-form-target"));
+
+    await waitForCronPage(() =>
+      expect(request).toHaveBeenCalledWith(
+        "conversations.list",
+        expect.objectContaining({ agentId: "writer", channel: "telegram" }),
+      ),
+    );
+    const recipientOptions = Array.from(
+      page.querySelectorAll<HTMLDataListElement>("#cron-delivery-to-suggestions option"),
+      (option) => option.value,
+    );
+    const accountOptions = Array.from(
+      page.querySelectorAll<HTMLDataListElement>("#cron-delivery-account-suggestions option"),
+      (option) => option.value,
+    );
+    expect(recipientOptions).toContain("-1001234567890:topic:42");
+    expect(recipientOptions).not.toContain("gmail-cleaner");
+    expect(recipientOptions).not.toContain("Gmail Cleaner");
+    expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);
+  });
+
+  it("rejects conversation targets from stale channel and agent scopes", async () => {
+    const staleTelegram = createDeferred<{
+      conversations: Array<{
+        conversationRef: string;
+        channel: string;
+        accountId: string;
+        kind: "group";
+        target: string;
+        firstSeenAt: number;
+        lastSeenAt: number;
+      }>;
+    }>();
+    const currentTelegram = createDeferred<Awaited<typeof staleTelegram.promise>>();
+    const staleWriterDiscord = createDeferred<Awaited<typeof staleTelegram.promise>>();
+    let telegramRequests = 0;
+    const request = vi.fn(async (method: string, params?: unknown) => {
+      if (method === "conversations.list") {
+        const { agentId, channel } = params as { agentId: string; channel: string };
+        if (agentId === "writer" && channel === "telegram") {
+          telegramRequests += 1;
+          return telegramRequests === 1 ? staleTelegram.promise : currentTelegram.promise;
+        }
+        if (agentId === "writer" && channel === "discord") {
+          return staleWriterDiscord.promise;
+        }
+        return {
+          conversations: [
+            {
+              conversationRef: "conversation:discord:default:group:fresh-editor",
+              channel: "discord",
+              accountId: "default",
+              kind: "group" as const,
+              target: "fresh-editor",
+              firstSeenAt: 0,
+              lastSeenAt: 0,
+            },
+          ],
+        };
+      }
+      if (method === "cron.list") {
+        return cronListResponse([]);
+      }
+      if (method === "cron.runs") {
+        return { entries: [], total: 0, offset: 0, hasMore: false };
+      }
+      if (method === "models.list") {
+        return { models: [] };
+      }
+      return {};
+    });
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const context = createContext(gateway, "writer");
+    setChannelFixtures(context);
+    const page = createPage(context, { render: true });
+
+    await waitForCronPage(() =>
+      expect(page.querySelector('[data-test-id="cron-new-task"]')).not.toBeNull(),
+    );
+    (page.querySelector('[data-test-id="cron-new-task"]') as HTMLButtonElement).click();
+    await waitForCronPage(() =>
+      expect(page.querySelector("#cron-delivery-channel")).not.toBeNull(),
+    );
+    const selectChannel = (channel: string) => {
+      const select = page.querySelector("#cron-delivery-channel") as HTMLSelectElement;
+      select.value = channel;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    selectChannel("telegram");
+    await waitForCronPage(() =>
+      expect(request).toHaveBeenCalledWith(
+        "conversations.list",
+        expect.objectContaining({ agentId: "writer", channel: "telegram" }),
+      ),
+    );
+    selectChannel("discord");
+    await waitForCronPage(() =>
+      expect(request).toHaveBeenCalledWith(
+        "conversations.list",
+        expect.objectContaining({ agentId: "writer", channel: "discord" }),
+      ),
+    );
+    selectChannel("telegram");
+    await waitForCronPage(() => expect(telegramRequests).toBe(2));
+
+    currentTelegram.resolve({
+      conversations: [
+        {
+          conversationRef: "conversation:telegram:work:group:current-channel",
+          channel: "telegram",
+          accountId: "work",
+          kind: "group",
+          target: "current-channel",
+          firstSeenAt: 0,
+          lastSeenAt: 0,
+        },
+      ],
+    });
+    await waitForCronPage(() => expect(page.conversationTargets).toEqual(["current-channel"]));
+
+    staleTelegram.resolve({
+      conversations: [
+        {
+          conversationRef: "conversation:telegram:work:group:stale-channel",
+          channel: "telegram",
+          accountId: "work",
+          kind: "group",
+          target: "stale-channel",
+          firstSeenAt: 0,
+          lastSeenAt: 0,
+        },
+      ],
+    });
+    await staleTelegram.promise;
+    expect(page.conversationTargets).toEqual(["current-channel"]);
+
+    context.agentSelection.setScope("editor");
+    await waitForCronPage(() => expect(page.cron.cronAgentId).toBe("editor"));
+    expect(page.cron.cronCreateOpen).toBe(false);
+    expect(page.conversationTargets).toEqual([]);
+    staleWriterDiscord.resolve({
+      conversations: [
+        {
+          conversationRef: "conversation:discord:default:group:stale-agent",
+          channel: "discord",
+          accountId: "default",
+          kind: "group",
+          target: "stale-agent",
+          firstSeenAt: 0,
+          lastSeenAt: 0,
+        },
+      ],
+    });
+    await Promise.resolve();
+    expect(page.conversationTargets).toEqual([]);
   });
 
   it("create & run now issues cron.run for the job returned by cron.add", async () => {

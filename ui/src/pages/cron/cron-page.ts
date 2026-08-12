@@ -1,4 +1,5 @@
 import { consume } from "@lit/context";
+import type { ConversationListResult } from "@openclaw/gateway-protocol";
 import { html } from "lit";
 import { state } from "lit/decorators.js";
 import type { AgentsListResult, CronJob } from "../../api/types.ts";
@@ -53,10 +54,13 @@ class CronPage extends OpenClawLightDomElement {
   @state() private cron = createInitialCronState();
   @state() private agentsList: AgentsListResult | null = null;
   @state() private cronModelSuggestions: string[] = [];
+  @state() private conversationTargets: string[] = [];
   @state() private listTab: CronListTab = "tasks";
   @state() private detailTab: CronDetailTab = "settings";
 
   private modelSuggestionsState: CronState | null = null;
+  private conversationTargetsKey: string | null = null;
+  private conversationTargetsGeneration = 0;
   private readonly gateway = new GatewayPageController(this, {
     getGateway: () => this.context?.gateway,
     invalidateRequests: (change) => this.resetGatewayState(change.snapshot),
@@ -129,7 +133,10 @@ class CronPage extends OpenClawLightDomElement {
     this.cron.cronAgentId = this.context.agentSelection.state.scopeId;
     this.agentsList = connected ? this.context.agents.state.agentsList : null;
     this.cronModelSuggestions = [];
+    this.conversationTargets = [];
     this.modelSuggestionsState = null;
+    this.conversationTargetsKey = null;
+    this.conversationTargetsGeneration += 1;
   }
 
   private syncAgentsState() {
@@ -180,6 +187,47 @@ class CronPage extends OpenClawLightDomElement {
         scroller.scrollTo({ top: 0 });
       }
     }
+  }
+
+  private ensureConversationTargets() {
+    const cronState = this.cron;
+    const client = cronState.client;
+    const agentId = resolveSessionNavigationAgentId(this.context);
+    const channel = cronState.cronForm.deliveryChannel.trim();
+    const key =
+      this.canManageCron &&
+      (cronState.cronCreateOpen || Boolean(cronState.cronEditingJobId)) &&
+      cronState.cronForm.deliveryMode === "announce" &&
+      channel !== "" &&
+      channel !== "last" &&
+      cronState.connected &&
+      client
+        ? JSON.stringify([agentId, channel])
+        : null;
+    if (key === this.conversationTargetsKey) {
+      return;
+    }
+    const generation = ++this.conversationTargetsGeneration;
+    this.conversationTargetsKey = key;
+    this.conversationTargets = [];
+    if (!key || !client) {
+      return;
+    }
+    void client
+      .request<ConversationListResult>("conversations.list", { agentId, channel, limit: 100 })
+      .then((result) => {
+        // Form scope and channel can change while discovery is in flight; only
+        // the request that still owns the editor may publish recipient targets.
+        if (
+          this.cron === cronState &&
+          this.cron.client === client &&
+          this.conversationTargetsGeneration === generation &&
+          this.conversationTargetsKey === key
+        ) {
+          this.conversationTargets = result.conversations.map((entry) => entry.target);
+        }
+      })
+      .catch(() => {});
   }
 
   private async refreshCron(options: { tableFilters: boolean }) {
@@ -248,12 +296,14 @@ class CronPage extends OpenClawLightDomElement {
     }
     this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...patch });
     this.cron.cronFieldErrors = validateCronForm(this.cron.cronForm);
+    this.ensureConversationTargets();
     this.requestCronUpdate();
   }
 
   private selectJob(job: CronJob) {
     this.cron.cronCreateOpen = false;
     startCronEdit(this.cron, job);
+    this.ensureConversationTargets();
     this.requestCronUpdate();
     void this.runCronTask(async (cronState) => {
       updateCronRunsFilter(cronState, { cronRunsScope: "job" });
@@ -275,6 +325,7 @@ class CronPage extends OpenClawLightDomElement {
       this.patchForm(patch);
       return;
     }
+    this.ensureConversationTargets();
     this.requestCronUpdate();
   }
 
@@ -285,6 +336,7 @@ class CronPage extends OpenClawLightDomElement {
     // A clone is a prefilled create: the editor submits cron.add, not update.
     startCronClone(this.cron, job);
     this.cron.cronCreateOpen = true;
+    this.ensureConversationTargets();
     this.requestCronUpdate();
   }
 
@@ -336,6 +388,7 @@ class CronPage extends OpenClawLightDomElement {
   private closePanel() {
     cancelCronEdit(this.cron);
     this.cron.cronCreateOpen = false;
+    this.ensureConversationTargets();
     this.requestCronUpdate();
     void this.runCronTask(async (cronState) => {
       updateCronRunsFilter(cronState, { cronRunsScope: "all" });
@@ -385,6 +438,7 @@ class CronPage extends OpenClawLightDomElement {
       cron: this.cron,
       agentsList: this.agentsList,
       modelSuggestions: this.cronModelSuggestions,
+      conversationTargets: this.conversationTargets,
     });
     const canManage = this.canManageCron;
     return html`
