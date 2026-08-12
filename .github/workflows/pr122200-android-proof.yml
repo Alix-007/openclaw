@@ -481,6 +481,10 @@ jobs:
           pairing_deadline=$((SECONDS + 180))
           while (( SECONDS < pairing_deadline )); do
             approve_pending_devices || true
+            if ui_point "Retry connection" exact >/dev/null 2>&1; then
+              tap_text "Retry connection" 30
+              phase "device-pairing-retry-requested"
+            fi
             if ui_point "Gateway paired" contains >/dev/null 2>&1; then break; fi
             sleep 2
           done
