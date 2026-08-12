@@ -71,10 +71,14 @@ export function isPrimaryInteractiveBootstrapRun(params: {
 
 function resolveBootstrapRouting(params: BootstrapRoutingInput): WorkspaceBootstrapRouting {
   const isPrimaryInteractiveRun = isPrimaryInteractiveBootstrapRun(params);
+  // Room events retain user-triggered pending bootstrap placement, but the
+  // stricter marker eligibility above prevents them from consuming state.
+  const isWorkspaceBootstrapPlacementRun =
+    params.isPrimaryRun && (params.trigger === "user" || params.trigger === "manual");
   const bootstrapMode = resolveBootstrapMode({
     bootstrapPending: params.workspaceBootstrapPending,
     runKind: params.bootstrapContextRunKind ?? "default",
-    isInteractiveUserFacing: isPrimaryInteractiveRun,
+    isInteractiveUserFacing: isWorkspaceBootstrapPlacementRun,
     isPrimaryRun: params.isPrimaryRun,
     isCanonicalWorkspace:
       (params.isCanonicalWorkspace ?? true) &&
@@ -153,17 +157,16 @@ export async function resolveBootstrapContextInjection<TBootstrapFile, TContextF
   // but only a clean full bootstrap later records a durable completion marker.
   const shouldSkipBootstrapInjection =
     params.contextInjectionMode === "never" || isContinuationTurn;
-  const shouldRecordEstablishedWorkspaceTurn =
-    params.bootstrapMode === "none" &&
-    params.contextInjectionMode === "continuation-skip" &&
-    isEligibleInteractiveBootstrapRun;
+  const isEstablishedWorkspaceBootstrapTurn =
+    params.bootstrapMode === "none" && params.contextInjectionMode === "continuation-skip";
   const shouldRecordCompletedBootstrapTurn =
     !shouldSkipBootstrapInjection &&
     params.bootstrapContextMode !== "lightweight" &&
     !isHeartbeatLifecycleRun &&
+    isEligibleInteractiveBootstrapRun &&
     // Established workspaces still inject normal context once. Only a primary
     // user/manual turn may establish state consumed by later continuations.
-    (params.bootstrapMode === "full" || shouldRecordEstablishedWorkspaceTurn);
+    (params.bootstrapMode === "full" || isEstablishedWorkspaceBootstrapTurn);
 
   const context = shouldSkipBootstrapInjection
     ? { bootstrapFiles: [], contextFiles: [] }

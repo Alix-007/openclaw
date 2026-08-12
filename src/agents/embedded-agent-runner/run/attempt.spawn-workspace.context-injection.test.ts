@@ -268,16 +268,16 @@ describe("embedded attempt context injection", () => {
     expect(resolver).toHaveBeenCalledOnce();
   });
 
-  it("does not let room events consume or write established-workspace bootstrap state", async () => {
+  it("injects pending bootstrap for room events without consuming or writing marker state", async () => {
     const resolver = vi.fn(async () => ({
-      bootstrapFiles: [{ name: "AGENTS.md" }],
-      contextFiles: [{ path: "AGENTS.md" }],
+      bootstrapFiles: [{ name: "BOOTSTRAP.md" }],
+      contextFiles: [{ path: "BOOTSTRAP.md" }],
     }));
     const { result, hasCompletedBootstrapTurn } = await resolveBootstrapContext({
       contextInjectionMode: "continuation-skip",
       bootstrapContextMode: "full",
       bootstrapContextRunKind: "default",
-      bootstrapMode: "none",
+      bootstrapMode: "full",
       currentInboundEventKind: "room_event",
       completed: true,
       resolver,
@@ -285,7 +285,7 @@ describe("embedded attempt context injection", () => {
 
     expect(result.isContinuationTurn).toBe(false);
     expect(result.shouldRecordCompletedBootstrapTurn).toBe(false);
-    expect(result.contextFiles).toEqual([{ path: "AGENTS.md" }]);
+    expect(result.contextFiles).toEqual([{ path: "BOOTSTRAP.md" }]);
     expect(hasCompletedBootstrapTurn).not.toHaveBeenCalled();
     expect(resolver).toHaveBeenCalledOnce();
   });

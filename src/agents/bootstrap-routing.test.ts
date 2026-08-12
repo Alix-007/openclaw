@@ -158,6 +158,23 @@ describe("resolveWorkspaceBootstrapRouting", () => {
     expect(routing.includeBootstrapInRuntimeContext).toBe(false);
   });
 
+  it("keeps pending bootstrap placement for room events without marker eligibility", async () => {
+    const routing = await resolveWorkspaceBootstrapRouting({
+      isWorkspaceBootstrapPending: vi.fn(async () => true),
+      currentInboundEventKind: "room_event",
+      trigger: "user",
+      isPrimaryRun: true,
+      isCanonicalWorkspace: true,
+      effectiveWorkspace: "/tmp/openclaw-workspace",
+      resolvedWorkspace: "/tmp/openclaw-workspace",
+      hasBootstrapFileAccess: true,
+    });
+
+    expect(routing.bootstrapMode).toBe("full");
+    expect(routing.includeBootstrapInSystemContext).toBe(true);
+    expect(routing.isPrimaryInteractiveRun).toBe(false);
+  });
+
   it.each([
     {
       label: "memory maintenance",
@@ -171,17 +188,11 @@ describe("resolveWorkspaceBootstrapRouting", () => {
       currentInboundEventKind: undefined,
       isPrimaryRun: false,
     },
-    {
-      label: "an ambient room event",
-      trigger: "user",
-      currentInboundEventKind: "room_event" as const,
-      isPrimaryRun: true,
-    },
   ])(
-    "marks $label as ineligible to establish continuation state",
+    "keeps pending bootstrap out of $label",
     async ({ trigger, currentInboundEventKind, isPrimaryRun }) => {
       const routing = await resolveWorkspaceBootstrapRouting({
-        isWorkspaceBootstrapPending: vi.fn(async () => false),
+        isWorkspaceBootstrapPending: vi.fn(async () => true),
         currentInboundEventKind,
         trigger,
         isPrimaryRun,

@@ -1812,28 +1812,46 @@ describe("prepareCliRunContext", () => {
     expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });
 
-  it("does not let room events consume or establish CLI continuation state", async () => {
+  it("injects pending bootstrap for room events without consuming or establishing CLI state", async () => {
     const { dir } = fixture.session;
+    const bootstrapPath = path.join(dir, "BOOTSTRAP.md");
     const hasCompletedBootstrapTurn = vi.fn(async () => true);
+    const isWorkspaceBootstrapPending = vi.fn(async () => true);
     const resolveBootstrapContextForRun = vi.fn(async () => ({
       bootstrapFiles: [
         {
-          name: "AGENTS.md" as const,
-          path: path.join(dir, "AGENTS.md"),
-          content: "Room-event workspace context",
+          name: "BOOTSTRAP.md" as const,
+          path: bootstrapPath,
+          content: "Room-event pending bootstrap context",
           missing: false,
         },
       ],
       contextFiles: [
         {
-          path: path.join(dir, "AGENTS.md"),
-          content: "Room-event workspace context",
+          path: bootstrapPath,
+          content: "Room-event pending bootstrap context",
         },
       ],
     }));
     setCliRunnerPrepareTestDeps({
       hasCompletedBootstrapTurn,
+      isWorkspaceBootstrapPending,
       resolveBootstrapContextForRun,
+    });
+    setRawCliBackendForPrepareTest({
+      id: "test-cli",
+      pluginId: "test",
+      bundleMcp: false,
+      nativeToolMode: "always-on",
+      config: {
+        command: "test-cli",
+        args: ["--print"],
+        systemPromptArg: "--system-prompt",
+        systemPromptWhen: "first",
+        sessionMode: "existing",
+        output: "text",
+        input: "arg",
+      },
     });
 
     const context = await fixture.prepare({
@@ -1850,9 +1868,10 @@ describe("prepareCliRunContext", () => {
       currentInboundEventKind: "room_event",
     });
 
-    expect(context.systemPrompt).toContain("Room-event workspace context");
+    expect(context.systemPrompt).toContain("Room-event pending bootstrap context");
     expect(takePreparedCliBootstrapCompletion(context)).toBeUndefined();
     expect(hasCompletedBootstrapTurn).not.toHaveBeenCalled();
+    expect(isWorkspaceBootstrapPending).toHaveBeenCalledWith(dir);
     expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });
 
