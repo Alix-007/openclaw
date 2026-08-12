@@ -22,7 +22,6 @@ export function buildCronSuggestions(params: {
   cron: CronState;
   agentsList: AgentsListResult | null;
   modelSuggestions: string[];
-  conversationTargets: string[];
 }) {
   const configValue = currentConfigObject(params.runtimeConfig);
   const channel = params.cron.cronForm.deliveryChannel.trim() || "last";
@@ -52,6 +51,9 @@ export function buildCronSuggestions(params: {
   const jobTargets = params.cron.cronJobs
     .map((job) => (typeof job.delivery?.to === "string" ? job.delivery.to.trim() : ""))
     .filter(Boolean);
+  const failureAlertTargets = params.cron.cronJobs.flatMap((job) =>
+    typeof job.failureAlert === "object" && job.failureAlert?.to ? [job.failureAlert.to] : [],
+  );
   const accountTargets = (
     channel === "last"
       ? Object.values(params.channels.channelsSnapshot?.channelAccounts ?? {}).flat()
@@ -61,7 +63,6 @@ export function buildCronSuggestions(params: {
     .filter((value): value is string => typeof value === "string")
     .map((value) => value.trim())
     .filter(Boolean);
-  const deliveryTargets = unique([...jobTargets, ...params.conversationTargets]);
   return {
     agentSuggestions,
     modelSuggestions,
@@ -69,7 +70,11 @@ export function buildCronSuggestions(params: {
     accountTargets,
     deliveryToSuggestions:
       params.cron.cronForm.deliveryMode === "webhook"
-        ? deliveryTargets.filter((value) => /^https?:\/\//i.test(value))
-        : deliveryTargets,
+        ? unique(jobTargets).filter((value) => /^https?:\/\//i.test(value))
+        : unique(jobTargets),
+    failureToSuggestions:
+      params.cron.cronForm.failureAlertDeliveryMode === "webhook"
+        ? failureAlertTargets.filter((value) => /^https?:\/\//i.test(value))
+        : failureAlertTargets,
   };
 }

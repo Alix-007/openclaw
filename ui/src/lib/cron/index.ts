@@ -1126,8 +1126,9 @@ export async function addCronJob(state: CronState): Promise<CronSaveResult> {
     }
     const selectedDeliveryMode = form.deliveryMode;
     const normalizedDeliveryAccountId = form.deliveryAccountId.trim();
-    // Update patches need null to clear stored routing; create payloads must
-    // omit blanks because the Gateway accountId schema rejects empty strings.
+    const threadId =
+      form.deliveryThreadId ?? (editingJob?.delivery?.threadId === undefined ? undefined : null);
+    // Update patches use null to clear stored routing; creates omit blank account IDs.
     const deliveryAccountId =
       selectedDeliveryMode === "announce"
         ? normalizedDeliveryAccountId || (editingJob?.delivery?.accountId ? null : undefined)
@@ -1145,7 +1146,7 @@ export async function addCronJob(state: CronState): Promise<CronSaveResult> {
             to: form.deliveryTo.trim() || undefined,
             accountId: deliveryAccountId,
             bestEffort: form.deliveryBestEffort,
-            ...(form.deliveryThreadId !== undefined ? { threadId: form.deliveryThreadId } : {}),
+            ...(threadId !== undefined ? { threadId } : {}),
             ...(selectedDeliveryMode === "announce" && form.deliveryCompletionDestination
               ? { completionDestination: form.deliveryCompletionDestination }
               : {}),
@@ -1157,7 +1158,7 @@ export async function addCronJob(state: CronState): Promise<CronSaveResult> {
           ? ({
               mode: "none",
               ...(form.deliveryBestEffort ? { bestEffort: true } : {}),
-              ...(form.deliveryThreadId !== undefined ? { threadId: form.deliveryThreadId } : {}),
+              ...(threadId !== undefined ? { threadId } : {}),
               ...(form.deliveryFailureDestination
                 ? { failureDestination: form.deliveryFailureDestination }
                 : {}),

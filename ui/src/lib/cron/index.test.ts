@@ -676,6 +676,25 @@ describe("cron controller", () => {
     });
   });
 
+  it("sends null delivery.threadId when an edited job switches to an unthreaded target", async () => {
+    const job = createCronJob({
+      id: "job-clear-thread-id",
+      name: "clear thread",
+      delivery: { mode: "announce", channel: "telegram", to: "-1001", threadId: "22" },
+    });
+    const { state, submit } = createCronEditHarness(job);
+    state.cronForm.deliveryTo = "-1002";
+    state.cronForm.deliveryThreadId = undefined;
+
+    const call = await submit();
+
+    expectRecordFields(requireRecord(requestPatch(call).delivery, "delivery"), {
+      mode: "announce",
+      to: "-1002",
+      threadId: null,
+    });
+  });
+
   it("maps a cron job into editable form fields", () => {
     const state = createState();
     const job = createCronJob({

@@ -65,6 +65,7 @@ function createCronViewProps(overrides: Partial<CronProps> = {}): CronProps {
     thinkingSuggestions: [],
     timezoneSuggestions: [],
     deliveryToSuggestions: [],
+    failureToSuggestions: [],
     accountSuggestions: [],
     onListTabChange: () => undefined,
     onDetailTabChange: () => undefined,

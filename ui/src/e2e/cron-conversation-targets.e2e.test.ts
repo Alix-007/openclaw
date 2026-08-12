@@ -54,17 +54,40 @@ suite.define(() => {
             "conversations.list": {
               conversations: [
                 {
-                  conversationRef: "conversation:telegram:work:group:editor-target",
+                  conversationRef: "conversation:telegram:gmail-cleaner:group:default-room",
+                  channel: "telegram",
+                  accountId: "gmail-cleaner",
+                  kind: "group",
+                  target: "-1000",
+                  label: "Default room",
+                  firstSeenAt: 0,
+                  lastSeenAt: 0,
+                },
+                {
+                  conversationRef: "conversation:telegram:work:group:-1001:topic:11",
                   channel: "telegram",
                   accountId: "work",
                   kind: "group",
-                  target: "editor-target",
-                  label: "Editor room",
+                  target: "-1001",
+                  threadId: "11",
+                  label: "General",
+                  firstSeenAt: 0,
+                  lastSeenAt: 0,
+                },
+                {
+                  conversationRef: "conversation:telegram:work:group:-1001:topic:22",
+                  channel: "telegram",
+                  accountId: "work",
+                  kind: "group",
+                  target: "-1001",
+                  threadId: "22",
+                  label: "Builds",
                   firstSeenAt: 0,
                   lastSeenAt: 0,
                 },
               ],
             },
+            "cron.add": { id: "topic-delivery-job" },
             "cron.list": {
               jobs: [],
               snapshotRevision: "cron-conversation-targets-fixture",
@@ -101,16 +124,40 @@ suite.define(() => {
               params: expect.objectContaining({ agentId: "editor", channel: "telegram" }),
             }),
           );
-        const recipientOptions = await page
+        const defaultRecipientOptions = await page
           .locator("#cron-delivery-to-suggestions option")
           .evaluateAll((options) => options.map((option) => option.getAttribute("value")));
         const accountOptions = await page
           .locator("#cron-delivery-account-suggestions option")
           .evaluateAll((options) => options.map((option) => option.getAttribute("value")));
-        expect(recipientOptions).toContain("editor-target");
-        expect(recipientOptions).not.toContain("gmail-cleaner");
-        expect(recipientOptions).not.toContain("Gmail Cleaner");
+        expect(defaultRecipientOptions).toEqual(["Default room (-1000)"]);
+        expect(defaultRecipientOptions).not.toContain("gmail-cleaner");
+        expect(defaultRecipientOptions).not.toContain("Gmail Cleaner");
         expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);
+
+        await page.locator(".cron-advanced > summary").click();
+        await page.locator("#cron-delivery-account-id").fill("work");
+        await expect
+          .poll(async () =>
+            page
+              .locator("#cron-delivery-to-suggestions option")
+              .evaluateAll((options) => options.map((option) => option.getAttribute("value"))),
+          )
+          .toEqual(["General (-1001) [thread 11]", "Builds (-1001) [thread 22]"]);
+        await recipient.fill("Builds (-1001) [thread 22]");
+        await page.locator("#cron-name").fill("Topic delivery");
+        await page.locator("#cron-payload-text").fill("Send the topic digest");
+        await page.locator('[data-test-id="cron-submit"]').click();
+        const addRequest = await gateway.waitForRequest("cron.add");
+        expect(addRequest.params).toMatchObject({
+          delivery: {
+            mode: "announce",
+            channel: "telegram",
+            to: "-1001",
+            threadId: "22",
+            accountId: "work",
+          },
+        });
       },
     );
   });

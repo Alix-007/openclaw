@@ -1,3 +1,4 @@
+import type { ConversationListItem } from "@openclaw/gateway-protocol";
 // Control UI view renders the Automations (cron) screen: a full-width list (stats, task table,
 // starter ideas) and a full-page detail view for creating or editing a single automation.
 import { html, nothing } from "lit";
@@ -45,6 +46,7 @@ import { renderCronStats } from "./stats.ts";
 import { CRON_SUGGESTIONS, suggestionFormPatch } from "./suggestions.ts";
 import { renderRunsSection, runStatusLabel } from "./view-runs.ts";
 
+type CronSuggestion = string | ConversationListItem;
 type CronPanelMode = "overview" | "create" | "job";
 
 export type CronListTab = "tasks" | "activity";
@@ -95,7 +97,8 @@ type CronProps = {
   modelSuggestions: string[];
   thinkingSuggestions: string[];
   timezoneSuggestions: string[];
-  deliveryToSuggestions: string[];
+  deliveryToSuggestions: CronSuggestion[];
+  failureToSuggestions: CronSuggestion[];
   accountSuggestions: string[];
   onListTabChange: (tab: CronListTab) => void;
   onDetailTabChange: (tab: CronDetailTab) => void;
@@ -144,13 +147,29 @@ function resolveChannelLabel(props: CronProps, channel: string): string {
         (props.channelLabels?.[channel] ?? channel);
 }
 
-function renderSuggestionList(id: string, options: string[]) {
-  const clean = uniqueStrings(normalizeStringEntries(options));
-  return clean.length === 0
+function conversationOptionValue(entry: CronSuggestion): string {
+  if (typeof entry === "string") return entry;
+  const target = entry.target.trim();
+  const label = entry.label?.trim() || target;
+  const base = label === target ? target : `${label} (${target})`;
+  return entry.threadId ? `${base} [thread ${entry.threadId}]` : base;
+}
+
+function renderSuggestionList(id: string, options: CronSuggestion[]) {
+  const rendered = [
+    ...uniqueStrings(normalizeStringEntries(options.filter((value) => typeof value === "string"))),
+    ...options.filter((value): value is ConversationListItem => typeof value !== "string"),
+  ];
+  return rendered.length === 0
     ? nothing
     : html`<datalist id=${id}>
-        ${clean.map((value) => html`<option value=${value}></option> `)}
+        ${rendered.map((entry) => html`<option value=${conversationOptionValue(entry)}></option>`)}
       </datalist>`;
+}
+
+function findConversation(value: string, suggestions: CronSuggestion[]) {
+  const selected = suggestions.find((entry) => value === conversationOptionValue(entry));
+  return typeof selected === "string" ? undefined : selected;
 }
 
 // ── Validation summary helpers ──
@@ -301,6 +320,7 @@ type CronInputOptions = {
   mono?: boolean;
   errorKey?: CronFieldKey;
   describeError?: boolean;
+  onInput?: (value: string) => Partial<CronFormState>;
 };
 
 function renderCronInput(props: CronProps, field: CronStringFormField, options: CronInputOptions) {
@@ -321,8 +341,10 @@ function renderCronInput(props: CronProps, field: CronStringFormField, options: 
       aria-invalid=${ifDefined(options.errorKey ? (error ? "true" : "false") : undefined)}
       aria-describedby=${ifDefined(describedBy)}
       placeholder=${ifDefined(options.placeholder)}
-      @input=${(event: Event) =>
-        props.onFormChange({ [field]: (event.currentTarget as HTMLInputElement).value })}
+      @input=${(event: Event) => {
+        const value = (event.currentTarget as HTMLInputElement).value;
+        props.onFormChange(options.onInput?.(value) ?? { [field]: value });
+      }}
     />
   `;
 }
@@ -418,6 +440,7 @@ export function renderCron(props: CronProps) {
     ${renderSuggestionList("cron-thinking-suggestions", props.thinkingSuggestions)}
     ${renderSuggestionList("cron-tz-suggestions", props.timezoneSuggestions)}
     ${renderSuggestionList("cron-delivery-to-suggestions", props.deliveryToSuggestions)}
+    ${renderSuggestionList("cron-failure-alert-to-suggestions", props.failureToSuggestions)}
     ${renderSuggestionList("cron-delivery-account-suggestions", props.accountSuggestions)}
   `;
 }
@@ -1482,6 +1505,13 @@ function renderDeliverySection(
               help: t("cron.form.toHelp"),
               list: "cron-delivery-to-suggestions",
               placeholder: t("cron.form.toPlaceholder"),
+              onInput: (value) => {
+                const selected = findConversation(value, props.deliveryToSuggestions);
+                return {
+                  deliveryTo: selected?.target ?? value,
+                  deliveryThreadId: selected?.threadId,
+                };
+              },
             })}
           `
         : nothing}
@@ -1678,8 +1708,11 @@ function renderFailureAlertRows(props: CronProps, channelOptions: string[]) {
           ${renderCronInputField(props, "failureAlertTo", {
             label: t("cron.form.failureAlertTo"),
             help: t("cron.form.failureAlertToHelp"),
-            list: "cron-delivery-to-suggestions",
+            list: "cron-failure-alert-to-suggestions",
             placeholder: t("cron.form.failureAlertToPlaceholder"),
+            onInput: (value) => ({
+              failureAlertTo: findConversation(value, props.failureToSuggestions)?.target ?? value,
+            }),
           })}
           ${renderCronSelectField(props, "failureAlertDeliveryMode", {
             label: t("cron.form.failureAlertMode"),
