@@ -274,31 +274,45 @@ internal sealed interface AssistantMessageDisclosureState {
   ) : AssistantMessageDisclosureState
 }
 
-internal class ChatAssistantMessageDisclosureStore {
-  private val states = mutableStateMapOf<String, AssistantMessageDisclosureState>()
+internal data class ChatAssistantMessageDisclosureOwner(
+  val gatewayId: String?,
+  val connectionRevision: Long,
+  val sessionKey: String,
+  val agentId: String,
+)
 
-  fun state(messageId: String): AssistantMessageDisclosureState? = states[messageId]
+internal data class ChatAssistantMessageDisclosureKey(
+  val owner: ChatAssistantMessageDisclosureOwner,
+  val messageId: String,
+)
+
+internal class ChatAssistantMessageDisclosureStore {
+  private val states = mutableStateMapOf<ChatAssistantMessageDisclosureKey, AssistantMessageDisclosureState>()
+
+  fun state(key: ChatAssistantMessageDisclosureKey): AssistantMessageDisclosureState? = states[key]
+
+  fun clear() = states.clear()
 
   suspend fun toggle(
-    messageId: String,
+    key: ChatAssistantMessageDisclosureKey,
     load: suspend () -> ChatMessage?,
   ) {
-    when (val current = states[messageId]) {
+    when (val current = states[key]) {
       is AssistantMessageDisclosureState.Loaded -> {
-        states[messageId] = current.copy(expanded = !current.expanded)
+        states[key] = current.copy(expanded = !current.expanded)
         return
       }
       AssistantMessageDisclosureState.Loading -> return
       AssistantMessageDisclosureState.Error, null -> Unit
     }
 
-    states[messageId] = AssistantMessageDisclosureState.Loading
-    states[messageId] =
+    states[key] = AssistantMessageDisclosureState.Loading
+    states[key] =
       try {
         load()?.let { AssistantMessageDisclosureState.Loaded(it, expanded = true) }
           ?: AssistantMessageDisclosureState.Error
       } catch (err: CancellationException) {
-        states.remove(messageId)
+        states.remove(key)
         throw err
       } catch (_: Throwable) {
         AssistantMessageDisclosureState.Error
@@ -320,6 +334,7 @@ fun ChatScreen(
 ) {
   val messages by viewModel.chatMessages.collectAsState()
   val chatMessageGetAvailable by viewModel.chatMessageGetAvailable.collectAsState()
+  val chatMessageGetScopeRevision by viewModel.chatMessageGetScopeRevision.collectAsState()
   val transcriptAnchor by viewModel.chatTranscriptAnchor.collectAsState()
   val historyLoading by viewModel.chatHistoryLoading.collectAsState()
   val errorText by viewModel.chatError.collectAsState()
@@ -751,7 +766,10 @@ fun ChatScreen(
     }
 
     ChatMessageList(
+      gatewayId = activeGatewayStableId,
+      connectionRevision = chatMessageGetScopeRevision,
       sessionKey = sessionKey,
+      sessionAgentId = activeAgentId,
       session = activeSession,
       messages = messages,
       transcriptAnchor = transcriptAnchor,
@@ -1330,7 +1348,10 @@ private fun HeaderIcon(
 
 @Composable
 private fun ChatMessageList(
+  gatewayId: String?,
+  connectionRevision: Long,
   sessionKey: String,
+  sessionAgentId: String,
   session: ChatSessionEntry?,
   messages: List<ChatMessage>,
   transcriptAnchor: ChatTranscriptAnchorState?,
@@ -1410,8 +1431,21 @@ private fun ChatMessageList(
       timeline = timeline,
       historyLoading = historyLoading,
     )
-  val assistantDisclosureStore = remember(sessionKey) { ChatAssistantMessageDisclosureStore() }
+  val assistantDisclosureOwner =
+    remember(gatewayId, connectionRevision, sessionKey, sessionAgentId) {
+      ChatAssistantMessageDisclosureOwner(
+        gatewayId = gatewayId,
+        connectionRevision = connectionRevision,
+        sessionKey = sessionKey,
+        agentId = sessionAgentId,
+      )
+    }
+  val assistantDisclosureStore =
+    remember(assistantDisclosureOwner) { ChatAssistantMessageDisclosureStore() }
   val disclosureScope = rememberCoroutineScope()
+  DisposableEffect(assistantDisclosureStore) {
+    onDispose(assistantDisclosureStore::clear)
+  }
   DisposableEffect(sessionKey, turnRecapResolver) {
     onDispose { turnRecapResolver.abandonActiveWatch(sessionKey) }
   }
@@ -1435,6 +1469,10 @@ private fun ChatMessageList(
                 item.message,
                 supported = assistantMessageDisclosureSupported,
               )
+            val disclosureKey =
+              disclosureMessageId?.let {
+                ChatAssistantMessageDisclosureKey(assistantDisclosureOwner, it)
+              }
             ChatBubble(
               messageId = item.message.id,
               entryId = item.message.entryId,
@@ -1442,13 +1480,13 @@ private fun ChatMessageList(
               live = false,
               content = item.message.content,
               isTruncated = disclosureMessageId != null,
-              assistantDisclosureState = disclosureMessageId?.let(assistantDisclosureStore::state),
+              assistantDisclosureState = disclosureKey?.let(assistantDisclosureStore::state),
               onToggleAssistantDisclosure =
-                disclosureMessageId?.let { messageId ->
+                disclosureKey?.let { key ->
                   {
                     disclosureScope.launch {
-                      assistantDisclosureStore.toggle(messageId) {
-                        loadFullAssistantMessage(messageId)
+                      assistantDisclosureStore.toggle(key) {
+                        loadFullAssistantMessage(key.messageId)
                       }
                     }
                   }

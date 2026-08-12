@@ -190,6 +190,7 @@ class ChatScreenTest {
   fun assistantDisclosureCachesLoadedMessageAcrossCollapseAndReexpand() =
     runTest {
       val store = ChatAssistantMessageDisclosureStore()
+      val key = assistantDisclosureKey(messageId = "message-long")
       val fullMessage = assistantMessage("complete response")
       var loads = 0
       val load =
@@ -198,22 +199,22 @@ class ChatScreenTest {
           fullMessage
         }
 
-      store.toggle("message-long", load)
+      store.toggle(key, load)
       assertEquals(
         AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
-        store.state("message-long"),
+        store.state(key),
       )
-      store.toggle("message-long", load)
+      store.toggle(key, load)
       assertEquals(
         AssistantMessageDisclosureState.Loaded(fullMessage, expanded = false),
-        store.state("message-long"),
+        store.state(key),
       )
-      store.toggle("message-long", load)
+      store.toggle(key, load)
 
       assertEquals(1, loads)
       assertEquals(
         AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
-        store.state("message-long"),
+        store.state(key),
       )
     }
 
@@ -221,6 +222,7 @@ class ChatScreenTest {
   fun assistantDisclosureFailureRemainsRetryable() =
     runTest {
       val store = ChatAssistantMessageDisclosureStore()
+      val key = assistantDisclosureKey(messageId = "message-long")
       val fullMessage = assistantMessage("recovered response")
       var loads = 0
       val load =
@@ -230,15 +232,32 @@ class ChatScreenTest {
           fullMessage
         }
 
-      store.toggle("message-long", load)
-      assertEquals(AssistantMessageDisclosureState.Error, store.state("message-long"))
-      store.toggle("message-long", load)
+      store.toggle(key, load)
+      assertEquals(AssistantMessageDisclosureState.Error, store.state(key))
+      store.toggle(key, load)
 
       assertEquals(2, loads)
       assertEquals(
         AssistantMessageDisclosureState.Loaded(fullMessage, expanded = true),
-        store.state("message-long"),
+        store.state(key),
       )
+    }
+
+  @Test
+  fun assistantDisclosureDoesNotCrossGatewaySessionAgentOrReconnectScope() =
+    runTest {
+      val store = ChatAssistantMessageDisclosureStore()
+      val original = assistantDisclosureKey(messageId = "same-message")
+      store.toggle(original) { assistantMessage("gateway-a response") }
+
+      assertTrue(store.state(original) is AssistantMessageDisclosureState.Loaded)
+      assertNull(store.state(original.copy(owner = original.owner.copy(gatewayId = "gateway-b"))))
+      assertNull(store.state(original.copy(owner = original.owner.copy(sessionKey = "session-b"))))
+      assertNull(store.state(original.copy(owner = original.owner.copy(agentId = "agent-b"))))
+      assertNull(store.state(original.copy(owner = original.owner.copy(connectionRevision = 2L))))
+
+      store.clear()
+      assertNull(store.state(original))
     }
 
   @Test
@@ -264,5 +283,17 @@ class ChatScreenTest {
       content = listOf(ChatMessageContent(text = text)),
       timestampMs = null,
       entryId = "message-long",
+    )
+
+  private fun assistantDisclosureKey(messageId: String): ChatAssistantMessageDisclosureKey =
+    ChatAssistantMessageDisclosureKey(
+      owner =
+        ChatAssistantMessageDisclosureOwner(
+          gatewayId = "gateway-a",
+          connectionRevision = 1L,
+          sessionKey = "session-a",
+          agentId = "agent-a",
+        ),
+      messageId = messageId,
     )
 }

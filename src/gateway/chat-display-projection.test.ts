@@ -20,6 +20,31 @@ function projectHistoryTransports(message: Record<string, unknown>) {
   return [websocket, sse];
 }
 
+describe("chat display truncation metadata", () => {
+  it("records the truncation fact at the projection owner", () => {
+    const [stringMessage, blockMessage, completeMessage] = sanitizeChatHistoryMessages(
+      [
+        { role: "assistant", content: "abcdefghij", __openclaw: { id: "string" } },
+        {
+          role: "assistant",
+          content: [{ type: "text", text: "abcdefghij" }],
+          __openclaw: { id: "block" },
+        },
+        { role: "assistant", content: "short", __openclaw: { id: "complete" } },
+      ],
+      5,
+    ) as Array<Record<string, unknown>>;
+
+    expect(stringMessage).toMatchObject({ __openclaw: { id: "string", truncated: true } });
+    expect(blockMessage).toMatchObject({ __openclaw: { id: "block", truncated: true } });
+    expect(completeMessage).toEqual({
+      role: "assistant",
+      content: "short",
+      __openclaw: { id: "complete" },
+    });
+  });
+});
+
 describe("oversized multimodal chat history", () => {
   it("projects one mixed-media message through every history boundary", async () => {
     const inlineImage = Buffer.from("inline image").toString("base64");

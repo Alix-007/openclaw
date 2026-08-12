@@ -60,6 +60,7 @@ internal const val SESSION_LIST_FETCH_LIMIT = 200
 private val QUESTION_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
 private val SWARM_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
 private const val FULL_CHAT_MESSAGE_MAX_CHARS = 500_000
+private const val TRUNCATED_CHAT_HISTORY_SUFFIX = "\n...(truncated)..."
 private const val SUBAGENT_ACTIVITY_RETENTION_MS = 60_000L
 private const val SESSION_EDITOR_MAX_BASE64_CHARS = ((OUTBOX_MAX_COMMAND_ATTACHMENT_BYTES + 2) / 3) * 4
 private val MANAGED_MEDIA_PATH_REGEX =
@@ -1425,7 +1426,7 @@ class ChatController internal constructor(
         ?.get("message")
         .asObjectOrNull()
         ?.let(::parseVisibleChatMessage)
-        ?.takeIf { it.role == "assistant" }
+        ?.takeIf { it.role == "assistant" && !it.isTruncated }
     } catch (err: CancellationException) {
       throw err
     } catch (_: Throwable) {
@@ -6429,16 +6430,20 @@ class ChatController internal constructor(
   private fun parseVisibleChatMessage(obj: JsonObject): ChatMessage? {
     val role = normalizeVisibleChatMessageRole(obj["role"].asStringOrNull()) ?: return null
     val metadata = obj["__openclaw"].asObjectOrNull()
+    val content = parseChatMessageContents(obj)
     return ChatMessage(
       id = UUID.randomUUID().toString(),
       role = role,
-      content = parseChatMessageContents(obj),
+      content = content,
       timestampMs = obj["timestamp"].asLongOrNull(),
       idempotencyKey = obj["idempotencyKey"].asStringOrNull(),
       entryId = metadata?.get("id").asStringOrNull(),
       provenance = parseChatMessageProvenance(obj["provenance"]),
       transcriptMarker = parseChatTranscriptMarker(metadata),
-      isTruncated = metadata?.get("truncated").asBooleanOrNull() == true,
+      isTruncated =
+        metadata?.get("truncated").asBooleanOrNull() == true ||
+          // Released gateways used this display suffix before publishing the metadata fact.
+          (role == "assistant" && content.any { it.text?.contains(TRUNCATED_CHAT_HISTORY_SUFFIX) == true }),
     )
   }
 

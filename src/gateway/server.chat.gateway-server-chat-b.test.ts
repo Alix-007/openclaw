@@ -5605,12 +5605,35 @@ describe("gateway server chat", () => {
 
       const historyMessages = await fetchHistoryMessages(ws, { maxChars: 5 });
       expect(JSON.stringify(historyMessages)).toContain("abcde\\n...(truncated)...");
+      expect(historyMessages[0]).toMatchObject({
+        __openclaw: { id: "msg-full-assistant", truncated: true },
+      });
 
       const full = await fetchChatMessage(ws, makeMainMessageParams("msg-full-assistant"));
       expect(full.ok).toBe(true);
       expect(full.unavailableReason).toBeUndefined();
       expect(JSON.stringify(full.message)).toContain("abcdefghij");
       expect(JSON.stringify(full.message)).not.toContain("...(truncated)...");
+    });
+  });
+
+  test("chat.message.get preserves a still-truncated projection state", async () => {
+    await withGatewayChatHarness(async ({ ws, createSessionDir }) => {
+      await prepareMainHistoryHarness({ ws, createSessionDir });
+      await writeMainSessionTranscript([
+        createTextTranscriptEvent("assistant", "abcdefghij", { id: "msg-still-truncated" }),
+      ]);
+
+      const bounded = await fetchChatMessage(ws, {
+        ...makeMainMessageParams("msg-still-truncated"),
+        maxChars: 5,
+      });
+
+      expect(bounded.ok).toBe(true);
+      expect(bounded.message).toMatchObject({
+        content: [{ type: "text", text: "abcde\n...(truncated)..." }],
+        __openclaw: { id: "msg-still-truncated", truncated: true },
+      });
     });
   });
 

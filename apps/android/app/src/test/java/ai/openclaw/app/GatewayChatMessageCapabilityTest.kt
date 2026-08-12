@@ -23,16 +23,22 @@ class GatewayChatMessageCapabilityTest {
       )
     val runtime = NodeRuntime(app, SecurePrefs(app, securePrefsOverride = securePrefs))
     val capability = runtime.chatMessageGetAvailable
+    val scopeRevision = runtime.chatMessageGetScopeRevision
 
     assertFalse(capability.value)
+    assertTrue(scopeRevision.value == 0L)
     replaceMethods(runtime, setOf("chat.history"))
     assertFalse(capability.value)
+    assertTrue(scopeRevision.value == 1L)
     replaceMethods(runtime, setOf(GatewayMethod.ChatMessageGet.rawValue))
     assertTrue(capability.value)
+    assertTrue(scopeRevision.value == 2L)
     clearOperatorGatewayState(runtime)
     assertFalse(capability.value)
+    assertTrue(scopeRevision.value == 3L)
     replaceMethods(runtime, setOf(GatewayMethod.ChatMessageGet.rawValue))
     assertTrue(capability.value)
+    assertTrue(scopeRevision.value == 4L)
   }
 
   private fun replaceMethods(

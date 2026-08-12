@@ -1254,6 +1254,8 @@ class NodeRuntime private constructor(
   val clawHubSkillMethodsAvailable: StateFlow<Boolean> = _clawHubSkillMethodsAvailable.asStateFlow()
   private val _chatMessageGetAvailable = MutableStateFlow(false)
   val chatMessageGetAvailable: StateFlow<Boolean> = _chatMessageGetAvailable.asStateFlow()
+  private val _chatMessageGetScopeRevision = MutableStateFlow(0L)
+  val chatMessageGetScopeRevision: StateFlow<Long> = _chatMessageGetScopeRevision.asStateFlow()
   private val systemAgentChatSupported = MutableStateFlow<Boolean?>(null)
   private val _skillMutationKeys = MutableStateFlow<Set<String>>(emptySet())
   val skillMutationKeys: StateFlow<Set<String>> = _skillMutationKeys.asStateFlow()
@@ -1313,8 +1315,8 @@ class NodeRuntime private constructor(
   private val resolvedExecApprovalIds = Collections.newSetFromMap(ConcurrentHashMap<String, Boolean>())
   private val pendingExecApprovalWrites = mutableMapOf<String, PendingExecApprovalWrite>()
 
-  // Each hello pins one approval RPC family. The epoch prevents an old socket's
-  // response from publishing into a replacement socket on the same stable endpoint.
+  // Each hello pins negotiated methods. The epoch prevents state from an old socket
+  // from crossing a reconnect to the same stable endpoint.
   private val gatewayMethodsLock = Any()
   private var gatewayApprovalRpcFamily = GatewayApprovalRpcFamily.Unavailable
   private var gatewayMethodsEpoch = 0L
@@ -7531,6 +7533,7 @@ class NodeRuntime private constructor(
       _chatMessageGetAvailable.value = GatewayMethod.ChatMessageGet.rawValue in methods
       systemAgentChatSupported.value = GatewayMethod.OpenclawChat.rawValue in methods
       gatewayMethodsEpoch += 1
+      _chatMessageGetScopeRevision.value = gatewayMethodsEpoch
     }
   }
 

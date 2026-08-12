@@ -139,12 +139,13 @@ function projectChatHistoryMediaFacts(value: unknown): unknown[] | undefined {
 export function sanitizeChatHistoryContentBlock(
   block: unknown,
   opts?: { preserveExactToolPayload?: boolean; maxChars?: number },
-): { block: unknown; changed: boolean } {
+): { block: unknown; changed: boolean; truncated: boolean } {
   if (!block || typeof block !== "object") {
-    return { block, changed: false };
+    return { block, changed: false, truncated: false };
   }
   const entry = { ...(block as Record<string, unknown>) };
   let changed = false;
+  let truncated = false;
   const preserveExactToolPayload =
     opts?.preserveExactToolPayload === true || isToolHistoryBlockType(entry.type);
   const maxChars = opts?.maxChars ?? DEFAULT_CHAT_HISTORY_TEXT_MAX_CHARS;
@@ -166,6 +167,7 @@ export function sanitizeChatHistoryContentBlock(
       const res = truncateChatHistoryText(stripped.text, maxChars);
       entry.text = res.text;
       changed ||= stripped.changed || res.truncated;
+      truncated ||= res.truncated;
     }
   }
   if (typeof entry.content === "string") {
@@ -177,22 +179,26 @@ export function sanitizeChatHistoryContentBlock(
       const res = truncateChatHistoryText(stripped.text, maxChars);
       entry.content = res.text;
       changed ||= stripped.changed || res.truncated;
+      truncated ||= res.truncated;
     }
   }
   if (typeof entry.partialJson === "string" && !preserveExactToolPayload) {
     const res = truncateChatHistoryText(entry.partialJson, maxChars);
     entry.partialJson = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if (typeof entry.arguments === "string" && !preserveExactToolPayload) {
     const res = truncateChatHistoryText(entry.arguments, maxChars);
     entry.arguments = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if (typeof entry.thinking === "string") {
     const res = truncateChatHistoryText(entry.thinking, maxChars);
     entry.thinking = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if ("thinkingSignature" in entry) {
     delete entry.thinkingSignature;
@@ -204,7 +210,7 @@ export function sanitizeChatHistoryContentBlock(
   }
   const mediaChanged = projectChatHistoryMediaBlock(entry);
   changed ||= mediaChanged;
-  return { block: changed ? entry : block, changed };
+  return { block: changed ? entry : block, changed, truncated };
 }
 
 function sanitizeAssistantPhasedContentBlocks(content: unknown[]): {
@@ -240,7 +246,7 @@ function sanitizeAssistantPhasedContentBlocks(content: unknown[]): {
 function projectAssistantMixedToolContent(
   content: unknown[],
   maxChars: number,
-): { content: unknown[]; changed: boolean } | null {
+): { content: unknown[]; changed: boolean; truncated: boolean } | null {
   const hasToolHistoryBlock = content.some((block) => {
     if (!block || typeof block !== "object") {
       return false;
@@ -252,6 +258,7 @@ function projectAssistantMixedToolContent(
   }
 
   let hasVisibleText = false;
+  let wasTruncated = false;
   const projectedContent: unknown[] = [];
   for (const block of content) {
     if (!block || typeof block !== "object") {
@@ -267,6 +274,7 @@ function projectAssistantMixedToolContent(
     }
     const stripped = stripInlineDirectiveTagsForDisplay(entry.text);
     const truncated = truncateChatHistoryText(stripped.text, maxChars);
+    wasTruncated ||= truncated.truncated;
     if (truncated.text.trim()) {
       projectedContent.push({ type: "text", text: truncated.text });
       hasVisibleText = true;
@@ -275,7 +283,9 @@ function projectAssistantMixedToolContent(
 
   // Mixed messages supply both the visible bubble and its reasoning/tool trace.
   // Keep structured siblings or a history reload loses activity shown while live.
-  return hasVisibleText ? { content: projectedContent, changed: true } : null;
+  return hasVisibleText
+    ? { content: projectedContent, changed: true, truncated: wasTruncated }
+    : null;
 }
 
 function toFiniteNumber(x: unknown): number | undefined {
@@ -382,6 +392,7 @@ export function sanitizeChatHistoryMessage(
   }
   const entry = { ...(message as Record<string, unknown>) };
   let changed = false;
+  let truncated = false;
   if ("providerReplay" in entry) {
     delete entry.providerReplay;
     changed = true;
@@ -476,6 +487,7 @@ export function sanitizeChatHistoryMessage(
       const res = truncateChatHistoryText(controlStripped, maxChars);
       entry.content = res.text;
       changed ||= stripped.changed || res.truncated;
+      truncated ||= res.truncated;
     }
   } else if (Array.isArray(entry.content)) {
     const updated = entry.content.map((block) => {
@@ -498,8 +510,9 @@ export function sanitizeChatHistoryMessage(
       const text = stripSuppressedControlReplyToken(contentBlock.text);
       return text === contentBlock.text
         ? sanitized
-        : { block: { ...contentBlock, text }, changed: true };
+        : { block: { ...contentBlock, text }, changed: true, truncated: sanitized.truncated };
     });
+    truncated ||= updated.some((item) => item.truncated);
     if (updated.some((item) => item.changed)) {
       entry.content = updated.map((item) => item.block);
       changed = true;
@@ -508,6 +521,7 @@ export function sanitizeChatHistoryMessage(
       const mixedToolContent = projectAssistantMixedToolContent(entry.content, maxChars);
       if (mixedToolContent) {
         entry.content = mixedToolContent.content;
+        truncated ||= mixedToolContent.truncated;
         if (entry.phase === "commentary") {
           delete entry.phase;
         }
@@ -535,7 +549,14 @@ export function sanitizeChatHistoryMessage(
       const res = truncateChatHistoryText(controlStripped, maxChars);
       entry.text = res.text;
       changed ||= stripped.changed || res.truncated;
+      truncated ||= res.truncated;
     }
+  }
+
+  if (truncated) {
+    // Truncation is decided here, so downstream clients must not infer it from display text.
+    entry["__openclaw"] = { ...readRecord(entry["__openclaw"]), truncated: true };
+    changed = true;
   }
 
   return { message: changed ? entry : message, changed };

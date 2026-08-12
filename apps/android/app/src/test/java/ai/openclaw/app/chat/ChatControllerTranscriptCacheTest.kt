@@ -1236,7 +1236,7 @@ class ChatControllerTranscriptCacheTest {
                 "messages": [{
                   "role": "assistant",
                   "content": "preview\n...(truncated)...",
-                  "__openclaw": {"id": "message-long", "truncated": true}
+                  "__openclaw": {"id": "message-long"}
                 }]
               }
               """.trimIndent()
@@ -1268,6 +1268,44 @@ class ChatControllerTranscriptCacheTest {
       assertTrue(params.contains("\"agentId\":\"work\""))
       assertTrue(params.contains("\"messageId\":\"message-long\""))
       assertTrue(params.contains("\"maxChars\":500000"))
+    }
+
+  @Test
+  fun stillTruncatedFullMessageRemainsRetryable() =
+    runTest {
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "preview\n...(truncated)...",
+                  "__openclaw": {"id": "message-long", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            "chat.message.get" ->
+              """
+              {
+                "ok": true,
+                "message": {
+                  "role": "assistant",
+                  "content": "bounded full response\n...(truncated)...",
+                  "__openclaw": {"id": "message-long", "truncated": true}
+                }
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      assertNull(controller.loadFullAssistantMessage("message-long"))
     }
 
   @Test
