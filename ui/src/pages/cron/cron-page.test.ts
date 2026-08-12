@@ -883,6 +883,7 @@ describe("CronPage lifecycle", () => {
       jobs: number;
       nextWakeAtMs: number;
     }>();
+    const confirmationRefreshJobs = createDeferred<CronJobsListResult>();
     const job: CronJob = {
       id: "job-1",
       name: "Nightly digest",
@@ -918,6 +919,9 @@ describe("CronPage lifecycle", () => {
         return Promise.resolve({ ...cronListResponse([]), total: overviewValue() });
       }
       if (method === "cron.list") {
+        if (phase === "confirmation-refresh") {
+          return confirmationRefreshJobs.promise;
+        }
         return Promise.resolve(cronListResponse(removed ? [] : [job]));
       }
       if (method === "cron.runs") {
@@ -944,12 +948,29 @@ describe("CronPage lifecycle", () => {
     await waitForCronPage(() => expect(showConfirmDialog).toHaveBeenCalledOnce());
 
     phase = "confirmation-refresh";
-    await page.refreshCron({ tableFilters: true });
-    expect(page.cron.cronStatus?.jobs).toBe(2);
-    expect(page.cron.cronFailingCount).toBe(2);
+    const confirmationRefresh = page.refreshCron({ tableFilters: true });
+    await waitForCronPage(() => {
+      expect(page.cron.cronStatus?.jobs).toBe(2);
+      expect(page.cron.cronFailingCount).toBe(2);
+    });
 
     confirmation.resolve(true);
+    await waitForCronPage(() => expect(removed).toBe(true));
+    confirmationRefreshJobs.resolve(cronListResponse([job]));
+    await confirmationRefresh;
     await waitForCronPage(() => expect(staleRemovalStatusRequests).toBe(1));
+
+    await waitForCronPage(() => {
+      expect(page.cron.cronJobs).toEqual([]);
+      expect(page.querySelector('[data-test-id="cron-row-job-1"]')).toBeNull();
+      expect(page.cron.cronStatus?.jobs).toBe(2);
+      expect(page.cron.cronFailingCount).toBe(2);
+    });
+
+    const mutationMethods = request.mock.calls
+      .map(([method]) => method)
+      .slice(request.mock.calls.findIndex(([method]) => method === "cron.remove"));
+    expect(mutationMethods.slice(0, 3)).toEqual(["cron.remove", "cron.list", "cron.status"]);
 
     staleRemovalStatus.resolve({ enabled: true, jobs: 99, nextWakeAtMs: 99_000 });
     await waitForCronPage(() => expect(page.cron.cronBusy).toBe(false));

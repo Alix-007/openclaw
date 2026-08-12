@@ -12,6 +12,7 @@ import { t } from "../../i18n/index.ts";
 import { watchAgentScope } from "../../lib/agents/index.ts";
 import {
   addCronJob,
+  cancelPendingCronJobsReload,
   cancelCronEdit,
   createInitialCronState,
   getVisibleCronJobs,
@@ -120,12 +121,14 @@ class CronPage extends OpenClawLightDomElement {
 
   override disconnectedCallback() {
     this.cronOverviewGeneration += 1;
+    cancelPendingCronJobsReload(this.cron);
     this.subscriptions.clear();
     super.disconnectedCallback();
   }
 
   private resetGatewayState(snapshot?: ApplicationContext["gateway"]["snapshot"]) {
     this.cronOverviewGeneration += 1;
+    cancelPendingCronJobsReload(this.cron);
     const connected = snapshot?.phase === "connected";
     this.cron = createInitialCronState({
       client: snapshot?.client ?? null,
@@ -335,12 +338,17 @@ class CronPage extends OpenClawLightDomElement {
       return;
     }
     await this.runCronTask(async (current) => {
-      await removeCronJob(current, currentJob, () => {
-        // A refresh while confirmation or removal is pending already owns the header.
-        return this.cronOverviewGeneration === overviewGeneration
-          ? this.claimCronOverview(cronState)
-          : () => false;
-      });
+      await removeCronJob(
+        current,
+        currentJob,
+        () => {
+          // A refresh while confirmation or removal is pending already owns the header.
+          return this.cronOverviewGeneration === overviewGeneration
+            ? this.claimCronOverview(cronState)
+            : () => false;
+        },
+        () => this.requestCronUpdate(current),
+      );
       // Removing the selected task drops the panel back to overview;
       // the runs scope must follow or recent activity stays empty.
       if (current.cronRunsScope === "job" && current.cronRunsJobId === null) {
@@ -364,7 +372,11 @@ class CronPage extends OpenClawLightDomElement {
   private submitForm(options: { runNow?: boolean } = {}) {
     this.runCronAdminTask(async (cronState) => {
       const editingJobId = cronState.cronEditingJobId;
-      const result = await addCronJob(cronState, () => this.claimCronOverview(cronState));
+      const result = await addCronJob(
+        cronState,
+        () => this.claimCronOverview(cronState),
+        () => this.requestCronUpdate(cronState),
+      );
       if (!result.saved) {
         return;
       }
@@ -479,8 +491,12 @@ class CronPage extends OpenClawLightDomElement {
           onClone: (job) => this.cloneJob(job),
           onToggle: (job, enabled) =>
             this.runCronAdminTask(async (cronState) => {
-              const updated = await toggleCronJob(cronState, job, enabled, () =>
-                this.claimCronOverview(cronState),
+              const updated = await toggleCronJob(
+                cronState,
+                job,
+                enabled,
+                () => this.claimCronOverview(cronState),
+                () => this.requestCronUpdate(cronState),
               );
               // Header pause/resume must not be undone by a later Save: the
               // editor form still carries the pre-toggle enabled value. Sync

@@ -278,6 +278,22 @@ export function createInitialCronState(
   };
 }
 
+type PendingCronJobsReload = {
+  promise: Promise<void>;
+  resolve: () => void;
+  reject: (reason: unknown) => void;
+};
+
+const pendingCronJobsReloads = new WeakMap<CronState, PendingCronJobsReload>();
+
+export function cancelPendingCronJobsReload(state: CronState) {
+  state.cronJobsReloadPending = false;
+  state.cronJobsReloadPendingTableFilters = false;
+  const pending = pendingCronJobsReloads.get(state);
+  pendingCronJobsReloads.delete(state);
+  pending?.resolve();
+}
+
 function supportsAnnounceDelivery(
   form: Pick<CronFormState, "sessionTarget" | "payloadKind" | "payloadLocked">,
 ) {
@@ -589,11 +605,21 @@ function assertCanonicalCronJobsCursor(page: CanonicalCronJobsPage, requestedOff
 }
 
 function queueCronJobsSnapshotRecovery(state: CronState, tableFilters: boolean) {
-  if (state.cronJobsReloadPending) {
-    return;
+  let pending = pendingCronJobsReloads.get(state);
+  if (!pending) {
+    let resolve!: () => void;
+    let reject!: (reason: unknown) => void;
+    const promise = new Promise<void>((onResolve, onReject) => {
+      resolve = onResolve;
+      reject = onReject;
+    });
+    void promise.catch(() => undefined);
+    pending = { promise, resolve, reject };
+    pendingCronJobsReloads.set(state, pending);
   }
   state.cronJobsReloadPending = true;
   state.cronJobsReloadPendingTableFilters = tableFilters;
+  return pending.promise;
 }
 
 async function drainPendingCronJobsReload(state: CronState) {
@@ -603,7 +629,18 @@ async function drainPendingCronJobsReload(state: CronState) {
   const tableFilters = state.cronJobsReloadPendingTableFilters;
   state.cronJobsReloadPending = false;
   state.cronJobsReloadPendingTableFilters = false;
-  await loadCronJobsPage(state, { tableFilters });
+  const pending = pendingCronJobsReloads.get(state);
+  try {
+    await loadCronJobsPage(state, { tableFilters });
+    pending?.resolve();
+  } catch (error) {
+    pending?.reject(error);
+    throw error;
+  } finally {
+    if (pendingCronJobsReloads.get(state) === pending) {
+      pendingCronJobsReloads.delete(state);
+    }
+  }
 }
 
 export async function loadCronJobsPage(
@@ -616,8 +653,7 @@ export async function loadCronJobsPage(
   const append = opts?.append === true;
   if (state.cronLoading || state.cronJobsLoadingMore) {
     if (!append) {
-      state.cronJobsReloadPending = true;
-      state.cronJobsReloadPendingTableFilters = opts?.tableFilters === true;
+      await queueCronJobsSnapshotRecovery(state, opts?.tableFilters === true);
     }
     return;
   }
@@ -1068,8 +1104,10 @@ function buildFailureAlert(form: CronFormState, existing?: CronJob["failureAlert
 
 type CronSaveResult = { saved: false } | { saved: true; jobId: string | null };
 type ClaimCronOverview = () => () => boolean;
+type NotifyCronJobsSettled = () => void;
 
 const claimCronOverviewUnconditionally: ClaimCronOverview = () => () => true;
+const noopCronJobsSettled: NotifyCronJobsSettled = () => undefined;
 
 // cron.add responds with either { created, job } or the bare job read view.
 function extractSavedCronJobId(response: unknown): string | null {
@@ -1087,6 +1125,7 @@ function extractSavedCronJobId(response: unknown): string | null {
 export async function addCronJob(
   state: CronState,
   claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
+  notifyCronJobsSettled: NotifyCronJobsSettled = noopCronJobsSettled,
 ): Promise<CronSaveResult> {
   let result: CronSaveResult = { saved: false };
   await withCronBusy(state, async (client) => {
@@ -1215,16 +1254,23 @@ export async function addCronJob(
       resetCronFormToDefaults(state);
       result = { saved: true, jobId: extractSavedCronJobId(response) };
     }
-    await reloadCronJobsSnapshot(state, claimOverview);
+    await reloadCronJobsSnapshot(state, claimOverview, notifyCronJobsSettled);
   });
   return result;
 }
 
 // Claim once before the mutation snapshot starts so a later page refresh
 // invalidates every overview writer from this request round together.
-async function reloadCronJobsSnapshot(state: CronState, claimOverview: ClaimCronOverview) {
+async function reloadCronJobsSnapshot(
+  state: CronState,
+  claimOverview: ClaimCronOverview,
+  notifyCronJobsSettled: NotifyCronJobsSettled,
+) {
   const isCurrent = claimOverview();
   await loadCronJobsPage(state, { tableFilters: true });
+  // A successful mutation must render its settled inventory before slower
+  // overview requests can delay the task's final page update.
+  notifyCronJobsSettled();
   await loadCronStatus(state, isCurrent);
   await loadCronFailingCount(state, isCurrent);
   await loadCronScopeStats(state, isCurrent);
@@ -1235,6 +1281,7 @@ export async function toggleCronJob(
   job: CronJob,
   enabled: boolean,
   claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
+  notifyCronJobsSettled: NotifyCronJobsSettled = noopCronJobsSettled,
 ): Promise<boolean> {
   // Report whether the update RPC itself succeeded; the follow-up list reload
   // can be queued or fail without invalidating the confirmed toggle.
@@ -1242,7 +1289,7 @@ export async function toggleCronJob(
   await withCronBusy(state, async (client) => {
     await client.request("cron.update", { id: job.id, patch: { enabled } });
     updated = true;
-    await reloadCronJobsSnapshot(state, claimOverview);
+    await reloadCronJobsSnapshot(state, claimOverview, notifyCronJobsSettled);
   });
   return updated;
 }
@@ -1286,6 +1333,7 @@ export async function removeCronJob(
   state: CronState,
   job: CronJob,
   claimOverview: ClaimCronOverview = claimCronOverviewUnconditionally,
+  notifyCronJobsSettled: NotifyCronJobsSettled = noopCronJobsSettled,
 ) {
   await withCronBusy(state, async (client) => {
     await client.request("cron.remove", { id: job.id });
@@ -1296,7 +1344,7 @@ export async function removeCronJob(
       state.cronRunsJobId = null;
       clearCronRunsPage(state);
     }
-    await reloadCronJobsSnapshot(state, claimOverview);
+    await reloadCronJobsSnapshot(state, claimOverview, notifyCronJobsSettled);
   });
 }
 

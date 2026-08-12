@@ -11,6 +11,7 @@ import type { CronJob, CronJobsListResult, CronRunsResult } from "../../api/type
 import { parseCronEveryMs } from "../../lib/cron/decimal.ts";
 import {
   addCronJob,
+  cancelPendingCronJobsReload,
   cancelCronEdit,
   createInitialCronState,
   loadCronFailingCount,
@@ -1643,9 +1644,9 @@ describe("cron controller", () => {
       cronJobsScheduleKindFilter: "cron",
       cronJobsLastStatusFilter: "unknown",
     });
-    await loadCronJobsPage(state, { tableFilters: true });
+    const pendingLoad = loadCronJobsPage(state, { tableFilters: true });
     first.resolve(emptyCronListResponse());
-    await firstLoad;
+    await Promise.all([firstLoad, pendingLoad]);
 
     expectRecordFields(requireRecord(payloads[1], "pending cron.list payload"), {
       scheduleKind: "cron",
@@ -1678,7 +1679,7 @@ describe("cron controller", () => {
       cronJobsScheduleKindFilter: "cron",
       cronJobsLastStatusFilter: "unknown",
     });
-    await loadCronJobsPage(state, { tableFilters: true });
+    const pendingLoad = loadCronJobsPage(state, { tableFilters: true });
     first.resolve(
       emptyCronListResponse({
         snapshotRevision: "revision-b",
@@ -1686,7 +1687,7 @@ describe("cron controller", () => {
         offset: 1,
       }),
     );
-    await appendLoad;
+    await Promise.all([appendLoad, pendingLoad]);
 
     expectRecordFields(requireRecord(payloads[0], "append cron.list payload"), {
       offset: 1,
@@ -1709,10 +1710,10 @@ describe("cron controller", () => {
     });
 
     const firstLoad = loadCronJobsPage(state);
-    await loadCronJobsPage(state, { tableFilters: true });
-    await loadCronJobsPage(state);
+    const tableFilteredLoad = loadCronJobsPage(state, { tableFilters: true });
+    const sharedLoad = loadCronJobsPage(state);
     first.resolve(emptyCronListResponse());
-    await firstLoad;
+    await Promise.all([firstLoad, tableFilteredLoad, sharedLoad]);
 
     const pendingPayload = requireRecord(payloads[1], "latest pending cron.list payload");
     expect(pendingPayload).not.toHaveProperty("scheduleKind");
@@ -1720,6 +1721,26 @@ describe("cron controller", () => {
     expect(request).toHaveBeenCalledTimes(2);
     expect(state.cronJobsReloadPending).toBe(false);
     expect(state.cronJobsReloadPendingTableFilters).toBe(false);
+  });
+
+  it("settles every coalesced jobs reload when its state owner is cancelled", async () => {
+    const { first, request, state } = createCronJobsReloadHarness();
+    const firstLoad = loadCronJobsPage(state);
+    const pendingLoads = [
+      loadCronJobsPage(state, { tableFilters: true }),
+      loadCronJobsPage(state, { tableFilters: true }),
+    ];
+
+    cancelPendingCronJobsReload(state);
+    await Promise.all(pendingLoads);
+
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(state.cronJobsReloadPending).toBe(false);
+    expect(state.cronJobsReloadPendingTableFilters).toBe(false);
+
+    first.resolve(emptyCronListResponse());
+    await firstLoad;
+    expect(request).toHaveBeenCalledTimes(1);
   });
 
   it("drops malformed cron jobs before they enter UI state", async () => {

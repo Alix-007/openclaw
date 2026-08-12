@@ -30,6 +30,7 @@ import {
 import { DEFAULT_AGENT_PANEL, type AgentsPanel } from "../../lib/agents/panels.ts";
 import { currentConfigObject } from "../../lib/config/config-state-model.ts";
 import {
+  cancelPendingCronJobsReload,
   createInitialCronState,
   loadCronJobsPage,
   loadCronScopeStats,
@@ -275,6 +276,7 @@ class AgentsPage
   }
 
   override disconnectedCallback() {
+    cancelPendingCronJobsReload(this.cron);
     this.subscriptions.clear();
     super.disconnectedCallback();
   }
@@ -359,6 +361,7 @@ class AgentsPage
 
   private invalidateTransientRequests() {
     this.gateway.invalidate();
+    cancelPendingCronJobsReload(this.cron);
     this.agentFilesLoading = false;
     this.agentFileSaving = false;
     this.agentIdentityLoading = false;
@@ -532,6 +535,7 @@ class AgentsPage
     }
     if (this.agentsPanel === "cron") {
       if (this.cron.cronAgentId !== agentId) {
+        cancelPendingCronJobsReload(this.cron);
         this.cron = createInitialCronState({
           client: this.client,
           connected: this.connected,
@@ -703,6 +707,7 @@ class AgentsPage
 
   private resetSelectionState() {
     this.gateway.invalidate();
+    cancelPendingCronJobsReload(this.cron);
     this.chatModelCatalog = [];
     this.chatModelCatalogAgentId = null;
     this.chatModelCatalogError = null;
