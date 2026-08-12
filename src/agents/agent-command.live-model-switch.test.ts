@@ -4657,6 +4657,9 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     expect(persistApproved).toHaveBeenCalledTimes(1);
     expect(state.acpRunTurnMock).not.toHaveBeenCalled();
     expect(state.persistAcpTurnTranscriptMock).not.toHaveBeenCalled();
+    expect(state.emitAcpLifecycleEndMock).toHaveBeenCalledWith(
+      expect.objectContaining({ stopReason: "superseded" }),
+    );
     expect(state.buildAcpResultMock).toHaveBeenCalledWith(
       expect.objectContaining({ payloadText: "", stopReason: "superseded" }),
     );

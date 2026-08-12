@@ -54,3 +54,24 @@ describe("normalizeGatewayEvent terminal tool item status", () => {
     );
   });
 });
+
+describe("normalizeGatewayEvent lifecycle termination", () => {
+  it("classifies a superseded lifecycle end as run.cancelled", () => {
+    const event = normalizeGatewayEvent({
+      event: "agent",
+      payload: {
+        runId: "r1",
+        stream: "lifecycle",
+        data: {
+          phase: "end",
+          aborted: true,
+          providerStarted: true,
+          status: "superseded",
+          stopReason: "superseded",
+        },
+      },
+    });
+
+    expect(event.type).toBe("run.cancelled");
+  });
+});

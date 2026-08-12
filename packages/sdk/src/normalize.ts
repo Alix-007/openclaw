@@ -26,10 +26,12 @@ function isLifecycleCancellation(data: JsonObject): boolean {
     status === "cancelled" ||
     status === "canceled" ||
     status === "killed" ||
+    status === "superseded" ||
     stopReason === "aborted" ||
     stopReason === "cancelled" ||
     stopReason === "canceled" ||
     stopReason === "killed" ||
+    stopReason === "superseded" ||
     stopReason === "auth-revoked" ||
     stopReason === "restart" ||
     stopReason === "rpc" ||
@@ -41,6 +43,11 @@ function isLifecycleCancellation(data: JsonObject): boolean {
 function normalizeLifecycleEndEventType(data: JsonObject): OpenClawEventType {
   const status = readLowerString(data.status);
   const stopReason = readLowerString(data.stopReason);
+  // Supersession is a sticky cancellation even when stale provider or abort
+  // metadata would otherwise satisfy the hard-timeout shortcut below.
+  if (status === "superseded" || stopReason === "superseded") {
+    return "run.cancelled";
+  }
   const statusAlreadyTimeoutAttributed =
     stopReason !== "restart" &&
     (status === "timeout" || status === "timed_out" || data.aborted === true);

@@ -86,7 +86,10 @@ import { resolveCliRuntimeExecutionProvider } from "../model-runtime-aliases.js"
 import { isCliProvider } from "../model-selection.js";
 import { resolveOpenAIRuntimeProvider } from "../openai-routing.js";
 import { hasVerifiedRequesterCompletionHandoff } from "../requester-tool-policy.js";
-import { resolveAgentRunAbortLifecycleFields } from "../run-termination.js";
+import {
+  AGENT_RUN_SUPERSEDED_STOP_REASON,
+  resolveAgentRunAbortLifecycleFields,
+} from "../run-termination.js";
 import { buildAgentRuntimeAuthPlan } from "../runtime-plan/auth.js";
 import type { AgentMessage } from "../runtime/index.js";
 import { resolveSandboxRuntimeStatus } from "../sandbox/runtime-status.js";
@@ -1273,12 +1276,15 @@ export function buildAcpResult(params: {
   const payloads = normalizedFinalPayload ? [normalizedFinalPayload] : [];
   const abortFields = resolveAgentRunAbortLifecycleFields(params.abortSignal);
   const resultCancelled = params.resultStatus === "cancelled";
+  const resultSuperseded = params.stopReason === AGENT_RUN_SUPERSEDED_STOP_REASON;
   return {
     payloads,
     meta: {
       durationMs: Date.now() - params.startedAt,
-      aborted: abortFields.aborted ?? resultCancelled,
-      stopReason: abortFields.stopReason ?? (resultCancelled ? "stop" : params.stopReason),
+      aborted: abortFields.aborted ?? (resultCancelled || resultSuperseded),
+      stopReason: resultSuperseded
+        ? AGENT_RUN_SUPERSEDED_STOP_REASON
+        : (abortFields.stopReason ?? (resultCancelled ? "stop" : params.stopReason)),
       ...(params.terminalReply ? { terminalReply: params.terminalReply } : {}),
     },
   };
@@ -1363,11 +1369,14 @@ function resolveAcpToolTerminalReason(
   error?: unknown,
   resultStatus?: Extract<AcpRuntimeEvent, { type: "done" }>["status"],
 ): "failed" | "cancelled" | "timed_out" {
+  const normalizedStopReason = normalizeOptionalLowercaseString(stopReason);
+  if (normalizedStopReason === AGENT_RUN_SUPERSEDED_STOP_REASON) {
+    return "cancelled";
+  }
   const abortFields = resolveAgentRunAbortLifecycleFields(signal);
   if (abortFields.aborted) {
     return abortFields.stopReason === "timeout" ? "timed_out" : "cancelled";
   }
-  const normalizedStopReason = normalizeOptionalLowercaseString(stopReason);
   if (normalizedStopReason === "timeout") {
     return "timed_out";
   }
@@ -1395,6 +1404,15 @@ function resolveAcpLifecycleEndFields(
   stopReason?: string,
   resultStatus?: Extract<AcpRuntimeEvent, { type: "done" }>["status"],
 ) {
+  if (normalizeOptionalLowercaseString(stopReason) === AGENT_RUN_SUPERSEDED_STOP_REASON) {
+    // Supersession is sticky: a concurrent generic abort must not erase the
+    // canonical owner outcome observed by lifecycle consumers.
+    return {
+      aborted: true,
+      status: AGENT_RUN_SUPERSEDED_STOP_REASON,
+      stopReason: AGENT_RUN_SUPERSEDED_STOP_REASON,
+    } as const;
+  }
   const abortFields = resolveAgentRunAbortLifecycleFields(signal);
   if (abortFields.aborted) {
     return abortFields;

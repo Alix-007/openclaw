@@ -74,6 +74,36 @@ describe("ACP diagnostic events", () => {
     expect(result.meta).toMatchObject({ aborted: true, stopReason: "stop" });
   });
 
+  it("preserves superseded result metadata as aborted", () => {
+    const abortController = new AbortController();
+    abortController.abort();
+    const result = buildAcpResult({
+      payloadText: "",
+      startedAt: Date.now(),
+      stopReason: "superseded",
+      abortSignal: abortController.signal,
+    });
+
+    expect(result.meta).toMatchObject({ aborted: true, stopReason: "superseded" });
+  });
+
+  it("emits duplicate ACP admission as a superseded lifecycle outcome", () => {
+    const abortController = new AbortController();
+    abortController.abort();
+    emitAcpLifecycleEnd({
+      runId: "run-superseded",
+      abortSignal: abortController.signal,
+      stopReason: "superseded",
+    });
+
+    expect(captured.at(-1)?.data).toMatchObject({
+      phase: "end",
+      aborted: true,
+      status: "superseded",
+      stopReason: "superseded",
+    });
+  });
+
   it("emits prompt-submitted state with proxy env names but not values", () => {
     const previous = process.env.HTTPS_PROXY;
     process.env.HTTPS_PROXY = "http://proxy.example.invalid:8080";
