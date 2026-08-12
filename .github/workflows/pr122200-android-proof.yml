@@ -29,6 +29,14 @@ jobs:
       - name: Set up Android toolchain
         uses: ./.github/actions/setup-android-toolchain
 
+      - name: Set up repository toolchain
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "true"
+          use-actions-cache: "false"
+
       - name: Prove negotiated capability and disclosure states
         working-directory: apps/android
         shell: bash
