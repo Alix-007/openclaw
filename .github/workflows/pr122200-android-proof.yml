@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 60
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      PRODUCT_SHA: 4d7dce9382ef2f9db837d10f905f46d7f614a12b
+      PRODUCT_SHA: bbfdfdcdcc507267df04ecc38ffc51c435609150
       GATEWAY_VERSION: 2026.7.1-2
       GATEWAY_PORT: "18791"
       MOCK_PORT: "18881"
@@ -90,6 +90,10 @@ jobs:
               sed \
                 -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
                 -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
+                -E -e 's/("(token|publicKey|deviceId|nodeId|requestId)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
+                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token)=)[^[:space:]]+/\1[REDACTED]/g' \
+                -E -e 's/(Sending adb public key ).*/\1[REDACTED]/g' \
+                -E -e 's/(androidboot\.qemu\.adb\.pubkey=)[^[:space:]]+/\1[REDACTED]/g' \
                 "$source" >"$target"
             fi
           }
@@ -102,7 +106,8 @@ jobs:
               sed \
                 -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
                 -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
-                -E -e 's/("(token|publicKey)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
+                -E -e 's/("(token|publicKey|deviceId|nodeId|requestId)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
+                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token)=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/[[:xdigit:]]{8}-[[:xdigit:]-]{27,}/[ID]/g' \
                 -E -e 's/[[:xdigit:]]{16,}/[ID]/g' \
                 "$source" >>"$RUNNER_TEMP/pairing-orchestration-raw.log"
@@ -292,11 +297,17 @@ jobs:
             adb exec-out screencap -p >"$ARTIFACT_DIR/final-state.png" 2>/dev/null || true
             adb shell uiautomator dump /sdcard/final-window.xml >/dev/null 2>&1 || true
             adb exec-out cat /sdcard/final-window.xml >"$ARTIFACT_DIR/final-window.xml" 2>/dev/null || true
-            adb logcat -d >"$RUNNER_TEMP/logcat-raw.txt" 2>/dev/null || true
+            app_pid="$(adb shell pidof ai.openclaw.app 2>/dev/null | tr -d '\r' | awk '{ print $1 }')"
+            if [[ -n "$app_pid" ]]; then
+              adb logcat -d --pid="$app_pid" >"$RUNNER_TEMP/logcat-raw.txt" 2>/dev/null || true
+            else
+              printf '%s\n' "OpenClaw app PID unavailable during cleanup" >"$RUNNER_TEMP/logcat-raw.txt"
+            fi
             redact_file "$RUNNER_TEMP/logcat-raw.txt" "$ARTIFACT_DIR/android-logcat-redacted.txt"
             redact_file "$RUNNER_TEMP/gateway-raw.log" "$ARTIFACT_DIR/gateway-redacted.log"
             redact_file "$RUNNER_TEMP/mock-raw.log" "$ARTIFACT_DIR/mock-redacted.log"
             redact_file "$RUNNER_TEMP/pairing-orchestration-raw.log" "$ARTIFACT_DIR/pairing-orchestration-redacted.log"
+            redact_file "$RUNNER_TEMP/emulator-raw.log" "$ARTIFACT_DIR/emulator-redacted.log"
             if [[ -f "$RUNNER_TEMP/mock-requests.jsonl" ]]; then
               MOCK_REQUESTS="$RUNNER_TEMP/mock-requests.jsonl" node <<'NODE' >"$ARTIFACT_DIR/mock-request-summary.txt" || true
           const fs = require("node:fs");
@@ -354,7 +365,7 @@ jobs:
             -gpu swiftshader_indirect \
             -no-snapshot \
             -wipe-data \
-            >"$ARTIFACT_DIR/emulator.log" 2>&1 &
+            >"$RUNNER_TEMP/emulator-raw.log" 2>&1 &
           emulator_pid=$!
           phase "emulator-launched"
           adb start-server
@@ -493,10 +504,25 @@ jobs:
           tap_text "Continue" 30
 
           if wait_text "Approve node access" 60 exact; then
+            tap_text "I have approved" 30
+            phase "node-approval-check-requested"
+            waiting_dialog_deadline=$((SECONDS + 15))
+            while (( SECONDS < waiting_dialog_deadline )); do
+              if ui_point "Still waiting for approval" exact >/dev/null 2>&1; then
+                tap_text "OK" 15
+                phase "node-approval-wait-dismissed"
+                break
+              fi
+              sleep 1
+            done
             node_pair_deadline=$((SECONDS + 180))
             node_pair_approved=false
             while (( SECONDS < node_pair_deadline )); do
               approve_pending_devices || true
+              if ui_point "Retry connection" exact >/dev/null 2>&1; then
+                tap_text "Retry connection" 30
+                phase "node-device-pairing-retry-requested"
+              fi
               if approve_pending_nodes; then
                 node_pair_approved=true
                 break
