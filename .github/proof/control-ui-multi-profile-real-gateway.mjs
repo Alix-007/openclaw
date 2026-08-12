@@ -217,8 +217,8 @@ try {
   };
   for (const [agentId, profileId, token] of [
     [defaultAgentId, rejectedProfileId, "proof-rejected-subscription-token-not-used"],
-    [selectedAgentId, rejectedProfileId, "proof-rejected-subscription-token-not-used"],
     [selectedAgentId, readyProfileId, "proof-ready-subscription-token-not-used"],
+    [selectedAgentId, rejectedProfileId, "proof-rejected-subscription-token-not-used"],
   ]) {
     await run(
       process.execPath,
