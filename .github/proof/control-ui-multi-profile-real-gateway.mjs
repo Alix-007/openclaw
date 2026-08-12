@@ -175,7 +175,12 @@ try {
     configPath,
     `${JSON.stringify(
       {
-        agents: { defaults: { model: { primary: `${providerId}/${modelId}` } } },
+        agents: {
+          defaults: {
+            model: { primary: `${providerId}/${modelId}` },
+            models: { [`${providerId}/${modelId}`]: {} },
+          },
+        },
         auth: { order: { [providerId]: [readyProfileId, rejectedProfileId] } },
         gateway: { mode: "local", auth: { mode: "token" } },
         plugins: {
@@ -240,8 +245,16 @@ try {
     { view: "all", includeProviderCapabilities: true },
     proofEnv,
   );
+  const rpcConfiguredModelsList = await callGateway(
+    "models.list",
+    { view: "configured" },
+    proofEnv,
+  );
   const rpcProviderAuth = rpcAuthStatus.providers?.find((item) => item.provider === providerId);
   const rpcProviderModel = rpcModelsList.models?.find(
+    (item) => item.provider === providerId && item.id === modelId,
+  );
+  const rpcConfiguredProviderModel = rpcConfiguredModelsList.models?.find(
     (item) => item.provider === providerId && item.id === modelId,
   );
   const rpcProfiles = rpcProviderAuth?.profiles?.map((item) => item.profileId) ?? [];
@@ -255,8 +268,10 @@ try {
         targetSha,
         authStatus: rpcAuthStatus,
         modelsList: rpcModelsList,
+        configuredModelsList: rpcConfiguredModelsList,
         providerAuth: rpcProviderAuth,
         providerModel: rpcProviderModel,
+        configuredProviderModel: rpcConfiguredProviderModel,
         savedProfiles: rpcProfiles,
         providerOutcomes: rpcOutcomes,
       },
@@ -283,6 +298,11 @@ try {
       `Expected proof model to be available before Chromium, got ${JSON.stringify(rpcProviderModel)}`,
     );
   }
+  if (rpcConfiguredProviderModel?.available !== true) {
+    throw new Error(
+      `Expected configured proof model to be available before Chromium, got ${JSON.stringify(rpcConfiguredProviderModel)}`,
+    );
+  }
   if (
     rpcOutcomes?.length !== 2 ||
     !rpcOutcomes.some((item) => item.profileId === readyProfileId && item.status === "ready") ||
@@ -303,6 +323,7 @@ try {
           savedProfiles: rpcProfiles,
           providerOutcomes: rpcOutcomes,
           providerModel: rpcProviderModel,
+          configuredProviderModel: rpcConfiguredProviderModel,
           providerAuth: rpcProviderAuth,
           verdict: "pass",
         },
@@ -324,23 +345,28 @@ try {
       viewport: { width: 1440, height: 1000 },
     });
     const page = await context.newPage();
-    const pendingMethods = new Map();
+    const pendingRequests = new Map();
     const gatewayFrames = {};
     page.on("websocket", (socket) => {
       socket.on("framesent", ({ payload }) => {
         const frame = parseFrame(payload);
         if (frame?.id && frame?.method) {
-          pendingMethods.set(frame.id, frame.method);
+          pendingRequests.set(frame.id, { method: frame.method, params: frame.params });
         }
       });
       socket.on("framereceived", ({ payload }) => {
         const frame = parseFrame(payload);
-        const method = frame?.id ? pendingMethods.get(frame.id) : undefined;
-        if (method === "models.authStatus") {
+        const request = frame?.id ? pendingRequests.get(frame.id) : undefined;
+        if (request?.method === "models.authStatus") {
           gatewayFrames.authStatus = frame;
         }
-        if (method === "models.list" && responsePayload(frame)?.providerOutcomes) {
-          gatewayFrames.modelsList = frame;
+        if (request?.method === "models.list") {
+          if (request.params?.view === "configured") {
+            gatewayFrames.configuredModelsList = frame;
+          }
+          if (request.params?.view === "all") {
+            gatewayFrames.modelsList = frame;
+          }
         }
       });
     });
@@ -354,6 +380,7 @@ try {
     const captureObservedState = async (label) => {
       const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
       const modelsList = responsePayload(gatewayFrames.modelsList);
+      const configuredModelsList = responsePayload(gatewayFrames.configuredModelsList);
       const authStatus = responsePayload(gatewayFrames.authStatus);
       await page.screenshot({
         path: path.join(artifactDir, `provider-card-${label}.png`),
@@ -369,8 +396,12 @@ try {
             cardText,
             authStatus,
             modelsList,
+            configuredModelsList,
             providerAuth: authStatus?.providers?.find((item) => item.provider === providerId),
             providerModel: modelsList?.models?.find((item) => item.provider === providerId),
+            configuredProviderModel: configuredModelsList?.models?.find(
+              (item) => item.provider === providerId,
+            ),
             providerOutcomes: modelsList?.providerOutcomes?.filter(
               (item) => item.provider === providerId,
             ),
@@ -397,12 +428,19 @@ try {
     if (!cardText.includes("Ready") || cardText.includes("Credentials rejected")) {
       throw new Error(`Unexpected provider card state: ${cardText}`);
     }
-    if (!gatewayFrames.modelsList || !gatewayFrames.authStatus) {
-      throw new Error("Did not capture real Gateway models.list and models.authStatus frames");
+    if (
+      !gatewayFrames.modelsList ||
+      !gatewayFrames.configuredModelsList ||
+      !gatewayFrames.authStatus
+    ) {
+      throw new Error(
+        "Did not capture real Gateway configured/all models.list and models.authStatus frames",
+      );
     }
 
     const modelsList = responsePayload(gatewayFrames.modelsList);
     const authStatus = responsePayload(gatewayFrames.authStatus);
+    const configuredModelsList = responsePayload(gatewayFrames.configuredModelsList);
     const outcomes = modelsList.providerOutcomes.filter((item) => item.provider === providerId);
     const profiles =
       authStatus.providers
@@ -415,14 +453,25 @@ try {
         (item) => item.profileId === rejectedProfileId && item.status === "auth-rejected",
       ) ||
       !profiles.includes(readyProfileId) ||
-      !profiles.includes(rejectedProfileId)
+      !profiles.includes(rejectedProfileId) ||
+      !configuredModelsList.models?.some(
+        (item) => item.provider === providerId && item.id === modelId && item.available === true,
+      )
     ) {
       throw new Error(`Missing multi-profile evidence: ${JSON.stringify({ outcomes, profiles })}`);
     }
 
     await writeFile(
       path.join(artifactDir, "gateway-frames.json"),
-      `${JSON.stringify({ authStatus: gatewayFrames.authStatus, modelsList: gatewayFrames.modelsList }, null, 2)}\n`,
+      `${JSON.stringify(
+        {
+          authStatus: gatewayFrames.authStatus,
+          modelsList: gatewayFrames.modelsList,
+          configuredModelsList: gatewayFrames.configuredModelsList,
+        },
+        null,
+        2,
+      )}\n`,
     );
     await writeFile(
       path.join(artifactDir, "verdict.json"),
