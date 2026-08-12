@@ -94,6 +94,7 @@ jobs:
                 -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token)=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/(Sending adb public key ).*/\1[REDACTED]/g' \
                 -E -e 's/(androidboot\.qemu\.adb\.pubkey=)[^[:space:]]+/\1[REDACTED]/g' \
+                -E -e 's/(androidboot\.vbmeta\.digest=)[^[:space:]]+/\1[REDACTED]/g' \
                 "$source" >"$target"
             fi
           }
@@ -299,7 +300,9 @@ jobs:
             adb exec-out cat /sdcard/final-window.xml >"$ARTIFACT_DIR/final-window.xml" 2>/dev/null || true
             app_pid="$(adb shell pidof ai.openclaw.app 2>/dev/null | tr -d '\r' | awk '{ print $1 }')"
             if [[ -n "$app_pid" ]]; then
-              adb logcat -d --pid="$app_pid" >"$RUNNER_TEMP/logcat-raw.txt" 2>/dev/null || true
+              adb logcat -d --pid="$app_pid" \
+                -s 'OpenClawRuntime:V' 'AndroidRuntime:E' 'System.err:W' '*:S' \
+                >"$RUNNER_TEMP/logcat-raw.txt" 2>/dev/null || true
             else
               printf '%s\n' "OpenClaw app PID unavailable during cleanup" >"$RUNNER_TEMP/logcat-raw.txt"
             fi
@@ -553,6 +556,18 @@ jobs:
           if wait_text "Permissions" 30 exact; then
             tap_text "Continue" 30
           fi
+          chat_navigation_deadline=$((SECONDS + 90))
+          while (( SECONDS < chat_navigation_deadline )); do
+            if ui_point "Message OpenClaw" exact >/dev/null 2>&1; then
+              break
+            fi
+            if ui_point "Chat" exact >/dev/null 2>&1; then
+              tap_text "Chat" 15 exact
+              phase "dashboard-chat-opened"
+              break
+            fi
+            sleep 2
+          done
           wait_text "Message OpenClaw" 180 exact
           phase "android-chat-ready"
 
