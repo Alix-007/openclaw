@@ -402,11 +402,12 @@ try {
     const page = await context.newPage();
     activePage = page;
     const pendingRequests = new Map();
+    const evidenceMethods = new Set(["models.authStatus", "models.list"]);
     gatewayExchanges = [];
     page.on("websocket", (socket) => {
       socket.on("framesent", ({ payload }) => {
         const frame = parseFrame(payload);
-        if (frame?.id && frame?.method) {
+        if (frame?.id && evidenceMethods.has(frame.method)) {
           pendingRequests.set(frame.id, { method: frame.method, params: frame.params });
         }
       });
