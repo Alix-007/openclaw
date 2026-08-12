@@ -49,6 +49,7 @@ import { buildCronSuggestions, THINKING_SUGGESTIONS } from "./form-suggestions.t
 import { renderCron, type CronDetailTab, type CronListTab } from "./view.ts";
 
 class CronPage extends OpenClawLightDomElement {
+  private static readonly threadScopeFields = /^(delivery(Channel|AccountId)|agentId|clearAgent)$/;
   @consume({ context: applicationContext, subscribe: true })
   private context!: ApplicationContext;
 
@@ -303,10 +304,8 @@ class CronPage extends OpenClawLightDomElement {
     if (!this.canManageCron) {
       return;
     }
-    const clearsDeliveryThread = Object.keys(patch).some((key) =>
-      "deliveryChannel deliveryAccountId agentId clearAgent".split(" ").includes(key),
-    );
-    const nextPatch = clearsDeliveryThread ? { ...patch, deliveryThreadId: undefined } : patch;
+    const clearThread = Object.keys(patch).some((key) => CronPage.threadScopeFields.test(key));
+    const nextPatch = clearThread ? { ...patch, deliveryThreadId: undefined } : patch;
     this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...nextPatch });
     this.cron.cronFieldErrors = validateCronForm(this.cron.cronForm);
     this.requestCronUpdate();

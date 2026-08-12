@@ -148,8 +148,9 @@ function resolveChannelLabel(props: CronProps, channel: string): string {
 }
 
 function conversationOptionValue(entry: CronSuggestion): string {
-  // oxlint-disable-next-line curly -- Keep the primitive type guard compact.
-  if (typeof entry === "string") return entry;
+  if (typeof entry === "string") {
+    return entry;
+  }
   const target = entry.target.trim();
   const label = entry.label?.trim() || target;
   const base = label === target ? target : `${label} (${target})`;
