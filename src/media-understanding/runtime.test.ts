@@ -785,7 +785,7 @@ describe("media-understanding runtime", () => {
     );
     expect(mocks.getBuffer).toHaveBeenCalledWith({
       attachmentIndex: 0,
-      maxBytes: 50 * 1024 * 1024,
+      maxBytes: 10 * 1024 * 1024,
       timeoutMs: 45_000,
     });
     expect(mocks.describeImageWithModel).toHaveBeenCalledWith(
