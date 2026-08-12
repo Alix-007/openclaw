@@ -8539,6 +8539,7 @@ internal fun manualGatewayEndpoint(entry: GatewayRegistryEntry): GatewayEndpoint
     host = normalizedHost,
     port = normalizedPort,
     tlsEnabled = entry.tls,
+    contextPath = entry.contextPath,
   )
 }
 
@@ -8554,6 +8555,7 @@ internal fun gatewayRegistryEntry(
       host = endpoint.host,
       port = endpoint.port,
       tls = endpoint.tlsEnabled,
+      contextPath = endpoint.contextPath,
       lastConnectedAtMs = existing?.lastConnectedAtMs ?: 0L,
     )
   } else {
