@@ -33,6 +33,7 @@ import { clearRuntimeAuthProfileStoreSnapshots } from "../auth-profiles/runtime-
 import { saveAuthProfileStore } from "../auth-profiles/store.js";
 import { testing as cliBackendsTesting } from "../cli-backends.test-support.js";
 import { consumeCliBootstrapCompletionCallerOwnership } from "../cli-bootstrap-completion-state.js";
+import type { RunCliAgentParams } from "../cli-runner/types.js";
 import { createCronCreatorAuthorityCapability } from "../cron-creator-authority-context.js";
 import type { EmbeddedAgentRunResult } from "../embedded-agent.js";
 import { FailoverError } from "../failover-error.js";
@@ -326,7 +327,9 @@ function makeRunAgentAttemptParams(overrides: RunAgentAttemptOverrides): RunAgen
   };
 }
 
-const runCliAgentMock = vi.hoisted(() => vi.fn());
+const runCliAgentMock = vi.hoisted(() =>
+  vi.fn<(params: RunCliAgentParams) => Promise<EmbeddedAgentRunResult>>(),
+);
 const runEmbeddedAgentMock = vi.hoisted(() => vi.fn());
 const hasClaudeSessionMock = vi.hoisted(() => vi.fn(() => false));
 const providerAuthAliasMocks = vi.hoisted(() => ({
@@ -538,7 +541,11 @@ function expectMockArgFields(
 }
 
 function firstRunCliAgentArg(callIndex = 0) {
-  return requireMockArg(runCliAgentMock, callIndex, "run CLI agent argument");
+  const arg = runCliAgentMock.mock.calls[callIndex]?.[0];
+  if (arg === undefined) {
+    throw new Error("Expected mock argument for run CLI agent argument");
+  }
+  return arg;
 }
 
 function firstEmbeddedAgentArg(callIndex = 0) {
