@@ -41,6 +41,7 @@ import {
   resolveSessionNavigationAgentId,
   sessionNavigationTarget,
 } from "../../lib/sessions/route-navigation.ts";
+import { resolveUiDefaultAgentId } from "../../lib/sessions/session-key.ts";
 import { GatewayPageController } from "../../lit/gateway-page-controller.ts";
 import { OpenClawLightDomElement } from "../../lit/openclaw-element.ts";
 import { SubscriptionsController } from "../../lit/subscriptions-controller.ts";
@@ -192,7 +193,14 @@ class CronPage extends OpenClawLightDomElement {
   private ensureConversationTargets() {
     const cronState = this.cron;
     const client = cronState.client;
-    const agentId = resolveSessionNavigationAgentId(this.context);
+    const formAgentId = cronState.cronForm.agentId.trim();
+    const agentId =
+      !cronState.cronForm.clearAgent && formAgentId
+        ? formAgentId
+        : resolveUiDefaultAgentId({
+            agentsList: this.context.agents.state.agentsList,
+            hello: this.context.gateway.snapshot.hello,
+          });
     const channel = cronState.cronForm.deliveryChannel.trim();
     const key =
       this.canManageCron &&

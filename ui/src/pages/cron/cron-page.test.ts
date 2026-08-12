@@ -353,18 +353,19 @@ describe("CronPage editor state sync", () => {
     });
   });
 
-  it("suggests canonical conversation targets for the selected announce channel", async () => {
-    const request = vi.fn(async (method: string) => {
+  it("suggests canonical conversation targets for the form agent, not chat selection", async () => {
+    const request = vi.fn(async (method: string, params?: unknown) => {
       if (method === "conversations.list") {
+        const { agentId } = params as { agentId: string };
         return {
           conversations: [
             {
-              conversationRef: "conversation:telegram:work:group:-1001234567890",
+              conversationRef: `conversation:telegram:work:group:${agentId}-target`,
               channel: "telegram",
               accountId: "work",
               kind: "group",
-              target: "-1001234567890:topic:42",
-              label: "Release room",
+              target: `${agentId}-target`,
+              label: `${agentId} room`,
               firstSeenAt: 0,
               lastSeenAt: 0,
             },
@@ -384,6 +385,8 @@ describe("CronPage editor state sync", () => {
     });
     const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
     const context = createContext(gateway, "writer");
+    context.agentSelection.setScope("editor");
+    expect(context.agentSelection.state).toEqual({ selectedId: "writer", scopeId: "editor" });
     setChannelFixtures(context);
     const page = createPage(context, { render: true });
 
@@ -396,6 +399,9 @@ describe("CronPage editor state sync", () => {
       expect(page.querySelector("#cron-delivery-channel")).not.toBeNull(),
     );
 
+    const agent = page.querySelector("#cron-agent-id") as HTMLInputElement;
+    agent.value = "publisher";
+    agent.dispatchEvent(new Event("input", { bubbles: true }));
     const channel = page.querySelector("#cron-delivery-channel") as HTMLSelectElement;
     channel.value = "telegram";
     channel.dispatchEvent(new Event("change", { bubbles: true }));
@@ -407,18 +413,20 @@ describe("CronPage editor state sync", () => {
     await waitForCronPage(() =>
       expect(request).toHaveBeenCalledWith(
         "conversations.list",
-        expect.objectContaining({ agentId: "writer", channel: "telegram" }),
+        expect.objectContaining({ agentId: "publisher", channel: "telegram" }),
       ),
     );
     const recipientOptions = Array.from(
-      page.querySelectorAll<HTMLDataListElement>("#cron-delivery-to-suggestions option"),
+      page.querySelectorAll<HTMLOptionElement>("#cron-delivery-to-suggestions option"),
       (option) => option.value,
     );
     const accountOptions = Array.from(
-      page.querySelectorAll<HTMLDataListElement>("#cron-delivery-account-suggestions option"),
+      page.querySelectorAll<HTMLOptionElement>("#cron-delivery-account-suggestions option"),
       (option) => option.value,
     );
-    expect(recipientOptions).toContain("-1001234567890:topic:42");
+    expect(recipientOptions).toContain("publisher-target");
+    expect(recipientOptions).not.toContain("editor-target");
+    expect(recipientOptions).not.toContain("writer-target");
     expect(recipientOptions).not.toContain("gmail-cleaner");
     expect(recipientOptions).not.toContain("Gmail Cleaner");
     expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);

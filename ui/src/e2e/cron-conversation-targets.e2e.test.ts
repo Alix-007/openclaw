@@ -24,7 +24,10 @@ suite.define(() => {
           defaultAgentId: "writer",
           methodResponses: {
             "agents.list": {
-              agents: [{ id: "writer", name: "Writer" }],
+              agents: [
+                { id: "writer", name: "Writer" },
+                { id: "editor", name: "Editor" },
+              ],
               defaultId: "writer",
               mainKey: "writer",
               scope: "agent",
@@ -51,12 +54,12 @@ suite.define(() => {
             "conversations.list": {
               conversations: [
                 {
-                  conversationRef: "conversation:telegram:work:group:-1001234567890",
+                  conversationRef: "conversation:telegram:work:group:editor-target",
                   channel: "telegram",
                   accountId: "work",
                   kind: "group",
-                  target: "-1001234567890:topic:42",
-                  label: "Release room",
+                  target: "editor-target",
+                  label: "Editor room",
                   firstSeenAt: 0,
                   lastSeenAt: 0,
                 },
@@ -78,6 +81,12 @@ suite.define(() => {
 
         const response = await page.goto(`${suite.server.baseUrl}cron`);
         expect(response?.status()).toBe(200);
+        const agentScope = page.locator(".agent-scope-control openclaw-agent-select");
+        await agentScope.locator(".agent-select__trigger").click();
+        await agentScope
+          .locator("wa-dropdown-item[data-agent-option]")
+          .filter({ hasText: "Editor" })
+          .click();
         await page.locator('[data-test-id="cron-new-task"]').click();
         await page.locator("#cron-delivery-channel").selectOption("telegram");
 
@@ -89,7 +98,7 @@ suite.define(() => {
           .poll(async () => await gateway.getRequests("conversations.list"))
           .toContainEqual(
             expect.objectContaining({
-              params: expect.objectContaining({ agentId: "writer", channel: "telegram" }),
+              params: expect.objectContaining({ agentId: "editor", channel: "telegram" }),
             }),
           );
         const recipientOptions = await page
@@ -98,7 +107,7 @@ suite.define(() => {
         const accountOptions = await page
           .locator("#cron-delivery-account-suggestions option")
           .evaluateAll((options) => options.map((option) => option.getAttribute("value")));
-        expect(recipientOptions).toContain("-1001234567890:topic:42");
+        expect(recipientOptions).toContain("editor-target");
         expect(recipientOptions).not.toContain("gmail-cleaner");
         expect(recipientOptions).not.toContain("Gmail Cleaner");
         expect(accountOptions).toEqual(["gmail-cleaner", "Gmail Cleaner"]);
