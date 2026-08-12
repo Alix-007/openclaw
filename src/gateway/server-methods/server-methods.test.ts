@@ -887,7 +887,10 @@ describe("sanitizeChatHistoryMessages", () => {
     );
 
     expect(result).toEqual([
-      assistantHistoryMessage(`${prefix}\n...(truncated)...`, { timestamp: 1 }),
+      assistantHistoryMessage(`${prefix}\n...(truncated)...`, {
+        __openclaw: { truncated: true },
+        timestamp: 1,
+      }),
     ]);
   });
 
@@ -2087,6 +2090,7 @@ describe("projectRecentChatDisplayMessages", () => {
       assistantAudioAttachmentHistoryMessage(
         `${projectedVisibleText.slice(0, 24)}\n...(truncated)...`,
         1,
+        { __openclaw: { truncated: true } },
       ),
     ]);
   });
