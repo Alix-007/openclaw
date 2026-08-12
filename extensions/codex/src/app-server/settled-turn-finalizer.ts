@@ -1,5 +1,5 @@
 import type {
-  AgentHarness,
+  AgentHarnessV2,
   AgentHarnessSettledTurnFinalizationResult,
 } from "openclaw/plugin-sdk/agent-harness-runtime";
 import { isSilentReplyText } from "openclaw/plugin-sdk/reply-runtime";
@@ -22,7 +22,9 @@ const FINALIZER_DEVELOPER_INSTRUCTIONS =
   "support success.";
 const FINALIZER_PASSIVE_ITEM_TYPES = new Set(["agentMessage", "reasoning"]);
 
-type CodexSettledTurnFinalization = Parameters<NonNullable<AgentHarness["finalizeSettledTurn"]>>[0];
+type CodexSettledTurnFinalization = Parameters<
+  NonNullable<AgentHarnessV2["finalizeSettledTurn"]>
+>[0];
 
 export async function runCodexSettledTurnFinalization(
   operation: CodexSettledTurnFinalization,
@@ -37,6 +39,7 @@ export async function runCodexSettledTurnFinalization(
   const bounded = await runBoundedCodexAppServerTurn({
     config: attempt.config,
     model: { mode: "required", id: attempt.modelId },
+    modelProvider: "openai",
     profile: attempt.authProfileId,
     timeoutMs: attempt.runTimeoutOverrideMs ?? attempt.timeoutMs,
     signal: attempt.abortSignal,

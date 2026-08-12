@@ -184,7 +184,7 @@ const longChildCompletionOutput = [
   "34/34 tests pass, clean build. Now docker repro:",
   "Root cause: the requester's announce delivery accepted a prefix-only assistant payload as delivered.",
   "PR: https://github.com/openclaw/openclaw/pull/12345",
-  "Verification: pnpm test src/agents/subagent-announce-delivery.test.ts passed with the regression enabled.",
+  "Verification: pnpm test src/agents/subagents/announce/subagent-announce-delivery.test.ts passed with the regression enabled.",
 ].join("\n");
 
 const committedSessionSpawnEvidence = {
@@ -1311,6 +1311,45 @@ describe("deliverSubagentAnnouncement completion delivery", () => {
         sourceReplyDeliveryMode: "message_tool_only",
       });
     }
+  });
+
+  it.each([
+    {
+      name: "intentional suppression",
+      suppressionReason: "cancelled_by_message_sending_hook",
+      disposition: "intentional_non_delivery",
+    },
+    {
+      name: "adapter ambiguity",
+      suppressionReason: "adapter_returned_no_identity",
+      disposition: "ambiguous",
+    },
+  ] as const)("reports $name from direct text completion fallback", async (testCase) => {
+    const callGateway = createPayloadGatewayMock();
+    const onDeliveryResult = vi.fn();
+    const sendMessage = vi.fn(async () => ({
+      channel: "discord",
+      to: "dm:U123",
+      via: "direct" as const,
+      mediaUrl: null,
+      deliveryStatus: "suppressed" as const,
+      suppressionReason: testCase.suppressionReason,
+    })) as unknown as typeof runtimeSendMessage;
+
+    const result = await deliverDiscordDirectMessageCompletion({
+      callGateway,
+      sendMessage,
+      internalEvents: taskCompletionEvents({ childSessionId: "child-session-id" }),
+      onDeliveryResult,
+    });
+
+    expectRecordFields(result, {
+      delivered: false,
+      path: "direct",
+      disposition: testCase.disposition,
+    });
+    expect(onDeliveryResult).not.toHaveBeenCalled();
+    expect(sendMessage).toHaveBeenCalledTimes(1);
   });
 
   it("sanitizes and bounds text before direct completion fallback delivery", async () => {
@@ -2816,7 +2855,7 @@ describe("deliverSubagentAnnouncement completion delivery", () => {
     );
   });
 
-  it("no-ops stale isolated cron run text completions", async () => {
+  it("records stale isolated cron run text completions as intentional non-delivery", async () => {
     const callGateway = createGatewayMock();
     const sendMessage = createSendMessageMock();
     const queueEmbeddedAgentMessageWithOutcome = createQueueOutcomeMock(true);
@@ -2832,9 +2871,20 @@ describe("deliverSubagentAnnouncement completion delivery", () => {
     });
 
     expectRecordFields(result, {
-      delivered: true,
+      delivered: false,
       path: "none",
-      phases: [{ phase: "direct-primary", delivered: true, path: "none", error: undefined }],
+      reason: "completion_handoff_pending",
+      terminal: true,
+      disposition: "intentional_non_delivery",
+      phases: [
+        {
+          phase: "direct-primary",
+          delivered: false,
+          path: "none",
+          reason: "completion_handoff_pending",
+          error: undefined,
+        },
+      ],
     });
     expect(queueEmbeddedAgentMessageWithOutcome).not.toHaveBeenCalled();
     expect(callGateway).not.toHaveBeenCalled();

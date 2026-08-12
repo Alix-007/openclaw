@@ -1,4 +1,5 @@
 import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import { inheritProviderRequestHeadersContext } from "../../infra/net/provider-request-header-context.js";
 import type { Api, Model } from "../../llm/types.js";
@@ -276,11 +277,7 @@ export function resolveProviderTransport(params: {
 }
 
 export function normalizeTransportBaseUrl(baseUrl: unknown): string | undefined {
-  if (typeof baseUrl !== "string") {
-    return undefined;
-  }
-  const trimmed = baseUrl.trim();
-  return trimmed ? trimmed : undefined;
+  return normalizeOptionalString(baseUrl);
 }
 
 export function resolveProviderRequestTimeoutMs(timeoutSeconds: unknown): number | undefined {

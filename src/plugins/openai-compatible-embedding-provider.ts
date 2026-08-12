@@ -1,6 +1,7 @@
 // Builds OpenAI-compatible embedding provider entries for plugins.
 import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
 import { asOptionalRecord as asRecord } from "@openclaw/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import {
   assertOkOrThrowHttpError,
   readProviderJsonResponse,
@@ -112,11 +113,6 @@ function normalizeDimensions(value: number | undefined): number | undefined {
 function normalizeOptionalInputType(value: string | undefined): string | undefined {
   const inputType = value?.trim();
   return inputType ? inputType : undefined;
-}
-
-function normalizeOptionalString(value: string | undefined): string | undefined {
-  const normalized = value?.trim();
-  return normalized ? normalized : undefined;
 }
 
 function chooseSecretInputOverride<T>(

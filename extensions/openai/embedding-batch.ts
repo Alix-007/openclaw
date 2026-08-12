@@ -1,3 +1,4 @@
+import { coerceErrorMessage as formatOpenAiBatchError } from "openclaw/plugin-sdk/error-runtime";
 // Openai plugin module implements embedding batch behavior.
 import {
   applyEmbeddingBatchOutputLine,
@@ -157,10 +158,6 @@ async function fetchOpenAiBatchResource<T>(params: {
       return await params.parse(res);
     },
   });
-}
-
-function formatOpenAiBatchError(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
 }
 
 function formatOpenAiBatchDiagnostic(error: unknown): string {

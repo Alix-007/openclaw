@@ -16,7 +16,6 @@ import {
 import { createAnthropicVertexStreamFnForModel } from "./anthropic-vertex-stream.js";
 import { buildCopilotDynamicHeaders, hasCopilotVisionInput } from "./copilot-dynamic-headers.js";
 import { ensureCustomApiRegistered } from "./custom-api-registry.js";
-import { prepareGoogleSimpleCompletionModel } from "./google-simple-completion-stream.js";
 import {
   resolveProviderRequestCapabilities,
   resolveProviderEndpoint,
@@ -105,7 +104,6 @@ export function configureAiTransportRuntimeHost(): void {
       ),
     transformTransportMessages,
     registerCustomApi: ensureCustomApiRegistered,
-    prepareGoogleSimpleCompletionModel,
   });
   configured = true;
 }

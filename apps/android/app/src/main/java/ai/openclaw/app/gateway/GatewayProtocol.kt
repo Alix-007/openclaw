@@ -155,6 +155,25 @@ data class WorkerDesktopObserveResult(
 )
 
 @Serializable
+data class WorkerDesktopLaunchParams(
+  val environmentId: String,
+  val app: String,
+)
+
+@Serializable
+data class WorkerDesktopLaunchResult(
+  val app: String,
+  val status: String = "ready",
+)
+
+@Serializable
+data class ProjectsListResult(
+  val projects: List<ProjectsListResultProjectsItem>,
+  val recents: List<JsonElement>? = null,
+  val observedProjects: List<ProjectsListResultObservedProjectsItem>? = null,
+)
+
+@Serializable
 data class GatewayEventFrameStateVersion(
   val presence: Long,
   val health: Long,
@@ -164,6 +183,30 @@ data class GatewayEventFrameStateVersion(
 data class GatewayNodeInvokeResultParamsError(
   val code: String? = null,
   val message: String? = null,
+)
+
+@Serializable
+data class ProjectsListResultProjectsItem(
+  val id: String,
+  val displayName: String,
+  val repoRoot: String? = null,
+  val originUrl: String? = null,
+  val source: String,
+  val agentId: String? = null,
+)
+
+@Serializable
+data class ProjectsListResultObservedProjectsItem(
+  val name: String,
+  val originUrl: String? = null,
+  val checkouts: List<ProjectsListResultObservedProjectsItemCheckoutsItem>,
+  val lastUsedAt: Double,
+)
+
+@Serializable
+data class ProjectsListResultObservedProjectsItemCheckoutsItem(
+  val runnerId: String,
+  val path: String,
 )
 
 enum class GatewayMethod(
@@ -521,6 +564,14 @@ enum class GatewayMethod(
   ProjectsList("projects.list"),
   ProjectsRegister("projects.register"),
   ProjectsRemove("projects.remove"),
+  WorkerDesktopLaunch("worker.desktop.launch"),
+  SecretsStoreList("secrets.store.list"),
+  SecretsStoreSet("secrets.store.set"),
+  SecretsStoreDelete("secrets.store.delete"),
+  UsersPrefsGet("users.prefs.get"),
+  UsersPrefsSet("users.prefs.set"),
+  ProjectsAdd("projects.add"),
+  ProjectsSearchRemote("projects.searchRemote"),
 }
 
 enum class GatewayEvent(

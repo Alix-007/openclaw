@@ -78,7 +78,7 @@ vi.mock("../plugins/providers.js", () => ({
 }));
 
 vi.mock("../plugins/setup-registry.js", () => ({
-  resolvePluginSetupProvider: () => undefined,
+  resolvePluginSetupProviderCore: () => undefined,
 }));
 
 vi.mock("../plugins/provider-runtime.js", () => {
@@ -179,8 +179,8 @@ let hasRuntimeAvailableProviderAuth: typeof import("./model-auth.js").hasRuntime
 let hasUsableCustomProviderApiKey: typeof import("./model-auth.js").hasUsableCustomProviderApiKey;
 let hasSyntheticLocalProviderAuthConfig: typeof import("./model-auth.js").hasSyntheticLocalProviderAuthConfig;
 let requireApiKey: typeof import("./model-auth.js").requireApiKey;
-let getApiKeyForModel: typeof import("./model-auth.js").getApiKeyForModel;
-let resolveApiKeyForProvider: typeof import("./model-auth.js").resolveApiKeyForProvider;
+let getApiKeyForModelCore: typeof import("./model-auth.js").getApiKeyForModelCore;
+let resolveApiKeyForProviderCore: typeof import("./model-auth.js").resolveApiKeyForProviderCore;
 let resolveAwsSdkEnvVarName: typeof import("./model-auth.js").resolveAwsSdkEnvVarName;
 let resolveModelAuthMode: typeof import("./model-auth.js").resolveModelAuthMode;
 let resolveUsableCustomProviderApiKey: typeof import("./model-auth.js").resolveUsableCustomProviderApiKey;
@@ -214,10 +214,10 @@ beforeAll(async () => {
     hasAvailableAuthForProvider,
     hasRuntimeAvailableProviderAuth,
     hasSyntheticLocalProviderAuthConfig,
-    getApiKeyForModel,
+    getApiKeyForModelCore,
     hasUsableCustomProviderApiKey,
     requireApiKey,
-    resolveApiKeyForProvider,
+    resolveApiKeyForProviderCore,
     resolveAwsSdkEnvVarName,
     resolveModelAuthMode,
     resolveUsableCustomProviderApiKey,
@@ -304,7 +304,7 @@ async function resolveCustomProviderAuth(
   modelId?: string,
   modelName?: string,
 ) {
-  return resolveApiKeyForProvider({
+  return resolveApiKeyForProviderCore({
     provider,
     cfg: {
       models: {
@@ -317,7 +317,7 @@ async function resolveCustomProviderAuth(
 }
 
 function expectAuthFields(
-  auth: Awaited<ReturnType<typeof resolveApiKeyForProvider>>,
+  auth: Awaited<ReturnType<typeof resolveApiKeyForProviderCore>>,
   expected: {
     apiKey: string;
     mode: "api-key" | "oauth";
@@ -332,7 +332,7 @@ function expectAuthFields(
 }
 
 function expectSecretSentinelAuth(
-  auth: Awaited<ReturnType<typeof resolveApiKeyForProvider>>,
+  auth: Awaited<ReturnType<typeof resolveApiKeyForProviderCore>>,
   expected: { value: string; source: string; mode: "api-key" | "oauth" },
 ) {
   const apiKey = auth.apiKey;
@@ -649,7 +649,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
     const previous = process.env.OPENAI_API_KEY;
     process.env.OPENAI_API_KEY = "sk-secretref-env-first"; // pragma: allowlist secret
     try {
-      const resolved = await resolveApiKeyForProvider({
+      const resolved = await resolveApiKeyForProviderCore({
         cfg: {
           models: {
             providers: {
@@ -882,7 +882,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
   });
 });
 
-describe("resolveApiKeyForProvider", () => {
+describe("resolveApiKeyForProviderCore", () => {
   it("does not fall back to env or profiles after an explicit provider SecretRef fails", async () => {
     const sourceConfig = {
       models: {
@@ -909,7 +909,7 @@ describe("resolveApiKeyForProvider", () => {
 
     await withEnv("OPENAI_API_KEY", "must-not-be-used", async () => {
       await expect(
-        resolveApiKeyForProvider({
+        resolveApiKeyForProviderCore({
           provider: "openai",
           cfg: sourceConfig,
           store: {
@@ -963,7 +963,7 @@ describe("resolveApiKeyForProvider", () => {
 
     await withEnv("OPENAI_API_KEY", "must-not-be-used", async () => {
       await expect(
-        resolveApiKeyForProvider({
+        resolveApiKeyForProviderCore({
           provider: "openai",
           cfg: sourceConfig,
           store: { version: 1, profiles: {} },
@@ -1023,7 +1023,7 @@ describe("resolveApiKeyForProvider", () => {
     };
 
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "anthropic",
         profileId: healthyProfileId,
         cfg,
@@ -1036,7 +1036,7 @@ describe("resolveApiKeyForProvider", () => {
     await withEnv("OPENAI_API_KEY", "unused", async () => {
       await expect(
         (async () => {
-          const auth = await resolveApiKeyForProvider({
+          const auth = await resolveApiKeyForProviderCore({
             provider: "openai",
             cfg,
             store,
@@ -1055,7 +1055,7 @@ describe("resolveApiKeyForProvider", () => {
 
   it("keeps plain environment credentials as plaintext", async () => {
     const resolved = await withEnv("OPENAI_API_KEY", "sk-plain-env-key", () =>
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "openai",
         store: { version: 1, profiles: {} },
       }),
@@ -1090,7 +1090,7 @@ describe("resolveApiKeyForProvider", () => {
       },
       agentDir,
     );
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "openai",
       profileId,
       secretSentinels: true,
@@ -1130,7 +1130,7 @@ describe("resolveApiKeyForProvider", () => {
       },
       agentDir,
     );
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "openai",
       profileId,
       store,
@@ -1143,7 +1143,7 @@ describe("resolveApiKeyForProvider", () => {
 
   it("reuses plugin fallback auth without a models.providers entry", async () => {
     const resolved = await withoutEnv("PLUGIN_WEB_API_KEY", () =>
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "plugin-web",
         cfg: {
           plugins: {
@@ -1199,7 +1199,7 @@ describe("resolveApiKeyForProvider", () => {
     setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
 
     const resolved = await withoutEnv("PLUGIN_WEB_API_KEY", () =>
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "plugin-web",
         cfg: sourceConfig,
         secretSentinels: true,
@@ -1252,7 +1252,7 @@ describe("resolveApiKeyForProvider", () => {
     };
     setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
 
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "cliproxyapi",
       cfg: sourceConfig,
       secretSentinels: true,
@@ -1305,7 +1305,7 @@ describe("resolveApiKeyForProvider", () => {
     };
     setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
 
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "cliproxyapi",
       cfg: structuredClone(runtimeConfig),
       secretSentinels: true,
@@ -1318,7 +1318,7 @@ describe("resolveApiKeyForProvider", () => {
       mode: "api-key",
     });
 
-    const preferred = await resolveApiKeyForProvider({
+    const preferred = await resolveApiKeyForProviderCore({
       provider: "cliproxyapi",
       cfg: structuredClone(runtimeConfig),
       preferredProfile: "cliproxyapi:preferred",
@@ -1386,7 +1386,7 @@ describe("resolveApiKeyForProvider", () => {
       };
 
       await expect(
-        resolveApiKeyForProvider({ provider: "cliproxyapi", cfg: sourceConfig, store }),
+        resolveApiKeyForProviderCore({ provider: "cliproxyapi", cfg: sourceConfig, store }),
       ).rejects.toThrow(/Inline API key for provider "cliproxyapi" is temporarily disabled/);
       await expect(
         hasAvailableAuthForProvider({ provider: "cliproxyapi", cfg: sourceConfig, store }),
@@ -1417,7 +1417,7 @@ describe("resolveApiKeyForProvider", () => {
     };
 
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "cliproxyapi",
         cfg: sourceConfig,
         store: { version: 1, profiles: {} },
@@ -1469,7 +1469,7 @@ describe("resolveApiKeyForProvider", () => {
     );
 
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "cliproxyapi",
         cfg: sourceConfig,
         store: { version: 1, profiles: {} },
@@ -1480,7 +1480,7 @@ describe("resolveApiKeyForProvider", () => {
   it("does not reuse plugin fallback auth when the plugin is disabled", async () => {
     await expect(
       withoutEnv("PLUGIN_WEB_API_KEY", () =>
-        resolveApiKeyForProvider({
+        resolveApiKeyForProviderCore({
           provider: "plugin-web",
           cfg: {
             plugins: {
@@ -1503,7 +1503,7 @@ describe("resolveApiKeyForProvider", () => {
   });
 
   it("reuses plugin-owned native CLI auth", async () => {
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "native-cli",
       cfg: {
         agents: {
@@ -1525,7 +1525,7 @@ describe("resolveApiKeyForProvider", () => {
   });
 
   it("reuses the loaded auth profile store after deferring an explicit synthetic profile", async () => {
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "custom-auth",
       profileId: "custom-auth:synthetic",
       store: {
@@ -1553,7 +1553,7 @@ describe("resolveApiKeyForProvider", () => {
   });
 
   it("prefers explicit api-key provider config over ambient auth profiles", async () => {
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "openai",
       cfg: {
         models: {
@@ -1590,7 +1590,7 @@ describe("resolveApiKeyForProvider", () => {
   it("preserves explicit subscription modes for literal provider credentials", async () => {
     for (const mode of ["oauth", "token"] as const) {
       const provider = `custom-${mode}`;
-      const resolved = await getApiKeyForModel({
+      const resolved = await getApiKeyForModelCore({
         model: {
           id: "subscription-model",
           provider,
@@ -1621,7 +1621,7 @@ describe("resolveApiKeyForProvider", () => {
 
   it("does not reinterpret explicit OpenAI oauth material as a Platform API key", async () => {
     await expect(
-      getApiKeyForModel({
+      getApiKeyForModelCore({
         model: {
           id: "platform-model",
           provider: "openai",
@@ -1649,7 +1649,7 @@ describe("resolveApiKeyForProvider", () => {
       "OPENCLAW_TEST_PROVIDER_SUBSCRIPTION_TOKEN",
       "env-subscription-credential",
       async () => {
-        const resolved = await getApiKeyForModel({
+        const resolved = await getApiKeyForModelCore({
           model: {
             id: "subscription-model",
             provider: "custom-token-env",
@@ -1711,7 +1711,7 @@ describe("resolveApiKeyForProvider", () => {
       sourceConfig,
     );
 
-    const resolved = await resolveApiKeyForProvider({
+    const resolved = await resolveApiKeyForProviderCore({
       provider: "cliproxyapi",
       cfg: sourceConfig,
       secretSentinels: true,
@@ -1762,7 +1762,7 @@ describe("resolveApiKeyForProvider", () => {
       sourceConfig,
     );
 
-    const resolved = await getApiKeyForModel({
+    const resolved = await getApiKeyForModelCore({
       model: {
         id: "subscription-model",
         provider: "custom-oauth-ref",
@@ -1782,7 +1782,7 @@ describe("resolveApiKeyForProvider", () => {
 
   it("prefers non-secret local env markers over ambient profiles", async () => {
     const resolved = await withEnv("OLLAMA_API_KEY", "ollama-local", () =>
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "ollama",
         store: {
           version: 1,
@@ -1805,7 +1805,7 @@ describe("resolveApiKeyForProvider", () => {
   });
 });
 
-describe("resolveApiKeyForProvider – synthetic local auth for custom providers", () => {
+describe("resolveApiKeyForProviderCore – synthetic local auth for custom providers", () => {
   it("recognizes local baseUrl variants for synthetic auth config", () => {
     const localBaseUrls = [
       "http://127.0.0.1:8080/v1",
@@ -1879,7 +1879,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     ).toBe(false);
 
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "my-remote",
         cfg: {
           models: {
@@ -1907,7 +1907,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("preserves custom named Ollama providers with explicit local marker auth", async () => {
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "ollama-remote",
       cfg: {
         models: {
@@ -1942,7 +1942,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("uses Ollama plugin synthetic auth for custom private provider ids without apiKey", async () => {
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "ollama-gpu1",
       cfg: {
         models: {
@@ -2002,7 +2002,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
       sourceConfig,
     );
 
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "ollama-gpu1",
       cfg: sourceConfig,
       secretSentinels: true,
@@ -2017,7 +2017,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("resolves synthetic auth when model overrides api to ollama within a non-ollama provider", async () => {
-    const auth = await getApiKeyForModel({
+    const auth = await getApiKeyForModelCore({
       model: {
         id: "my-router/local-llama",
         name: "Local Llama",
@@ -2064,7 +2064,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("accepts non-secret local markers for private LAN custom OpenAI-compatible providers", async () => {
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "custom-192-168-0-222-11434",
       cfg: {
         models: {
@@ -2101,7 +2101,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   it.each(["docker.orb.internal", "host.docker.internal", "host.orb.internal"])(
     "accepts ollama-local marker auth for host-backed alias %s",
     async (hostname) => {
-      const auth = await resolveApiKeyForProvider({
+      const auth = await resolveApiKeyForProviderCore({
         provider: "ollama",
         cfg: {
           models: {
@@ -2138,7 +2138,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
 
   it("does not accept non-secret local markers for remote custom providers", async () => {
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "custom-remote",
         cfg: {
           models: {
@@ -2172,7 +2172,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     delete process.env.OPENAI_API_KEY;
     try {
       await expect(
-        resolveApiKeyForProvider({
+        resolveApiKeyForProviderCore({
           provider: "custom",
           cfg: {
             models: {
@@ -2209,7 +2209,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
 
   it("does not synthesize local auth when auth mode explicitly requires oauth", async () => {
     await expect(
-      resolveApiKeyForProvider({
+      resolveApiKeyForProviderCore({
         provider: "custom",
         cfg: {
           models: {
@@ -2238,7 +2238,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("uses explicit aws-sdk auth for local baseUrl overrides", async () => {
-    const auth = await resolveApiKeyForProvider({
+    const auth = await resolveApiKeyForProviderCore({
       provider: "amazon-bedrock",
       cfg: {
         models: {
@@ -2258,7 +2258,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
   });
 
   it("uses implicit aws-sdk auth for built-in Bedrock Converse models", async () => {
-    const auth = await getApiKeyForModel({
+    const auth = await getApiKeyForModelCore({
       model: {
         id: "us.anthropic.claude-sonnet-4-6-v1",
         name: "Claude Sonnet",
