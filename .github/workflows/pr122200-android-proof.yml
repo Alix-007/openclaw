@@ -92,7 +92,7 @@ jobs:
                 -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
                 -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
                 -E -e 's/("(token|publicKey|deviceId|nodeId|requestId)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
-                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token)=)[^[:space:]]+/\1[REDACTED]/g' \
+                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token|conn|id)=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/(Sending adb public key ).*/\1[REDACTED]/g' \
                 -E -e 's/(androidboot\.qemu\.adb\.pubkey=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/(androidboot\.vbmeta\.digest=)[^[:space:]]+/\1[REDACTED]/g' \
@@ -112,7 +112,7 @@ jobs:
                 -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
                 -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
                 -E -e 's/("(token|publicKey|deviceId|nodeId|requestId)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
-                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token)=)[^[:space:]]+/\1[REDACTED]/g' \
+                -E -e 's/((device|node|deviceId|nodeId|requestId|publicKey|token|conn|id)=)[^[:space:]]+/\1[REDACTED]/g' \
                 -E -e 's/[[:xdigit:]]{8}-[[:xdigit:]-]{27,}/[ID]/g' \
                 -E -e 's/[[:xdigit:]]{16,}/[ID]/g' \
                 "$source" >>"$RUNNER_TEMP/pairing-orchestration-raw.log"
@@ -193,8 +193,11 @@ jobs:
               if ui_point "Message OpenClaw" exact >/dev/null 2>&1; then
                 return 0
               fi
-              if ui_point "Chat" exact >/dev/null 2>&1; then
-                tap_text "Chat" 15 exact
+              local point
+              if point="$(ui_point "Chat" exact)"; then
+                local x y
+                read -r x y <<<"$point"
+                adb shell input tap "$x" "$y"
                 phase "dashboard-chat-opened"
               fi
               sleep 2
