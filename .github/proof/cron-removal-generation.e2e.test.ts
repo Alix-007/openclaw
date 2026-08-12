@@ -175,7 +175,7 @@ suite.define(() => {
         (element as HTMLButtonElement).click();
       });
       await waitForStats(page, { tasks: 2, failing: 2 });
-      await expect(confirmation).toBeVisible();
+      expect(await confirmation.isVisible()).toBe(true);
       const newerRefreshCompletedAfterSequence = (await gateway.getRequests()).length;
       await screenshot(page, "02-confirmation-open-refresh-complete.png");
 
