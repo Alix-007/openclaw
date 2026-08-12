@@ -59,7 +59,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
           results=apps/android/app/build/test-results/testPlayDebugUnitTest
           test -n "$(find "$results" -maxdepth 1 -name '*.xml' -print -quit)"
-          ! rg -n '<failure|<error' "$results"
+          ! grep -R -n -E '<failure|<error' "$results"
           for test_name in \
             chatMessageGetCapabilityFailsClosedAcrossOldDisconnectAndReconnectMethodSets \
             truncatedAssistantMessageLoadsFullContentForItsCurrentOwner \
@@ -68,7 +68,7 @@ jobs:
             assistantDisclosureFailureRemainsRetryable \
             assistantDisclosureRequiresGatewayMethodSupport
           do
-            rg -q "name=\"${test_name}\"" "$results"
+            grep -R -q "name=\"${test_name}\"" "$results"
           done
           echo "exact-head focused proof: 6 tests passed"
 
