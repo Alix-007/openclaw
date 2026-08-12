@@ -303,12 +303,11 @@ class CronPage extends OpenClawLightDomElement {
     if (!this.canManageCron) {
       return;
     }
-    if (
-      ["deliveryChannel", "deliveryAccountId", "agentId", "clearAgent"].some((key) => key in patch)
-    ) {
-      patch = { ...patch, deliveryThreadId: undefined };
-    }
-    this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...patch });
+    const clearsDeliveryThread = Object.keys(patch).some((key) =>
+      "deliveryChannel deliveryAccountId agentId clearAgent".split(" ").includes(key),
+    );
+    const nextPatch = clearsDeliveryThread ? { ...patch, deliveryThreadId: undefined } : patch;
+    this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...nextPatch });
     this.cron.cronFieldErrors = validateCronForm(this.cron.cronForm);
     this.requestCronUpdate();
   }

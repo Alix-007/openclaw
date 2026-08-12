@@ -195,6 +195,7 @@ afterEach(() => {
   vi.mocked(showConfirmDialog).mockReset();
   vi.restoreAllMocks();
 });
+/* oxlint-disable max-lines -- Cohesive cron-page integration coverage shares one Gateway fixture. */
 
 describe("CronPage editor state sync", () => {
   it.each([
