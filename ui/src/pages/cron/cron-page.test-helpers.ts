@@ -126,13 +126,14 @@ export function createContext(
 }
 
 export function setChannelFixtures(context: ApplicationContext) {
+  const channelLabels = { telegram: "Telegram", discord: "Discord" };
   context.channels.state.channelsSnapshot = {
     ts: 0,
     channelOrder: ["telegram", "discord"],
-    channelLabels: { telegram: "Telegram", discord: "Discord" },
+    channelLabels,
     channelMeta: [
-      { id: "telegram", label: "Telegram", detailLabel: "Telegram Bot" },
-      { id: "discord", label: "Discord", detailLabel: "Discord Bot" },
+      { id: "telegram", label: channelLabels.telegram, detailLabel: "Telegram Bot" },
+      { id: "discord", label: channelLabels.discord, detailLabel: "Discord Bot" },
     ],
     channels: {},
     channelAccounts: {
