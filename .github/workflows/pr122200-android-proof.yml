@@ -102,6 +102,7 @@ jobs:
               sed \
                 -e "s/${PROOF_TOKEN}/[REDACTED]/g" \
                 -e "s/${PROOF_API_KEY}/[REDACTED]/g" \
+                -E -e 's/("(token|publicKey)"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
                 -E -e 's/[[:xdigit:]]{8}-[[:xdigit:]-]{27,}/[ID]/g' \
                 -E -e 's/[[:xdigit:]]{16,}/[ID]/g' \
                 "$source" >>"$RUNNER_TEMP/pairing-orchestration-raw.log"
@@ -504,7 +505,23 @@ jobs:
             done
             [[ "$node_pair_approved" == true ]]
             phase "node-access-approved"
-            tap_text "I have approved" 30
+            node_approval_ui_deadline=$((SECONDS + 30))
+            node_approval_ui_handled=false
+            while (( SECONDS < node_approval_ui_deadline )); do
+              if ui_point "Permissions" exact >/dev/null 2>&1; then
+                phase "permissions-auto-advanced"
+                node_approval_ui_handled=true
+                break
+              fi
+              if ui_point "I have approved" exact >/dev/null 2>&1; then
+                tap_text "I have approved" 30
+                phase "node-approval-confirmed"
+                node_approval_ui_handled=true
+                break
+              fi
+              sleep 2
+            done
+            [[ "$node_approval_ui_handled" == true ]]
           fi
 
           if wait_text "Permissions" 30 exact; then
