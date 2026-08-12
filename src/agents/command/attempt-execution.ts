@@ -62,6 +62,7 @@ import {
 } from "../bash-tools.exec-approval-output.js";
 import { resolveBootstrapWarningSignaturesSeen } from "../bootstrap-budget.js";
 import { resolveCliBackendConfig } from "../cli-backends.js";
+import { markCliBootstrapCompletionCallerOwned } from "../cli-bootstrap-completion-state.js";
 import {
   cliBackendAcceptsAuthProfileForwarding,
   resolveCliExecutionAuthProfileId,
@@ -915,7 +916,7 @@ export function runAgentAttempt(params: {
           runId: params.runId,
         },
         async () => {
-          return await runCliAgent({
+          const cliRunParams: Parameters<typeof runCliAgent>[0] = {
             preparedRunAdmission: params.preparedRunAdmission,
             sessionId: params.sessionId,
             sessionKey: params.sessionKey,
@@ -928,7 +929,6 @@ export function runAgentAttempt(params: {
             storePath: params.storePath,
             persistAssistantTranscript:
               params.storePath !== undefined && params.sessionStore !== undefined,
-            deferBootstrapCompletionToPostRun: true,
             workspaceDir: params.workspaceDir,
             cwd: params.cwd,
             config: params.cfg,
@@ -1084,7 +1084,9 @@ export function runAgentAttempt(params: {
                   },
                 }
               : {}),
-          });
+          };
+          markCliBootstrapCompletionCallerOwned(cliRunParams);
+          return await runCliAgent(cliRunParams);
         },
       );
     };

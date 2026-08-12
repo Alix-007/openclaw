@@ -644,7 +644,6 @@ export function buildCliRunResult(params: {
       : {}),
   };
   if (
-    context.shouldRecordCompletedBootstrapTurn === true &&
     bootstrapCompletion?.handled !== true &&
     bootstrapCompletion?.pending !== undefined &&
     runParams.abortSignal?.aborted !== true

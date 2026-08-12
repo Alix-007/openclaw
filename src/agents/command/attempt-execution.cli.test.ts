@@ -32,6 +32,7 @@ import { createTestPreparedRunAdmission } from "../admitted-run-context.test-sup
 import { clearRuntimeAuthProfileStoreSnapshots } from "../auth-profiles/runtime-snapshots.js";
 import { saveAuthProfileStore } from "../auth-profiles/store.js";
 import { testing as cliBackendsTesting } from "../cli-backends.test-support.js";
+import { consumeCliBootstrapCompletionCallerOwnership } from "../cli-bootstrap-completion-state.js";
 import { createCronCreatorAuthorityCapability } from "../cron-creator-authority-context.js";
 import type { EmbeddedAgentRunResult } from "../embedded-agent.js";
 import { FailoverError } from "../failover-error.js";
@@ -844,10 +845,10 @@ describe("CLI attempt execution", () => {
       onExecutionStarted,
     });
 
-    expect(firstRunCliAgentArg()).toMatchObject({
-      onExecutionStarted,
-      deferBootstrapCompletionToPostRun: true,
-    });
+    const runParams = firstRunCliAgentArg();
+    expect(runParams).toMatchObject({ onExecutionStarted });
+    expect(consumeCliBootstrapCompletionCallerOwnership(runParams)).toBe(true);
+    expect(consumeCliBootstrapCompletionCallerOwnership(runParams)).toBe(false);
   });
 
   it("forwards authoritative group type to CLI runs with opaque session keys", async () => {

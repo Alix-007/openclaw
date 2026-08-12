@@ -48,6 +48,7 @@ import {
   setCliAuthEpochTestDeps,
 } from "../cli-auth-epoch.test-support.js";
 import { testing as cliBackendsTesting } from "../cli-backends.test-support.js";
+import { takePreparedCliBootstrapCompletion } from "../cli-bootstrap-completion-state.js";
 import {
   buildDefaultTestCliBackend,
   createCliRunnerPrepareFixture,
@@ -1801,13 +1802,13 @@ describe("prepareCliRunContext", () => {
     const firstTurn = await fixture.prepare(runParams);
 
     expect(firstTurn.systemPrompt).toContain("CLI continuation context");
-    expect(firstTurn.shouldRecordCompletedBootstrapTurn).toBe(true);
+    expect(takePreparedCliBootstrapCompletion(firstTurn)).toEqual({ transcriptOwner: "runner" });
 
     hasCompletedBootstrapTurn.mockResolvedValue(true);
     const continuation = await fixture.prepare(runParams);
 
     expect(continuation.systemPrompt).not.toContain("CLI continuation context");
-    expect(continuation.shouldRecordCompletedBootstrapTurn).toBeUndefined();
+    expect(takePreparedCliBootstrapCompletion(continuation)).toBeUndefined();
     expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });
 
@@ -1850,7 +1851,7 @@ describe("prepareCliRunContext", () => {
     });
 
     expect(context.systemPrompt).toContain("Room-event workspace context");
-    expect(context.shouldRecordCompletedBootstrapTurn).toBeUndefined();
+    expect(takePreparedCliBootstrapCompletion(context)).toBeUndefined();
     expect(hasCompletedBootstrapTurn).not.toHaveBeenCalled();
     expect(resolveBootstrapContextForRun).toHaveBeenCalledOnce();
   });

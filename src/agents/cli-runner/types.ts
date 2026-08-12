@@ -105,8 +105,6 @@ export type RunCliAgentParams = {
   controlOperation?: "compact";
   /** Persist the successful CLI assistant reply into the OpenClaw session transcript. */
   persistAssistantTranscript?: boolean;
-  /** Keep bootstrap completion caller-owned until rewrite-capable post-run work settles. */
-  deferBootstrapCompletionToPostRun?: boolean;
   /** Session store path used when assistant transcript persistence is enabled. */
   storePath?: string;
   /** Admission-time lifecycle half of the durable transcript writer fence. */
@@ -349,8 +347,6 @@ export type PreparedCliRunContext = {
   systemPromptReport: SessionSystemPromptReport;
   claudeSkillsPluginArgs?: string[] | undefined;
   bootstrapPromptWarningLines: string[];
-  /** Persist continuation-skip state only after this prepared turn completes successfully. */
-  shouldRecordCompletedBootstrapTurn?: true;
   openClawHistoryPrompt?: string;
   heartbeatPrompt?: string;
   authEpoch?: string;

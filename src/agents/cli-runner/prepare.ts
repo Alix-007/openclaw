@@ -86,6 +86,10 @@ import {
   resolveCliAuthEpoch,
 } from "../cli-auth-epoch.js";
 import { resolveCliBackendConfig } from "../cli-backends.js";
+import {
+  consumeCliBootstrapCompletionCallerOwnership,
+  markPreparedCliBootstrapCompletion,
+} from "../cli-bootstrap-completion-state.js";
 import { hashCliSessionText, resolveCliSessionReuse } from "../cli-session.js";
 import {
   claudeCliSessionTranscriptHasContent,
@@ -429,6 +433,9 @@ function buildCliAuthProfileResolutionError(params: {
 export async function prepareCliRunContext(
   inputParams: RunCliAgentParams,
 ): Promise<PreparedCliRunContext> {
+  const bootstrapCompletionOwner = consumeCliBootstrapCompletionCallerOwnership(inputParams)
+    ? "caller"
+    : "runner";
   let params = inputParams.config ? inputParams : { ...inputParams, config: getRuntimeConfig() };
   const runConfig = params.config!;
   const sessionOwner = normalizeAgentId(
@@ -1864,7 +1871,7 @@ export async function prepareCliRunContext(
     });
     bindMcpClientGrantAdmission(preparedParams.admittedRunContext);
 
-    return {
+    const context: PreparedCliRunContext = {
       params: preparedParams,
       effectiveAuthProfileId,
       ...(authStore ? { authProfileStore: authStore } : {}),
@@ -1889,7 +1896,6 @@ export async function prepareCliRunContext(
       systemPromptReport,
       claudeSkillsPluginArgs: claudeSkillsPlugin.args,
       bootstrapPromptWarningLines: bootstrapPromptWarning.lines,
-      ...(shouldRecordCompletedBootstrapTurn ? { shouldRecordCompletedBootstrapTurn: true } : {}),
       ...(openClawHistoryPrompt ? { openClawHistoryPrompt } : {}),
       heartbeatPrompt,
       authEpoch,
@@ -1903,6 +1909,10 @@ export async function prepareCliRunContext(
       cwdHash,
       ...(mcpDeliveryCaptureEnabled ? { mcpDeliveryCapture: true } : {}),
     };
+    if (shouldRecordCompletedBootstrapTurn) {
+      markPreparedCliBootstrapCompletion(context, bootstrapCompletionOwner);
+    }
+    return context;
   } catch (err) {
     try {
       await cleanupPreparedResources?.();

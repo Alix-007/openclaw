@@ -31,20 +31,9 @@ type CliDeferredTurnMaintenanceOutcomePromise = Parameters<
   >
 >[1];
 
-const cliDeferredTurnMaintenanceOutcomes = new WeakMap<
-  PreparedCliRunContext,
-  CliDeferredTurnMaintenanceOutcomePromise
->();
-
-export function takeCliDeferredTurnMaintenanceOutcome(
-  context: PreparedCliRunContext,
-): CliDeferredTurnMaintenanceOutcomePromise | undefined {
-  const outcome = cliDeferredTurnMaintenanceOutcomes.get(context);
-  if (outcome) {
-    cliDeferredTurnMaintenanceOutcomes.delete(context);
-  }
-  return outcome;
-}
+type CliContextEngineTurnFinalization = {
+  maintenanceOutcome?: CliDeferredTurnMaintenanceOutcomePromise;
+};
 
 export function buildCliHookUserMessage(prompt: string): unknown {
   return {
@@ -368,10 +357,10 @@ export async function finalizeCliContextEngineTurn(params: {
   assistantText: string;
   terminalAnchor?: import("../../config/sessions/session-accessor.js").TranscriptEntryAnchor;
   output: CliOutput;
-}): Promise<void> {
+}): Promise<CliContextEngineTurnFinalization> {
   const { context } = params;
   if (!context.contextEngine) {
-    return;
+    return {};
   }
 
   const { params: runParams } = context;
@@ -399,7 +388,7 @@ export async function finalizeCliContextEngineTurn(params: {
     prePromptMessageCount: number;
     sessionManager?: SessionManager;
     withSessionManagerRewriteLock: <T>(operation: () => Promise<T> | T) => Promise<T>;
-  }) => {
+  }): Promise<CliContextEngineTurnFinalization> => {
     let deferredTurnMaintenance: Promise<void> | undefined;
     let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
     const result = await finalizeHarnessContextEngineTurn({
@@ -429,14 +418,12 @@ export async function finalizeCliContextEngineTurn(params: {
         }),
       warn: (message) => log.warn(message),
     });
-    if (
-      result.postTurnFinalizationSucceeded &&
-      deferredTurnMaintenance &&
-      deferredTurnMaintenanceOutcome
-    ) {
+    if (result.postTurnFinalizationSucceeded && deferredTurnMaintenance) {
       context.contextEngineDeferredTurnMaintenance = deferredTurnMaintenance;
-      cliDeferredTurnMaintenanceOutcomes.set(context, deferredTurnMaintenanceOutcome);
     }
+    return deferredTurnMaintenanceOutcome
+      ? { maintenanceOutcome: deferredTurnMaintenanceOutcome }
+      : {};
   };
   const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();
   if (runParams.onContextEngineTurnCandidate) {
@@ -457,11 +444,11 @@ export async function finalizeCliContextEngineTurn(params: {
         isHeartbeat: isHeartbeatLifecycleRunKind(runParams.bootstrapContextRunKind),
       });
     }
-  } else {
-    await finalizeTurn({
-      messagesSnapshot: [...prePromptMessages, ...turnMessages],
-      prePromptMessageCount: prePromptMessages.length,
-      withSessionManagerRewriteLock: async (operation) => await operation(),
-    });
+    return {};
   }
+  return await finalizeTurn({
+    messagesSnapshot: [...prePromptMessages, ...turnMessages],
+    prePromptMessageCount: prePromptMessages.length,
+    withSessionManagerRewriteLock: async (operation) => await operation(),
+  });
 }

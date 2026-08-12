@@ -5,6 +5,8 @@ import {
   persistCompletedBootstrapTurn,
   trackPendingBootstrapCompletionSettlement,
 } from "./bootstrap-files.js";
+import { takePreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
+import type { PreparedCliRunContext } from "./cli-runner/types.js";
 import type { EmbeddedAgentRunResult } from "./embedded-agent-runner/types.js";
 import type { SessionManager } from "./sessions/session-manager.js";
 
@@ -22,6 +24,39 @@ export type PendingCliBootstrapCompletion = {
 type CliBootstrapCompletionResult = EmbeddedAgentRunResult & {
   [CLI_BOOTSTRAP_COMPLETION]?: PendingCliBootstrapCompletion;
 };
+
+/** Transfers completion to the transcript owner after all rewrite-capable work settles. */
+export function buildPendingCliBootstrapCompletion(params: {
+  context: PreparedCliRunContext;
+  maintenanceOutcome?: Promise<{ status: string; changed?: boolean }>;
+  runnerTranscriptPersisted: boolean;
+}): PendingCliBootstrapCompletion | undefined {
+  const { context } = params;
+  const completion = takePreparedCliBootstrapCompletion(context);
+  if (
+    !completion ||
+    context.params.abortSignal?.aborted === true ||
+    !context.params.sessionTarget
+  ) {
+    return undefined;
+  }
+  return {
+    maintenanceSettledWithoutRewrite: params.maintenanceOutcome
+      ? params.maintenanceOutcome
+          .then((outcome) => outcome.status === "completed" && !outcome.changed)
+          .catch((error: unknown) => {
+            log.warn(
+              `failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`,
+            );
+            return false;
+          })
+      : Promise.resolve(true),
+    runId: context.params.runId,
+    sessionTarget: context.params.sessionTarget,
+    sessionManager: context.params.sessionManager,
+    transcriptOwner: params.runnerTranscriptPersisted ? completion.transcriptOwner : "caller",
+  };
+}
 
 /** Carries internal lifecycle ownership through result spreads without entering serialized metadata. */
 export function setPendingCliBootstrapCompletion(

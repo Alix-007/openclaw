@@ -29,9 +29,10 @@ import {
 } from "./auth-profiles.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
 import {
+  buildPendingCliBootstrapCompletion,
   finalizeRunnerOwnedPendingCliBootstrapCompletion,
-  type PendingCliBootstrapCompletion,
 } from "./cli-bootstrap-completion.js";
+import { takePreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
   resolveCliSessionId,
@@ -58,7 +59,6 @@ import {
   persistCliAssistantTranscript,
   persistCliRunBlock,
   runCliAgentEndHook,
-  takeCliDeferredTurnMaintenanceOutcome,
 } from "./cli-runner/cli-run-transcript.js";
 import {
   attachCliMessagingDeliveryEvidence,
@@ -134,49 +134,6 @@ export async function isCliBindingFlushed(
     }
   }
   return false;
-}
-
-/** Transfers completion to the transcript owner after all rewrite-capable work settles. */
-function handleCompletedCliBootstrapTurn(
-  context: PreparedCliRunContext,
-  runnerTranscriptPersisted: boolean,
-): { handled: boolean; pending?: PendingCliBootstrapCompletion } {
-  // Post-output transcript/finalization awaits can race with cancellation. Never
-  // let an aborted turn suppress workspace context on the next eligible turn.
-  if (
-    context.shouldRecordCompletedBootstrapTurn !== true ||
-    context.params.abortSignal?.aborted === true
-  ) {
-    return { handled: false };
-  }
-  const sessionTarget = context.params.sessionTarget;
-  if (!sessionTarget) {
-    return { handled: false };
-  }
-  const maintenanceOutcome = takeCliDeferredTurnMaintenanceOutcome(context);
-  return {
-    handled: false,
-    pending: {
-      maintenanceSettledWithoutRewrite: maintenanceOutcome
-        ? maintenanceOutcome
-            .then((outcome) => outcome.status === "completed" && !outcome.changed)
-            .catch((error: unknown) => {
-              log.warn(
-                `failed to settle CLI bootstrap completion entry: ${formatErrorMessage(error)}`,
-              );
-              return false;
-            })
-        : Promise.resolve(true),
-      runId: context.params.runId,
-      sessionTarget,
-      sessionManager: context.params.sessionManager,
-      // Command post-run may still compact or reset after runner persistence.
-      transcriptOwner:
-        runnerTranscriptPersisted && context.params.deferBootstrapCompletionToPostRun !== true
-          ? "runner"
-          : "caller",
-    },
-  };
 }
 
 /** Prepares and runs one CLI-backed agent turn. */
@@ -597,7 +554,7 @@ export async function runPreparedCliAgent(
           modelId: context.modelId,
           usage: output.usage,
         });
-        await finalizeCliContextEngineTurn({
+        const { maintenanceOutcome } = await finalizeCliContextEngineTurn({
           context,
           historyMessages: context.contextEngine ? contextEngineHistoryMessages : historyMessages,
           assistantText,
@@ -623,10 +580,15 @@ export async function runPreparedCliAgent(
           ctx: hookContext,
           hookRunner,
         });
-        const bootstrapCompletion = handleCompletedCliBootstrapTurn(
+        const pendingBootstrapCompletion = buildPendingCliBootstrapCompletion({
           context,
-          assistantTranscriptPersistence.persisted,
-        );
+          maintenanceOutcome,
+          runnerTranscriptPersisted: assistantTranscriptPersistence.persisted,
+        });
+        const bootstrapCompletion = {
+          handled: false,
+          ...(pendingBootstrapCompletion ? { pending: pendingBootstrapCompletion } : {}),
+        };
         return buildCliRunResult({
           context,
           output,
@@ -771,29 +733,33 @@ export async function runPreparedCliAgent(
     cleanupSucceeded = false;
     cleanupError = error as Error;
   }
-  const settledResult = settleCliBackendOutcome({
-    runResult,
-    runError,
-    runFailed,
-    cleanupError,
-    deliveredMessagingSideEffect,
-    diagnosticLifecycle,
-    failoverContext: cliFailoverContext,
-  });
-  void finalizeRunnerOwnedPendingCliBootstrapCompletion({
-    result: settledResult,
-    transcriptStable: cleanupSucceeded,
-    isStillEligible: () => {
-      if (params.abortSignal?.aborted === true) {
-        return false;
-      }
-      if (params.lifecycleGeneration) {
-        assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
-      }
-      return true;
-    },
-  });
-  return settledResult;
+  try {
+    const settledResult = settleCliBackendOutcome({
+      runResult,
+      runError,
+      runFailed,
+      cleanupError,
+      deliveredMessagingSideEffect,
+      diagnosticLifecycle,
+      failoverContext: cliFailoverContext,
+    });
+    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+      result: settledResult,
+      transcriptStable: cleanupSucceeded,
+      isStillEligible: () => {
+        if (params.abortSignal?.aborted === true) {
+          return false;
+        }
+        if (params.lifecycleGeneration) {
+          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+        }
+        return true;
+      },
+    });
+    return settledResult;
+  } finally {
+    takePreparedCliBootstrapCompletion(context);
+  }
 }
 
 

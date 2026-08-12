@@ -571,7 +571,7 @@ async function compactNativeHarnessCliTranscript(params: {
   return { compacted: true, result };
 }
 
-export type CliTurnCompactionLifecycleOutcome = {
+type CliTurnCompactionLifecycleOutcome = {
   sessionEntry: SessionEntry | undefined;
   compacted: boolean;
 };

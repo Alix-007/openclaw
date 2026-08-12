@@ -50,6 +50,7 @@ import {
   hasCompletedBootstrapTurn,
 } from "./bootstrap-files.js";
 import { testing as cliBackendsTesting } from "./cli-backends.test-support.js";
+import { markPreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
 import { finalizePendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import {
   restoreCliRunnerTestDeps,
@@ -473,7 +474,7 @@ describe("runCliAgent reliability", () => {
     context.params.sessionTarget = sessionTarget;
     context.params.storePath = storePath;
     context.params.workspaceDir = dir;
-    context.shouldRecordCompletedBootstrapTurn = true;
+    markPreparedCliBootstrapCompletion(context, "runner");
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
         reason: "exit",
@@ -524,7 +525,7 @@ describe("runCliAgent reliability", () => {
     context.params.sessionTarget = sessionTarget;
     context.params.storePath = storePath;
     context.params.workspaceDir = dir;
-    context.shouldRecordCompletedBootstrapTurn = true;
+    markPreparedCliBootstrapCompletion(context, "runner");
     context.preparedBackend.cleanup = vi.fn(async () => {
       throw new Error("backend cleanup failed");
     });
@@ -611,7 +612,7 @@ describe("runCliAgent reliability", () => {
       context.params.workspaceDir = dir;
       context.contextEngine = contextEngine;
       context.contextEngineTurnPrompt = context.params.prompt;
-      context.shouldRecordCompletedBootstrapTurn = true;
+      markPreparedCliBootstrapCompletion(context, "runner");
       supervisorSpawnMock.mockResolvedValueOnce(
         createManagedRun({
           reason: "exit",
@@ -669,11 +670,10 @@ describe("runCliAgent reliability", () => {
       runId: "run-cli-bootstrap-marker-deferred",
     });
     context.params.persistAssistantTranscript = true;
-    context.params.deferBootstrapCompletionToPostRun = true;
     context.params.sessionFile = sessionFile;
     context.params.sessionTarget = sessionTarget;
     context.params.storePath = storePath;
-    context.shouldRecordCompletedBootstrapTurn = true;
+    markPreparedCliBootstrapCompletion(context, "caller");
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
         reason: "exit",
@@ -729,7 +729,7 @@ describe("runCliAgent reliability", () => {
     context.params.sessionTarget = sessionTarget;
     context.params.storePath = storePath;
     context.params.workspaceDir = dir;
-    context.shouldRecordCompletedBootstrapTurn = true;
+    markPreparedCliBootstrapCompletion(context, "runner");
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
         reason: "exit",
