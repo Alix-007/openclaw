@@ -883,7 +883,6 @@ describe("CronPage lifecycle", () => {
   });
 
   it("keeps a newer overview ahead of a removal confirmed after an intervening refresh", async () => {
-    const confirmation = createDeferred<boolean>();
     const staleRemovalStatus = createDeferred<{
       enabled: boolean;
       jobs: number;
@@ -938,7 +937,6 @@ describe("CronPage lifecycle", () => {
       }
       return Promise.resolve({});
     });
-    vi.mocked(showConfirmDialog).mockReturnValueOnce(confirmation.promise);
     const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
     const page = createPage(createContext(gateway, null), { render: true });
     await waitForCronPage(() =>
@@ -951,7 +949,11 @@ describe("CronPage lifecycle", () => {
       (item) => item.textContent?.trim() === "Remove",
     ) as HTMLButtonElement;
     removeButton.click();
-    await waitForCronPage(() => expect(showConfirmDialog).toHaveBeenCalledOnce());
+    const findConfirmButton = () =>
+      Array.from(document.querySelectorAll<HTMLButtonElement>(".exec-approval-actions .btn")).find(
+        (button) => button.textContent?.trim() === "Remove",
+      );
+    await waitForCronPage(() => expect(findConfirmButton()).toBeDefined());
 
     phase = "confirmation-refresh";
     const confirmationRefresh = page.refreshCron({ tableFilters: true });
@@ -960,7 +962,7 @@ describe("CronPage lifecycle", () => {
       expect(page.cron.cronFailingCount).toBe(2);
     });
 
-    confirmation.resolve(true);
+    findConfirmButton()?.click();
     await waitForCronPage(() => expect(removed).toBe(true));
     confirmationRefreshJobs.resolve(cronListResponse([job]));
     await confirmationRefresh;

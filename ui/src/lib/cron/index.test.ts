@@ -1743,6 +1743,25 @@ describe("cron controller", () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
+  it("settles every coalesced jobs reload when the drained reload fails", async () => {
+    const first = createDeferred<CronJobsListResult>();
+    const request = vi
+      .fn()
+      .mockImplementationOnce(() => first.promise)
+      .mockRejectedValueOnce(new Error("queued cron.list unavailable"));
+    const state = createStateWithRequest(request);
+    const firstLoad = loadCronJobsPage(state);
+    const pendingLoads = [loadCronJobsPage(state), loadCronJobsPage(state)];
+
+    first.resolve(emptyCronListResponse());
+    await Promise.all([firstLoad, ...pendingLoads]);
+
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(state.cronError).toBe("Error: queued cron.list unavailable");
+    expect(state.cronJobsReloadPending).toBe(false);
+    expect(state.cronJobsReloadPendingTableFilters).toBe(false);
+  });
+
   it("drops malformed cron jobs before they enter UI state", async () => {
     const request = vi.fn(async (method: string) => {
       if (method === "cron.list") {

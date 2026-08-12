@@ -282,7 +282,6 @@ export function createInitialCronState(
 type PendingCronJobsReload = {
   promise: Promise<void>;
   resolve: () => void;
-  reject: (reason: unknown) => void;
 };
 
 const pendingCronJobsReloads = new WeakMap<CronState, PendingCronJobsReload>();
@@ -609,18 +608,15 @@ function queueCronJobsSnapshotRecovery(state: CronState, tableFilters: boolean) 
   let pending = pendingCronJobsReloads.get(state);
   if (!pending) {
     let resolve!: () => void;
-    let reject!: (reason: unknown) => void;
-    const promise = new Promise<void>((onResolve, onReject) => {
+    const promise = new Promise<void>((onResolve) => {
       resolve = onResolve;
-      reject = onReject;
     });
-    void promise.catch(() => undefined);
-    pending = { promise, resolve, reject };
+    pending = { promise, resolve };
     pendingCronJobsReloads.set(state, pending);
   }
   state.cronJobsReloadPending = true;
   state.cronJobsReloadPendingTableFilters = tableFilters;
-  return pending.promise;
+  return pending;
 }
 
 async function drainPendingCronJobsReload(state: CronState) {
@@ -633,11 +629,10 @@ async function drainPendingCronJobsReload(state: CronState) {
   const pending = pendingCronJobsReloads.get(state);
   try {
     await loadCronJobsPage(state, { tableFilters });
-    pending?.resolve();
-  } catch (error) {
-    pending?.reject(error);
-    throw error;
   } finally {
+    // Coalesced callers wait for settlement, while loadCronJobsPage owns any
+    // reload error in cronError. Always release every waiter and state owner.
+    pending?.resolve();
     if (pendingCronJobsReloads.get(state) === pending) {
       pendingCronJobsReloads.delete(state);
     }
@@ -654,7 +649,7 @@ export async function loadCronJobsPage(
   const append = opts?.append === true;
   if (state.cronLoading || state.cronJobsLoadingMore) {
     if (!append) {
-      await queueCronJobsSnapshotRecovery(state, opts?.tableFilters === true);
+      await queueCronJobsSnapshotRecovery(state, opts?.tableFilters === true).promise;
     }
     return;
   }
