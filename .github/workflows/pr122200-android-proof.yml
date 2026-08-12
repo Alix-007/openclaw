@@ -36,6 +36,14 @@ jobs:
           path: proof-harness
           persist-credentials: false
 
+      - name: Set up repository toolchain
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          install-deps: "true"
+          use-actions-cache: "false"
+
       - name: Set up Android toolchain
         uses: ./.github/actions/setup-android-toolchain
 
@@ -66,11 +74,13 @@ jobs:
           set -euo pipefail
           artifact_dir="$RUNNER_TEMP/pr122200-emulator-proof"
           mkdir -p "$artifact_dir"
+          runtime_log="$RUNNER_TEMP/pr122200-emulator-runtime.log"
+          logcat_file="$RUNNER_TEMP/pr122200-emulator-logcat.txt"
           emulator_pid=""
 
           cleanup() {
             set +e
-            adb logcat -d '*:W' >"$artifact_dir/logcat-warnings.txt" 2>/dev/null || true
+            adb logcat -d '*:W' >"$logcat_file" 2>/dev/null || true
             adb emu kill >/dev/null 2>&1 || true
             [[ -n "$emulator_pid" ]] && kill "$emulator_pid" >/dev/null 2>&1 || true
           }
@@ -100,7 +110,7 @@ jobs:
             -no-snapshot \
             -wipe-data \
             -gpu swiftshader_indirect \
-            >"$artifact_dir/emulator.log" 2>&1 &
+            >"$runtime_log" 2>&1 &
           emulator_pid=$!
 
           timeout 180 adb wait-for-device
@@ -144,6 +154,11 @@ jobs:
           grep -q 'View all' "$artifact_dir/interaction/03-closed.xml"
           grep -q 'Retry' "$artifact_dir/interaction/04-retry.xml"
           grep -q 'Close' "$artifact_dir/interaction/05-recovered.xml"
+          text_artifacts=("$artifact_dir/instrumentation.txt" "$artifact_dir"/interaction/*.xml)
+          ! rg -n -i \
+            'token|public.?key|private.?key|device.?id|node.?id|credential|authorization|bearer|adbkey' \
+            "${text_artifacts[@]}"
+          ! rg -n -e '\b[[:xdigit:]]{64}\b' -e '[A-Za-z0-9+/=_-]{80,}' "${text_artifacts[@]}"
           {
             echo "product_sha=$PRODUCT_SHA"
             echo "proof_sha=$PROOF_SHA"
@@ -151,9 +166,13 @@ jobs:
             echo "states=preview,full,closed,retry,recovered"
             echo "instrumentation=OK (1 test)"
           } >"$artifact_dir/manifest.txt"
+          (
+            cd "$artifact_dir"
+            find interaction -type f -print0 | sort -z | xargs -0 sha256sum >sha256sums.txt
+          )
 
       - name: Upload redacted emulator interaction proof
-        if: always()
+        if: steps.proof.outcome == 'success'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pr122200-android-emulator-interaction-exact-head
