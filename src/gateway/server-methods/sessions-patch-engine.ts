@@ -8,8 +8,9 @@ import {
 } from "../../../packages/gateway-protocol/src/index.js";
 import type { SessionEntry } from "../../config/sessions.js";
 import { isInternalSessionEffectsKey } from "../../config/sessions/internal-session-key.js";
+import { SESSION_LIFECYCLE_CHANGED_ERROR_REASON } from "../../config/sessions/lifecycle.js";
 import {
-  applySqliteSessionEntryCanonicalReplacements,
+  applySessionEntryCanonicalReplacements,
   type SessionEntryCanonicalReplacement,
 } from "../../config/sessions/session-accessor.sqlite-replacement-projection.js";
 import { SessionLabelOwnerIndex } from "../../config/sessions/session-entry-selection.js";
@@ -96,6 +97,12 @@ function unexpectedPatchError(key: string, error: unknown): ErrorShape {
       retryable: true,
     },
   );
+}
+
+function sessionChangedError(key: string): ErrorShape {
+  return errorShape(ErrorCodes.INVALID_REQUEST, `Session ${key} changed before patch. Retry.`, {
+    details: { reason: SESSION_LIFECYCLE_CHANGED_ERROR_REASON },
+  });
 }
 
 function pluginOwnershipError(params: {
@@ -314,8 +321,17 @@ async function executeSessionPatchMutations(params: {
             [...groups.values()].map(async (group) => {
               const first = group[0]!;
               try {
-                const groupOutcomes = await applySqliteSessionEntryCanonicalReplacements({
+                // Labels need store-wide uniqueness. Other single patches retain every resolver
+                // candidate so writer-queued legacy aliases remain visible to revalidation.
+                const selectedSessionKeys =
+                  group.length === 1 && first.fullPatch.label === undefined
+                    ? Array.from(
+                        new Set([first.key, first.canonicalKey, ...first.initialStoreKeys]),
+                      )
+                    : undefined;
+                const groupOutcomes = await applySessionEntryCanonicalReplacements({
                   agentId: first.targetAgentId,
+                  ...(selectedSessionKeys ? { sessionKeys: selectedSessionKeys } : {}),
                   storePath: first.storePath,
                   skipMaintenance: true,
                   update: async (entries) => {
@@ -376,10 +392,7 @@ async function executeSessionPatchMutations(params: {
                         ) {
                           projectedOutcomes.push({
                             ok: false,
-                            error: errorShape(
-                              ErrorCodes.INVALID_REQUEST,
-                              `Session ${target.key} changed before patch. Retry.`,
-                            ),
+                            error: sessionChangedError(target.key),
                           });
                           continue;
                         }

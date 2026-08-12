@@ -9,7 +9,6 @@ import {
   setActiveEmbeddedRun,
 } from "../../agents/embedded-agent-runner/runs.js";
 import type { SessionEntry } from "../../config/sessions.js";
-import { HEARTBEAT_RUN_SCOPE } from "../../infra/heartbeat-run-scope.js";
 import { withSystemEventOwner } from "../../infra/system-event-ownership.js";
 import {
   enqueueSystemEvent,
@@ -20,7 +19,6 @@ import { MESSAGE_TOOL_ONLY_DELIVERY_HINT } from "../../plugin-sdk/message-tool-d
 import { normalizeSessionDeliveryState } from "../../utils/delivery-context.shared.js";
 import { hasControlCommand } from "../command-detection.js";
 import { runReplyAgent } from "./agent-runner.runtime.js";
-import { applySessionHints } from "./body.js";
 import {
   loadAgentRunnerRuntime,
   loadEmbeddedAgentRuntime,
@@ -37,6 +35,11 @@ import { createReplyOperation, getActiveReplyRunCount } from "./reply-run-regist
 import { testing as replyRunTesting } from "./reply-run-registry.test-support.js";
 import { routeReply } from "./route-reply.runtime.js";
 import { drainFormattedSystemEvents } from "./session-system-events.js";
+import {
+  createSourceReplyDeliveryRuntime,
+  readSourceReplyDeliveryRuntime,
+  type SourceReplyDeliveryRuntimeOptions,
+} from "./source-reply-delivery-runtime.js";
 import { buildChannelSourceTurnId } from "./source-turn-id.js";
 import { resolveTypingMode } from "./typing-mode.js";
 
@@ -63,7 +66,7 @@ vi.mock("../../config/sessions/group.js", () => ({
 }));
 
 vi.mock("../../config/sessions/paths.js", () => ({
-  resolveSessionFilePath: vi.fn().mockReturnValue("/tmp/session.jsonl"),
+  resolveSessionFilePathCore: vi.fn().mockReturnValue("/tmp/session.jsonl"),
   resolveSessionFilePathOptions: vi.fn().mockReturnValue({}),
 }));
 
@@ -71,9 +74,9 @@ const loadSessionEntryMock = vi.hoisted(() => vi.fn());
 const updateAmbientTranscriptWatermarkMock = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 
 vi.mock("../../config/sessions/session-accessor.js", () => ({
-  listSessionEntries: vi.fn().mockReturnValue([]),
+  listSessionEntriesCore: vi.fn().mockReturnValue([]),
   loadSessionEntry: loadSessionEntryMock,
-  patchSessionEntry: vi.fn(),
+  patchSessionEntryCore: vi.fn(),
   persistSessionTranscriptTurn: vi.fn(),
 }));
 
@@ -430,6 +433,54 @@ describe("runPreparedReply media-only handling", () => {
     expect(call?.followupRun.run.allowEmptyAssistantReplyAsSilent).toBe(true);
   });
 
+  it.each([
+    {
+      name: "mention",
+      ctx: { WasMentioned: true },
+    },
+    {
+      name: "native command",
+      ctx: {
+        CommandTurn: {
+          kind: "native" as const,
+          source: "native" as const,
+          authorized: true,
+          commandName: "status",
+          body: "/status",
+        },
+      },
+    },
+  ])("keeps empty-assistant silence disabled for a directed group $name", async ({ ctx }) => {
+    await runPrepared({
+      ctx: {
+        ...baseParams().ctx,
+        ...ctx,
+      },
+    });
+
+    const call = requireLastRunReplyAgentCall();
+    expect(call?.followupRun.run.allowEmptyAssistantReplyAsSilent).toBe(false);
+  });
+
+  it("keeps empty-assistant silence available for ambient room events", async () => {
+    const defaults = baseParams();
+    await runPrepared({
+      ctx: {
+        ...defaults.ctx,
+        InboundEventKind: "room_event",
+        WasMentioned: true,
+      },
+      sessionCtx: {
+        ...defaults.sessionCtx,
+        InboundEventKind: "room_event",
+        WasMentioned: true,
+      },
+    });
+
+    const call = requireLastRunReplyAgentCall();
+    expect(call?.followupRun.run.allowEmptyAssistantReplyAsSilent).toBe(true);
+  });
+
   it("hydrates runtime thinking metadata before trusting static provider support", async () => {
     const resolveThinkingCatalog = vi.fn(async () => [
       {
@@ -587,10 +638,11 @@ describe("runPreparedReply media-only handling", () => {
       },
     });
 
-    expect(buildDirectChatContext).toHaveBeenCalledTimes(1);
+    expect(buildDirectChatContext).toHaveBeenCalledTimes(2);
     const directContextParams = requireMockCallArg(
       vi.mocked(buildDirectChatContext),
       "direct chat context",
+      1,
     ) as {
       sessionCtx?: { Provider?: string; ChatType?: string };
       sourceReplyDeliveryMode?: string;
@@ -616,6 +668,81 @@ describe("runPreparedReply media-only handling", () => {
       expect.anything(),
       undefined,
     );
+  });
+
+  it("projects prepared embedded prompt variants without changing CLI session guidance", async () => {
+    vi.mocked(buildDirectChatContext).mockImplementation(
+      ({ sourceReplyDeliveryMode }) => `direct:${sourceReplyDeliveryMode ?? "automatic"}`,
+    );
+    await runPrepared({
+      opts: {
+        sourceReplyDeliveryMode: "message_tool_only",
+        sourceReplyDeliveryModeOrigin: "runtime_default",
+      } as NonNullable<Parameters<typeof runPreparedReply>[0]["opts"]> &
+        SourceReplyDeliveryRuntimeOptions,
+      ctx: { ...createInboundTurn("hello", "discord", "direct") },
+      sessionCtx: { ...createSessionTurn("hello", "discord", "direct") },
+    });
+
+    const call = requireLastRunReplyAgentCall();
+    const followupRun = call.followupRun;
+    const run = followupRun.run;
+    const sourceReplyDeliveryRuntime = readSourceReplyDeliveryRuntime(run);
+    expect(run.extraSystemPrompt).toBe("direct:message_tool_only");
+    expect(run.extraSystemPromptStatic).toBe("direct:message_tool_only");
+    run.extraSystemPrompt += "\n\npost-compaction refresh";
+    sourceReplyDeliveryRuntime?.applyMode(run, "automatic");
+    expect(run.extraSystemPrompt).toBe("direct:message_tool_only\n\npost-compaction refresh");
+    sourceReplyDeliveryRuntime?.applyPreparedMode(run, "automatic");
+    expect(run.extraSystemPrompt).toBe("direct:automatic\n\npost-compaction refresh");
+    expect(run.extraSystemPromptStatic).toBe("direct:message_tool_only");
+    sourceReplyDeliveryRuntime?.applyPreparedMode(run, "message_tool_only");
+    expect(run.extraSystemPrompt).toBe("direct:message_tool_only\n\npost-compaction refresh");
+    expect(run.cliSessionBindingFacts).toEqual({
+      extraSystemPromptStatic: "direct:message_tool_only",
+      sourceReplyDeliveryMode: "message_tool_only",
+    });
+  });
+
+  it("replaces only the bound delivery prompt component", () => {
+    const repeatedPrefix = "same guidance\n\nindependent context\n\n";
+    const run = { extraSystemPrompt: `${repeatedPrefix}same guidance\n\nlater context` };
+    const runtime = createSourceReplyDeliveryRuntime({
+      origin: "runtime_default",
+      initialMode: "message_tool_only",
+      projections: [run],
+      promptComponentByMode: {
+        automatic: "automatic guidance",
+        message_tool_only: "same guidance",
+      },
+      promptComponentOffset: repeatedPrefix.length,
+    });
+
+    runtime.applyPreparedMode(run, "automatic");
+    expect(run.extraSystemPrompt).toBe(`${repeatedPrefix}automatic guidance\n\nlater context`);
+
+    const absent = { extraSystemPrompt: "independent context only" };
+    createSourceReplyDeliveryRuntime({
+      origin: "runtime_default",
+      initialMode: "message_tool_only",
+      projections: [absent],
+      promptComponentByMode: {
+        automatic: "automatic guidance",
+        message_tool_only: "missing guidance",
+      },
+      promptComponentOffset: undefined,
+    }).applyPreparedMode(absent, "automatic");
+    expect(absent.extraSystemPrompt).toBe("independent context only");
+
+    const empty = { extraSystemPrompt: "independent context only" };
+    createSourceReplyDeliveryRuntime({
+      origin: "runtime_default",
+      initialMode: "message_tool_only",
+      projections: [empty],
+      promptComponentByMode: { automatic: "", message_tool_only: "" },
+      promptComponentOffset: undefined,
+    }).applyPreparedMode(empty, "automatic");
+    expect(empty.extraSystemPrompt).toBe("independent context only");
   });
 
   it("keeps addressed message-tool delivery hints out of persisted transcript rows", async () => {
@@ -737,6 +864,24 @@ describe("runPreparedReply media-only handling", () => {
     expect(call.followupRun.prompt).toContain("[Thread history - for context]");
     expect(call.followupRun.prompt).toContain("Earlier message in this thread");
     expect(call.followupRun.prompt).toContain("[User sent media without caption]");
+  });
+
+  it("carries source delivery provenance into the queue-owned run", async () => {
+    await runPrepared({
+      opts: {
+        sourceReplyDeliveryMode: "message_tool_only",
+        sourceReplyDeliveryModeOrigin: "runtime_default",
+      } as NonNullable<Parameters<typeof runPreparedReply>[0]["opts"]> &
+        SourceReplyDeliveryRuntimeOptions,
+    });
+
+    const call = requireRunReplyAgentCall();
+    const followupRun = call.followupRun;
+    const run = followupRun.run;
+    expect(run.sourceReplyDeliveryMode).toBe("message_tool_only");
+    const sourceReplyDeliveryRuntime = readSourceReplyDeliveryRuntime(run);
+    expect(sourceReplyDeliveryRuntime?.origin).toBe("runtime_default");
+    expect(sourceReplyDeliveryRuntime?.currentMode).toBe("message_tool_only");
   });
 
   it("persists pure media turns without the model-facing placeholder", async () => {
@@ -2785,41 +2930,58 @@ describe("runPreparedReply media-only handling", () => {
     const directContextParams = requireMockCallArg(
       vi.mocked(buildDirectChatContext),
       "direct chat context",
+      1,
     ) as { sourceReplyDeliveryMode?: string };
     const call = requireLastRunReplyAgentCall();
     expect(directContextParams?.sourceReplyDeliveryMode).toBe("message_tool_only");
     expect(call?.followupRun.run.sourceReplyDeliveryMode).toBe("message_tool_only");
   });
 
-  it("keeps heartbeat prompts out of visible transcript prompt", async () => {
-    const heartbeatPrompt = "Read HEARTBEAT.md and run any due maintenance.";
+  it.each(["heartbeat", "cron-event", "exec-event"] as const)(
+    "keeps %s heartbeat metadata out of the model prompt",
+    async (provider) => {
+      const heartbeatPrompt = "Read HEARTBEAT.md and run any due maintenance.";
+      const syntheticConversationInfo =
+        'Conversation info:\n```json\n{"chat_id":"discord:channel-123"}\n```';
+      vi.mocked(buildInboundUserContextPrefix).mockReturnValueOnce(syntheticConversationInfo);
 
-    await runPrepared({
-      opts: { isHeartbeat: true },
-      ctx: {
-        Body: heartbeatPrompt,
-        RawBody: heartbeatPrompt,
-        CommandBody: heartbeatPrompt,
-        ...createProviderSurface("heartbeat"),
-        ChatType: "direct",
-      },
-      sessionCtx: {
-        Body: heartbeatPrompt,
-        BodyStripped: heartbeatPrompt,
-        ...createProviderSurface("heartbeat"),
-        ChatType: "direct",
-      },
-    });
+      await runPrepared({
+        opts: { isHeartbeat: true },
+        ctx: {
+          Body: heartbeatPrompt,
+          RawBody: heartbeatPrompt,
+          CommandBody: heartbeatPrompt,
+          ...createProviderSurface(provider),
+          ChatType: "direct",
+          OriginatingChannel: "discord",
+          OriginatingTo: "discord:channel-123",
+        },
+        sessionCtx: {
+          Body: heartbeatPrompt,
+          BodyStripped: heartbeatPrompt,
+          ...createProviderSurface(provider),
+          ChatType: "direct",
+          OriginatingChannel: "discord",
+          OriginatingTo: "discord:channel-123",
+        },
+      });
 
-    const call = requireLastRunReplyAgentCall();
-    expect(call?.commandBody).toContain(heartbeatPrompt);
-    expect(call?.followupRun.prompt).toContain(heartbeatPrompt);
-    expect(call?.transcriptCommandBody).toBe("[OpenClaw heartbeat poll]");
-    expect(call?.followupRun.transcriptPrompt).toBe("[OpenClaw heartbeat poll]");
-    expect(call?.followupRun.userTurnTranscriptRecorder?.message).toMatchObject({
-      provenance: { kind: "internal_system", sourceTool: "heartbeat" },
-    });
-  });
+      const call = requireLastRunReplyAgentCall();
+      expect(call?.commandBody).toContain(heartbeatPrompt);
+      expect(call?.followupRun.prompt).toContain(heartbeatPrompt);
+      expect(call?.followupRun.prompt).not.toContain(syntheticConversationInfo);
+      expect(buildInboundUserContextPrefix).not.toHaveBeenCalled();
+      expect(call?.sessionCtx).toMatchObject({
+        OriginatingChannel: "discord",
+        OriginatingTo: "discord:channel-123",
+      });
+      expect(call?.transcriptCommandBody).toBe("[OpenClaw heartbeat poll]");
+      expect(call?.followupRun.transcriptPrompt).toBe("[OpenClaw heartbeat poll]");
+      expect(call?.followupRun.userTurnTranscriptRecorder?.message).toMatchObject({
+        provenance: { kind: "internal_system", sourceTool: "heartbeat" },
+      });
+    },
+  );
 
   it("keeps active goal context out of background heartbeat turns", async () => {
     const sessionEntry: SessionEntry = {
@@ -2844,11 +3006,7 @@ describe("runPreparedReply media-only handling", () => {
       sessionStore: { "session-key": sessionEntry },
     });
 
-    expect(buildInboundUserContextPrefix).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.anything(),
-      undefined,
-    );
+    expect(buildInboundUserContextPrefix).not.toHaveBeenCalled();
   });
 
   it("uses persisted Discord chat metadata for system-event CLI static prompt identity", async () => {
@@ -2889,7 +3047,7 @@ describe("runPreparedReply media-only handling", () => {
     });
 
     const call = requireLastRunReplyAgentCall();
-    expect(buildGroupChatContext).toHaveBeenCalledTimes(1);
+    expect(buildGroupChatContext).toHaveBeenCalledTimes(2);
     const groupContextParams = requireMockCallArg(
       vi.mocked(buildGroupChatContext),
       "group chat context",
@@ -3472,19 +3630,6 @@ describe("runPreparedReply media-only handling", () => {
     const call = requireRunReplyAgentCall();
     expect(call.commandBody).toContain("System: [t] Model switched.");
     expect(call.followupRun.run.extraSystemPrompt ?? "").not.toContain("Runtime System Events");
-  });
-
-  it("does not drain queued system events for commitment-only heartbeat runs", async () => {
-    await runPrepared({
-      abortedLastRun: true,
-      opts: {
-        isHeartbeat: true,
-        [HEARTBEAT_RUN_SCOPE]: "commitment-only",
-      },
-    });
-
-    expect(drainFormattedSystemEvents).not.toHaveBeenCalled();
-    expect(applySessionHints).not.toHaveBeenCalled();
   });
 
   it("keeps sender ownership when queued system events are prepended", async () => {

@@ -156,7 +156,7 @@
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font: 600 var(--control-ui-text-xs) / 1 var(--font-sans);
+  font: 600 var(--control-ui-text-xs) / 1 var(--font-body);
   cursor: var(--cursor-action);
 }
 
@@ -560,6 +560,8 @@ wa-radio-group.settings-segmented::part(radios) {
 
 .settings-input,
 .settings-select {
+  --control-ui-touch-input-size: var(--control-ui-input-text-size);
+
   width: 100%;
   min-width: 0;
   font: inherit;

@@ -1,5 +1,5 @@
 {
-  "startupJsGzipBytes": 324626,
-  "reason": "task-suggestion card feature (PR #121259) on top of accumulated main drift; CI-measured QA-profile bytes",
-  "updatedAt": "2026-08-09"
+  "startupJsGzipBytes": 328285,
+  "reason": "Gateway update outcome (#121686); Testbox-measured exact-head bytes",
+  "updatedAt": "2026-08-11"
 }

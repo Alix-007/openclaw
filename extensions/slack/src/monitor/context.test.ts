@@ -13,6 +13,7 @@ function createTestContext(params?: {
   groupDmChannels?: string[];
   appClient?: App["client"];
   apiAppId?: string;
+  channelsConfig?: Record<string, { enabled?: boolean }>;
 }) {
   return createSlackMonitorContext({
     cfg: {
@@ -38,6 +39,7 @@ function createTestContext(params?: {
     groupDmEnabled: params?.groupDmEnabled ?? false,
     groupDmChannels: params?.groupDmChannels ?? [],
     defaultRequireMention: true,
+    channelsConfig: params?.channelsConfig,
     groupPolicy: "allowlist",
     useAccessGroups: true,
     reactionMode: "off",
@@ -100,6 +102,44 @@ describe("createSlackMonitorContext shouldDropMismatchedSlackEvent", () => {
       }),
     ).toBe(false);
   });
+
+  it("reads updated identity fields and mismatch guards after auth recovery", () => {
+    const ctx = createTestContext();
+
+    ctx.installationIdentity = {
+      kind: "enterprise",
+      apiAppId: "A_ENTERPRISE",
+      enterpriseId: "E_ENTERPRISE",
+    };
+    ctx.teamId = "";
+    ctx.apiAppId = "A_ENTERPRISE";
+
+    expect(ctx.installationIdentity).toEqual({
+      kind: "enterprise",
+      apiAppId: "A_ENTERPRISE",
+      enterpriseId: "E_ENTERPRISE",
+    });
+    expect(ctx.teamId).toBe("");
+    expect(ctx.apiAppId).toBe("A_ENTERPRISE");
+    expect(ctx.shouldDropMismatchedSlackEvent({ api_app_id: "A_EXPECTED" })).toBe(true);
+
+    ctx.installationIdentity = {
+      kind: "workspace",
+      apiAppId: "A_RECOVERED",
+      teamId: "T_RECOVERED",
+    };
+    ctx.teamId = "T_RECOVERED";
+    ctx.apiAppId = "A_RECOVERED";
+
+    expect(ctx.teamId).toBe("T_RECOVERED");
+    expect(ctx.apiAppId).toBe("A_RECOVERED");
+    expect(
+      ctx.shouldDropMismatchedSlackEvent({
+        api_app_id: "A_RECOVERED",
+        team_id: "T_WRONG",
+      }),
+    ).toBe(true);
+  });
 });
 
 describe("createSlackMonitorContext isChannelAllowed", () => {
@@ -111,6 +151,46 @@ describe("createSlackMonitorContext isChannelAllowed", () => {
 
     expect(ctx.isChannelAllowed({ channelId: "G456", channelType: "mpim" })).toBe(true);
     expect(ctx.isChannelAllowed({ channelId: "G999", channelType: "mpim" })).toBe(false);
+  });
+
+  it("matches workspace-qualified channel and group DM policies", () => {
+    const ctx = createTestContext({
+      groupDmEnabled: true,
+      groupDmChannels: ["team:T11111111:channel:G01234567"],
+      channelsConfig: {
+        "team:T11111111:channel:C01234567": { enabled: true },
+        "team:T22222222:channel:C01234567": { enabled: false },
+      },
+    });
+
+    expect(
+      ctx.isChannelAllowed({
+        teamId: "T11111111",
+        channelId: "C01234567",
+        channelType: "channel",
+      }),
+    ).toBe(true);
+    expect(
+      ctx.isChannelAllowed({
+        teamId: "T22222222",
+        channelId: "C01234567",
+        channelType: "channel",
+      }),
+    ).toBe(false);
+    expect(
+      ctx.isChannelAllowed({
+        teamId: "T11111111",
+        channelId: "G01234567",
+        channelType: "mpim",
+      }),
+    ).toBe(true);
+    expect(
+      ctx.isChannelAllowed({
+        teamId: "T22222222",
+        channelId: "G01234567",
+        channelType: "mpim",
+      }),
+    ).toBe(false);
   });
 });
 

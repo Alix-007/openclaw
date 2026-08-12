@@ -121,6 +121,7 @@ target server during config edits.
         },
         auth: "oauth",
         oauth: {
+          identity: "per-requester", // shared | per-requester; default: shared
           scope: "docs.read",
         },
         sslVerify: true,
@@ -156,6 +157,11 @@ target server during config edits.
   OAuth. Run `openclaw mcp login <name>` to store tokens under OpenClaw state.
 - `mcp.servers.<name>.oauth`: optional OAuth scope, redirect URL, and client
   metadata URL overrides.
+- `mcp.servers.<name>.oauth.identity`: credential ownership. Omit it or set
+  `"shared"` for operator-managed credentials; set `"per-requester"` to isolate
+  credentials for each authenticated sender. Per-requester OAuth requires an
+  HTTP server URL, cannot use `oauth.authProfileId`, and requires
+  `gateway.publicOrigin` for its callback.
 - `mcp.servers.<name>.sslVerify`, `clientCert`, `clientKey`: HTTP TLS controls
   for private endpoints and mutual TLS.
 - `mcp.servers.<name>.toolFilter`: optional per-server tool selection. `include`
@@ -420,8 +426,7 @@ See [Plugins](/tools/plugin).
     ssrfPolicy: {
       // dangerouslyAllowPrivateNetwork: true, // opt in only for trusted private-network access
       // allowPrivateNetwork: true, // legacy alias
-      // hostnameAllowlist: ["*.example.com", "example.com"],
-      // allowedHostnames: ["localhost"],
+      // allowedHostnames: ["*.example.com", "example.com", "localhost"],
     },
     tabCleanup: {
       enabled: true,
@@ -478,7 +483,7 @@ See [Plugins](/tools/plugin).
 - Set `ssrfPolicy.dangerouslyAllowPrivateNetwork: true` only when you intentionally trust private-network browser navigation.
 - In strict mode, remote CDP profile endpoints (`profiles.*.cdpUrl`) are subject to the same private-network blocking during reachability/discovery checks.
 - `ssrfPolicy.allowPrivateNetwork` remains supported as a legacy alias.
-- In strict mode, use `ssrfPolicy.hostnameAllowlist` and `ssrfPolicy.allowedHostnames` for explicit exceptions.
+- In strict mode, use the wildcard-aware `ssrfPolicy.allowedHostnames` for exact-host and pattern exceptions.
 - Remote profiles are attach-only (start/stop/reset disabled).
 - `profiles.*.cdpUrl` accepts `http://`, `https://`, `ws://`, and `wss://`.
   Use HTTP(S) when you want OpenClaw to discover `/json/version`; use WS(S)
@@ -570,12 +575,16 @@ See [Plugins](/tools/plugin).
     mode: "local", // local | remote
     port: 18789,
     bind: "loopback",
+    publicOrigin: "https://gateway.example.com",
     auth: {
       mode: "token", // none | token | password | trusted-proxy
       token: "your-token",
       // password: "your-password", // or OPENCLAW_GATEWAY_PASSWORD
       // trustedProxy: { userHeader: "x-forwarded-user" }, // for mode=trusted-proxy; see /gateway/trusted-proxy-auth
       allowTailscale: true,
+      identityScopes: {
+        "admin@example.com": ["operator.admin"],
+      },
       rateLimit: {
         maxAttempts: 10,
         windowMs: 60000,
@@ -654,6 +663,11 @@ See [Plugins](/tools/plugin).
 
 - `mode`: `local` (run gateway) or `remote` (connect to remote gateway). Gateway refuses to start unless `local`.
 - `port`: single multiplexed port for WS + HTTP. Precedence: `--port` > `OPENCLAW_GATEWAY_PORT` > `gateway.port` > `18789`.
+- `publicOrigin`: optional externally reachable HTTPS origin of the Gateway,
+  without a path, query, or credentials. HTTP is accepted only for literal
+  loopback hosts (`localhost`, `127.0.0.1`, or `[::1]`) during local development.
+  Per-requester MCP OAuth requires this value and uses
+  `<publicOrigin>/oauth/mcp/callback` as its callback URL.
 - `bind`: `auto`, `loopback` (default), `lan` (`0.0.0.0`), `tailnet` (Tailscale IPv4 when available, otherwise loopback), or `custom` (one IPv4 address). A resolved `tailnet` address and any `custom` address other than `127.0.0.1` or `0.0.0.0` require `127.0.0.1` on the same port for same-host clients; startup fails if either listener cannot bind. Non-loopback exposure remains limited to the selected interface.
 - **Legacy bind aliases**: use bind mode values in `gateway.bind` (`auto`, `loopback`, `lan`, `tailnet`, `custom`), not host aliases (`0.0.0.0`, `127.0.0.1`, `localhost`, `::`, `::1`).
 - **Docker note**: the default `loopback` bind listens on `127.0.0.1` inside the container. With Docker bridge networking (`-p 18789:18789`), traffic arrives on `eth0`, so the gateway is unreachable. Use `--network host`, or set `bind: "lan"` (or `bind: "custom"` with `customBindHost: "0.0.0.0"`) to listen on all interfaces.
@@ -662,6 +676,7 @@ See [Plugins](/tools/plugin).
 - `gateway.auth.mode: "none"`: explicit no-auth mode. Use only for trusted local loopback setups; this is intentionally not offered by onboarding prompts.
 - `gateway.auth.mode: "trusted-proxy"`: delegate browser/user auth to an identity-aware reverse proxy and trust identity headers from `gateway.trustedProxies` (see [Trusted Proxy Auth](/gateway/trusted-proxy-auth)). This mode expects a **non-loopback** proxy source by default; same-host loopback reverse proxies require explicit `gateway.auth.trustedProxy.allowLoopback = true`. Internal same-host callers can use `gateway.auth.password` as a local direct fallback; `gateway.auth.token` remains mutually exclusive with trusted-proxy mode.
 - `gateway.auth.allowTailscale`: when `true`, Tailscale Serve identity headers can satisfy Control UI/WebSocket auth (verified via `tailscale whois`). HTTP API endpoints do **not** use that Tailscale header auth; they follow the gateway's normal HTTP auth mode instead. This tokenless flow assumes the gateway host is trusted. Defaults to `true` when `tailscale.mode = "serve"`.
+- `gateway.auth.identityScopes`: maps a verified trusted-proxy user or Tailscale WhoIs login to connection-only operator scopes. Email keys match case-insensitively; other identities match exactly. For trusted-proxy Control UI connections, `x-openclaw-scopes` caps device enrollment or upgrade requests and the final device-plus-identity session scopes. Grants do not create or modify pairing records. Token, password, and no-auth connections have no verified identity and receive no grant.
 - `gateway.auth.rateLimit`: optional failed-auth limiter. Applies per client IP and per auth scope (shared-secret and device-token are tracked independently). Blocked attempts return `429` + `Retry-After`.
   - On the async Tailscale Serve Control UI path, failed attempts for the same `{scope, clientIp}` are serialized before the failure write. Concurrent bad attempts from the same client can therefore trip the limiter on the second request instead of both racing through as plain mismatches.
   - `gateway.auth.rateLimit.exemptLoopback` defaults to `true`; set `false` when you intentionally want localhost traffic rate-limited too (for test setups or strict proxy deployments).
@@ -1065,12 +1080,12 @@ Validation and safety notes:
 ```json5
 {
   discovery: {
-    wideArea: { enabled: true },
+    wideArea: { domain: "openclaw.internal" },
   },
 }
 ```
 
-Writes a unicast DNS-SD zone under `~/.openclaw/dns/`. For cross-network discovery, pair with a DNS server (CoreDNS recommended) + Tailscale split DNS.
+Setting `discovery.wideArea.domain` enables wide-area discovery and writes a unicast DNS-SD zone under `~/.openclaw/dns/`. For cross-network discovery, pair with a DNS server (CoreDNS recommended) + Tailscale split DNS.
 
 Setup: `openclaw dns setup --apply`.
 
@@ -1083,8 +1098,8 @@ Setup: `openclaw dns setup --apply`.
 ```json5
 {
   env: {
-    OPENROUTER_API_KEY: "sk-or-...",
     vars: {
+      OPENROUTER_API_KEY: "sk-or-...",
       GROQ_API_KEY: "gsk-...",
     },
     shellEnv: {
@@ -1128,7 +1143,7 @@ Secret refs are additive: plaintext values still work.
 Use one object shape:
 
 ```json5
-{ source: "env" | "file" | "exec", provider: "default", id: "..." }
+{ source: "env" | "file" | "exec" | "store", provider: "default", id: "..." }
 ```
 
 Validation:

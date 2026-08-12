@@ -58,10 +58,6 @@ import {
   detectLegacyChannelPairingState,
   migrateLegacyChannelPairingState,
 } from "./state-migrations.channel-pairing.js";
-import {
-  detectLegacyCommitments,
-  migrateLegacyCommitments,
-} from "./state-migrations.commitments.js";
 import { migrateLegacyConfigMachineState } from "./state-migrations.config-machine-state.js";
 import {
   detectLegacyDebugProxyCaptureSidecar,
@@ -78,7 +74,7 @@ import {
 } from "./state-migrations.exec-approvals.js";
 import {
   existsDir,
-  fileExists,
+  migrationFileExists,
   readSessionStoreJson5,
   safeReadDir,
 } from "./state-migrations.fs.js";
@@ -293,7 +289,7 @@ async function detectManagedWorktreeStateMigration(params: {
 }): Promise<LegacyStateDetection["worktrees"]> {
   const rawRoot = path.join(params.stateDir, "worktrees");
   const stateEnv = { ...params.env, OPENCLAW_STATE_DIR: params.stateDir };
-  const databaseExists = fileExists(resolveOpenClawStateSqlitePath(stateEnv));
+  const databaseExists = migrationFileExists(resolveOpenClawStateSqlitePath(stateEnv));
   const hasCurrentSchema = params.stateSchemaMigrations.length === 0;
   const hasLegacy =
     params.doctorOnlyStateMigrations === true &&
@@ -392,10 +388,10 @@ export async function detectLegacyStateMigrations(params: {
   const { preserveForeignMainAliases } = sessionStoreOwnership;
   const legacySessionEntries = safeReadDir(sessionsLegacyDir);
   const hasLegacySessions =
-    fileExists(sessionsLegacyStorePath) ||
+    migrationFileExists(sessionsLegacyStorePath) ||
     legacySessionEntries.some((e) => e.isFile() && e.name.endsWith(".jsonl"));
 
-  const targetSessionParsed = fileExists(sessionsTargetStorePath)
+  const targetSessionParsed = migrationFileExists(sessionsTargetStorePath)
     ? readSessionStoreJson5(sessionsTargetStorePath)
     : { store: {}, ok: true };
   const legacySessionSurfaces = params.legacySessionSurfaces;
@@ -427,13 +423,13 @@ export async function detectLegacyStateMigrations(params: {
   const targetAgentDir = path.join(stateDir, "agents", targetAgentId, "agent");
   const hasLegacyAgentDir = existsDir(legacyAgentDir);
   const pluginStateSidecarPath = resolveLegacyPluginStateSidecarPath(stateDir);
-  const hasPluginStateSidecar = fileExists(pluginStateSidecarPath);
+  const hasPluginStateSidecar = migrationFileExists(pluginStateSidecarPath);
   const hasPendingPluginStateSidecarArchive = hasPendingSqliteSidecarArchive(
     pluginStateSidecarPath,
     PLUGIN_STATE_SQLITE_SIDECAR_SUFFIXES,
   );
   const pluginInstallIndexPath = resolveLegacyInstalledPluginIndexStorePath({ stateDir });
-  const hasPluginInstallIndex = fileExists(pluginInstallIndexPath);
+  const hasPluginInstallIndex = migrationFileExists(pluginInstallIndexPath);
   const debugProxyCaptureSidecar = detectLegacyDebugProxyCaptureSidecar(stateDir, env);
   const stateSchemaMigrations = detectOpenClawStateDatabaseSchemaMigrations({
     env: { ...env, OPENCLAW_STATE_DIR: stateDir },
@@ -455,8 +451,8 @@ export async function detectLegacyStateMigrations(params: {
     TASK_STATE_SQLITE_SIDECAR_SUFFIXES,
   );
   const hasTaskStateSidecars =
-    fileExists(taskRunsSidecarPath) ||
-    fileExists(flowRunsSidecarPath) ||
+    migrationFileExists(taskRunsSidecarPath) ||
+    migrationFileExists(flowRunsSidecarPath) ||
     hasPendingTaskRunsSidecarArchive ||
     hasPendingFlowRunsSidecarArchive;
   const deliveryQueuePaths = {
@@ -472,31 +468,33 @@ export async function detectLegacyStateMigrations(params: {
     triggersPath: resolveLegacyVoiceWakeTriggersPath(stateDir),
     routingPath: resolveLegacyVoiceWakeRoutingPath(stateDir),
   };
-  const hasVoiceWake = fileExists(voiceWake.triggersPath) || fileExists(voiceWake.routingPath);
+  const hasVoiceWake =
+    migrationFileExists(voiceWake.triggersPath) || migrationFileExists(voiceWake.routingPath);
   const updateCheck = {
     sourcePath: resolveLegacyUpdateCheckPath(stateDir),
   };
-  const hasUpdateCheck = fileExists(updateCheck.sourcePath);
+  const hasUpdateCheck = migrationFileExists(updateCheck.sourcePath);
   const configHealth = {
     sourcePath: resolveLegacyConfigHealthPath(stateDir),
   };
-  const hasConfigHealth = fileExists(configHealth.sourcePath);
+  const hasConfigHealth = migrationFileExists(configHealth.sourcePath);
   const pluginBindingApprovals = {
     sourcePath: resolveLegacyPluginBindingApprovalsPath(env, homedir),
   };
   const hasPluginBindingApprovals =
     path.resolve(path.dirname(pluginBindingApprovals.sourcePath)) === path.resolve(stateDir) &&
-    fileExists(pluginBindingApprovals.sourcePath);
+    migrationFileExists(pluginBindingApprovals.sourcePath);
   const currentConversationBindings = {
     sourcePath: resolveLegacyCurrentConversationBindingsPath(stateDir),
   };
-  const hasCurrentConversationBindings = fileExists(currentConversationBindings.sourcePath);
+  const hasCurrentConversationBindings = migrationFileExists(
+    currentConversationBindings.sourcePath,
+  );
   const detectDoctorOwnedState = <TDetection>(
     detect: (options: { stateDir: string; doctorOnlyStateMigrations?: boolean }) => TDetection,
   ): TDetection =>
     detect({ stateDir, doctorOnlyStateMigrations: params.doctorOnlyStateMigrations });
   const tuiLastSessions = detectDoctorOwnedState(detectLegacyTuiLastSessions);
-  const commitments = detectDoctorOwnedState(detectLegacyCommitments);
   const auditLogs = detectDoctorOwnedState(detectLegacyAuditLogs);
   const acpReplayLedger = detectDoctorOwnedState(detectLegacyAcpReplayLedger);
   const managedOutgoingImages = detectDoctorOwnedState(detectLegacyManagedOutgoingImages);
@@ -645,12 +643,12 @@ export async function detectLegacyStateMigrations(params: {
       `- Managed worktrees: canonicalize ${worktrees.pathRewrites.length} persisted ${worktrees.pathRewrites.length === 1 ? "path" : "paths"} for symlinked state directories`,
     );
   }
-  if (fileExists(taskRunsSidecarPath)) {
+  if (migrationFileExists(taskRunsSidecarPath)) {
     preview.push(`- Task registry sidecar: ${taskRunsSidecarPath} → shared SQLite state`);
   } else if (hasPendingTaskRunsSidecarArchive) {
     preview.push(`- Task registry sidecar: finish archive cleanup for ${taskRunsSidecarPath}`);
   }
-  if (fileExists(flowRunsSidecarPath)) {
+  if (migrationFileExists(flowRunsSidecarPath)) {
     preview.push(`- Task flow sidecar: ${flowRunsSidecarPath} → shared SQLite state`);
   } else if (hasPendingFlowRunsSidecarArchive) {
     preview.push(`- Task flow sidecar: finish archive cleanup for ${flowRunsSidecarPath}`);
@@ -672,7 +670,6 @@ export async function detectLegacyStateMigrations(params: {
       tuiLastSessions.hasLegacy,
       "- TUI last-session pointers: legacy JSON file → shared SQLite state",
     ],
-    [commitments.hasLegacy, "- Commitments: legacy JSON file → shared SQLite state"],
     ...auditLogs.sources.map((source): readonly [boolean, string] => [
       true,
       `- ${source.label}: legacy JSONL file → shared SQLite state`,
@@ -792,7 +789,6 @@ export async function detectLegacyStateMigrations(params: {
       hasLegacy: hasCurrentConversationBindings,
     },
     tuiLastSessions,
-    commitments,
     auditLogs,
     acpReplayLedger,
     managedOutgoingImages,
@@ -1089,7 +1085,6 @@ function buildLegacyStateMigrationSteps(
   const doctorStateSteps: LegacyStateMigrationStep[] = isDoctor
     ? [
         ownerStep(detected.tuiLastSessions, migrateLegacyTuiLastSessions),
-        ownerStep(detected.commitments, migrateLegacyCommitments),
         ownerStep(detected.auditLogs, migrateLegacyAuditLogs),
         ownerStep(detected.acpReplayLedger, migrateLegacyAcpReplayLedger),
         ownerStep(detected.managedOutgoingImages, migrateLegacyManagedOutgoingImages),

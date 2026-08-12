@@ -1097,6 +1097,7 @@ describe("update-startup", () => {
       timeoutMs: 2500,
       fetchGit: true,
       includeRegistry: false,
+      useDetachedDevUpstream: true,
     });
     expect(resolveNpmChannelTag).not.toHaveBeenCalled();
     expect(getUpdateAvailable()).toEqual({
@@ -1214,14 +1215,48 @@ describe("update-startup", () => {
     });
   });
 
-  it("continues automatic dev campaigns from receipt-backed detached HEAD", async () => {
+  it("continues managed dev campaigns from a detached tracked deployment", async () => {
+    mockDevGitStatus({ branch: "HEAD", upstreamSource: "tracking" });
+    const runAutoUpdate = createAutoUpdateSuccessMock();
+
+    await runGatewayUpdateCheck({
+      cfg: { update: { channel: "dev", auto: { enabled: true } } },
+      log: { info: vi.fn() },
+      isNixMode: false,
+      allowInTests: true,
+      activeWorkInspectors: idleActiveWorkInspectors(),
+      runAutoUpdate,
+    });
+
+    expect(getUpdateSchedule()?.campaign?.state).toBe("countdown");
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(runAutoUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        devTarget: {
+          mode: "tracked",
+          upstreamRef: "origin/main",
+          upstreamSha: "upstream-sha",
+        },
+      }),
+    );
+  });
+
+  it.each([
+    { name: "successful install", status: "ok", reason: undefined },
+    {
+      name: "failed handoff",
+      status: "error",
+      reason: "managed-service-handoff-failed",
+    },
+  ] as const)("continues automatic dev campaigns from a $name receipt", async (testCase) => {
     runOpenClawStateWriteTransaction(({ db }) => {
       writeUpdateInstallReceiptRowSync(db, {
         kind: "update",
-        status: "ok",
+        status: testCase.status,
         ts: Date.now() - 60_000,
         stats: {
           mode: "git",
+          ...(testCase.reason ? { reason: testCase.reason } : {}),
           root: "/opt/openclaw",
           after: {
             sha: "current-sha",
@@ -1248,6 +1283,7 @@ describe("update-startup", () => {
       timeoutMs: 2500,
       fetchGit: true,
       includeRegistry: false,
+      useDetachedDevUpstream: true,
       gitUpstreamFallback: { currentSha: "current-sha", upstreamRef: "origin/main" },
     });
     expect(getUpdateSchedule()?.campaign?.state).toBe("countdown");
@@ -1267,7 +1303,10 @@ describe("update-startup", () => {
     { name: "ahead", git: { ahead: 1, behind: 0 } },
     { name: "diverged", git: { ahead: 1, behind: 2 } },
     { name: "non-main", git: { branch: "feature" } },
-    { name: "detached", git: { branch: "HEAD" } },
+    {
+      name: "detached without tracking",
+      git: { branch: "HEAD", upstream: null, upstreamSha: null, ahead: null, behind: null },
+    },
   ])("does not announce an automatic dev campaign for a $name checkout", async ({ git }) => {
     mockDevGitStatus(git);
     const runAutoUpdate = createAutoUpdateSuccessMock();
@@ -1417,7 +1456,7 @@ describe("update-startup", () => {
     expect(getUpdateSchedule()?.install?.git?.status).not.toBe("current");
   });
 
-  it("resets a busy dev campaign and forces it at the deadline", async () => {
+  it("keeps a dev campaign countdown stable when active work begins", async () => {
     mockDevGitStatus();
     let busy = 1;
     const log = { info: vi.fn() };
@@ -1457,12 +1496,15 @@ describe("update-startup", () => {
         applyAtMs: expect.any(Number),
       }),
     );
+    const applyAtMs = getUpdateSchedule()?.campaign?.applyAtMs;
     busy = 1;
     await vi.advanceTimersByTimeAsync(5_000);
-    expect(getUpdateSchedule()?.campaign).toMatchObject({ state: "waiting-for-idle" });
-    expect(getUpdateSchedule()?.campaign?.applyAtMs).toBeUndefined();
+    expect(getUpdateSchedule()?.campaign).toMatchObject({
+      state: "countdown",
+      applyAtMs,
+    });
 
-    await vi.advanceTimersByTimeAsync(14 * 60_000 + 50_000);
+    await vi.advanceTimersByTimeAsync(55_000);
     expect(getUpdateSchedule()?.campaign?.state).toBe("applying");
     expect(runAutoUpdate).toHaveBeenCalledOnce();
     expect(log.info).toHaveBeenCalledWith(
@@ -1470,7 +1512,7 @@ describe("update-startup", () => {
       expect.objectContaining({
         channel: "dev",
         version: "upstream-sha",
-        forced: true,
+        forced: false,
       }),
     );
   });

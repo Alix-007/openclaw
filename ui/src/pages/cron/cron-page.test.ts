@@ -4,8 +4,11 @@ import { createDeferred } from "../../../../test/helpers/promise.js";
 import type { GatewayBrowserClient, GatewayEventListener } from "../../api/gateway.ts";
 import type { CronJob, CronJobsListResult } from "../../api/types.ts";
 import type { ApplicationContext, ApplicationGatewaySnapshot } from "../../app/context.ts";
+import { showConfirmDialog } from "../../components/confirm-dialog.ts";
 import type { CronState } from "../../lib/cron/index.ts";
 import "./cron-page.ts";
+
+vi.mock("../../components/confirm-dialog.ts", () => ({ showConfirmDialog: vi.fn() }));
 
 type CronTestPage = HTMLElement & {
   context: ApplicationContext;
@@ -159,6 +162,7 @@ function createRequest() {
 
 afterEach(() => {
   document.body.replaceChildren();
+  vi.mocked(showConfirmDialog).mockReset();
   vi.restoreAllMocks();
 });
 
@@ -444,6 +448,7 @@ describe("CronPage editor state sync", () => {
     const removeButton = Array.from(page.querySelectorAll(".cron-job-menu__item")).find(
       (item) => item.textContent?.trim() === "Remove",
     ) as HTMLButtonElement;
+    vi.mocked(showConfirmDialog).mockResolvedValueOnce(true);
     removeButton.click();
     await waitForCronPage(() => expect(page.cron.cronEditingJobId).toBeNull());
     await waitForCronPage(() => expect(page.cron.cronRunsScope).toBe("all"));
@@ -865,6 +870,88 @@ describe("CronPage lifecycle", () => {
     expect(page.cron.cronFailingCount).toBe(2);
 
     staleMutationStatus.resolve({ enabled: true, jobs: 99, nextWakeAtMs: 99_000 });
+    await waitForCronPage(() => expect(page.cron.cronBusy).toBe(false));
+
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+  });
+
+  it("keeps a newer overview ahead of a removal confirmed after an intervening refresh", async () => {
+    const confirmation = createDeferred<boolean>();
+    const staleRemovalStatus = createDeferred<{
+      enabled: boolean;
+      jobs: number;
+      nextWakeAtMs: number;
+    }>();
+    const job: CronJob = {
+      id: "job-1",
+      name: "Nightly digest",
+      enabled: true,
+      createdAtMs: 0,
+      updatedAtMs: 0,
+      schedule: { kind: "every", everyMs: 60_000 },
+      sessionTarget: "isolated",
+      wakeMode: "now",
+      payload: { kind: "agentTurn", message: "digest" },
+      state: { nextRunAtMs: 1_000 },
+    };
+    let phase: "setup" | "confirmation-refresh" | "removal" = "setup";
+    let removed = false;
+    let staleRemovalStatusRequests = 0;
+    const overviewValue = () => (phase === "confirmation-refresh" ? 2 : 1);
+    const request = vi.fn((method: string, rawParams?: unknown) => {
+      const params = (rawParams ?? {}) as Record<string, unknown>;
+      if (method === "cron.remove") {
+        removed = true;
+        phase = "removal";
+        return Promise.resolve({});
+      }
+      if (method === "cron.status") {
+        if (phase === "removal") {
+          staleRemovalStatusRequests += 1;
+          return staleRemovalStatus.promise;
+        }
+        const jobs = overviewValue();
+        return Promise.resolve({ enabled: true, jobs, nextWakeAtMs: jobs * 1_000 });
+      }
+      if (method === "cron.list" && params.lastRunStatus === "error") {
+        return Promise.resolve({ ...cronListResponse([]), total: overviewValue() });
+      }
+      if (method === "cron.list") {
+        return Promise.resolve(cronListResponse(removed ? [] : [job]));
+      }
+      if (method === "cron.runs") {
+        return Promise.resolve({ entries: [], total: 0, offset: 0, hasMore: false });
+      }
+      if (method === "models.list") {
+        return Promise.resolve({ models: [] });
+      }
+      return Promise.resolve({});
+    });
+    vi.mocked(showConfirmDialog).mockReturnValueOnce(confirmation.promise);
+    const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
+    const page = createPage(createContext(gateway, null), { render: true });
+    await waitForCronPage(() =>
+      expect(page.querySelector('[data-test-id="cron-row-job-1"]')).not.toBeNull(),
+    );
+
+    const menu = page.querySelector("wa-dropdown.cron-job-menu") as HTMLElement;
+    menu.dispatchEvent(new Event("click", { bubbles: true }));
+    const removeButton = Array.from(page.querySelectorAll(".cron-job-menu__item")).find(
+      (item) => item.textContent?.trim() === "Remove",
+    ) as HTMLButtonElement;
+    removeButton.click();
+    await waitForCronPage(() => expect(showConfirmDialog).toHaveBeenCalledOnce());
+
+    phase = "confirmation-refresh";
+    await page.refreshCron({ tableFilters: true });
+    expect(page.cron.cronStatus?.jobs).toBe(2);
+    expect(page.cron.cronFailingCount).toBe(2);
+
+    confirmation.resolve(true);
+    await waitForCronPage(() => expect(staleRemovalStatusRequests).toBe(1));
+
+    staleRemovalStatus.resolve({ enabled: true, jobs: 99, nextWakeAtMs: 99_000 });
     await waitForCronPage(() => expect(page.cron.cronBusy).toBe(false));
 
     expect(page.cron.cronStatus?.jobs).toBe(2);

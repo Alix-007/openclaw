@@ -24,10 +24,17 @@ const CLAW_LAZY_ADDITIVE_STATE_COLUMNS = [
   "claw_package_refs.extension_mapped_json",
   "claw_package_refs.extension_unavailable_json",
   "worker_environments.shared_host",
+  "worker_session_placements.terminal_reason",
+  "worker_session_placements.terminal_at_ms",
   "worktrees.run_end_cleanup_json",
 ] as const;
 
 const CLAW_LAZY_ADDITIVE_STATE_COLUMN_SET = new Set<string>(CLAW_LAZY_ADDITIVE_STATE_COLUMNS);
+const CLAW_STARTUP_ADDITIVE_STATE_TABLES = [
+  "worker_session_tool_operations",
+  "worker_turn_tool_authorities",
+] as const;
+const CLAW_STARTUP_ADDITIVE_STATE_TABLE_SET = new Set<string>(CLAW_STARTUP_ADDITIVE_STATE_TABLES);
 let openClawStateCanonicalNamedIndexSet: ReadonlySet<string> | undefined;
 
 function getOpenClawStateCanonicalNamedIndexSet(): ReadonlySet<string> {
@@ -102,17 +109,22 @@ export const STATE_PERSISTENT_SCHEMA_COMPATIBILITY: SqliteSchemaCompatibility = 
     "operator_approvals.resolution_ref": ["resolution_ref TEXT"],
     "worker_environments.desktop_json": ["desktop_json TEXT"],
     "worker_environments.shared_host": ["shared_host INTEGER CHECK (shared_host IN (0, 1))"],
+    "worker_session_placements.terminal_reason": ["terminal_reason TEXT"],
+    "worker_session_placements.terminal_at_ms": ["terminal_at_ms INTEGER"],
   },
 };
 
 export const OPENCLAW_STATE_MAINTENANCE_SCHEMA_COMPATIBILITY: SqliteSchemaCompatibility = {
   ...STATE_PERSISTENT_SCHEMA_COMPATIBILITY,
-  allowedMissingTables: LAZY_ADDITIVE_STATE_TABLES,
+  allowedMissingTables: [...LAZY_ADDITIVE_STATE_TABLES, ...CLAW_STARTUP_ADDITIVE_STATE_TABLES],
   allowedMissingColumns: CLAW_LAZY_ADDITIVE_STATE_COLUMNS,
 };
 
 /** Identify schema differences that the writable shared-state cold open repairs. */
 export function isOpenClawStateStartupRepairableSchemaIssue(issue: SqliteSchemaIssue): boolean {
+  if (issue.code === "missing-table") {
+    return CLAW_STARTUP_ADDITIVE_STATE_TABLE_SET.has(issue.objectName);
+  }
   if (issue.code === "missing-column") {
     return CLAW_LAZY_ADDITIVE_STATE_COLUMN_SET.has(issue.objectName);
   }
