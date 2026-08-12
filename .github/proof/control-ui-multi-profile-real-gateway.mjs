@@ -188,10 +188,10 @@ try {
             model: { primary: `${providerId}/${modelId}` },
             models: { [`${providerId}/${modelId}`]: {} },
           },
-          list: [
-            { id: defaultAgentId, default: true, identity: { name: "Main" } },
-            { id: selectedAgentId, identity: { name: "Writer" } },
-          ],
+          entries: {
+            [defaultAgentId]: { default: true, identity: { name: "Main" } },
+            [selectedAgentId]: { identity: { name: "Writer" } },
+          },
         },
         gateway: { mode: "local", auth: { mode: "token" } },
         plugins: {
@@ -238,6 +238,26 @@ try {
       ],
       { env: proofEnv, input: `${token}\n` },
     );
+  }
+  for (const [agentId, profileIds] of [
+    [defaultAgentId, [rejectedProfileId]],
+    [selectedAgentId, [readyProfileId, rejectedProfileId]],
+  ]) {
+    const orderArgs = [
+      "openclaw.mjs",
+      "models",
+      "auth",
+      "order",
+      "set",
+      "--provider",
+      providerId,
+      "--agent",
+      agentId,
+    ];
+    for (const profileId of profileIds) {
+      orderArgs.push(profileId);
+    }
+    await run(process.execPath, orderArgs, { env: proofEnv });
   }
 
   gateway = spawn(
