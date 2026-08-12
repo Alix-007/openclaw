@@ -627,7 +627,12 @@ jobs:
           tap_text "Send" 60
           transcript_deadline=$((SECONDS + 120))
           while (( SECONDS < transcript_deadline )); do
-            transcript_path="$(find "$OPENCLAW_STATE_DIR/agents" -type f -name '*.jsonl' -print0 | xargs -0 grep -l -m1 'PR122200_FULL_MESSAGE_START' | head -1)"
+            transcript_path="$(
+              find "$OPENCLAW_STATE_DIR/agents" -type f -name '*.jsonl' -print0 \
+                | xargs -0 -r grep -l -m1 'PR122200_FULL_MESSAGE_START' \
+                | head -1 \
+                || true
+            )"
             if [[ -n "$transcript_path" ]]; then break; fi
             sleep 2
           done
