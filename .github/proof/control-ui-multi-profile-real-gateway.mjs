@@ -8,6 +8,8 @@ import { chromium } from "playwright";
 
 const pluginId = "proof-multi-profile-plugin";
 const providerId = "proof-multi-profile";
+const defaultAgentId = "main";
+const selectedAgentId = "writer";
 const readyProfileId = `${providerId}:ready`;
 const rejectedProfileId = `${providerId}:rejected`;
 const modelId = "proof-model";
@@ -112,6 +114,8 @@ let context;
 let gateway;
 let gatewayStdout = "";
 let gatewayStderr = "";
+let activePage;
+let gatewayExchanges = [];
 
 try {
   await mkdir(stateDir, { recursive: true });
@@ -146,7 +150,9 @@ try {
       auth: [],
       catalog: {
         order: "profile",
-        async run() {
+        async run(ctx) {
+          const selectedProfileId = ctx.resolveProviderAuth(${JSON.stringify(providerId)}).profileId;
+          const selectedAgentReady = selectedProfileId === ${JSON.stringify(readyProfileId)};
           return {
             provider: {
               baseUrl: "http://127.0.0.1:9",
@@ -159,10 +165,12 @@ try {
                 maxTokens: 1024
               }]
             },
-            outcomes: [
-              { provider: ${JSON.stringify(providerId)}, profileId: ${JSON.stringify(rejectedProfileId)}, status: "auth-rejected" },
-              { provider: ${JSON.stringify(providerId)}, profileId: ${JSON.stringify(readyProfileId)}, status: "ready" }
-            ]
+            outcomes: selectedAgentReady
+              ? [
+                  { provider: ${JSON.stringify(providerId)}, profileId: ${JSON.stringify(rejectedProfileId)}, status: "auth-rejected" },
+                  { provider: ${JSON.stringify(providerId)}, profileId: ${JSON.stringify(readyProfileId)}, status: "ready" }
+                ]
+              : [{ provider: ${JSON.stringify(providerId)}, status: "auth-rejected" }]
           };
         }
       }
@@ -180,8 +188,11 @@ try {
             model: { primary: `${providerId}/${modelId}` },
             models: { [`${providerId}/${modelId}`]: {} },
           },
+          list: [
+            { id: defaultAgentId, default: true, identity: { name: "Main" } },
+            { id: selectedAgentId, identity: { name: "Writer" } },
+          ],
         },
-        auth: { order: { [providerId]: [readyProfileId, rejectedProfileId] } },
         gateway: { mode: "local", auth: { mode: "token" } },
         plugins: {
           enabled: true,
@@ -204,9 +215,10 @@ try {
     OPENCLAW_GATEWAY_TOKEN: gatewayToken,
     NO_COLOR: "1",
   };
-  for (const [profileId, token] of [
-    [rejectedProfileId, "proof-rejected-subscription-token-not-used"],
-    [readyProfileId, "proof-ready-subscription-token-not-used"],
+  for (const [agentId, profileId, token] of [
+    [defaultAgentId, rejectedProfileId, "proof-rejected-subscription-token-not-used"],
+    [selectedAgentId, rejectedProfileId, "proof-rejected-subscription-token-not-used"],
+    [selectedAgentId, readyProfileId, "proof-ready-subscription-token-not-used"],
   ]) {
     await run(
       process.execPath,
@@ -214,6 +226,8 @@ try {
         "openclaw.mjs",
         "models",
         "auth",
+        "--agent",
+        agentId,
         "paste-token",
         "--provider",
         providerId,
@@ -239,78 +253,102 @@ try {
   });
   await waitForGateway(gateway);
 
-  const rpcAuthStatus = await callGateway("models.authStatus", {}, proofEnv);
-  const rpcModelsList = await callGateway(
-    "models.list",
-    { view: "all", includeProviderCapabilities: true },
-    proofEnv,
-  );
-  const rpcConfiguredModelsList = await callGateway(
-    "models.list",
-    { view: "configured" },
-    proofEnv,
-  );
-  const rpcProviderAuth = rpcAuthStatus.providers?.find((item) => item.provider === providerId);
-  const rpcProviderModel = rpcModelsList.models?.find(
-    (item) => item.provider === providerId && item.id === modelId,
-  );
-  const rpcConfiguredProviderModel = rpcConfiguredModelsList.models?.find(
-    (item) => item.provider === providerId && item.id === modelId,
-  );
-  const rpcProfiles = rpcProviderAuth?.profiles?.map((item) => item.profileId) ?? [];
-  const rpcOutcomes = rpcModelsList.providerOutcomes?.filter(
-    (item) => item.provider === providerId,
-  );
+  const queryAgent = async (agentId) => {
+    const authStatus = await callGateway("models.authStatus", { agentId }, proofEnv);
+    const modelsList = await callGateway(
+      "models.list",
+      { view: "all", includeProviderCapabilities: true, agentId },
+      proofEnv,
+    );
+    const configuredModelsList = await callGateway(
+      "models.list",
+      { view: "configured", agentId },
+      proofEnv,
+    );
+    const providerAuth = authStatus.providers?.find((item) => item.provider === providerId);
+    const providerModel = modelsList.models?.find(
+      (item) => item.provider === providerId && item.id === modelId,
+    );
+    const configuredProviderModel = configuredModelsList.models?.find(
+      (item) => item.provider === providerId && item.id === modelId,
+    );
+    return {
+      agentId,
+      authStatus,
+      modelsList,
+      configuredModelsList,
+      providerAuth,
+      providerModel,
+      configuredProviderModel,
+      savedProfiles: providerAuth?.profiles?.map((item) => item.profileId) ?? [],
+      providerOutcomes:
+        modelsList.providerOutcomes?.filter((item) => item.provider === providerId) ?? [],
+    };
+  };
+  const rpcDefaultAgent = await queryAgent(defaultAgentId);
+  const rpcSelectedAgent = await queryAgent(selectedAgentId);
   await writeFile(
     path.join(artifactDir, "rpc-preflight.json"),
     `${JSON.stringify(
       {
         targetSha,
-        authStatus: rpcAuthStatus,
-        modelsList: rpcModelsList,
-        configuredModelsList: rpcConfiguredModelsList,
-        providerAuth: rpcProviderAuth,
-        providerModel: rpcProviderModel,
-        configuredProviderModel: rpcConfiguredProviderModel,
-        savedProfiles: rpcProfiles,
-        providerOutcomes: rpcOutcomes,
+        defaultAgent: rpcDefaultAgent,
+        selectedAgent: rpcSelectedAgent,
       },
       null,
       2,
     )}\n`,
     "utf8",
   );
-  if (rpcProviderAuth?.status !== "ok") {
+  if (
+    rpcDefaultAgent.providerAuth?.status !== "ok" ||
+    !rpcDefaultAgent.savedProfiles.includes(rejectedProfileId) ||
+    rpcDefaultAgent.providerModel?.available !== false ||
+    rpcDefaultAgent.providerOutcomes.length !== 1 ||
+    rpcDefaultAgent.providerOutcomes[0]?.status !== "auth-rejected"
+  ) {
     throw new Error(
-      `Expected healthy saved-profile auth, got ${rpcProviderAuth?.status ?? "missing"}`,
+      `Expected default-agent rejected control before Chromium: ${JSON.stringify(rpcDefaultAgent)}`,
     );
   }
-  if (!rpcProfiles.includes(readyProfileId) || !rpcProfiles.includes(rejectedProfileId)) {
-    throw new Error(`Missing saved token profiles: ${JSON.stringify(rpcProfiles)}`);
-  }
-  if (rpcProfiles[0] !== readyProfileId) {
+  if (rpcSelectedAgent.providerAuth?.status !== "ok") {
     throw new Error(
-      `Expected ready profile to be selected first, got ${JSON.stringify(rpcProfiles)}`,
-    );
-  }
-  if (rpcProviderModel?.available !== true) {
-    throw new Error(
-      `Expected proof model to be available before Chromium, got ${JSON.stringify(rpcProviderModel)}`,
-    );
-  }
-  if (rpcConfiguredProviderModel?.available !== true) {
-    throw new Error(
-      `Expected configured proof model to be available before Chromium, got ${JSON.stringify(rpcConfiguredProviderModel)}`,
+      `Expected selected-agent healthy saved-profile auth, got ${rpcSelectedAgent.providerAuth?.status ?? "missing"}`,
     );
   }
   if (
-    rpcOutcomes?.length !== 2 ||
-    !rpcOutcomes.some((item) => item.profileId === readyProfileId && item.status === "ready") ||
-    !rpcOutcomes.some(
+    !rpcSelectedAgent.savedProfiles.includes(readyProfileId) ||
+    !rpcSelectedAgent.savedProfiles.includes(rejectedProfileId)
+  ) {
+    throw new Error(`Missing selected-agent saved profiles: ${JSON.stringify(rpcSelectedAgent)}`);
+  }
+  if (rpcSelectedAgent.savedProfiles[0] !== readyProfileId) {
+    throw new Error(
+      `Expected selected-agent ready profile first: ${JSON.stringify(rpcSelectedAgent)}`,
+    );
+  }
+  if (rpcSelectedAgent.providerModel?.available !== true) {
+    throw new Error(
+      `Expected selected-agent proof model available before Chromium: ${JSON.stringify(rpcSelectedAgent)}`,
+    );
+  }
+  if (rpcSelectedAgent.configuredProviderModel?.available !== true) {
+    throw new Error(
+      `Expected selected-agent configured model available before Chromium: ${JSON.stringify(rpcSelectedAgent)}`,
+    );
+  }
+  if (
+    rpcSelectedAgent.providerOutcomes.length !== 2 ||
+    !rpcSelectedAgent.providerOutcomes.some(
+      (item) => item.profileId === readyProfileId && item.status === "ready",
+    ) ||
+    !rpcSelectedAgent.providerOutcomes.some(
       (item) => item.profileId === rejectedProfileId && item.status === "auth-rejected",
     )
   ) {
-    throw new Error(`Missing preflight provider outcomes: ${JSON.stringify(rpcOutcomes)}`);
+    throw new Error(
+      `Missing selected-agent provider outcomes: ${JSON.stringify(rpcSelectedAgent)}`,
+    );
   }
 
   if (rpcOnly) {
@@ -320,11 +358,8 @@ try {
         {
           targetSha,
           realGateway: true,
-          savedProfiles: rpcProfiles,
-          providerOutcomes: rpcOutcomes,
-          providerModel: rpcProviderModel,
-          configuredProviderModel: rpcConfiguredProviderModel,
-          providerAuth: rpcProviderAuth,
+          defaultAgent: rpcDefaultAgent,
+          selectedAgent: rpcSelectedAgent,
           verdict: "pass",
         },
         null,
@@ -333,7 +368,7 @@ try {
       "utf8",
     );
     console.log(
-      `[control-ui multi-profile rpc preflight proof] exact-head=${targetSha} saved-profiles=2 auth-ok=true model-available=true ready-outcome=true rejected-outcome=true real-gateway=true`,
+      `[control-ui multi-profile rpc preflight proof] exact-head=${targetSha} default-agent-rejected=true selected-agent=writer selected-saved-profiles=2 selected-auth-ok=true selected-model-available=true ready-outcome=true rejected-outcome=true real-gateway=true`,
     );
   } else {
     browser = await chromium.launch();
@@ -345,8 +380,9 @@ try {
       viewport: { width: 1440, height: 1000 },
     });
     const page = await context.newPage();
+    activePage = page;
     const pendingRequests = new Map();
-    const gatewayFrames = {};
+    gatewayExchanges = [];
     page.on("websocket", (socket) => {
       socket.on("framesent", ({ payload }) => {
         const frame = parseFrame(payload);
@@ -357,16 +393,9 @@ try {
       socket.on("framereceived", ({ payload }) => {
         const frame = parseFrame(payload);
         const request = frame?.id ? pendingRequests.get(frame.id) : undefined;
-        if (request?.method === "models.authStatus") {
-          gatewayFrames.authStatus = frame;
-        }
-        if (request?.method === "models.list") {
-          if (request.params?.view === "configured") {
-            gatewayFrames.configuredModelsList = frame;
-          }
-          if (request.params?.view === "all") {
-            gatewayFrames.modelsList = frame;
-          }
+        if (request) {
+          gatewayExchanges.push({ request, response: frame });
+          pendingRequests.delete(frame.id);
         }
       });
     });
@@ -377,11 +406,32 @@ try {
     }
     const card = page.locator(`[data-provider-id="${providerId}"]`);
     await card.waitFor({ state: "visible", timeout: 30_000 });
-    const captureObservedState = async (label) => {
+    const findExchange = (method, view, agentId) =>
+      gatewayExchanges.findLast(
+        (exchange) =>
+          exchange.request.method === method &&
+          (view === undefined || exchange.request.params?.view === view) &&
+          exchange.request.params?.agentId === agentId,
+      );
+    const waitForAgentFrames = async (agentId) => {
+      for (let attempt = 0; attempt < 120; attempt += 1) {
+        const frames = {
+          authStatus: findExchange("models.authStatus", undefined, agentId),
+          modelsList: findExchange("models.list", "all", agentId),
+          configuredModelsList: findExchange("models.list", "configured", agentId),
+        };
+        if (frames.authStatus && frames.modelsList && frames.configuredModelsList) {
+          return frames;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+      throw new Error(`Missing real Gateway frames for agent ${agentId}`);
+    };
+    const captureObservedState = async (label, agentId, frames) => {
       const cardText = (await card.textContent())?.replaceAll(/\s+/g, " ").trim() ?? "";
-      const modelsList = responsePayload(gatewayFrames.modelsList);
-      const configuredModelsList = responsePayload(gatewayFrames.configuredModelsList);
-      const authStatus = responsePayload(gatewayFrames.authStatus);
+      const modelsList = responsePayload(frames.modelsList?.response);
+      const configuredModelsList = responsePayload(frames.configuredModelsList?.response);
+      const authStatus = responsePayload(frames.authStatus?.response);
       await page.screenshot({
         path: path.join(artifactDir, `provider-card-${label}.png`),
         fullPage: true,
@@ -392,8 +442,10 @@ try {
         `${JSON.stringify(
           {
             targetSha,
+            agentId,
             route: new URL(page.url()).pathname,
             cardText,
+            gatewayFrames: frames,
             authStatus,
             modelsList,
             configuredModelsList,
@@ -413,34 +465,54 @@ try {
       );
       return cardText;
     };
-    try {
-      await page.waitForFunction(
-        (id) =>
-          document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
-        providerId,
-        { timeout: 30_000 },
-      );
-    } catch (error) {
-      await captureObservedState("failure");
-      throw error;
-    }
-    const cardText = await captureObservedState("ready");
-    if (!cardText.includes("Ready") || cardText.includes("Credentials rejected")) {
-      throw new Error(`Unexpected provider card state: ${cardText}`);
-    }
-    if (
-      !gatewayFrames.modelsList ||
-      !gatewayFrames.configuredModelsList ||
-      !gatewayFrames.authStatus
-    ) {
-      throw new Error(
-        "Did not capture real Gateway configured/all models.list and models.authStatus frames",
-      );
+    const defaultFrames = await waitForAgentFrames(defaultAgentId);
+    await page.waitForFunction(
+      (id) =>
+        document
+          .querySelector(`[data-provider-id="${id}"]`)
+          ?.textContent?.includes("Credentials rejected"),
+      providerId,
+      { timeout: 30_000 },
+    );
+    const defaultCardText = await captureObservedState(
+      "default-agent-rejected",
+      defaultAgentId,
+      defaultFrames,
+    );
+    if (!defaultCardText.includes("Credentials rejected") || defaultCardText.includes("Ready")) {
+      throw new Error(`Unexpected default-agent provider card state: ${defaultCardText}`);
     }
 
-    const modelsList = responsePayload(gatewayFrames.modelsList);
-    const authStatus = responsePayload(gatewayFrames.authStatus);
-    const configuredModelsList = responsePayload(gatewayFrames.configuredModelsList);
+    const pageScope = page.locator(".agent-scope-control openclaw-agent-select");
+    await pageScope.locator(".agent-select__trigger").click();
+    await pageScope
+      .locator("wa-dropdown-item[data-agent-option]")
+      .filter({ hasText: "Writer" })
+      .click();
+    await page.waitForFunction(
+      (agentId) =>
+        document.querySelector(".agent-scope-control openclaw-agent-select")?.value === agentId,
+      selectedAgentId,
+      { timeout: 30_000 },
+    );
+    const selectedFrames = await waitForAgentFrames(selectedAgentId);
+    await page.waitForFunction(
+      (id) => document.querySelector(`[data-provider-id="${id}"]`)?.textContent?.includes("Ready"),
+      providerId,
+      { timeout: 30_000 },
+    );
+    const selectedCardText = await captureObservedState(
+      "selected-agent-ready",
+      selectedAgentId,
+      selectedFrames,
+    );
+    if (!selectedCardText.includes("Ready") || selectedCardText.includes("Credentials rejected")) {
+      throw new Error(`Unexpected selected-agent provider card state: ${selectedCardText}`);
+    }
+
+    const modelsList = responsePayload(selectedFrames.modelsList.response);
+    const authStatus = responsePayload(selectedFrames.authStatus.response);
+    const configuredModelsList = responsePayload(selectedFrames.configuredModelsList.response);
     const outcomes = modelsList.providerOutcomes.filter((item) => item.provider === providerId);
     const profiles =
       authStatus.providers
@@ -465,9 +537,9 @@ try {
       path.join(artifactDir, "gateway-frames.json"),
       `${JSON.stringify(
         {
-          authStatus: gatewayFrames.authStatus,
-          modelsList: gatewayFrames.modelsList,
-          configuredModelsList: gatewayFrames.configuredModelsList,
+          exchanges: gatewayExchanges,
+          defaultAgent: defaultFrames,
+          selectedAgent: selectedFrames,
         },
         null,
         2,
@@ -480,9 +552,24 @@ try {
           targetSha,
           realGateway: true,
           realChromium: true,
+          defaultAgent: {
+            id: defaultAgentId,
+            providerCard: {
+              containsReady: false,
+              containsCredentialsRejected: true,
+              text: defaultCardText,
+            },
+          },
+          selectedAgent: {
+            id: selectedAgentId,
+            providerCard: {
+              containsReady: true,
+              containsCredentialsRejected: false,
+              text: selectedCardText,
+            },
+          },
           savedProfiles: profiles.toSorted(),
           providerOutcomes: outcomes,
-          providerCard: { containsReady: true, containsCredentialsRejected: false, text: cardText },
           verdict: "pass",
         },
         null,
@@ -490,9 +577,26 @@ try {
       )}\n`,
     );
     console.log(
-      `[control-ui multi-profile real-gateway proof] exact-head=${targetSha} saved-profiles=2 ready-outcome=true rejected-outcome=true provider-card-ready=true credentials-rejected=false real-gateway=true real-chromium=true`,
+      `[control-ui multi-profile real-gateway proof] exact-head=${targetSha} default-agent-rejected=true selected-agent=writer selected-saved-profiles=2 ready-outcome=true rejected-outcome=true selected-provider-card-ready=true selected-credentials-rejected=false real-gateway=true real-chromium=true`,
     );
   }
+} catch (error) {
+  if (activePage) {
+    await activePage
+      .screenshot({ path: path.join(artifactDir, "provider-card-failure.png"), fullPage: true })
+      .catch(() => {});
+    const failureHtml = await activePage.content().catch(() => undefined);
+    if (failureHtml !== undefined) {
+      await writeFile(path.join(artifactDir, "page-failure.html"), failureHtml, "utf8").catch(
+        () => {},
+      );
+    }
+  }
+  await writeFile(
+    path.join(artifactDir, "gateway-exchanges-failure.json"),
+    `${JSON.stringify({ targetSha, exchanges: gatewayExchanges }, null, 2)}\n`,
+  ).catch(() => {});
+  throw error;
 } finally {
   await context?.close().catch(() => {});
   await browser?.close().catch(() => {});
