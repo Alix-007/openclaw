@@ -12,7 +12,10 @@ import type { UserTurnTranscriptRecorder } from "../../sessions/user-turn-transc
 import type { PreparedAgentRunAdmission } from "../admitted-run-context.js";
 import { prepareInternalSessionEffectsSession } from "../internal-session-effects.js";
 import type { AgentRunSessionTarget } from "../run-session-target.js";
-import { isAgentRunRestartAbortReason } from "../run-termination.js";
+import {
+  AGENT_RUN_SUPERSEDED_STOP_REASON,
+  isAgentRunRestartAbortReason,
+} from "../run-termination.js";
 import { applyAgentRunAbortMetadata } from "./lifecycle.js";
 import type { PreparedAgentCommandExecution } from "./prepare.js";
 import {
@@ -77,6 +80,7 @@ export async function runAcpAgentCommand(params: {
   const visibleTextAccumulator = attemptExecutionRuntime.createAcpVisibleTextAccumulator();
   let stopReason: string | undefined;
   let resultStatus: "completed" | "cancelled" | undefined;
+  let duplicateSource = false;
   let terminalOutcome: "blocked" | undefined;
   let sessionEntry = params.sessionEntry;
   let transcriptContext:
@@ -169,60 +173,67 @@ export async function runAcpAgentCommand(params: {
     if (!internalTarget && userTurnResult?.sessionEntry) {
       sessionEntry = userTurnResult.sessionEntry;
     }
-    const acpImageAttachments = resolveInlineAgentImageAttachments(params.opts.images);
-    await params.acpManager.runTurn({
-      admittedRunContext,
-      cfg: params.cfg,
-      sessionKey: params.sessionKey,
-      provenance: params.provenance,
-      text: params.body,
-      attachments: acpImageAttachments.length > 0 ? acpImageAttachments : undefined,
-      mode: "prompt",
-      requestId: params.runId,
-      signal: params.opts.abortSignal,
-      onLifecycle: (event) => {
-        if (event.type === "prompt_submitted") {
-          params.opts.onExecutionStarted?.();
-          attemptExecutionRuntime.emitAcpPromptSubmitted({
-            runId: params.runId,
-            sessionKey: params.sessionKey,
-            at: event.at,
-          });
-        }
-      },
-      onEvent: (event) => {
-        if (event.type !== "text_delta") {
-          attemptExecutionRuntime.emitAcpRuntimeEvent({
-            runId: params.runId,
-            toolTracker: acpToolTracker,
-            sessionKey: params.sessionKey,
-            agentId: params.sessionAgentId,
-            abortSignal: params.opts.abortSignal,
-            event,
-          });
-        }
-        if (event.type === "done") {
-          stopReason = event.stopReason;
-          resultStatus = event.status;
-          return;
-        }
-        if (
-          event.type !== "text_delta" ||
-          (event.stream && event.stream !== "output") ||
-          !event.text
-        ) {
-          return;
-        }
-        const visibleUpdate = visibleTextAccumulator.consume(event.text);
-        if (visibleUpdate) {
-          attemptExecutionRuntime.emitAcpAssistantDelta({
-            runId: params.runId,
-            text: visibleUpdate.text,
-            delta: visibleUpdate.delta,
-          });
-        }
-      },
-    });
+    duplicateSource = userTurnResult?.appended === false;
+    if (duplicateSource) {
+      // The transcript owner already admitted this idempotency key for another run.
+      // Stop before provider/tool execution instead of replaying a duplicate source turn.
+      stopReason = AGENT_RUN_SUPERSEDED_STOP_REASON;
+    } else {
+      const acpImageAttachments = resolveInlineAgentImageAttachments(params.opts.images);
+      await params.acpManager.runTurn({
+        admittedRunContext,
+        cfg: params.cfg,
+        sessionKey: params.sessionKey,
+        provenance: params.provenance,
+        text: params.body,
+        attachments: acpImageAttachments.length > 0 ? acpImageAttachments : undefined,
+        mode: "prompt",
+        requestId: params.runId,
+        signal: params.opts.abortSignal,
+        onLifecycle: (event) => {
+          if (event.type === "prompt_submitted") {
+            params.opts.onExecutionStarted?.();
+            attemptExecutionRuntime.emitAcpPromptSubmitted({
+              runId: params.runId,
+              sessionKey: params.sessionKey,
+              at: event.at,
+            });
+          }
+        },
+        onEvent: (event) => {
+          if (event.type !== "text_delta") {
+            attemptExecutionRuntime.emitAcpRuntimeEvent({
+              runId: params.runId,
+              toolTracker: acpToolTracker,
+              sessionKey: params.sessionKey,
+              agentId: params.sessionAgentId,
+              abortSignal: params.opts.abortSignal,
+              event,
+            });
+          }
+          if (event.type === "done") {
+            stopReason = event.stopReason;
+            resultStatus = event.status;
+            return;
+          }
+          if (
+            event.type !== "text_delta" ||
+            (event.stream && event.stream !== "output") ||
+            !event.text
+          ) {
+            return;
+          }
+          const visibleUpdate = visibleTextAccumulator.consume(event.text);
+          if (visibleUpdate) {
+            attemptExecutionRuntime.emitAcpAssistantDelta({
+              runId: params.runId,
+              text: visibleUpdate.text,
+              delta: visibleUpdate.delta,
+            });
+          }
+        },
+      });
+    }
     if (isAgentRunRestartAbortReason(params.opts.abortSignal?.reason)) {
       throw params.opts.abortSignal?.reason;
     }
@@ -254,40 +265,42 @@ export async function runAcpAgentCommand(params: {
   }
   const { internalTarget, sessionCwd, suppressUserTurnPersistence, userTurnTranscriptRecorder } =
     transcriptContext;
-  try {
-    const transcriptResult = await attemptExecutionRuntime.persistAcpTurnTranscript({
-      body: params.body,
-      transcriptBody: params.transcriptBody,
-      skipUserTurn:
-        suppressUserTurnPersistence ||
-        userTurnTranscriptRecorder.hasPersisted() ||
-        userTurnTranscriptRecorder.isBlocked(),
-      ...(params.opts.suppressPromptPersistence !== true && params.opts.transcriptMedia?.length
-        ? {
-            userInput: {
-              text: params.transcriptBody,
-              media: params.opts.transcriptMedia,
-            },
-          }
-        : {}),
-      finalText: finalTextRaw,
-      sessionId: internalTarget?.sessionId ?? params.sessionId,
-      sessionKey: internalTarget?.sessionKey ?? params.sessionKey,
-      sessionEntry: internalTarget?.sessionEntry ?? sessionEntry,
-      sessionStore: params.suppressVisibleSessionEffects ? undefined : params.sessionStore,
-      storePath: internalTarget?.storePath ?? params.storePath,
-      sessionAgentId: internalTarget?.agentId ?? params.sessionAgentId,
-      threadId: params.opts.threadId,
-      sessionCwd,
-      config: params.cfg,
-    });
-    if (!internalTarget) {
-      sessionEntry = transcriptResult.sessionEntry;
+  if (!duplicateSource) {
+    try {
+      const transcriptResult = await attemptExecutionRuntime.persistAcpTurnTranscript({
+        body: params.body,
+        transcriptBody: params.transcriptBody,
+        skipUserTurn:
+          suppressUserTurnPersistence ||
+          userTurnTranscriptRecorder.hasPersisted() ||
+          userTurnTranscriptRecorder.isBlocked(),
+        ...(params.opts.suppressPromptPersistence !== true && params.opts.transcriptMedia?.length
+          ? {
+              userInput: {
+                text: params.transcriptBody,
+                media: params.opts.transcriptMedia,
+              },
+            }
+          : {}),
+        finalText: finalTextRaw,
+        sessionId: internalTarget?.sessionId ?? params.sessionId,
+        sessionKey: internalTarget?.sessionKey ?? params.sessionKey,
+        sessionEntry: internalTarget?.sessionEntry ?? sessionEntry,
+        sessionStore: params.suppressVisibleSessionEffects ? undefined : params.sessionStore,
+        storePath: internalTarget?.storePath ?? params.storePath,
+        sessionAgentId: internalTarget?.agentId ?? params.sessionAgentId,
+        threadId: params.opts.threadId,
+        sessionCwd,
+        config: params.cfg,
+      });
+      if (!internalTarget) {
+        sessionEntry = transcriptResult.sessionEntry;
+      }
+    } catch (error) {
+      log.warn(
+        `ACP transcript persistence failed for ${params.sessionKey}: ${formatErrorMessage(error)}`,
+      );
     }
-  } catch (error) {
-    log.warn(
-      `ACP transcript persistence failed for ${params.sessionKey}: ${formatErrorMessage(error)}`,
-    );
   }
   const restartAbortReason = params.opts.abortSignal?.reason;
   if (isAgentRunRestartAbortReason(restartAbortReason)) {

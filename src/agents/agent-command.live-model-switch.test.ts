@@ -4643,6 +4643,26 @@ describe("agentCommand – LiveSessionModelSwitchError retry", () => {
     );
   });
 
+  it("does not execute a duplicate-source direct ACP turn", async () => {
+    setupAcpSession();
+    const { persistApproved, recorder } = createTrackingUserTurnRecorder("duplicate ACP turn");
+    persistApproved.mockResolvedValueOnce({ appended: false } as never);
+
+    const result = await agentCommand({
+      message: "duplicate ACP turn",
+      sessionKey: "agent:main:main",
+      userTurnTranscriptRecorder: recorder,
+    });
+
+    expect(persistApproved).toHaveBeenCalledTimes(1);
+    expect(state.acpRunTurnMock).not.toHaveBeenCalled();
+    expect(state.persistAcpTurnTranscriptMock).not.toHaveBeenCalled();
+    expect(state.buildAcpResultMock).toHaveBeenCalledWith(
+      expect.objectContaining({ payloadText: "", stopReason: "superseded" }),
+    );
+    expect(result).toBeUndefined();
+  });
+
   it("keeps suppressed direct ACP prompts out of the transcript", async () => {
     setupAcpSession();
     const { persistApproved, recorder } = createTrackingUserTurnRecorder("internal handoff");
