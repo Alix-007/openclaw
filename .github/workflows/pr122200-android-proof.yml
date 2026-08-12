@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 20
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      PRODUCT_SHA: ac483019b2dad9b1548499ab2bbcdc719edf81b8
+      PRODUCT_SHA: bae10eb2c8d4a7336a5674aa453c1c70bf0ebc0f
 
     steps:
       - name: Check out exact product head
