@@ -1,0 +1,180 @@
+name: PR 101923 media-understanding resize proof
+
+run-name: PR 101923 proof at ${{ inputs.product_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_sha:
+        description: Immutable full product SHA from the Alix fork
+        required: true
+        type: string
+      harness_sha:
+        description: Immutable full proof-harness SHA from the Alix fork
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  exact-head-proof:
+    name: Exact-head configured and explicit fallback proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PRODUCT_SHA: ${{ inputs.product_sha }}
+      HARNESS_SHA: ${{ inputs.harness_sha }}
+    steps:
+      - name: Check out immutable product source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.product_sha }}
+          persist-credentials: false
+
+      - name: Check out immutable proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.harness_sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof
+          persist-credentials: false
+
+      - name: Verify immutable source identities
+        shell: bash
+        env:
+          DISPATCH_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          actual_product_sha="$(git rev-parse HEAD)"
+          actual_harness_sha="$(git -C .proof-tooling rev-parse HEAD)"
+          if [[ ! "$PRODUCT_SHA" =~ ^[0-9a-f]{40}$ ]] ||
+             [[ ! "$HARNESS_SHA" =~ ^[0-9a-f]{40}$ ]] ||
+             [[ "$actual_product_sha" != "$PRODUCT_SHA" ]] ||
+             [[ "$actual_harness_sha" != "$HARNESS_SHA" ]] ||
+             [[ "$DISPATCH_SHA" != "$HARNESS_SHA" ]]; then
+            echo "immutable SHA mismatch" >&2
+            echo "product expected=$PRODUCT_SHA actual=$actual_product_sha" >&2
+            echo "harness expected=$HARNESS_SHA actual=$actual_harness_sha dispatch=$DISPATCH_SHA" >&2
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Ensure ImageMagick fixture generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v convert >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes imagemagick
+          fi
+          convert -version | head -1
+
+      - name: Generate the exact oversized JPEG fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          output_dir=".artifacts/qa-e2e/pr101923-media-resize"
+          mkdir -p "$output_dir"
+          convert -size 4536x8064 xc:'#356a9f' -quality 92 "$RUNNER_TEMP/camera.jpg"
+          identify -format '%m %w %h %[channels] %b\n' "$RUNNER_TEMP/camera.jpg" \
+            | tee "$output_dir/fixture-identify.txt"
+          test "$(identify -format '%w' "$RUNNER_TEMP/camera.jpg")" = "4536"
+          test "$(identify -format '%h' "$RUNNER_TEMP/camera.jpg")" = "8064"
+          test "$(identify -format '%m' "$RUNNER_TEMP/camera.jpg")" = "JPEG"
+
+      - name: Run production-boundary proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          output_dir=".artifacts/qa-e2e/pr101923-media-resize"
+          cp .proof-tooling/.github/proof/pr101923-media-resize.proof.test.ts \
+            src/media-understanding/pr101923-media-resize.proof.test.ts
+          OPENCLAW_PROOF_PRODUCT_SHA="$PRODUCT_SHA" \
+            OPENCLAW_PROOF_HARNESS_SHA="$HARNESS_SHA" \
+            OPENCLAW_PROOF_FIXTURE_PATH="$RUNNER_TEMP/camera.jpg" \
+            OPENCLAW_PROOF_VERDICT_PATH="$output_dir/verdict.json" \
+            node scripts/run-vitest.mjs \
+              src/media-understanding/pr101923-media-resize.proof.test.ts \
+              --reporter=verbose 2>&1 | tee "$output_dir/proof.log"
+          grep -F '[pr101923 media resize proof]' "$output_dir/proof.log"
+
+      - name: Validate and fingerprint proof artifact
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          output_dir=".artifacts/qa-e2e/pr101923-media-resize"
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const verdict = JSON.parse(fs.readFileSync(".artifacts/qa-e2e/pr101923-media-resize/verdict.json", "utf8"));
+          const lanes = verdict.observations.map((entry) => entry.lane);
+          if (verdict.result !== "pass" ||
+              verdict.target.productSha !== process.env.PRODUCT_SHA ||
+              verdict.target.harnessSha !== process.env.HARNESS_SHA ||
+              verdict.fixture.width !== 4536 || verdict.fixture.height !== 8064 ||
+              verdict.fixture.pixels !== 36578304 ||
+              JSON.stringify(lanes) !== JSON.stringify(["configured", "fallback-primary", "fallback-secondary"]) ||
+              verdict.explicitFallback.selectedModel !== "camera-secondary" ||
+              verdict.explicitFallback.attemptCount !== 2 ||
+              verdict.observations.some((entry) =>
+                entry.mime !== "image/jpeg" || entry.fileName !== "camera.jpg" ||
+                entry.bytes <= 0 || entry.bytes > entry.maxBytes ||
+                Math.max(entry.width, entry.height) > entry.maxSidePx)) {
+            process.exit(1);
+          }
+          NODE
+          {
+            echo "repository=Alix-007/openclaw"
+            echo "product_sha=$PRODUCT_SHA"
+            echo "harness_sha=$HARNESS_SHA"
+            echo "run_id=$RUN_ID"
+            echo "run_attempt=$RUN_ATTEMPT"
+            echo "secretless=true"
+            echo "provider_fixture=custom-local-hook"
+          } > "$output_dir/metadata.txt"
+          if rg -ni '(api[_-]?key|authorization|password|secret|access[_-]?token)[[:space:]]*[:=]' \
+            "$output_dir"; then
+            echo "forbidden credential-shaped field found in artifact" >&2
+            exit 1
+          fi
+          bash scripts/install-trufflehog.sh
+          trufflehog filesystem "$output_dir" \
+            --results=verified,unknown \
+            --fail \
+            --fail-on-scan-errors \
+            --no-update \
+            --json > "$RUNNER_TEMP/trufflehog.json"
+          test ! -s "$RUNNER_TEMP/trufflehog.json"
+          printf 'version=3.95.9\nverified=0\nunknown=0\n' > "$output_dir/secret-scan.txt"
+          (
+            cd "$output_dir"
+            sha256sum fixture-identify.txt metadata.txt proof.log secret-scan.txt verdict.json \
+              > SHA256SUMS
+            sha256sum --check SHA256SUMS
+          )
+
+      - name: Upload exact-head proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr101923-media-resize-${{ inputs.product_sha }}
+          path: .artifacts/qa-e2e/pr101923-media-resize
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
