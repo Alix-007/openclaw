@@ -75,6 +75,7 @@ describe("OpenAI realtime voice provider routing", () => {
       supportsBrowserSession: true,
       supportsBargeIn: true,
       handlesInputAudioBargeIn: true,
+      supportsActivationNameGating: true,
       supportsToolCalls: true,
       supportsVideoFrames: true,
     });

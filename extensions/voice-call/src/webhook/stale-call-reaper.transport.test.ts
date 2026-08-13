@@ -154,7 +154,7 @@ describe("stale-call reaper provider transport", () => {
         expect(manager.endCall).toHaveBeenCalledTimes(2);
         expect(secondResult).toEqual({
           success: false,
-          error: "Telnyx API error: 503 controlled provider failure",
+          error: "Telnyx API error (503): controlled provider failure",
         });
         expect(transport).toHaveBeenCalledTimes(2);
 
