@@ -157,7 +157,7 @@ class AssistantDisclosureInteractionProof {
   }
 
   private companion object {
-    const val proofProductSha = "171b9ea31ef50d428b04d47f15cbb6f368acde60"
+    const val proofProductSha = "7b2dbbf4287b9cfebe58c1b0ffa02bacac092d75"
     const val proofMessageId = "proof-message"
     const val previewText = "Preview: release blockers remain. ...(truncated)..."
     const val fullMarker = "Complete: localization and review follow-ups are resolved."

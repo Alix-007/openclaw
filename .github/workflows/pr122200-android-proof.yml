@@ -17,10 +17,8 @@ jobs:
     timeout-minutes: 25
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      PRODUCT_SHA: 171b9ea31ef50d428b04d47f15cbb6f368acde60
+      PRODUCT_SHA: 7b2dbbf4287b9cfebe58c1b0ffa02bacac092d75
       PROOF_SHA: ${{ github.sha }}
-      AVD_NAME: pr122200-interaction
-      SYSTEM_IMAGE: system-images;android-35;google_apis;x86_64
 
     steps:
       - name: Check out exact product head
@@ -67,109 +65,77 @@ jobs:
             :app:assemblePlayDebug \
             :app:assemblePlayDebugAndroidTest
 
-      - name: Run one bounded emulator interaction proof
-        id: proof
+      - name: Enable KVM for the hosted emulator
         shell: bash
         run: |
           set -euo pipefail
-          artifact_dir="$RUNNER_TEMP/pr122200-emulator-proof"
-          mkdir -p "$artifact_dir"
-          runtime_log="$RUNNER_TEMP/pr122200-emulator-runtime.log"
-          logcat_file="$RUNNER_TEMP/pr122200-emulator-logcat.txt"
-          emulator_pid=""
-
-          cleanup() {
-            set +e
-            adb logcat -d '*:W' >"$logcat_file" 2>/dev/null || true
-            adb emu kill >/dev/null 2>&1 || true
-            [[ -n "$emulator_pid" ]] && kill "$emulator_pid" >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
-
-          test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
           test -c /dev/kvm
-          sudo chmod 666 /dev/kvm
-          android_sdk_root="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
-          sdkmanager_bin="$(find "$android_sdk_root/cmdline-tools" -type f -path '*/bin/sdkmanager' -print | sort | tail -1)"
-          test -x "$sdkmanager_bin"
-          avdmanager_bin="$(dirname "$sdkmanager_bin")/avdmanager"
-          test -x "$avdmanager_bin"
-          export PATH="$android_sdk_root/platform-tools:$android_sdk_root/emulator:$(dirname "$sdkmanager_bin"):$PATH"
-          yes | "$sdkmanager_bin" --licenses >/dev/null || true
-          "$sdkmanager_bin" --sdk_root="$android_sdk_root" --install "emulator" "$SYSTEM_IMAGE"
-          printf 'no\n' | "$avdmanager_bin" create avd \
-            --force \
-            --name "$AVD_NAME" \
-            --package "$SYSTEM_IMAGE" \
-            --device pixel_6
-          emulator \
-            -avd "$AVD_NAME" \
-            -no-window \
-            -no-audio \
-            -no-boot-anim \
-            -no-snapshot \
-            -wipe-data \
-            -gpu swiftshader_indirect \
-            >"$runtime_log" 2>&1 &
-          emulator_pid=$!
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules >/dev/null
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
-          timeout 180 adb wait-for-device
-          boot_deadline=$((SECONDS + 180))
-          until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
-            if (( SECONDS >= boot_deadline )); then
-              echo "Emulator boot timed out" >&2
-              exit 1
-            fi
-            sleep 2
-          done
-          adb shell settings put global window_animation_scale 0
-          adb shell settings put global transition_animation_scale 0
-          adb shell settings put global animator_duration_scale 0
-          adb shell input keyevent 82
+      - name: Run one bounded emulator interaction proof
+        id: proof
+        uses: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2.37.0
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-boot-timeout: 180
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            artifact_dir="$RUNNER_TEMP/pr122200-emulator-proof"
+            mkdir -p "$artifact_dir"
 
-          app_apk="$(find apps/android/app/build/outputs/apk/play/debug -name '*.apk' -type f -print -quit)"
-          test_apk="$(find apps/android/app/build/outputs/apk/androidTest/play/debug -name '*.apk' -type f -print -quit)"
-          test -n "$app_apk"
-          test -n "$test_apk"
-          adb install -r "$app_apk"
-          adb install -r "$test_apk"
+            test "$(git rev-parse HEAD)" = "$PRODUCT_SHA"
 
-          set +e
-          timeout 240 adb shell am instrument -w -r \
-            -e class ai.openclaw.app.ui.chat.AssistantDisclosureInteractionProof \
-            ai.openclaw.app.test/androidx.test.runner.AndroidJUnitRunner \
-            | tee "$artifact_dir/instrumentation.txt"
-          test_status="${PIPESTATUS[0]}"
-          set -e
-          test "$test_status" -eq 0
-          grep -q '^OK (1 test)' "$artifact_dir/instrumentation.txt"
-          adb pull /sdcard/Android/data/ai.openclaw.app/files/pr122200-proof/. "$artifact_dir/interaction/"
+            app_apk="$(find apps/android/app/build/outputs/apk/play/debug -name '*.apk' -type f -print -quit)"
+            test_apk="$(find apps/android/app/build/outputs/apk/androidTest/play/debug -name '*.apk' -type f -print -quit)"
+            test -n "$app_apk"
+            test -n "$test_apk"
+            adb install -r "$app_apk"
+            adb install -r "$test_apk"
 
-          for state in 01-preview 02-full 03-closed 04-retry 05-recovered; do
-            test -s "$artifact_dir/interaction/$state.png"
-            test -s "$artifact_dir/interaction/$state.xml"
-          done
-          grep -q 'View all' "$artifact_dir/interaction/01-preview.xml"
-          grep -q 'Close' "$artifact_dir/interaction/02-full.xml"
-          grep -q 'View all' "$artifact_dir/interaction/03-closed.xml"
-          grep -q 'Retry' "$artifact_dir/interaction/04-retry.xml"
-          grep -q 'Close' "$artifact_dir/interaction/05-recovered.xml"
-          text_artifacts=("$artifact_dir/instrumentation.txt" "$artifact_dir"/interaction/*.xml)
-          ! rg -n -i \
-            'token|public.?key|private.?key|device.?id|node.?id|credential|authorization|bearer|adbkey' \
-            "${text_artifacts[@]}"
-          ! rg -n -e '\b[[:xdigit:]]{64}\b' -e '[A-Za-z0-9+/=_-]{80,}' "${text_artifacts[@]}"
-          {
-            echo "product_sha=$PRODUCT_SHA"
-            echo "proof_sha=$PROOF_SHA"
-            echo "emulator=true"
-            echo "states=preview,full,closed,retry,recovered"
-            echo "instrumentation=OK (1 test)"
-          } >"$artifact_dir/manifest.txt"
-          (
-            cd "$artifact_dir"
-            find interaction -type f -print0 | sort -z | xargs -0 sha256sum >sha256sums.txt
-          )
+            set +e
+            timeout 240 adb shell am instrument -w -r \
+              -e class ai.openclaw.app.ui.chat.AssistantDisclosureInteractionProof \
+              ai.openclaw.app.test/androidx.test.runner.AndroidJUnitRunner \
+              | tee "$artifact_dir/instrumentation.txt"
+            test_status="${PIPESTATUS[0]}"
+            set -e
+            test "$test_status" -eq 0
+            grep -q '^OK (1 test)' "$artifact_dir/instrumentation.txt"
+            adb pull /sdcard/Android/data/ai.openclaw.app/files/pr122200-proof/. "$artifact_dir/interaction/"
+
+            for state in 01-preview 02-full 03-closed 04-retry 05-recovered; do
+              test -s "$artifact_dir/interaction/$state.png"
+              test -s "$artifact_dir/interaction/$state.xml"
+            done
+            grep -q 'View all' "$artifact_dir/interaction/01-preview.xml"
+            grep -q 'Close' "$artifact_dir/interaction/02-full.xml"
+            grep -q 'View all' "$artifact_dir/interaction/03-closed.xml"
+            grep -q 'Retry' "$artifact_dir/interaction/04-retry.xml"
+            grep -q 'Close' "$artifact_dir/interaction/05-recovered.xml"
+            text_artifacts=("$artifact_dir/instrumentation.txt" "$artifact_dir"/interaction/*.xml)
+            ! rg -n -i \
+              'token|public.?key|private.?key|device.?id|node.?id|credential|authorization|bearer|adbkey' \
+              "${text_artifacts[@]}"
+            ! rg -n -e '\b[[:xdigit:]]{64}\b' -e '[A-Za-z0-9+/=_-]{80,}' "${text_artifacts[@]}"
+            {
+              echo "product_sha=$PRODUCT_SHA"
+              echo "proof_sha=$PROOF_SHA"
+              echo "emulator=true"
+              echo "states=preview,full,closed,retry,recovered"
+              echo "instrumentation=OK (1 test)"
+            } >"$artifact_dir/manifest.txt"
+            (
+              cd "$artifact_dir"
+              find interaction -type f -print0 | sort -z | xargs -0 sha256sum >sha256sums.txt
+            )
 
       - name: Upload redacted emulator interaction proof
         if: steps.proof.outcome == 'success'
