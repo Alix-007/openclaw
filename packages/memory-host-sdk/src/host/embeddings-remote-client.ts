@@ -2,7 +2,7 @@
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import type { EmbeddingProviderOptions } from "./embeddings.types.js";
 import { requireApiKey, resolveApiKeyForProvider } from "./openclaw-runtime-auth.js";
-import type { SsrFPolicy } from "./openclaw-runtime-network.js";
+import { recordProviderRequestHeaderContext, type SsrFPolicy } from "./openclaw-runtime-network.js";
 import { buildRemoteBaseUrlPolicy } from "./remote-http.js";
 import { resolveMemorySecretInputString } from "./secret-input.js";
 
@@ -59,11 +59,14 @@ export async function resolveRemoteEmbeddingBearerClient(params: {
   const baseUrl =
     remoteBaseUrl || normalizeOptionalString(providerConfig?.baseUrl) || params.defaultBaseUrl;
   const headerOverrides = Object.assign({}, providerConfig?.headers, remote?.headers);
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
-    ...headerOverrides,
-  };
+  const headers = recordProviderRequestHeaderContext(
+    {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      ...headerOverrides,
+    },
+    Object.keys(headerOverrides),
+  );
   if (isNativeOpenAIEmbeddingRoute(params.provider, baseUrl)) {
     Object.assign(headers, resolveOpenClawAttributionHeaders());
   }

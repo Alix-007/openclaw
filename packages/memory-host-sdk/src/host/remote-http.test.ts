@@ -1,5 +1,6 @@
 // Memory Host SDK tests cover remote http behavior.
 import { describe, expect, it } from "vitest";
+import { recordProviderRequestHeaderContext } from "./openclaw-runtime-network.js";
 import { withRemoteHttpResponse } from "./remote-http.js";
 
 describe("package withRemoteHttpResponse", () => {
@@ -57,5 +58,23 @@ describe("package withRemoteHttpResponse", () => {
     });
 
     expect(deps.calls[0]).toHaveProperty("signal", controller.signal);
+  });
+
+  it("forwards sensitive header provenance to guarded fetch capture", async () => {
+    const deps = makeFetchDeps();
+    const headers = recordProviderRequestHeaderContext({ "X-Workspace": "fixture-value" }, [
+      "X-Workspace",
+    ]);
+
+    await withRemoteHttpResponse({
+      url: "https://memory.example/v1/embeddings",
+      init: { headers },
+      onResponse: async () => undefined,
+      ...deps,
+    });
+
+    expect(deps.calls[0]).toHaveProperty("capture", {
+      sensitiveRequestHeaderNames: ["x-workspace"],
+    });
   });
 });

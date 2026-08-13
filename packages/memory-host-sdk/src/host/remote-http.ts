@@ -1,6 +1,7 @@
 // Memory Host SDK module implements remote http behavior.
 import {
   fetchWithSsrFGuard,
+  getProviderRequestSensitiveHeaderNames,
   shouldUseEnvHttpProxyForUrl,
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
 } from "./openclaw-runtime-network.js";
@@ -29,6 +30,10 @@ export async function withRemoteHttpResponse<T>(params: {
 }): Promise<T> {
   const guardedFetch = params.fetchWithSsrFGuardImpl ?? fetchWithSsrFGuard;
   const shouldUseEnvProxy = params.shouldUseEnvHttpProxyForUrlImpl ?? shouldUseEnvHttpProxyForUrl;
+  const sensitiveRequestHeaderNames =
+    params.init?.headers && typeof params.init.headers === "object"
+      ? (getProviderRequestSensitiveHeaderNames(params.init.headers) ?? [])
+      : [];
   const { response, release } = await guardedFetch({
     url: params.url,
     fetchImpl: params.fetchImpl,
@@ -36,6 +41,7 @@ export async function withRemoteHttpResponse<T>(params: {
     signal: params.signal,
     policy: params.ssrfPolicy,
     auditContext: params.auditContext ?? "memory-remote",
+    ...(sensitiveRequestHeaderNames.length > 0 ? { capture: { sensitiveRequestHeaderNames } } : {}),
     ...(shouldUseEnvProxy(params.url) ? { mode: MEMORY_REMOTE_TRUSTED_ENV_PROXY_MODE } : {}),
   });
   try {

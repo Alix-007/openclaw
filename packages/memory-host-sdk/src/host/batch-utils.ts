@@ -1,5 +1,8 @@
 // Memory Host SDK helper module supports batch utils behavior.
-import type { SsrFPolicy } from "./openclaw-runtime-network.js";
+import {
+  inheritProviderRequestHeaderContext,
+  type SsrFPolicy,
+} from "./openclaw-runtime-network.js";
 
 // Common HTTP and grouping helpers for remote embedding batch clients.
 
@@ -30,7 +33,7 @@ export function buildBatchHeaders(
     delete headers["Content-Type"];
     delete headers["content-type"];
   }
-  return headers;
+  return client.headers ? inheritProviderRequestHeaderContext(client.headers, headers) : headers;
 }
 
 const jsonlEncoder = new TextEncoder();

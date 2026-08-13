@@ -1,5 +1,6 @@
 // Openai tests cover embedding batch plugin behavior.
 import { createServer } from "node:http";
+import { resolveRemoteEmbeddingBearerClient } from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runOpenAiEmbeddingBatches } from "./embedding-batch.js";
 
@@ -847,8 +848,20 @@ describe("OpenAI embedding batch output", () => {
     expect(textSpy).not.toHaveBeenCalled();
   });
 
-  it("redacts a reflected final authorization credential from batch resource errors", async () => {
-    const apiKey = "orchid/River17glassMoth92cabin";
+  it("redacts a reflected configured custom header from batch resource errors", async () => {
+    const configuredHeaderValue = "orchid/River17glassMoth92cabin";
+    const client = await resolveRemoteEmbeddingBearerClient({
+      provider: "openai",
+      defaultBaseUrl: "https://openai-compatible.example/v1",
+      options: {
+        config: { models: {} } as never,
+        model: "text-embedding-3-small",
+        remote: {
+          apiKey: "fixture-bearer",
+          headers: { "X-Workspace": configuredHeaderValue },
+        },
+      },
+    });
     const fetchImpl = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = fetchInputUrl(input);
       if (url.endsWith("/files") && init?.method === "POST") {
@@ -861,9 +874,9 @@ describe("OpenAI embedding batch output", () => {
         return jsonResponse(
           {
             error: {
-              message: `provider reflected ${apiKey}`,
-              code: apiKey,
-              type: apiKey,
+              message: `provider reflected ${configuredHeaderValue}`,
+              code: configuredHeaderValue,
+              type: configuredHeaderValue,
             },
           },
           400,
@@ -874,8 +887,7 @@ describe("OpenAI embedding batch output", () => {
 
     const error = await runOpenAiEmbeddingBatches({
       openAi: {
-        baseUrl: "https://openai-compatible.example/v1",
-        headers: { Authorization: `Bearer ${apiKey}` },
+        ...client,
         model: "text-embedding-3-small",
         fetchImpl,
       },
@@ -895,7 +907,7 @@ describe("OpenAI embedding batch output", () => {
     }).catch((cause: unknown) => cause);
     const diagnostics = `${error instanceof Error ? error.message : String(error)}\n${JSON.stringify(error)}`;
 
-    expect(diagnostics).not.toContain(apiKey);
+    expect(diagnostics).not.toContain(configuredHeaderValue);
     expect(diagnostics).toContain("***");
   });
 });
