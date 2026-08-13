@@ -102,6 +102,9 @@ suite.define(() => {
         viewport: { width: 1440, height: 900 },
       },
       async ({ page }) => {
+        await page.addInitScript((now) => {
+          Date.now = () => now;
+        }, baseTime);
         const gateway = await installMockGateway(page, {
           historyMessages: [
             {
