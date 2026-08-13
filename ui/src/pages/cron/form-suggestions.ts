@@ -1,3 +1,4 @@
+import { normalizeSortedUniqueTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
 import type { AgentsListResult } from "../../api/types.ts";
 import type { ApplicationContext } from "../../app/context.ts";
 import { listSelectableAgents } from "../../lib/agents/display.ts";
@@ -7,14 +8,9 @@ import {
   resolveConfiguredCronModelSuggestions,
   type CronState,
 } from "../../lib/cron/index.ts";
-import { sortUniqueStrings } from "../../lib/string-coerce.ts";
 import { resolveCronTimezoneSuggestions } from "./timezone-suggestions.ts";
 
 export const THINKING_SUGGESTIONS = ["off", "minimal", "low", "medium", "high"];
-
-function unique(values: string[]): string[] {
-  return sortUniqueStrings(values.map((value) => value.trim()).filter(Boolean));
-}
 
 export function buildCronSuggestions(params: {
   channels: ApplicationContext["channels"]["state"];
@@ -30,7 +26,7 @@ export function buildCronSuggestions(params: {
       .filter((entry) => entry.kind === "system")
       .map((entry) => entry.id.trim()),
   );
-  const agentSuggestions = unique([
+  const agentSuggestions = normalizeSortedUniqueTrimmedStringList([
     ...listSelectableAgents(params.agentsList?.agents ?? []).map((entry) => entry.id.trim()),
     ...params.cron.cronJobs.map((job) =>
       typeof job.agentId === "string" && !systemAgentIds.has(job.agentId.trim())
@@ -38,7 +34,7 @@ export function buildCronSuggestions(params: {
         : "",
     ),
   ]);
-  const modelSuggestions = unique([
+  const modelSuggestions = normalizeSortedUniqueTrimmedStringList([
     ...params.modelSuggestions,
     ...resolveConfiguredCronModelSuggestions(configValue),
     ...params.cron.cronJobs.map((job) => {
@@ -69,11 +65,15 @@ export function buildCronSuggestions(params: {
     accountTargets,
     deliveryToSuggestions:
       params.cron.cronForm.deliveryMode === "webhook"
-        ? unique(jobTargets).filter((value) => /^https?:\/\//i.test(value))
-        : unique(jobTargets),
+        ? normalizeSortedUniqueTrimmedStringList(jobTargets).filter((value) =>
+            /^https?:\/\//i.test(value),
+          )
+        : normalizeSortedUniqueTrimmedStringList(jobTargets),
     failureToSuggestions:
       params.cron.cronForm.failureAlertDeliveryMode === "webhook"
-        ? failureAlertTargets.filter((value) => /^https?:\/\//i.test(value))
-        : failureAlertTargets,
+        ? normalizeSortedUniqueTrimmedStringList(failureAlertTargets).filter((value) =>
+            /^https?:\/\//i.test(value),
+          )
+        : normalizeSortedUniqueTrimmedStringList(failureAlertTargets),
   };
 }

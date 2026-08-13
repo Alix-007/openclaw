@@ -3,7 +3,6 @@ import { createDeferred } from "../../../../test/helpers/promise.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
 import type { CronJob } from "../../api/types.ts";
 import type { ApplicationGatewaySnapshot } from "../../app/context.ts";
-import { showConfirmDialog } from "../../components/confirm-dialog.ts";
 import {
   createContext,
   createGateway,
@@ -14,11 +13,8 @@ import {
 } from "./cron-page.test-helpers.ts";
 import "./cron-page.ts";
 
-vi.mock("../../components/confirm-dialog.ts", () => ({ showConfirmDialog: vi.fn() }));
-
 afterEach(() => {
   document.body.replaceChildren();
-  vi.mocked(showConfirmDialog).mockReset();
   vi.restoreAllMocks();
 });
 
@@ -240,6 +236,7 @@ describe("CronPage editor state sync", () => {
     };
     let serverEnabled = true;
     let removed = false;
+    const removeRequested = createDeferred();
     const request = vi.fn(async (method: string, params?: unknown) => {
       if (method === "cron.list") {
         return cronListResponse(removed ? [] : [{ ...job, enabled: serverEnabled }]);
@@ -253,6 +250,7 @@ describe("CronPage editor state sync", () => {
       }
       if (method === "cron.remove") {
         removed = true;
+        removeRequested.resolve();
         return {};
       }
       if (method === "cron.runs") {
@@ -284,11 +282,19 @@ describe("CronPage editor state sync", () => {
     await waitForCronPage(() => expect(page.cron.cronForm.enabled).toBe(false));
     expect(serverEnabled).toBe(false);
 
-    const removeButton = Array.from(page.querySelectorAll(".cron-job-menu__item")).find(
-      (item) => item.textContent?.trim() === "Remove",
-    ) as HTMLButtonElement;
-    vi.mocked(showConfirmDialog).mockResolvedValueOnce(true);
-    removeButton.click();
+    const findRemoveButton = () =>
+      Array.from(page.querySelectorAll<HTMLButtonElement>(".cron-job-menu__item")).find(
+        (item) => item.textContent?.trim() === "Remove",
+      );
+    await waitForCronPage(() => expect(findRemoveButton()?.disabled).toBe(false));
+    findRemoveButton()?.click();
+    const findConfirmButton = () =>
+      Array.from(document.querySelectorAll<HTMLButtonElement>(".exec-approval-actions .btn")).find(
+        (button) => button.textContent?.trim() === "Remove",
+      );
+    await waitForCronPage(() => expect(findConfirmButton()).toBeDefined());
+    findConfirmButton()?.click();
+    await removeRequested.promise;
     await waitForCronPage(() => expect(page.cron.cronEditingJobId).toBeNull());
     await waitForCronPage(() => expect(page.cron.cronRunsScope).toBe("all"));
   });

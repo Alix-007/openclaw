@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createDeferred } from "../../../../test/helpers/promise.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
-import { showConfirmDialog } from "../../components/confirm-dialog.ts";
 import {
   createContext,
   createGateway,
@@ -12,8 +11,6 @@ import {
   waitForCronPage,
 } from "./cron-page.test-helpers.ts";
 import "./cron-page.ts";
-
-vi.mock("../../components/confirm-dialog.ts", () => ({ showConfirmDialog: vi.fn() }));
 
 function addWorkAccount(context: ReturnType<typeof createContext>) {
   context.channels.state.channelsSnapshot?.channelAccounts.telegram?.push({
@@ -27,7 +24,6 @@ function addWorkAccount(context: ReturnType<typeof createContext>) {
 
 afterEach(() => {
   document.body.replaceChildren();
-  vi.mocked(showConfirmDialog).mockReset();
   vi.restoreAllMocks();
 });
 
