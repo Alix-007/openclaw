@@ -45,6 +45,37 @@ describe("chat display truncation metadata", () => {
       __openclaw: { id: "complete" },
     });
   });
+
+  it("does not mark a complete visible reply when only private content is truncated", () => {
+    const [message] = sanitizeChatHistoryMessages(
+      [
+        {
+          role: "assistant",
+          content: [
+            { type: "text", text: "ok" },
+            { type: "thinking", thinking: "private reasoning" },
+            {
+              type: "provider-private",
+              partialJson: "private partial JSON",
+              arguments: "private tool arguments",
+            },
+          ],
+        },
+      ],
+      5,
+    ) as Array<Record<string, unknown>>;
+
+    expect(message).not.toHaveProperty("__openclaw.truncated");
+    expect(message?.content).toEqual([
+      { type: "text", text: "ok" },
+      { type: "thinking", thinking: "priva\n...(truncated)..." },
+      {
+        type: "provider-private",
+        partialJson: "priva\n...(truncated)...",
+        arguments: "priva\n...(truncated)...",
+      },
+    ]);
+  });
 });
 
 describe("oversized multimodal chat history", () => {

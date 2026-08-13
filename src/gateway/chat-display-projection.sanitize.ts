@@ -190,19 +190,16 @@ export function sanitizeChatHistoryContentBlock(
     const res = truncateChatHistoryText(entry.partialJson, maxChars);
     entry.partialJson = res.text;
     changed ||= res.truncated;
-    truncated ||= res.truncated;
   }
   if (typeof entry.arguments === "string" && !preserveExactToolPayload) {
     const res = truncateChatHistoryText(entry.arguments, maxChars);
     entry.arguments = res.text;
     changed ||= res.truncated;
-    truncated ||= res.truncated;
   }
   if (typeof entry.thinking === "string") {
     const res = truncateChatHistoryText(entry.thinking, maxChars);
     entry.thinking = res.text;
     changed ||= res.truncated;
-    truncated ||= res.truncated;
   }
   if ("thinkingSignature" in entry) {
     delete entry.thinkingSignature;
