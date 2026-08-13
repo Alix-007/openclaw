@@ -118,7 +118,20 @@ suite.define(() => {
           .filter({ hasText: "Editor" })
           .click();
         await page.locator('[data-test-id="cron-new-task"]').click();
-        await page.locator("#cron-delivery-channel").selectOption("telegram");
+        const channelPicker = page.locator("#cron-delivery-channel");
+        if ((await channelPicker.evaluate((element) => element.localName)) === "select") {
+          await channelPicker.selectOption("telegram");
+        } else {
+          await channelPicker.click();
+          await channelPicker.locator('wa-option[value="telegram"]').click();
+        }
+        await expect
+          .poll(() =>
+            channelPicker.evaluate((element) =>
+              String((element as HTMLElement & { value?: string }).value),
+            ),
+          )
+          .toBe("telegram");
 
         const recipient = page.locator("#cron-delivery-to");
         await recipient.fill("plugin-owned:free-form-target");
