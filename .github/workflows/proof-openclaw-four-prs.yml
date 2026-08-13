@@ -461,11 +461,23 @@ jobs:
           cp proof-cron-removal.log proof-artifacts/proof-cron-removal.log
           scan_file="$(mktemp)"
           find proof-artifacts -type f -exec strings {} \; >"$scan_file"
-          credential_pattern='(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|[Bb]earer[[:space:]]+[A-Za-z0-9._~+/-]{12,}|[Aa]uthorization[[:space:]"'"']*[:=]|[Aa]pi[_-]?[Kk]ey[[:space:]"'"']*[:=]|[Pp]assword[[:space:]"'"']*[:=])'
-          if rg -n "$credential_pattern" proof-artifacts "$scan_file"; then
-            echo "credential-shaped output found in proof artifact" >&2
-            exit 1
-          fi
+          node - "$scan_file" <<'NODE'
+          const fs = require("node:fs");
+          const text = fs.readFileSync(process.argv[2], "utf8");
+          const credentialPatterns = [
+            /gh[pousr]_[A-Za-z0-9_]{20,}/,
+            /github_pat_[A-Za-z0-9_]{20,}/,
+            /sk-[A-Za-z0-9_-]{20,}/,
+            /bearer\s+[A-Za-z0-9._~+/-]{12,}/i,
+            /authorization\s*["']*[:=]/i,
+            /api[_-]?key\s*["']*[:=]/i,
+            /password\s*["']*[:=]/i,
+          ];
+          if (credentialPatterns.some((pattern) => pattern.test(text))) {
+            console.error("credential-shaped output found in proof artifact");
+            process.exit(1);
+          }
+          NODE
           echo "redaction_scan=pass" | tee -a proof-artifacts/proof-metadata.txt
           manifest="$(mktemp)"
           (

@@ -9,7 +9,7 @@ import {
 } from "../test-helpers/control-ui-e2e.ts";
 import { createControlUiE2eSuite } from "./control-ui-e2e-suite.test-support.ts";
 
-const TARGET_HEAD = "c43086c4b93c19c67d12f941c23be8979c638eef";
+const TARGET_HEAD = "e319ca79f5f3c31b9186a17e42fa839f95e8366b";
 const artifactDir = path.resolve(
   process.env.OPENCLAW_PROOF_ARTIFACT_DIR ??
     ".artifacts/control-ui-e2e/cron-removal-generation-121137",
