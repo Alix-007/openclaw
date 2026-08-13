@@ -350,19 +350,27 @@ describe("CronPage conversation target suggestions", () => {
     (page.querySelector(".cron-table__row") as HTMLElement).click();
     await waitForCronPage(() => expect(page.cron.cronEditingJobId).toBe("topic-job"));
     expect(page.cron.cronForm.deliveryThreadId).toBe("22");
-    const deliveryMode = page.querySelector("#cron-delivery-mode") as HTMLSelectElement;
-    deliveryMode.value = "webhook";
-    deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+    const selectDeliveryMode = (value: "announce" | "webhook") => {
+      const deliveryMode = page.querySelector<HTMLElement & { value: string }>(
+        "#cron-delivery-mode",
+      );
+      expect(deliveryMode).not.toBeNull();
+      if (!deliveryMode) {
+        return;
+      }
+      Object.defineProperty(deliveryMode, "value", { configurable: true, value });
+      deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+      Reflect.deleteProperty(deliveryMode, "value");
+    };
+    selectDeliveryMode("webhook");
     await waitForCronPage(() => {
       expect(page.cron.cronForm.deliveryMode).toBe("webhook");
       expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
-      expect((page.querySelector("#cron-delivery-mode") as HTMLSelectElement).value).toBe(
-        "webhook",
-      );
+      expect(
+        page.querySelector<HTMLElement & { value: string }>("#cron-delivery-mode")?.value,
+      ).toBe("webhook");
     });
-    const restoredDeliveryMode = page.querySelector("#cron-delivery-mode") as HTMLSelectElement;
-    restoredDeliveryMode.value = "announce";
-    restoredDeliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+    selectDeliveryMode("announce");
     await waitForCronPage(() => {
       expect(page.cron.cronForm.deliveryMode).toBe("announce");
       expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
