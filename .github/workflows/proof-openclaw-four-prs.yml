@@ -14,6 +14,7 @@ on:
           - cron-runtime
           - discord
           - foundation
+          - foundation-runtime
           - matrix
           - memory
           - ollama
@@ -286,6 +287,16 @@ jobs:
               echo '[foundation credential redaction proof] shared-logging=true provider-http=true active-shared-caller=true final-request-headers=true redirect-final-context=true configured-header=true invalid-content=true short-fail-closed=true manual-oauth=true manual-voice=true inworld=true inventory=true guarded-web-transport=true openai-plugin-tts=true openai-realtime=true openai-embedding-batch=true openai-image=true openai-video=true perplexity-native=true perplexity-chat=true exa-web-search=true ollama-web-search=true parallel-web-search=true raw=true json=true json-optional-slash=true json-slash-dangling=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
               marker='[foundation compiled SDK proof]'
               ;;
+            foundation-runtime)
+              mkdir -p .proof-runtime proof-artifacts
+              cp .proof-tooling/.github/proof/foundation-request-secret-runtime.ts \
+                .proof-runtime/foundation-request-secret-runtime.ts
+              OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+                timeout 90s node --import tsx \
+                  .proof-runtime/foundation-request-secret-runtime.ts \
+                  2>&1 | tee "$log_file"
+              marker='[foundation request-secret runtime proof]'
+              ;;
             matrix)
               node scripts/run-vitest.mjs \
                 extensions/matrix/src/matrix/client/shared.test.ts \
@@ -468,8 +479,62 @@ jobs:
           grep -F "$marker" "$log_file"
           echo "proof_marker_verified=true" | tee -a "$log_file" proof-metadata.txt
 
+      - name: Scan request-secret proof artifact
+        if: inputs.proof_kind == 'foundation-runtime'
+        shell: bash
+        run: |
+          set -euo pipefail
+          scan_dir="$(mktemp -d)"
+          trap 'rm -rf "$scan_dir"' EXIT
+          archive="$scan_dir/trufflehog.tar.gz"
+          curl --fail --location --silent --show-error \
+            https://github.com/trufflesecurity/trufflehog/releases/download/v3.96.0/trufflehog_3.96.0_linux_amd64.tar.gz \
+            --output "$archive"
+          echo '7105f1cd6577f058a9e39d0578f1a99c8a1e481e4d3512cd8a09acfe22a0fdc0  '"$archive" \
+            | sha256sum --check --status
+          tar -xzf "$archive" -C "$scan_dir" trufflehog
+
+          fake_secret='openclaw-proof-fake-9Xv7Kp4Qm2Ns8Lw6'
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            "$fake_secret" proof-metadata.txt proof-foundation-runtime.log proof-artifacts; then
+            echo 'synthetic proof secret reached an upload surface' >&2
+            exit 1
+          fi
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            '/tmp/openclaw-request-redaction-proof-' \
+            proof-metadata.txt proof-foundation-runtime.log proof-artifacts; then
+            echo 'ephemeral runtime path reached an upload surface' >&2
+            exit 1
+          fi
+
+          if ! "$scan_dir/trufflehog" filesystem \
+            --no-update \
+            --log-level=-1 \
+            --results=verified,unknown,unverified \
+            --filter-entropy=3.0 \
+            --fail \
+            --fail-on-scan-errors \
+            --json \
+            proof-metadata.txt proof-foundation-runtime.log proof-artifacts \
+            > "$scan_dir/findings.jsonl"; then
+            echo 'TruffleHog found a credential candidate or hit a scan error' >&2
+            exit 1
+          fi
+          test ! -s "$scan_dir/findings.jsonl"
+          node -e 'const fs=require("node:fs"); fs.writeFileSync("proof-artifacts/artifact-scan.json", `${JSON.stringify({schemaVersion:1, verdict:"pass", fixedSyntheticSecretAbsent:true, ephemeralPathsAbsent:true, truffleHog:{version:"3.96.0", results:["verified","unknown","unverified"], entropyFloor:3, findings:0}}, null, 2)}\n`);'
+          find proof-artifacts -type f ! -name artifact-manifest.sha256 -print0 \
+            | sort -z \
+            | xargs -0 sha256sum \
+            > proof-artifacts/artifact-manifest.sha256
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            "$fake_secret" proof-metadata.txt proof-foundation-runtime.log proof-artifacts; then
+            echo 'synthetic proof secret reached the finalized artifact' >&2
+            exit 1
+          fi
+          echo 'artifact_scan_verified=true' | tee -a proof-metadata.txt
+
       - name: Upload terminal proof
-        if: always()
+        if: always() && (inputs.proof_kind != 'foundation-runtime' || success())
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: openclaw-${{ inputs.proof_kind }}-${{ inputs.target_sha }}
