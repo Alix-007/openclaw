@@ -353,9 +353,23 @@ describe("CronPage conversation target suggestions", () => {
     const deliveryMode = page.querySelector("#cron-delivery-mode") as HTMLSelectElement;
     deliveryMode.value = "webhook";
     deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
-    deliveryMode.value = "announce";
-    deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
-    expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
+    await waitForCronPage(() => {
+      expect(page.cron.cronForm.deliveryMode).toBe("webhook");
+      expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
+      expect((page.querySelector("#cron-delivery-mode") as HTMLSelectElement).value).toBe(
+        "webhook",
+      );
+    });
+    const restoredDeliveryMode = page.querySelector("#cron-delivery-mode") as HTMLSelectElement;
+    restoredDeliveryMode.value = "announce";
+    restoredDeliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+    await waitForCronPage(() => {
+      expect(page.cron.cronForm.deliveryMode).toBe("announce");
+      expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
+      expect(
+        (page.querySelector('[data-test-id="cron-submit"]') as HTMLButtonElement).disabled,
+      ).toBe(false);
+    });
     (page.querySelector('[data-test-id="cron-submit"]') as HTMLButtonElement).click();
 
     await waitForCronPage(() =>
