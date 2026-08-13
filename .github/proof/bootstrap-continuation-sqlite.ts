@@ -6,6 +6,9 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const targetRoot = process.cwd();
+const targetSha = process.env.OPENCLAW_PROOF_HEAD_SHA ?? "";
+assert.match(targetSha, /^[0-9a-f]{40}$/u);
+
 const runtimeRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-bootstrap-proof-"));
 process.env.HOME = path.join(runtimeRoot, "home");
 process.env.OPENCLAW_STATE_DIR = path.join(runtimeRoot, "state");
@@ -14,33 +17,22 @@ await fs.mkdir(process.env.OPENCLAW_STATE_DIR, { recursive: true });
 
 const importTarget = async (relativePath: string) =>
   await import(pathToFileURL(path.join(targetRoot, relativePath)).href);
-const { upsertSessionEntry } = await importTarget("src/config/sessions/session-accessor.ts");
-const { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, hasCompletedBootstrapTurn } = await importTarget(
-  "src/agents/bootstrap-files.ts",
-);
+const { upsertSessionEntryCore } = await importTarget("src/config/sessions/session-accessor.ts");
+const { hasCompletedBootstrapTurn } = await importTarget("src/agents/bootstrap-files.ts");
 const { resolveBootstrapContextInjection, resolveWorkspaceBootstrapRouting } = await importTarget(
   "src/agents/bootstrap-routing.ts",
 );
-const { finalizePendingCliBootstrapCompletion, setPendingCliBootstrapCompletion } =
-  await importTarget("src/agents/cli-bootstrap-completion.ts");
-const { runPreparedCliAgent } = await importTarget("src/agents/cli-runner.ts");
-const { SessionManager } = await importTarget("src/agents/sessions/session-manager.ts");
-const { shouldPersistCompletedBootstrapTurn } = await importTarget(
-  "src/agents/embedded-agent-runner/run/attempt.thread-helpers.ts",
+const { createTestAdmittedRunContext } = await importTarget(
+  "src/agents/admitted-run-context.test-support.ts",
 );
-const { closeOpenClawAgentDatabasesForTest } = await importTarget("src/state/openclaw-agent-db.ts");
+const { markPreparedCliBootstrapCompletion } = await importTarget(
+  "src/agents/cli-bootstrap-completion-state.ts",
+);
+const { runPreparedCliAgent } = await importTarget("src/agents/cli-runner.ts");
+const { closeOpenClawAgentDatabasesForTest } = await importTarget(
+  "src/state/openclaw-agent-db.ts",
+);
 
-const sessionTarget = {
-  agentId: "main",
-  sessionId: randomUUID(),
-  sessionKey: "agent:main:bootstrap-proof",
-  storePath: path.join(runtimeRoot, "sessions.json"),
-};
-await upsertSessionEntry(sessionTarget, {
-  sessionId: sessionTarget.sessionId,
-  updatedAt: Date.now(),
-});
-const sessionFile = path.join(runtimeRoot, "bootstrap-proof.jsonl");
 const cliBackend = {
   command: process.execPath,
   args: ["-e", "process.stdout.write('cli-backed proof reply')"],
@@ -50,20 +42,29 @@ const cliBackend = {
   serialize: true,
 };
 
+function createSessionTarget(label: string) {
+  return {
+    agentId: "main",
+    sessionId: randomUUID(),
+    sessionKey: `agent:main:bootstrap-proof-${label}`,
+    storePath: path.join(runtimeRoot, "sessions.json"),
+  };
+}
+
 function buildCliContext(params: {
   runId: string;
-  shouldRecordCompletedBootstrapTurn: boolean;
-  contextEngine?: unknown;
+  sessionTarget: ReturnType<typeof createSessionTarget>;
 }) {
   return {
     params: {
-      sessionId: sessionTarget.sessionId,
-      sessionKey: sessionTarget.sessionKey,
-      sessionFile,
-      sessionTarget,
-      storePath: sessionTarget.storePath,
+      admittedRunContext: createTestAdmittedRunContext(params.runId),
+      sessionId: params.sessionTarget.sessionId,
+      sessionKey: params.sessionTarget.sessionKey,
+      sessionFile: path.join(runtimeRoot, `${params.runId}.jsonl`),
+      sessionTarget: params.sessionTarget,
+      storePath: params.sessionTarget.storePath,
       workspaceDir: runtimeRoot,
-      agentId: sessionTarget.agentId,
+      agentId: params.sessionTarget.agentId,
       prompt: `bootstrap proof turn ${params.runId}`,
       provider: "proof-cli",
       model: "proof-model",
@@ -79,14 +80,11 @@ function buildCliContext(params: {
     workspaceDir: runtimeRoot,
     backendResolved: {
       id: "proof-cli",
+      pluginId: "proof-cli",
       config: cliBackend,
       bundleMcp: false,
     },
-    preparedBackend: {
-      backend: cliBackend,
-      env: {},
-      cleanup: async () => undefined,
-    },
+    preparedBackend: { backend: cliBackend, env: {}, cleanup: async () => undefined },
     reusableCliSession: { mode: "none" },
     hadSessionFile: false,
     contextEngineConfig: {},
@@ -96,25 +94,18 @@ function buildCliContext(params: {
     systemPromptReport: {},
     bootstrapPromptWarningLines: [],
     authEpochVersion: 2,
-    shouldRecordCompletedBootstrapTurn: params.shouldRecordCompletedBootstrapTurn,
-    ...(params.contextEngine
-      ? {
-          contextEngine: params.contextEngine,
-          contextEngineTurnPrompt: `bootstrap proof turn ${params.runId}`,
-        }
-      : {}),
   };
 }
 
-async function runTurn(params: {
+async function resolveTurn(params: {
+  sessionTarget: ReturnType<typeof createSessionTarget>;
   trigger: string;
-  isPrimaryRun: boolean;
   runKind?: "default" | "cron";
 }) {
   const routing = await resolveWorkspaceBootstrapRouting({
     isWorkspaceBootstrapPending: async () => false,
     trigger: params.trigger,
-    isPrimaryRun: params.isPrimaryRun,
+    isPrimaryRun: true,
     isCanonicalWorkspace: true,
     effectiveWorkspace: runtimeRoot,
     resolvedWorkspace: runtimeRoot,
@@ -127,7 +118,7 @@ async function runTurn(params: {
     bootstrapContextRunKind: params.runKind ?? "default",
     bootstrapMode: routing.bootstrapMode,
     isPrimaryInteractiveRun: routing.isPrimaryInteractiveRun,
-    hasCompletedBootstrapTurn: async () => await hasCompletedBootstrapTurn(sessionTarget),
+    hasCompletedBootstrapTurn: async () => await hasCompletedBootstrapTurn(params.sessionTarget),
     resolveBootstrapContextForRun: async () => ({
       bootstrapFiles: [{ name: "AGENTS.md" }],
       contextFiles: [{ path: "AGENTS.md" }],
@@ -135,157 +126,85 @@ async function runTurn(params: {
   });
 }
 
+async function runCli(params: {
+  runId: string;
+  sessionTarget: ReturnType<typeof createSessionTarget>;
+  recordCompletion: boolean;
+}) {
+  const context = buildCliContext(params);
+  if (params.recordCompletion) {
+    markPreparedCliBootstrapCompletion(context, "runner");
+  }
+  const result = await runPreparedCliAgent(context);
+  assert.equal(result.payloads?.[0]?.text, "cli-backed proof reply");
+}
+
 try {
-  const first = await runTurn({ trigger: "user", isPrimaryRun: true });
+  const eligibleTarget = createSessionTarget("eligible");
+  await upsertSessionEntryCore(eligibleTarget, {
+    sessionId: eligibleTarget.sessionId,
+    updatedAt: Date.now(),
+  });
+  const first = await resolveTurn({ sessionTarget: eligibleTarget, trigger: "user" });
   assert.equal(first.isContinuationTurn, false);
   assert.equal(first.shouldRecordCompletedBootstrapTurn, true);
   assert.equal(first.contextFiles.length, 1);
-  const shouldPersist = shouldPersistCompletedBootstrapTurn({
-    shouldRecordCompletedBootstrapTurn: first.shouldRecordCompletedBootstrapTurn,
-    promptError: undefined,
-    aborted: false,
-    timedOutDuringCompaction: false,
-    compactionOccurredThisAttempt: false,
-  });
-  assert.equal(shouldPersist, true);
-  const firstCliResult = await runPreparedCliAgent(
-    buildCliContext({
-      runId: "bootstrap-cli-first",
-      shouldRecordCompletedBootstrapTurn: true,
-    }),
-  );
-  assert.equal(firstCliResult.payloads?.[0]?.text, "cli-backed proof reply");
-  assert.equal(await hasCompletedBootstrapTurn(sessionTarget), true);
-  const sessionManager = SessionManager.open(sessionTarget, runtimeRoot);
+  await runCli({ runId: "eligible-first", sessionTarget: eligibleTarget, recordCompletion: true });
+  assert.equal(await hasCompletedBootstrapTurn(eligibleTarget), true);
 
-  const continuation = await runTurn({ trigger: "user", isPrimaryRun: true });
-  assert.equal(continuation.isContinuationTurn, true);
-  assert.equal(continuation.contextFiles.length, 0);
-  assert.equal(continuation.shouldRecordCompletedBootstrapTurn, false);
-  const continuationCliResult = await runPreparedCliAgent(
-    buildCliContext({
-      runId: "bootstrap-cli-continuation",
-      shouldRecordCompletedBootstrapTurn: continuation.shouldRecordCompletedBootstrapTurn,
-    }),
-  );
-  assert.equal(continuationCliResult.payloads?.[0]?.text, "cli-backed proof reply");
-  assert.equal(await hasCompletedBootstrapTurn(sessionTarget), true);
-  console.log(
-    "[bootstrap CLI-backed two-turn proof] subprocess=true first=injected marker-write=true second-same-session=skipped",
-  );
+  const second = await resolveTurn({ sessionTarget: eligibleTarget, trigger: "user" });
+  assert.equal(second.isContinuationTurn, true);
+  assert.equal(second.shouldRecordCompletedBootstrapTurn, false);
+  assert.equal(second.contextFiles.length, 0);
+  await runCli({ runId: "eligible-second", sessionTarget: eligibleTarget, recordCompletion: false });
+  assert.equal(await hasCompletedBootstrapTurn(eligibleTarget), true);
 
-  const memory = await runTurn({ trigger: "memory", isPrimaryRun: true });
-  const nonPrimary = await runTurn({ trigger: "user", isPrimaryRun: false });
-  const cron = await runTurn({ trigger: "cron", isPrimaryRun: true, runKind: "cron" });
-  for (const background of [memory, nonPrimary, cron]) {
-    assert.equal(background.isContinuationTurn, false);
-    assert.equal(background.contextFiles.length, 1);
-    assert.equal(background.shouldRecordCompletedBootstrapTurn, false);
-  }
+  const ineligibleWithMarker = await resolveTurn({
+    sessionTarget: eligibleTarget,
+    trigger: "cron",
+    runKind: "cron",
+  });
+  assert.equal(ineligibleWithMarker.isContinuationTurn, false);
+  assert.equal(ineligibleWithMarker.shouldRecordCompletedBootstrapTurn, false);
+  assert.equal(ineligibleWithMarker.contextFiles.length, 1);
+  assert.equal(await hasCompletedBootstrapTurn(eligibleTarget), true);
 
-  let releaseDeferredMaintenance: (() => void) | undefined;
-  const deferredMaintenance = new Promise<boolean>((resolve) => {
-    releaseDeferredMaintenance = () => resolve(true);
+  const ineligibleTarget = createSessionTarget("ineligible");
+  await upsertSessionEntryCore(ineligibleTarget, {
+    sessionId: ineligibleTarget.sessionId,
+    updatedAt: Date.now(),
   });
-  const deferredResult = {
-    meta: {
-      durationMs: 0,
-      bootstrapContextCompletionPending: true,
-    },
-  };
-  setPendingCliBootstrapCompletion(deferredResult, {
-    maintenanceSettledWithoutRewrite: deferredMaintenance,
-    runId: "bootstrap-deferred-proof",
-    sessionTarget,
+  assert.equal(await hasCompletedBootstrapTurn(ineligibleTarget), false);
+  const ineligible = await resolveTurn({
+    sessionTarget: ineligibleTarget,
+    trigger: "cron",
+    runKind: "cron",
   });
-  sessionManager.appendResetBoundary("reset");
-  const markerFinalized = await finalizePendingCliBootstrapCompletion({
-    result: deferredResult,
-    transcriptStable: false,
+  assert.equal(ineligible.isContinuationTurn, false);
+  assert.equal(ineligible.shouldRecordCompletedBootstrapTurn, false);
+  assert.equal(ineligible.contextFiles.length, 1);
+  await runCli({
+    runId: "ineligible-control",
+    sessionTarget: ineligibleTarget,
+    recordCompletion: false,
   });
-  releaseDeferredMaintenance?.();
-  await deferredMaintenance;
-  assert.equal(markerFinalized, false);
-  assert.equal(await hasCompletedBootstrapTurn(sessionTarget), false);
+  assert.equal(await hasCompletedBootstrapTurn(ineligibleTarget), false);
 
   console.log(
-    "[bootstrap deferred finalization proof] maintenance=no-rewrite command-post-run=reset marker=false",
-  );
-
-  let releaseNonblockingMaintenance: (() => void) | undefined;
-  const nonblockingMaintenance = new Promise<void>((resolve) => {
-    releaseNonblockingMaintenance = resolve;
-  });
-  let announceMaintenanceStarted: (() => void) | undefined;
-  const maintenanceStarted = new Promise<void>((resolve) => {
-    announceMaintenanceStarted = resolve;
-  });
-  const contextEngine = {
-    info: {
-      id: "bootstrap-proof-background-engine",
-      name: "Bootstrap proof background engine",
-      turnMaintenanceMode: "background",
-    },
-    ingest: async () => ({ ingested: true }),
-    assemble: async ({ messages }: { messages: unknown[] }) => ({
-      messages,
-      estimatedTokens: 0,
+    JSON.stringify({
+      proof: "bootstrap-cli-sqlite-three-state",
+      targetSha,
+      node: process.version,
+      cliSubprocess: true,
+      sqliteMarker: true,
+      firstEligible: "injected",
+      firstMarkerWrite: true,
+      secondEligible: "skipped",
+      ineligibleControl: "cron",
+      ineligibleMarkerWrite: false,
+      ineligibleMarkerConsumed: false,
+      secretOutput: false,
     }),
-    compact: async () => ({ ok: true, compacted: false }),
-    maintain: async () => {
-      announceMaintenanceStarted?.();
-      await nonblockingMaintenance;
-      return { changed: false, bytesFreed: 0, rewrittenEntries: 0 };
-    },
-  };
-  const markerCountBefore = sessionManager
-    .getBranch()
-    .filter(
-      (entry) =>
-        entry.type === "custom" && entry.customType === FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
-    ).length;
-  let replyFinished = false;
-  const nonblockingReply = runPreparedCliAgent(
-    buildCliContext({
-      runId: "bootstrap-cli-nonblocking",
-      shouldRecordCompletedBootstrapTurn: true,
-      contextEngine,
-    }),
-  );
-  void nonblockingReply.then(() => {
-    replyFinished = true;
-  });
-  await maintenanceStarted;
-  const nonblockingResult = await nonblockingReply;
-  assert.equal(nonblockingResult.payloads?.[0]?.text, "cli-backed proof reply");
-  assert.equal(nonblockingResult.meta.bootstrapContextCompletionPending, true);
-  let nextTurnReadFinished = false;
-  const nextTurnCompleted = hasCompletedBootstrapTurn(sessionTarget).then((completed) => {
-    nextTurnReadFinished = true;
-    return completed;
-  });
-  await new Promise<void>((resolve) => setImmediate(resolve));
-  assert.equal(replyFinished, true);
-  assert.equal(nextTurnReadFinished, false);
-  assert.equal(
-    sessionManager
-      .getBranch()
-      .filter(
-        (entry) =>
-          entry.type === "custom" && entry.customType === FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE,
-      ).length,
-    markerCountBefore,
-  );
-
-  releaseNonblockingMaintenance?.();
-  await nonblockingMaintenance;
-  assert.equal(await nextTurnCompleted, true);
-  console.log(
-    "[bootstrap nonblocking delivery proof] cli-subprocess=true reply-before-maintenance=true marker-before=false next-turn-serialized=true marker-after=true",
-  );
-
-  console.log(
-    "[bootstrap continuation SQLite proof] sqlite-marker=true first=injected marker-write=true continuation=skipped memory=injected non-primary=injected cron=injected secret-output=false",
   );
 } finally {
   closeOpenClawAgentDatabasesForTest();

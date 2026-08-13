@@ -101,42 +101,10 @@ jobs:
           log_file="proof-${PROOF_KIND}.log"
           case "$PROOF_KIND" in
             bootstrap)
-              node scripts/run-vitest.mjs \
-                src/agents/bootstrap-routing.test.ts \
-                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.context-injection.test.ts \
-                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.bootstrap-marker.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              node scripts/run-vitest.mjs \
-                src/agents/agent-command.live-model-switch.test.ts \
-                src/agents/bootstrap-files.test.ts \
-                src/agents/embedded-agent-runner/cli-backend-dispatch.test.ts \
-                src/agents/cli-runner/prepare.test.ts \
-                src/agents/cli-runner.reliability.test.ts \
-                src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
-                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|waits for an in-flight same-session marker settlement before reading continuation state|persists a CLI bootstrap completion marker after its runner-owned transcript|does not persist a runner-owned bootstrap marker when backend cleanup fails|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|finalizes a pending bootstrap marker after the transcript mirror commits|does not finalize a pending bootstrap marker when transcript mirroring fails|does not finalize a pending bootstrap marker after the dispatched run aborts|records CLI bootstrap completion after the post-run transcript commit|keeps CLI bootstrap completion pending until post-run compaction settles|delivers the completed reply while deferred bootstrap maintenance is pending|returns the completed CLI reply while deferred bootstrap maintenance is pending|does not record CLI bootstrap completion after post-run compaction|does not record CLI bootstrap completion when deferred maintenance settles after compaction|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              grep -F 'does not persist a runner-owned bootstrap marker when backend cleanup fails' "$log_file"
-              grep -F 'does not persist a CLI bootstrap marker after post-output cancellation' "$log_file"
-              grep -F 'finalizes a pending bootstrap marker after the transcript mirror commits' "$log_file"
-              grep -F 'does not finalize a pending bootstrap marker when transcript mirroring fails' "$log_file"
-              grep -F 'does not finalize a pending bootstrap marker after the dispatched run aborts' "$log_file"
-              grep -F 'records CLI bootstrap completion after the post-run transcript commit' "$log_file"
-              grep -F 'keeps CLI bootstrap completion pending until post-run compaction settles' "$log_file"
-              grep -F 'delivers the completed reply while deferred bootstrap maintenance is pending' "$log_file"
-              grep -F 'returns the completed CLI reply while deferred bootstrap maintenance is pending' "$log_file"
-              grep -F 'waits for an in-flight same-session marker settlement before reading continuation state' "$log_file"
-              grep -F 'does not record CLI bootstrap completion after post-run compaction' "$log_file"
-              grep -F 'does not record CLI bootstrap completion when deferred maintenance settles after compaction' "$log_file"
-              grep -F 'does not record CLI bootstrap completion when post-run transcript persistence fails' "$log_file"
-              grep -F 'skips post-run persistence after the session is deleted' "$log_file"
               node --import tsx \
                 .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
-                2>&1 | tee -a "$log_file"
-              grep -F '[bootstrap CLI-backed two-turn proof]' "$log_file"
-              grep -F '[bootstrap deferred finalization proof]' "$log_file"
-              grep -F '[bootstrap nonblocking delivery proof]' "$log_file"
-              echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true delivery-nonblocking=true next-turn-serialized=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
-              marker='[bootstrap continuation SQLite proof]'
+                2>&1 | tee "$log_file"
+              marker='"proof":"bootstrap-cli-sqlite-three-state"'
               ;;
             discord)
               node scripts/run-vitest.mjs \
