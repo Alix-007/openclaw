@@ -1119,6 +1119,8 @@ class NodeRuntime private constructor(
   val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
   private val _gatewayControlPage = MutableStateFlow<GatewayControlPage?>(null)
   val gatewayControlPage: StateFlow<GatewayControlPage?> = _gatewayControlPage.asStateFlow()
+  private val _desktopObserveAvailable = MutableStateFlow(false)
+  val desktopObserveAvailable: StateFlow<Boolean> = _desktopObserveAvailable.asStateFlow()
   private val _nodeConnected = MutableStateFlow(false)
   val nodeConnected: StateFlow<Boolean> = _nodeConnected.asStateFlow()
   private val _nodeCapabilityApproval = MutableStateFlow<GatewayNodeCapabilityApproval>(GatewayNodeCapabilityApproval.Loading)
@@ -2919,6 +2921,14 @@ class NodeRuntime private constructor(
     _serverName.value = "OpenClaw Gateway"
     _remoteAddress.value = "Mac Studio on local network"
     _gatewayVersion.value = BuildConfig.VERSION_NAME
+    replaceGatewayMethods(setOf(GatewayMethod.DesktopObserve.rawValue))
+    _gatewayControlPage.value =
+      GatewayControlPage(
+        baseUrl = AndroidScreenshotFixture.controlUiBaseUrl,
+        token = null,
+        password = null,
+        tlsFingerprintSha256 = null,
+      )
     updateGatewayDefaultAgentId("main")
     _gatewayAgents.value = AndroidScreenshotFixture.agents
     _modelCatalog.value = AndroidScreenshotFixture.models
@@ -6369,7 +6379,7 @@ class NodeRuntime private constructor(
     publishGatewayData(gatewayScope) {
       _clawHubSkillSearchState.value =
         _clawHubSkillSearchState.value.copy(
-          reviewingSlug = skill.slug,
+          reviewingSlug = skill.reference,
           installReview = null,
           acknowledgeSlug = null,
           acknowledgeVersion = null,
@@ -6378,7 +6388,7 @@ class NodeRuntime private constructor(
         )
     }
     try {
-      val response = requestGatewayData(gatewayScope, "skills.detail", clawHubDetailParams(skill.slug))
+      val response = requestGatewayData(gatewayScope, "skills.detail", clawHubDetailParams(skill.reference))
       val review = parseClawHubInstallReview(response, skill, json)
       publishGatewayData(gatewayScope) {
         if (clawHubSkillReviewSeq.get() == reviewSeq) {
@@ -6388,7 +6398,7 @@ class NodeRuntime private constructor(
               installReview = review,
               errorText =
                 if (review == null) {
-                  "ClawHub did not return an installable version for ${skill.slug}."
+                  "ClawHub did not return an installable version for ${skill.reference}."
                 } else {
                   null
                 },
@@ -6404,7 +6414,7 @@ class NodeRuntime private constructor(
             _clawHubSkillSearchState.value.copy(
               reviewingSlug = null,
               errorText =
-                nativeString("Could not load ClawHub details for \${skill.slug}.", skill.slug),
+                nativeString("Could not load ClawHub details for \${skill.reference}.", skill.reference),
             )
         }
       }
@@ -7531,6 +7541,7 @@ class NodeRuntime private constructor(
       gatewayApprovalRpcFamily = selectGatewayApprovalRpcFamily(methods)
       _clawHubSkillMethodsAvailable.value = supportsClawHubSkillManagement(methods)
       _chatMessageGetAvailable.value = GatewayMethod.ChatMessageGet.rawValue in methods
+      _desktopObserveAvailable.value = GatewayMethod.DesktopObserve.rawValue in methods
       systemAgentChatSupported.value = GatewayMethod.OpenclawChat.rawValue in methods
       gatewayMethodsEpoch += 1
       _chatMessageGetScopeRevision.value = gatewayMethodsEpoch
