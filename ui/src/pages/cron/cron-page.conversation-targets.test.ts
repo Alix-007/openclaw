@@ -128,6 +128,25 @@ describe("CronPage conversation target suggestions", () => {
   });
 
   it("selects duplicate topics atomically and clears stale delivery threads", async () => {
+    let topicJobCreated = false;
+    const topicJob = {
+      id: "topic-job",
+      name: "Topic delivery",
+      enabled: true,
+      createdAtMs: 0,
+      updatedAtMs: 0,
+      schedule: { kind: "every" as const, everyMs: 3_600_000 },
+      sessionTarget: "isolated" as const,
+      wakeMode: "now" as const,
+      payload: { kind: "agentTurn" as const, message: "Send the topic digest" },
+      delivery: {
+        mode: "announce" as const,
+        channel: "telegram",
+        to: "-1001",
+        threadId: "22",
+        accountId: "work",
+      },
+    };
     const request = vi.fn(async (method: string, params?: unknown) => {
       if (method === "conversations.list") {
         const { channel } = params as { channel: string };
@@ -182,10 +201,14 @@ describe("CronPage conversation target suggestions", () => {
         };
       }
       if (method === "cron.add") {
+        topicJobCreated = true;
         return { id: "topic-job" };
       }
+      if (method === "cron.update") {
+        return {};
+      }
       if (method === "cron.list") {
-        return cronListResponse([]);
+        return cronListResponse(topicJobCreated ? [topicJob] : []);
       }
       if (method === "cron.runs") {
         return { entries: [], total: 0, offset: 0, hasMore: false };
@@ -318,6 +341,30 @@ describe("CronPage conversation target suggestions", () => {
             channel: "telegram",
             to: "-1001",
             threadId: "22",
+          }),
+        }),
+      ),
+    );
+
+    await waitForCronPage(() => expect(page.querySelector(".cron-table__row")).not.toBeNull());
+    (page.querySelector(".cron-table__row") as HTMLElement).click();
+    await waitForCronPage(() => expect(page.cron.cronEditingJobId).toBe("topic-job"));
+    expect(page.cron.cronForm.deliveryThreadId).toBe("22");
+    const deliveryMode = page.querySelector("#cron-delivery-mode") as HTMLSelectElement;
+    deliveryMode.value = "webhook";
+    deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+    deliveryMode.value = "announce";
+    deliveryMode.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
+    (page.querySelector('[data-test-id="cron-submit"]') as HTMLButtonElement).click();
+
+    await waitForCronPage(() =>
+      expect(request).toHaveBeenCalledWith(
+        "cron.update",
+        expect.objectContaining({
+          id: "topic-job",
+          patch: expect.objectContaining({
+            delivery: expect.objectContaining({ threadId: null }),
           }),
         }),
       ),
