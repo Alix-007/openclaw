@@ -4,6 +4,7 @@ import {
   markCliBootstrapCompletionCallerOwned,
   markPreparedCliBootstrapCompletion,
   takePreparedCliBootstrapCompletion,
+  transferCliBootstrapCompletionCallerOwnership,
 } from "./cli-bootstrap-completion-state.js";
 import type { PreparedCliRunContext, RunCliAgentParams } from "./cli-runner/types.js";
 
@@ -22,5 +23,17 @@ describe("CLI bootstrap completion state", () => {
     expect(takePreparedCliBootstrapCompletion({ ...context })).toBeUndefined();
     expect(takePreparedCliBootstrapCompletion(context)).toEqual({ transcriptOwner: "caller" });
     expect(takePreparedCliBootstrapCompletion(context)).toBeUndefined();
+  });
+
+  it("transfers one-shot caller ownership across parameter normalization", () => {
+    const params = {} as RunCliAgentParams;
+    const normalizedParams = { ...params };
+    markCliBootstrapCompletionCallerOwned(params);
+
+    transferCliBootstrapCompletionCallerOwnership(params, normalizedParams);
+
+    expect(consumeCliBootstrapCompletionCallerOwnership(params)).toBe(false);
+    expect(consumeCliBootstrapCompletionCallerOwnership(normalizedParams)).toBe(true);
+    expect(consumeCliBootstrapCompletionCallerOwnership(normalizedParams)).toBe(false);
   });
 });

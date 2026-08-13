@@ -50,10 +50,14 @@ import {
   hasCompletedBootstrapTurn,
 } from "./bootstrap-files.js";
 import { testing as cliBackendsTesting } from "./cli-backends.test-support.js";
-import { markPreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
+import {
+  markCliBootstrapCompletionCallerOwned,
+  markPreparedCliBootstrapCompletion,
+} from "./cli-bootstrap-completion-state.js";
 import { finalizePendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import {
   restoreCliRunnerTestDeps,
+  runCliAgent,
   runPreparedCliAgent,
   setCliRunnerTestDeps,
 } from "./cli-runner.js";
@@ -73,7 +77,7 @@ import {
 import { prepareCliRunContext } from "./cli-runner/prepare.js";
 import { hashCliReseedPrompt } from "./cli-runner/reseed-envelope.js";
 import * as sessionHistoryModule from "./cli-runner/session-history.js";
-import type { PreparedCliRunContext } from "./cli-runner/types.js";
+import type { PreparedCliRunContext, RunCliAgentParams } from "./cli-runner/types.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "./harness/hook-helpers.js";
 import { MAX_AGENT_HOOK_HISTORY_MESSAGES } from "./harness/hook-history.js";
 import { SessionManager } from "./sessions/index.js";
@@ -501,6 +505,79 @@ describe("runCliAgent reliability", () => {
           }),
         ]),
       );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps normalized caller-owned completion pending until command post-run settlement", async () => {
+    const { dir, sessionFile, storePath } = createSessionFile();
+    await seedSqliteSessionEntry({ sessionFile, storePath });
+    const sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath,
+    };
+    cliBackendsTesting.setDepsForTest({
+      resolvePluginSetupCliBackend: () => undefined,
+      resolveRuntimeCliBackends: () => [
+        {
+          id: "codex-cli",
+          pluginId: "test-codex-cli",
+          config: {
+            command: "codex",
+            args: ["exec", "--json"],
+            output: "text",
+            input: "arg",
+            sessionMode: "none",
+            systemPromptArg: "--system-prompt",
+          },
+        },
+      ],
+    });
+    supervisorSpawnMock.mockResolvedValueOnce(
+      createManagedRun({
+        reason: "exit",
+        exitCode: 0,
+        exitSignal: null,
+        durationMs: 20,
+        stdout: "completed",
+        stderr: "",
+        timedOut: false,
+        noOutputTimedOut: false,
+      }),
+    );
+    const runParams = {
+      admittedRunContext: createTestAdmittedRunContext("run-cli-normalized-caller-owner"),
+      agentId: "main",
+      config: {
+        agents: { defaults: { contextInjection: "continuation-skip", workspace: dir } },
+      },
+      model: "gpt-5.4",
+      persistAssistantTranscript: true,
+      prompt: "hi",
+      provider: "codex-cli",
+      runId: "run-cli-normalized-caller-owner",
+      sessionFile,
+      sessionId: sessionTarget.sessionId,
+      sessionKey: sessionTarget.sessionKey,
+      sessionTarget,
+      storePath,
+      timeoutMs: 1_000,
+      trigger: "user",
+      workspaceDir: dir,
+    } satisfies RunCliAgentParams;
+    markCliBootstrapCompletionCallerOwned(runParams);
+
+    try {
+      const result = await runCliAgent(runParams);
+
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(false);
+      await expect(
+        finalizePendingCliBootstrapCompletion({ result, transcriptStable: true }),
+      ).resolves.toBe(true);
+      expect(await hasCompletedBootstrapTurn(sessionTarget)).toBe(true);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

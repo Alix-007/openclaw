@@ -32,7 +32,10 @@ import {
   buildPendingCliBootstrapCompletion,
   finalizeRunnerOwnedPendingCliBootstrapCompletion,
 } from "./cli-bootstrap-completion.js";
-import { takePreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
+import {
+  takePreparedCliBootstrapCompletion,
+  transferCliBootstrapCompletionCallerOwnership,
+} from "./cli-bootstrap-completion-state.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import {
   resolveCliSessionId,
@@ -144,6 +147,7 @@ export function runCliAgent(paramsInput: RunCliAgentParams): Promise<EmbeddedAge
     ...paramsInput,
     lifecycleGeneration,
   };
+  transferCliBootstrapCompletionCallerOwnership(paramsInput, params);
   // Observability services register before turns and keep subscriptions process-stable.
   // Snapshot listener presence here so disabled installs pay no synthetic trace cost.
   return withAgentRunLifecycleGeneration(lifecycleGeneration, () =>
@@ -761,5 +765,4 @@ export async function runPreparedCliAgent(
     takePreparedCliBootstrapCompletion(context);
   }
 }
-
 

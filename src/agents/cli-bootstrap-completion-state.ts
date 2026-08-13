@@ -12,6 +12,16 @@ export function markCliBootstrapCompletionCallerOwned(params: RunCliAgentParams)
   callerOwnedRuns.add(params);
 }
 
+/** Carries caller ownership across the runner's synchronous parameter normalization. */
+export function transferCliBootstrapCompletionCallerOwnership(
+  source: RunCliAgentParams,
+  target: RunCliAgentParams,
+): void {
+  if (callerOwnedRuns.delete(source)) {
+    callerOwnedRuns.add(target);
+  }
+}
+
 /** Consumes caller ownership while preparing the exact marked run object. */
 export function consumeCliBootstrapCompletionCallerOwnership(params: RunCliAgentParams): boolean {
   return callerOwnedRuns.delete(params);
