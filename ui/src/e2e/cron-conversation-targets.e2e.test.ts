@@ -118,6 +118,14 @@ suite.define(() => {
           .filter({ hasText: "Editor" })
           .click();
         await page.locator('[data-test-id="cron-new-task"]').click();
+        const formAgent = page.locator("#cron-agent-id");
+        await expect
+          .poll(() =>
+            formAgent.evaluate((element) =>
+              String((element as HTMLElement & { value?: string }).value),
+            ),
+          )
+          .toBe("writer");
         const channelPicker = page.locator("#cron-delivery-channel");
         if ((await channelPicker.evaluate((element) => element.localName)) === "select") {
           await channelPicker.selectOption("telegram");
@@ -141,7 +149,7 @@ suite.define(() => {
           .poll(async () => await gateway.getRequests("conversations.list"))
           .toContainEqual(
             expect.objectContaining({
-              params: expect.objectContaining({ agentId: "editor", channel: "telegram" }),
+              params: expect.objectContaining({ agentId: "writer", channel: "telegram" }),
             }),
           );
         const defaultRecipientOptions = await page
