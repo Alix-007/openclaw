@@ -72,9 +72,10 @@ export function createGateway(client: GatewayBrowserClient, connected: boolean):
 export function createContext(
   gateway: TestGateway,
   scopeId: string | null = "main",
+  selectedId: string | null = scopeId,
 ): ApplicationContext {
   const subscribe = () => () => undefined;
-  let selectionState = { selectedId: scopeId, scopeId };
+  let selectionState = { selectedId, scopeId };
   const selectionListeners = new Set<(state: typeof selectionState) => void>();
   return {
     basePath: "",

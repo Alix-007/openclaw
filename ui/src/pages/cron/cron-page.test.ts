@@ -119,13 +119,24 @@ describe("CronPage editor state sync", () => {
     {
       scenario: "a new task from the all-agents view",
       scopeId: null,
+      selectedId: "writer",
       suggested: false,
-      expectedAgentId: undefined,
+      expectedAgentId: "writer",
     },
   ])("creates $scenario with its intended agent ownership", async (scenario) => {
     const request = createRequest();
     const gateway = createGateway({ request } as unknown as GatewayBrowserClient, true);
-    const page = createPage(createContext(gateway, scenario.scopeId), { render: true });
+    const page = createPage(
+      createContext(gateway, scenario.scopeId, scenario.selectedId ?? scenario.scopeId),
+      { render: true },
+    );
+    await waitForCronPage(() => {
+      expect(request).toHaveBeenCalledWith("models.list", {
+        agentId: scenario.expectedAgentId,
+        view: "configured",
+        preparedOnly: true,
+      });
+    });
 
     const createSelector = scenario.suggested
       ? '[data-suggestion="repoPulse"]'
