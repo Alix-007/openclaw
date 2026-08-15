@@ -219,8 +219,8 @@ export async function executePreparedReplyAgentRun(
     throw replyOperation.abortSignal.reason ?? new Error("reply operation aborted");
   }
 
-  // Exhausted maintenance resets this session in place, so persist the turn before
-  // preflight; the later reset boundary preserves the same transcript target.
+  // Persist before preflight so a reset preserves this turn. Admission also puts the
+  // prompt in the transcript read below, so preflight must not project it again.
   const userTurnAdmission = await admitUserTurn(followupRun.userTurnTranscriptRecorder);
   if (userTurnAdmission === "duplicate-source") {
     return returnWithQueuedFollowupDrain(undefined);
@@ -232,7 +232,7 @@ export async function executePreparedReplyAgentRun(
       runPreflightCompactionIfNeeded({
         cfg,
         followupRun,
-        promptForEstimate: followupRun.prompt,
+        promptForEstimate: "",
         defaultModel,
         agentCfgContextTokens,
         sessionEntry: activeSessionEntry,

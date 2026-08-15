@@ -2124,6 +2124,57 @@ describe("runMemoryFlushIfNeeded", () => {
 
     expect(compactEmbeddedAgentSessionMock).toHaveBeenCalledTimes(1);
   });
+  it("counts an admitted user turn from the SQLite transcript only once near the threshold", async () => {
+    registerMemoryFlushPlanResolverForTest(() => ({
+      softThresholdTokens: 0,
+      forceFlushTranscriptBytes: 1_000_000_000,
+      reserveTokensFloor: 10,
+      prompt: "Pre-compaction memory flush.\nNO_REPLY",
+      systemPrompt: "Write memory to memory/YYYY-MM-DD.md.",
+      relativePath: "memory/2023-11-14.md",
+    }));
+    const storePath = path.join(rootDir, "sessions.json");
+    const currentPrompt = "near-threshold admitted user turn ".repeat(80);
+
+    const runPreflight = async (sessionKey: string, promptForEstimate: string) => {
+      const sessionId = `${sessionKey}-session`;
+      await writeTestSessionTranscript({
+        rootDir,
+        sessionId,
+        sessionKey,
+        events: [{ type: "message", message: { role: "user", content: currentPrompt } }],
+      });
+      const sessionEntry: SessionEntry = {
+        sessionId,
+        updatedAt: Date.now(),
+        totalTokensFresh: false,
+        compactionCount: 0,
+      };
+      const followupRun = createTestFollowupRun({ sessionId, sessionKey });
+      followupRun.prompt = currentPrompt;
+
+      await runPreflightCompactionIfNeeded({
+        cfg: { agents: { defaults: { compaction: { memoryFlush: {} } } } },
+        followupRun,
+        promptForEstimate,
+        defaultModel: "anthropic/claude",
+        agentCfgContextTokens: 1_000,
+        sessionEntry,
+        sessionStore: { [sessionKey]: sessionEntry },
+        sessionKey,
+        storePath,
+        isHeartbeat: false,
+        replyOperation: createReplyOperation(),
+      });
+    };
+
+    await runPreflight("duplicate-estimate", currentPrompt);
+    expect(compactEmbeddedAgentSessionMock).toHaveBeenCalledTimes(1);
+
+    compactEmbeddedAgentSessionMock.mockClear();
+    await runPreflight("admitted-turn", "");
+    expect(compactEmbeddedAgentSessionMock).not.toHaveBeenCalled();
+  });
   it("does not preflight compact a fresh session when only accumulated output tokens are large and the latest output keeps the request under budget", async () => {
     registerMemoryFlushPlanResolverForTest(() => ({
       softThresholdTokens: 0,

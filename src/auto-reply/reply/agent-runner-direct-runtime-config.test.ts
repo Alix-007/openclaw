@@ -238,6 +238,7 @@ function requireMaintenanceCall(mock: MockCallSource, name: string, index = 0) {
     | {
         cfg?: unknown;
         followupRun?: unknown;
+        promptForEstimate?: string;
         sessionKey?: string;
         runtimePolicySessionKey?: string;
       }
@@ -347,6 +348,11 @@ describe("runReplyAgent runtime config", () => {
     expect(persistApproved.mock.invocationCallOrder[0]).toBeLessThan(
       runPreflightCompactionIfNeededMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
     );
+    const preflightCall = requireMaintenanceCall(
+      runPreflightCompactionIfNeededMock,
+      "runPreflightCompactionIfNeeded",
+    );
+    expect(preflightCall.promptForEstimate).toBe("");
     expect(executeAgentTurnMock).not.toHaveBeenCalled();
   });
 
