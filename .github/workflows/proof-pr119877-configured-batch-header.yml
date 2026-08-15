@@ -1,0 +1,135 @@
+name: Alix PR 119877 exact configured-header proof
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  proof:
+    name: Exact configured batch header runtime proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OPENCLAW_PROOF_HEAD_SHA: 9ebc312ce89f07189ed1316e48581e74da7b4cd2
+    steps:
+      - name: Check out immutable Alix product source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: 9ebc312ce89f07189ed1316e48581e74da7b4cd2
+          persist-credentials: false
+
+      - name: Verify immutable product identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$OPENCLAW_PROOF_HEAD_SHA" ]]; then
+            echo "target SHA mismatch" >&2
+            exit 1
+          fi
+          {
+            echo "target_sha=$actual_sha"
+            echo "repository=Alix-007/openclaw"
+            echo "runner_os=$RUNNER_OS"
+            echo "run_id=$GITHUB_RUN_ID"
+          } > proof-metadata.txt
+
+      - name: Check out proof-only harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install exact product dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Run one exact-head loopback trace
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .proof-runtime proof-artifacts
+          cp .proof-tooling/.github/proof/pr119877-configured-batch-header.ts \
+            .proof-runtime/pr119877-configured-batch-header.ts
+          OPENCLAW_PROOF_ARTIFACT_DIR="$PWD/proof-artifacts" \
+            timeout 120s node --import tsx \
+              .proof-runtime/pr119877-configured-batch-header.ts \
+              2>&1 | tee proof-runtime.log
+          grep -F '[configured batch header proof]' proof-runtime.log
+
+      - name: Fail-closed artifact scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          scan_dir="$(mktemp -d)"
+          trap 'rm -rf "$scan_dir"' EXIT
+          archive="$scan_dir/trufflehog.tar.gz"
+          curl --fail --location --silent --show-error \
+            https://github.com/trufflesecurity/trufflehog/releases/download/v3.96.0/trufflehog_3.96.0_linux_amd64.tar.gz \
+            --output "$archive"
+          echo '7105f1cd6577f058a9e39d0578f1a99c8a1e481e4d3512cd8a09acfe22a0fdc0  '"$archive" \
+            | sha256sum --check --status
+          tar -xzf "$archive" -C "$scan_dir" trufflehog
+
+          configured_value='literal-workspace-routing-value'
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            "$configured_value" proof-metadata.txt proof-runtime.log proof-artifacts; then
+            echo 'synthetic configured value reached an upload surface' >&2
+            exit 1
+          fi
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            '/tmp/openclaw-batch-header-proof-' \
+            proof-metadata.txt proof-runtime.log proof-artifacts; then
+            echo 'ephemeral runtime path reached an upload surface' >&2
+            exit 1
+          fi
+          if ! "$scan_dir/trufflehog" filesystem \
+            --no-update \
+            --log-level=-1 \
+            --results=verified,unknown,unverified \
+            --filter-entropy=3.0 \
+            --fail \
+            --fail-on-scan-errors \
+            --json \
+            proof-metadata.txt proof-runtime.log proof-artifacts \
+            > "$scan_dir/findings.jsonl"; then
+            echo 'TruffleHog found a credential candidate or hit a scan error' >&2
+            exit 1
+          fi
+          test ! -s "$scan_dir/findings.jsonl"
+          node -e 'const fs=require("node:fs"); fs.writeFileSync("proof-artifacts/artifact-scan.json", `${JSON.stringify({schemaVersion:1, verdict:"pass", fixedSyntheticValueAbsent:true, ephemeralPathsAbsent:true, truffleHog:{version:"3.96.0", results:["verified","unknown","unverified"], entropyFloor:3, findings:0}}, null, 2)}\n`);'
+          find proof-artifacts -type f ! -name artifact-manifest.sha256 -print0 \
+            | sort -z \
+            | xargs -0 sha256sum \
+            > proof-artifacts/artifact-manifest.sha256
+          if grep --binary-files=without-match --fixed-strings --quiet --recursive \
+            "$configured_value" proof-metadata.txt proof-runtime.log proof-artifacts; then
+            echo 'synthetic configured value reached the finalized artifact' >&2
+            exit 1
+          fi
+          echo 'artifact_scan_verified=true' >> proof-metadata.txt
+
+      - name: Upload redacted exact-head verdict
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr119877-configured-batch-header-9ebc312ce89f
+          path: |
+            proof-metadata.txt
+            proof-runtime.log
+            proof-artifacts/**
+          if-no-files-found: error
+          retention-days: 30
