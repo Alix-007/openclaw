@@ -99,6 +99,7 @@ export type ChatPageHost = ChatHost &
     sessionsLoading: boolean;
     lastErrorCode: string | null;
     chatScrollCommitCleanup: (() => void) | null;
+    chatStreamRenderDeferred: boolean;
     chatStreamRenderFrame: number | null;
     chatScrollFrame: number | null;
     chatScrollGuardFrame: number | null;

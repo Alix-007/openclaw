@@ -4,7 +4,7 @@ import { subscribeChatOutboxProjection } from "./chat-queue.ts";
 import { stopChatRealtimeTalk } from "./chat-realtime.ts";
 import type { ChatPageHost } from "./chat-state-host.ts";
 import { invalidateImageLightbox } from "./chat-state-page.ts";
-import { cancelChatStreamRenderFrame } from "./chat-state-render.ts";
+import { cancelChatStreamRenderFrame, requestChatPageUpdate } from "./chat-state-render.ts";
 import { ChatAttachmentReadLifecycle } from "./components/chat-attachments.ts";
 import { releaseChatMediaResourceSubscriber } from "./components/chat-message-media.ts";
 import { clearSessionWorkspaceTimers } from "./components/chat-session-workspace.ts";
@@ -39,6 +39,19 @@ export class ChatStateController<TState extends ChatPageHost> implements Reactiv
   private renderLifecycleConnected = false;
   private renderLifecycleConnectionEpoch = 0;
   private renderLifecycleScope: ChatRenderLifecycleScope | undefined;
+  private readonly handleVisibilityChange = () => {
+    const state = this.stateValue;
+    if (!state || document.visibilityState === "visible") {
+      if (state?.chatStreamRenderDeferred) {
+        requestChatPageUpdate(state);
+      }
+      return;
+    }
+    if (state.chatStreamRenderFrame != null) {
+      cancelChatStreamRenderFrame(state);
+      state.chatStreamRenderDeferred = true;
+    }
+  };
 
   constructor(private readonly host: ReactiveControllerHost) {
     this.attachmentReads = new ChatAttachmentReadLifecycle(() =>
@@ -275,6 +288,7 @@ export class ChatStateController<TState extends ChatPageHost> implements Reactiv
   hostConnected() {
     this.renderLifecycleConnectionEpoch += 1;
     this.renderLifecycleConnected = true;
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
     // A lifecycle created while detached must never become active on reconnect.
     this.cancelRenderLifecycleScope();
   }
@@ -335,6 +349,7 @@ export class ChatStateController<TState extends ChatPageHost> implements Reactiv
   }
 
   hostDisconnected() {
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
     this.renderLifecycleConnected = false;
     this.cancelRenderLifecycleScope();
     this.attachmentReads.abortReads();

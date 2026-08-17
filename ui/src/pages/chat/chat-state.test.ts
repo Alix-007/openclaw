@@ -575,6 +575,7 @@ describe("ChatStateController render lifecycle", () => {
       chatMessagesBySession: new Map(),
       chatRunId: "run-1",
       chatStream: null,
+      chatStreamRenderDeferred: false,
       chatStreamRenderFrame: null,
       chatStreamStartedAt: 1,
       lastError: null,
@@ -583,6 +584,27 @@ describe("ChatStateController render lifecycle", () => {
       sessionKey: "main",
       ...overrides,
     } as unknown as ChatPageHost;
+  }
+
+  function createPageContext() {
+    return {
+      agents: {
+        state: { agentsList: null },
+        adoptList: vi.fn(),
+      },
+      agentSelection: { state: { selectedId: "main" } },
+      basePath: "",
+      config: {
+        current: {
+          allowExternalEmbedUrls: false,
+          assistantIdentity: { name: "Assistant" },
+          embedSandboxMode: "scripts",
+          localMediaPreviewRoots: [],
+        },
+      },
+      initialUserMessage: createInitialUserMessageHandoff(),
+      sessions: {},
+    } as unknown as ApplicationContext;
   }
 
   it("keeps the active observer digest when another run streams in the same session", () => {
@@ -1024,6 +1046,82 @@ describe("ChatStateController render lifecycle", () => {
     expect(state.chatStreamRenderFrame).toBeNull();
   });
 
+  it("keeps hidden stream state without scheduling a paint", () => {
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+    const requestAnimationFrame = vi
+      .spyOn(globalThis, "requestAnimationFrame")
+      .mockImplementation(() => 1);
+    const requestUpdate = vi.fn();
+    const state = createStreamEventState({ requestUpdate });
+
+    for (const deltaText of ["A", "B", "C"]) {
+      handlePageGatewayEvent(state, {
+        type: "event",
+        event: "chat",
+        payload: { state: "delta", runId: "run-1", sessionKey: "main", deltaText },
+      });
+    }
+
+    expect(state.chatStream).toBe("ABC");
+    expect(requestAnimationFrame).not.toHaveBeenCalled();
+    expect(requestUpdate).not.toHaveBeenCalled();
+
+    handlePageGatewayEvent(state, {
+      type: "event",
+      event: "session.operation",
+      payload: {},
+    });
+    expect(requestUpdate).toHaveBeenCalledOnce();
+  });
+
+  it("renders a deferred stream once when the document becomes visible", () => {
+    let visibilityState: DocumentVisibilityState = "visible";
+    vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibilityState);
+    vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation(() => 1);
+    const cancelAnimationFrame = vi
+      .spyOn(globalThis, "cancelAnimationFrame")
+      .mockImplementation(() => undefined);
+    const requestUpdate = vi.fn();
+    const controller = new ChatStateController<ChatPageHost>(
+      createControllerHost({ requestUpdate }),
+    );
+    controller.hostConnected();
+    const renderLifecycle = controller.createRenderLifecycle();
+    const state = createPageState(createPageContext(), renderLifecycle, {
+      querySelector: () => null,
+    });
+    state.sessionKey = "main";
+    state.chatRunId = "run-1";
+    state.chatStreamStartedAt = 1;
+    controller.attach(state);
+    const emitDelta = (deltaText: string) =>
+      handlePageGatewayEvent(state, {
+        type: "event",
+        event: "chat",
+        payload: { state: "delta", runId: "run-1", sessionKey: "main", deltaText },
+      });
+
+    emitDelta("A");
+    visibilityState = "hidden";
+    document.dispatchEvent(new Event("visibilitychange"));
+    emitDelta("B");
+    emitDelta("C");
+
+    expect(cancelAnimationFrame).toHaveBeenCalledWith(1);
+    expect(state.chatStream).toBe("ABC");
+    expect(requestUpdate).not.toHaveBeenCalled();
+
+    visibilityState = "visible";
+    document.dispatchEvent(new Event("visibilitychange"));
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(requestUpdate).toHaveBeenCalledOnce();
+
+    controller.hostDisconnected();
+    state.chatStreamRenderDeferred = true;
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(requestUpdate).toHaveBeenCalledOnce();
+  });
+
   it("keeps every chat delta while batching their render", () => {
     let scheduledFrame: FrameRequestCallback | undefined;
     vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation((callback) => {
@@ -1149,25 +1247,9 @@ describe("ChatStateController render lifecycle", () => {
     const controller = new ChatStateController<ChatPageHost>(host);
     controller.hostConnected();
     const renderLifecycle = controller.createRenderLifecycle();
-    const context = {
-      agents: {
-        state: { agentsList: null },
-        adoptList: vi.fn(),
-      },
-      agentSelection: { state: { selectedId: "main" } },
-      basePath: "",
-      config: {
-        current: {
-          allowExternalEmbedUrls: false,
-          assistantIdentity: { name: "Assistant" },
-          embedSandboxMode: "scripts",
-          localMediaPreviewRoots: [],
-        },
-      },
-      initialUserMessage: createInitialUserMessageHandoff(),
-      sessions: {},
-    } as unknown as ApplicationContext;
-    const state = createPageState(context, renderLifecycle, { querySelector: () => null });
+    const state = createPageState(createPageContext(), renderLifecycle, {
+      querySelector: () => null,
+    });
     const stop = vi.fn(() => {
       expect(state.realtimeTalkSession).toBeNull();
     });

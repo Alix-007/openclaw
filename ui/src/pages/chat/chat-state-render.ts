@@ -4,6 +4,7 @@ type ChatPageUpdateMode = "immediate" | "animation-frame";
 
 export function cancelChatStreamRenderFrame(state: ChatPageHost): void {
   const frame = state.chatStreamRenderFrame;
+  state.chatStreamRenderDeferred = false;
   if (frame == null) {
     return;
   }
@@ -17,6 +18,12 @@ export function requestChatPageUpdate(
   state: ChatPageHost,
   mode: ChatPageUpdateMode = "immediate",
 ): void {
+  if (mode === "animation-frame" && globalThis.document?.visibilityState === "hidden") {
+    cancelChatStreamRenderFrame(state);
+    state.chatStreamRenderDeferred = true;
+    return;
+  }
+  state.chatStreamRenderDeferred = false;
   if (mode === "immediate" || typeof globalThis.requestAnimationFrame !== "function") {
     cancelChatStreamRenderFrame(state);
     state.requestUpdate?.();
