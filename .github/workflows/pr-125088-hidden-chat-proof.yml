@@ -1,0 +1,54 @@
+name: PR 125088 hidden chat Chromium proof
+
+on:
+  push:
+    branches:
+      - alix/pr-125088-proof
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PR_HEAD_SHA: 7e4575aca5b26d2e4bf4725efe43ab8e9a9e4716
+
+jobs:
+  chromium-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout proof branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 2
+
+      - name: Verify exact PR head and proof-only commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$PR_HEAD_SHA"
+          actual_files="$(git diff --name-only HEAD^ HEAD)"
+          expected_files=$'.github/proof/pr-125088-hidden-chat.mts\n.github/workflows/pr-125088-hidden-chat-proof.yml'
+          test "$actual_files" = "$expected_files"
+
+      - name: Setup Node environment
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.x"
+          install-bun: "false"
+          use-actions-cache: "true"
+
+      - name: Install Playwright Chromium
+        run: node --import tsx scripts/ensure-playwright-chromium.mts
+
+      - name: Run exact-head hidden chat proof
+        run: node --import tsx .github/proof/pr-125088-hidden-chat.mts
+
+      - name: Upload inspectable proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr-125088-7e4575ac-chromium-proof
+          path: .artifacts/pr-125088-hidden-chat-proof
+          if-no-files-found: error
+          retention-days: 14
