@@ -1,0 +1,62 @@
+name: PR 125176 Browser relay shutdown proof
+
+on:
+  push:
+    branches: [alix/proof-125176]
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  EXPECTED_HEAD: 3870829db9447feb84a4af34d415a29d719fdc30
+
+jobs:
+  real-gateway-websocket-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Bind the harness to the exact pull request head
+        run: |
+          set -euo pipefail
+          cp test/pr125176-browser-relay-shutdown-proof.e2e.test.ts "$RUNNER_TEMP/"
+          cp test/fixtures/pr125176-browser-relay-observer.mjs "$RUNNER_TEMP/"
+          git checkout --detach "$EXPECTED_HEAD"
+          cp "$RUNNER_TEMP/pr125176-browser-relay-shutdown-proof.e2e.test.ts" test/
+          cp "$RUNNER_TEMP/pr125176-browser-relay-observer.mjs" test/fixtures/
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+
+      - name: Setup Node environment
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+
+      - name: Run real Gateway and direct WebSocket proof
+        env:
+          OPENCLAW_VITEST_MAX_WORKERS: "1"
+          OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "660000"
+        run: |
+          set -euo pipefail
+          mkdir -p .local/pr125176-proof
+          node scripts/run-vitest.mjs test/pr125176-browser-relay-shutdown-proof.e2e.test.ts \
+            2>&1 | tee .local/pr125176-proof/run.log
+          sha256sum \
+            .local/pr125176-proof/result.json \
+            .local/pr125176-proof/cold-observer.jsonl \
+            .local/pr125176-proof/direct-observer.jsonl \
+            .local/pr125176-proof/run.log \
+            > .local/pr125176-proof/SHA256SUMS
+
+      - name: Upload proof artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr125176-browser-relay-shutdown-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .local/pr125176-proof
+          include-hidden-files: true
+          if-no-files-found: error
