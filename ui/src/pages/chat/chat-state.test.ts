@@ -42,6 +42,7 @@ describe("canonical session message recovery", () => {
       sessionId: "selected-session",
       thinkingLevel: null,
     });
+    const requestUpdate = overrides.requestUpdate ?? vi.fn();
     const state = {
       ...makeChatHost(),
       client: { request } as unknown as GatewayBrowserClient,
@@ -56,7 +57,8 @@ describe("canonical session message recovery", () => {
         reconcileChanged: vi.fn().mockReturnValue({ applied: false }),
         refresh: vi.fn().mockResolvedValue(undefined),
       },
-      requestUpdate: vi.fn(),
+      renderLifecycle: { invalidate: requestUpdate },
+      requestUpdate,
       ...overrides,
     } as unknown as ChatPageHost;
     return { request, state };
@@ -509,13 +511,15 @@ describe("canonical session message recovery", () => {
 
 describe("ChatStateController render lifecycle", () => {
   function createObserverState(overrides: Partial<Record<keyof ChatPageHost, unknown>> = {}) {
+    const requestUpdate = (overrides.requestUpdate ?? vi.fn()) as ReturnType<typeof vi.fn>;
     return {
       sessionKey: "agent:main:current",
       assistantAgentId: "main",
       agentsList: { defaultId: "main" },
       chatRunId: null,
       observerDigest: null,
-      requestUpdate: vi.fn(),
+      renderLifecycle: { invalidate: requestUpdate },
+      requestUpdate,
       ...overrides,
     } as unknown as ChatPageHost;
   }
@@ -570,6 +574,7 @@ describe("ChatStateController render lifecycle", () => {
   }
 
   function createStreamEventState(overrides: Partial<ChatPageHost> = {}) {
+    const requestUpdate = overrides.requestUpdate ?? vi.fn();
     return {
       chatMessages: [],
       chatMessagesBySession: new Map(),
@@ -580,7 +585,8 @@ describe("ChatStateController render lifecycle", () => {
       chatStreamStartedAt: 1,
       lastError: null,
       pendingSessionMessageReloadSessionKey: null,
-      requestUpdate: vi.fn(),
+      renderLifecycle: { invalidate: requestUpdate },
+      requestUpdate,
       sessionKey: "main",
       ...overrides,
     } as unknown as ChatPageHost;
@@ -900,6 +906,7 @@ describe("ChatStateController render lifecycle", () => {
   });
 
   it("tracks waiting approval only for the selected session until resolution", () => {
+    const requestUpdate = vi.fn();
     const state = {
       sessionKey: "agent:main:current",
       assistantAgentId: "main",
@@ -915,7 +922,8 @@ describe("ChatStateController render lifecycle", () => {
       waitingApprovalStatuses: new Map(),
       sessions: { setModelOverride: vi.fn() },
       chatStreamRenderFrame: null,
-      requestUpdate: vi.fn(),
+      renderLifecycle: { invalidate: requestUpdate },
+      requestUpdate,
     } as unknown as ChatPageHost;
     const lifecycleEvent = (
       phase: "waiting-approval" | "approval-resolved",
@@ -1046,7 +1054,7 @@ describe("ChatStateController render lifecycle", () => {
     expect(state.chatStreamRenderFrame).toBeNull();
   });
 
-  it("keeps hidden stream state without scheduling a paint", () => {
+  it("keeps hidden Gateway state without scheduling a paint", () => {
     vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
     const requestAnimationFrame = vi
       .spyOn(globalThis, "requestAnimationFrame")
@@ -1068,13 +1076,28 @@ describe("ChatStateController render lifecycle", () => {
 
     handlePageGatewayEvent(state, {
       type: "event",
+      event: "session.observer",
+      payload: {
+        sessionKey: "main",
+        runId: "run-1",
+        revision: 1,
+        updatedAt: 1_000,
+        headline: "Waiting for a tool",
+        health: "grinding",
+      },
+    });
+    handlePageGatewayEvent(state, {
+      type: "event",
       event: "session.operation",
       payload: {},
     });
-    expect(requestUpdate).toHaveBeenCalledOnce();
+
+    expect(state.observerDigest?.headline).toBe("Waiting for a tool");
+    expect(state.chatStreamRenderDeferred).toBe(true);
+    expect(requestUpdate).not.toHaveBeenCalled();
   });
 
-  it("renders a deferred stream once when the document becomes visible", () => {
+  it("renders all deferred Gateway state once when the document becomes visible", () => {
     let visibilityState: DocumentVisibilityState = "visible";
     vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibilityState);
     vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation(() => 1);
@@ -1106,9 +1129,40 @@ describe("ChatStateController render lifecycle", () => {
     document.dispatchEvent(new Event("visibilitychange"));
     emitDelta("B");
     emitDelta("C");
+    handlePageGatewayEvent(state, {
+      type: "event",
+      event: "session.observer",
+      payload: {
+        sessionKey: "main",
+        runId: "run-1",
+        revision: 1,
+        updatedAt: 1_000,
+        headline: "Compacting context",
+        health: "grinding",
+      },
+    });
+    handlePageGatewayEvent(state, {
+      type: "event",
+      event: "session.operation",
+      payload: {
+        operation: "compact",
+        phase: "start",
+        sessionKey: "main",
+        operationId: "compact-1",
+      },
+    });
+    expect(state.compactionStatus?.runId).toBe("compact-1");
+    handlePageGatewayEvent(state, {
+      type: "event",
+      event: "chat",
+      payload: { state: "aborted", runId: "run-1", sessionKey: "main" },
+    });
 
     expect(cancelAnimationFrame).toHaveBeenCalledWith(1);
-    expect(state.chatStream).toBe("ABC");
+    expect(state.chatStream).toBeNull();
+    expect(state.chatRunId).toBeNull();
+    expect(state.observerDigest?.headline).toBe("Compacting context");
+    expect(state.compactionStatus).toBeNull();
     expect(requestUpdate).not.toHaveBeenCalled();
 
     visibilityState = "visible";
@@ -1116,10 +1170,24 @@ describe("ChatStateController render lifecycle", () => {
     document.dispatchEvent(new Event("visibilitychange"));
     expect(requestUpdate).toHaveBeenCalledOnce();
 
+    handlePageGatewayEvent(state, {
+      type: "event",
+      event: "session.operation",
+      payload: {
+        operation: "compact",
+        phase: "end",
+        sessionKey: "main",
+        operationId: "compact-1",
+        completed: true,
+      },
+    });
+    expect(state.compactionStatus?.phase).toBe("complete");
+    expect(requestUpdate).toHaveBeenCalledTimes(2);
+
     controller.hostDisconnected();
     state.chatStreamRenderDeferred = true;
     document.dispatchEvent(new Event("visibilitychange"));
-    expect(requestUpdate).toHaveBeenCalledOnce();
+    expect(requestUpdate).toHaveBeenCalledTimes(2);
   });
 
   it("keeps every chat delta while batching their render", () => {

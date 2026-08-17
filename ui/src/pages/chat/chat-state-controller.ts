@@ -48,8 +48,7 @@ export class ChatStateController<TState extends ChatPageHost> implements Reactiv
       return;
     }
     if (state.chatStreamRenderFrame != null) {
-      cancelChatStreamRenderFrame(state);
-      state.chatStreamRenderDeferred = true;
+      requestChatPageUpdate(state);
     }
   };
 
@@ -97,7 +96,7 @@ export class ChatStateController<TState extends ChatPageHost> implements Reactiv
     this.previousChatStream = state.chatStream;
     this.previousRealtimeConversation = state.realtimeTalkConversation;
     const renderLifecycle = state.renderLifecycle;
-    state.requestUpdate = () => renderLifecycle.invalidate();
+    state.requestUpdate = () => requestChatPageUpdate(state);
     this.cleanups.push(subscribeChatOutboxProjection(state));
     const sendChat = state.handleSendChat;
     state.handleSendChat = async (messageOverride, options) => {

@@ -18,7 +18,7 @@ export function requestChatPageUpdate(
   state: ChatPageHost,
   mode: ChatPageUpdateMode = "immediate",
 ): void {
-  if (mode === "animation-frame" && globalThis.document?.visibilityState === "hidden") {
+  if (globalThis.document?.visibilityState === "hidden") {
     cancelChatStreamRenderFrame(state);
     state.chatStreamRenderDeferred = true;
     return;
@@ -26,7 +26,7 @@ export function requestChatPageUpdate(
   state.chatStreamRenderDeferred = false;
   if (mode === "immediate" || typeof globalThis.requestAnimationFrame !== "function") {
     cancelChatStreamRenderFrame(state);
-    state.requestUpdate?.();
+    state.renderLifecycle.invalidate();
     return;
   }
   if (state.chatStreamRenderFrame != null) {
@@ -40,7 +40,7 @@ export function requestChatPageUpdate(
       return;
     }
     state.chatStreamRenderFrame = null;
-    state.requestUpdate?.();
+    state.renderLifecycle.invalidate();
   });
   state.chatStreamRenderFrame = frame;
 }
