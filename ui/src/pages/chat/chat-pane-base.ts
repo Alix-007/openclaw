@@ -53,6 +53,7 @@ import {
 } from "./chat-session-companion.ts";
 import { ChatStateController } from "./chat-state-controller.ts";
 import type { ChatPageHost } from "./chat-state-host.ts";
+import { requestChatPageUpdate } from "./chat-state-render.ts";
 import { resolveChatAgentId } from "./chat-state-route.ts";
 import type { ChatPaneHeaderAction } from "./components/chat-pane-header.ts";
 import type { ChatSessionSharingState } from "./components/chat-session-sharing.ts";
@@ -63,6 +64,30 @@ import type { SessionSnapshotStore } from "./session-snapshot-store.ts";
 import { closeSlot, openSlot, setSidebarOpen } from "./sidebar-layout.ts";
 
 export abstract class ChatPaneBase extends OpenClawLightDomElement {
+  private hiddenUpdateResume: (() => void) | undefined;
+  private readonly handleVisibilityChange = () =>
+    document.visibilityState === "hidden" && this.state?.chatStreamRenderFrame != null
+      ? requestChatPageUpdate(this.state)
+      : this.hiddenUpdateResume?.();
+  override connectedCallback() {
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    super.connectedCallback();
+  }
+  protected override async scheduleUpdate() {
+    while (this.isConnected && document.visibilityState === "hidden") {
+      await new Promise<void>((resolve) => {
+        this.hiddenUpdateResume = resolve;
+      });
+    }
+    super.scheduleUpdate();
+  }
+
+  override disconnectedCallback() {
+    this.hiddenUpdateResume?.();
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    super.disconnectedCallback();
+  }
+
   // Relative labels still need a minute tick; external PR state is server-pushed.
   readonly minutePoll = new PollController(this, 60_000, () => {
     this.requestUpdate();

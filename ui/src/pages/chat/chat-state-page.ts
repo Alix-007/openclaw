@@ -232,7 +232,6 @@ export function createPageState(
     chatInputHistoryIndex: -1,
     chatDraftBeforeHistory: null,
     chatScrollCommitCleanup: null,
-    chatStreamRenderDeferred: false,
     chatStreamRenderFrame: null,
     chatScrollFrame: null,
     chatScrollGuardFrame: null,

@@ -580,7 +580,6 @@ describe("ChatStateController render lifecycle", () => {
       chatMessagesBySession: new Map(),
       chatRunId: "run-1",
       chatStream: null,
-      chatStreamRenderDeferred: false,
       chatStreamRenderFrame: null,
       chatStreamStartedAt: 1,
       lastError: null,
@@ -1054,7 +1053,7 @@ describe("ChatStateController render lifecycle", () => {
     expect(state.chatStreamRenderFrame).toBeNull();
   });
 
-  it("keeps hidden Gateway state without scheduling a paint", () => {
+  it("projects hidden Gateway state without scheduling animation frames", () => {
     vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
     const requestAnimationFrame = vi
       .spyOn(globalThis, "requestAnimationFrame")
@@ -1072,7 +1071,7 @@ describe("ChatStateController render lifecycle", () => {
 
     expect(state.chatStream).toBe("ABC");
     expect(requestAnimationFrame).not.toHaveBeenCalled();
-    expect(requestUpdate).not.toHaveBeenCalled();
+    expect(requestUpdate).toHaveBeenCalledTimes(3);
 
     handlePageGatewayEvent(state, {
       type: "event",
@@ -1093,101 +1092,7 @@ describe("ChatStateController render lifecycle", () => {
     });
 
     expect(state.observerDigest?.headline).toBe("Waiting for a tool");
-    expect(state.chatStreamRenderDeferred).toBe(true);
-    expect(requestUpdate).not.toHaveBeenCalled();
-  });
-
-  it("renders all deferred Gateway state once when the document becomes visible", () => {
-    let visibilityState: DocumentVisibilityState = "visible";
-    vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibilityState);
-    vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation(() => 1);
-    const cancelAnimationFrame = vi
-      .spyOn(globalThis, "cancelAnimationFrame")
-      .mockImplementation(() => undefined);
-    const requestUpdate = vi.fn();
-    const controller = new ChatStateController<ChatPageHost>(
-      createControllerHost({ requestUpdate }),
-    );
-    controller.hostConnected();
-    const renderLifecycle = controller.createRenderLifecycle();
-    const state = createPageState(createPageContext(), renderLifecycle, {
-      querySelector: () => null,
-    });
-    state.sessionKey = "main";
-    state.chatRunId = "run-1";
-    state.chatStreamStartedAt = 1;
-    controller.attach(state);
-    const emitDelta = (deltaText: string) =>
-      handlePageGatewayEvent(state, {
-        type: "event",
-        event: "chat",
-        payload: { state: "delta", runId: "run-1", sessionKey: "main", deltaText },
-      });
-
-    emitDelta("A");
-    visibilityState = "hidden";
-    document.dispatchEvent(new Event("visibilitychange"));
-    emitDelta("B");
-    emitDelta("C");
-    handlePageGatewayEvent(state, {
-      type: "event",
-      event: "session.observer",
-      payload: {
-        sessionKey: "main",
-        runId: "run-1",
-        revision: 1,
-        updatedAt: 1_000,
-        headline: "Compacting context",
-        health: "grinding",
-      },
-    });
-    handlePageGatewayEvent(state, {
-      type: "event",
-      event: "session.operation",
-      payload: {
-        operation: "compact",
-        phase: "start",
-        sessionKey: "main",
-        operationId: "compact-1",
-      },
-    });
-    expect(state.compactionStatus?.runId).toBe("compact-1");
-    handlePageGatewayEvent(state, {
-      type: "event",
-      event: "chat",
-      payload: { state: "aborted", runId: "run-1", sessionKey: "main" },
-    });
-
-    expect(cancelAnimationFrame).toHaveBeenCalledWith(1);
-    expect(state.chatStream).toBeNull();
-    expect(state.chatRunId).toBeNull();
-    expect(state.observerDigest?.headline).toBe("Compacting context");
-    expect(state.compactionStatus).toBeNull();
-    expect(requestUpdate).not.toHaveBeenCalled();
-
-    visibilityState = "visible";
-    document.dispatchEvent(new Event("visibilitychange"));
-    document.dispatchEvent(new Event("visibilitychange"));
-    expect(requestUpdate).toHaveBeenCalledOnce();
-
-    handlePageGatewayEvent(state, {
-      type: "event",
-      event: "session.operation",
-      payload: {
-        operation: "compact",
-        phase: "end",
-        sessionKey: "main",
-        operationId: "compact-1",
-        completed: true,
-      },
-    });
-    expect(state.compactionStatus?.phase).toBe("complete");
-    expect(requestUpdate).toHaveBeenCalledTimes(2);
-
-    controller.hostDisconnected();
-    state.chatStreamRenderDeferred = true;
-    document.dispatchEvent(new Event("visibilitychange"));
-    expect(requestUpdate).toHaveBeenCalledTimes(2);
+    expect(requestUpdate).toHaveBeenCalledTimes(5);
   });
 
   it("keeps every chat delta while batching their render", () => {
