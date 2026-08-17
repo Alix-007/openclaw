@@ -64,6 +64,8 @@ import type { SessionSnapshotStore } from "./session-snapshot-store.ts";
 import { closeSlot, openSlot, setSidebarOpen } from "./sidebar-layout.ts";
 
 export abstract class ChatPaneBase extends OpenClawLightDomElement {
+  // Transfer a queued stream frame to Lit before parking; visibility resumes it.
+  // Disconnect releases the waiter so reconnect can schedule in its new lifecycle.
   private hiddenUpdateResume: (() => void) | undefined;
   private readonly handleVisibilityChange = () =>
     document.visibilityState === "hidden" && this.state?.chatStreamRenderFrame != null
@@ -79,7 +81,7 @@ export abstract class ChatPaneBase extends OpenClawLightDomElement {
         this.hiddenUpdateResume = resolve;
       });
     }
-    super.scheduleUpdate();
+    await super.scheduleUpdate();
   }
 
   override disconnectedCallback() {
