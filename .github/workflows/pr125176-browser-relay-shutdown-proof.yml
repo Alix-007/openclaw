@@ -45,6 +45,7 @@ jobs:
           mkdir -p .local/pr125176-proof
           node scripts/run-vitest.mjs test/pr125176-browser-relay-shutdown-proof.e2e.test.ts \
             2>&1 | tee .local/pr125176-proof/run.log
+          touch .local/pr125176-proof/cold-observer.jsonl
           sha256sum \
             .local/pr125176-proof/result.json \
             .local/pr125176-proof/cold-observer.jsonl \
