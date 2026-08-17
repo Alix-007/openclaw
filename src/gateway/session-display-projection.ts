@@ -39,7 +39,7 @@ function extractUserText(message: Record<string, unknown>): string | undefined {
   return typeof message.text === "string" ? message.text : undefined;
 }
 
-/** Projects one transcript row onto the bounded text shared by session-list consumers. */
+/** Projects one transcript row onto visible text; explicit callers own their budget. */
 export function projectSessionDisplayMessage(
   message: unknown,
   options: SessionDisplayProjectionOptions = {},
@@ -67,10 +67,8 @@ export function projectSessionDisplayMessage(
   if (!text) {
     return null;
   }
-  const limit = Math.min(
-    SESSION_LAST_MESSAGE_PREVIEW_MAX_CHARS,
-    Math.max(20, Math.floor(options.maxChars ?? SESSION_LAST_MESSAGE_PREVIEW_MAX_CHARS)),
-  );
+  const requestedMaxChars = options.maxChars ?? SESSION_LAST_MESSAGE_PREVIEW_MAX_CHARS;
+  const limit = Math.max(20, Math.floor(requestedMaxChars));
   return {
     role,
     text: text.length <= limit ? text : `${truncateUtf16Safe(text, limit - 3)}...`,

@@ -44,6 +44,17 @@ describe("projectSessionDisplayMessage", () => {
     expect(preview?.text).toBe(`${"a".repeat(SESSION_LAST_MESSAGE_PREVIEW_MAX_CHARS - 3)}...`);
   });
 
+  test("honors an explicit preview budget above the default", () => {
+    const maxChars = 800;
+    const preview = projectSessionDisplayMessage(
+      { role: "assistant", content: "a".repeat(maxChars + 20) },
+      { maxChars },
+    );
+
+    expect(preview?.text).toHaveLength(maxChars);
+    expect(preview?.text).toBe(`${"a".repeat(maxChars - 3)}...`);
+  });
+
   test("flattens Markdown before bounding a preview", () => {
     const longUrl = `https://example.com/${"x".repeat(SESSION_LAST_MESSAGE_PREVIEW_MAX_CHARS)}`;
     const preview = projectSessionDisplayMessage(
