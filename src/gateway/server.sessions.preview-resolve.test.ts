@@ -77,7 +77,7 @@ test("sessions.preview returns transcript previews", async () => {
   ]);
 });
 
-test("sessions.preview honors a maxChars request above the default", async () => {
+test("sessions.preview honors maxChars up to the shared cap", async () => {
   const { storePath } = await createSessionStoreDir();
   const sessionId = "sess-preview-explicit-budget";
   const maxChars = 800;
@@ -100,6 +100,15 @@ test("sessions.preview honors a maxChars request above the default", async () =>
 
   expect(preview.ok).toBe(true);
   expect(preview.payload?.previews[0]?.items).toEqual([
+    { role: "assistant", text: `${"a".repeat(maxChars - 3)}...` },
+  ]);
+
+  const capped = await directSessionReq<{
+    previews: Array<{ items: Array<{ role: string; text: string }> }>;
+  }>("sessions.preview", { keys: ["main"], limit: 1, maxChars: Number.MAX_SAFE_INTEGER });
+
+  expect(capped.ok).toBe(true);
+  expect(capped.payload?.previews[0]?.items).toEqual([
     { role: "assistant", text: `${"a".repeat(maxChars - 3)}...` },
   ]);
 });
