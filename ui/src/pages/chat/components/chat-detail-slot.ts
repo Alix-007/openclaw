@@ -1,14 +1,21 @@
 import { html, type TemplateResult } from "lit";
 import type { ChatPageHost } from "../chat-state-host.ts";
 import type { ChatProps } from "../chat-view.ts";
-import type { SidebarLayout } from "../sidebar-layout.ts";
+import { openSlot, type SidebarLayout } from "../sidebar-layout.ts";
 import type { BackgroundTasksProps } from "./chat-background-tasks.types.ts";
 import "./chat-sidebar.ts";
 import { openSessionWorkspaceFile, revealSessionWorkspaceFile } from "./chat-session-workspace.ts";
 import type { SidebarContent, SidebarFullMessageLoader } from "./chat-sidebar.ts";
-import { resetSubagentDetail } from "./chat-subagent-detail-state.ts";
-import { renderSubagentDetailPanel } from "./chat-subagent-detail.ts";
+import { resetTaskDetail } from "./chat-task-detail-state.ts";
+import { renderTaskDetailPanel } from "./chat-task-detail.ts";
 import type { ChatTranscriptController } from "./chat-transcript-controller.ts";
+
+// Region close collapses the detail slot but leaves sidebarContent set, so
+// "task content exists" is not "panel visible"; consumers (panel render, rail
+// open-row highlight) must gate on the layout, not the content.
+export function detailSlotOpen(layout: SidebarLayout): boolean {
+  return layout.columns.some((column) => column.panels.some((panel) => panel.slot === "detail"));
+}
 
 export function renderChatDetailSlot(params: {
   backgroundTasks: BackgroundTasksProps;
@@ -20,15 +27,12 @@ export function renderChatDetailSlot(params: {
   transcript: ChatTranscriptController;
 }): TemplateResult {
   const { content, host } = params;
-  if (content.kind === "subagent") {
-    const detailOpen = params.layout.columns.some((column) =>
-      column.panels.some((panel) => panel.slot === "detail"),
-    );
-    if (!detailOpen) {
-      resetSubagentDetail(host);
+  if (content.kind === "task") {
+    if (!detailSlotOpen(params.layout)) {
+      resetTaskDetail(host);
       return html``;
     }
-    return renderSubagentDetailPanel({
+    return renderTaskDetailPanel({
       backgroundTasks: params.backgroundTasks,
       chat: params.chat,
       host,
@@ -36,17 +40,22 @@ export function renderChatDetailSlot(params: {
       transcript: params.transcript,
     });
   }
-  resetSubagentDetail(host);
+  resetTaskDetail(host);
   return html`<openclaw-chat-detail-panel
     class="chat-sidebar"
     .content=${content}
+    .basePath=${params.chat.basePath ?? ""}
     .loadFullMessage=${params.fullMessageLoader}
     .canvasPluginSurfaceUrl=${host.canvasPluginSurfaceUrl}
     .embedSandboxMode=${host.embedSandboxMode}
     .allowExternalEmbedUrls=${host.allowExternalEmbedUrls}
     .onOpenWorkspaceFile=${(target: { path: string; line?: number | null }) =>
       openSessionWorkspaceFile(host, target)}
-    .onRevealInWorkspace=${(path: string) => revealSessionWorkspaceFile(host, path)}
+    .onOpenSessionLink=${params.chat.onOpenSessionLink}
+    .onRevealInWorkspace=${(path: string) => {
+      revealSessionWorkspaceFile(host, path);
+      host.updateSidebarLayout(openSlot(host.sidebarLayout, "workspace"));
+    }}
     .onOpenImage=${(item: Parameters<typeof host.handleOpenImage>[0]) =>
       host.handleOpenImage(item, host.beginImageOpen())}
     .embedded=${true}

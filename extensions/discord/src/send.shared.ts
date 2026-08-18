@@ -4,9 +4,9 @@ import type { APIChannel } from "discord-api-types/v10";
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 // Discord plugin module implements send.shared behavior.
 import { expectDefined } from "openclaw/plugin-sdk/expect-runtime";
-import { buildOutboundMediaLoadOptions } from "openclaw/plugin-sdk/media-runtime";
-import { extensionForMime } from "openclaw/plugin-sdk/media-runtime";
 import {
+  buildOutboundMediaLoadOptions,
+  extensionForMime,
   normalizePollDurationHours,
   normalizePollInput,
   type OutboundMediaAccess,
@@ -29,6 +29,15 @@ import {
 import { parseAndResolveRecipient } from "./recipient-resolution.js";
 import { resolveDiscordReplyMessageId, type DiscordReplyReference } from "./reply-reference.js";
 import type { DiscordRetryRunner } from "./retry.js";
+import {
+  buildDiscordMessageRequest,
+  resolveDiscordMessageFlags,
+  resolveDiscordSendComponents,
+  resolveDiscordSendEmbeds,
+  type DiscordAllowedMentions,
+  type DiscordSendComponents,
+  type DiscordSendEmbeds,
+} from "./send.message-request.js";
 import { fetchChannelPermissionsDiscord } from "./send.permissions.js";
 import { DiscordSendError } from "./send.types.js";
 
@@ -54,15 +63,6 @@ export {
   resolveDiscordSendEmbeds,
   stripUndefinedFields,
   SUPPRESS_NOTIFICATIONS_FLAG,
-  type DiscordAllowedMentions,
-  type DiscordSendComponents,
-  type DiscordSendEmbeds,
-} from "./send.message-request.js";
-import {
-  buildDiscordMessageRequest,
-  resolveDiscordMessageFlags,
-  resolveDiscordSendComponents,
-  resolveDiscordSendEmbeds,
   type DiscordAllowedMentions,
   type DiscordSendComponents,
   type DiscordSendEmbeds,

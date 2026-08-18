@@ -455,6 +455,14 @@ select.settings-select:not([multiple]) {
   min-height: var(--settings-control-height);
   box-sizing: border-box;
   align-items: stretch;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-width: 100%;
+  background: color-mix(in srgb, var(--bg) 80%, var(--bg-elevated) 20%);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  border-radius: var(--radius-md);
+  padding: 2px;
 }
 
 .settings-segmented > .settings-segmented__btn {
@@ -494,17 +502,6 @@ wa-switch.settings-toggle {
   --wa-form-control-activated-color: var(--accent);
   --wa-color-focus: var(--ring);
   flex: none;
-}
-
-.settings-segmented {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  max-width: 100%;
-  background: color-mix(in srgb, var(--bg) 80%, var(--bg-elevated) 20%);
-  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
-  border-radius: var(--radius-md);
-  padding: 2px;
 }
 
 wa-radio-group.settings-segmented::part(form-control-label) {
@@ -1019,6 +1016,22 @@ textarea.settings-input {
 
 .identity-error .settings-row__desc {
   color: var(--danger);
+}
+
+/* ── Account value (small round avatar + handle inside a row control) ── */
+
+.settings-account {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.settings-account__avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  flex: none;
 }
 
 /* ── Mobile ── */

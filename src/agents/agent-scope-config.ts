@@ -1,6 +1,9 @@
 /** Resolves configured agent ids, directories, workspaces, and merged agent defaults. */
 import path from "node:path";
-import { readStringValue } from "@openclaw/normalization-core/string-coerce";
+import {
+  normalizeOptionalString,
+  readStringValue,
+} from "@openclaw/normalization-core/string-coerce";
 import { getRetainedLegacyDefaultAgentId } from "../config/legacy.default-agent-owner-state.js";
 import { hasExplicitModelPolicyAllow } from "../config/model-policy-allowlist-migration.js";
 import { resolveStateDir } from "../config/paths.js";
@@ -16,6 +19,7 @@ import { resolveDefaultAgentWorkspaceDir } from "./workspace-default.js";
 
 type AgentEntry = NonNullable<NonNullable<OpenClawConfig["agents"]>["list"]>[number];
 type AgentEntriesConfig = NonNullable<NonNullable<OpenClawConfig["agents"]>["entries"]>;
+type MutableAgentEntry = AgentEntry | AgentEntriesConfig[string];
 type AgentRosterProperty = { kind: "entries" | "list"; value: unknown };
 export type ListedAgentEntry = {
   entry: AgentEntry;
@@ -62,7 +66,6 @@ export type ResolvedAgentConfig = {
   verboseDefault?: AgentDefaultsConfig["verboseDefault"];
   reasoningDefault?: AgentEntry["reasoningDefault"];
   fastModeDefault?: AgentEntry["fastModeDefault"];
-  contextTokens?: AgentEntry["contextTokens"];
   contextInjection?: AgentEntry["contextInjection"];
   bootstrapMaxChars?: AgentEntry["bootstrapMaxChars"];
   bootstrapTotalMaxChars?: AgentEntry["bootstrapTotalMaxChars"];
@@ -216,6 +219,37 @@ export function tryResolveLegacyCompatibilityAgentId(cfg: OpenClawConfig): strin
     : tryResolveDefaultAgentId(cfg);
 }
 
+/** Resolves the configured owner for ambient system work and explicit consults. */
+export function tryResolveSystemAgentTargetAgentId(
+  cfg: OpenClawConfig,
+  requestedAgentId?: string,
+): string | undefined {
+  const configuredAgentId =
+    normalizeOptionalString(requestedAgentId) ??
+    normalizeOptionalString(cfg.agents?.defaults?.systemAgent?.agentId);
+  return configuredAgentId ? normalizeAgentId(configuredAgentId) : tryResolveSoleAgentId(cfg);
+}
+
+export function resolveSystemAgentTargetAgentId(
+  cfg: OpenClawConfig,
+  requestedAgentId?: string,
+  context?: AgentSelectionContext,
+): string {
+  const resolvedAgentId = tryResolveSystemAgentTargetAgentId(cfg, requestedAgentId);
+  if (resolvedAgentId) {
+    return resolvedAgentId;
+  }
+  return normalizeAgentId(
+    resolveSoleAgentId(
+      cfg,
+      context ?? {
+        surface: "system-agent consult routing",
+        hint: "Set agents.defaults.systemAgent.agentId or pass an explicit consult agent id.",
+      },
+    ),
+  );
+}
+
 /** @deprecated Use resolveSoleAgentId; accepts raw shipped markers only for input compatibility. */
 export function resolveDefaultAgentId(
   cfg: OpenClawConfig,
@@ -238,7 +272,7 @@ export function resolveAgentEntry(cfg: OpenClawConfig, agentId: string): AgentEn
 export function resolveMutableAgentEntry(
   cfg: OpenClawConfig,
   agentId: string,
-): Pick<AgentEntry, "model"> | undefined {
+): MutableAgentEntry | undefined {
   const id = normalizeAgentId(agentId);
   const roster = readAgentRosterProperty(cfg);
   if (roster?.kind === "entries" && roster.value && typeof roster.value === "object") {
@@ -283,7 +317,6 @@ export function resolveAgentConfig(
     verboseDefault: entry.verboseDefault ?? agentDefaults?.verboseDefault,
     reasoningDefault: entry.reasoningDefault,
     fastModeDefault: entry.fastModeDefault ?? agentDefaults?.fastModeDefault,
-    contextTokens: entry.contextTokens ?? agentDefaults?.contextTokens,
     contextInjection: entry.contextInjection,
     bootstrapMaxChars: entry.bootstrapMaxChars,
     bootstrapTotalMaxChars: entry.bootstrapTotalMaxChars,

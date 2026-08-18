@@ -252,8 +252,10 @@ const CORE_GATEWAY_METHOD_SPECS = [
   ["sessions.delete", "sessions-delete", "dynamic", "<=2026.7"],
   ["sessions.compact", "sessions-compact", "operator.admin", "<=2026.7"],
   ["sessions.groups.list", "sessions-groups", "operator.read", "<=2026.7"],
+  ["sessions.groups.defaults", "sessions-groups", "operator.write", "2026.8"],
   ["sessions.groups.put", "sessions-groups", "operator.write", "<=2026.7"],
   ["sessions.groups.rename", "sessions-groups", "operator.write", "<=2026.7"],
+  ["sessions.groups.update", "sessions-groups", "operator.write", "2026.8"],
   ["sessions.groups.delete", "sessions-groups", "operator.write", "<=2026.7"],
   ["last-heartbeat", "system", "operator.read", "<=2026.7"],
   ["set-heartbeats", "system", "operator.admin", "<=2026.7"],
@@ -276,13 +278,20 @@ const CORE_GATEWAY_METHOD_SPECS = [
     "<=2026.7",
     { advertise: false },
   ],
+  [
+    "device.pair.setupStatus",
+    "device-pair-setup",
+    "operator.admin",
+    "2026.8",
+    { advertise: false },
+  ],
   ["node.rename", "nodes", "operator.pairing", "<=2026.7"],
   ["node.list", "nodes", "operator.read", "<=2026.7"],
   ["node.describe", "nodes", "operator.read", "<=2026.7"],
   ["node.pluginSurface.refresh", "nodes", "node", "<=2026.7"],
   ["node.pluginTools.update", "nodes", "node", "<=2026.7"],
   ["node.skills.update", "nodes", "node", "<=2026.7"],
-  ["node.protocolFeatures.update", "nodes", "node", "2026.8", { advertise: false }],
+  ["node.runnerInventory.update", "nodes", "node", "2026.8", { advertise: false }],
   ["node.pending.drain", "nodes-pending", "node", "<=2026.7"],
   ["node.pending.enqueue", "nodes-pending", "operator.write", "<=2026.7"],
   // Params-aware: host-sensitive commands raise direct invocation from write to admin.
@@ -383,6 +392,7 @@ const CORE_GATEWAY_METHOD_SPECS = [
   // Session PR chips read the session's own checkout metadata, matching the
   // sessions.files.* trusted-operator read domain.
   ["controlUi.sessionPullRequests.subscribe", "control-ui", "operator.read", "2026.7"],
+  ["controlUi.sessionPreview", "control-ui", "operator.read", "2026.8"],
   [
     "gateway.suspend.prepare",
     "suspend",
@@ -521,6 +531,27 @@ const CORE_GATEWAY_METHOD_SPECS = [
   // Live device scope upgrades are additive so every older advertised index stays stable.
   ["device.scopes.requestUpgrade", "devices", "operator.read", "2026.8"],
   ["device.scopes.waitUpgrade", "devices", "operator.read", "2026.8"],
+  ["portal.list", "portals", "operator.read", "2026.8"],
+  ["portal.open", "portals", "operator.write", "2026.8", { controlPlaneWrite: true }],
+  ["portal.close", "portals", "operator.write", "2026.8", { controlPlaneWrite: true }],
+  [
+    "sessions.move",
+    "sessions-dispatch",
+    "operator.admin",
+    "2026.8",
+    { startup: true, controlPlaneWrite: true },
+  ],
+  ["sessions.assignOwner", "sessions-mutations", "operator.write", "2026.8"],
+  ["progressCard.get", "progress-card", "operator.read", "2026.8"],
+  ["progressCard.put", "progress-card", "operator.write", "2026.8"],
+  ["tools.github.status", "tools-github", "operator.read", "2026.8"],
+  [
+    "tools.github.configure",
+    "tools-github",
+    "operator.admin",
+    "2026.8",
+    { controlPlaneWrite: true },
+  ],
 ] as const satisfies readonly CoreGatewayMethodSpecRow[];
 
 export type CoreGatewayHandlerFamily = Exclude<(typeof CORE_GATEWAY_METHOD_SPECS)[number][1], null>;

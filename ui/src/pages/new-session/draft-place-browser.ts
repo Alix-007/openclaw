@@ -1,4 +1,5 @@
 import { initialState, Task, TaskStatus } from "@lit/task";
+import { readMissingScopeError } from "@openclaw/gateway-client/browser";
 import type { ReactiveControllerHost } from "lit";
 import type {
   FsListDirResult,
@@ -11,6 +12,7 @@ import type {
 } from "../../../../packages/gateway-protocol/src/index.js";
 import type { ApplicationContext } from "../../app/context.ts";
 import { t } from "../../i18n/index.ts";
+import { formatUiError } from "../../lib/format-error.ts";
 import { canCallGatewayMethod, isGatewayMethodAdvertised } from "../../lib/gateway-methods.ts";
 import type { BrowserTarget, DraftNode } from "./discovery.ts";
 import type { DraftGatewayState } from "./draft-gateway-state.ts";
@@ -183,7 +185,7 @@ export class DraftPlaceBrowser {
       return null;
     }
     const error = this.projectSearchTask.error;
-    return error instanceof Error ? error.message : String(error);
+    return formatUiError(error);
   }
 
   get browserLoading(): boolean {
@@ -216,6 +218,17 @@ export class DraftPlaceBrowser {
 
   popoverHiding(kind: DraftPickerKind): boolean {
     return this.hidingPopoverValue === kind;
+  }
+
+  popoverCallbacks(kind: DraftPickerKind) {
+    return {
+      popoverOpen: this.popoverOpen(kind),
+      popoverHiding: this.popoverHiding(kind),
+      onGuardTransition: (event: MouseEvent) => this.guardPopoverTransition(event, kind),
+      onPopoverShow: () => this.onPopoverShow(kind),
+      onPopoverHide: () => this.onPopoverHide(kind),
+      onPopoverAfterHide: () => this.onPopoverAfterHide(kind),
+    };
   }
 
   get browserPathDraft(): string {
@@ -372,7 +385,7 @@ export class DraftPlaceBrowser {
     this.loadBrowser(path);
   }
 
-  loadBrowser(path: string | undefined) {
+  loadBrowser(path: string | undefined, retainedError: string | null = null) {
     const snapshot = this.read();
     const gatewaySnapshot = snapshot.context?.gateway.snapshot;
     const client = gatewaySnapshot?.client;
@@ -390,7 +403,7 @@ export class DraftPlaceBrowser {
     }
     const requestId = ++this.browserRequestToken;
     this.browserLoadingValue = true;
-    this.browserErrorValue = null;
+    this.browserErrorValue = retainedError;
     this.browserProjectPathValue = null;
     this.browserListingValue = null;
     this.browserPathDraftValue = path ?? "";
@@ -432,12 +445,17 @@ export class DraftPlaceBrowser {
         }
         this.callbacks.requestUpdate();
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         if (requestId !== this.browserRequestToken) {
           return;
         }
         if (path) {
-          this.loadBrowser(undefined);
+          this.loadBrowser(
+            undefined,
+            !target.nodeId && readMissingScopeError(error)?.missingScope === "operator.admin"
+              ? t("newSession.browseRequiresAdmin")
+              : t("newSession.browserLoadFailed"),
+          );
           return;
         }
         this.browserErrorValue = t("newSession.browserLoadFailed");
@@ -483,7 +501,7 @@ export class DraftPlaceBrowser {
       this.close();
     } catch (error) {
       if (requestId === this.browserRequestToken && client === this.gateway.client) {
-        this.browserErrorValue = error instanceof Error ? error.message : String(error);
+        this.browserErrorValue = formatUiError(error);
       }
     } finally {
       if (requestId === this.browserRequestToken) {
