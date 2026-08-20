@@ -27,8 +27,26 @@ describe("qa scenario catalog channel contracts", () => {
       (scenario) => scenario.execution.flowKind === "module",
     );
 
-    expect(moduleFlows).toHaveLength(146);
+    expect(moduleFlows).toHaveLength(147);
     expect(moduleFlows.every((scenario) => scenario.execution.flow)).toBe(true);
+  });
+
+  it("catalogs the Discord runtime-context proof as an isolated mock-provider live flow", () => {
+    const scenario = requireFlowScenario(readQaScenarioById("discord-runtime-context-redaction"));
+
+    expect(scenario.execution).toMatchObject({
+      channel: "discord",
+      providerMode: "mock-openai",
+      retryCount: 0,
+      suiteIsolation: "isolated",
+      config: { discordScenarioId: "discord-runtime-context-redaction" },
+    });
+    expect(JSON.stringify(scenario.execution.flow)).toContain("runDiscordScenario");
+    expect(JSON.stringify(scenario.execution.flow)).toContain(
+      "discordQaRuntimeContextRedactionScenario",
+    );
+    expect(scenario.coverage?.primary).toContain("discord.configured-and-runtime-routing");
+    expect(scenario.coverage?.secondary).toContain("discord.media-and-rich-content");
   });
 
   it("routes native command session targeting through Crabline Telegram", () => {

@@ -4410,6 +4410,7 @@ describe("package artifact reuse", () => {
           GITHUB_RUN_ID: "123",
           INPUT_SCENARIO: inputScenario,
           OPENCLAW_CI_OPENAI_FALLBACK_MODEL: "openai/gpt-5.6-luna-alt",
+          PROVIDER_MODE: "live-frontier",
           PATH: `${workdir}:${process.env.PATH}`,
           PNPM_CALLS: callsPath,
         },
