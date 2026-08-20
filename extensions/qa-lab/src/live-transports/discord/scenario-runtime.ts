@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
 import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
+import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
 import {
   discordQaScenarioSupport,
   type DiscordQaScenarioImplementation,
@@ -68,13 +69,7 @@ function buildInternalRuntimeContext(marker: string) {
 }
 
 function readUserMessages(messages: readonly unknown[]) {
-  return messages.filter(
-    (message) =>
-      message !== null &&
-      typeof message === "object" &&
-      "role" in message &&
-      (message as { role?: unknown }).role === "user",
-  );
+  return messages.filter((message) => isRecord(message) && message.role === "user");
 }
 
 function serializeUserMessages(messages: readonly unknown[]) {
@@ -468,11 +463,11 @@ export async function runDiscordScenario(
       const proof = await runDiscordRuntimeContextRedactionProof({
         dependencies: {
           async readSessionMessages() {
-            const result = (await environment.gateway.call("sessions.get", {
+            const result = await environment.gateway.call("sessions.get", {
               key: sessionKey,
               limit: 200,
-            })) as { messages?: unknown };
-            return Array.isArray(result.messages) ? result.messages : [];
+            });
+            return isRecord(result) && Array.isArray(result.messages) ? result.messages : [];
           },
           async sendText(content) {
             return await discordQaScenarioSupport.testing.sendChannelMessage(

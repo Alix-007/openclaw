@@ -60,6 +60,9 @@ export type DiscordQaScenarioRun =
       progressLabel: string;
     }
   | {
+      kind: "runtime-context-redaction";
+    }
+  | {
       kind: "thread-reply-filepath-attachment";
       expectedAttachmentFilename: string;
       input: string;
