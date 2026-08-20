@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "pr": 121144,
+  "headSha": "e4e558df215a009fb24faa4471c4ee8dc7730151",
+  "generatedAt": "2026-08-20T22:18:38.888Z",
+  "proofKind": "synthetic-discord-rest+mock-provider+ephemeral-gateway",
+  "exactHeadVerified": true,
+  "credentialMode": "none",
+  "boundaries": {
+    "gateway": "real ephemeral loopback Gateway with authenticated health RPC",
+    "provider": "repository mock-openai provider",
+    "channel": "production sendMessageDiscord and RequestClient against synthetic Discord REST",
+    "diagnostic": "production 50013 wrapper and parent-channel permission resolution"
+  },
+  "scenario": {
+    "targetType": "public-thread",
+    "sendResult": "HTTP 403 / Discord code 50013",
+    "permissionOwner": "parent-channel-overwrite",
+    "parentDenied": [
+      "ViewChannel"
+    ],
+    "threadGrantRetained": [
+      "SendMessagesInThreads"
+    ],
+    "operatorDiagnosticChannelId": "thread1",
+    "missingPermissions": [
+      "SendMessages"
+    ],
+    "staleSendMessagesClaim": true,
+    "requiredProductionRoutesObserved": false,
+    "gatewayHealthRpc": true
+  },
+  "redaction": "No credentials, real Discord IDs, message contents, local ports, or local runtime paths recorded.",
+  "pass": false
+}

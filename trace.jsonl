@@ -1,0 +1,10 @@
+{"at":"2026-08-20T22:08:04.927Z","boundary":"proof","event":"start","details":{"headSha":"c78f63969737e009570edc7b281df09a4f0e5969"}}
+{"at":"2026-08-20T22:10:17.391Z","boundary":"ephemeral-gateway","event":"authenticated-health-rpc","details":{"pass":true,"providerMode":"mock-openai"}}
+{"at":"2026-08-20T22:10:17.537Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/channels/<thread>","status":200}}
+{"at":"2026-08-20T22:10:17.654Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"POST","route":"/v10/channels/<thread>/messages","status":403,"discordCode":50013}}
+{"at":"2026-08-20T22:10:17.718Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/channels/<thread>","status":200}}
+{"at":"2026-08-20T22:10:17.726Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/channels/<parent>","status":200}}
+{"at":"2026-08-20T22:10:17.734Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/users/%40me","status":200}}
+{"at":"2026-08-20T22:10:17.744Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/guilds/<guild>","status":200}}
+{"at":"2026-08-20T22:10:17.749Z","boundary":"synthetic-discord-rest","event":"request","details":{"method":"GET","route":"/v10/guilds/<guild>/members/<bot>","status":200}}
+{"at":"2026-08-20T22:10:17.756Z","boundary":"discord-diagnostic","event":"production-send-error","details":{"channelId":"thread1","discordCode":50013,"status":403,"missingPermissions":["ViewChannel"],"staleSendMessagesClaim":false,"requiredProductionRoutesObserved":true}}

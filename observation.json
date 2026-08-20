@@ -1,0 +1,24 @@
+{
+  "headSha": "c78f63969737e009570edc7b281df09a4f0e5969",
+  "generatedAt": "2026-08-20T22:10:17.756Z",
+  "gatewayHealthRpc": true,
+  "providerMode": "mock-openai",
+  "sendResult": "HTTP 403 / Discord code 50013",
+  "diagnosticChannelId": "thread1",
+  "discordCode": 50013,
+  "status": 403,
+  "missingPermissions": [
+    "ViewChannel"
+  ],
+  "staleSendMessagesClaim": false,
+  "requiredProductionRoutesObserved": true,
+  "observedRoutes": [
+    "GET /v10/channels/<thread>",
+    "POST /v10/channels/<thread>/messages",
+    "GET /v10/channels/<thread>",
+    "GET /v10/channels/<parent>",
+    "GET /v10/users/%40me",
+    "GET /v10/guilds/<guild>",
+    "GET /v10/guilds/<guild>/members/<bot>"
+  ]
+}
