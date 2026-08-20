@@ -226,8 +226,7 @@ export async function handleSendChat(
 
   // Commands own the raw composer text. Annotation context is model input and must not
   // turn a recognized command into an ordinary message.
-  const parsedCommand = parseSlashCommand(userMessage);
-  const message = parsedCommand
+  const message = rawParsedCommand
     ? userMessage
     : composeBrowserAnnotationContext(userMessage, attachmentsToSend);
 
@@ -253,7 +252,7 @@ export async function handleSendChat(
     }
 
     host.chatRunError = null;
-    const parsed = parsedCommand;
+    const parsed = rawParsedCommand;
     if (/^\/(?:btw|side)(?::|\s|$)/i.test(userMessage)) {
       const question = extractCompanionCommandQuestion(userMessage);
       if (!question) {
