@@ -35,6 +35,24 @@ data class ChatMessage(
   val isTruncated: Boolean = false,
 )
 
+sealed interface ChatFullMessageLoadResult {
+  data class Loaded(
+    val message: ChatMessage,
+  ) : ChatFullMessageLoadResult
+
+  data class Unavailable(
+    val reason: UnavailableReason,
+  ) : ChatFullMessageLoadResult
+
+  data object RetryableFailure : ChatFullMessageLoadResult
+
+  enum class UnavailableReason {
+    NotFound,
+    Oversized,
+    NotVisible,
+  }
+}
+
 data class ChatMessageProvenance(
   val kind: String,
   val sourceTool: String? = null,

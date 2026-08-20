@@ -4,6 +4,7 @@ import ai.openclaw.app.chat.BackgroundTask
 import ai.openclaw.app.chat.ChatActiveRunPresentation
 import ai.openclaw.app.chat.ChatCommandEntry
 import ai.openclaw.app.chat.ChatComposerOwner
+import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatOutboxItem
 import ai.openclaw.app.chat.ChatPendingToolCall
@@ -1659,7 +1660,8 @@ class MainViewModel private constructor(
 
   suspend fun forkChatAtEntry(entryId: String): SessionForkResult? = ensureRuntime().forkChatAtEntry(entryId)
 
-  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? = ensureRuntime().loadFullAssistantMessage(entryId)
+  suspend fun loadFullAssistantMessage(entryId: String): ChatFullMessageLoadResult? =
+    ensureRuntime().loadFullAssistantMessage(entryId)
 
   suspend fun refreshChatSessionBranches(): Boolean = ensureRuntime().refreshChatSessionBranches()
 

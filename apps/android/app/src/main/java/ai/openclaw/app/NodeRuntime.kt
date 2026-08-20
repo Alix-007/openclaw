@@ -8,6 +8,7 @@ import ai.openclaw.app.chat.ChatCommandEntry
 import ai.openclaw.app.chat.ChatCommandOutbox
 import ai.openclaw.app.chat.ChatComposerOwner
 import ai.openclaw.app.chat.ChatController
+import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatOutboxItem
 import ai.openclaw.app.chat.ChatPendingToolCall
@@ -4984,7 +4985,7 @@ class NodeRuntime private constructor(
 
   suspend fun forkChatAtEntry(entryId: String): SessionForkResult? = chat.forkSessionAtEntry(chatSessionKey.value, entryId)
 
-  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? = chat.loadFullAssistantMessage(entryId)
+  suspend fun loadFullAssistantMessage(entryId: String): ChatFullMessageLoadResult? = chat.loadFullAssistantMessage(entryId)
 
   suspend fun refreshChatSessionBranches(): Boolean = chat.refreshSessionBranches()
 

@@ -1515,7 +1515,7 @@ class ChatController internal constructor(
   }
 
   /** Loads the canonical row only when the current transcript identifies it as a truncated assistant preview. */
-  suspend fun loadFullAssistantMessage(entryId: String): ChatMessage? {
+  suspend fun loadFullAssistantMessage(entryId: String): ChatFullMessageLoadResult? {
     val messageId = entryId.trim().takeIf { it.isNotEmpty() } ?: return null
     val snapshot = currentSessionActionSnapshot(_sessionKey.value) ?: return null
     val markedPreview =
@@ -1540,16 +1540,32 @@ class ChatController internal constructor(
               params.toString(),
             ),
           ).asObjectOrNull()
-      if (!isCurrentSessionAction(snapshot) || root?.get("ok").asBooleanOrNull() != true) return null
-      root
-        ?.get("message")
-        .asObjectOrNull()
-        ?.let(::parseVisibleChatMessage)
-        ?.takeIf { it.role == "assistant" && !it.isTruncated }
+      if (!isCurrentSessionAction(snapshot)) return null
+      when (root?.get("ok").asBooleanOrNull()) {
+        false -> {
+          val reason =
+            when (root?.get("unavailableReason").asStringOrNull()) {
+              "not_found" -> ChatFullMessageLoadResult.UnavailableReason.NotFound
+              "oversized" -> ChatFullMessageLoadResult.UnavailableReason.Oversized
+              "not_visible" -> ChatFullMessageLoadResult.UnavailableReason.NotVisible
+              else -> return ChatFullMessageLoadResult.RetryableFailure
+            }
+          ChatFullMessageLoadResult.Unavailable(reason)
+        }
+        true ->
+          root
+            ?.get("message")
+            .asObjectOrNull()
+            ?.let(::parseVisibleChatMessage)
+            ?.takeIf { it.role == "assistant" && !it.isTruncated }
+            ?.let { ChatFullMessageLoadResult.Loaded(it) }
+            ?: ChatFullMessageLoadResult.RetryableFailure
+        null -> ChatFullMessageLoadResult.RetryableFailure
+      }
     } catch (err: CancellationException) {
       throw err
     } catch (_: Throwable) {
-      null
+      ChatFullMessageLoadResult.RetryableFailure
     }
   }
 

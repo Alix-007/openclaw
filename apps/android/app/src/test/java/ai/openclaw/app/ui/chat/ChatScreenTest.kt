@@ -3,6 +3,7 @@ package ai.openclaw.app.ui.chat
 import ai.openclaw.app.GatewayAgentSummary
 import ai.openclaw.app.PendingAssistantAutoSend
 import ai.openclaw.app.chat.ChatComposerOwner
+import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.chat.ChatSessionEntry
@@ -227,7 +228,7 @@ class ChatScreenTest {
       val load =
         suspend {
           loads += 1
-          fullMessage
+          ChatFullMessageLoadResult.Loaded(fullMessage)
         }
 
       store.toggle(key, load)
@@ -259,8 +260,7 @@ class ChatScreenTest {
       val load =
         suspend {
           loads += 1
-          if (loads == 1) throw IllegalStateException("offline")
-          fullMessage
+          if (loads == 1) ChatFullMessageLoadResult.RetryableFailure else ChatFullMessageLoadResult.Loaded(fullMessage)
         }
 
       store.toggle(key, load)
@@ -279,7 +279,7 @@ class ChatScreenTest {
     runTest {
       val store = ChatAssistantMessageDisclosureStore()
       val original = assistantDisclosureKey(messageId = "same-message")
-      store.toggle(original) { assistantMessage("gateway-a response") }
+      store.toggle(original) { ChatFullMessageLoadResult.Loaded(assistantMessage("gateway-a response")) }
 
       assertTrue(store.state(original) is AssistantMessageDisclosureState.Loaded)
       assertNull(store.state(original.copy(owner = original.owner.copy(gatewayId = "gateway-b"))))
@@ -289,6 +289,28 @@ class ChatScreenTest {
 
       store.clear()
       assertNull(store.state(original))
+    }
+
+  @Test
+  fun assistantDisclosureUnavailableReasonIsTerminal() =
+    runTest {
+      val store = ChatAssistantMessageDisclosureStore()
+      val key = assistantDisclosureKey(messageId = "message-long")
+      var loads = 0
+      val load =
+        suspend {
+          loads += 1
+          ChatFullMessageLoadResult.Unavailable(ChatFullMessageLoadResult.UnavailableReason.Oversized)
+        }
+
+      store.toggle(key, load)
+      assertEquals(
+        AssistantMessageDisclosureState.Unavailable(ChatFullMessageLoadResult.UnavailableReason.Oversized),
+        store.state(key),
+      )
+      store.toggle(key, load)
+
+      assertEquals(1, loads)
     }
 
   @Test

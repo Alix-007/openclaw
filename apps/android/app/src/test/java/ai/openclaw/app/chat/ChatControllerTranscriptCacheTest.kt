@@ -1260,9 +1260,10 @@ class ChatControllerTranscriptCacheTest {
 
       val preview = controller.messages.value.single()
       assertTrue(preview.isTruncated)
-      val full = controller.loadFullAssistantMessage("message-long")
+      val full =
+        controller.loadFullAssistantMessage("message-long") as ChatFullMessageLoadResult.Loaded
 
-      assertEquals("complete assistant response", full?.content?.single()?.text)
+      assertEquals("complete assistant response", full.message.content.single().text)
       val params = requests.single { it.first == "chat.message.get" }.second.orEmpty()
       assertTrue(params.contains("\"sessionKey\":\"global\""))
       assertTrue(params.contains("\"agentId\":\"work\""))
@@ -1305,7 +1306,10 @@ class ChatControllerTranscriptCacheTest {
       controller.load("global", ownerAgentId = "work")
       advanceUntilIdle()
 
-      assertNull(controller.loadFullAssistantMessage("message-long"))
+      assertEquals(
+        ChatFullMessageLoadResult.RetryableFailure,
+        controller.loadFullAssistantMessage("message-long"),
+      )
     }
 
   @Test
@@ -1334,8 +1338,10 @@ class ChatControllerTranscriptCacheTest {
       controller.load("global", ownerAgentId = "work")
       advanceUntilIdle()
 
-      val result: Any? = controller.loadFullAssistantMessage("message-long")
-      assertTrue("oversized must remain distinguishable from a retryable failure", result != null)
+      assertEquals(
+        ChatFullMessageLoadResult.Unavailable(ChatFullMessageLoadResult.UnavailableReason.Oversized),
+        controller.loadFullAssistantMessage("message-long"),
+      )
     }
 
   @Test

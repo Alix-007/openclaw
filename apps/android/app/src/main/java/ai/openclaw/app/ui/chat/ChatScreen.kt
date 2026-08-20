@@ -12,6 +12,7 @@ import ai.openclaw.app.SHARED_VIDEO_MIME_TYPES
 import ai.openclaw.app.chat.ChatCommandEntry
 import ai.openclaw.app.chat.ChatComposerOwner
 import ai.openclaw.app.chat.ChatDiffStat
+import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.chat.ChatOutboxItem
@@ -276,6 +277,10 @@ internal sealed interface AssistantMessageDisclosureState {
 
   data object Error : AssistantMessageDisclosureState
 
+  data class Unavailable(
+    val reason: ChatFullMessageLoadResult.UnavailableReason,
+  ) : AssistantMessageDisclosureState
+
   data class Loaded(
     val message: ChatMessage,
     val expanded: Boolean,
@@ -303,7 +308,7 @@ internal class ChatAssistantMessageDisclosureStore {
 
   suspend fun toggle(
     key: ChatAssistantMessageDisclosureKey,
-    load: suspend () -> ChatMessage?,
+    load: suspend () -> ChatFullMessageLoadResult?,
   ) {
     when (val current = states[key]) {
       is AssistantMessageDisclosureState.Loaded -> {
@@ -311,14 +316,21 @@ internal class ChatAssistantMessageDisclosureStore {
         return
       }
       AssistantMessageDisclosureState.Loading -> return
+      // Gateway unavailability is stable for this stored row; retrying cannot recover it.
+      is AssistantMessageDisclosureState.Unavailable -> return
       AssistantMessageDisclosureState.Error, null -> Unit
     }
 
     states[key] = AssistantMessageDisclosureState.Loading
     states[key] =
       try {
-        load()?.let { AssistantMessageDisclosureState.Loaded(it, expanded = true) }
-          ?: AssistantMessageDisclosureState.Error
+        when (val result = load()) {
+          is ChatFullMessageLoadResult.Loaded ->
+            AssistantMessageDisclosureState.Loaded(result.message, expanded = true)
+          is ChatFullMessageLoadResult.Unavailable ->
+            AssistantMessageDisclosureState.Unavailable(result.reason)
+          ChatFullMessageLoadResult.RetryableFailure, null -> AssistantMessageDisclosureState.Error
+        }
       } catch (err: CancellationException) {
         states.remove(key)
         throw err
@@ -1386,7 +1398,7 @@ private fun ChatMessageList(
   onRewindMessage: (String) -> Unit,
   onForkMessage: (String) -> Unit,
   assistantMessageDisclosureSupported: Boolean,
-  loadFullAssistantMessage: suspend (String) -> ChatMessage?,
+  loadFullAssistantMessage: suspend (String) -> ChatFullMessageLoadResult?,
   speechState: MessageSpeechState?,
   onToggleListen: (String, String) -> Unit,
   inlineMediaPlaybackBlocked: Boolean,
@@ -2014,6 +2026,22 @@ private fun ChatAssistantMessageDisclosure(
   state: AssistantMessageDisclosureState?,
   onToggle: () -> Unit,
 ) {
+  if (state is AssistantMessageDisclosureState.Unavailable) {
+    Text(
+      text =
+        when (state.reason) {
+          ChatFullMessageLoadResult.UnavailableReason.Oversized ->
+            nativeString("Full content is unavailable because the stored transcript entry is too large to return safely.")
+          ChatFullMessageLoadResult.UnavailableReason.NotVisible ->
+            nativeString("Full content is unavailable because this transcript entry has no visible chat projection.")
+          ChatFullMessageLoadResult.UnavailableReason.NotFound ->
+            nativeString("Full content is no longer available for this transcript entry.")
+        },
+      style = ClawTheme.type.body,
+      color = ClawTheme.colors.textMuted,
+    )
+    return
+  }
   val label =
     when (state) {
       is AssistantMessageDisclosureState.Loaded -> if (state.expanded) nativeString("Close") else nativeString("View all")

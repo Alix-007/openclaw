@@ -6678,6 +6678,39 @@
       ]
     },
     {
+      "id": "native.android.17bdeec568de7ac1",
+      "source": "Full content is no longer available for this transcript entry.",
+      "surface": "android",
+      "sites": [
+        {
+          "kind": "ui-call",
+          "path": "apps/android/app/src/main/java/ai/openclaw/app/ui/chat/ChatScreen.kt"
+        }
+      ]
+    },
+    {
+      "id": "native.android.5bb5e7400231dee9",
+      "source": "Full content is unavailable because the stored transcript entry is too large to return safely.",
+      "surface": "android",
+      "sites": [
+        {
+          "kind": "ui-call",
+          "path": "apps/android/app/src/main/java/ai/openclaw/app/ui/chat/ChatScreen.kt"
+        }
+      ]
+    },
+    {
+      "id": "native.android.62948c9a5a10d80c",
+      "source": "Full content is unavailable because this transcript entry has no visible chat projection.",
+      "surface": "android",
+      "sites": [
+        {
+          "kind": "ui-call",
+          "path": "apps/android/app/src/main/java/ai/openclaw/app/ui/chat/ChatScreen.kt"
+        }
+      ]
+    },
+    {
       "id": "native.android.44f6b5c185ccdd8a",
       "source": "Gateway",
       "surface": "android",
