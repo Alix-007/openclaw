@@ -37,8 +37,9 @@ data class ChatMessage(
   val isMessageToolMirror: Boolean = false,
 )
 
-internal fun ChatMessage.fullAssistantMessageEntryId(): String? =
-  entryId?.takeIf { role == "assistant" && isTruncated && !isMessageToolMirror }
+internal fun ChatMessage.fullAssistantMessageEntryId(): String? = entryId?.takeIf {
+  role == "assistant" && isTruncated && !isMessageToolMirror
+}
 
 sealed interface ChatFullMessageLoadResult {
   data class Loaded(
