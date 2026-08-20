@@ -197,7 +197,7 @@ try {
         plugins: {
           enabled: true,
           allow: [pluginId],
-          load: { paths: [pluginDir] },
+          load: { paths: [pluginPath] },
           entries: { [pluginId]: { enabled: true } },
           slots: { memory: "none" },
         },
