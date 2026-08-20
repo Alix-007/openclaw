@@ -184,9 +184,10 @@ try {
     `${JSON.stringify(
       {
         agents: {
+          ownership: "explicit",
           defaults: {
             model: { primary: `${providerId}/${modelId}` },
-            models: { [`${providerId}/${modelId}`]: {} },
+            modelPolicy: { allow: [`${providerId}/${modelId}`] },
           },
           entries: {
             [defaultAgentId]: { identity: { name: "Main" } },
