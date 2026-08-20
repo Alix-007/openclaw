@@ -397,18 +397,19 @@ describe("Gateway child fixture helpers", () => {
       }),
     ]);
     expect(catalog.models[0]).not.toHaveProperty("supports_reasoning_summaries");
-    expect(
-      buildQaForcedRuntimeEnvPatch({
-        forcedRuntime: "codex",
-        providerMode: "mock-openai",
-        providerBaseUrl: "http://127.0.0.1:44080/v1",
-        codexModelCatalogPath: modelCatalogPath,
-      }),
-    ).toEqual(
+    const runtimeEnvPatch = buildQaForcedRuntimeEnvPatch({
+      forcedRuntime: "codex",
+      providerMode: "mock-openai",
+      providerBaseUrl: "http://127.0.0.1:44080/v1",
+      codexModelCatalogPath: modelCatalogPath,
+    });
+    expect(runtimeEnvPatch).toEqual(
       expect.objectContaining({
         OPENCLAW_CODEX_APP_SERVER_ARGS: `app-server -c openai_base_url=http://127.0.0.1:44080/v1 -c ${JSON.stringify(`model_catalog_json=${modelCatalogPath}`)} -c sandbox_workspace_write.exclude_tmpdir_env_var=true -c sandbox_workspace_write.exclude_slash_tmp=true --listen stdio://`,
       }),
     );
+    expect(runtimeEnvPatch).not.toHaveProperty("OPENAI_API_KEY");
+    expect(runtimeEnvPatch).not.toHaveProperty("CODEX_API_KEY");
   });
 
   it("does not stage a Codex catalog for other runtimes or live providers", async () => {
@@ -1872,7 +1873,7 @@ describe("buildQaRuntimeEnv", () => {
 });
 
 describe("qa bundled plugin dir", () => {
-  it("creates a scoped bundled plugin tree for allowed plugins plus always-allowed runtime facades", async () => {
+  it("creates a scoped bundled plugin tree with the always-staged runtime facade", async () => {
     const repoRoot = await tempDirs.makeTempDir("qa-bundled-scope-");
     await writeFile(
       path.join(repoRoot, "package.json"),
@@ -2345,7 +2346,7 @@ describe("qa bundled plugin dir", () => {
     ).resolves.toBe("2026.4.8");
   });
 
-  it("includes always-allowed runtime facade plugins when raising the QA runtime host version", async () => {
+  it("includes the always-staged runtime facade when raising the QA runtime host version", async () => {
     const repoRoot = await tempDirs.makeTempDir("qa-runtime-version-runtime-facade-");
     await writeJsonFixture(path.join(repoRoot, "package.json"), { version: "2026.4.7-1" });
     const bundledRoot = path.join(repoRoot, "extensions");

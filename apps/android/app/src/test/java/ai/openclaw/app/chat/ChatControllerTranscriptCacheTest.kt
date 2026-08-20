@@ -1022,21 +1022,21 @@ class ChatControllerTranscriptCacheTest {
   @Test
   fun unscopedHistoryWaitsForAProvableDefaultOwner() =
     runTest {
-      var requestCount = 0
+      var historyRequestCount = 0
       val controller =
         createChatController(
           transcriptCache = FakeTranscriptCache(),
           cacheScope = { gatewayScope },
           currentDefaultAgentId = { null },
-        ) { _, _ ->
-          requestCount += 1
+        ) { method, _ ->
+          if (method == "chat.history") historyRequestCount += 1
           "{}"
         }
 
       controller.load("custom")
       advanceUntilIdle()
 
-      assertEquals(0, requestCount)
+      assertEquals(0, historyRequestCount)
       assertFalse(controller.historyLoading.value)
       assertTrue(controller.messages.value.isEmpty())
       assertEquals(null, controller.errorText.value)
@@ -1306,6 +1306,36 @@ class ChatControllerTranscriptCacheTest {
       advanceUntilIdle()
 
       assertNull(controller.loadFullAssistantMessage("message-long"))
+    }
+
+  @Test
+  fun oversizedFullMessagePreservesATerminalOutcome() =
+    runTest {
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "preview\n...(truncated)...",
+                  "__openclaw": {"id": "message-long", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            "chat.message.get" ->
+              """{"ok":false,"unavailableReason":"oversized"}"""
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val result: Any? = controller.loadFullAssistantMessage("message-long")
+      assertTrue("oversized must remain distinguishable from a retryable failure", result != null)
     }
 
   @Test

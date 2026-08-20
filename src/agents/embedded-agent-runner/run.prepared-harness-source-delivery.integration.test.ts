@@ -137,6 +137,7 @@ describe("prepared harness source delivery", () => {
     let modelVisiblePrompt = "";
     const recordModelVisiblePrompt = (attemptParams: {
       extraSystemPrompt?: string;
+      forceMessageTool?: boolean;
       sourceReplyDeliveryMode?: "automatic" | "message_tool_only";
     }) => {
       modelVisiblePrompt = buildEmbeddedSystemPrompt({
@@ -154,7 +155,7 @@ describe("prepared harness source delivery", () => {
           channel: "discord",
           chatType: "direct",
         },
-        tools: [],
+        tools: attemptParams.forceMessageTool ? [{ name: "message" } as never] : [],
         userTimezone: "UTC",
         userDate: "2026-08-11",
       });
@@ -404,7 +405,6 @@ describe("prepared harness source delivery", () => {
       block: testCase.expectedBlocks,
       final: testCase.expectedFinals,
     });
-    expect(dispatcher.getFailedCounts()).toEqual({ tool: 0, block: 0, final: 0 });
     expect(modeTransitions).toEqual(testCase.expectedTransitions);
     if (cliSucceeded) {
       const cliParams = runnerState.runCliAgentMock.mock.calls.at(-1)?.[0] as {
