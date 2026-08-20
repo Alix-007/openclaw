@@ -1263,7 +1263,12 @@ class ChatControllerTranscriptCacheTest {
       val full =
         controller.loadFullAssistantMessage("message-long") as ChatFullMessageLoadResult.Loaded
 
-      assertEquals("complete assistant response", full.message.content.single().text)
+      assertEquals(
+        "complete assistant response",
+        full.message.content
+          .single()
+          .text,
+      )
       val params = requests.single { it.first == "chat.message.get" }.second.orEmpty()
       assertTrue(params.contains("\"sessionKey\":\"global\""))
       assertTrue(params.contains("\"agentId\":\"work\""))
