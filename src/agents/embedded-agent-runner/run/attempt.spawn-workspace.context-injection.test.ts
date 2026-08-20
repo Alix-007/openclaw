@@ -287,7 +287,7 @@ describe("embedded attempt context injection", () => {
     expect(resolver).toHaveBeenCalledOnce();
   });
 
-  it.each(["heartbeat", "commitment-only"] as const)(
+  it.each(["heartbeat", "cron"] as const)(
     "does not record full bootstrap completion for %s runs",
     async (bootstrapContextRunKind) => {
       const { result } = await resolveBootstrapContext({
