@@ -32,6 +32,7 @@ import ai.openclaw.app.chat.MessageSpeechState
 import ai.openclaw.app.chat.SessionBranch
 import ai.openclaw.app.chat.VoiceNoteRecorderState
 import ai.openclaw.app.chat.chatOutboxQueueFailureText
+import ai.openclaw.app.chat.fullAssistantMessageEntryId
 import ai.openclaw.app.chat.questionsForSession
 import ai.openclaw.app.chat.resolveChatComposerOwner
 import ai.openclaw.app.chat.resolveGatewayDefaultAgentId
@@ -1641,7 +1642,7 @@ private fun ChatMessageList(
 internal fun assistantDisclosureMessageId(
   message: ChatMessage,
   supported: Boolean,
-): String? = message.entryId?.takeIf { supported && message.role == "assistant" && message.isTruncated }
+): String? = if (supported) message.fullAssistantMessageEntryId() else null
 
 internal data class ChatWorkingRun(
   val clockKey: String,

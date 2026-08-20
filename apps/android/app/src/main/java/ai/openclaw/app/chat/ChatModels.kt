@@ -33,7 +33,12 @@ data class ChatMessage(
   val transcriptMarker: ChatTranscriptMarker? = null,
   /** True when chat.history projected this row as a bounded preview. */
   val isTruncated: Boolean = false,
+  /** True for a synthetic visible reply mirrored from a message tool call. */
+  val isMessageToolMirror: Boolean = false,
 )
+
+internal fun ChatMessage.fullAssistantMessageEntryId(): String? =
+  entryId?.takeIf { role == "assistant" && isTruncated && !isMessageToolMirror }
 
 sealed interface ChatFullMessageLoadResult {
   data class Loaded(

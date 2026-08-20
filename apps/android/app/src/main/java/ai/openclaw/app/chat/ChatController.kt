@@ -1520,7 +1520,7 @@ class ChatController internal constructor(
     val snapshot = currentSessionActionSnapshot(_sessionKey.value) ?: return null
     val markedPreview =
       _messages.value.any { message ->
-        message.role == "assistant" && message.entryId == messageId && message.isTruncated
+        message.fullAssistantMessageEntryId() == messageId
       }
     if (!markedPreview || !supportsChatMessageGet()) return null
     val params =
@@ -6629,6 +6629,7 @@ class ChatController internal constructor(
       entryId = metadata?.get("id").asStringOrNull(),
       provenance = parseChatMessageProvenance(obj["provenance"]),
       transcriptMarker = parseChatTranscriptMarker(metadata),
+      isMessageToolMirror = obj["openclawMessageToolMirror"].asObjectOrNull() != null,
       isTruncated =
         metadata?.get("truncated").asBooleanOrNull() == true ||
           // Released gateways used this display suffix before publishing the metadata fact.
