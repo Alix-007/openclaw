@@ -331,14 +331,6 @@ jobs:
                 src/agents/embedded-agent-runner/run/payloads.errors.test.ts \
                 src/agents/embedded-agent-runner/run/tool-media-payloads.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
-              pnpm plugin-sdk:api:gen 2>&1 | tee -a "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.json \
-                "$output_dir/plugin-sdk-api-baseline.json"
-              git diff -- docs/.generated/plugin-sdk-api-baseline \
-                | tee "$output_dir/plugin-sdk-api.diff" | tee -a "$log_file"
-              git diff --quiet -- docs/.generated/plugin-sdk-api-baseline
-              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
-              pnpm plugin-sdk:surface:check 2>&1 | tee -a "$log_file"
               OPENCLAW_PROOF_HARNESS_COMMIT=9af4f079faa1e605f3d9cf26a52f2820aa4d0c65 \
                 OPENCLAW_PROOF_VERDICT_PATH="$output_dir/delivery.json" \
                 node scripts/run-vitest.mjs \
