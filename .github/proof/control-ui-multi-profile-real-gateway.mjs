@@ -189,7 +189,7 @@ try {
             models: { [`${providerId}/${modelId}`]: {} },
           },
           entries: {
-            [defaultAgentId]: { default: true, identity: { name: "Main" } },
+            [defaultAgentId]: { identity: { name: "Main" } },
             [selectedAgentId]: { identity: { name: "Writer" } },
           },
         },
@@ -211,6 +211,7 @@ try {
   const proofEnv = {
     ...process.env,
     OPENCLAW_CONFIG_PATH: configPath,
+    OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
     OPENCLAW_STATE_DIR: stateDir,
     OPENCLAW_GATEWAY_TOKEN: gatewayToken,
     NO_COLOR: "1",
