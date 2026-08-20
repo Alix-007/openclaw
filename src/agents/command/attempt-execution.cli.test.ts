@@ -2933,8 +2933,8 @@ describe("CLI attempt execution", () => {
     const cliArg = firstRunCliAgentArg();
     const attributionSuffix = `\n\n${attribution}`;
     expect(cliArg.prompt).toEqual(expect.stringContaining("commit from CLI"));
-    expect(String(cliArg.prompt).endsWith(attributionSuffix)).toBe(true);
-    expect(cliArg.transcriptPrompt).toBe(String(cliArg.prompt).slice(0, -attributionSuffix.length));
+    expect(cliArg.prompt.endsWith(attributionSuffix)).toBe(true);
+    expect(cliArg.transcriptPrompt).toBe(cliArg.prompt.slice(0, -attributionSuffix.length));
 
     const codexSessionKey = "agent:main:direct:coauthor-codex-prompt";
     const codexSessionEntry = makeSessionEntry("coauthor-codex-prompt");

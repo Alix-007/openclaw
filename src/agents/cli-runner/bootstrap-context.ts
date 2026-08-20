@@ -1,6 +1,6 @@
 import type { ChatType } from "../../channels/chat-type.js";
 import type { InboundEventKind } from "../../channels/inbound-event/kind.js";
-import { resolveStorePath } from "../../config/sessions/paths.js";
+import { resolveSessionStorePathCore } from "../../config/sessions/paths.js";
 import type { SessionTranscriptRuntimeTarget } from "../../config/sessions/session-accessor.types.js";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import {
@@ -71,7 +71,7 @@ export async function prepareCliBootstrapContext(params: {
       sessionKey: params.sessionKey?.trim() || params.sessionId,
       storePath:
         params.storePath ??
-        resolveStorePath(params.config?.session?.store, {
+        resolveSessionStorePathCore(params.config?.session?.store, {
           agentId: params.sessionAgentId,
         }),
     } as const);

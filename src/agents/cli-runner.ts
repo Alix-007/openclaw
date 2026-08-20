@@ -28,15 +28,10 @@ import {
   markAuthProfileSuccess,
 } from "./auth-profiles.js";
 import { resolveCliBackendConfig } from "./cli-backends.js";
-import {
-  buildPendingCliBootstrapCompletion,
-  finalizeRunnerOwnedPendingCliBootstrapCompletion,
-} from "./cli-bootstrap-completion.js";
-import {
-  takePreparedCliBootstrapCompletion,
-  transferCliBootstrapCompletionCallerOwnership,
-} from "./cli-bootstrap-completion-state.js";
+import { transferCliBootstrapCompletionCallerOwnership } from "./cli-bootstrap-completion-state.js";
+import { buildPendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
+import { settleCliBackendExecution } from "./cli-runner/cli-backend-settlement.js";
 import {
   resolveCliSessionId,
   runCliRecovery,
@@ -50,7 +45,6 @@ import {
   cliRunSettlementDeps,
   isClaudeCliBackend,
   resolveCliSourceReplyMirror,
-  settleCliBackendOutcome,
   settleCliPreparationError,
   settlePreparedCliRun,
 } from "./cli-runner/cli-run-settlement.js";
@@ -720,49 +714,11 @@ export async function runPreparedCliAgent(
     });
   };
 
-  let runResult: EmbeddedAgentRunResult | undefined;
-  let runError: unknown;
-  let runFailed = false;
-  let cleanupSucceeded = true;
-  try {
-    runResult = await executeRun();
-  } catch (error) {
-    runFailed = true;
-    runError = error;
-  }
-  let cleanupError: Error | undefined;
-  try {
-    await context.preparedBackend.cleanup?.();
-  } catch (error) {
-    cleanupSucceeded = false;
-    cleanupError = error as Error;
-  }
-  try {
-    const settledResult = settleCliBackendOutcome({
-      runResult,
-      runError,
-      runFailed,
-      cleanupError,
-      deliveredMessagingSideEffect,
-      diagnosticLifecycle,
-      failoverContext: cliFailoverContext,
-    });
-    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
-      result: settledResult,
-      transcriptStable: cleanupSucceeded,
-      isStillEligible: () => {
-        if (params.abortSignal?.aborted === true) {
-          return false;
-        }
-        if (params.lifecycleGeneration) {
-          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
-        }
-        return true;
-      },
-    });
-    return settledResult;
-  } finally {
-    takePreparedCliBootstrapCompletion(context);
-  }
+  return await settleCliBackendExecution({
+    context,
+    diagnosticLifecycle,
+    failoverContext: cliFailoverContext,
+    getDeliveredMessagingSideEffect: () => deliveredMessagingSideEffect,
+    run: executeRun,
+  });
 }
-

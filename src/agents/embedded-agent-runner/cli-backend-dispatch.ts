@@ -17,8 +17,8 @@ import {
   onAgentEvent,
 } from "../../infra/agent-events.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
-import { finalizePendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
 import { resolvePreparedRunAdmission } from "../admitted-run-context.js";
+import { finalizePendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
 import { stripOpenClawMcpToolPrefix } from "../cli-runner/tool-policy.js";
 import { normalizeToolPolicyName } from "../tool-policy.js";
 import { isToolResultError } from "../tool-result-error.js";
@@ -210,58 +210,58 @@ async function runEmbeddedAgentViaCliBackend(
   const result = await (async () => {
     try {
       const cliResult = await runCliAgent({
-      admittedRunContext,
-      sessionId: params.sessionId,
-      sessionKey: params.sessionKey,
-      ...(params.sessionTarget?.expectedLifecycleRevision !== undefined
-        ? { expectedLifecycleRevision: params.sessionTarget.expectedLifecycleRevision }
-        : {}),
-      ...(params.sessionTarget?.expectedWriterRunId !== undefined
-        ? { expectedWriterRunId: params.sessionTarget.expectedWriterRunId }
-        : {}),
-      chatType: params.chatType,
-      agentId: params.agentId,
-      ...(params.sessionTarget?.storePath ? { storePath: params.sessionTarget.storePath } : {}),
-      trigger: params.trigger,
-      sessionFile: dispatch.sessionFile,
-      workspaceDir: params.workspaceDir,
-      agentDir: params.agentDir,
-      config: params.config,
-      prompt: params.prompt,
-      imagePrompt: params.prompt,
-      images: params.images,
-      imageOrder: params.imageOrder,
-      media: params.media,
-      currentInboundEventKind: params.currentInboundEventKind,
-      provider: dispatch.provider,
-      model: params.model,
-      modelHasVision: params.modelHasVision,
-      thinkLevel: params.thinkLevel,
-      timeoutMs: params.timeoutMs,
-      runTimeoutOverrideMs: params.runTimeoutOverrideMs ?? params.timeoutMs,
-      runId: params.runId,
-      lifecycleGeneration: params.lifecycleGeneration,
-      lane: params.lane,
-      extraSystemPrompt: params.extraSystemPrompt,
-      messageChannel: params.messageChannel,
-      messageProvider: params.messageProvider,
-      bootstrapContextMode: params.bootstrapContextMode,
-      bootstrapContextRunKind: params.bootstrapContextRunKind,
-      abortSignal: params.abortSignal,
-      onExecutionPhase: params.onExecutionPhase,
-      cliToolAvailability,
-      // One-shot helper run: fresh CLI process, no warm live session left
-      // behind, and no implicit message sends without an explicit target.
-      disableCliLiveSession: true,
-      cleanupCliLiveSessionOnRunEnd: true,
-      requireExplicitMessageTarget: true,
-      // Deliberately NOT forwarding cleanupBundleMcpOnRunEnd: on the CLI
-      // runner it closes the process-wide loopback MCP server, which a
-      // concurrent main turn or overlapping recall may still be using.
-      // Session-scoped MCP runtimes are retired below instead.
-    });
+        admittedRunContext,
+        sessionId: params.sessionId,
+        sessionKey: params.sessionKey,
+        ...(params.sessionTarget?.expectedLifecycleRevision !== undefined
+          ? { expectedLifecycleRevision: params.sessionTarget.expectedLifecycleRevision }
+          : {}),
+        ...(params.sessionTarget?.expectedWriterRunId !== undefined
+          ? { expectedWriterRunId: params.sessionTarget.expectedWriterRunId }
+          : {}),
+        chatType: params.chatType,
+        agentId: params.agentId,
+        ...(params.sessionTarget?.storePath ? { storePath: params.sessionTarget.storePath } : {}),
+        trigger: params.trigger,
+        sessionFile: dispatch.sessionFile,
+        workspaceDir: params.workspaceDir,
+        agentDir: params.agentDir,
+        config: params.config,
+        prompt: params.prompt,
+        imagePrompt: params.prompt,
+        images: params.images,
+        imageOrder: params.imageOrder,
+        media: params.media,
+        currentInboundEventKind: params.currentInboundEventKind,
+        provider: dispatch.provider,
+        model: params.model,
+        modelHasVision: params.modelHasVision,
+        thinkLevel: params.thinkLevel,
+        timeoutMs: params.timeoutMs,
+        runTimeoutOverrideMs: params.runTimeoutOverrideMs ?? params.timeoutMs,
+        runId: params.runId,
+        lifecycleGeneration: params.lifecycleGeneration,
+        lane: params.lane,
+        extraSystemPrompt: params.extraSystemPrompt,
+        messageChannel: params.messageChannel,
+        messageProvider: params.messageProvider,
+        bootstrapContextMode: params.bootstrapContextMode,
+        bootstrapContextRunKind: params.bootstrapContextRunKind,
+        abortSignal: params.abortSignal,
+        onExecutionPhase: params.onExecutionPhase,
+        cliToolAvailability,
+        // One-shot helper run: fresh CLI process, no warm live session left
+        // behind, and no implicit message sends without an explicit target.
+        disableCliLiveSession: true,
+        cleanupCliLiveSessionOnRunEnd: true,
+        requireExplicitMessageTarget: true,
+        // Deliberately NOT forwarding cleanupBundleMcpOnRunEnd: on the CLI
+        // runner it closes the process-wide loopback MCP server, which a
+        // concurrent main turn or overlapping recall may still be using.
+        // Session-scoped MCP runtimes are retired below instead.
+      });
       finalAssistantText = cliResult.payloads?.find(
-      (payload) => payload.isReasoning !== true && typeof payload.text === "string",
+        (payload) => payload.isReasoning !== true && typeof payload.text === "string",
       )?.text;
       return withoutCliSessionBinding(cliResult);
     } finally {
