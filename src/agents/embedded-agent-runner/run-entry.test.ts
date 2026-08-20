@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { setPendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
+import { settleCliBackendExecution } from "../cli-runner/cli-backend-settlement.js";
+import type { PreparedCliRunContext } from "../cli-runner/types.js";
 import type { ContextEngineTurnAttemptFacts } from "../harness/context-engine-turn-attempt.js";
 import type { EmbeddedAgentRunResult } from "./types.js";
 
@@ -150,6 +153,20 @@ function recordTurnAttempt(
     aborted: false,
     yieldAborted: false,
   });
+}
+
+function buildCliBootstrapSettlementContext(params: {
+  onContextEngineTurnCandidate: (facts: ContextEngineTurnAttemptFacts) => void;
+  runId: string;
+}): PreparedCliRunContext {
+  // SAFETY: settleCliBackendExecution only reads params and preparedBackend from this owner fixture.
+  return {
+    params: {
+      onContextEngineTurnCandidate: params.onContextEngineTurnCandidate,
+      runId: params.runId,
+    },
+    preparedBackend: {},
+  } as PreparedCliRunContext;
 }
 
 describe("runEmbeddedAgentEntry", () => {
@@ -508,6 +525,132 @@ describe("runEmbeddedAgentEntry", () => {
     expect(primaryReleased).toBe(true);
     expect(fallbackReleased).toBe(true);
     expect(state.finalizedAttempts).toEqual(["fallback"]);
+  });
+
+  it("settles a runner-owned CLI bootstrap marker after outer turn acceptance", async () => {
+    state.runWithModelFallback.mockImplementationOnce(async (params: FallbackRunnerParams) => {
+      const result = await params.run(params.provider, params.model);
+      return {
+        outcome: "completed" as const,
+        result,
+        provider: params.provider,
+        model: params.model,
+        attempts: [],
+      };
+    });
+    const settlementOrder: string[] = [];
+    const turnAttemptModule = await import("../harness/context-engine-turn-attempt.js");
+    vi.mocked(turnAttemptModule.finalizeAcceptedContextEngineTurn).mockImplementationOnce(
+      async ({ facts }) => {
+        state.finalizedAttempts.push(facts.sessionIdUsed);
+        settlementOrder.push("outer-turn");
+      },
+    );
+    const appendCustomEntry = vi.fn(() => {
+      settlementOrder.push("bootstrap-marker");
+      return "bootstrap-marker-entry";
+    });
+    const candidateResult = makeResult({ provider: "provider", model: "model" });
+    setPendingCliBootstrapCompletion(candidateResult, {
+      maintenanceSettledWithoutRewrite: Promise.resolve(true),
+      runId: "outer-bootstrap-accepted",
+      sessionTarget: {
+        agentId: "main",
+        sessionId: "session-1",
+        sessionKey: "agent:main:session-1",
+        storePath: "/session.sqlite",
+      },
+      sessionManager: { appendCustomEntry },
+      transcriptOwner: "runner",
+    });
+    const { runEmbeddedAgentEntry } = await import("./run-entry.js");
+    await runEmbeddedAgentEntry({
+      selection: { cfg: {}, provider: "provider", model: "model" },
+      identity: { runId: "outer-bootstrap-accepted", agentId: "main", sessionId: "session-1" },
+      harness: {
+        workspaceDir: "/tmp/workspace",
+        preparation: { kind: "direct" },
+        resolveRuntimeOverride: () => undefined,
+      },
+      behavior: { kind: "command-rpc", hasCommittedSideEffect: () => false },
+      sessionOverride: { kind: "preserve" },
+      runCandidate: async (_provider, _model, options) => {
+        recordTurnAttempt(options.onContextEngineTurnCandidate, "accepted");
+        return await settleCliBackendExecution({
+          context: buildCliBootstrapSettlementContext({
+            onContextEngineTurnCandidate: options.onContextEngineTurnCandidate,
+            runId: "outer-bootstrap-accepted",
+          }),
+          failoverContext: { provider: "provider", model: "model", sessionId: "session-1" },
+          getDeliveredMessagingSideEffect: () => false,
+          run: async () => candidateResult,
+        });
+      },
+    });
+
+    await vi.waitFor(() => expect(appendCustomEntry).toHaveBeenCalledOnce());
+    expect(settlementOrder).toEqual(["outer-turn", "bootstrap-marker"]);
+  });
+
+  it("discards a runner-owned CLI bootstrap marker when the outer turn is rejected", async () => {
+    state.runWithModelFallback.mockImplementationOnce(async (params: FallbackRunnerParams) => {
+      const result = await params.run(params.provider, params.model);
+      return {
+        outcome: "completed" as const,
+        result,
+        provider: params.provider,
+        model: params.model,
+        attempts: [],
+      };
+    });
+    const appendCustomEntry = vi.fn();
+    const candidateResult = makeResult({
+      provider: "provider",
+      model: "model",
+      meta: { aborted: true, stopReason: "error" },
+    });
+    setPendingCliBootstrapCompletion(candidateResult, {
+      maintenanceSettledWithoutRewrite: Promise.resolve(true),
+      runId: "outer-bootstrap-rejected",
+      sessionTarget: {
+        agentId: "main",
+        sessionId: "session-1",
+        sessionKey: "agent:main:session-1",
+        storePath: "/session.sqlite",
+      },
+      sessionManager: { appendCustomEntry },
+      transcriptOwner: "runner",
+    });
+    const { runEmbeddedAgentEntry } = await import("./run-entry.js");
+    await runEmbeddedAgentEntry({
+      selection: { cfg: {}, provider: "provider", model: "model" },
+      identity: { runId: "outer-bootstrap-rejected", agentId: "main", sessionId: "session-1" },
+      harness: {
+        workspaceDir: "/tmp/workspace",
+        preparation: { kind: "direct" },
+        resolveRuntimeOverride: () => undefined,
+      },
+      behavior: { kind: "command-rpc", hasCommittedSideEffect: () => false },
+      sessionOverride: { kind: "preserve" },
+      runCandidate: async (_provider, _model, options) => {
+        recordTurnAttempt(options.onContextEngineTurnCandidate, "rejected");
+        return await settleCliBackendExecution({
+          context: buildCliBootstrapSettlementContext({
+            onContextEngineTurnCandidate: options.onContextEngineTurnCandidate,
+            runId: "outer-bootstrap-rejected",
+          }),
+          failoverContext: { provider: "provider", model: "model", sessionId: "session-1" },
+          getDeliveredMessagingSideEffect: () => false,
+          run: async () => candidateResult,
+        });
+      },
+    });
+
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 0);
+    });
+    expect(appendCustomEntry).not.toHaveBeenCalled();
+    expect(state.discardedAttempts).toEqual(["rejected"]);
   });
 
   it("accepts an empty result after a committed side effect and finalizes it once", async () => {

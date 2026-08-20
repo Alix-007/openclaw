@@ -7,6 +7,7 @@ import {
   buildAgentRunTerminalReplySnapshot,
   normalizeAgentRunTerminalReplySnapshot,
 } from "../agent-run-terminal-reply.js";
+import { finalizeRunnerOwnedPendingCliBootstrapCompletion } from "../cli-bootstrap-completion.js";
 import {
   createContextEngineLogicalTurnLease,
   type ContextEngineLogicalTurnLease,
@@ -541,14 +542,15 @@ export async function runEmbeddedAgentEntry<T extends EmbeddedAgentRunResult>(
       behavior: params.behavior,
       runId: params.identity.runId,
     });
+    const acceptedContextEngineTurn =
+      fallbackResult.result.turnAttempt !== undefined &&
+      canAdvanceContextEngineTurn({
+        result,
+        fallbackOutcome: settledResult.outcome,
+        terminal,
+      });
     if (fallbackResult.result.turnAttempt) {
-      if (
-        canAdvanceContextEngineTurn({
-          result,
-          fallbackOutcome: settledResult.outcome,
-          terminal,
-        })
-      ) {
+      if (acceptedContextEngineTurn) {
         await finalizeAcceptedContextEngineTurn({
           facts: fallbackResult.result.turnAttempt,
           lease: contextEngineLogicalTurnLease,
@@ -561,6 +563,10 @@ export async function runEmbeddedAgentEntry<T extends EmbeddedAgentRunResult>(
       }
       unsettledContextEngineTurnAttempt = undefined;
     }
+    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+      result,
+      transcriptStable: acceptedContextEngineTurn,
+    });
     let sessionOverrideSettled = false;
     const settleSessionOverride = async () => {
       if (sessionOverrideSettled) {

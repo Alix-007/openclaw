@@ -1,4 +1,3 @@
-import { assertAgentRunLifecycleGenerationCurrent } from "../../infra/agent-events.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import { takePreparedCliBootstrapCompletion } from "../cli-bootstrap-completion-state.js";
@@ -88,19 +87,12 @@ export async function settleCliBackendExecution(params: {
       failoverContext: params.failoverContext,
     });
     const runParams = params.context.params;
-    void finalizeRunnerOwnedPendingCliBootstrapCompletion({
-      result: settledResult,
-      transcriptStable: cleanupSucceeded,
-      isStillEligible: () => {
-        if (runParams.abortSignal?.aborted === true) {
-          return false;
-        }
-        if (runParams.lifecycleGeneration) {
-          assertAgentRunLifecycleGenerationCurrent(runParams.lifecycleGeneration);
-        }
-        return true;
-      },
-    });
+    if (!runParams.onContextEngineTurnCandidate) {
+      void finalizeRunnerOwnedPendingCliBootstrapCompletion({
+        result: settledResult,
+        transcriptStable: cleanupSucceeded,
+      });
+    }
     return settledResult;
   } finally {
     takePreparedCliBootstrapCompletion(params.context);

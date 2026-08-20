@@ -1,4 +1,5 @@
 import type { SessionTranscriptRuntimeTarget } from "../config/sessions/session-accessor.js";
+import { assertAgentRunLifecycleGenerationCurrent } from "../infra/agent-events.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import {
@@ -21,8 +22,12 @@ export type PendingCliBootstrapCompletion = {
   transcriptOwner?: "caller" | "runner";
 };
 
+type OwnedPendingCliBootstrapCompletion = PendingCliBootstrapCompletion & {
+  isStillEligible?: () => boolean;
+};
+
 type CliBootstrapCompletionResult = EmbeddedAgentRunResult & {
-  [CLI_BOOTSTRAP_COMPLETION]?: PendingCliBootstrapCompletion;
+  [CLI_BOOTSTRAP_COMPLETION]?: OwnedPendingCliBootstrapCompletion;
 };
 
 function asCliBootstrapCompletionResult(
@@ -47,7 +52,7 @@ export function buildPendingCliBootstrapCompletion(params: {
   ) {
     return undefined;
   }
-  return {
+  const pending: OwnedPendingCliBootstrapCompletion = {
     maintenanceSettledWithoutRewrite: params.maintenanceOutcome
       ? params.maintenanceOutcome
           .then((outcome) => outcome.status === "completed" && !outcome.changed)
@@ -62,7 +67,17 @@ export function buildPendingCliBootstrapCompletion(params: {
     sessionTarget: context.params.sessionTarget,
     sessionManager: context.params.sessionManager,
     transcriptOwner: params.runnerTranscriptPersisted ? completion.transcriptOwner : "caller",
+    isStillEligible: () => {
+      if (context.params.abortSignal?.aborted === true) {
+        return false;
+      }
+      if (context.params.lifecycleGeneration) {
+        assertAgentRunLifecycleGenerationCurrent(context.params.lifecycleGeneration);
+      }
+      return true;
+    },
   };
+  return pending;
 }
 
 /** Carries internal lifecycle ownership through result spreads without entering serialized metadata. */
@@ -89,15 +104,17 @@ export function finalizePendingCliBootstrapCompletion(params: {
   delete result[CLI_BOOTSTRAP_COMPLETION];
   const sessionTarget = params.sessionTarget ?? pending?.sessionTarget;
   const runId = params.runId ?? pending?.runId;
+  const isStillEligible = () =>
+    pending?.isStillEligible?.() !== false && params.isStillEligible?.() !== false;
   const settlement = (async () => {
     try {
-      if (!pending || !params.transcriptStable || params.isStillEligible?.() === false) {
+      if (!pending || !params.transcriptStable || !isStillEligible()) {
         return false;
       }
       if (!(await pending.maintenanceSettledWithoutRewrite)) {
         return false;
       }
-      if (params.isStillEligible?.() === false || !sessionTarget || !runId) {
+      if (!isStillEligible() || !sessionTarget || !runId) {
         return false;
       }
       persistCompletedBootstrapTurn({
