@@ -1226,6 +1226,7 @@ class ChatControllerTranscriptCacheTest {
     runTest {
       val cache = FakeTranscriptCache()
       val requests = mutableListOf<Pair<String, String?>>()
+      val legacyPreview = "p".repeat(8_000) + "\\n...(truncated)..."
       val controller =
         createCachedController(cache) { method, paramsJson ->
           requests += method to paramsJson
@@ -1236,7 +1237,7 @@ class ChatControllerTranscriptCacheTest {
                 "sessionId": "session-global",
                 "messages": [{
                   "role": "assistant",
-                  "content": "preview\n...(truncated)...",
+                  "content": "$legacyPreview",
                   "__openclaw": {"id": "message-long"}
                 }]
               }
@@ -1381,7 +1382,7 @@ class ChatControllerTranscriptCacheTest {
     }
 
   @Test
-  fun unmarkedAssistantMessageDoesNotRequestFullContent() =
+  fun shortAssistantMessageEndingInLegacyMarkerDoesNotRequestFullContent() =
     runTest {
       val cache = FakeTranscriptCache()
       val requests = mutableListOf<Pair<String, String?>>()
@@ -1395,7 +1396,7 @@ class ChatControllerTranscriptCacheTest {
                 "sessionId": "session-global",
                 "messages": [{
                   "role": "assistant",
-                  "content": "complete assistant response",
+                  "content": "The historical marker is quoted below:\n...(truncated)...",
                   "__openclaw": {"id": "message-complete"}
                 }]
               }
