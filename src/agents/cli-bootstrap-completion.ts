@@ -25,6 +25,13 @@ type CliBootstrapCompletionResult = EmbeddedAgentRunResult & {
   [CLI_BOOTSTRAP_COMPLETION]?: PendingCliBootstrapCompletion;
 };
 
+function asCliBootstrapCompletionResult(
+  result: EmbeddedAgentRunResult,
+): CliBootstrapCompletionResult {
+  // SAFETY: this module exclusively owns the private symbol attached to run results.
+  return result as CliBootstrapCompletionResult;
+}
+
 /** Transfers completion to the transcript owner after all rewrite-capable work settles. */
 export function buildPendingCliBootstrapCompletion(params: {
   context: PreparedCliRunContext;
@@ -65,7 +72,7 @@ export function setPendingCliBootstrapCompletion(
 ): void {
   // Enumerable symbols survive internal result spreads, while JSON serialization
   // ignores them so a Promise never leaks into the public run-result contract.
-  (result as CliBootstrapCompletionResult)[CLI_BOOTSTRAP_COMPLETION] = pending;
+  asCliBootstrapCompletionResult(result)[CLI_BOOTSTRAP_COMPLETION] = pending;
 }
 
 /** Finalizes a pending marker only after every transcript-rewrite owner reports stable state. */
@@ -77,7 +84,7 @@ export function finalizePendingCliBootstrapCompletion(params: {
   runId?: string;
   isStillEligible?: () => boolean;
 }): Promise<boolean> {
-  const result = params.result as CliBootstrapCompletionResult;
+  const result = asCliBootstrapCompletionResult(params.result);
   const pending = result[CLI_BOOTSTRAP_COMPLETION];
   delete result[CLI_BOOTSTRAP_COMPLETION];
   const sessionTarget = params.sessionTarget ?? pending?.sessionTarget;
@@ -118,7 +125,7 @@ export function finalizeRunnerOwnedPendingCliBootstrapCompletion(params: {
   transcriptStable: boolean;
   isStillEligible?: () => boolean;
 }): Promise<boolean> | undefined {
-  const pending = (params.result as CliBootstrapCompletionResult)[CLI_BOOTSTRAP_COMPLETION];
+  const pending = asCliBootstrapCompletionResult(params.result)[CLI_BOOTSTRAP_COMPLETION];
   if (pending?.transcriptOwner !== "runner") {
     return undefined;
   }

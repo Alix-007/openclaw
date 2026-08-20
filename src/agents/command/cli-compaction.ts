@@ -652,7 +652,7 @@ export async function runCliTurnCompactionLifecycle(params: {
     !isNativeHarnessCompactionSession(params.sessionEntry, params.provider)
   ) {
     log.info(`CLI backend "${params.provider}" owns native compaction — deferring to backend`);
-    return params.sessionEntry;
+    return { sessionEntry: params.sessionEntry, compacted: false };
   }
 
   let compactionKind: EmbeddedAgentCompactResult["compactionKind"];

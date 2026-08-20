@@ -1376,7 +1376,7 @@ describe("runCliTurnCompactionLifecycle", () => {
       model: "opus",
     });
 
-    expect(result).toBe(sessionEntry);
+    expect(result).toEqual({ sessionEntry, compacted: false });
     expect(compactCalls).toEqual([]);
     expect(recordCliCompactionInStore).not.toHaveBeenCalled();
   });

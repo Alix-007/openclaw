@@ -1745,7 +1745,6 @@ src/agents/cli-backends.ts	1
 src/agents/cli-credentials.ts	15
 src/agents/cli-executable-identity.ts	3
 src/agents/cli-output-records.ts	1
-src/agents/cli-runner.ts	1
 src/agents/cli-runner/bundle-mcp-codex.ts	5
 src/agents/cli-runner/bundle-mcp-gemini.ts	4
 src/agents/cli-runner/bundle-mcp-runtime.ts	1

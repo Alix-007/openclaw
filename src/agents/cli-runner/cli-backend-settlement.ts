@@ -14,13 +14,15 @@ function settleCliBackendOutcome(params: {
   runResult: EmbeddedAgentRunResult | undefined;
   runError: unknown;
   runFailed: boolean;
-  cleanupError: Error | undefined;
+  cleanupFailed: boolean;
+  cleanupError: unknown;
   deliveredMessagingSideEffect: boolean;
   diagnosticLifecycle?: ClaudeCliRunDiagnosticLifecycle;
   failoverContext: { provider: string; model: string; sessionId: string; lane?: string };
 }): EmbeddedAgentRunResult {
   const {
     cleanupError,
+    cleanupFailed,
     deliveredMessagingSideEffect,
     diagnosticLifecycle,
     failoverContext,
@@ -28,7 +30,7 @@ function settleCliBackendOutcome(params: {
     runFailed,
     runResult,
   } = params;
-  if (cleanupError) {
+  if (cleanupFailed) {
     if (!deliveredMessagingSideEffect) {
       if (runFailed) {
         log.warn(`CLI run also failed before backend cleanup: ${formatErrorMessage(runError)}`);
@@ -67,18 +69,19 @@ export async function settleCliBackendExecution(params: {
     runFailed = true;
     runError = error;
   }
-  let cleanupError: Error | undefined;
+  let cleanupError: unknown;
   try {
     await params.context.preparedBackend.cleanup?.();
   } catch (error) {
     cleanupSucceeded = false;
-    cleanupError = error as Error;
+    cleanupError = error;
   }
   try {
     const settledResult = settleCliBackendOutcome({
       runResult,
       runError,
       runFailed,
+      cleanupFailed: !cleanupSucceeded,
       cleanupError,
       deliveredMessagingSideEffect: params.getDeliveredMessagingSideEffect(),
       diagnosticLifecycle: params.diagnosticLifecycle,
