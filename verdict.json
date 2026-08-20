@@ -1,0 +1,29 @@
+{
+  "exactHead": "90e14acae4af8ee515a6527e4a403ce44912be22",
+  "scenarios": [
+    {
+      "annotationAccepted": true,
+      "command": "/new",
+      "exactHead": "90e14acae4af8ee515a6527e4a403ce44912be22",
+      "gatewayRequests": {
+        "chatAbort": 0,
+        "chatSend": 0,
+        "sessionsCreate": 1
+      },
+      "status": "pass"
+    },
+    {
+      "annotationAccepted": true,
+      "command": "/stop",
+      "exactHead": "90e14acae4af8ee515a6527e4a403ce44912be22",
+      "gatewayRequests": {
+        "chatAbort": 1,
+        "chatSend": 0,
+        "sessionsCreate": 0
+      },
+      "status": "pass",
+      "visibleResult": "Run status: Interrupted"
+    }
+  ],
+  "status": "pass"
+}
