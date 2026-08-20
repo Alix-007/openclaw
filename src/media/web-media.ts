@@ -961,7 +961,7 @@ export async function optimizeImageBufferForWebMedia(params: {
   const cap = effectiveImageBytesCap(baseCap, params.imageCompression) ?? baseCap;
   if (params.contentType === "image/gif") {
     if (params.buffer.length > cap) {
-      throw new ImageOptimizationLimitError(formatCapLimit("GIF", cap, params.buffer.length));
+      throw new ImageOptimizationLimitError(formatCapLimit("GIF", cap, params.buffer.length), cap);
     }
     assertImageSatisfiesHardDimensionPolicy(params.buffer, params.imageCompression);
     return {
@@ -995,7 +995,10 @@ export async function optimizeImageBufferForWebMedia(params: {
   });
   logOptimizedImage({ originalSize: params.buffer.length, optimized });
   if (optimized.buffer.length > cap) {
-    throw new ImageOptimizationLimitError(formatCapReduce("Media", cap, optimized.buffer.length));
+    throw new ImageOptimizationLimitError(
+      formatCapReduce("Media", cap, optimized.buffer.length),
+      cap,
+    );
   }
   return {
     buffer: optimized.buffer,
