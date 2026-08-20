@@ -788,7 +788,7 @@ jobs:
             for raw in "${raw_scenarios[@]}"; do
               scenario="$(printf '%s' "${raw}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
               if [[ -n "${scenario}" ]]; then
-                scenario_provider_mode="live-frontier"
+                scenario_provider_mode="${PROVIDER_MODE}"
                 if [[ "${scenario}" == "discord-runtime-context-redaction" ]]; then
                   provider_args=(
                     --provider-mode mock-openai

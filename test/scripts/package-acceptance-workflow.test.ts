@@ -4399,7 +4399,7 @@ describe("package artifact reuse", () => {
     );
     chmodSync(pnpmPath, 0o755);
 
-    const runSelection = (inputScenario: string) => {
+    const runSelection = (inputScenario: string, providerMode = "live-frontier") => {
       writeFileSync(callsPath, "");
       const result = spawnSync("bash", ["--noprofile", "--norc", "-c", runStep.run!], {
         cwd: workdir,
@@ -4410,7 +4410,7 @@ describe("package artifact reuse", () => {
           GITHUB_RUN_ID: "123",
           INPUT_SCENARIO: inputScenario,
           OPENCLAW_CI_OPENAI_FALLBACK_MODEL: "openai/gpt-5.6-luna-alt",
-          PROVIDER_MODE: "live-frontier",
+          PROVIDER_MODE: providerMode,
           PATH: `${workdir}:${process.env.PATH}`,
           PNPM_CALLS: callsPath,
         },
@@ -4430,6 +4430,13 @@ describe("package artifact reuse", () => {
     const liveOnly = runSelection("discord-canary");
     expect(liveOnly.result.status, liveOnly.result.stderr).toBe(0);
     expect(liveOnly.calls).toContain("--provider-mode live-frontier");
+
+    const mockCombined = runSelection(
+      "discord-canary, discord-runtime-context-redaction",
+      "mock-openai",
+    );
+    expect(mockCombined.result.status, mockCombined.result.stderr).toBe(0);
+    expect(mockCombined.calls).toContain("--provider-mode mock-openai");
   });
 
   it("requires QA live evidence artifacts when lanes run", () => {
