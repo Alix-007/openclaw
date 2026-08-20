@@ -127,10 +127,8 @@ try {
       {
         id: pluginId,
         name: "PR 122300 profile-scope proof",
-        activation: { onStartup: true },
-        enabledByDefault: true,
         providers: [providerId],
-        modelCatalog: { discovery: { [providerId]: "runtime" } },
+        modelCatalog: { discovery: { [providerId]: "runtime" }, runtimeAugment: true },
         configSchema: { type: "object", additionalProperties: false, properties: {} },
       },
       null,
