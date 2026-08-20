@@ -65,10 +65,13 @@ class CronPage extends OpenClawLightDomElement {
   @state() private cron = createInitialCronState();
   @state() private agentsList: AgentsListResult | null = null;
   @state() private cronModelSuggestions: string[] = [];
-  @state() private conversationDirectories = {
+  @state() private conversationDirectories: Record<
+    "delivery" | "failureAlert",
+    ConversationListItem[]
+  > = {
     delivery: [],
     failureAlert: [],
-  } as Record<"delivery" | "failureAlert", ConversationListItem[]>;
+  };
   @state() private listTab: CronListTab = "tasks";
   @state() private detailTab: CronDetailTab = "settings";
 

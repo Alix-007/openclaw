@@ -139,6 +139,7 @@ describe("CronPage conversation target suggestions", () => {
       sessionTarget: "isolated" as const,
       wakeMode: "now" as const,
       payload: { kind: "agentTurn" as const, message: "Send the topic digest" },
+      state: {},
       delivery: {
         mode: "announce" as const,
         channel: "telegram",

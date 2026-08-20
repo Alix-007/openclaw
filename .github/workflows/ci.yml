@@ -1751,8 +1751,10 @@ jobs:
       - *cache_playwright_chromium
       - *install_playwright_chromium
 
-      - name: Build Control UI bundle for real-Gateway tests
-        run: pnpm ui:build
+      # The child-process Cron test needs a built Gateway entrypoint. Prepare it
+      # before the UI so the mounted Control UI is the final dist artifact.
+      - name: Build Gateway and Control UI bundles for real-Gateway tests
+        run: node scripts/run-node.mjs --help && pnpm ui:build
 
       - name: Test MCP app conformance with a real Gateway
         run: >-
