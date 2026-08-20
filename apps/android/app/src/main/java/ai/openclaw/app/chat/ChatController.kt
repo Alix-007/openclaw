@@ -61,6 +61,7 @@ internal const val SESSION_LIST_FETCH_LIMIT = 200
 private val QUESTION_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
 private val SWARM_REFRESH_RETRY_DELAYS_MS = longArrayOf(1_000L, 2_000L, 4_000L)
 private const val FULL_CHAT_MESSAGE_MAX_CHARS = 500_000
+private const val LEGACY_CHAT_HISTORY_TEXT_MAX_CHARS = 8_000
 private const val TRUNCATED_CHAT_HISTORY_SUFFIX = "\n...(truncated)..."
 private const val WEAR_AGENT_PULSE_SWARM_MAX_ROWS = 1_000
 private const val WEAR_AGENT_PULSE_SWARM_FETCH_LIMIT = WEAR_AGENT_PULSE_SWARM_MAX_ROWS + 1
@@ -69,6 +70,13 @@ private const val SUBAGENT_ACTIVITY_RETENTION_MS = 60_000L
 private const val SESSION_EDITOR_MAX_BASE64_CHARS = ((OUTBOX_MAX_COMMAND_ATTACHMENT_BYTES + 2) / 3) * 4
 private val MANAGED_MEDIA_PATH_REGEX =
   Regex("^/api/chat/media/outgoing/[^/]+/([0-9a-fA-F-]{36})/full(?:\\?.*)?$")
+
+private fun isLegacyTruncatedChatHistoryText(text: String): Boolean {
+  // Released gateways clipped Android previews at 8,000 UTF-16 units before appending the marker.
+  // A surrogate-safe cut may remove one unit; short quoted markers remain ordinary text.
+  return text.length >= LEGACY_CHAT_HISTORY_TEXT_MAX_CHARS + TRUNCATED_CHAT_HISTORY_SUFFIX.length - 1 &&
+    text.endsWith(TRUNCATED_CHAT_HISTORY_SUFFIX)
+}
 
 internal fun chatOutboxQueueFailureText(): NativeText = ChatController.queueFailureText()
 
@@ -6632,8 +6640,7 @@ class ChatController internal constructor(
       isMessageToolMirror = obj["openclawMessageToolMirror"].asObjectOrNull() != null,
       isTruncated =
         metadata?.get("truncated").asBooleanOrNull() == true ||
-          // Released gateways used this display suffix before publishing the metadata fact.
-          (role == "assistant" && content.any { it.text?.contains(TRUNCATED_CHAT_HISTORY_SUFFIX) == true }),
+          (role == "assistant" && content.any { it.text?.let(::isLegacyTruncatedChatHistoryText) == true }),
     )
   }
 
