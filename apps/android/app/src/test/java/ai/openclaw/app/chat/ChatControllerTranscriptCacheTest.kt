@@ -1,5 +1,6 @@
 package ai.openclaw.app.chat
 
+import ai.openclaw.app.ui.chat.assistantDisclosureMessageId
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -1274,6 +1275,36 @@ class ChatControllerTranscriptCacheTest {
       assertTrue(params.contains("\"agentId\":\"work\""))
       assertTrue(params.contains("\"messageId\":\"message-long\""))
       assertTrue(params.contains("\"maxChars\":500000"))
+    }
+
+  @Test
+  fun truncatedMessageToolMirrorDoesNotOfferFullContentDisclosure() =
+    runTest {
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "mirrored preview\n...(truncated)...",
+                  "openclawMessageToolMirror": {"toolName": "message", "toolCallId": "call-1"},
+                  "__openclaw": {"id": "message-source", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val mirror = controller.messages.value.single()
+      assertTrue(mirror.isTruncated)
+      assertNull(assistantDisclosureMessageId(mirror, supported = true))
     }
 
   @Test
