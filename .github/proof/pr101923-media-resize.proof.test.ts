@@ -177,7 +177,7 @@ describe("PR 101923 exact-head media-understanding resize proof", () => {
 
     const cache = {
       getBuffer: vi.fn(async (params: { maxBytes: number }) => {
-        expect(params.maxBytes).toBe(50 * 1024 * 1024);
+        expect(params.maxBytes).toBe(DEFAULT_PROVIDER_MAX_BYTES);
         return {
           buffer: source,
           fileName: "camera.jpg",
@@ -266,7 +266,7 @@ describe("PR 101923 exact-head media-understanding resize proof", () => {
         sha256: sourceSha256,
       },
       contracts: {
-        sourceReadMaxBytes: 50 * 1024 * 1024,
+        sourceReadMaxBytes: DEFAULT_PROVIDER_MAX_BYTES,
         providerMaxBytes: DEFAULT_PROVIDER_MAX_BYTES,
         rastermillDefaultInputPixels: 25_000_000,
         resizeOwnerInputPixels: 40_000_000,
