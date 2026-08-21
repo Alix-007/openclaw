@@ -112,7 +112,11 @@ function composerRetainsSubmittedAnnotations(
   return Boolean(
     retained?.length &&
     retained.length === host.chatAttachments.length &&
-    retained.every((attachment, index) => attachment.id === host.chatAttachments[index]?.id),
+    retained.every(
+      (attachment, index) =>
+        attachment.id === host.chatAttachments[index]?.id &&
+        attachment.browserAnnotation === host.chatAttachments[index]?.browserAnnotation,
+    ),
   );
 }
 

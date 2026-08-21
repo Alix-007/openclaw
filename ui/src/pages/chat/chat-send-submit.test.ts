@@ -236,7 +236,7 @@ describe("handleSendChat browser annotation context", () => {
     const annotation = createBrowserAnnotationAttachment("remote", "Review the annotated page");
     const document = createStagedAttachment("remote-document");
     const host = makeChatHost({
-      requestHandlers: { "chat.send": { runId: "annotation-command-run", status: "started" } },
+      requestHandlers: { "chat.send": { runId: "annotation-command-run", status: "ok" } },
       chatAttachments: [annotation, document],
       chatMessage: "/status",
     });
@@ -249,9 +249,9 @@ describe("handleSendChat browser annotation context", () => {
       expect.objectContaining({ fileName: "brief.pdf", mimeType: "application/pdf" }),
     ]);
     expect(host.chatAttachments).toEqual([annotation]);
+    expect(host.chatQueue).toEqual([]);
 
     host.request.mockClear();
-    host.chatRunId = null;
     host.chatMessage = "Explain the highlighted issue";
     await handleSendChat(host);
 
@@ -298,8 +298,16 @@ describe("handleSendChat browser annotation context", () => {
       expect.objectContaining({ fileName: "brief.pdf", mimeType: "application/pdf" }),
     ]);
     expect(host.chatMessage).toBe("/status");
-    expect(host.chatAttachments).toEqual([annotation, document]);
-    expect(getChatAttachmentDataUrl(document)).toBe(attachmentDataUrl);
+    expect(host.chatAttachments).toMatchObject([
+      {
+        id: annotation.id,
+        browserAnnotation: annotation.browserAnnotation,
+        dataUrl: annotation.dataUrl,
+      },
+      { id: document.id, fileName: "brief.pdf", dataUrl: attachmentDataUrl },
+    ]);
+    expect(getChatAttachmentDataUrl(host.chatAttachments[0]!)).toBe(annotation.dataUrl);
+    expect(getChatAttachmentDataUrl(host.chatAttachments[1]!)).toBe(attachmentDataUrl);
   });
 
   it("restores the command draft and mixed attachments when an approval fails", async () => {
@@ -320,8 +328,47 @@ describe("handleSendChat browser annotation context", () => {
       expect.objectContaining({ fileName: "brief.pdf", mimeType: "application/pdf" }),
     ]);
     expect(host.chatMessage).toBe(command);
-    expect(host.chatAttachments).toEqual([annotation, document]);
-    expect(getChatAttachmentDataUrl(document)).toBe(attachmentDataUrl);
+    expect(host.chatAttachments).toMatchObject([
+      {
+        id: annotation.id,
+        browserAnnotation: annotation.browserAnnotation,
+        dataUrl: annotation.dataUrl,
+      },
+      { id: document.id, fileName: "brief.pdf", dataUrl: attachmentDataUrl },
+    ]);
+    expect(getChatAttachmentDataUrl(host.chatAttachments[0]!)).toBe(annotation.dataUrl);
+    expect(getChatAttachmentDataUrl(host.chatAttachments[1]!)).toBe(attachmentDataUrl);
+  });
+
+  it("never restores over a replacement annotation that reuses the submitted attachment ID", async () => {
+    const acknowledgment = createDeferred<{ runId: string; status: "error" }>();
+    const annotation = createBrowserAnnotationAttachment("reused-annotation", "Original page");
+    const replacement = {
+      ...annotation,
+      dataUrl: "data:image/png;base64,bmV3",
+      browserAnnotation: {
+        ...annotation.browserAnnotation!,
+        modelContext: "Replacement page",
+      },
+    };
+    const host = makeChatHost({
+      requestHandlers: { "chat.send": () => acknowledgment.promise },
+      chatAttachments: [annotation],
+      chatMessage: "/approve approval-123 allow-once",
+      chatRunId: "active-run",
+      chatStream: "Waiting for approval...",
+    });
+
+    const send = handleSendChat(host);
+    await vi.waitFor(() => expect(host.request).toHaveBeenCalledOnce());
+    expect(host.chatMessage).toBe("");
+    host.chatAttachments = [replacement];
+    acknowledgment.resolve({ runId: "failed-approval-run", status: "error" });
+    await send;
+
+    expect(host.chatMessage).toBe("");
+    expect(host.chatAttachments).toEqual([replacement]);
+    expect(getChatAttachmentDataUrl(host.chatAttachments[0]!)).toBe(replacement.dataUrl);
   });
 
   it("never restores a failed approval over a newer composer attachment", async () => {
