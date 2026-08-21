@@ -16,6 +16,7 @@ import {
   seedStartingPlacement,
 } from "./placement-dispatch-test-fixtures.js";
 import { createWorkerPlacementDispatchService } from "./placement-dispatch.js";
+import { createWorkerPlacementRunnerAvailabilityReader } from "./placement-projector.js";
 import { completeReclaimedWorkspaceTeardown } from "./placement-teardown.js";
 import { WorkerTunnelOwnerDisconnectedError } from "./tunnel-contract.js";
 import type { WorkerTunnelHandle } from "./tunnel.js";
@@ -57,6 +58,9 @@ export function createHarness(
     publishAcceptedWorkspace?: Parameters<
       typeof createWorkerPlacementDispatchService
     >[0]["publishAcceptedWorkspace"];
+    beforeMoveBegin?: (abandoned: { runId: string } | undefined) => Promise<void>;
+    afterMoveBegin?: () => void;
+    deviceRunnerAvailable?: boolean;
   } = {},
 ) {
   const reconciledManifestRef = MANIFEST_REF.replaceAll("b", "c");
@@ -101,10 +105,21 @@ export function createHarness(
       }
       return begun;
     },
+    preparePlacementMove: async (params, prepareNew) => {
+      const begun = await placementStore.preparePlacementMove(params, prepareNew);
+      if (!begun.joined) {
+        log.push("placement:draining");
+      }
+      return begun;
+    },
     cancelPlacementMove: (params) => placementStore.cancelPlacementMove(params),
     completePlacementMoveSourceToLocal: (params) => {
       log.push("placement:local");
       return placementStore.completePlacementMoveSourceToLocal(params);
+    },
+    completeAbandonedPlacementMoveSourceToLocal: (params) => {
+      log.push("placement:local");
+      return placementStore.completeAbandonedPlacementMoveSourceToLocal(params);
     },
     completePlacementMoveToWorker: (params) => placementStore.completePlacementMoveToWorker(params),
     getPlacementMove: (sessionId) => placementStore.getPlacementMove(sessionId),
@@ -350,6 +365,10 @@ export function createHarness(
   const service = createWorkerPlacementDispatchService({
     placements,
     environments,
+    runnerAvailability: createWorkerPlacementRunnerAvailabilityReader({
+      environments,
+      hasCurrentDeviceRunner: () => options.deviceRunnerAvailable === true,
+    }),
     workspaceOperations: options.workspaceOperations ?? createWorkerWorkspaceOperationCoordinator(),
     runLocalBarrier: async ({ authorize, startDispatch }) => {
       log.push("barrier");
@@ -377,7 +396,13 @@ export function createHarness(
     },
     runMoveBarrier: async ({ authorize, begin }) => {
       authorize?.();
-      const begun = begin();
+      const begun = await begin(async (runId) => {
+        if (options.beforeMoveBegin) {
+          await options.beforeMoveBegin({ runId });
+          authorize?.();
+        }
+      });
+      options.afterMoveBegin?.();
       if (options.failMoveAfterBegin) {
         throw new Error("move barrier interrupted");
       }
@@ -389,8 +414,20 @@ export function createHarness(
         : {
             profileId: target.kind === "profile" ? target.profileId : `device:${target.deviceId}`,
             executionMode: REQUEST.executionMode,
-            ...(target.kind === "device" ? { deviceId: target.deviceId } : {}),
+            ...(target.kind === "device"
+              ? {
+                  deviceId: target.deviceId,
+                  devicePlacement: { requiredNodeCommands: [], consumesWorkerSlot: true },
+                }
+              : {}),
           },
+    resolveDevicePlacementRequirement: async ({ executionMode }) =>
+      executionMode === "remote-exec"
+        ? {
+            requiredNodeCommands: ["codex.exec-server.stdio.v1"],
+            consumesWorkerSlot: false,
+          }
+        : { requiredNodeCommands: [], consumesWorkerSlot: true },
     runReclaimBarrier: async ({ authorize, begin, reclaim }) => {
       authorize?.();
       return await reclaim(options.workspacePath ?? "/gateway/workspace", begin());
@@ -417,7 +454,8 @@ export function createHarness(
     reconciledManifestRef,
     placements: {
       current: () => placementStore.get(REQUEST.sessionId),
-      seedProvisioning: () => seedProvisioningPlacement(placementStore, environmentId),
+      seedProvisioning: (executionMode?: "worker-turn" | "remote-exec") =>
+        seedProvisioningPlacement(placementStore, environmentId, executionMode),
       seedStarting: () => seedStartingPlacement(placementStore, environmentId),
       seedActive: (ownerEpoch: number, executionMode?: "worker-turn" | "remote-exec") =>
         seedActivePlacement(placementStore, { environmentId, ownerEpoch, executionMode }),

@@ -82,6 +82,8 @@ const OUTPUT_EVENT_TAIL = 20_000;
 const DEFAULT_NODE_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
 
 type NodeHostPrivateInvokeRuntime = NodeHostInvokeRuntime & {
+  canReportAbortedFailure?: (error: unknown) => boolean;
+  flushPluginCommandIo?: () => Promise<void>;
   workerBundleInstaller?: NodeWorkerBundleInstallerControl;
   workerSupervisor?: NodeWorkerSupervisorControl;
   workerWorkspace?: NodeWorkerWorkspaceRuntime;
@@ -581,7 +583,7 @@ export async function handleInvoke(
 ) {
   const invocationClient = createNodeHostInvocationClient(client, runtime.signal);
   try {
-    await dispatchInvoke(frame, invocationClient, skillBins, mcpManager, runtime);
+    await dispatchInvoke(frame, invocationClient, client, skillBins, mcpManager, runtime);
   } catch (err) {
     // Gateway events launch this handler without awaiting it. Consume unexpected
     // failures here so one bad request cannot terminate the node-host process.
@@ -603,6 +605,7 @@ export async function handleInvoke(
 async function dispatchInvoke(
   frame: NodeInvokeRequestPayload,
   client: NodeHostClient,
+  abortedFailureClient: NodeHostClient,
   skillBins: SkillBinsProvider,
   mcpManager?: NodeHostMcpManager,
   runtime: NodeHostPrivateInvokeRuntime = {},
@@ -817,21 +820,48 @@ async function dispatchInvoke(
   }
   try {
     const { pluginCommandIo: io, pluginCommandContext: context } = runtime;
+    const acquireManagedWorkspace = context?.acquireManagedWorkspace;
+    let pluginInvocationActive = true;
     const invokeContext =
-      context && (frame.sessionKey || runtime.signal)
+      context && (frame.sessionKey || runtime.signal || acquireManagedWorkspace)
         ? {
             ...context,
             ...(frame.sessionKey ? { sessionKey: frame.sessionKey } : {}),
             ...(runtime.signal ? { signal: runtime.signal } : {}),
+            ...(acquireManagedWorkspace
+              ? {
+                  acquireManagedWorkspace: (
+                    request: Parameters<typeof acquireManagedWorkspace>[0],
+                  ) => {
+                    if (
+                      !pluginInvocationActive ||
+                      runtime.signal?.aborted ||
+                      !frame.sessionKey ||
+                      request.sessionKey !== frame.sessionKey
+                    ) {
+                      throw new Error("node placement workspace invocation authority is closed");
+                    }
+                    return acquireManagedWorkspace(request);
+                  },
+                }
+              : {}),
           }
         : context;
-    const pluginResult = await invokePlugin(command, frame.paramsJSON, io, invokeContext);
+    let pluginResult: string | null;
+    try {
+      pluginResult = await invokePlugin(command, frame.paramsJSON, io, invokeContext);
+    } finally {
+      pluginInvocationActive = false;
+    }
     if (pluginResult !== null) {
+      await runtime.flushPluginCommandIo?.();
       await sendRawPayloadResult(client, frame, pluginResult);
       return;
     }
   } catch (err) {
-    await sendInvalidRequestResult(client, frame, err);
+    // Only the exact current owner's exact framed failure may bypass its aborted-client fence.
+    const failureClient = runtime.canReportAbortedFailure?.(err) ? abortedFailureClient : client;
+    await sendInvalidRequestResult(failureClient, frame, err);
     return;
   }
 
