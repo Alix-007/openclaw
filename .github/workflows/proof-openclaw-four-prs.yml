@@ -163,11 +163,21 @@ jobs:
               marker='[bootstrap continuation SQLite proof]'
               ;;
             bootstrap-review)
+              set +e
+              node scripts/run-vitest.mjs \
+                src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
+                -t 'leaves bootstrap settlement to the outer fallback owner' \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              dispatch_status=${PIPESTATUS[0]}
               node scripts/run-vitest.mjs \
                 src/agents/cli-runner.context-engine.test.ts \
-                src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
-                -t 'leaves bootstrap settlement to the outer fallback owner|does not record bootstrap completion when afterTurn fails|does not record bootstrap completion when foreground maintenance fails|does not record bootstrap completion when foreground maintenance rewrites the transcript' \
-                --reporter=verbose 2>&1 | tee "$log_file"
+                -t 'does not record bootstrap completion when afterTurn fails|does not record bootstrap completion when foreground maintenance fails|does not record bootstrap completion when foreground maintenance rewrites the transcript' \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              context_status=${PIPESTATUS[0]}
+              set -e
+              if ((dispatch_status != 0 || context_status != 0)); then
+                exit 1
+              fi
               grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
               grep -F 'does not record bootstrap completion when afterTurn fails' "$log_file"
               grep -F 'does not record bootstrap completion when foreground maintenance fails' "$log_file"
