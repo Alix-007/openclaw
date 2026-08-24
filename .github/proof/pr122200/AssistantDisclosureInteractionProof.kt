@@ -90,8 +90,8 @@ class AssistantDisclosureInteractionProof {
       }
 
       instrumentation.waitForIdleSync()
-      waitForText(device, "View all")
       capture(device, artifactDir, "00-observed-initial")
+      waitForText(device, "View all")
       capture(device, artifactDir, "01-preview")
 
       clickText(device, "View all")
