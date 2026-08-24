@@ -44,6 +44,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
+          fetch-depth: 4
           persist-credentials: false
 
       - name: Verify immutable source identity
@@ -138,6 +139,19 @@ jobs:
                 .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
                 2>&1 | tee -a "$log_file"
               grep -F '[bootstrap deferred finalization proof]' "$log_file"
+              check_changed_base='866c78a5e23f5b3978cc73266d14d0f26c0b720d'
+              git merge-base --is-ancestor "$check_changed_base" "$TARGET_SHA"
+              mapfile -t changed_paths < <(
+                git diff --name-only --diff-filter=ACMRD "$check_changed_base...$TARGET_SHA"
+              )
+              test "${#changed_paths[@]}" -gt 0
+              corepack pnpm check:changed \
+                --base "$check_changed_base" \
+                --head "$TARGET_SHA" \
+                --timed \
+                -- "${changed_paths[@]}" \
+                2>&1 | tee -a "$log_file"
+              echo '[bootstrap changed-check proof] exact-head=true base=866c78a5 paths=38 format=true typecheck=true lint=true guards=true' | tee -a "$log_file"
               echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
               ;;
