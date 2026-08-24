@@ -171,9 +171,9 @@ suite.define(() => {
 
         await page.locator(".cron-advanced > summary").click();
         const deliveryAccount = page.locator("#cron-delivery-account-id");
-        await expect(deliveryAccount).toHaveValue("");
+        await expect.poll(() => deliveryAccount.inputValue()).toBe("");
         await recipient.fill("Builds (-1001) [thread 22] [account work]");
-        await expect(deliveryAccount).toHaveValue("work");
+        await expect.poll(() => deliveryAccount.inputValue()).toBe("work");
         await page.locator("#cron-name").fill("Topic delivery");
         await page.locator("#cron-payload-text").fill("Send the topic digest");
         await page.locator('[data-test-id="cron-submit"]').click();

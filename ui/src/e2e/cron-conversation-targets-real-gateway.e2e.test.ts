@@ -235,7 +235,7 @@ describeRealGateway("Control UI Cron conversation targets real Gateway E2E", () 
         const recipient = page.locator("#cron-delivery-to");
         await recipient.fill(selectedDisplay);
         await expect.poll(() => recipient.inputValue()).toBe("-1001");
-        await expect(deliveryAccount).toHaveValue("work");
+        await expect.poll(() => deliveryAccount.inputValue()).toBe("work");
         await capture(page, "01-account-filtered-topic-selected.png");
         await page.locator('[data-test-id="cron-submit"]').click();
         console.info("[real-cron-conversation-proof] ui-save-submitted");
