@@ -8,6 +8,7 @@ import {
   listMessageReceiptPlatformIds,
   type MessageReceipt,
 } from "openclaw/plugin-sdk/channel-outbound";
+import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
 import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
 import { getMatrixRuntime } from "../../runtime.js";
@@ -160,11 +161,7 @@ export async function deliverMatrixReplies(params: {
           ? undefined
           : replyToIdRaw;
       const rawText = visibleText ?? "";
-      const mediaList = reply.mediaUrls?.length
-        ? reply.mediaUrls
-        : reply.mediaUrl
-          ? [reply.mediaUrl]
-          : [];
+      const mediaList = resolveSendableOutboundReplyParts(reply).mediaUrls;
 
       const shouldIncludeReply = (id?: string) =>
         Boolean(id) && (params.threadId || params.replyToMode === "all" || !hasRepliedRef.value);

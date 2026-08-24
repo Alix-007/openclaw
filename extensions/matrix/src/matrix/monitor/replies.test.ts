@@ -339,6 +339,27 @@ describe("deliverMatrixReplies", () => {
     expect(sendOptions(2).replyToId).toBe("reply-text");
   });
 
+  it("uses singular media when plural media entries are blank", async () => {
+    await deliverMatrixReplies({
+      cfg,
+      replies: [
+        {
+          text: "caption",
+          mediaUrl: "https://example.com/fallback.jpg",
+          mediaUrls: ["   "],
+        },
+      ],
+      roomId: "room:2",
+      client: {} as MatrixClient,
+      runtime: runtimeEnv,
+      textLimit: 4000,
+      replyToMode: "off",
+    });
+
+    expect(sendMessageMatrixMock).toHaveBeenCalledOnce();
+    expect(sendOptions(0).mediaUrl).toBe("https://example.com/fallback.jpg");
+  });
+
   it("keeps replyToId when threadId is set so Matrix can send fallback metadata", async () => {
     chunkMatrixTextMock.mockImplementation((text: string) => ({
       trimmedText: text.trim(),
