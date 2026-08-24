@@ -1,0 +1,324 @@
+name: Alix PR 116511 sharded exact-head proof
+
+run-name: PR 116511 sharded proof at ${{ inputs.target_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        description: Immutable full SHA from the Alix fork
+        required: true
+        type: string
+
+permissions: {}
+
+env:
+  BASE_SHA: 866c78a5e23f5b3978cc73266d14d0f26c0b720d
+  TARGET_SHA: ${{ inputs.target_sha }}
+
+jobs:
+  behavior:
+    name: Exact bootstrap behavior
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out immutable Alix source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out configured proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Run exact bootstrap behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          git merge-base --is-ancestor "$BASE_SHA" "$TARGET_SHA"
+          log_file='proof-behavior.log'
+          node scripts/run-vitest.mjs \
+            src/agents/bootstrap-routing.test.ts \
+            src/agents/embedded-agent-runner/run/attempt.spawn-workspace.context-injection.test.ts \
+            src/agents/embedded-agent-runner/run/attempt.spawn-workspace.bootstrap-marker.test.ts \
+            --reporter=verbose 2>&1 | tee "$log_file"
+          node scripts/run-vitest.mjs \
+            src/agents/agent-command.live-model-switch.test.ts \
+            src/agents/bootstrap-files.test.ts \
+            src/agents/cli-runner/prepare.test.ts \
+            src/agents/cli-runner.reliability.test.ts \
+            -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|persists a CLI bootstrap completion marker after its runner-owned transcript|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|records CLI bootstrap completion after the post-run transcript commit|keeps CLI bootstrap completion pending until post-run compaction settles|does not record CLI bootstrap completion after post-run compaction|does not record CLI bootstrap completion when deferred maintenance settles after compaction|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
+            --reporter=verbose 2>&1 | tee -a "$log_file"
+          grep -F 'does not persist a CLI bootstrap marker after post-output cancellation with terminal partial output' "$log_file"
+          grep -F 'records CLI bootstrap completion after the post-run transcript commit' "$log_file"
+          grep -F 'keeps CLI bootstrap completion pending until post-run compaction settles' "$log_file"
+          grep -F 'does not record CLI bootstrap completion after post-run compaction' "$log_file"
+          grep -F 'does not record CLI bootstrap completion when deferred maintenance settles after compaction' "$log_file"
+          grep -F 'does not record CLI bootstrap completion when post-run transcript persistence fails' "$log_file"
+          grep -F 'skips post-run persistence after the session is deleted' "$log_file"
+          node --import tsx \
+            .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
+            2>&1 | tee -a "$log_file"
+          grep -F '[bootstrap deferred finalization proof]' "$log_file"
+          grep -F '[bootstrap continuation SQLite proof]' "$log_file"
+          cat > manifest-behavior.txt <<EOF
+          target_sha=$TARGET_SHA
+          base_sha=$BASE_SHA
+          shard=behavior
+          verdict=green
+          exact_head=true
+          EOF
+          sha256sum manifest-behavior.txt proof-behavior.log > SHA256SUMS
+
+      - name: Upload behavior proof
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr116511-behavior-${{ inputs.target_sha }}
+          path: |
+            SHA256SUMS
+            manifest-behavior.txt
+            proof-behavior.log
+          if-no-files-found: error
+          retention-days: 7
+
+  static:
+    name: Exact static shard (${{ matrix.shard }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - production
+          - tests
+          - tooling
+    steps:
+      - name: Check out immutable Alix source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+
+      - name: Build exact disjoint shard manifest
+        env:
+          SHARD: ${{ matrix.shard }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          git merge-base --is-ancestor "$BASE_SHA" "$TARGET_SHA"
+          mapfile -t all_paths < <(
+            git diff --name-only --diff-filter=ACMRD "$BASE_SHA...$TARGET_SHA"
+          )
+          test "${#all_paths[@]}" -eq 38
+          : > "paths-$SHARD.txt"
+          production_count=0
+          tests_count=0
+          tooling_count=0
+          for path in "${all_paths[@]}"; do
+            if [[ "$path" == *.test.ts ]]; then
+              ((tests_count += 1))
+              [[ "$SHARD" == tests ]] && printf '%s\n' "$path" >> "paths-$SHARD.txt"
+            elif [[ "$path" == config/* ]]; then
+              ((tooling_count += 1))
+              [[ "$SHARD" == tooling ]] && printf '%s\n' "$path" >> "paths-$SHARD.txt"
+            else
+              ((production_count += 1))
+              [[ "$SHARD" == production ]] && printf '%s\n' "$path" >> "paths-$SHARD.txt"
+            fi
+          done
+          test "$production_count" -eq 20
+          test "$tests_count" -eq 17
+          test "$tooling_count" -eq 1
+          test "$((production_count + tests_count + tooling_count))" -eq 38
+          path_count=$(wc -l < "paths-$SHARD.txt")
+          case "$SHARD" in
+            production) test "$path_count" -eq 20 ;;
+            tests) test "$path_count" -eq 17 ;;
+            tooling) test "$path_count" -eq 1 ;;
+            *) exit 1 ;;
+          esac
+          cat > "manifest-$SHARD.txt" <<EOF
+          target_sha=$TARGET_SHA
+          base_sha=$BASE_SHA
+          shard=$SHARD
+          path_count=$path_count
+          partition_total=38
+          partition_disjoint_by=*.test.ts|config/*|remaining
+          EOF
+
+      - name: Run exact shard gate
+        env:
+          SHARD: ${{ matrix.shard }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t paths < "paths-$SHARD.txt"
+          test "${#paths[@]}" -gt 0
+          log_file="proof-$SHARD.log"
+          case "$SHARD" in
+            production)
+              OPENCLAW_CHECK_CHANGED_SKIP_DEADCODE=1 \
+                corepack pnpm check:changed \
+                  --base "$BASE_SHA" \
+                  --head "$TARGET_SHA" \
+                  --timed \
+                  -- "${paths[@]}" \
+                  2>&1 | tee "$log_file"
+              node --import tsx scripts/check-deadcode-exports.mts \
+                2>&1 | tee -a "$log_file"
+              ;;
+            tests)
+              corepack pnpm tsgo:core:test 2>&1 | tee "$log_file"
+              corepack pnpm exec oxfmt \
+                --check \
+                --no-error-on-unmatched-pattern \
+                -- "${paths[@]}" \
+                2>&1 | tee -a "$log_file"
+              node --import tsx scripts/run-oxlint.mts \
+                --tsconfig config/tsconfig/oxlint.core.json \
+                "${paths[@]}" \
+                2>&1 | tee -a "$log_file"
+              ;;
+            tooling)
+              corepack pnpm check:changed \
+                --base "$BASE_SHA" \
+                --head "$TARGET_SHA" \
+                --timed \
+                -- "${paths[@]}" \
+                2>&1 | tee "$log_file"
+              ;;
+          esac
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          git diff --quiet
+          {
+            echo 'verdict=green'
+            echo 'exact_head=true'
+          } >> "manifest-$SHARD.txt"
+          sha256sum \
+            "manifest-$SHARD.txt" \
+            "paths-$SHARD.txt" \
+            "$log_file" \
+            > SHA256SUMS
+
+      - name: Upload static shard proof
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr116511-${{ matrix.shard }}-${{ inputs.target_sha }}
+          path: |
+            SHA256SUMS
+            manifest-${{ matrix.shard }}.txt
+            paths-${{ matrix.shard }}.txt
+            proof-${{ matrix.shard }}.log
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    name: Verify exact aggregate verdict
+    needs:
+      - behavior
+      - static
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out immutable Alix source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Download exact shard artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: pr116511-*-${{ inputs.target_sha }}
+          path: proof-artifacts
+
+      - name: Verify hashes and disjoint 38-path union
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          mapfile -t sums_files < <(find proof-artifacts -name SHA256SUMS -print | sort)
+          test "${#sums_files[@]}" -eq 4
+          for sums_file in "${sums_files[@]}"; do
+            (
+              cd "$(dirname "$sums_file")"
+              sha256sum -c SHA256SUMS
+            )
+          done
+          mapfile -t path_files < <(find proof-artifacts -name 'paths-*.txt' -print | sort)
+          test "${#path_files[@]}" -eq 3
+          mapfile -t expected_paths < <(
+            git diff --name-only --diff-filter=ACMRD "$BASE_SHA...$TARGET_SHA" | sort
+          )
+          mapfile -t actual_paths < <(cat "${path_files[@]}" | sort)
+          mapfile -t unique_paths < <(printf '%s\n' "${actual_paths[@]}" | sort -u)
+          test "${#expected_paths[@]}" -eq 38
+          test "${#actual_paths[@]}" -eq 38
+          test "${#unique_paths[@]}" -eq 38
+          diff \
+            <(printf '%s\n' "${expected_paths[@]}") \
+            <(printf '%s\n' "${actual_paths[@]}")
+          cat > aggregate-verdict.txt <<EOF
+          target_sha=$TARGET_SHA
+          base_sha=$BASE_SHA
+          verdict=green
+          exact_head=true
+          shard_hashes=verified
+          partition_count=3
+          path_count=38
+          path_union=exact
+          path_overlap=none
+          EOF
+          printf '%s\n' "${actual_paths[@]}" > aggregate-paths.txt
+          sha256sum aggregate-verdict.txt aggregate-paths.txt > SHA256SUMS
+
+      - name: Upload aggregate verdict
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr116511-aggregate-${{ inputs.target_sha }}
+          path: |
+            SHA256SUMS
+            aggregate-paths.txt
+            aggregate-verdict.txt
+          if-no-files-found: error
+          retention-days: 7
