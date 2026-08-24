@@ -27,7 +27,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 16
           persist-credentials: false
 
       - name: Check out configured proof harness
@@ -133,7 +133,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 16
           persist-credentials: false
 
       - name: Set up Node
@@ -293,7 +293,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 16
           persist-credentials: false
 
       - name: Set up Node
@@ -362,7 +362,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 16
           persist-credentials: false
 
       - name: Download exact shard artifacts
