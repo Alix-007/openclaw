@@ -38,8 +38,7 @@ data class ChatMessage(
   val isSyntheticTranscriptRow: Boolean = false,
 )
 
-internal fun ChatMessage.fullAssistantMessageEntryId(): String? =
-  entryId?.takeIf { role == "assistant" && isTruncated && !isSyntheticTranscriptRow }
+internal fun ChatMessage.fullAssistantMessageEntryId(): String? = entryId?.takeIf { role == "assistant" && isTruncated && !isSyntheticTranscriptRow }
 
 sealed interface ChatFullMessageLoadResult {
   data class Loaded(
