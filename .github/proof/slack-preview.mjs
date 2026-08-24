@@ -552,9 +552,6 @@ try {
   const preAnswerPostTs = preAnswerPosts.map((event) => event.responseTs).filter(Boolean);
   const uniquePreAnswerPostTs = [...new Set(preAnswerPostTs)];
   const previewMessageTs = uniquePreAnswerPostTs[0];
-  const preAnswerUpdatesReusePreview =
-    preAnswerUpdates.length > 0 &&
-    preAnswerUpdates.every((event) => event.body?.ts === previewMessageTs);
   const roundStartsReusePreview = providerRounds
     .slice(1)
     .every(
@@ -563,6 +560,10 @@ try {
         round.postResponseTsAtStart.length === 1 &&
         round.postResponseTsAtStart[0] === previewMessageTs,
     );
+  const finalDeliveryReusesPreview =
+    isSlackMethod(finalDelivery, "chat.update") &&
+    finalDelivery?.body?.ts === previewMessageTs &&
+    finalDelivery?.responseTs === previewMessageTs;
   const inboundGatewayAck = slackIngressEvents.find((event) => event.eventId === inboundEventId);
   const pass =
     inboundAdminStatus === 200 &&
@@ -572,9 +573,8 @@ try {
     postCountsAtRoundStart[2] === 1 &&
     preAnswerPosts.length === 1 &&
     uniquePreAnswerPostTs.length === 1 &&
-    preAnswerUpdatesReusePreview &&
     roundStartsReusePreview &&
-    Boolean(finalDelivery) &&
+    finalDeliveryReusesPreview &&
     finalDelivery?.accepted === true &&
     postEvents.every((event) => event.accepted === true && event.owner === "crabline-forward") &&
     updateEvents.every(
@@ -600,9 +600,10 @@ try {
       preAnswerPreviewPostCount: preAnswerPosts.length,
       preAnswerPreviewIdentityCount: uniquePreAnswerPostTs.length,
       preAnswerPreviewTs: previewMessageTs,
-      preAnswerUpdatesReusePreview,
+      preAnswerUpdateCount: preAnswerUpdates.length,
       roundStartsReusePreview,
       finalMarkerDelivered: Boolean(finalDelivery),
+      finalDeliveryReusesPreview,
       finalDeliveryMethod: finalDelivery
         ? String(finalDelivery.path).replace(/^\/api\//u, "")
         : null,
@@ -636,7 +637,7 @@ try {
   verdict.cleanup = "gateway/provider/slack/relay/proxy/temp removed";
   await fs.writeFile(verdictPath, `${JSON.stringify(verdict, null, 2)}\n`, "utf8");
   process.stdout.write(
-    `[slack preview reasoning-boundary proof] head=${exactHead} rounds=${roundSignature} pre-answer-posts=1 pre-answer-identities=1 final-delivered=true cleanup=true\n`,
+    `[slack preview reasoning-boundary proof] head=${exactHead} rounds=${roundSignature} pre-answer-posts=1 pre-answer-identities=1 final-reuses-preview=true cleanup=true\n`,
   );
   process.stdout.write(`${JSON.stringify(verdict, null, 2)}\n`);
 } catch (error) {

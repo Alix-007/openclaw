@@ -316,9 +316,9 @@ jobs:
                     observed.inboundGatewayAck?.owner !== "crabline-signed-event" ||
                     observed.preAnswerPreviewPostCount !== 1 ||
                     observed.preAnswerPreviewIdentityCount !== 1 ||
-                    observed.preAnswerUpdatesReusePreview !== true ||
                     observed.roundStartsReusePreview !== true ||
                     observed.finalMarkerDelivered !== true ||
+                    observed.finalDeliveryReusesPreview !== true ||
                     observed.postMessagesForwardedToCrabline !== true ||
                     observed.updatesHandledByProofLoopback !== true ||
                     observed.providerRounds?.map((round) => round.round).join(",") !== "0,1,2" ||
