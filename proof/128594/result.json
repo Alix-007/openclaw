@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "proof": "skill_workshop real tool call",
+  "productHead": "cd14df37d3f00864e54c3fe64042535a6747d8bd",
+  "node": "v24.15.0",
+  "boundary": "createOpenClawTools -> validateToolArguments -> skill_workshop.execute",
+  "input": {
+    "action": "create",
+    "descriptionCharacters": 161,
+    "descriptionBytes": 161
+  },
+  "outcome": {
+    "kind": "error",
+    "message": "Skill proposal description is too large (161 bytes, max 160)."
+  },
+  "state": {
+    "proposalStateWritten": false
+  },
+  "assertions": {
+    "exactProductHead": true,
+    "registryToolExposed": true,
+    "schemaValidationAccepted": true,
+    "serviceReturnedByteAwareError": true,
+    "rejectedBeforeProposalStateWrite": true
+  }
+}
