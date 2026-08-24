@@ -34,11 +34,12 @@ data class ChatMessage(
   val senderLabel: String? = null,
   /** True when chat.history projected this row as a bounded preview. */
   val isTruncated: Boolean = false,
-  /** True for a synthetic visible reply mirrored from a message tool call. */
-  val isMessageToolMirror: Boolean = false,
+  /** True for a synthetic display row without its own canonical transcript entry. */
+  val isSyntheticTranscriptRow: Boolean = false,
 )
 
-internal fun ChatMessage.fullAssistantMessageEntryId(): String? = entryId?.takeIf { role == "assistant" && isTruncated && !isMessageToolMirror }
+internal fun ChatMessage.fullAssistantMessageEntryId(): String? =
+  entryId?.takeIf { role == "assistant" && isTruncated && !isSyntheticTranscriptRow }
 
 sealed interface ChatFullMessageLoadResult {
   data class Loaded(

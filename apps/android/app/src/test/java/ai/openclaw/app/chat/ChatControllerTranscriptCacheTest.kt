@@ -1312,6 +1312,44 @@ class ChatControllerTranscriptCacheTest {
     }
 
   @Test
+  fun truncatedStreamFallbackDoesNotOfferFullContentDisclosure() =
+    runTest {
+      val requests = mutableListOf<String>()
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          requests += method
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "commentary preview\n...(truncated)...",
+                  "openclawStreamFallback": {
+                    "replacementText": "commentary preview\n...(truncated)...",
+                    "source": "segment",
+                    "itemId": "msg-commentary"
+                  },
+                  "__openclaw": {"id": "message-source", "truncated": true}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val fallback = controller.messages.value.single()
+      assertTrue(fallback.isTruncated)
+      assertNull(assistantDisclosureMessageId(fallback, supported = true))
+      assertNull(controller.loadFullAssistantMessage("message-source"))
+      assertFalse(requests.contains("chat.message.get"))
+    }
+
+  @Test
   fun stillTruncatedFullMessageRemainsRetryable() =
     runTest {
       val controller =
@@ -1418,6 +1456,70 @@ class ChatControllerTranscriptCacheTest {
       )
       assertNull(controller.loadFullAssistantMessage("message-complete"))
       assertFalse(requests.any { it.first == "chat.message.get" })
+    }
+
+  @Test
+  fun surrogateSafeLegacyPreviewLengthOffersFullContentDisclosure() =
+    runTest {
+      val legacyPreview = "p".repeat(7_999) + "\\n...(truncated)..."
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "$legacyPreview",
+                  "__openclaw": {"id": "message-long"}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val preview = controller.messages.value.single()
+      assertTrue(preview.isTruncated)
+      assertEquals("message-long", assistantDisclosureMessageId(preview, supported = true))
+    }
+
+  @Test
+  fun overlongAssistantMessageEndingInLegacyMarkerDoesNotRequestFullContent() =
+    runTest {
+      val requests = mutableListOf<String>()
+      val overlongMessage = "p".repeat(8_001) + "\\n...(truncated)..."
+      val controller =
+        createCachedController(FakeTranscriptCache()) { method, _ ->
+          requests += method
+          when (method) {
+            "chat.history" ->
+              """
+              {
+                "sessionId": "session-global",
+                "messages": [{
+                  "role": "assistant",
+                  "content": "$overlongMessage",
+                  "__openclaw": {"id": "message-complete"}
+                }]
+              }
+              """.trimIndent()
+            else -> "{}"
+          }
+        }
+
+      controller.load("global", ownerAgentId = "work")
+      advanceUntilIdle()
+
+      val message = controller.messages.value.single()
+      assertFalse(message.isTruncated)
+      assertNull(assistantDisclosureMessageId(message, supported = true))
+      assertNull(controller.loadFullAssistantMessage("message-complete"))
+      assertFalse(requests.contains("chat.message.get"))
     }
 
   @Test

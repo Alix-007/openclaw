@@ -75,7 +75,8 @@ private val MANAGED_MEDIA_PATH_REGEX =
 private fun isLegacyTruncatedChatHistoryText(text: String): Boolean {
   // Released gateways clipped Android previews at 8,000 UTF-16 units before appending the marker.
   // A surrogate-safe cut may remove one unit; short quoted markers remain ordinary text.
-  return text.length >= LEGACY_CHAT_HISTORY_TEXT_MAX_CHARS + TRUNCATED_CHAT_HISTORY_SUFFIX.length - 1 &&
+  val releasedPreviewLength = LEGACY_CHAT_HISTORY_TEXT_MAX_CHARS + TRUNCATED_CHAT_HISTORY_SUFFIX.length
+  return text.length in (releasedPreviewLength - 1)..releasedPreviewLength &&
     text.endsWith(TRUNCATED_CHAT_HISTORY_SUFFIX)
 }
 
@@ -6647,7 +6648,9 @@ class ChatController internal constructor(
       provenance = parseChatMessageProvenance(obj["provenance"]),
       transcriptMarker = parseChatTranscriptMarker(metadata),
       senderLabel = obj["senderLabel"].asJsonStringOrNull()?.trim()?.takeIf { role == "user" && it.isNotEmpty() },
-      isMessageToolMirror = obj["openclawMessageToolMirror"].asObjectOrNull() != null,
+      isSyntheticTranscriptRow =
+        obj["openclawMessageToolMirror"].asObjectOrNull() != null ||
+          obj["openclawStreamFallback"].asObjectOrNull() != null,
       isTruncated =
         metadata?.get("truncated").asBooleanOrNull() == true ||
           (role == "assistant" && content.any { it.text?.let(::isLegacyTruncatedChatHistoryText) == true }),
