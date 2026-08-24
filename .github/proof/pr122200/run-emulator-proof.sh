@@ -35,13 +35,18 @@ for state in 01-preview 02-full 03-closed 04-retry 05-recovered 06-not-found 07-
   test -s "$artifact_dir/interaction/$state.xml"
 done
 grep -q 'View all' "$artifact_dir/interaction/01-preview.xml"
+grep -q 'content-desc="proof-state-preview"' "$artifact_dir/interaction/01-preview.xml"
 grep -q 'Close' "$artifact_dir/interaction/02-full.xml"
+grep -q 'content-desc="proof-state-full"' "$artifact_dir/interaction/02-full.xml"
 grep -q 'View all' "$artifact_dir/interaction/03-closed.xml"
+grep -q 'content-desc="proof-state-closed"' "$artifact_dir/interaction/03-closed.xml"
 grep -q 'Retry' "$artifact_dir/interaction/04-retry.xml"
+grep -q 'content-desc="proof-state-retry"' "$artifact_dir/interaction/04-retry.xml"
 grep -q 'Close' "$artifact_dir/interaction/05-recovered.xml"
-grep -q 'Full content is no longer available for this transcript entry.' "$artifact_dir/interaction/06-not-found.xml"
-grep -q 'Full content is unavailable because the stored transcript entry is too large to return safely.' "$artifact_dir/interaction/07-oversized.xml"
-grep -q 'Full content is unavailable because this transcript entry has no visible chat projection.' "$artifact_dir/interaction/08-not-visible.xml"
+grep -q 'content-desc="proof-state-full"' "$artifact_dir/interaction/05-recovered.xml"
+grep -q 'content-desc="proof-state-not-found"' "$artifact_dir/interaction/06-not-found.xml"
+grep -q 'content-desc="proof-state-oversized"' "$artifact_dir/interaction/07-oversized.xml"
+grep -q 'content-desc="proof-state-not-visible"' "$artifact_dir/interaction/08-not-visible.xml"
 for state in 06-not-found 07-oversized 08-not-visible; do
   ! grep -Eq 'text="(Retry|View all|Close)"' "$artifact_dir/interaction/$state.xml"
 done

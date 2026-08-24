@@ -14,6 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -48,7 +50,14 @@ class AssistantDisclosureInteractionProof {
       scenario.onActivity { activity ->
         activity.setContent {
           OpenClawTheme {
-            Box(modifier = Modifier.fillMaxSize().padding(18.dp)) {
+            val proofState = proofStateDescription(disclosureState)
+            Box(
+              modifier =
+                Modifier
+                  .fillMaxSize()
+                  .padding(18.dp)
+                  .semantics { contentDescription = proofState },
+            ) {
               ChatBubble(
                 messageId = proofMessageId,
                 entryId = proofMessageId,
@@ -90,17 +99,17 @@ class AssistantDisclosureInteractionProof {
 
       instrumentation.waitForIdleSync()
       waitForText(device, "View all")
-      waitForTextContaining(device, previewText)
+      waitForDescription(device, "proof-state-preview")
       capture(device, artifactDir, "01-preview")
 
       clickText(device, "View all")
       waitForText(device, "Close")
-      waitForTextContaining(device, fullMarker)
+      waitForDescription(device, "proof-state-full")
       capture(device, artifactDir, "02-full")
 
       clickText(device, "Close")
       waitForText(device, "View all")
-      waitForTextContaining(device, previewText)
+      waitForDescription(device, "proof-state-closed")
       capture(device, artifactDir, "03-closed")
 
       scenario.onActivity {
@@ -110,11 +119,12 @@ class AssistantDisclosureInteractionProof {
       instrumentation.waitForIdleSync()
       clickText(device, "View all")
       waitForText(device, "Retry")
+      waitForDescription(device, "proof-state-retry")
       capture(device, artifactDir, "04-retry")
 
       clickText(device, "Retry")
       waitForText(device, "Close")
-      waitForTextContaining(device, fullMarker)
+      waitForDescription(device, "proof-state-full")
       capture(device, artifactDir, "05-recovered")
 
       scenario.onActivity {
@@ -124,7 +134,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForText(device, notFoundText)
+      waitForDescription(device, "proof-state-not-found")
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "06-not-found")
 
@@ -135,7 +145,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForText(device, oversizedText)
+      waitForDescription(device, "proof-state-oversized")
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "07-oversized")
 
@@ -146,7 +156,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForText(device, notVisibleText)
+      waitForDescription(device, "proof-state-not-visible")
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "08-not-visible")
     }
@@ -169,12 +179,27 @@ class AssistantDisclosureInteractionProof {
       "Missing visible text: $text"
     }
 
-  private fun waitForTextContaining(
+  private fun waitForDescription(
     device: UiDevice,
-    text: String,
+    description: String,
   ): UiObject2 =
-    checkNotNull(device.wait(Until.findObject(By.textContains(text)), uiTimeoutMs)) {
-      "Missing visible text containing: $text"
+    checkNotNull(device.wait(Until.findObject(By.desc(description)), uiTimeoutMs)) {
+      "Missing proof state: $description"
+    }
+
+  private fun proofStateDescription(state: AssistantMessageDisclosureState?): String =
+    when (state) {
+      null -> "proof-state-preview"
+      AssistantMessageDisclosureState.Loading -> "proof-state-loading"
+      AssistantMessageDisclosureState.Error -> "proof-state-retry"
+      is AssistantMessageDisclosureState.Loaded ->
+        if (state.expanded) "proof-state-full" else "proof-state-closed"
+      is AssistantMessageDisclosureState.Unavailable ->
+        when (state.reason) {
+          ChatFullMessageLoadResult.UnavailableReason.NotFound -> "proof-state-not-found"
+          ChatFullMessageLoadResult.UnavailableReason.Oversized -> "proof-state-oversized"
+          ChatFullMessageLoadResult.UnavailableReason.NotVisible -> "proof-state-not-visible"
+        }
     }
 
   private fun clickText(
@@ -204,11 +229,6 @@ class AssistantDisclosureInteractionProof {
     const val proofMessageId = "proof-message"
     const val previewText = "Preview: release blockers remain. ...(truncated)..."
     const val fullMarker = "Complete: localization and review follow-ups are resolved."
-    const val notFoundText = "Full content is no longer available for this transcript entry."
-    const val oversizedText =
-      "Full content is unavailable because the stored transcript entry is too large to return safely."
-    const val notVisibleText =
-      "Full content is unavailable because this transcript entry has no visible chat projection."
     const val uiTimeoutMs = 10_000L
     val fullMessage =
       ChatMessage(
