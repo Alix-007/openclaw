@@ -30,8 +30,8 @@ import {
 import { resolveCliBackendConfig } from "./cli-backends.js";
 import { transferCliBootstrapCompletionCallerOwnership } from "./cli-bootstrap-completion-state.js";
 import { buildPendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
-import { acceptsClaudeLive } from "./cli-runner/claude-live-session-policy.js";
 import { settleCliBackendExecution } from "./cli-runner/cli-backend-settlement.js";
+import { acceptsCliLiveSession } from "./cli-runner/cli-live-session-registry.js";
 import {
   resolveCliSessionId,
   runCliRecovery,
@@ -43,6 +43,7 @@ import {
   buildCliDeliveredFailure,
   buildCliRunResult,
   cliRunSettlementDeps,
+  formatCliTerminalInterruption,
   isClaudeCliBackend,
   resolveCliSourceReplyMirror,
   settleCliPreparationError,
@@ -55,6 +56,7 @@ import {
   persistApprovedCliUserTurnTranscript,
   persistCliAssistantTranscript,
   persistCliRunBlock,
+  resolveCliAssistantStopReason,
   runCliAgentEndHook,
 } from "./cli-runner/cli-run-transcript.js";
 import {
@@ -441,6 +443,7 @@ export async function runPreparedCliAgent(
             provider: params.provider,
             model: context.modelId,
             usage: output.usage,
+            stopReason: resolveCliAssistantStopReason(output),
           })
         : undefined;
     if (assistantText.length > 0 && hasLlmOutputHooks) {
@@ -542,7 +545,10 @@ export async function runPreparedCliAgent(
       const { output, assistantText, lastAssistant, sourceReplyWasDelivered, usedHistoryPrompt } =
         result;
       try {
-        await assertCliRuntimeBinding(context);
+        const terminalInterruption = output.terminalInterruption;
+        if (!terminalInterruption) {
+          await assertCliRuntimeBinding(context);
+        }
         const effectiveCliSessionId = output.sessionId ?? fallbackCliSessionId;
         const assistantTranscriptPersistence = await persistCliAssistantTranscript({
           runParams: params,
@@ -551,6 +557,7 @@ export async function runPreparedCliAgent(
           text: sourceReplyWasDelivered ? "" : assistantText,
           modelId: context.modelId,
           usage: output.usage,
+          stopReason: resolveCliAssistantStopReason(output),
         });
         const { maintenanceOutcome } = await finalizeCliContextEngineTurn({
           context,
@@ -567,12 +574,16 @@ export async function runPreparedCliAgent(
               effectiveCliSessionId,
               params.provider,
               context.cwd ?? context.workspaceDir,
-              { skipTranscriptProbe: acceptsClaudeLive(context) },
+              { skipTranscriptProbe: acceptsCliLiveSession(context) },
             );
+        const interruptionError = terminalInterruption
+          ? formatCliTerminalInterruption(terminalInterruption)
+          : undefined;
         await runCliAgentEndHook(params, {
           event: {
             messages: buildAgentEndMessages(lastAssistant),
-            success: true,
+            success: interruptionError === undefined,
+            ...(interruptionError ? { error: interruptionError } : {}),
             durationMs: Date.now() - context.started,
           },
           ctx: hookContext,
