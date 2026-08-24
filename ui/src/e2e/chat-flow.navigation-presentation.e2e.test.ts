@@ -13,7 +13,6 @@ import {
 } from "./chat-flow.test-support.ts";
 
 const suite = createChatFlowE2eSuite();
-
 suite.define(() => {
   it("coalesces persisted same-session split panes during cold startup", async () => {
     const context = await suite.newBrowserContext({
@@ -82,7 +81,7 @@ suite.define(() => {
     }
   });
 
-  it("restores a scrolled session after switching away while new messages arrive", async () => {
+  it("retains scrolled and end-anchored sessions without history reloads", async () => {
     const context = await suite.newBrowserContext({
       locale: "en-US",
       serviceWorkers: "block",
@@ -123,7 +122,7 @@ suite.define(() => {
     try {
       await page.goto(`${suite.server.baseUrl}chat`);
       await waitForChatScrollIdle(page);
-      const thread = page.locator(".chat-thread");
+      const thread = page.locator(".chat-pane-cache__pane--active .chat-thread");
       await expect.poll(() => thread.count()).toBe(1);
       const initialDistance = await thread.evaluate((element) => {
         const transcript = element as HTMLElement;
@@ -151,17 +150,11 @@ suite.define(() => {
       });
       expect(firstVisitDistance).toBeLessThanOrEqual(8);
 
-      const messagesAWithNewTail = messages("A", 78);
-      const updatedResponses = responseCases(messagesAWithNewTail);
-      await gateway.setMethodResponse("chat.history", updatedResponses);
-      await gateway.setMethodResponse("chat.startup", updatedResponses);
       const historyRequestsBeforeReturn = (await gateway.getRequests("chat.history")).length;
       await sessionLink(sessionA).click();
       await expect.poll(() => new URL(page.url()).pathname).toBe(controlUiSessionPath(sessionA));
-      await expect
-        .poll(async () => (await gateway.getRequests("chat.history")).length)
-        .toBeGreaterThan(historyRequestsBeforeReturn);
       await waitForChatScrollIdle(page);
+      expect(await gateway.getRequests("chat.history")).toHaveLength(historyRequestsBeforeReturn);
 
       const restored = await thread.evaluate((element) => {
         const transcript = element as HTMLElement;
@@ -177,17 +170,13 @@ suite.define(() => {
       ).toBeLessThanOrEqual(120);
       expect(restored.distanceFromBottom).toBeGreaterThan(8);
 
-      const messagesBWithNewTail = messages("B", 36);
-      const endAnchoredResponses = responseCases(messagesAWithNewTail, messagesBWithNewTail);
-      await gateway.setMethodResponse("chat.history", endAnchoredResponses);
-      await gateway.setMethodResponse("chat.startup", endAnchoredResponses);
       const historyRequestsBeforeEndReturn = (await gateway.getRequests("chat.history")).length;
       await sessionLink(sessionB).click();
       await expect.poll(() => new URL(page.url()).pathname).toBe(controlUiSessionPath(sessionB));
-      await expect
-        .poll(async () => (await gateway.getRequests("chat.history")).length)
-        .toBeGreaterThan(historyRequestsBeforeEndReturn);
       await waitForChatScrollIdle(page);
+      expect(await gateway.getRequests("chat.history")).toHaveLength(
+        historyRequestsBeforeEndReturn,
+      );
       const endAnchoredDistance = await thread.evaluate((element) => {
         const transcript = element as HTMLElement;
         return transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight;
@@ -291,26 +280,57 @@ suite.define(() => {
         })
         .toBe(true);
       await expect.poll(() => splitEntry.count()).toBe(0);
-      // The pane header hosts the session workspace toggle (the old collapsed
-      // rail strip is gone).
-      await expect.poll(() => headers.first().locator(".chat-workspace-toggle").count()).toBe(1);
+      // The pane header owns one side-panel toggle; individual tools live in its tab strip.
+      await expect.poll(() => headers.first().locator(".chat-side-panel-toggle").count()).toBe(1);
       await expect.poll(() => page.locator(".chat-workspace-rail").count()).toBe(0);
 
-      // Keyboard focus on a header action marks the pane active.
-      await headers.first().getByRole("button", { name: "Close pane" }).focus();
       const cells = page.locator(".chat-split-view__cell");
+      const actionRows = headers.locator(".chat-pane__actions");
+      await expect.poll(() => actionRows.first().isVisible()).toBe(false);
+      await expect.poll(() => actionRows.last().isVisible()).toBe(true);
+      expect(
+        await headers
+          .first()
+          .locator(".chat-pane__close-pane")
+          .evaluate((button) => {
+            (button as HTMLElement).focus();
+            return document.activeElement === button;
+          }),
+      ).toBe(false);
+
+      await panes.first().click({ position: { x: 20, y: 80 } });
       await expect.poll(() => cells.first().getAttribute("class")).toContain("--active");
+      await expect.poll(() => actionRows.first().isVisible()).toBe(true);
+      await expect.poll(() => actionRows.last().isVisible()).toBe(false);
+      const paneEmphasis = await cells.evaluateAll((nodes) =>
+        nodes.map((cell) => {
+          const style = getComputedStyle(cell);
+          return {
+            active: cell.classList.contains("chat-split-view__cell--active"),
+            boxShadow: style.boxShadow,
+            filter: style.filter,
+            opacity: style.opacity,
+          };
+        }),
+      );
+      expect(paneEmphasis).toEqual([
+        { active: true, boxShadow: "none", filter: "none", opacity: "1" },
+        { active: false, boxShadow: "none", filter: "saturate(0.45)", opacity: "1" },
+      ]);
 
       const lastPane = page.locator(".chat-split-view__pane").last();
       await lastPane.click({ position: { x: 20, y: 80 } });
       await expect.poll(() => cells.last().getAttribute("class")).toContain("--active");
+      await expect.poll(() => actionRows.first().isVisible()).toBe(false);
+      await expect.poll(() => actionRows.last().isVisible()).toBe(true);
       const targetHeader = headers.first();
       await expect
         .poll(() =>
           targetHeader.evaluate((header) => {
             const owner = header.closest("openclaw-chat-pane");
             return (
-              owner === header.parentElement && owner?.classList.contains("chat-split-view__pane")
+              header.parentElement?.classList.contains("chat-main__conversation-column") === true &&
+              owner?.classList.contains("chat-split-view__pane") === true
             );
           }),
         )
@@ -686,19 +706,16 @@ suite.define(() => {
         .evaluate((label) => getComputedStyle(label).fontWeight);
       expect(activeWeight).toBe(inactiveWeight);
 
-      const sortThreads = page.getByRole("button", { name: "Sort sessions" });
-      await sortThreads.locator("..").hover();
-      await sortThreads.click();
+      const filterAndSort = page.getByRole("button", { name: "Filter & sort" });
+      await filterAndSort.click();
       await page.getByRole("menuitemradio", { name: "Last updated" }).click();
       await expect.poll(() => sidebarSessionOrder(page)).toEqual(updatedOrder);
 
-      await sortThreads.locator("..").hover();
-      await sortThreads.click();
+      await filterAndSort.click();
       await page.getByRole("menuitemradio", { name: "Created" }).click();
       await expect.poll(() => sidebarSessionOrder(page)).toEqual(createdOrder);
 
-      await sortThreads.locator("..").hover();
-      await sortThreads.click();
+      await filterAndSort.click();
       await page.getByRole("main").click();
       await expect.poll(() => page.getByRole("menuitemradio", { name: "Created" }).count()).toBe(0);
     } finally {
@@ -727,7 +744,10 @@ suite.define(() => {
     try {
       await page.goto(`${suite.server.baseUrl}chat`);
       await page.locator(`.sidebar-recent-session[data-session-key="${secondKey}"]`).waitFor();
-      await page.locator(".chat-pane__session-title").getByText("Instant A").waitFor();
+      await page
+        .locator(".chat-pane-cache__pane--visible .chat-pane__session-title")
+        .getByText("Instant A")
+        .waitFor();
       await page.waitForTimeout(500);
       const initialListCount = (await gateway.getRequests("sessions.list")).length;
       const initialMetadataCount = (await gateway.getRequests("chat.metadata")).length;
@@ -738,7 +758,10 @@ suite.define(() => {
           `.sidebar-recent-session[data-session-key="${secondKey}"] a.sidebar-recent-session__link`,
         )
         .click();
-      await page.locator(".chat-pane__session-title").getByText("Instant B").waitFor();
+      await page
+        .locator(".chat-pane-cache__pane--visible .chat-pane__session-title")
+        .getByText("Instant B")
+        .waitFor();
       const emptyOutboxListRequests = (await gateway.getRequests("sessions.list")).slice(
         initialListCount,
       );
@@ -746,7 +769,7 @@ suite.define(() => {
       expect(await gateway.getRequests("chat.metadata")).toHaveLength(initialMetadataCount);
       const emptyOutboxListCount = initialListCount + emptyOutboxListRequests.length;
 
-      await page.locator("openclaw-chat-pane").evaluate((pane, targetKey) => {
+      await page.locator('openclaw-chat-pane[aria-hidden="false"]').evaluate((pane, targetKey) => {
         const state = (
           pane as HTMLElement & {
             state: {
@@ -778,14 +801,17 @@ suite.define(() => {
             },
           }),
         );
-        window.dispatchEvent(new StorageEvent("storage", { key }));
+        window.dispatchEvent(new StorageEvent("storage", { key, storageArea: sessionStorage }));
       }, firstKey);
       await page
         .locator(
           `.sidebar-recent-session[data-session-key="${firstKey}"] a.sidebar-recent-session__link`,
         )
         .click();
-      await page.locator(".chat-pane__session-title").getByText("Instant A").waitFor();
+      await page
+        .locator(".chat-pane-cache__pane--visible .chat-pane__session-title")
+        .getByText("Instant A")
+        .waitFor();
       await expect
         .poll(async () => (await gateway.getRequests("sessions.list")).length)
         .toBe(emptyOutboxListCount + 1);

@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { FailoverError } from "../../agents/failover-error.js";
+import {
+  BILLING_ERROR_USER_MESSAGE,
+  HEARTBEAT_EXTERNAL_RUN_FAILURE_TEXT,
+} from "../../agents/failover/user-copy.js";
 import { AgentHarnessSessionSupersededError } from "../../agents/harness/errors.js";
 import { CommandLaneClearedError, GatewayDrainingError } from "../../process/command-queue.js";
 import { getReplyPayloadMetadata } from "../reply-payload.js";
@@ -19,7 +23,6 @@ import {
   createMinimalRunAgentTurnParams,
   createTestFallbackSummaryError,
 } from "./agent-runner-execution.test-support.js";
-import { HEARTBEAT_EXTERNAL_RUN_FAILURE_TEXT } from "./agent-runner-failure-copy.js";
 import { buildKnownAgentRunFailureReplyPayload } from "./agent-runner-failure-reply.js";
 
 const state = setupAgentRunnerExecutionTestState();
@@ -64,7 +67,7 @@ describe("executeAgentTurn: terminal failures", () => {
 
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
-      expect(result.payload.text).toBe("billing");
+      expect(result.payload.text).toBe(BILLING_ERROR_USER_MESSAGE);
       expect(result.payload.text).not.toContain("All models failed");
       expect(result.payload.text).not.toContain("402 (billing)");
       expect(result.payload.text).not.toContain("Rate-limited");
@@ -216,7 +219,7 @@ describe("executeAgentTurn: terminal failures", () => {
 
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
-      expect(result.payload.text).toBe("billing");
+      expect(result.payload.text).toBe(BILLING_ERROR_USER_MESSAGE);
     }
   });
 
@@ -436,6 +439,67 @@ describe("executeAgentTurn: terminal failures", () => {
           event.data.stopReason === "restart",
       ),
     ).toBe(true);
+  });
+
+  it.each([
+    {
+      label: "settled result",
+      result: {
+        payloads: [{ text: "completed before the restart marker was observed" }],
+        meta: {},
+      },
+    },
+    {
+      label: "client-close error result",
+      result: {
+        payloads: [
+          {
+            text: "Codex app-server stopped before confirming turn completion.",
+            isError: true,
+          },
+        ],
+        meta: { error: { message: "codex app-server client closed before turn completed" } },
+      },
+    },
+  ])("hands an armed restart recovery owner the $label", async ({ label, result }) => {
+    const runId = `armed-restart-${label.replaceAll(" ", "-")}`;
+    const { replyOperation, failMock } = createMockReplyOperation();
+    let operationResult: typeof replyOperation.result = null;
+    const abortForRestart = vi.fn(() => {
+      operationResult = { kind: "aborted", code: "aborted_for_restart" };
+      return true;
+    });
+    const complete = vi.fn(() => {
+      operationResult ??= { kind: "completed" };
+    });
+    const restartReplyOperation = {
+      ...replyOperation,
+      get result() {
+        return operationResult;
+      },
+      abortForRestart,
+      complete,
+    } satisfies typeof replyOperation;
+    state.runEmbeddedAgentMock.mockResolvedValueOnce(result);
+    const { executeAgentTurn } = await import("./agent-runner-execution.js");
+
+    const execution = await executeAgentTurn({
+      ...createMinimalRunAgentTurnParams({ replyOperation: restartReplyOperation }),
+      opts: { runId } as GetReplyOptions,
+      isRestartRecoveryArmed: () => true,
+    });
+
+    expect(execution).toEqual({
+      runId,
+      outcome: { kind: "aborted", reason: "restart" },
+    });
+    expect(abortForRestart).toHaveBeenCalledOnce();
+    expect(complete).not.toHaveBeenCalled();
+    expect(restartReplyOperation.result).toEqual({
+      kind: "aborted",
+      code: "aborted_for_restart",
+    });
+    expect(failMock).not.toHaveBeenCalled();
   });
 
   it("uses compact generic copy for raw external chat errors when verbose is off", async () => {

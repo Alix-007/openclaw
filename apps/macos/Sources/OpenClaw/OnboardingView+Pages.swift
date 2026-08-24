@@ -172,11 +172,7 @@ extension OnboardingView {
         guard let probe = localGatewayProbe else {
             return "Private to this computer. Installs and starts automatically."
         }
-        let base = probe.expected
-            ? "Existing gateway detected"
-            : "Port \(probe.port) already in use"
-        let command = probe.command.isEmpty ? "" : " (\(probe.command) pid \(probe.pid))"
-        return "\(base)\(command). Will attach."
+        return probe.subtitle
     }
 
     private var remoteChoiceSubtitle: String {
@@ -883,6 +879,7 @@ extension OnboardingView {
     private var installStepStateForInstall: InstallStepState {
         if self.cliInstalled { return .done }
         if self.installingCLI {
+            if self.cliInstallPhase == .choosingTarget { return .pending }
             return self.cliInstallPhase == .startingService ? .done : .running
         }
         if self.installFailed { return .failed }

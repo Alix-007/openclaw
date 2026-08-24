@@ -1,14 +1,16 @@
 import { gatewayOriginScope } from "@openclaw/gateway-client/browser";
 import { safeParseJson } from "@openclaw/normalization-core";
+import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeUniqueTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
 import {
   DEFAULT_SIDEBAR_ENTRIES,
+  isPersistedSidebarRoute,
   normalizeSidebarEntries,
-  SIDEBAR_NAV_ROUTES,
   serializeSidebarEntry,
 } from "../app-navigation.ts";
 import { isSupportedLocale } from "../i18n/index.ts";
 import { normalizeBoardSessionViews, type BoardSessionViews } from "../lib/board/settings.ts";
-import { normalizeOptionalString } from "../lib/string-coerce.ts";
 import { getSafeLocalStorage, getSafeSessionStorage } from "../local-storage.ts";
 import {
   normalizeSidebarSessionActivePanels,
@@ -16,10 +18,10 @@ import {
   type SidebarSessionActivePanels,
   type SidebarSessionLayouts,
 } from "../pages/chat/sidebar-layout-persistence.ts";
-import { normalizeChatSplitLayout, type ChatSplitLayout } from "../pages/chat/split-layout.ts";
-import { resolveControlUiBasePath } from "./browser.ts";
+import { normalizeChatSplitLayout } from "../pages/chat/split-layout-persistence.ts";
+import type { ChatSplitLayout } from "../pages/chat/split-layout-types.ts";
+import { resolveControlUiPaths } from "./browser.ts";
 import { parseImportedCustomTheme, type ImportedCustomTheme } from "./custom-theme.ts";
-import { normalizePinnedAgentIds } from "./settings-normalizers.ts";
 import { parseThemeSelection, type ThemeMode, type ThemeName } from "./theme.ts";
 import { normalizeLocalUserIdentity, type LocalUserIdentity } from "./user-identity.ts";
 
@@ -152,6 +154,12 @@ export type ChatWorkspaceDock = (typeof CHAT_WORKSPACE_DOCKS)[number];
 
 export const normalizeChatWorkspaceDock = normalizeChoice(CHAT_WORKSPACE_DOCKS, "right");
 
+export function normalizeAccentColor(value: unknown): string | undefined {
+  return typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)
+    ? value.toLowerCase()
+    : undefined;
+}
+
 export function normalizeTextScale(value: unknown, fallback: TextScaleStop = 100): TextScaleStop {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return fallback;
@@ -179,6 +187,7 @@ export const UI_APPEARANCE_DEFAULTS = {
   composerHoldToRecord: true,
   lobsterPetVisits: true,
   lobsterPetSounds: false,
+  sessionDeleteConfirm: true,
 } as const;
 
 export type UiSettings = {
@@ -188,6 +197,7 @@ export type UiSettings = {
   lastActiveSessionKey: string;
   theme: ThemeName;
   themeMode: ThemeMode;
+  accent?: string;
   chatShowThinking: boolean;
   chatShowToolCalls: boolean;
   chatPersistCommentary?: boolean;
@@ -216,10 +226,16 @@ export type UiSettings = {
   locale?: string;
   lobsterPetVisits?: boolean; // Whether the sidebar lobster pet drops by (default true)
   lobsterPetSounds?: boolean; // Opt-in poke/pet chirps from the lobster (default false)
+  // Confirm before deleting sessions (default true). Device-local on purpose:
+  // opting out on one browser must not lower the bar on the operator's others,
+  // so this stays out of the synced ui.prefs set in server-prefs-state.ts.
+  sessionDeleteConfirm?: boolean;
+  // Device-local opt-in: route eligible external links into the Gateway browser panel.
+  openLinksInControlUiBrowser?: boolean;
 };
 
 type LastActiveSessionHost = {
-  settings: UiSettings;
+  settings: Pick<UiSettings, "lastActiveSessionKey">;
   applySettings(patch: Partial<UiSettings>): void;
 };
 
@@ -248,7 +264,7 @@ function formatHostWithPort(hostname: string, port: string): string {
 
 function deriveDefaultGatewayUrl(): { pageUrl: string; effectiveUrl: string } {
   const proto = location.protocol === "https:" ? "wss" : "ws";
-  const basePath = resolveControlUiBasePath(location.pathname);
+  const basePath = resolveControlUiPaths(location.pathname)[0];
   const pageUrl = `${proto}://${location.host}${basePath}`;
   if (!isViteDevPage()) {
     return { pageUrl, effectiveUrl: pageUrl };
@@ -463,7 +479,7 @@ export function loadSettings(): UiSettings {
       (parsed as { theme?: unknown }).theme,
       (parsed as { themeMode?: unknown }).themeMode,
     );
-    const parsedRecord = parsed as unknown as Record<string, unknown>;
+    const parsedRecord = asOptionalRecord(parsed) ?? {};
     const hasSidebarEntries = Object.hasOwn(parsedRecord, "sidebarEntries");
     // One-time read of the retired route-only shape; all writes use sidebarEntries.
     const migratedSidebarEntries = hasSidebarEntries
@@ -471,11 +487,11 @@ export function loadSettings(): UiSettings {
       : Array.isArray(parsedRecord.sidebarPinnedRoutes)
         ? normalizeSidebarEntries(
             parsedRecord.sidebarPinnedRoutes.flatMap((value) =>
-              typeof value === "string" && SIDEBAR_NAV_ROUTES.some((route) => route === value)
+              isPersistedSidebarRoute(value)
                 ? [
                     serializeSidebarEntry({
                       type: "route",
-                      route: value as (typeof SIDEBAR_NAV_ROUTES)[number],
+                      route: value,
                     }),
                   ]
                 : [],
@@ -490,6 +506,7 @@ export function loadSettings(): UiSettings {
       lastActiveSessionKey: scopedSessionSelection.lastActiveSessionKey,
       theme: theme === "custom" && !customTheme ? "claw" : theme,
       themeMode: mode,
+      accent: normalizeAccentColor(parsed.accent),
       chatShowThinking:
         typeof parsed.chatShowThinking === "boolean"
           ? parsed.chatShowThinking
@@ -541,7 +558,7 @@ export function loadSettings(): UiSettings {
         typeof parsed.showAdvancedSettings === "boolean"
           ? parsed.showAdvancedSettings
           : defaults.showAdvancedSettings,
-      pinnedAgentIds: normalizePinnedAgentIds(parsed.pinnedAgentIds),
+      pinnedAgentIds: normalizeUniqueTrimmedStringList(parsed.pinnedAgentIds),
       textScale:
         typeof parsed.textScale === "number" &&
         normalizeTextScale(parsed.textScale) !== UI_APPEARANCE_DEFAULTS.textScale
@@ -551,6 +568,8 @@ export function loadSettings(): UiSettings {
       locale: isSupportedLocale(parsed.locale) ? parsed.locale : undefined,
       ...(parsed.lobsterPetVisits === false ? { lobsterPetVisits: false } : {}),
       ...(parsed.lobsterPetSounds === true ? { lobsterPetSounds: true } : {}),
+      ...(parsed.sessionDeleteConfirm === false ? { sessionDeleteConfirm: false } : {}),
+      ...(parsed.openLinksInControlUiBrowser === true ? { openLinksInControlUiBrowser: true } : {}),
     };
     // Scoped blobs from builds that persisted tokens durably get rewritten once
     // so the plaintext token leaves localStorage.
@@ -608,6 +627,7 @@ function persistSettings(next: UiSettings, options: { selectGateway?: boolean } 
   const storage = getSafeLocalStorage();
   const scope = gatewayOriginScope(next.gatewayUrl);
   const scopedKey = settingsKeyForGateway(next.gatewayUrl);
+  const accent = normalizeAccentColor(next.accent);
   const chatFollowUpMode = normalizeChatFollowUpModeOverride(next.chatFollowUpMode);
   let existingSessionsByGateway: Record<string, ScopedSessionSelection> = {};
   try {
@@ -637,6 +657,7 @@ function persistSettings(next: UiSettings, options: { selectGateway?: boolean } 
     gatewayUrl: next.gatewayUrl,
     theme: next.theme,
     themeMode: next.themeMode,
+    ...(accent ? { accent } : {}),
     chatShowThinking: next.chatShowThinking,
     chatShowToolCalls: next.chatShowToolCalls,
     chatPersistCommentary: next.chatPersistCommentary ?? true,
@@ -693,6 +714,10 @@ function persistSettings(next: UiSettings, options: { selectGateway?: boolean } 
     // off; only an explicit opt-in persists.
     ...(next.lobsterPetVisits === false ? { lobsterPetVisits: false } : {}),
     ...(next.lobsterPetSounds === true ? { lobsterPetSounds: true } : {}),
+    // Only the opted-out value is persisted; absence means the safe default.
+    ...(next.sessionDeleteConfirm === false ? { sessionDeleteConfirm: false } : {}),
+    // External links keep host behavior unless the operator explicitly opts in.
+    ...(next.openLinksInControlUiBrowser === true ? { openLinksInControlUiBrowser: true } : {}),
   };
   const serialized = JSON.stringify(persisted);
   unpersistedSettings = next;
