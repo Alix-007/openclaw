@@ -141,12 +141,12 @@ export async function deliverMatrixReplies(params: {
   try {
     for (const reply of params.replies) {
       const visibleText = resolveVisibleMatrixReplyText(reply.text);
-      const { hasMedia, mediaUrls } = resolveSendableOutboundReplyParts(reply);
+      const { hasMedia, hasText, mediaUrls } = resolveSendableOutboundReplyParts(reply);
       if (reply.isReasoning === true || (!hasMedia && reply.text && visibleText === undefined)) {
         logVerbose("matrix reply suppressed as reasoning-only");
         continue;
       }
-      if (!reply?.text && !hasMedia) {
+      if (!hasText && !hasMedia) {
         if (reply?.audioAsVoice) {
           logVerbose("matrix reply has audioAsVoice without media/text; skipping");
           continue;

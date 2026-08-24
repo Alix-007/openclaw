@@ -379,6 +379,25 @@ describe("deliverMatrixReplies", () => {
     });
   });
 
+  it("reports blank text with blank-only media as missing", async () => {
+    const result = await deliverMatrixReplies({
+      cfg,
+      replies: [{ text: "   ", mediaUrls: ["   "] }],
+      roomId: "room:2",
+      client: {} as MatrixClient,
+      runtime: runtimeEnv,
+      textLimit: 4000,
+      replyToMode: "off",
+    });
+
+    expect(runtimeEnv.error).toHaveBeenCalledWith("matrix reply missing text/media");
+    expect(sendMessageMatrixMock).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      visibleReplySent: false,
+      suppression: { reason: "no_visible_result" },
+    });
+  });
+
   it("keeps replyToId when threadId is set so Matrix can send fallback metadata", async () => {
     chunkMatrixTextMock.mockImplementation((text: string) => ({
       trimmedText: text.trim(),
