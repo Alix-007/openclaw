@@ -171,7 +171,7 @@ jobs:
               dispatch_status=${PIPESTATUS[0]}
               node scripts/run-vitest.mjs \
                 src/agents/cli-runner.context-engine.test.ts \
-                -t 'does not record bootstrap completion when afterTurn fails|does not record bootstrap completion when foreground maintenance fails|does not record bootstrap completion when foreground maintenance rewrites the transcript' \
+                -t 'does not record bootstrap completion when' \
                 --reporter=verbose 2>&1 | tee -a "$log_file"
               context_status=${PIPESTATUS[0]}
               set -e
@@ -179,9 +179,9 @@ jobs:
                 exit 1
               fi
               grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
-              grep -F 'does not record bootstrap completion when afterTurn fails' "$log_file"
-              grep -F 'does not record bootstrap completion when foreground maintenance fails' "$log_file"
-              grep -F 'does not record bootstrap completion when foreground maintenance rewrites the transcript' "$log_file"
+              grep -F "does not record bootstrap completion when 'afterTurn fails'" "$log_file"
+              grep -F "does not record bootstrap completion when 'foreground maintenance fails'" "$log_file"
+              grep -F "does not record bootstrap completion when 'foreground maintenance rewrites the transcript'" "$log_file"
               echo '[bootstrap independent-review findings proof] exact-head=true outer-owner=true finalization-failure=true foreground-failure=true foreground-rewrite=true' | tee -a "$log_file"
               marker='[bootstrap independent-review findings proof]'
               ;;
