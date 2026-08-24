@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "productHead": "354432ae1494c8b1d81c87e844657a9cd1c3aea5",
+  "scenario": {
+    "jobId": "disabled-running",
+    "enabled": false,
+    "runningAtMs": 1777593600000,
+    "storage": "SQLite"
+  },
+  "doctor": {
+    "advisory": "1 automation is still marked in-flight (`state.runningAtMs` is set).\n- If no gateway is currently executing it, the marker is left over from an interrupted run; the gateway marks such runs interrupted the next time it starts.\n- Review with openclaw automations list --all or openclaw automations show <id>.",
+    "recommendsAll": true,
+    "makesFalseRunningClaim": false
+  },
+  "inventory": {
+    "defaultCount": 0,
+    "allCount": 1,
+    "allRows": [
+      {
+        "id": "disabled-running",
+        "enabled": false
+      }
+    ]
+  },
+  "result": "PASS"
+}
