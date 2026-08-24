@@ -314,16 +314,16 @@ jobs:
                     observed.inboundAdminStatus !== 200 ||
                     observed.inboundGatewayAck?.gatewayStatus !== 200 ||
                     observed.inboundGatewayAck?.owner !== "crabline-signed-event" ||
-                    observed.postMessageCount !== 2 ||
-                    observed.updateMessageIdentityCount !== 2 ||
-                    observed.preAnswerMessageIdentityCount !== 1 ||
-                    observed.partialAnswerOnFirstMessage !== true ||
-                    observed.finalAnswerOnSecondMessage !== true ||
+                    observed.preAnswerPreviewPostCount !== 1 ||
+                    observed.preAnswerPreviewIdentityCount !== 1 ||
+                    observed.preAnswerUpdatesReusePreview !== true ||
+                    observed.roundStartsReusePreview !== true ||
+                    observed.finalMarkerDelivered !== true ||
                     observed.postMessagesForwardedToCrabline !== true ||
                     observed.updatesHandledByProofLoopback !== true ||
-                    observed.providerRounds?.map((round) => round.round).join(",") !== "0,1,2,3" ||
-                    observed.providerRounds?.[2]?.postCountAtStart !== 1 ||
-                    observed.providerRounds?.[3]?.postCountAtStart !== 1) process.exit(1);
+                    observed.providerRounds?.map((round) => round.round).join(",") !== "0,1,2" ||
+                    observed.providerRounds?.[1]?.postCountAtStart !== 1 ||
+                    observed.providerRounds?.[2]?.postCountAtStart !== 1) process.exit(1);
               ' "$output_dir/verdict.json"
               marker='[slack preview reasoning-boundary proof]'
               ;;

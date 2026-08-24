@@ -24,8 +24,7 @@ const artifactDir = path.join(repoRoot, ".artifacts/qa-e2e/pr-128626-slack-previ
 const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-pr128626-proof-"));
 const verdictPath = path.join(artifactDir, "verdict.json");
 const failurePath = path.join(artifactDir, "failure.json");
-const partialMarker = "PR128626_VISIBLE_ANSWER_BOUNDARY";
-const finalMarker = "PR128626_SECOND_PREVIEW_OK";
+const finalMarker = "PR128626_REASONING_BOUNDARY_OK";
 const providerRounds = [];
 const slackApiEvents = [];
 const slackIngressEvents = [];
@@ -158,15 +157,6 @@ async function writeProviderResponse(response, round) {
 
   if (round < 2) {
     output.push(writeToolCall(response, round, 1));
-  } else if (round === 2) {
-    output.push(
-      await writeMessage(response, {
-        id: "message_pr128626_partial",
-        marker: partialMarker,
-        outputIndex: 1,
-      }),
-    );
-    output.push(writeToolCall(response, round, 2));
   } else {
     output.push(
       await writeMessage(response, {
@@ -211,15 +201,37 @@ function isSlackMethod(event, method) {
   return event?.type === "api" && String(event.path).includes(method);
 }
 
-async function waitForFinalUpdate(timeoutMs) {
+function slackEventContainsMarker(event, marker) {
+  return JSON.stringify(event.body).includes(marker);
+}
+
+function summarizeSlackApiEvent(event) {
+  const rawText = typeof event.body?.text === "string" ? event.body.text : "";
+  return {
+    at: event.at,
+    method: String(event.path).replace(/^\/api\//u, ""),
+    providerRound: event.providerRound,
+    channel: typeof event.body?.channel === "string" ? event.body.channel : null,
+    requestTs: typeof event.body?.ts === "string" ? event.body.ts : null,
+    responseTs: event.responseTs ?? null,
+    textPreview: rawText.replace(/\s+/gu, " ").trim().slice(0, 120),
+    marker: slackEventContainsMarker(event, finalMarker) ? "final" : "none",
+    accepted: event.accepted,
+    owner: event.owner,
+  };
+}
+
+async function waitForFinalDelivery(timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (
       slackApiEvents.some(
         (event) =>
-          isSlackMethod(event, "chat.update") && JSON.stringify(event.body).includes(finalMarker),
+          (isSlackMethod(event, "chat.postMessage") || isSlackMethod(event, "chat.update")) &&
+          slackEventContainsMarker(event, finalMarker),
       )
     ) {
+      await sleep(500);
       return [...slackApiEvents];
     }
     await sleep(250);
@@ -278,8 +290,13 @@ try {
       providerRounds.push({
         round,
         toolOutputCount,
+        slackApiEventCountAtStart: slackApiEvents.length,
         postCountAtStart: slackApiEvents.filter((event) => isSlackMethod(event, "chat.postMessage"))
           .length,
+        postResponseTsAtStart: slackApiEvents
+          .filter((event) => isSlackMethod(event, "chat.postMessage"))
+          .map((event) => event.responseTs)
+          .filter(Boolean),
       });
       await writeProviderResponse(response, round);
     })().catch((error) => {
@@ -377,10 +394,16 @@ try {
         body,
         method: request.method ?? "GET",
         path: requestUrl.pathname,
+        providerRound: providerRounds.at(-1)?.round ?? null,
         type: "api",
       };
       if (method === "chat.update") {
-        slackApiEvents.push({ ...event, accepted: true, owner: "proof-loopback-update" });
+        slackApiEvents.push({
+          ...event,
+          accepted: true,
+          owner: "proof-loopback-update",
+          responseTs: typeof body.ts === "string" ? body.ts : null,
+        });
         writeJson(response, {
           ok: true,
           channel: body.channel,
@@ -403,13 +426,20 @@ try {
         ...(["GET", "HEAD"].includes(request.method ?? "GET") ? {} : { body: rawBody }),
       });
       const payload = await upstream.text();
+      let parsedPayload;
       let accepted = upstream.ok;
       try {
-        accepted = accepted && JSON.parse(payload).ok === true;
+        parsedPayload = JSON.parse(payload);
+        accepted = accepted && parsedPayload.ok === true;
       } catch {
         accepted = false;
       }
-      slackApiEvents.push({ ...event, accepted, owner: "crabline-forward" });
+      slackApiEvents.push({
+        ...event,
+        accepted,
+        owner: "crabline-forward",
+        responseTs: typeof parsedPayload?.ts === "string" ? parsedPayload.ts : null,
+      });
       response.writeHead(upstream.status, {
         "content-type": upstream.headers.get("content-type") ?? "application/json",
       });
@@ -487,7 +517,7 @@ try {
       conversation: { id: "D01286260", kind: "direct" },
       senderId: "U01286260",
       senderName: "Proof Operator",
-      text: "Read PROOF.md three times, showing progress, then send the final marker.",
+      text: "Read PROOF.md twice, showing progress, then send the final marker.",
     },
   });
   const inboundResponse = await fetch(inbound.providerUrl, {
@@ -502,50 +532,54 @@ try {
   if (!inboundResponse.ok || typeof inboundEventId !== "string") {
     throw new Error(`Crabline inbound was not accepted: HTTP ${inboundResponse.status}`);
   }
-  const events = await waitForFinalUpdate(120_000);
+  const events = await waitForFinalDelivery(120_000);
   const apiEvents = events.filter((event) => event.type === "api");
   const postEvents = apiEvents.filter((event) => isSlackMethod(event, "chat.postMessage"));
   const updateEvents = apiEvents.filter((event) => isSlackMethod(event, "chat.update"));
-  const secondPostIndex = apiEvents.findIndex(
-    (event, index) =>
-      isSlackMethod(event, "chat.postMessage") &&
-      apiEvents.slice(0, index).some((prior) => isSlackMethod(prior, "chat.postMessage")),
-  );
-  const updateTs = updateEvents.map((event) => String(event.body?.ts ?? "")).filter(Boolean);
-  const uniqueUpdateTs = [...new Set(updateTs)];
-  const updatesBeforeSecondPost = apiEvents
-    .slice(0, secondPostIndex)
-    .filter((event) => isSlackMethod(event, "chat.update"));
-  const preRotationTs = [
-    ...new Set(
-      updatesBeforeSecondPost.map((event) => String(event.body?.ts ?? "")).filter(Boolean),
-    ),
-  ];
-  const partialUpdate = updateEvents.find((event) =>
-    JSON.stringify(event.body).includes(partialMarker),
-  );
-  const finalUpdate = updateEvents.find((event) =>
-    JSON.stringify(event.body).includes(finalMarker),
+  const finalDelivery = apiEvents.find(
+    (event) =>
+      (isSlackMethod(event, "chat.postMessage") || isSlackMethod(event, "chat.update")) &&
+      slackEventContainsMarker(event, finalMarker),
   );
   const roundSignature = providerRounds.map(({ round }) => round).join(",");
   const postCountsAtRoundStart = providerRounds.map(({ postCountAtStart }) => postCountAtStart);
+  const finalRoundStart = providerRounds.find((round) => round.round === 2);
+  const preAnswerEvents = apiEvents.slice(0, finalRoundStart?.slackApiEventCountAtStart ?? 0);
+  const preAnswerPosts = preAnswerEvents.filter((event) =>
+    isSlackMethod(event, "chat.postMessage"),
+  );
+  const preAnswerUpdates = preAnswerEvents.filter((event) => isSlackMethod(event, "chat.update"));
+  const preAnswerPostTs = preAnswerPosts.map((event) => event.responseTs).filter(Boolean);
+  const uniquePreAnswerPostTs = [...new Set(preAnswerPostTs)];
+  const previewMessageTs = uniquePreAnswerPostTs[0];
+  const preAnswerUpdatesReusePreview =
+    preAnswerUpdates.length > 0 &&
+    preAnswerUpdates.every((event) => event.body?.ts === previewMessageTs);
+  const roundStartsReusePreview = providerRounds
+    .slice(1)
+    .every(
+      (round) =>
+        round.postCountAtStart === 1 &&
+        round.postResponseTsAtStart.length === 1 &&
+        round.postResponseTsAtStart[0] === previewMessageTs,
+    );
   const inboundGatewayAck = slackIngressEvents.find((event) => event.eventId === inboundEventId);
   const pass =
     inboundAdminStatus === 200 &&
     inboundGatewayAck?.gatewayStatus === 200 &&
-    roundSignature === "0,1,2,3" &&
+    roundSignature === "0,1,2" &&
+    postCountsAtRoundStart[1] === 1 &&
     postCountsAtRoundStart[2] === 1 &&
-    postCountsAtRoundStart[3] === 1 &&
-    postEvents.length === 2 &&
+    preAnswerPosts.length === 1 &&
+    uniquePreAnswerPostTs.length === 1 &&
+    preAnswerUpdatesReusePreview &&
+    roundStartsReusePreview &&
+    Boolean(finalDelivery) &&
+    finalDelivery?.accepted === true &&
     postEvents.every((event) => event.accepted === true && event.owner === "crabline-forward") &&
     updateEvents.every(
       (event) => event.accepted === true && event.owner === "proof-loopback-update",
-    ) &&
-    secondPostIndex > 0 &&
-    preRotationTs.length === 1 &&
-    uniqueUpdateTs.length === 2 &&
-    String(partialUpdate?.body?.ts ?? "") === uniqueUpdateTs[0] &&
-    String(finalUpdate?.body?.ts ?? "") === uniqueUpdateTs[1];
+    );
   const verdict = {
     result: pass ? "pass" : "fail",
     target: {
@@ -563,10 +597,16 @@ try {
       providerRounds,
       postMessageCount: postEvents.length,
       updateCount: updateEvents.length,
-      updateMessageIdentityCount: uniqueUpdateTs.length,
-      preAnswerMessageIdentityCount: preRotationTs.length,
-      partialAnswerOnFirstMessage: String(partialUpdate?.body?.ts ?? "") === uniqueUpdateTs[0],
-      finalAnswerOnSecondMessage: String(finalUpdate?.body?.ts ?? "") === uniqueUpdateTs[1],
+      preAnswerPreviewPostCount: preAnswerPosts.length,
+      preAnswerPreviewIdentityCount: uniquePreAnswerPostTs.length,
+      preAnswerPreviewTs: previewMessageTs,
+      preAnswerUpdatesReusePreview,
+      roundStartsReusePreview,
+      finalMarkerDelivered: Boolean(finalDelivery),
+      finalDeliveryMethod: finalDelivery
+        ? String(finalDelivery.path).replace(/^\/api\//u, "")
+        : null,
+      finalDeliveryTs: finalDelivery?.responseTs ?? finalDelivery?.body?.ts ?? null,
       postMessagesForwardedToCrabline: postEvents.every(
         (event) => event.accepted === true && event.owner === "crabline-forward",
       ),
@@ -574,6 +614,7 @@ try {
         (event) => event.accepted === true && event.owner === "proof-loopback-update",
       ),
       slackApiOwners: [...new Set(slackApiEvents.map((event) => event.owner))],
+      slackApiSequence: slackApiEvents.map(summarizeSlackApiEvent),
     },
     cleanup: "pending",
   };
@@ -595,7 +636,7 @@ try {
   verdict.cleanup = "gateway/provider/slack/relay/proxy/temp removed";
   await fs.writeFile(verdictPath, `${JSON.stringify(verdict, null, 2)}\n`, "utf8");
   process.stdout.write(
-    `[slack preview reasoning-boundary proof] head=${exactHead} rounds=${roundSignature} posts=2 identities=2 partial-first=true final-second=true cleanup=true\n`,
+    `[slack preview reasoning-boundary proof] head=${exactHead} rounds=${roundSignature} pre-answer-posts=1 pre-answer-identities=1 final-delivered=true cleanup=true\n`,
   );
   process.stdout.write(`${JSON.stringify(verdict, null, 2)}\n`);
 } catch (error) {
@@ -613,6 +654,7 @@ try {
         slackApiEvents.filter((event) => event.path === eventPath).length,
       ]),
     ),
+    slackApiSequence: slackApiEvents.map(summarizeSlackApiEvent),
   };
   await fs.writeFile(failurePath, `${JSON.stringify(failure, null, 2)}\n`, "utf8");
   const gatewayTail = gateway?.logs?.().slice(-4_000);
