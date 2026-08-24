@@ -13,16 +13,22 @@ test -n "$test_apk"
 adb install -r "$app_apk"
 adb install -r "$test_apk"
 
+runner_component="ai.openclaw.app.debug.test/androidx.test.runner.AndroidJUnitRunner"
+target_package="ai.openclaw.app.debug"
+adb shell pm list instrumentation \
+  | tr -d '\r' \
+  | grep -Fx "instrumentation:$runner_component (target=$target_package)"
+
 set +e
 timeout 240 adb shell am instrument -w -r \
   -e class ai.openclaw.app.ui.chat.AssistantDisclosureInteractionProof \
-  ai.openclaw.app.test/androidx.test.runner.AndroidJUnitRunner \
+  "$runner_component" \
   | tee "$artifact_dir/instrumentation.txt"
 test_status="${PIPESTATUS[0]}"
 set -e
 test "$test_status" -eq 0
 grep -q '^OK (1 test)' "$artifact_dir/instrumentation.txt"
-adb pull /sdcard/Android/data/ai.openclaw.app/files/pr122200-proof/. "$artifact_dir/interaction/"
+adb pull "/sdcard/Android/data/$target_package/files/pr122200-proof/." "$artifact_dir/interaction/"
 
 for state in 01-preview 02-full 03-closed 04-retry 05-recovered 06-not-found 07-oversized 08-not-visible; do
   test -s "$artifact_dir/interaction/$state.png"
