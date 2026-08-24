@@ -639,19 +639,22 @@ async function runCliAgentWithLifecycleInternal(
           payloads: [{ text: durableReasoningText, isReasoning: true }, ...(result.payloads ?? [])],
         }
       : result;
-    void finalizePendingCliBootstrapCompletion({
-      result: resultWithReasoning,
-      transcriptStable: true,
-      isStillEligible: () => {
-        if (params.runParams.abortSignal?.aborted === true) {
-          return false;
-        }
-        if (params.lifecycleGeneration) {
-          assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
-        }
-        return true;
-      },
-    });
+    // Fallback run-entry owns bootstrap settlement until it accepts or discards this candidate.
+    if (!params.runParams.onContextEngineTurnCandidate) {
+      void finalizePendingCliBootstrapCompletion({
+        result: resultWithReasoning,
+        transcriptStable: true,
+        isStillEligible: () => {
+          if (params.runParams.abortSignal?.aborted === true) {
+            return false;
+          }
+          if (params.lifecycleGeneration) {
+            assertAgentRunLifecycleGenerationCurrent(params.lifecycleGeneration);
+          }
+          return true;
+        },
+      });
+    }
     if (cliText) {
       emitAgentEvent({
         runId: params.runId,

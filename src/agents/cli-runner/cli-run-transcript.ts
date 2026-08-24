@@ -401,7 +401,10 @@ export async function finalizeCliContextEngineTurn(params: {
   }): Promise<CliContextEngineTurnFinalization> => {
     let deferredTurnMaintenance: Promise<void> | undefined;
     let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
-    const result = await finalizeHarnessContextEngineTurn({
+    let foregroundTurnMaintenanceResult: Awaited<
+      ReturnType<typeof runHarnessContextEngineMaintenanceWithOutcome>
+    > = undefined;
+    const turnFinalization = await finalizeHarnessContextEngineTurn({
       contextEngine: context.contextEngine,
       promptError: false,
       aborted:
@@ -418,23 +421,37 @@ export async function finalizeCliContextEngineTurn(params: {
       contextEngineHostSupport,
       providerId: runParams.provider,
       modelId: context.modelId,
-      runMaintenance: async (maintenanceParams) =>
-        await runHarnessContextEngineMaintenanceWithOutcome({
+      runMaintenance: async (maintenanceParams) => {
+        const maintenanceResult = await runHarnessContextEngineMaintenanceWithOutcome({
           ...maintenanceParams,
           withSessionManagerRewriteLock: transcript.withSessionManagerRewriteLock,
           onDeferredMaintenance: (promise, outcome) => {
             deferredTurnMaintenance = promise;
             deferredTurnMaintenanceOutcome = outcome;
           },
-        }),
+        });
+        foregroundTurnMaintenanceResult = maintenanceResult;
+        return maintenanceResult;
+      },
       warn: (message) => log.warn(message),
     });
-    if (result.postTurnFinalizationSucceeded && deferredTurnMaintenance) {
+    if (turnFinalization.postTurnFinalizationSucceeded && deferredTurnMaintenance) {
       context.contextEngineDeferredTurnMaintenance = deferredTurnMaintenance;
     }
-    return deferredTurnMaintenanceOutcome
-      ? { maintenanceOutcome: deferredTurnMaintenanceOutcome }
-      : {};
+    // Foreground maintenance must report its rewrite result before bootstrap can become complete.
+    const maintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise =
+      deferredTurnMaintenanceOutcome ??
+      Promise.resolve(
+        turnFinalization.postTurnFinalizationSucceeded &&
+          (typeof context.contextEngine?.maintain !== "function" ||
+            foregroundTurnMaintenanceResult !== undefined)
+          ? {
+              status: "completed" as const,
+              changed: foregroundTurnMaintenanceResult?.changed ?? false,
+            }
+          : { status: "failed" as const, changed: true },
+      );
+    return { maintenanceOutcome };
   };
   const admission = runParams.userTurnTranscriptRecorder?.getAdmissionReceipt();
   if (runParams.onContextEngineTurnCandidate) {
