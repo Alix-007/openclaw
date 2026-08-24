@@ -1,0 +1,9 @@
+PR: 128594
+Product head: cd14df37d3f00864e54c3fe64042535a6747d8bd
+Runtime: Node v24.15.0
+Command: OPENCLAW_PROOF_REPO=<exact-head-checkout> OPENCLAW_PROOF_HEAD=cd14df37d3f00864e54c3fe64042535a6747d8bd node --import tsx proof/128594/harness.mts
+Boundary: createOpenClawTools -> validateToolArguments -> skill_workshop.execute
+Schema validation: accepted
+Tool outcome: Skill proposal description is too large (161 bytes, max 160).
+Proposal state written: false
+Result: PASS (5/5 assertions)
