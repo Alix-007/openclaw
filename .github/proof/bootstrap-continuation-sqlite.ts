@@ -25,7 +25,7 @@ const { finalizePendingCliBootstrapCompletion, setPendingCliBootstrapCompletion 
   await importTarget("src/agents/cli-bootstrap-completion.ts");
 const { SessionManager } = await importTarget("src/agents/sessions/session-manager.ts");
 const { shouldPersistCompletedBootstrapTurn } = await importTarget(
-  "src/agents/embedded-agent-runner/run/attempt.thread-helpers.ts",
+  "src/agents/embedded-agent-runner/run/attempt-thread-helpers.ts",
 );
 const { closeOpenClawAgentDatabasesForTest } = await importTarget("src/state/openclaw-agent-db.ts");
 
