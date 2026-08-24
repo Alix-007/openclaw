@@ -14,7 +14,7 @@ await fs.mkdir(process.env.OPENCLAW_STATE_DIR, { recursive: true });
 
 const importTarget = async (relativePath: string) =>
   await import(pathToFileURL(path.join(targetRoot, relativePath)).href);
-const { upsertSessionEntry } = await importTarget("src/config/sessions/session-accessor.ts");
+const { upsertSessionEntryCore } = await importTarget("src/config/sessions/session-accessor.ts");
 const { FULL_BOOTSTRAP_COMPLETED_CUSTOM_TYPE, hasCompletedBootstrapTurn } = await importTarget(
   "src/agents/bootstrap-files.ts",
 );
@@ -35,7 +35,7 @@ const sessionTarget = {
   sessionKey: "agent:main:bootstrap-proof",
   storePath: path.join(runtimeRoot, "sessions.json"),
 };
-await upsertSessionEntry(sessionTarget, {
+await upsertSessionEntryCore(sessionTarget, {
   sessionId: sessionTarget.sessionId,
   updatedAt: Date.now(),
 });
