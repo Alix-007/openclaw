@@ -1,6 +1,7 @@
 package ai.openclaw.app.ui.chat
 
 import ai.openclaw.app.BuildConfig
+import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.ui.OpenClawTheme
@@ -30,7 +31,7 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class AssistantDisclosureInteractionProof {
   @Test
-  fun emulatorShowsExpandCollapseAndRetryRecovery() {
+  fun emulatorShowsExpandedFlowAndUnavailableStates() {
     assertEquals(proofProductSha, BuildConfig.GIT_COMMIT)
     val instrumentation = InstrumentationRegistry.getInstrumentation()
     val device = UiDevice.getInstance(instrumentation)
@@ -115,6 +116,48 @@ class AssistantDisclosureInteractionProof {
       waitForText(device, "Close")
       waitForTextContaining(device, fullMarker)
       capture(device, artifactDir, "05-recovered")
+
+      scenario.onActivity {
+        disclosureState =
+          AssistantMessageDisclosureState.Unavailable(
+            ChatFullMessageLoadResult.UnavailableReason.NotFound,
+          )
+      }
+      instrumentation.waitForIdleSync()
+      waitForText(device, notFoundText)
+      assertDisclosureActionMissing(device)
+      capture(device, artifactDir, "06-not-found")
+
+      scenario.onActivity {
+        disclosureState =
+          AssistantMessageDisclosureState.Unavailable(
+            ChatFullMessageLoadResult.UnavailableReason.Oversized,
+          )
+      }
+      instrumentation.waitForIdleSync()
+      waitForText(device, oversizedText)
+      assertDisclosureActionMissing(device)
+      capture(device, artifactDir, "07-oversized")
+
+      scenario.onActivity {
+        disclosureState =
+          AssistantMessageDisclosureState.Unavailable(
+            ChatFullMessageLoadResult.UnavailableReason.NotVisible,
+          )
+      }
+      instrumentation.waitForIdleSync()
+      waitForText(device, notVisibleText)
+      assertDisclosureActionMissing(device)
+      capture(device, artifactDir, "08-not-visible")
+    }
+  }
+
+  private fun assertDisclosureActionMissing(device: UiDevice) {
+    for (label in listOf("Retry", "View all", "Close")) {
+      assertTrue(
+        "Unexpected disclosure action: $label",
+        device.wait(Until.gone(By.text(label)), uiTimeoutMs),
+      )
     }
   }
 
@@ -157,10 +200,15 @@ class AssistantDisclosureInteractionProof {
   }
 
   private companion object {
-    const val proofProductSha = "7b2dbbf4287b9cfebe58c1b0ffa02bacac092d75"
+    const val proofProductSha = "937412ce4d1728cf5efbb1865107aec8b4ea9925"
     const val proofMessageId = "proof-message"
     const val previewText = "Preview: release blockers remain. ...(truncated)..."
     const val fullMarker = "Complete: localization and review follow-ups are resolved."
+    const val notFoundText = "Full content is no longer available for this transcript entry."
+    const val oversizedText =
+      "Full content is unavailable because the stored transcript entry is too large to return safely."
+    const val notVisibleText =
+      "Full content is unavailable because this transcript entry has no visible chat projection."
     const val uiTimeoutMs = 10_000L
     val fullMessage =
       ChatMessage(
