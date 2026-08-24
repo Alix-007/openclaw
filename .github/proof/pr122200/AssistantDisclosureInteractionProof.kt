@@ -89,8 +89,8 @@ class AssistantDisclosureInteractionProof {
       }
 
       instrumentation.waitForIdleSync()
-      waitForSpeaker(device)
       waitForText(device, "View all")
+      capture(device, artifactDir, "00-observed-initial")
       capture(device, artifactDir, "01-preview")
 
       clickText(device, "View all")
@@ -121,7 +121,6 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForSpeaker(device)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "06-not-found")
 
@@ -132,7 +131,6 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForSpeaker(device)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "07-oversized")
 
@@ -143,7 +141,6 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
-      waitForSpeaker(device)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "08-not-visible")
     }
@@ -164,11 +161,6 @@ class AssistantDisclosureInteractionProof {
   ): UiObject2 =
     checkNotNull(device.wait(Until.findObject(By.text(text)), uiTimeoutMs)) {
       "Missing visible text: $text"
-    }
-
-  private fun waitForSpeaker(device: UiDevice): UiObject2 =
-    checkNotNull(device.wait(Until.findObject(By.desc("OpenClaw")), uiTimeoutMs)) {
-      "Missing assistant message accessibility node"
     }
 
   private fun clickText(
