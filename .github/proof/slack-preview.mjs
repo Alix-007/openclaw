@@ -417,7 +417,7 @@ try {
   await fs.writeFile(path.join(gateway.workspaceDir, "PROOF.md"), "bounded proof fixture\n");
   await transport.waitReady({ gateway, timeoutMs: 30_000, pollIntervalMs: 250 });
 
-  const delivery = transport.buildAgentDelivery({ target: "dm:D128626" });
+  const delivery = transport.buildAgentDelivery({ target: "dm:D01286260" });
   const started = await gateway.call(
     "agent",
     {
@@ -427,7 +427,7 @@ try {
       message: "Read PROOF.md three times, showing progress, then send the final marker.",
       deliver: true,
       channel: delivery.channel,
-      to: delivery.to ?? "D128626",
+      to: delivery.to ?? "D01286260",
       replyChannel: delivery.replyChannel,
       replyTo: delivery.replyTo,
     },
