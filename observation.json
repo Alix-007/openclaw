@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "pr": 128477,
+  "headSha": "d5fdcb76fb00cb38210699c4915f8e835aa396ca",
+  "generatedAt": "2026-08-24T04:23:23.371Z",
+  "node": "v22.22.0",
+  "credentialMode": "none",
+  "harnessSha256": "38fbc7811c1469fda743496780e2bc3d476ba10bdf2c2e6c85de149b4617f91b",
+  "initial": {
+    "sourceSha256": "fbd7ac0a4de30945ee9026de522b360b9757c1bc4df8abce61ba7a0abac8821f",
+    "handlerResult": "before",
+    "stat": {
+      "size": 31,
+      "mtimeMs": 1767225600000,
+      "ctimeMs": 1787545403340.9922
+    },
+    "importUrl": "file://<redacted>/handler.mjs?t=1767225600000&c=1787545403340.9922&s=31"
+  },
+  "edited": {
+    "sourceSha256": "ef17fe6eb1784886c53d71931303fc2cb4fd51fa0f478f5e8fafa4fec0b2fad9",
+    "handlerResult": "after!",
+    "stat": {
+      "size": 31,
+      "mtimeMs": 1767225600000,
+      "ctimeMs": 1787545403364.9937
+    },
+    "importUrl": "file://<redacted>/handler.mjs?t=1767225600000&c=1787545403364.9937&s=31"
+  },
+  "invariants": {
+    "sameBytes": true,
+    "sameMtime": true,
+    "ctimeChanged": true,
+    "importUrlChanged": true,
+    "behaviorChanged": true
+  },
+  "redaction": "Temporary paths are replaced with <redacted>; no credentials or user data used.",
+  "pass": true
+}
