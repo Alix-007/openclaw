@@ -401,11 +401,9 @@ export async function finalizeCliContextEngineTurn(params: {
   }): Promise<CliContextEngineTurnFinalization> => {
     let deferredTurnMaintenance: Promise<void> | undefined;
     let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
-    const foregroundTurnMaintenance = {
-      result: undefined as Awaited<
-        ReturnType<typeof runHarnessContextEngineMaintenanceWithOutcome>
-      >,
-    };
+    const foregroundTurnMaintenance: {
+      result: Awaited<ReturnType<typeof runHarnessContextEngineMaintenanceWithOutcome>>;
+    } = { result: undefined };
     const turnFinalization = await finalizeHarnessContextEngineTurn({
       contextEngine: context.contextEngine,
       promptError: false,

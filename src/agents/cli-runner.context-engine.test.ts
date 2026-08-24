@@ -3,9 +3,7 @@ import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ContextEngine } from "../context-engine/types.js";
 import { createTestAdmittedRunContext } from "./admitted-run-context.test-support.js";
-import {
-  finalizePendingCliBootstrapCompletion,
-} from "./cli-bootstrap-completion.js";
+import { finalizePendingCliBootstrapCompletion } from "./cli-bootstrap-completion.js";
 import { markPreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
 import type { PreparedCliRunContext } from "./cli-runner/types.js";
 
