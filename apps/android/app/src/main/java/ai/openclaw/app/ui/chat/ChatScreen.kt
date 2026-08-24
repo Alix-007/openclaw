@@ -1524,6 +1524,7 @@ private fun ChatMessageList(
               resolveInlineWidgetResource = resolveInlineWidgetResource,
               loadImageArtifact = loadImageArtifact,
               loadMediaArtifact = loadMediaArtifact,
+              senderLabel = item.message.senderLabel,
             )
           }
           is ChatTimelineItem.OutboxCommand ->
@@ -1838,12 +1839,14 @@ internal fun ChatBubble(
   isTruncated: Boolean = false,
   assistantDisclosureState: AssistantMessageDisclosureState? = null,
   onToggleAssistantDisclosure: (() -> Unit)? = null,
+  senderLabel: String? = null,
 ) {
   val normalizedRole = role.trim().lowercase(Locale.US)
   val isUser = normalizedRole == "user"
+  val peerSenderLabel = senderLabel?.trim()?.takeIf { isUser && it.isNotEmpty() }
   val speaker =
     when {
-      isUser -> nativeString("You")
+      isUser -> peerSenderLabel ?: nativeString("You")
       normalizedRole == "system" -> nativeString("System")
       else -> nativeString("OpenClaw")
     }
@@ -1851,6 +1854,7 @@ internal fun ChatBubble(
     when {
       live -> nativeString("OpenClaw · Live")
       normalizedRole == "system" -> nativeString("System")
+      peerSenderLabel != null -> peerSenderLabel
       else -> null
     }
   var visibleImageCount = 0
