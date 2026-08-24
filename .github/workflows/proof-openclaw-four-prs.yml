@@ -145,6 +145,12 @@ jobs:
                 git diff --name-only --diff-filter=ACMRD "$check_changed_base...$TARGET_SHA"
               )
               test "${#changed_paths[@]}" -gt 0
+              format_probe='src/agents/cli-runner.reliability.test.ts'
+              corepack pnpm exec oxfmt "$format_probe"
+              git diff -- "$format_probe" | tee -a "$log_file"
+              git checkout -- "$format_probe"
+              test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+              git diff --quiet
               corepack pnpm check:changed \
                 --base "$check_changed_base" \
                 --head "$TARGET_SHA" \
