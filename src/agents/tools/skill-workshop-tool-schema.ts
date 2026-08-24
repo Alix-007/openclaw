@@ -104,7 +104,6 @@ export function buildSkillWorkshopToolSchema(
       ),
       description: Type.Optional(
         Type.String({
-          maxLength: 160,
           description:
             "Skill description for create/update/revise; max 160 bytes. On update, concise text shortens the proposal listing entry.",
         }),

@@ -2,6 +2,7 @@
 // applying generated skills to the workspace.
 import fs from "node:fs/promises";
 import path from "node:path";
+import { validateToolArguments } from "openclaw/plugin-sdk/llm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { consumeRunSkillUsage, recordRunSkillUsage } from "../../skills/runtime/run-usage.js";
 import { writeWorkspaceSkills } from "../../skills/test-support/e2e-test-helpers.js";
@@ -207,6 +208,28 @@ describe("skill_workshop tool", () => {
     expect(schema).toContain("artifact_path");
     expect(tool.description).toContain(lazyDescription);
     expect(tool.description).toContain(SKILL_AUTHORING_STANDARDS_PROMPT);
+  });
+
+  it("lets the proposal service explain overlong descriptions", async () => {
+    const workspaceDir = await tempDirs.make("openclaw-skill-workshop-description-limit-");
+    const tool = createSkillWorkshopTool({ workspaceDir, env: testState.env });
+    const args = {
+      action: "create" as const,
+      name: "Long Description",
+      description: "x".repeat(161),
+      proposal_content: "# Long Description\n",
+    };
+    const call = {
+      type: "toolCall" as const,
+      id: "call-long-description",
+      name: "skill_workshop",
+      arguments: args,
+    };
+    expect(validateToolArguments(tool, call)).toEqual(args);
+
+    await expect(tool.execute(call.id, args)).rejects.toThrow(
+      "Skill proposal description is too large (161 bytes, max 160).",
+    );
   });
 
   it("evaluates an exact pending draft and exposes the persisted result", async () => {
