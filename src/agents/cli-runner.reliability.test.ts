@@ -70,8 +70,8 @@ import {
   requestHeartbeatMock,
   supervisorSpawnMock,
 } from "./cli-runner.test-support.js";
-import { executePreparedCliRun } from "./cli-runner/execute.js";
 import { buildCliRunResult } from "./cli-runner/cli-run-settlement.js";
+import { executePreparedCliRun } from "./cli-runner/execute.js";
 import {
   resolveCliNoOutputTimeoutMs,
   resolveCliRunTimeoutOverrideMs,
@@ -790,49 +790,46 @@ describe("runCliAgent reliability", () => {
     }
   });
 
-  it(
-    "does not persist a CLI bootstrap marker after post-output cancellation with terminal partial output",
-    async () => {
-      const context = buildPreparedContext({ runId: "run-cli-bootstrap-terminal-interruption" });
-      const appendCustomEntry = vi.fn();
-      context.params.sessionTarget = {
-        agentId: "main",
-        sessionId: "s1",
-        sessionKey: "agent:main:main",
-        storePath: "/tmp/sessions.json",
-      };
-      context.params.sessionManager = { appendCustomEntry } as never;
-      markPreparedCliBootstrapCompletion(context, "caller");
-      const pending = buildPendingCliBootstrapCompletion({
-        context,
-        runnerTranscriptPersisted: true,
-      });
-      if (!pending) {
-        throw new Error("expected pending CLI bootstrap completion");
-      }
+  it("does not persist a CLI bootstrap marker after post-output cancellation with terminal partial output", async () => {
+    const context = buildPreparedContext({ runId: "run-cli-bootstrap-terminal-interruption" });
+    const appendCustomEntry = vi.fn();
+    context.params.sessionTarget = {
+      agentId: "main",
+      sessionId: "s1",
+      sessionKey: "agent:main:main",
+      storePath: "/tmp/sessions.json",
+    };
+    context.params.sessionManager = { appendCustomEntry } as never;
+    markPreparedCliBootstrapCompletion(context, "caller");
+    const pending = buildPendingCliBootstrapCompletion({
+      context,
+      runnerTranscriptPersisted: true,
+    });
+    if (!pending) {
+      throw new Error("expected pending CLI bootstrap completion");
+    }
 
-      const result = buildCliRunResult({
-        context,
-        output: {
-          text: "partial answer",
-          rawText: "partial answer",
-          terminalInterruption: { reason: "timeout" },
-        },
-        effectiveCliSessionId: "interrupted-native-session",
-        bindingFlushOk: true,
-        bootstrapCompletion: { handled: false, pending },
-        usedHistoryPrompt: false,
-        userTurnHandled: true,
-        sessionBindingDisabled: false,
-        preparedContextAgentMeta: {},
-      });
+    const result = buildCliRunResult({
+      context,
+      output: {
+        text: "partial answer",
+        rawText: "partial answer",
+        terminalInterruption: { reason: "timeout" },
+      },
+      effectiveCliSessionId: "interrupted-native-session",
+      bindingFlushOk: true,
+      bootstrapCompletion: { handled: false, pending },
+      usedHistoryPrompt: false,
+      userTurnHandled: true,
+      sessionBindingDisabled: false,
+      preparedContextAgentMeta: {},
+    });
 
-      await expect(
-        finalizePendingCliBootstrapCompletion({ result, transcriptStable: true }),
-      ).resolves.toBe(false);
-      expect(appendCustomEntry).not.toHaveBeenCalled();
-    },
-  );
+    await expect(
+      finalizePendingCliBootstrapCompletion({ result, transcriptStable: true }),
+    ).resolves.toBe(false);
+    expect(appendCustomEntry).not.toHaveBeenCalled();
+  });
 
   it("fails with timeout when no-output watchdog trips", async () => {
     supervisorSpawnMock.mockResolvedValueOnce(
