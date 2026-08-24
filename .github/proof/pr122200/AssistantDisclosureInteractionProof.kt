@@ -1,11 +1,11 @@
 package ai.openclaw.app.ui.chat
 
 import ai.openclaw.app.BuildConfig
+import ai.openclaw.app.MainActivity
 import ai.openclaw.app.chat.ChatFullMessageLoadResult
 import ai.openclaw.app.chat.ChatMessage
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.ui.OpenClawTheme
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +44,7 @@ class AssistantDisclosureInteractionProof {
     var disclosureState by mutableStateOf<AssistantMessageDisclosureState?>(null)
     var failuresRemaining = 0
 
-    ActivityScenario.launch(ComponentActivity::class.java).use { scenario ->
+    ActivityScenario.launch(MainActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         activity.setContent {
           OpenClawTheme {
