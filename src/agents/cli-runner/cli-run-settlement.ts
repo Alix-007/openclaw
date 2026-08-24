@@ -676,6 +676,7 @@ export function buildCliRunResult(params: {
   if (
     bootstrapCompletion?.handled !== true &&
     bootstrapCompletion?.pending !== undefined &&
+    terminalInterruption === undefined &&
     runParams.abortSignal?.aborted !== true
   ) {
     setPendingCliBootstrapCompletion(result, bootstrapCompletion.pending);
