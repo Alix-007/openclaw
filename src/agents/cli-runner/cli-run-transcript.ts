@@ -401,9 +401,11 @@ export async function finalizeCliContextEngineTurn(params: {
   }): Promise<CliContextEngineTurnFinalization> => {
     let deferredTurnMaintenance: Promise<void> | undefined;
     let deferredTurnMaintenanceOutcome: CliDeferredTurnMaintenanceOutcomePromise | undefined;
-    let foregroundTurnMaintenanceResult: Awaited<
-      ReturnType<typeof runHarnessContextEngineMaintenanceWithOutcome>
-    > = undefined;
+    const foregroundTurnMaintenance = {
+      result: undefined as Awaited<
+        ReturnType<typeof runHarnessContextEngineMaintenanceWithOutcome>
+      >,
+    };
     const turnFinalization = await finalizeHarnessContextEngineTurn({
       contextEngine: context.contextEngine,
       promptError: false,
@@ -430,7 +432,7 @@ export async function finalizeCliContextEngineTurn(params: {
             deferredTurnMaintenanceOutcome = outcome;
           },
         });
-        foregroundTurnMaintenanceResult = maintenanceResult;
+        foregroundTurnMaintenance.result = maintenanceResult;
         return maintenanceResult;
       },
       warn: (message) => log.warn(message),
@@ -444,10 +446,10 @@ export async function finalizeCliContextEngineTurn(params: {
       Promise.resolve(
         turnFinalization.postTurnFinalizationSucceeded &&
           (typeof context.contextEngine?.maintain !== "function" ||
-            foregroundTurnMaintenanceResult !== undefined)
+            foregroundTurnMaintenance.result !== undefined)
           ? {
               status: "completed" as const,
-              changed: foregroundTurnMaintenanceResult?.changed ?? false,
+              changed: foregroundTurnMaintenance.result?.changed ?? false,
             }
           : { status: "failed" as const, changed: true },
       );
