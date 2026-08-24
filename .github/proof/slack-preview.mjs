@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import { createServer } from "node:http";
 import os from "node:os";
@@ -27,6 +27,7 @@ const partialMarker = "PR128626_VISIBLE_ANSWER_BOUNDARY";
 const finalMarker = "PR128626_SECOND_PREVIEW_OK";
 const providerRounds = [];
 let gateway;
+let agentWait;
 let providerServer;
 let transport;
 
@@ -356,13 +357,33 @@ try {
   await fs.writeFile(path.join(gateway.workspaceDir, "PROOF.md"), "bounded proof fixture\n");
   await transport.waitReady({ gateway, timeoutMs: 30_000, pollIntervalMs: 250 });
 
-  const conversation = { id: "D128626", kind: "direct" };
-  await transport.sendInbound({
-    conversation,
-    senderId: "U128626",
-    senderName: "Proof User",
-    text: "Read PROOF.md three times, showing progress, then send the final marker.",
-  });
+  const delivery = transport.buildAgentDelivery({ target: "dm:D128626" });
+  const started = await gateway.call(
+    "agent",
+    {
+      idempotencyKey: randomUUID(),
+      agentId: "qa",
+      sessionKey: "agent:qa:proof:slack-preview-boundary",
+      message: "Read PROOF.md three times, showing progress, then send the final marker.",
+      deliver: true,
+      channel: delivery.channel,
+      to: delivery.to ?? "D128626",
+      replyChannel: delivery.replyChannel,
+      replyTo: delivery.replyTo,
+    },
+    { timeoutMs: 30_000 },
+  );
+  if (!started?.runId) {
+    throw new Error("agent RPC did not return a runId");
+  }
+  agentWait = await gateway.call(
+    "agent.wait",
+    { runId: started.runId, timeoutMs: 150_000 },
+    { timeoutMs: 160_000 },
+  );
+  if (agentWait?.status !== "ok") {
+    throw new Error(`agent run did not complete successfully: ${JSON.stringify(agentWait)}`);
+  }
   const events = await waitForFinalUpdate(120_000);
   const apiEvents = events.filter((event) => event.type === "api");
   const postEvents = apiEvents.filter((event) => isSlackMethod(event, "chat.postMessage"));
@@ -411,6 +432,7 @@ try {
     boundary: "Crabline loopback Slack HTTP + exact dist Gateway + mock OpenAI Responses SSE",
     observed: {
       providerRounds,
+      agentWaitStatus: agentWait.status,
       postMessageCount: postEvents.length,
       updateCount: updateEvents.length,
       updateMessageIdentityCount: uniqueUpdateTs.length,
@@ -442,6 +464,8 @@ try {
     result: "fail",
     targetHead: exactHead,
     message: error instanceof Error ? error.message : String(error),
+    providerRounds,
+    agentWaitStatus: agentWait?.status ?? null,
   };
   await fs.writeFile(failurePath, `${JSON.stringify(failure, null, 2)}\n`, "utf8");
   const gatewayTail = gateway?.logs?.().slice(-4_000);
