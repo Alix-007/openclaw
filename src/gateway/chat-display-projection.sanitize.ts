@@ -148,18 +148,21 @@ export function sanitizeChatHistoryContentBlock(
   }
   const entry = { ...(block as Record<string, unknown>) };
   let changed = false;
+  // Display-cap truncation is a fact consumers need (to fetch the full row), so
+  // it is tracked apart from `changed`, which also covers metadata stripping.
   let truncated = false;
   const preserveExactToolPayload =
     opts?.preserveExactToolPayload === true || isToolHistoryBlockType(entry.type);
   const maxChars = opts?.maxChars ?? DEFAULT_CHAT_HISTORY_TEXT_MAX_CHARS;
   if (isToolResultHistoryBlockType(entry.type) && "details" in entry) {
     const projectedDetails = projectToolResultDetails(entry.details, maxChars);
-    if (projectedDetails) {
-      entry.details = projectedDetails;
+    if (projectedDetails.details) {
+      entry.details = projectedDetails.details;
     } else {
       delete entry.details;
     }
     changed = true;
+    truncated ||= projectedDetails.truncated;
   }
   if (typeof entry.text === "string") {
     if (!preserveExactToolPayload) {
@@ -181,16 +184,19 @@ export function sanitizeChatHistoryContentBlock(
     const res = truncateChatHistoryText(entry.partialJson, maxChars);
     entry.partialJson = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if (typeof entry.arguments === "string" && !preserveExactToolPayload) {
     const res = truncateChatHistoryText(entry.arguments, maxChars);
     entry.arguments = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if (typeof entry.thinking === "string") {
     const res = truncateChatHistoryText(entry.thinking, maxChars);
     entry.thinking = res.text;
     changed ||= res.truncated;
+    truncated ||= res.truncated;
   }
   if ("thinkingSignature" in entry) {
     delete entry.thinkingSignature;
@@ -238,7 +244,7 @@ function sanitizeAssistantPhasedContentBlocks(content: unknown[]): {
 function projectAssistantMixedToolContent(
   content: unknown[],
   maxChars: number,
-): { content: unknown[]; changed: boolean; truncated: boolean } | null {
+): { content: unknown[]; changed: boolean } | null {
   const hasToolHistoryBlock = content.some((block) => {
     if (!block || typeof block !== "object") {
       return false;
@@ -250,7 +256,6 @@ function projectAssistantMixedToolContent(
   }
 
   let hasVisibleText = false;
-  let wasTruncated = false;
   const projectedContent: unknown[] = [];
   for (const block of content) {
     if (!block || typeof block !== "object") {
@@ -265,7 +270,6 @@ function projectAssistantMixedToolContent(
       continue;
     }
     const truncated = truncateChatHistoryText(entry.text, maxChars);
-    wasTruncated ||= truncated.truncated;
     if (truncated.text.trim()) {
       projectedContent.push({ type: "text", text: truncated.text });
       hasVisibleText = true;
@@ -274,9 +278,7 @@ function projectAssistantMixedToolContent(
 
   // Mixed messages supply both the visible bubble and its reasoning/tool trace.
   // Keep structured siblings or a history reload loses activity shown while live.
-  return hasVisibleText
-    ? { content: projectedContent, changed: true, truncated: wasTruncated }
-    : null;
+  return hasVisibleText ? { content: projectedContent, changed: true } : null;
 }
 
 function sanitizeCost(raw: unknown): Record<string, number> | undefined {
@@ -415,17 +417,19 @@ export function sanitizeChatHistoryMessage(
     typeof entry.tool_call_id === "string";
 
   if ("details" in entry) {
-    const projectedDetails =
-      projectWorkspaceConflictDetails(entry) ??
-      (messageHasToolResultShape(entry)
+    const conflictDetails = projectWorkspaceConflictDetails(entry);
+    const toolResultDetails =
+      !conflictDetails && messageHasToolResultShape(entry)
         ? projectToolResultDetails(entry.details, maxChars)
-        : undefined);
+        : undefined;
+    const projectedDetails = conflictDetails ?? toolResultDetails?.details;
     if (projectedDetails) {
       entry.details = projectedDetails;
     } else {
       delete entry.details;
     }
     changed = true;
+    truncated ||= toolResultDetails?.truncated === true;
   }
 
   if (entry.role !== "assistant") {
@@ -497,16 +501,15 @@ export function sanitizeChatHistoryMessage(
         ? sanitized
         : { block: { ...contentBlock, text }, changed: true, truncated: sanitized.truncated };
     });
-    truncated ||= updated.some((item) => item.truncated);
     if (updated.some((item) => item.changed)) {
       entry.content = updated.map((item) => item.block);
       changed = true;
     }
+    truncated ||= updated.some((item) => item.truncated);
     if (entry.role === "assistant" && Array.isArray(entry.content)) {
       const mixedToolContent = projectAssistantMixedToolContent(entry.content, maxChars);
       if (mixedToolContent) {
         entry.content = mixedToolContent.content;
-        truncated ||= mixedToolContent.truncated;
         if (entry.phase === "commentary") {
           delete entry.phase;
         }
@@ -537,8 +540,16 @@ export function sanitizeChatHistoryMessage(
   }
 
   if (truncated) {
-    // Truncation is decided here, so downstream clients must not infer it from display text.
-    entry["__openclaw"] = { ...readRecord(entry["__openclaw"]), truncated: true };
+    // Record the display cap where it is applied so any session.message or
+    // chat.history consumer can tell a bounded preview from the full row and
+    // fetch it via chat.message.get. An upstream "oversized" transcript
+    // marker already explains the truncation; never overwrite its reason.
+    const meta = readRecord(entry["__openclaw"]);
+    entry["__openclaw"] = {
+      ...meta,
+      truncated: true,
+      reason: typeof meta?.reason === "string" ? meta.reason : "display-cap",
+    };
     changed = true;
   }
 
