@@ -311,6 +311,9 @@ jobs:
                 if (verdict.result !== "pass" || verdict.target?.immutableHead !== sha ||
                     verdict.target?.buildStampHead !== sha ||
                     verdict.target?.runtimePostbuildStampHead !== sha ||
+                    observed.inboundAdminStatus !== 200 ||
+                    observed.inboundGatewayAck?.gatewayStatus !== 200 ||
+                    observed.inboundGatewayAck?.owner !== "crabline-signed-event" ||
                     observed.postMessageCount !== 2 ||
                     observed.updateMessageIdentityCount !== 2 ||
                     observed.preAnswerMessageIdentityCount !== 1 ||

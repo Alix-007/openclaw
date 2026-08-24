@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from "node:crypto";
+import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import { createServer } from "node:http";
 import os from "node:os";
@@ -13,10 +13,12 @@ if (!/^[0-9a-f]{40}$/u.test(exactHead ?? "")) {
 }
 
 const importRepo = (relativePath) => import(pathToFileURL(path.join(repoRoot, relativePath)).href);
-const { createQaCrablineTransportAdapter } = await importRepo(
-  "extensions/qa-lab/src/crabline-transport.ts",
-);
 const { startQaGatewayChild } = await importRepo("extensions/qa-lab/src/gateway-child.ts");
+const { waitForQaTransportAccountReady } = await importRepo(
+  "extensions/qa-lab/src/qa-transport.ts",
+);
+const { createOpenClawCrablineInbound, createOpenClawCrablineProviderBinding, startSlackServer } =
+  await import("@openclaw/crabline");
 
 const artifactDir = path.join(repoRoot, ".artifacts/qa-e2e/pr-128626-slack-preview");
 const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-pr128626-proof-"));
@@ -26,11 +28,14 @@ const partialMarker = "PR128626_VISIBLE_ANSWER_BOUNDARY";
 const finalMarker = "PR128626_SECOND_PREVIEW_OK";
 const providerRounds = [];
 const slackApiEvents = [];
+const slackIngressEvents = [];
 let gateway;
-let agentWait;
+let inboundAdminStatus;
+let inboundEventId;
 let providerServer;
+let slackIngressRelayServer;
 let slackProxyServer;
-let transport;
+let slackServer;
 
 await fs.mkdir(artifactDir, { recursive: true });
 
@@ -293,16 +298,66 @@ try {
     throw new Error("proof provider did not bind a loopback port");
   }
 
-  transport = await createQaCrablineTransportAdapter({
-    outputDir,
-    selection: {
-      capabilityMatrixPath: "crabline-fake-provider-capabilities.json",
-      channel: "slack",
-      channelDriver: "crabline",
-      smokeArtifactPath: "crabline-fake-provider-smoke.json",
-    },
+  slackIngressRelayServer = createServer((request, response) => {
+    void (async () => {
+      const rawBody = await readRequestBody(request);
+      const envelope = JSON.parse(rawBody);
+      if (!gateway?.baseUrl) {
+        response.writeHead(503).end();
+        return;
+      }
+      const headers = new Headers();
+      for (const name of [
+        "content-type",
+        "x-slack-request-timestamp",
+        "x-slack-retry-num",
+        "x-slack-retry-reason",
+        "x-slack-signature",
+      ]) {
+        const value = request.headers[name];
+        if (typeof value === "string") {
+          headers.set(name, value);
+        }
+      }
+      const upstream = await fetch(`${gateway.baseUrl}/slack/events`, {
+        method: "POST",
+        headers,
+        body: rawBody,
+        signal: AbortSignal.timeout(2_500),
+      });
+      const payload = await upstream.text();
+      slackIngressEvents.push({
+        eventId: envelope.event_id ?? null,
+        eventType: envelope.event?.type ?? envelope.type ?? null,
+        gatewayStatus: upstream.status,
+        owner: "crabline-signed-event",
+      });
+      response.writeHead(upstream.status, {
+        "content-type": upstream.headers.get("content-type") ?? "text/plain",
+      });
+      response.end(payload);
+    })().catch((error) => {
+      if (!response.headersSent) {
+        response.writeHead(500);
+      }
+      response.end(error instanceof Error ? error.message : String(error));
+    });
   });
-  const crablineEnv = transport.createRuntimeEnvPatch?.() ?? {};
+  await new Promise((resolve, reject) => {
+    slackIngressRelayServer.once("error", reject);
+    slackIngressRelayServer.listen(0, "127.0.0.1", resolve);
+  });
+  const slackIngressRelayAddress = slackIngressRelayServer.address();
+  if (!slackIngressRelayAddress || typeof slackIngressRelayAddress === "string") {
+    throw new Error("Slack ingress relay did not bind a loopback port");
+  }
+
+  slackServer = await startSlackServer({
+    eventsRequestUrl: `http://127.0.0.1:${slackIngressRelayAddress.port}/slack/events`,
+    recorderPath: path.join(outputDir, "crabline-slack.jsonl"),
+  });
+  const crablineBinding = createOpenClawCrablineProviderBinding(slackServer.manifest);
+  const crablineEnv = crablineBinding.createChannelDriverSmokeEnv({});
   const crablineApiRoot = crablineEnv.SLACK_API_URL;
   if (!crablineApiRoot) {
     throw new Error("Crabline did not expose its loopback Slack API root");
@@ -381,7 +436,10 @@ try {
     providerMode: "mock-openai",
     primaryModel: "mock-openai/gpt-5.6-luna",
     alternateModel: "mock-openai/gpt-5.6-luna",
-    transport,
+    transport: {
+      requiredPluginIds: crablineBinding.requiredPluginIds,
+      createGatewayConfig: (params) => crablineBinding.createGatewayConfig(params),
+    },
     transportBaseUrl: "http://127.0.0.1:1",
     controlUiEnabled: false,
     mutateConfig: (cfg) => ({
@@ -415,34 +473,34 @@ try {
     },
   });
   await fs.writeFile(path.join(gateway.workspaceDir, "PROOF.md"), "bounded proof fixture\n");
-  await transport.waitReady({ gateway, timeoutMs: 30_000, pollIntervalMs: 250 });
+  await waitForQaTransportAccountReady({
+    accountId: crablineBinding.accountId,
+    channel: "slack",
+    gateway,
+    timeoutMs: 30_000,
+    pollIntervalMs: 250,
+  });
 
-  const delivery = transport.buildAgentDelivery({ target: "dm:D01286260" });
-  const started = await gateway.call(
-    "agent",
-    {
-      idempotencyKey: randomUUID(),
-      agentId: "qa",
-      sessionKey: "agent:qa:proof:slack-preview-boundary",
-      message: "Read PROOF.md three times, showing progress, then send the final marker.",
-      deliver: true,
-      channel: delivery.channel,
-      to: delivery.to ?? "D01286260",
-      replyChannel: delivery.replyChannel,
-      replyTo: delivery.replyTo,
+  const inbound = createOpenClawCrablineInbound({
+    manifest: slackServer.manifest,
+    input: {
+      conversation: { id: "D01286260", kind: "direct" },
+      senderId: "U01286260",
+      senderName: "Proof Operator",
+      text: "Read PROOF.md three times, showing progress, then send the final marker.",
     },
-    { timeoutMs: 30_000 },
-  );
-  if (!started?.runId) {
-    throw new Error("agent RPC did not return a runId");
-  }
-  agentWait = await gateway.call(
-    "agent.wait",
-    { runId: started.runId, timeoutMs: 150_000 },
-    { timeoutMs: 160_000 },
-  );
-  if (agentWait?.status !== "ok") {
-    throw new Error(`agent run did not complete successfully: ${JSON.stringify(agentWait)}`);
+  });
+  const inboundResponse = await fetch(inbound.providerUrl, {
+    method: "POST",
+    headers: inbound.providerHeaders,
+    body: JSON.stringify(inbound.providerBody),
+    signal: AbortSignal.timeout(5_000),
+  });
+  inboundAdminStatus = inboundResponse.status;
+  const inboundPayload = await inboundResponse.json();
+  inboundEventId = inboundPayload?.event?.event_id;
+  if (!inboundResponse.ok || typeof inboundEventId !== "string") {
+    throw new Error(`Crabline inbound was not accepted: HTTP ${inboundResponse.status}`);
   }
   const events = await waitForFinalUpdate(120_000);
   const apiEvents = events.filter((event) => event.type === "api");
@@ -471,7 +529,10 @@ try {
   );
   const roundSignature = providerRounds.map(({ round }) => round).join(",");
   const postCountsAtRoundStart = providerRounds.map(({ postCountAtStart }) => postCountAtStart);
+  const inboundGatewayAck = slackIngressEvents.find((event) => event.eventId === inboundEventId);
   const pass =
+    inboundAdminStatus === 200 &&
+    inboundGatewayAck?.gatewayStatus === 200 &&
     roundSignature === "0,1,2,3" &&
     postCountsAtRoundStart[2] === 1 &&
     postCountsAtRoundStart[3] === 1 &&
@@ -494,10 +555,12 @@ try {
       changedSourceSha256: createHash("sha256").update(slackDispatchSource).digest("hex"),
     },
     boundary:
-      "exact dist Gateway + Crabline loopback Slack HTTP with a proof-owned chat.update endpoint + mock OpenAI Responses SSE",
+      "Crabline-signed Slack Events API inbound + exact dist Gateway monitor + Crabline Slack Web API with a proof-owned chat.update endpoint + mock OpenAI Responses SSE",
     observed: {
+      inboundAdminStatus,
+      inboundEventId,
+      inboundGatewayAck,
       providerRounds,
-      agentWaitStatus: agentWait.status,
       postMessageCount: postEvents.length,
       updateCount: updateEvents.length,
       updateMessageIdentityCount: uniqueUpdateTs.length,
@@ -518,16 +581,18 @@ try {
     throw new Error(`proof verdict failed: ${JSON.stringify(verdict)}`);
   }
 
+  await slackServer.close();
+  slackServer = undefined;
   await gateway.stop();
   gateway = undefined;
-  await transport.cleanup?.();
-  transport = undefined;
   await closeServer(slackProxyServer);
   slackProxyServer = undefined;
+  await closeServer(slackIngressRelayServer);
+  slackIngressRelayServer = undefined;
   await closeServer(providerServer);
   providerServer = undefined;
   await fs.rm(outputDir, { recursive: true, force: true });
-  verdict.cleanup = "gateway/provider/transport/temp removed";
+  verdict.cleanup = "gateway/provider/slack/relay/proxy/temp removed";
   await fs.writeFile(verdictPath, `${JSON.stringify(verdict, null, 2)}\n`, "utf8");
   process.stdout.write(
     `[slack preview reasoning-boundary proof] head=${exactHead} rounds=${roundSignature} posts=2 identities=2 partial-first=true final-second=true cleanup=true\n`,
@@ -539,7 +604,9 @@ try {
     targetHead: exactHead,
     message: error instanceof Error ? error.message : String(error),
     providerRounds,
-    agentWaitStatus: agentWait?.status ?? null,
+    inboundAdminStatus: inboundAdminStatus ?? null,
+    inboundEventId: inboundEventId ?? null,
+    slackIngressEvents,
     slackApiCounts: Object.fromEntries(
       [...new Set(slackApiEvents.map((event) => event.path))].map((eventPath) => [
         eventPath,
@@ -555,8 +622,9 @@ try {
   process.exitCode = 1;
 } finally {
   await gateway?.stop().catch(() => undefined);
-  await transport?.cleanup?.().catch(() => undefined);
+  await slackServer?.close().catch(() => undefined);
   await closeServer(slackProxyServer).catch(() => undefined);
+  await closeServer(slackIngressRelayServer).catch(() => undefined);
   await closeServer(providerServer).catch(() => undefined);
   await fs.rm(outputDir, { recursive: true, force: true }).catch(() => undefined);
 }
