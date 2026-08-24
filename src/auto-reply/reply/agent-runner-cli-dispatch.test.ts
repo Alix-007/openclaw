@@ -3,7 +3,10 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useAutoCleanupTempDirTracker } from "../../../test/helpers/temp-dir.js";
 import { withTestAdmittedRunContext } from "../../agents/admitted-run-context.test-support.js";
-import { setPendingCliBootstrapCompletion } from "../../agents/cli-bootstrap-completion.js";
+import {
+  finalizePendingCliBootstrapCompletion,
+  setPendingCliBootstrapCompletion,
+} from "../../agents/cli-bootstrap-completion.js";
 import type { EmbeddedAgentRunResult } from "../../agents/embedded-agent-runner/types.js";
 import { FailoverError } from "../../agents/failover-error.js";
 import { createAgentRunRestartAbortError } from "../../agents/run-termination.js";
@@ -493,6 +496,51 @@ describe("runCliAgentWithLifecycle", () => {
     releaseMaintenance?.(true);
     await maintenanceSettledWithoutRewrite;
     await vi.waitFor(() => expect(appendCustomEntry).toHaveBeenCalledOnce());
+  });
+
+  it("leaves bootstrap settlement to the outer fallback owner", async () => {
+    const result = {
+      payloads: [{ text: "Visible answer" }],
+      meta: { durationMs: 1 },
+    } satisfies EmbeddedAgentRunResult;
+    const appendCustomEntry = vi.fn();
+    setPendingCliBootstrapCompletion(result, {
+      maintenanceSettledWithoutRewrite: Promise.resolve(true),
+      runId: "run-outer-bootstrap-owner",
+      sessionTarget: {
+        agentId: "main",
+        sessionId: "session-1",
+        sessionKey: "agent:main:main",
+        storePath: "/tmp/sessions.json",
+      },
+      sessionManager: { appendCustomEntry },
+      transcriptOwner: "runner",
+    });
+    cliDispatchState.runCliAgentMock.mockResolvedValueOnce(result);
+
+    const reply = await runCliAgentWithLifecycle({
+      runId: "run-outer-bootstrap-owner",
+      provider: "claude-cli",
+      runParams: {
+        sessionId: "session-1",
+        sessionKey: "agent:main:main",
+        sessionFile: "/tmp/session.jsonl",
+        workspaceDir: "/tmp/workspace",
+        prompt: "hello",
+        provider: "claude-cli",
+        model: "claude",
+        thinkLevel: "high",
+        timeoutMs: 1_000,
+        runId: "run-outer-bootstrap-owner",
+        onContextEngineTurnCandidate: vi.fn(),
+      },
+    });
+
+    expect(appendCustomEntry).not.toHaveBeenCalled();
+    await expect(
+      finalizePendingCliBootstrapCompletion({ result: reply, transcriptStable: true }),
+    ).resolves.toBe(true);
+    expect(appendCustomEntry).toHaveBeenCalledOnce();
   });
 
   it("keeps the captured lifecycle generation on start and terminal events", async () => {

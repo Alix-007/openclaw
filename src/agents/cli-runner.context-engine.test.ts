@@ -3,6 +3,10 @@ import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ContextEngine } from "../context-engine/types.js";
 import { createTestAdmittedRunContext } from "./admitted-run-context.test-support.js";
+import {
+  finalizePendingCliBootstrapCompletion,
+} from "./cli-bootstrap-completion.js";
+import { markPreparedCliBootstrapCompletion } from "./cli-bootstrap-completion-state.js";
 import type { PreparedCliRunContext } from "./cli-runner/types.js";
 
 const {
@@ -600,6 +604,57 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
     expect(context.contextEngineDeferredTurnMaintenance).toBeDefined();
     await context.contextEngineDeferredTurnMaintenance;
     expect(dispose).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      label: "afterTurn fails",
+      create: () =>
+        createContextEngine({
+          afterTurn: vi.fn(async () => {
+            throw new Error("afterTurn failed");
+          }),
+        }),
+    },
+    {
+      label: "foreground maintenance fails",
+      create: () =>
+        createContextEngine({
+          maintain: vi.fn(async () => {
+            throw new Error("maintenance failed");
+          }),
+        }),
+    },
+    {
+      label: "foreground maintenance rewrites the transcript",
+      create: () =>
+        createContextEngine({
+          maintain: vi.fn(async () => ({
+            changed: true,
+            bytesFreed: 1,
+            rewrittenEntries: 1,
+          })),
+        }),
+    },
+  ])("does not record bootstrap completion when $label", async ({ create }) => {
+    const appendCustomEntry = vi.fn();
+    const context = buildPreparedContext(create());
+    context.hadSessionFile = false;
+    context.params.sessionTarget = {
+      agentId: "main",
+      sessionId: "openclaw-session-1",
+      sessionKey: "agent:main:main",
+      storePath: "/tmp/sessions.json",
+    };
+    context.params.sessionManager = { appendCustomEntry } as never;
+    markPreparedCliBootstrapCompletion(context, "caller");
+
+    const result = await runPreparedCliAgent(context);
+
+    await expect(
+      finalizePendingCliBootstrapCompletion({ result, transcriptStable: true }),
+    ).resolves.toBe(false);
+    expect(appendCustomEntry).not.toHaveBeenCalled();
   });
 
   it("waits for same-session maintenance before preparing the next CLI turn", async () => {
