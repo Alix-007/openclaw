@@ -28,7 +28,7 @@ test_status="${PIPESTATUS[0]}"
 set -e
 adb pull "/sdcard/Android/data/$target_package/files/pr122200-proof/." "$artifact_dir/interaction/"
 if test -s "$artifact_dir/interaction/00-observed-initial.xml"; then
-  rg -o 'text="[^"]*"|content-desc="[^"]*"|clickable="true"' \
+  grep -oE 'text="[^"]*"|content-desc="[^"]*"|clickable="true"' \
     "$artifact_dir/interaction/00-observed-initial.xml" \
     | sort -u
 fi
@@ -55,10 +55,10 @@ done
 ! cmp -s "$artifact_dir/interaction/06-not-found.png" "$artifact_dir/interaction/07-oversized.png"
 ! cmp -s "$artifact_dir/interaction/07-oversized.png" "$artifact_dir/interaction/08-not-visible.png"
 text_artifacts=("$artifact_dir/instrumentation.txt" "$artifact_dir"/interaction/*.xml)
-! rg -n -i \
+! grep -nEi \
   'token|public.?key|private.?key|device.?id|node.?id|credential|authorization|bearer|adbkey' \
   "${text_artifacts[@]}"
-! rg -n -e '\b[[:xdigit:]]{64}\b' -e '[A-Za-z0-9+/=_-]{80,}' "${text_artifacts[@]}"
+! grep -nE -e '\b[[:xdigit:]]{64}\b' -e '[A-Za-z0-9+/=_-]{80,}' "${text_artifacts[@]}"
 {
   echo "product_sha=$PRODUCT_SHA"
   echo "proof_sha=$PROOF_SHA"
