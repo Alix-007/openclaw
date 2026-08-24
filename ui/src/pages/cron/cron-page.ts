@@ -1,6 +1,5 @@
 import { consume } from "@lit/context";
 import type { ConversationListItem, ConversationListResult } from "@openclaw/gateway-protocol";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
 import { html } from "lit";
 import { state } from "lit/decorators.js";
 import type { AgentsListResult, CronJob } from "../../api/types.ts";
@@ -12,7 +11,6 @@ import { showConfirmDialog } from "../../components/confirm-dialog.ts";
 import { renderSettingsWorkspace } from "../../components/settings-workspace.ts";
 import { t } from "../../i18n/index.ts";
 import { watchAgentScope } from "../../lib/agents/index.ts";
-import { currentConfigObject } from "../../lib/config/config-state-model.ts";
 import {
   addCronJob,
   cancelCronEdit,
@@ -49,13 +47,6 @@ import { OpenClawLightDomElement } from "../../lit/openclaw-element.ts";
 import { SubscriptionsController } from "../../lit/subscriptions-controller.ts";
 import { buildCronSuggestions, THINKING_SUGGESTIONS } from "./form-suggestions.ts";
 import { renderCron, type CronDetailTab, type CronListTab } from "./view.ts";
-
-function resolveCronTriggersEnabled(context: ApplicationContext): boolean {
-  const config = currentConfigObject(context.runtimeConfig.state) ?? {};
-  const cron = isRecord(config.cron) ? config.cron : undefined;
-  const triggers = cron && isRecord(cron.triggers) ? cron.triggers : undefined;
-  return triggers?.enabled !== false;
-}
 
 class CronPage extends OpenClawLightDomElement {
   private static readonly threadScope = /^(delivery(Channel|AccountId|Mode)|agentId|clearAgent)$/;
@@ -313,7 +304,11 @@ class CronPage extends OpenClawLightDomElement {
     if (!this.canManageCron) {
       return;
     }
-    const clearThread = Object.keys(patch).some((key) => CronPage.threadScope.test(key));
+    // A conversation selection supplies its whole route atomically. Scope-only
+    // edits omit the thread and must clear the previous route's thread instead.
+    const clearThread =
+      !Object.hasOwn(patch, "deliveryThreadId") &&
+      Object.keys(patch).some((key) => CronPage.threadScope.test(key));
     const nextPatch = clearThread ? { ...patch, deliveryThreadId: undefined } : patch;
     this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...nextPatch });
     this.cron.cronFieldErrors = validateCronForm(this.cron.cronForm);
@@ -447,11 +442,8 @@ class CronPage extends OpenClawLightDomElement {
   override render() {
     const channels = this.context.channels.state;
     const form = this.cron.cronForm;
-    const defaultAccountIds = channels.channelsSnapshot?.channelDefaultAccountId;
-    const deliveryAccountId =
-      form.deliveryAccountId.trim() || defaultAccountIds?.[form.deliveryChannel];
-    const failureAccountId =
-      form.failureAlertAccountId.trim() || defaultAccountIds?.[form.failureAlertChannel];
+    const deliveryAccountId = form.deliveryAccountId.trim();
+    const failureAccountId = form.failureAlertAccountId.trim();
     const fallbackAgentId = resolveSessionNavigationAgentId(this.context);
     const suggestions = buildCronSuggestions({
       channels,
@@ -477,7 +469,6 @@ class CronPage extends OpenClawLightDomElement {
           agentId: fallbackAgentId,
           loading: this.cron.cronLoading,
           canManage,
-          triggersEnabled: resolveCronTriggersEnabled(this.context),
           status: this.cron.cronStatus,
           failingCount: this.cron.cronFailingCount,
           agentScoped: this.cron.cronAgentId !== null,

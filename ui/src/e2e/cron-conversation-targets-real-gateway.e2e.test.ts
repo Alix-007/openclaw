@@ -202,7 +202,8 @@ describeRealGateway("Control UI Cron conversation targets real Gateway E2E", () 
         await jobRow.click();
         await page.locator("#cron-delivery-to").waitFor();
         await page.locator(".cron-advanced > summary").click();
-        await page.locator("#cron-delivery-account-id").fill("work");
+        const deliveryAccount = page.locator("#cron-delivery-account-id");
+        await deliveryAccount.fill("");
         console.info("[real-cron-conversation-proof] edit-snapshot-opened");
 
         const readDeliveryOptions = () =>
@@ -215,22 +216,26 @@ describeRealGateway("Control UI Cron conversation targets real Gateway E2E", () 
           .poll(async () =>
             (await readDeliveryOptions()).filter((value) => value.includes("[thread ")),
           )
-          .toEqual(["Builds (-1001) [thread 22]", "General (-1001) [thread 11]"]);
+          .toEqual([
+            "Builds (-1001) [thread 22] [account work]",
+            "General (-1001) [thread 11] [account work]",
+          ]);
         const deliveryOptions = await readDeliveryOptions();
-        const accountFilteredTopicOptions = deliveryOptions.filter((value) =>
+        const multiAccountTopicOptions = deliveryOptions.filter((value) =>
           value.includes("[thread "),
         );
         const legacyFreeFormOptions = deliveryOptions.filter(
-          (value) => !value.includes("[thread "),
+          (value) => !value.includes("[account "),
         );
-        expect(deliveryOptions).not.toContain("Default room (-1000)");
+        expect(deliveryOptions).toContain("Default room (-1000) [account default]");
         expect(legacyFreeFormOptions).toEqual(["-1000"]);
-        console.info("[real-cron-conversation-proof] account-filtered-options-visible");
+        console.info("[real-cron-conversation-proof] multi-account-options-visible");
 
-        const selectedDisplay = "Builds (-1001) [thread 22]";
+        const selectedDisplay = "Builds (-1001) [thread 22] [account work]";
         const recipient = page.locator("#cron-delivery-to");
         await recipient.fill(selectedDisplay);
         await expect.poll(() => recipient.inputValue()).toBe("-1001");
+        await expect(deliveryAccount).toHaveValue("work");
         await capture(page, "01-account-filtered-topic-selected.png");
         await page.locator('[data-test-id="cron-submit"]').click();
         console.info("[real-cron-conversation-proof] ui-save-submitted");
@@ -263,8 +268,7 @@ describeRealGateway("Control UI Cron conversation targets real Gateway E2E", () 
           gateway: "real-ephemeral-websocket",
           readbackMethod: "cron.get",
           uiSource: "mounted-control-ui",
-          accountFilter: "work",
-          accountFilteredTopicOptions,
+          multiAccountTopicOptions,
           preservedLegacyFreeFormOptions: legacyFreeFormOptions,
           selectedDisplay,
           persisted,

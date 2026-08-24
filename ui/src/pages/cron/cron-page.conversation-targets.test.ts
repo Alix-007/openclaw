@@ -117,7 +117,7 @@ describe("CronPage conversation target suggestions", () => {
       page.querySelectorAll<HTMLOptionElement>("#cron-delivery-account-suggestions option"),
       (option) => option.value,
     );
-    expect(recipientOptions).toContain("publisher room (publisher-target)");
+    expect(recipientOptions).toContain("publisher room (publisher-target) [account gmail-cleaner]");
     expect(recipientOptions.join(" ")).not.toContain("editor-target");
     expect(recipientOptions.join(" ")).not.toContain("writer-target");
     expect(recipientOptions).not.toContain("gmail-cleaner");
@@ -162,6 +162,17 @@ describe("CronPage conversation target suggestions", () => {
                     kind: "group",
                     target: "-1000",
                     label: "Default room",
+                    firstSeenAt: 0,
+                    lastSeenAt: 0,
+                  },
+                  {
+                    conversationRef: "conversation:telegram:gmail-cleaner:group:shared:thread:22",
+                    channel: "telegram",
+                    accountId: "gmail-cleaner",
+                    kind: "group",
+                    target: "-1001",
+                    threadId: "22",
+                    label: "Builds",
                     firstSeenAt: 0,
                     lastSeenAt: 0,
                   },
@@ -267,13 +278,19 @@ describe("CronPage conversation target suggestions", () => {
           page.querySelectorAll<HTMLOptionElement>("#cron-delivery-to-suggestions option"),
           (option) => option.value,
         ),
-      ).toEqual(["Default room (-1000)"]),
+      ).toEqual([
+        "Default room (-1000) [account gmail-cleaner]",
+        "Builds (-1001) [thread 22] [account gmail-cleaner]",
+        "General (-1001) [thread 11] [account work]",
+        "Builds (-1001) [thread 22] [account work]",
+        "Plain room (-1002) [account work]",
+      ]),
     );
     const account = page.querySelector("#cron-delivery-account-id") as HTMLInputElement;
-    account.value = "work";
-    account.dispatchEvent(new Event("input", { bubbles: true }));
-    await selectConversation("Builds (-1001) [thread 22]");
+    expect(account.value).toBe("");
+    await selectConversation("Builds (-1001) [thread 22] [account work]");
     expect(conversationRequestCount()).toBe(1);
+    expect(page.cron.cronForm.deliveryAccountId).toBe("work");
     expect(page.cron.cronForm.deliveryTo).toBe("-1001");
     expect(page.cron.cronForm.deliveryThreadId).toBe("22");
     const topicOptions = Array.from(
@@ -287,21 +304,21 @@ describe("CronPage conversation target suggestions", () => {
     expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
     account.value = "work";
     account.dispatchEvent(new Event("input", { bubbles: true }));
-    await selectConversation("Builds (-1001) [thread 22]");
+    await selectConversation("Builds (-1001) [thread 22] [account work]");
 
     const recipient = page.querySelector("#cron-delivery-to") as HTMLInputElement;
     recipient.value = "plugin-owned:free-form-target";
     recipient.dispatchEvent(new Event("input", { bubbles: true }));
     expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
 
-    await selectConversation("General (-1001) [thread 11]");
+    await selectConversation("General (-1001) [thread 11] [account work]");
     selectChannel("discord");
     await waitForCronPage(() => expect(conversationRequestCount()).toBe(2));
     expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
 
     selectChannel("telegram");
     await waitForCronPage(() => expect(conversationRequestCount()).toBe(3));
-    await selectConversation("General (-1001) [thread 11]");
+    await selectConversation("General (-1001) [thread 11] [account work]");
     const agent = page.querySelector("#cron-agent-id") as HTMLInputElement;
     agent.value = "publisher";
     agent.dispatchEvent(new Event("input", { bubbles: true }));
@@ -313,12 +330,12 @@ describe("CronPage conversation target suggestions", () => {
     );
     expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
 
-    await selectConversation("General (-1001) [thread 11]");
-    await selectConversation("Plain room (-1002)");
+    await selectConversation("General (-1001) [thread 11] [account work]");
+    await selectConversation("Plain room (-1002) [account work]");
     expect(page.cron.cronForm.deliveryTo).toBe("-1002");
     expect(page.cron.cronForm.deliveryThreadId).toBeUndefined();
 
-    await selectConversation("Builds (-1001) [thread 22]");
+    await selectConversation("Builds (-1001) [thread 22] [account work]");
     const name = page.querySelector("#cron-name") as HTMLInputElement;
     name.value = "Topic delivery";
     name.dispatchEvent(new Event("input", { bubbles: true }));
@@ -438,6 +455,7 @@ describe("CronPage conversation target suggestions", () => {
           : {
               conversations: [
                 conversation("discord", "default-alert", undefined, "default"),
+                conversation("discord", "current-alert", undefined, "default"),
                 conversation("discord", "current-alert"),
                 conversation("discord", "topic-alert", "22"),
               ],
@@ -490,7 +508,9 @@ describe("CronPage conversation target suggestions", () => {
         page.querySelectorAll<HTMLOptionElement>("#cron-delivery-to-suggestions option"),
         (option) => option.value,
       );
-    await waitForCronPage(() => expect(deliveryTargets()).toEqual(["normal-target"]));
+    await waitForCronPage(() =>
+      expect(deliveryTargets()).toEqual(["normal-target [account gmail-cleaner]"]),
+    );
     expect(
       (page.querySelector("#cron-failure-alert-to") as HTMLInputElement).getAttribute("list"),
     ).toBe("cron-failure-alert-to-suggestions");
@@ -499,14 +519,24 @@ describe("CronPage conversation target suggestions", () => {
     await waitForCronPage(() => expect(failureTargets()).toEqual([]));
     changeSelect("#cron-failure-alert-channel", "discord");
     await waitForCronPage(() => expect(discordRequests).toBe(2));
-    await waitForCronPage(() => expect(failureTargets()).toEqual(["default-alert"]));
+    await waitForCronPage(() =>
+      expect(failureTargets()).toEqual([
+        "default-alert [account default]",
+        "current-alert [account default]",
+        "current-alert [account work]",
+      ]),
+    );
     const failureAccount = page.querySelector("#cron-failure-alert-account-id") as HTMLInputElement;
-    failureAccount.value = "work";
-    failureAccount.dispatchEvent(new Event("input", { bubbles: true }));
-    await waitForCronPage(() => expect(failureTargets()).toEqual(["current-alert"]));
+    expect(failureAccount.value).toBe("");
+    const failureTarget = page.querySelector("#cron-failure-alert-to") as HTMLInputElement;
+    failureTarget.value = "current-alert [account work]";
+    failureTarget.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(page.cron.cronForm.failureAlertAccountId).toBe("work");
+    expect(page.cron.cronForm.failureAlertTo).toBe("current-alert");
+    await waitForCronPage(() => expect(failureTargets()).toEqual(["current-alert [account work]"]));
     staleDiscord.resolve({ conversations: [conversation("discord", "stale-alert")] });
     await staleDiscord.promise;
-    expect(failureTargets()).toEqual(["current-alert"]);
+    expect(failureTargets()).toEqual(["current-alert [account work]"]);
     expect(failureTargets()).not.toContain("normal-target");
     expect(failureTargets()).not.toContain("gmail-cleaner");
   });

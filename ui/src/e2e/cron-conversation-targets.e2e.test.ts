@@ -158,7 +158,11 @@ suite.define(() => {
         const accountOptions = await page
           .locator("#cron-delivery-account-suggestions option")
           .evaluateAll((options) => options.map((option) => option.getAttribute("value")));
-        expect(defaultRecipientOptions).toEqual(["Default room (-1000)"]);
+        expect(defaultRecipientOptions).toEqual([
+          "Default room (-1000) [account gmail-cleaner]",
+          "General (-1001) [thread 11] [account work]",
+          "Builds (-1001) [thread 22] [account work]",
+        ]);
         expect(defaultRecipientOptions).not.toContain("gmail-cleaner");
         expect(defaultRecipientOptions).not.toContain("Gmail Cleaner");
         expect(accountOptions).toEqual(["gmail-cleaner", "work"]);
@@ -166,15 +170,10 @@ suite.define(() => {
         expect(accountOptions).not.toContain("Work Bot");
 
         await page.locator(".cron-advanced > summary").click();
-        await page.locator("#cron-delivery-account-id").fill("work");
-        await expect
-          .poll(async () =>
-            page
-              .locator("#cron-delivery-to-suggestions option")
-              .evaluateAll((options) => options.map((option) => option.getAttribute("value"))),
-          )
-          .toEqual(["General (-1001) [thread 11]", "Builds (-1001) [thread 22]"]);
-        await recipient.fill("Builds (-1001) [thread 22]");
+        const deliveryAccount = page.locator("#cron-delivery-account-id");
+        await expect(deliveryAccount).toHaveValue("");
+        await recipient.fill("Builds (-1001) [thread 22] [account work]");
+        await expect(deliveryAccount).toHaveValue("work");
         await page.locator("#cron-name").fill("Topic delivery");
         await page.locator("#cron-payload-text").fill("Send the topic digest");
         await page.locator('[data-test-id="cron-submit"]').click();

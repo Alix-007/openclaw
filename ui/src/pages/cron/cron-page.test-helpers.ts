@@ -181,8 +181,17 @@ export function cronListResponse(jobs: CronJob[]): CronJobsListResult {
   };
 }
 
-export function createRequest() {
+export function createRequest(
+  cronStatus: { enabled: boolean; jobs: number; triggersEnabled: boolean } = {
+    enabled: true,
+    jobs: 0,
+    triggersEnabled: true,
+  },
+) {
   return vi.fn(async (method: string) => {
+    if (method === "cron.status") {
+      return { ...cronStatus };
+    }
     if (method === "cron.list") {
       return cronListResponse([]);
     }
