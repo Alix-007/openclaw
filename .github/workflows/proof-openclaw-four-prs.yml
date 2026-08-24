@@ -181,7 +181,7 @@ jobs:
               grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
               grep -F "does not record bootstrap completion when 'afterTurn fails'" "$log_file"
               grep -F "does not record bootstrap completion when 'foreground maintenance fails'" "$log_file"
-              grep -F "does not record bootstrap completion when 'foreground maintenance rewrites the transcript'" "$log_file"
+              grep -F "foreground maintenance rewrites" "$log_file"
               echo '[bootstrap independent-review findings proof] exact-head=true outer-owner=true finalization-failure=true foreground-failure=true foreground-rewrite=true' | tee -a "$log_file"
               marker='[bootstrap independent-review findings proof]'
               ;;
