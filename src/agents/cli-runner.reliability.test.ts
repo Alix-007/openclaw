@@ -790,7 +790,7 @@ describe("runCliAgent reliability", () => {
     }
   });
 
-  it("does not persist a CLI bootstrap marker after terminal partial-output cancellation", async () => {
+  it("does not persist a CLI bootstrap marker after post-output cancellation with terminal partial output", async () => {
     const context = buildPreparedContext({ runId: "run-cli-bootstrap-terminal-interruption" });
     const appendCustomEntry = vi.fn();
     context.params.sessionTarget = {
