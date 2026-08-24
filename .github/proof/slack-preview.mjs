@@ -20,15 +20,16 @@ const { startQaGatewayChild } = await importRepo("extensions/qa-lab/src/gateway-
 
 const artifactDir = path.join(repoRoot, ".artifacts/qa-e2e/pr-128626-slack-preview");
 const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-pr128626-proof-"));
-const recorderPath = path.join(outputDir, "artifacts", "crabline", "slack-fake-provider.jsonl");
 const verdictPath = path.join(artifactDir, "verdict.json");
 const failurePath = path.join(artifactDir, "failure.json");
 const partialMarker = "PR128626_VISIBLE_ANSWER_BOUNDARY";
 const finalMarker = "PR128626_SECOND_PREVIEW_OK";
 const providerRounds = [];
+const slackApiEvents = [];
 let gateway;
 let agentWait;
 let providerServer;
+let slackProxyServer;
 let transport;
 
 await fs.mkdir(artifactDir, { recursive: true });
@@ -191,28 +192,14 @@ async function readRequestBody(request) {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-async function readRecorderEvents() {
-  let raw;
-  try {
-    raw = await fs.readFile(recorderPath, "utf8");
-  } catch (error) {
-    if (error?.code === "ENOENT") {
-      return [];
-    }
-    throw error;
+function parseSlackBody(raw, contentType) {
+  if (!raw) {
+    return {};
   }
-  const events = [];
-  for (const line of raw.split(/\r?\n/u).filter(Boolean)) {
-    try {
-      events.push(JSON.parse(line));
-    } catch {
-      // The recorder appends JSONL while this proof polls it; ignore only an incomplete tail.
-      if (line !== raw.trimEnd().split(/\r?\n/u).at(-1)) {
-        throw new Error("Slack recorder contains malformed JSONL before its active tail");
-      }
-    }
+  if (contentType.includes("application/json")) {
+    return JSON.parse(raw);
   }
-  return events;
+  return Object.fromEntries(new URLSearchParams(raw));
 }
 
 function isSlackMethod(event, method) {
@@ -222,14 +209,13 @@ function isSlackMethod(event, method) {
 async function waitForFinalUpdate(timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const events = await readRecorderEvents();
     if (
-      events.some(
+      slackApiEvents.some(
         (event) =>
           isSlackMethod(event, "chat.update") && JSON.stringify(event.body).includes(finalMarker),
       )
     ) {
-      return events;
+      return [...slackApiEvents];
     }
     await sleep(250);
   }
@@ -284,11 +270,10 @@ try {
       const serializedInput = JSON.stringify(body.input ?? []);
       const toolOutputCount = serializedInput.match(/"type":"function_call_output"/gu)?.length ?? 0;
       const round = Math.min(toolOutputCount, 3);
-      const eventsAtStart = await readRecorderEvents();
       providerRounds.push({
         round,
         toolOutputCount,
-        postCountAtStart: eventsAtStart.filter((event) => isSlackMethod(event, "chat.postMessage"))
+        postCountAtStart: slackApiEvents.filter((event) => isSlackMethod(event, "chat.postMessage"))
           .length,
       });
       await writeProviderResponse(response, round);
@@ -317,6 +302,78 @@ try {
       smokeArtifactPath: "crabline-fake-provider-smoke.json",
     },
   });
+  const crablineEnv = transport.createRuntimeEnvPatch?.() ?? {};
+  const crablineApiRoot = crablineEnv.SLACK_API_URL;
+  if (!crablineApiRoot) {
+    throw new Error("Crabline did not expose its loopback Slack API root");
+  }
+  slackProxyServer = createServer((request, response) => {
+    void (async () => {
+      const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
+      if (!requestUrl.pathname.startsWith("/api/")) {
+        response.writeHead(404).end();
+        return;
+      }
+      const rawBody = await readRequestBody(request);
+      const body = parseSlackBody(rawBody, String(request.headers["content-type"] ?? ""));
+      const method = requestUrl.pathname.slice("/api/".length);
+      const event = {
+        at: new Date().toISOString(),
+        body,
+        method: request.method ?? "GET",
+        path: requestUrl.pathname,
+        type: "api",
+      };
+      if (method === "chat.update") {
+        slackApiEvents.push({ ...event, accepted: true, owner: "proof-loopback-update" });
+        writeJson(response, {
+          ok: true,
+          channel: body.channel,
+          ts: body.ts,
+          message: { text: body.text ?? "", ts: body.ts },
+        });
+        return;
+      }
+
+      const headers = new Headers();
+      for (const name of ["authorization", "content-type"]) {
+        const value = request.headers[name];
+        if (typeof value === "string") {
+          headers.set(name, value);
+        }
+      }
+      const upstream = await fetch(new URL(`${method}${requestUrl.search}`, crablineApiRoot), {
+        method: request.method,
+        headers,
+        ...(["GET", "HEAD"].includes(request.method ?? "GET") ? {} : { body: rawBody }),
+      });
+      const payload = await upstream.text();
+      let accepted = upstream.ok;
+      try {
+        accepted = accepted && JSON.parse(payload).ok === true;
+      } catch {
+        accepted = false;
+      }
+      slackApiEvents.push({ ...event, accepted, owner: "crabline-forward" });
+      response.writeHead(upstream.status, {
+        "content-type": upstream.headers.get("content-type") ?? "application/json",
+      });
+      response.end(payload);
+    })().catch((error) => {
+      if (!response.headersSent) {
+        response.writeHead(500);
+      }
+      response.end(error instanceof Error ? error.message : String(error));
+    });
+  });
+  await new Promise((resolve, reject) => {
+    slackProxyServer.once("error", reject);
+    slackProxyServer.listen(0, "127.0.0.1", resolve);
+  });
+  const slackProxyAddress = slackProxyServer.address();
+  if (!slackProxyAddress || typeof slackProxyAddress === "string") {
+    throw new Error("Slack proof proxy did not bind a loopback port");
+  }
   gateway = await startQaGatewayChild({
     repoRoot,
     useRepoCli: false,
@@ -352,7 +409,10 @@ try {
         },
       },
     }),
-    runtimeEnvPatch: transport.createRuntimeEnvPatch?.(),
+    runtimeEnvPatch: {
+      ...crablineEnv,
+      SLACK_API_URL: `http://127.0.0.1:${slackProxyAddress.port}/api/`,
+    },
   });
   await fs.writeFile(path.join(gateway.workspaceDir, "PROOF.md"), "bounded proof fixture\n");
   await transport.waitReady({ gateway, timeoutMs: 30_000, pollIntervalMs: 250 });
@@ -416,6 +476,10 @@ try {
     postCountsAtRoundStart[2] === 1 &&
     postCountsAtRoundStart[3] === 1 &&
     postEvents.length === 2 &&
+    postEvents.every((event) => event.accepted === true && event.owner === "crabline-forward") &&
+    updateEvents.every(
+      (event) => event.accepted === true && event.owner === "proof-loopback-update",
+    ) &&
     secondPostIndex > 0 &&
     preRotationTs.length === 1 &&
     uniqueUpdateTs.length === 2 &&
@@ -429,7 +493,8 @@ try {
       runtimePostbuildStampHead: runtimeStamp.head,
       changedSourceSha256: createHash("sha256").update(slackDispatchSource).digest("hex"),
     },
-    boundary: "Crabline loopback Slack HTTP + exact dist Gateway + mock OpenAI Responses SSE",
+    boundary:
+      "exact dist Gateway + Crabline loopback Slack HTTP with a proof-owned chat.update endpoint + mock OpenAI Responses SSE",
     observed: {
       providerRounds,
       agentWaitStatus: agentWait.status,
@@ -439,6 +504,13 @@ try {
       preAnswerMessageIdentityCount: preRotationTs.length,
       partialAnswerOnFirstMessage: String(partialUpdate?.body?.ts ?? "") === uniqueUpdateTs[0],
       finalAnswerOnSecondMessage: String(finalUpdate?.body?.ts ?? "") === uniqueUpdateTs[1],
+      postMessagesForwardedToCrabline: postEvents.every(
+        (event) => event.accepted === true && event.owner === "crabline-forward",
+      ),
+      updatesHandledByProofLoopback: updateEvents.every(
+        (event) => event.accepted === true && event.owner === "proof-loopback-update",
+      ),
+      slackApiOwners: [...new Set(slackApiEvents.map((event) => event.owner))],
     },
     cleanup: "pending",
   };
@@ -450,6 +522,8 @@ try {
   gateway = undefined;
   await transport.cleanup?.();
   transport = undefined;
+  await closeServer(slackProxyServer);
+  slackProxyServer = undefined;
   await closeServer(providerServer);
   providerServer = undefined;
   await fs.rm(outputDir, { recursive: true, force: true });
@@ -466,6 +540,12 @@ try {
     message: error instanceof Error ? error.message : String(error),
     providerRounds,
     agentWaitStatus: agentWait?.status ?? null,
+    slackApiCounts: Object.fromEntries(
+      [...new Set(slackApiEvents.map((event) => event.path))].map((eventPath) => [
+        eventPath,
+        slackApiEvents.filter((event) => event.path === eventPath).length,
+      ]),
+    ),
   };
   await fs.writeFile(failurePath, `${JSON.stringify(failure, null, 2)}\n`, "utf8");
   const gatewayTail = gateway?.logs?.().slice(-4_000);
@@ -476,6 +556,7 @@ try {
 } finally {
   await gateway?.stop().catch(() => undefined);
   await transport?.cleanup?.().catch(() => undefined);
+  await closeServer(slackProxyServer).catch(() => undefined);
   await closeServer(providerServer).catch(() => undefined);
   await fs.rm(outputDir, { recursive: true, force: true }).catch(() => undefined);
 }

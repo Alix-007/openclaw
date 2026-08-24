@@ -316,6 +316,8 @@ jobs:
                     observed.preAnswerMessageIdentityCount !== 1 ||
                     observed.partialAnswerOnFirstMessage !== true ||
                     observed.finalAnswerOnSecondMessage !== true ||
+                    observed.postMessagesForwardedToCrabline !== true ||
+                    observed.updatesHandledByProofLoopback !== true ||
                     observed.providerRounds?.map((round) => round.round).join(",") !== "0,1,2,3" ||
                     observed.providerRounds?.[2]?.postCountAtStart !== 1 ||
                     observed.providerRounds?.[3]?.postCountAtStart !== 1) process.exit(1);
