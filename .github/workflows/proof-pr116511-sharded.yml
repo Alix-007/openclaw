@@ -71,6 +71,14 @@ jobs:
             src/agents/cli-runner.reliability.test.ts \
             -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|persists a CLI bootstrap completion marker after its runner-owned transcript|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|records CLI bootstrap completion after the post-run transcript commit|keeps CLI bootstrap completion pending until post-run compaction settles|does not record CLI bootstrap completion after post-run compaction|does not record CLI bootstrap completion when deferred maintenance settles after compaction|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
             --reporter=verbose 2>&1 | tee -a "$log_file"
+          node scripts/run-vitest.mjs \
+            src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
+            -t 'leaves bootstrap settlement to the outer fallback owner' \
+            --reporter=verbose 2>&1 | tee -a "$log_file"
+          node scripts/run-vitest.mjs \
+            src/agents/cli-runner.context-engine.test.ts \
+            -t 'does not record bootstrap completion when' \
+            --reporter=verbose 2>&1 | tee -a "$log_file"
           grep -F 'does not persist a CLI bootstrap marker after post-output cancellation with terminal partial output' "$log_file"
           grep -F 'records CLI bootstrap completion after the post-run transcript commit' "$log_file"
           grep -F 'keeps CLI bootstrap completion pending until post-run compaction settles' "$log_file"
@@ -78,6 +86,10 @@ jobs:
           grep -F 'does not record CLI bootstrap completion when deferred maintenance settles after compaction' "$log_file"
           grep -F 'does not record CLI bootstrap completion when post-run transcript persistence fails' "$log_file"
           grep -F 'skips post-run persistence after the session is deleted' "$log_file"
+          grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
+          grep -F "does not record bootstrap completion when 'afterTurn fails'" "$log_file"
+          grep -F "does not record bootstrap completion when 'foreground maintenance fails'" "$log_file"
+          grep -F 'foreground maintenance rewrites' "$log_file"
           node --import tsx \
             .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
             2>&1 | tee -a "$log_file"
