@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - bootstrap
+          - bootstrap-review
           - discord
           - foundation
           - heartbeat
@@ -160,6 +161,19 @@ jobs:
               echo '[bootstrap changed-check proof] exact-head=true base=866c78a5 paths=38 format=true typecheck=true lint=true guards=true' | tee -a "$log_file"
               echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
               marker='[bootstrap continuation SQLite proof]'
+              ;;
+            bootstrap-review)
+              node scripts/run-vitest.mjs \
+                src/agents/cli-runner.context-engine.test.ts \
+                src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
+                -t 'leaves bootstrap settlement to the outer fallback owner|does not record bootstrap completion when afterTurn fails|does not record bootstrap completion when foreground maintenance fails|does not record bootstrap completion when foreground maintenance rewrites the transcript' \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
+              grep -F 'does not record bootstrap completion when afterTurn fails' "$log_file"
+              grep -F 'does not record bootstrap completion when foreground maintenance fails' "$log_file"
+              grep -F 'does not record bootstrap completion when foreground maintenance rewrites the transcript' "$log_file"
+              echo '[bootstrap independent-review findings proof] exact-head=true outer-owner=true finalization-failure=true foreground-failure=true foreground-rewrite=true' | tee -a "$log_file"
+              marker='[bootstrap independent-review findings proof]'
               ;;
             discord)
               node scripts/run-vitest.mjs \
