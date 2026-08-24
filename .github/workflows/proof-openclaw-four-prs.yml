@@ -19,6 +19,7 @@ on:
           - ollama
           - qqbot
           - responses
+          - slack-preview
           - synology
           - terminal-timeout
           - web-search
@@ -288,6 +289,39 @@ jobs:
               echo '[responses idle-activity proof] loopback-sse=true internal-window-exceeded=true final-text=true idle-timeout=false' | tee -a "$log_file"
               marker='[responses idle-activity proof]'
               ;;
+            slack-preview)
+              output_dir='.artifacts/qa-e2e/pr-128626-slack-preview'
+              mkdir -p "$output_dir"
+              OPENCLAW_RUN_NODE_SKIP_DTS_BUILD=1 pnpm build 2>&1 | tee "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const sha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+                const build = JSON.parse(fs.readFileSync("dist/.buildstamp", "utf8"));
+                const runtime = JSON.parse(fs.readFileSync("dist/.runtime-postbuildstamp", "utf8"));
+                if (build.head !== sha || runtime.head !== sha) process.exit(1);
+              '
+              node --import tsx \
+                .proof-tooling/.github/proof/slack-preview.mjs \
+                2>&1 | tee -a "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const verdict = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+                const sha = process.env.OPENCLAW_PROOF_HEAD_SHA;
+                const observed = verdict.observed ?? {};
+                if (verdict.result !== "pass" || verdict.target?.immutableHead !== sha ||
+                    verdict.target?.buildStampHead !== sha ||
+                    verdict.target?.runtimePostbuildStampHead !== sha ||
+                    observed.postMessageCount !== 2 ||
+                    observed.updateMessageIdentityCount !== 2 ||
+                    observed.preAnswerMessageIdentityCount !== 1 ||
+                    observed.partialAnswerOnFirstMessage !== true ||
+                    observed.finalAnswerOnSecondMessage !== true ||
+                    observed.providerRounds?.map((round) => round.round).join(",") !== "0,1,2,3" ||
+                    observed.providerRounds?.[2]?.postCountAtStart !== 1 ||
+                    observed.providerRounds?.[3]?.postCountAtStart !== 1) process.exit(1);
+              ' "$output_dir/verdict.json"
+              marker='[slack preview reasoning-boundary proof]'
+              ;;
             synology)
               node scripts/run-vitest.mjs \
                 extensions/synology-chat/src/client.test.ts \
@@ -409,6 +443,7 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            .artifacts/qa-e2e/pr-128626-slack-preview
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
