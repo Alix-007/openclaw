@@ -46,6 +46,12 @@ grep -q 'Close' "$artifact_dir/interaction/02-full.xml"
 grep -q 'View all' "$artifact_dir/interaction/03-closed.xml"
 grep -q 'Retry' "$artifact_dir/interaction/04-retry.xml"
 grep -q 'Close' "$artifact_dir/interaction/05-recovered.xml"
+grep -q 'Full content is no longer available for this transcript entry.' \
+  "$artifact_dir/interaction/06-not-found.xml"
+grep -q 'Full content is unavailable because the stored transcript entry is too large to return safely.' \
+  "$artifact_dir/interaction/07-oversized.xml"
+grep -q 'Full content is unavailable because this transcript entry has no visible chat projection.' \
+  "$artifact_dir/interaction/08-not-visible.xml"
 for state in 06-not-found 07-oversized 08-not-visible; do
   ! grep -Eq 'text="(Retry|View all|Close)"' "$artifact_dir/interaction/$state.xml"
 done

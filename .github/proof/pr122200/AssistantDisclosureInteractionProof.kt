@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,7 +49,7 @@ class AssistantDisclosureInteractionProof {
       scenario.onActivity { activity ->
         activity.setContent {
           OpenClawTheme {
-            Box(modifier = Modifier.fillMaxSize().padding(18.dp)) {
+            Box(modifier = Modifier.fillMaxSize().safeDrawingPadding().padding(18.dp)) {
               ChatBubble(
                 messageId = proofMessageId,
                 entryId = proofMessageId,
@@ -121,6 +122,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
+      waitForText(device, notFoundText)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "06-not-found")
 
@@ -131,6 +133,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
+      waitForText(device, oversizedText)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "07-oversized")
 
@@ -141,6 +144,7 @@ class AssistantDisclosureInteractionProof {
           )
       }
       instrumentation.waitForIdleSync()
+      waitForText(device, notVisibleText)
       assertDisclosureActionMissing(device)
       capture(device, artifactDir, "08-not-visible")
     }
@@ -190,6 +194,11 @@ class AssistantDisclosureInteractionProof {
     const val proofMessageId = "proof-message"
     const val previewText = "Preview: release blockers remain. ...(truncated)..."
     const val fullMarker = "Complete: localization and review follow-ups are resolved."
+    const val notFoundText = "Full content is no longer available for this transcript entry."
+    const val oversizedText =
+      "Full content is unavailable because the stored transcript entry is too large to return safely."
+    const val notVisibleText =
+      "Full content is unavailable because this transcript entry has no visible chat projection."
     const val uiTimeoutMs = 10_000L
     val fullMessage =
       ChatMessage(
