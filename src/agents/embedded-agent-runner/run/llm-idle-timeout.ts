@@ -9,7 +9,9 @@ import {
   MAX_TIMER_TIMEOUT_MS,
 } from "@openclaw/normalization-core/number-coercion";
 import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import { areDiagnosticsEnabledForProcess } from "../../../infra/diagnostic-events.js";
 import { toErrorObject } from "../../../infra/errors.js";
+import { markDiagnosticRunProgress } from "../../../logging/diagnostic-run-activity.js";
 import type { StreamFn } from "../../runtime/index.js";
 import type { MutableAssistantMessageEventStream } from "../../stream-compat.js";
 import { createStreamIteratorWrapper } from "../../stream-iterator-wrapper.js";
@@ -516,10 +518,12 @@ export function streamWithIdleTimeout(
             rejectIdleTimeout = undefined;
             clearTimer();
           };
-          const unsubscribeLlmActivity = onLlmRequestActivity(
-            streamAbortController.signal,
-            armTimer,
-          );
+          const unsubscribeLlmActivity = onLlmRequestActivity(streamAbortController.signal, () => {
+            armTimer();
+            if (runId && areDiagnosticsEnabledForProcess()) {
+              markDiagnosticRunProgress({ runId, reason: "model_call:stream_progress" });
+            }
+          });
           const unsubscribeStreamToolActivity = runId ? onToolActivity(runId, armTimer) : undefined;
           const cleanupIterator = () => {
             stopWaiting();
