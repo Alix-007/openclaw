@@ -1,0 +1,13 @@
+{
+  "productHead": "a0658c572070eb98f18f117ec255e05765881ea0",
+  "expectedProductHead": "a0658c572070eb98f18f117ec255e05765881ea0",
+  "summarySucceeded": true,
+  "summaryText": "Redacted compaction summary",
+  "privateThinkingPresent": false,
+  "thinkingLabelPresent": false,
+  "visibleAnswerPresent": true,
+  "toolCallPresent": true,
+  "conversationEnvelopePresent": true,
+  "promptSha256": "804bece58782ad5ee2b1a434e3ea2bd15b5342417d12bdc597442888858fa449",
+  "pass": true
+}
