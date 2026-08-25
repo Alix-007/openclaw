@@ -547,7 +547,10 @@ See [Plugins](/tools/plugin).
 }
 ```
 
-- `seamColor`: accent color for native app UI chrome (Talk Mode bubble tint, etc.).
+- `seamColor`: operator accent color for native app UI chrome (Talk Mode bubble
+  tint, etc.). The Control UI user accent (`ui.prefs.accent`) takes precedence in
+  `talk.config` payloads and the macOS app's config snapshot. If neither is set,
+  the theme default applies.
 - `assistant`: Control UI identity override. Falls back to active agent identity.
 - `prefs`: cross-device operator preferences. This is the canonical home so agents can
   change them through the approval gate and every Control UI client stays in
@@ -1111,8 +1114,8 @@ Validation and safety notes:
   - Direct announce delivery requires both a concrete `channel` and `to`; supplying only one fails before the run is scheduled.
   - `accountId` selects a configured, enabled account for direct announce delivery and requires both `channel` and `to`; invalid selections return `400` before a run starts.
   - Omit both delivery fields for completion-only hooks, or set `deliver: false` to ignore supplied destination data.
-  - The request waits up to 15 seconds for runner admission, not run completion. `200` means the agent runner was entered.
-  - Pre-run failures return `{ ok: false, error, runId }`: `400` for invalid delivery coordinates or account selection, `409` for session admission conflicts, `502` for other preparation failures, and `503` when the 15-second admission deadline expires. Timed-out queued work is canceled and will not start later.
+  - The request waits up to 15 seconds for canonical session/global placement admission, not run completion. `200` means the execution path acquired that admission; the run may still be preparing its model runtime.
+  - Pre-admission failures return `{ ok: false, error, runId }`: `400` for invalid delivery coordinates or account selection, `409` for session admission conflicts, `502` for other preparation failures, and `503` when placement admission does not occur within 15 seconds. Timed-out queued work is canceled and will not start later.
 - `POST /hooks/<name>` → resolved via `hooks.mappings`
   - Template-rendered mapping `sessionKey` values are treated as externally supplied and also require `hooks.allowRequestSessionKey=true`.
   - Mapped `agent` actions use the same admission wait and `200`/`400`/`409`/`502`/`503` outcomes.

@@ -30,7 +30,10 @@ import {
   type SessionListOptions,
 } from "../lib/sessions/index.ts";
 import { reconcileSessionHistory } from "../lib/sessions/reconcile.ts";
-import { createApplicationContextProvider } from "./application-context.ts";
+import {
+  createApplicationContextProvider,
+  hiddenScopeUpgradeCapability,
+} from "./application-context.ts";
 import { gatewayHelloForMethods, SESSION_MUTATION_TEST_METHODS } from "./gateway-methods.ts";
 import { createStorageMock } from "./storage.ts";
 
@@ -517,6 +520,7 @@ export function createContext(
       setScope: () => undefined,
       subscribe: () => () => undefined,
     },
+    scopeUpgrade: hiddenScopeUpgradeCapability,
     overlays: {
       snapshot: { approvalQueue },
       subscribe: () => () => undefined,
@@ -569,7 +573,7 @@ export const manyAgents = (count: number) =>
   }) as AgentsListResult;
 
 export const catalogPage = (
-  sessions: Array<{ threadId: string; name: string }>,
+  sessions: Array<{ threadId: string; name: string; sessionKey?: string }>,
   nextCursor?: string,
   catalogId = "codex",
 ): SessionsCatalogListResult => ({
