@@ -17,7 +17,7 @@ import type { ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
 import { resolveTextChunksWithFallback } from "openclaw/plugin-sdk/reply-payload";
 import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
-import { resolveRequiredDiscordChannelPermissions } from "./audit-core.js";
+import { isDiscordThreadChannelType } from "./channel-type.js";
 import { chunkDiscordTextWithMode } from "./chunk.js";
 import { createDiscordClient, resolveDiscordRest, type DiscordClientOpts } from "./client.js";
 import {
@@ -50,6 +50,12 @@ const DISCORD_UPLOAD_TOO_LARGE = 40005;
 const DISCORD_UPLOAD_TOO_LARGE_STATUS = 413;
 const DISCORD_UPLOAD_TOO_LARGE_NOTICE =
   "Attachment skipped: Discord rejected the file as too large.";
+
+function resolveRequiredDiscordSendPermissions(channelType?: number): string[] {
+  return isDiscordThreadChannelType(channelType)
+    ? ["ViewChannel", "SendMessagesInThreads"]
+    : ["ViewChannel", "SendMessages"];
+}
 
 type DiscordRequest = DiscordRetryRunner;
 
@@ -209,7 +215,7 @@ async function buildDiscordSendError(
     });
     probedChannelType = permissions.channelType;
     const current = new Set(permissions.permissions);
-    const required = resolveRequiredDiscordChannelPermissions(probedChannelType);
+    const required = resolveRequiredDiscordSendPermissions(probedChannelType);
     if (ctx.hasMedia) {
       required.push("AttachFiles");
     }
@@ -222,7 +228,7 @@ async function buildDiscordSendError(
   const apiDetails = [`code=${code}`, status != null ? `status=${status}` : undefined]
     .filter(Boolean)
     .join(" ");
-  const probedPermissions = resolveRequiredDiscordChannelPermissions(probedChannelType);
+  const probedPermissions = resolveRequiredDiscordSendPermissions(probedChannelType);
   if (ctx.hasMedia) {
     probedPermissions.push("AttachFiles");
   }
