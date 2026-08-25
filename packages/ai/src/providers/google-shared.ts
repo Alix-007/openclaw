@@ -795,6 +795,10 @@ export async function consumeGoogleGenerateContentStream<T extends GoogleApiType
 
   for await (const chunk of params.chunks) {
     params.output.responseId ||= chunk.responseId;
+    const responseModel = chunk.modelVersion?.trim();
+    if (responseModel && responseModel !== params.model.id) {
+      params.output.responseModel ||= responseModel;
+    }
     if (chunk.usageMetadata) {
       for (const field of Object.keys(knownUsage) as Array<keyof typeof knownUsage>) {
         const value = chunk.usageMetadata[field];

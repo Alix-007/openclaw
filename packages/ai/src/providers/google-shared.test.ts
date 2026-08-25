@@ -145,6 +145,7 @@ type GoogleResponseFixture = {
   parts?: Part[];
   finishReason?: FinishReason;
   finishMessage?: string;
+  modelVersion?: string;
   responseId?: string;
   usageMetadata?: GenerateContentResponse["usageMetadata"];
   promptFeedback?: GenerateContentResponse["promptFeedback"];
@@ -271,6 +272,7 @@ describe("consumeGoogleGenerateContentStream", () => {
     const { output, events } = await consumeGoogleFixture(
       [
         googleResponse({
+          modelVersion: "gemini-2.5-pro-002",
           responseId: "response-1",
           parts: [
             { text: "thinking", thought: true, thoughtSignature: "dGhpbms=" },
@@ -306,6 +308,7 @@ describe("consumeGoogleGenerateContentStream", () => {
       "done",
     ]);
     expect(output.responseId).toBe("response-1");
+    expect(output.responseModel).toBe("gemini-2.5-pro-002");
     expect(output.stopReason).toBe("toolUse");
     expect(output.content).toEqual([
       { type: "thinking", thinking: "thinking", thinkingSignature: "dGhpbms=" },
@@ -319,6 +322,18 @@ describe("consumeGoogleGenerateContentStream", () => {
       totalTokens: 17,
     });
     expect(output.usage.cost.total).toBeGreaterThan(0);
+  });
+
+  it("omits responseModel when the served model matches the requested id", async () => {
+    const { output } = await consumeGoogleFixture([
+      googleResponse({
+        modelVersion: model.id,
+        parts: [{ text: "hello" }],
+        finishReason: FinishReason.STOP,
+      }),
+    ]);
+
+    expect(output).not.toHaveProperty("responseModel");
   });
 
   it.each([
