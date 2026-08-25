@@ -22,6 +22,7 @@ on:
           - qqbot
           - responses
           - synology
+          - subagent-announcement
           - terminal-timeout
           - web-search
       target_sha:
@@ -316,6 +317,17 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[synology webhook retry proof]'
               ;;
+            subagent-announcement)
+              proof_test='src/gateway/subagent-announce-steer-recovery.proof.test.ts'
+              cp .proof-tooling/.github/proof/subagent-announcement-real-gateway.proof.test.ts \
+                "$proof_test"
+              sha256sum "$proof_test" | tee proof-subagent-announcement-harness.sha256
+              node scripts/run-vitest.mjs \
+                "$proof_test" \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              grep -F '[subagent announcement proof] exact-head=true real-gateway=true direct-primary=failed steer-fallback=delivered recovered-warning-count=1' "$log_file"
+              marker='[subagent announcement proof]'
+              ;;
             terminal-timeout)
               output_dir='.artifacts/qa-e2e/pr-122036-terminal-timeout'
               mkdir -p "$output_dir"
@@ -397,6 +409,36 @@ jobs:
           grep -F "$marker" "$log_file"
           echo "proof_marker_verified=true" | tee -a "$log_file" proof-metadata.txt
 
+      - name: Validate current PR merge-ref focused suite
+        if: inputs.proof_kind == 'subagent-announcement'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none --no-checkout https://github.com/openclaw/openclaw.git .merge-ref
+          git -C .merge-ref fetch --depth=2 origin refs/pull/125130/merge
+          git -C .merge-ref checkout --detach FETCH_HEAD
+          merge_sha="$(git -C .merge-ref rev-parse HEAD)"
+          merge_parents="$(git -C .merge-ref show -s --format=%P HEAD)"
+          if [[ " $merge_parents " != *" $TARGET_SHA "* ]]; then
+            echo "current merge-ref does not contain exact product head: target=$TARGET_SHA parents=$merge_parents" >&2
+            exit 1
+          fi
+          {
+            echo "merge_ref_sha=$merge_sha"
+            echo "merge_ref_parents=$merge_parents"
+          } | tee -a proof-metadata.txt
+          cd .merge-ref
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+          node scripts/run-vitest.mjs \
+            src/agents/subagents/announce/subagent-announce-delivery.test.ts \
+            src/agents/subagents/announce/subagent-announce.test.ts \
+            src/plugin-sdk/agent-harness-task-runtime.test.ts \
+            extensions/codex/src/app-server/native-subagent-monitor.test.ts \
+            --reporter=verbose 2>&1 | tee ../proof-subagent-announcement-merge-ref.log
+          echo '[subagent announcement merge-ref proof] exact-product-parent=true focused-suite=passed' | tee -a ../proof-subagent-announcement-merge-ref.log ../proof-metadata.txt
+
       - name: Upload terminal proof
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -405,9 +447,12 @@ jobs:
           path: |
             proof-metadata.txt
             proof-${{ inputs.proof_kind }}.log
+            proof-subagent-announcement-harness.sha256
+            proof-subagent-announcement-merge-ref.log
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            .artifacts/qa-e2e/pr-125130-subagent-announcement
             .artifacts/control-ui-e2e/pr-122300-real-gateway
           include-hidden-files: true
           if-no-files-found: warn
