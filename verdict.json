@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "pr": 129481,
+  "productHead": "3167c4e6d9f3dc3aa7b0faf923f337a3c051803d",
+  "generatedAt": "2026-08-25T18:51:41.051Z",
+  "environment": {
+    "platform": "linux-x64",
+    "nodeVersion": "v22.22.3"
+  },
+  "surface": {
+    "productionEntryPoint": "src/agents/cli-runner.ts#runCliAgent",
+    "terminalOwner": "src/agents/cli-runner/cli-run-recovery.ts",
+    "loggerOwner": "src/agents/cli-runner/log.ts",
+    "realSubprocess": true,
+    "subprocessExitCode": 1,
+    "realConsoleSink": true,
+    "realJsonlFileSink": true,
+    "loggerMock": false,
+    "diagnosticListeners": false
+  },
+  "observations": {
+    "consoleTerminalWarningCount": 1,
+    "fileTerminalWarningCount": 1,
+    "sameTerminalMessageAcrossSinks": true,
+    "providerPresent": true,
+    "modelPresent": true,
+    "durationMsPresent": true,
+    "durationMs": 11043,
+    "runIdPresent": true,
+    "bearerLabelPresent": true,
+    "bearerValueRedacted": true,
+    "fullBearerSecretAbsent": true,
+    "fullSessionKeyAbsent": true
+  },
+  "ephemeralInputFingerprints": {
+    "bearerSecretSha256": "b0fe3f08346fbaa72e2df2715f05eb809c6211435d0eda0150dbf72efa906c2d",
+    "sessionKeySha256": "763d14a27c2835cc9f7caf952fb45605b4d8188fa5eaabc09196c5bf3278eba0"
+  },
+  "artifacts": [
+    "README.md",
+    "operator-warning.log",
+    "logger-record.jsonl",
+    "proof-harness.mts",
+    "SHA256SUMS"
+  ],
+  "pass": true
+}

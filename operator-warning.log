@@ -1,0 +1,1 @@
+[agent/cli-backend] cli terminal failure: provider=fixture-cli model=fixture-model durationMs=11043 runId=proof-pr129481-terminal error=Authorization: Bearer ***
