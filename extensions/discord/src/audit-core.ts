@@ -7,6 +7,7 @@ import type {
 } from "openclaw/plugin-sdk/config-contracts";
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
 import { isRecord, normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isDiscordThreadChannelType } from "./channel-type.js";
 
 type DiscordChannelPermissionsAuditEntry = {
   channelId: string;
@@ -36,11 +37,7 @@ const REQUIRED_VOICE_CHANNEL_PERMISSIONS = [
 ] as const;
 
 export function resolveRequiredDiscordChannelPermissions(channelType?: number): string[] {
-  if (
-    channelType === ChannelType.GuildNewsThread ||
-    channelType === ChannelType.GuildPublicThread ||
-    channelType === ChannelType.GuildPrivateThread
-  ) {
+  if (isDiscordThreadChannelType(channelType)) {
     return [...REQUIRED_THREAD_CHANNEL_PERMISSIONS];
   }
   if (channelType === ChannelType.GuildVoice || channelType === ChannelType.GuildStageVoice) {

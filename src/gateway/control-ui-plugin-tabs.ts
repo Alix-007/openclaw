@@ -20,6 +20,7 @@ type ControlUiPluginTab = {
   description?: string;
   icon?: string;
   path?: string;
+  placement?: string;
   group?: "control" | "agent";
   order?: number;
   requiresGatewayAuth?: boolean;
@@ -68,6 +69,7 @@ export type ControlUiPluginTabAuthGrant = {
   path: string;
   match: "exact" | "prefix";
   scopes: OperatorScope[];
+  profileId?: string;
 };
 
 /** Pure projection of tab descriptors visible to the presented scopes. */
@@ -94,6 +96,7 @@ function projectControlUiPluginTabs(
       description: descriptor.description,
       icon: descriptor.icon,
       path: descriptor.path,
+      placement: descriptor.placement,
       group: descriptor.group,
       order: descriptor.order,
     });

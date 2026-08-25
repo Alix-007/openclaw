@@ -7,6 +7,8 @@ import type { GatewayBrowserClient } from "../../api/gateway.ts";
 import type { GatewaySessionRow } from "../../api/types.ts";
 import type { ApplicationContext } from "../../app/context.ts";
 import {
+  appendChatMessageToCache,
+  cacheChatSessionSnapshot,
   observeChatCache,
   readChatSessionSnapshot,
   type ChatMessageCache,
@@ -186,7 +188,7 @@ describe("recent session prefetch", () => {
     controller.hostUpdated?.();
   }
 
-  it("idles, excludes open and fresh sessions, and fills five cache entries sequentially", async () => {
+  it("quickly warms five eligible sessions together without reopening fresh or active history", async () => {
     store.write("agent:main:fresh", historySnapshot("fresh"));
     await store.flush();
     const open = vi.spyOn(indexedDB, "open");
@@ -230,19 +232,18 @@ describe("recent session prefetch", () => {
 
     updatePrefetch(state);
     expect(request).not.toHaveBeenCalled();
-    await vi.advanceTimersByTimeAsync(2_000);
+    await vi.advanceTimersByTimeAsync(300);
     await settlePromises();
-    expect(request).toHaveBeenCalledTimes(1);
+    expect(request).toHaveBeenCalledTimes(5);
 
     for (let index = 0; index < 5; index += 1) {
-      expect(request).toHaveBeenCalledTimes(index + 1);
       const pendingRequest = pending[index];
       if (!pendingRequest) {
         throw new Error(`missing pending history request ${index}`);
       }
       pendingRequest.resolve(historyResult(pendingRequest.sessionKey));
-      await settlePromises();
     }
+    await settlePromises();
 
     expect(request.mock.calls.map(sessionKeyFromCall)).toEqual([
       "agent:main:eligible-1",
@@ -314,6 +315,88 @@ describe("recent session prefetch", () => {
     await vi.advanceTimersByTimeAsync(2_000);
     await settlePromises();
     expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it("rewarms complete stored history after an interleaved append miss", async () => {
+    const sessionKey = "agent:main:delta";
+    const priorMessages = Array.from({ length: 5 }, (_, index) => ({
+      role: index % 2 === 0 ? "user" : "assistant",
+      content: `prior-${index + 1}`,
+      __openclaw: { id: `prior-${index + 1}`, seq: index + 1 },
+    }));
+    cacheChatSessionSnapshot(
+      cache,
+      snapshotHost,
+      { sessionKey },
+      {
+        deltaCursor: "cursor-1",
+        messages: priorMessages,
+        pagination: { hasMore: false, completeSnapshot: true },
+        sessionId: "session-delta",
+      },
+    );
+    await store.flush();
+    const previousSavedAt = store.readSavedAt(sessionKey);
+    cache.clear();
+    const liveMessage = {
+      role: "user",
+      content: "live broadcast",
+      __openclaw: { id: "live-user", seq: 6 },
+    };
+    const liveEvent = {
+      sessionKey,
+      message: liveMessage,
+      messageId: "live-user",
+      messageSeq: 6,
+    };
+    appendChatMessageToCache(cache, snapshotHost, { sessionKey }, liveMessage, liveEvent);
+    const deltaMessage = {
+      role: "assistant",
+      content: "delta reply",
+      __openclaw: { id: "delta-assistant", seq: 7 },
+    };
+    const request = vi.fn(async () => ({
+      kind: "delta",
+      messages: [
+        liveEvent,
+        {
+          sessionKey,
+          message: deltaMessage,
+          messageId: "delta-assistant",
+          messageSeq: 7,
+        },
+      ],
+      deltaCursor: "cursor-2",
+      sessionInfo: { key: sessionKey, kind: "direct", sessionId: "session-delta", updatedAt: 2 },
+    }));
+
+    updatePrefetch({
+      client: { request } as unknown as GatewayBrowserClient,
+      listRevision: 1,
+      openSessionKeys: [],
+      rows: [row(sessionKey, NOW + 1)],
+    });
+    await vi.advanceTimersByTimeAsync(2_000);
+    await settlePromises();
+
+    expect(request).toHaveBeenCalledWith(
+      "chat.history",
+      expect.objectContaining({ cursor: "cursor-1", sessionKey }),
+    );
+    expect(readChatSessionSnapshot(cache, snapshotHost, { sessionKey })).toEqual({
+      deltaCursor: "cursor-2",
+      messages: [...priorMessages, liveMessage, deltaMessage],
+      pagination: { hasMore: false, completeSnapshot: true },
+      sessionId: "session-delta",
+    });
+    expect(store.readSavedAt(sessionKey)).toBeGreaterThan(previousSavedAt ?? 0);
+    await store.flush();
+    expect(await new SessionSnapshotStore().read(sessionKey)).toEqual({
+      deltaCursor: "cursor-2",
+      messages: [...priorMessages, liveMessage, deltaMessage],
+      pagination: { hasMore: false, completeSnapshot: true },
+      sessionId: "session-delta",
+    });
   });
 
   it("skips the cycle when another tab holds the Web Lock", async () => {

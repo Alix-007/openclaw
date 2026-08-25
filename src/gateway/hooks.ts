@@ -196,7 +196,11 @@ export async function readJsonBody(
   req: IncomingMessage,
   maxBytes: number,
 ): Promise<Result<unknown, string>> {
-  const result = await readJsonBodyWithLimit(req, { maxBytes, emptyObjectOnEmpty: true });
+  const result = await readJsonBodyWithLimit(req, {
+    maxBytes,
+    emptyObjectOnEmpty: true,
+    destroyOnLimit: false,
+  });
   if (result.ok) {
     return result;
   }
@@ -256,6 +260,9 @@ export function normalizeWakePayload(
   if (payload.sessionKey !== undefined && !sessionKey) {
     return { ok: false, error: "sessionKey must be a non-empty string" };
   }
+  if (mode === "next-heartbeat" && sessionKey) {
+    return { ok: false, error: "sessionKey requires mode=now" };
+  }
   return {
     ok: true,
     value: {
@@ -299,6 +306,8 @@ export type HookAgentDispatchPayload = Omit<HookAgentPayload, "sessionKey"> & {
   sourcePath: string;
   allowUnsafeExternalContent?: boolean;
   externalContentSource?: HookExternalContentSource;
+  /** Configured ingress source attribution; never an authenticated principal. */
+  mappingId?: string;
 };
 
 const listHookChannelValues = () => ["last", ...listChannelPlugins().map((plugin) => plugin.id)];

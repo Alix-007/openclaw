@@ -20,10 +20,16 @@ import { createCronServiceState as createCronServiceStateBase } from "./state.js
 import {
   getActiveCronTaskRunId,
   findCronTaskRunRecoveryInDatabase,
-  tryCreateCronTaskRun,
+  tryCreateCronTaskRunHandle,
   tryFinishCronTaskRun,
   tryFinishCronTaskRunWithoutHistory,
 } from "./task-runs.js";
+
+function tryCreateCronTaskRun(
+  params: Parameters<typeof tryCreateCronTaskRunHandle>[0],
+): string | undefined {
+  return tryCreateCronTaskRunHandle(params)?.runId;
+}
 import { executeJobCoreWithTimeout } from "./timer-job-runner.js";
 
 function createCronServiceState(
@@ -196,6 +202,7 @@ describe("cron task run terminal records", () => {
             action: "finished",
             job,
             status: "ok",
+            completionStatus: "succeeded",
             runAtMs: 1_000,
             durationMs: 100,
           },
@@ -536,6 +543,7 @@ describe("cron task run terminal records", () => {
             action: "finished",
             job,
             status: "ok",
+            completionStatus: "succeeded",
             summary: "done",
             sessionKey: "agent:main:cron:retry-job:run:actual",
             runAtMs: startedAt,

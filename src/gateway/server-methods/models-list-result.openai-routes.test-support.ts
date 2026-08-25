@@ -3,6 +3,7 @@ import type { ModelCatalogEntry } from "../../agents/model-catalog.types.js";
 import type { createOpenAIModelRoutesResolver } from "../../agents/openai-model-routes.js";
 import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import { loadManifestMetadataSnapshot } from "../../plugins/manifest-contract-eligibility.js";
+import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
 import {
   type PreparedGatewayModelCatalogSnapshot,
   registerGatewayModelCatalogPrivateAccess,
@@ -41,16 +42,20 @@ export function registerTestCatalogAccess(
 }
 
 export async function listModels(params: {
+  agentId?: string;
   catalog: ModelCatalogEntry[];
+  staticEntries?: ModelCatalogEntry[];
   cfg?: OpenClawConfig;
   discoveryModes?: Record<string, "refreshable" | "runtime" | "static">;
+  metadataSnapshot?: PluginMetadataSnapshot;
   routeResolverFactory?: typeof createOpenAIModelRoutesResolver;
   view?: "all" | "configured" | "provider-config" | "default";
 }) {
+  const agentId = params.agentId ?? "main";
   const config = params.cfg ?? ({} as OpenClawConfig);
   const loadGatewayModelCatalogSnapshot = async () =>
     ({
-      agentId: "main",
+      agentId,
       agentDir: "/tmp/models-list-openai-agent",
       catalogComplete: false,
       workspaceDir: "/tmp/models-list-openai-workspace",
@@ -59,9 +64,11 @@ export async function listModels(params: {
       authStore: loadAuthProfileStoreWithoutExternalProfiles("/tmp/models-list-openai-agent", {
         allowKeychainPrompt: false,
       }),
-      metadataSnapshot: loadManifestMetadataSnapshot({ config, env: process.env }),
+      metadataSnapshot:
+        params.metadataSnapshot ?? loadManifestMetadataSnapshot({ config, env: process.env }),
       entries: params.catalog,
       routeVariants: params.catalog,
+      ...(params.staticEntries ? { staticEntries: params.staticEntries } : {}),
       authMaterializations: [],
     }) satisfies PreparedGatewayModelCatalogSnapshot;
   registerGatewayModelCatalogPrivateAccess(loadGatewayModelCatalogSnapshot, {
@@ -75,6 +82,7 @@ export async function listModels(params: {
   } as unknown as GatewayRequestContext;
   return await buildModelsListResult({
     context,
+    agentId,
     params: { view: params.view ?? "all" },
     ...(params.discoveryModes
       ? {

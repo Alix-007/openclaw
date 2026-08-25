@@ -13,7 +13,7 @@ import type {
   ControlUiSessionPullRequest,
 } from "../../../../src/gateway/control-ui-contract.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
-import type { GatewaySessionRow, SessionsListResult } from "../../api/types.ts";
+import type { GatewaySessionRow, ModelCatalogEntry, SessionsListResult } from "../../api/types.ts";
 import type { ExecApprovalDecision, ExecApprovalRequest } from "../../app/exec-approval.ts";
 import type { QuestionPrompt } from "../../app/question-prompt.ts";
 import type { ChatSendShortcut } from "../../app/settings.ts";
@@ -21,6 +21,8 @@ import { renderExecApprovalCard } from "../../components/exec-approval-card.ts";
 import { icons } from "../../components/icons.ts";
 import type { ImageLightboxItem } from "../../components/image-lightbox.ts";
 import type { SessionLinkTarget } from "../../components/markdown-session-links.ts";
+import type { PersonActivityRouting } from "../../components/person-activity-link.ts";
+import { renderSessionProgressCard } from "../../components/session-progress-card.ts";
 import { t } from "../../i18n/index.ts";
 import type { BoardProvider } from "../../lib/board/provider.ts";
 import type {
@@ -31,12 +33,18 @@ import type {
 } from "../../lib/chat/chat-types.ts";
 import type { ControlUiFollowUpMode } from "../../lib/chat/follow-up-mode.ts";
 import type { EmbedSandboxMode } from "../../lib/chat/tool-display.ts";
-import { resolveAsciiShortcutKey } from "../../lib/keyboard-shortcuts.ts";
+import {
+  KEYBOARD_SHORTCUT_COMBOS,
+  matchesShortcutCombo,
+} from "../../lib/keyboard-shortcut-catalog.ts";
 import type { ProviderUsageDisplayProps } from "../../lib/provider-quota-summary.ts";
 import type { SessionToolOverrides } from "../../lib/sessions/patch.ts";
 import type { UiSessionDefaultsHost } from "../../lib/sessions/session-key.ts";
 import type { ChatRunStartupStatus } from "./chat-run-startup.ts";
-import { type ChatCloudStartupNoticeProps, renderChatViewNotices } from "./chat-view-notices.ts";
+import {
+  type ChatPlacementStartupNoticeProps,
+  renderChatViewNotices,
+} from "./chat-view-notices.ts";
 import { createChatAttachmentDropHandlers } from "./components/chat-attachments.ts";
 import type { BackgroundTasksProps } from "./components/chat-background-tasks.types.ts";
 import type {
@@ -63,6 +71,7 @@ import {
 import { renderChatThread } from "./components/chat-thread.ts";
 import type { ChatTranscriptController } from "./components/chat-transcript-controller.ts";
 import type { ChatInputHistoryKeyInput, ChatInputHistoryKeyResult } from "./input-history.ts";
+import type { LinkFaviconFetcher } from "./link-favicon-loader.ts";
 import type { RealtimeTalkConversationEntry } from "./realtime-talk-conversation.ts";
 import type { RealtimeTalkCameraDevice } from "./realtime-talk-input.ts";
 import type { RealtimeTalkLevelSignal } from "./realtime-talk-level.ts";
@@ -78,7 +87,7 @@ type ChatReplyTarget = {
   sourceMessageId?: string | null;
 };
 export type ChatProps = ChatTaskSuggestionTrayProps &
-  ChatCloudStartupNoticeProps & {
+  ChatPlacementStartupNoticeProps & {
     transcript: ChatTranscriptController;
     paneId: string;
     sessionKey: string;
@@ -96,7 +105,10 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     waitingApproval?: boolean;
     compactionStatus?: CompactionStatus | null;
     fallbackStatus?: FallbackStatus | null;
-    progressCard?: ProgressCard | null;
+    /* One live placement per view: the pane picks it, so the composer bar and
+     * the right-gutter dock can never both render the same card. */
+    progressCard?: { card: ProgressCard; placement: "composer" | "dock" } | null;
+    onDismissProgressCard?: (card: ProgressCard) => void;
     gatewayQuestionPrompts?: readonly QuestionPrompt[];
     onGatewayQuestionChange?: () => void;
     onGatewayQuestionSubmit?: (
@@ -120,6 +132,8 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     runOutputTokens?: number | null;
     assistantAvatarUrl?: string | null;
     draft: string;
+    modelCatalog: readonly ModelCatalogEntry[];
+    modelSwitching: boolean;
     queue: ChatQueueItem[];
     queuedOutboxCount?: number;
     realtimeTalkActive?: boolean;
@@ -137,8 +151,8 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     gatewayClient?: GatewayBrowserClient | null;
     composerHoldToRecord?: boolean;
     suggestionComposer?: boolean;
-    typingActors?: readonly { id: string; label: string }[];
-    onTypingChange?: (typing: boolean) => void;
+    typingActors?: readonly { id: string; label: string; preview?: string }[];
+    onTypingChange?: (typing: boolean, preview?: string) => void;
     canSend: boolean;
     disabledReason: string | null;
     disabledBanner?: ChatComposerDisabledBanner;
@@ -149,8 +163,8 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     runError?: { summary: string } | null;
     inlineApproval?: ExecApprovalRequest | null;
     approvalBusy?: boolean;
+    approvalCanGrant: boolean;
     approvalErrors?: ReadonlyMap<string, string>;
-    approvalNowMs?: number;
     onApprovalDecision?: (
       approvalId: string,
       decision: ExecApprovalDecision,
@@ -169,6 +183,7 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     boardProvider?: BoardProvider;
     embedSandboxMode?: EmbedSandboxMode;
     allowExternalEmbedUrls?: boolean;
+    fetchLinkFavicon?: LinkFaviconFetcher;
     chatMessageMaxWidth?: string | null;
     assistantName: string;
     sendShortcut?: ChatSendShortcut;
@@ -177,6 +192,7 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     userId?: string | null;
     userName?: string | null;
     userAvatar?: string | null;
+    personActivity?: PersonActivityRouting;
     localMediaPreviewRoots?: string[];
     assistantAttachmentAuthToken?: string | null;
     resolveArtifactDownload?: ArtifactDownloadResolver;
@@ -242,6 +258,7 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     onRevealWorkspaceFile?: (path: string) => void;
     onChatScroll?: (event: Event) => void;
     basePath?: string;
+    resourceBasePath?: string;
     composerControls?: TemplateResult | typeof nothing;
     permissionPicker?: ChatPermissionPickerProps;
     replyTarget?: ChatReplyTarget | null;
@@ -268,6 +285,13 @@ export type ChatProps = ChatTaskSuggestionTrayProps &
     onOpenSessionDiff?: () => void;
     onExpandPullRequests?: () => void;
     onDismissPullRequest?: (pullRequest: ControlUiSessionPullRequest) => void;
+    githubPublicationBusy?: boolean;
+    githubPublicationResult?:
+      | import("../../../../packages/gateway-protocol/src/index.js").SessionGitHubPublicationResult
+      | null;
+    githubPublicationError?: string | null;
+    githubPublicationGuidance?: string;
+    onPublishPullRequest?: () => void;
   };
 
 export function renderChat(props: ChatProps) {
@@ -324,7 +348,9 @@ export function renderChat(props: ChatProps) {
       userId: props.userId,
       userName: props.userName,
       userAvatar: props.userAvatar,
+      personActivity: props.personActivity,
       basePath: props.basePath,
+      resourceBasePath: props.resourceBasePath,
       fullMessageAgentId: props.fullMessageAgentId,
       loadFullAssistantMessage: props.loadFullAssistantMessage,
       localMediaPreviewRoots: props.localMediaPreviewRoots,
@@ -333,8 +359,10 @@ export function renderChat(props: ChatProps) {
       canvasPluginSurfaceUrl: props.canvasPluginSurfaceUrl,
       embedSandboxMode: props.embedSandboxMode,
       allowExternalEmbedUrls: props.allowExternalEmbedUrls,
+      fetchLinkFavicon: props.fetchLinkFavicon,
       autoExpandToolCalls: props.autoExpandToolCalls,
       realtimeTalkConversation: props.realtimeTalkConversation,
+      typingActors: props.typingActors,
       onOpenSidebar: props.onOpenSidebar,
       onOpenWorkspaceFile: props.onOpenWorkspaceFile,
       onOpenSessionLink: props.onOpenSessionLink,
@@ -347,6 +375,7 @@ export function renderChat(props: ChatProps) {
       onHistoryIntent: props.onHistoryIntent,
       onDraftChange: props.onDraftChange,
       onSend: props.onSend,
+      onRetryQueuedMessage: props.connected && canCompose ? props.onQueueRetry : undefined,
       onSetReply: props.onSetReply,
       replyMessageAccess: props.replyMessageAccess,
       onRewindMessage: props.onRewindMessage,
@@ -383,12 +412,15 @@ export function renderChat(props: ChatProps) {
     waitingApproval: props.waitingApproval,
     compactionStatus: props.compactionStatus,
     fallbackStatus: props.fallbackStatus,
-    progressCard: props.progressCard,
+    progressCard: props.progressCard?.placement === "composer" ? props.progressCard.card : null,
+    onDismissProgressCard: props.onDismissProgressCard,
     gatewayQuestionPrompts: props.gatewayQuestionPrompts,
     messages: props.messages,
     stream: props.stream,
     queue: props.queue,
     draft: props.draft,
+    modelCatalog: props.modelCatalog,
+    modelSwitching: props.modelSwitching,
     sessions: props.sessions,
     toolOverrides: props.toolOverrides,
     capabilityMenu: props.capabilityMenu,
@@ -417,7 +449,6 @@ export function renderChat(props: ChatProps) {
     gatewayClient: props.gatewayClient,
     composerHoldToRecord: props.composerHoldToRecord,
     suggestionComposer: props.suggestionComposer,
-    typingActors: props.typingActors,
     onTypingChange: props.onTypingChange,
     composerControls: props.composerControls,
     permissionPicker: props.permissionPicker,
@@ -519,12 +550,7 @@ export function renderChat(props: ChatProps) {
           props.onClearReply?.();
           return;
         }
-        if (
-          (event.metaKey || event.ctrlKey) &&
-          !event.altKey &&
-          !event.shiftKey &&
-          resolveAsciiShortcutKey(event) === "f"
-        ) {
+        if (matchesShortcutCombo(KEYBOARD_SHORTCUT_COMBOS.transcriptSearch, event)) {
           event.preventDefault();
           toggleTranscriptSearch(props.paneId, requestUpdate, event);
         }
@@ -544,8 +570,8 @@ export function renderChat(props: ChatProps) {
                         ${renderExecApprovalCard({
                           approval: props.inlineApproval,
                           busy: props.approvalBusy === true,
+                          canGrant: props.approvalCanGrant,
                           error: props.approvalErrors?.get(props.inlineApproval.id) ?? null,
-                          nowMs: props.approvalNowMs ?? Date.now(),
                           variant: "inline",
                           onDecision: props.onApprovalDecision,
                         })}
@@ -560,6 +586,11 @@ export function renderChat(props: ChatProps) {
                     onExpand: () => props.onExpandPullRequests?.(),
                     onDismiss: (pullRequest) => props.onDismissPullRequest?.(pullRequest),
                     onOpenSessionDiff: props.onOpenSessionDiff,
+                    publicationBusy: props.githubPublicationBusy === true,
+                    publicationResult: props.githubPublicationResult,
+                    publicationError: props.githubPublicationError,
+                    publicationGuidance: props.githubPublicationGuidance,
+                    onPublish: props.onPublishPullRequest,
                   })}
                   ${renderChatSessionSuggestions({
                     suggestions: props.sessionSuggestions ?? [],
@@ -574,6 +605,13 @@ export function renderChat(props: ChatProps) {
                     sessions: props.swarmSessions ?? [],
                     sessionKey: props.sessionKey,
                   })}
+                  ${props.progressCard?.placement === "dock"
+                    ? renderSessionProgressCard(
+                        props.progressCard.card,
+                        "dock",
+                        props.onDismissProgressCard,
+                      )
+                    : nothing}
                   ${showModelSetupSplash ? nothing : chatColumnFooter}
                 </div>
               </div>

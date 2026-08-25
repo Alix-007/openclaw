@@ -60,19 +60,20 @@ export { CLAUDE_CLI_PROFILE_ID, CODEX_CLI_PROFILE_ID } from "../agents/auth-prof
 export {
   ensureAuthProfileStore,
   ensureAuthProfileStoreForLocalUpdate,
-  updateAuthProfileStoreWithLock,
 } from "../agents/auth-profiles/store.js";
+export { listProfilesForProvider, upsertAuthProfile } from "../agents/auth-profiles/profiles.js";
 export {
-  listProfilesForProvider,
-  removeProviderAuthProfilesWithLock,
-  upsertAuthProfile,
-  upsertAuthProfileWithLock,
-} from "../agents/auth-profiles/profiles.js";
+  removeProviderAuthProfilesWithLockCompat as removeProviderAuthProfilesWithLock,
+  updateAuthProfileStoreWithLockCompat as updateAuthProfileStoreWithLock,
+  upsertAuthProfileWithLockCompat as upsertAuthProfileWithLock,
+} from "./provider-auth-write-compat.js";
 export { resolveEnvApiKey } from "../agents/model-auth-env.js";
+export { readCodexCliCredentialsCached } from "../agents/cli-credentials.js";
 export {
+  type ClaudeCliCredential,
+  type ClaudeCliCredentialReadOptions,
   readClaudeCliCredentialsCached,
-  readCodexCliCredentialsCached,
-} from "../agents/cli-credentials.js";
+} from "./provider-auth-claude-compat.js";
 export { suggestOAuthProfileIdForLegacyDefault } from "../agents/auth-profiles/repair.js";
 export {
   CUSTOM_LOCAL_AUTH_MARKER,

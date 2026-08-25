@@ -13,13 +13,15 @@ import {
 import type { spawnTerminalPty } from "../../process/terminal-pty.js";
 import { GATEWAY_OWNER_ONLY_CORE_TOOLS } from "../../security/dangerous-tools.js";
 import { compactToolOutputHint } from "../tool-schema-hints.js";
+import { withGatewayToolCallerIdentity } from "./gateway-caller-context.js";
 import { createTerminalTool } from "./terminal-tool.js";
 
 const callInProcessGatewayTool = vi.hoisted(() => vi.fn(async () => ({ ok: true })));
+const getInProcessGatewayToolContext = vi.hoisted(() => vi.fn());
 
 vi.mock("./in-process-gateway.js", () => ({
   callInProcessGatewayTool,
-  getInProcessGatewayToolContext: vi.fn(),
+  getInProcessGatewayToolContext,
 }));
 
 type TerminalPtyHandle = Awaited<ReturnType<typeof spawnTerminalPty>>;
@@ -85,10 +87,14 @@ describe("terminal tool", () => {
   beforeEach(() => {
     resetAgentRunRegistryForTest();
     callInProcessGatewayTool.mockClear();
+    getInProcessGatewayToolContext.mockReset();
   });
 
   it("uses a flat action enum and the owner-only core gate", () => {
     const tool = createTerminalTool();
+    expect(tool.description).toContain(
+      "Terminals opened from this chat's Control UI panel are shared with the agent",
+    );
     expect(tool.parameters).toMatchObject({
       properties: {
         action: {
@@ -102,17 +108,188 @@ describe("terminal tool", () => {
     expect(GATEWAY_OWNER_ONLY_CORE_TOOLS).toContain("terminal");
   });
 
+  it("uses the admitted caller Gateway before ambient context", async () => {
+    const callerManager = new TerminalSessionManager({ emit: vi.fn(), spawn: vi.fn() });
+    const ambientManager = new TerminalSessionManager({ emit: vi.fn(), spawn: vi.fn() });
+    const callerList = vi.spyOn(callerManager, "listAgent");
+    const ambientList = vi.spyOn(ambientManager, "listAgent");
+    const gatewayContextResolver = vi.fn();
+    gatewayContextResolver.mockReturnValue(makeContext(callerManager));
+    getInProcessGatewayToolContext.mockReturnValue(makeContext(ambientManager));
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+    });
+
+    const result = await withGatewayToolCallerIdentity(
+      {
+        agentId: "main",
+        sessionKey: "agent:main:main",
+        gatewayContextResolver,
+      },
+      async () => await tool.execute("list", { action: "list" }),
+    );
+
+    expect(result.details).toEqual({ sessions: [] });
+    expect(callerList).toHaveBeenCalledOnce();
+    expect(ambientList).not.toHaveBeenCalled();
+  });
+
+  it("fails closed when the admitted caller Gateway has retired", async () => {
+    const ambientManager = new TerminalSessionManager({ emit: vi.fn(), spawn: vi.fn() });
+    const ambientList = vi.spyOn(ambientManager, "listAgent");
+    getInProcessGatewayToolContext.mockReturnValue(makeContext(ambientManager));
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+    });
+
+    await expect(
+      withGatewayToolCallerIdentity(
+        {
+          agentId: "main",
+          sessionKey: "agent:main:main",
+          gatewayContextResolver: () => undefined,
+        },
+        async () => await tool.execute("list", { action: "list" }),
+      ),
+    ).rejects.toThrow("terminal unavailable");
+    expect(ambientList).not.toHaveBeenCalled();
+  });
+
+  it("revalidates the admitted Gateway after task lookup before opening", async () => {
+    const callerSpawn = vi.fn(async () => makeBackend());
+    const ambientSpawn = vi.fn(async () => makeBackend());
+    const callerManager = new TerminalSessionManager({ emit: vi.fn(), spawn: callerSpawn });
+    const ambientManager = new TerminalSessionManager({ emit: vi.fn(), spawn: ambientSpawn });
+    let callerLive = true;
+    const gatewayContextResolver = vi.fn();
+    gatewayContextResolver.mockImplementation(() =>
+      callerLive ? makeContext(callerManager) : undefined,
+    );
+    getInProcessGatewayToolContext.mockReturnValue(makeContext(ambientManager));
+    const lookupTaskByRunIdForChildSession = vi.fn(async () => {
+      callerLive = false;
+      return undefined;
+    });
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+      runId: "run-1",
+      lookupTaskByRunIdForChildSession,
+    });
+
+    await expect(
+      withGatewayToolCallerIdentity(
+        {
+          agentId: "main",
+          sessionKey: "agent:main:main",
+          gatewayContextResolver,
+        },
+        async () => await tool.execute("open", { action: "open" }),
+      ),
+    ).rejects.toThrow("terminal unavailable");
+    expect(gatewayContextResolver).toHaveBeenCalledTimes(2);
+    expect(callerSpawn).not.toHaveBeenCalled();
+    expect(ambientSpawn).not.toHaveBeenCalled();
+    expect(getInProcessGatewayToolContext).not.toHaveBeenCalled();
+  });
+
+  it("closes a terminal when the admitted Gateway retires during open", async () => {
+    const spawned = deferred<ReturnType<typeof makeBackend>>();
+    const backend = makeBackend();
+    const callerSpawn = vi.fn(() => spawned.promise);
+    const callerManager = new TerminalSessionManager({ emit: vi.fn(), spawn: callerSpawn });
+    const ambientSpawn = vi.fn(async () => makeBackend());
+    const ambientManager = new TerminalSessionManager({ emit: vi.fn(), spawn: ambientSpawn });
+    let callerLive = true;
+    const gatewayContextResolver = vi.fn();
+    gatewayContextResolver.mockImplementation(() =>
+      callerLive ? makeContext(callerManager) : undefined,
+    );
+    getInProcessGatewayToolContext.mockReturnValue(makeContext(ambientManager));
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+    });
+
+    const opening = withGatewayToolCallerIdentity(
+      {
+        agentId: "main",
+        sessionKey: "agent:main:main",
+        gatewayContextResolver,
+      },
+      async () => await tool.execute("open", { action: "open", command: "echo unsafe" }),
+    );
+    await vi.waitFor(() => expect(callerSpawn).toHaveBeenCalledOnce());
+    callerLive = false;
+    spawned.resolve(backend);
+
+    await expect(opening).rejects.toThrow("terminal unavailable");
+    expect(gatewayContextResolver).toHaveBeenCalledTimes(2);
+    expect(backend.writes).toEqual([]);
+    expect(backend.killed).toBe(true);
+    expect(callerManager.size).toBe(0);
+    expect(ambientSpawn).not.toHaveBeenCalled();
+    expect(getInProcessGatewayToolContext).not.toHaveBeenCalled();
+  });
+
+  it("keeps ambient Gateway context pinned across task lookup", async () => {
+    const firstSpawn = vi.fn(async () => makeBackend());
+    const secondSpawn = vi.fn(async () => makeBackend());
+    const firstManager = new TerminalSessionManager({ emit: vi.fn(), spawn: firstSpawn });
+    const secondManager = new TerminalSessionManager({ emit: vi.fn(), spawn: secondSpawn });
+    getInProcessGatewayToolContext
+      .mockReturnValueOnce(makeContext(firstManager))
+      .mockReturnValue(makeContext(secondManager));
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+      runId: "run-1",
+      lookupTaskByRunIdForChildSession: vi.fn(async () => undefined),
+    });
+
+    await expect(tool.execute("open", { action: "open" })).resolves.toMatchObject({
+      details: { ok: true },
+    });
+    expect(getInProcessGatewayToolContext).toHaveBeenCalledOnce();
+    expect(firstSpawn).toHaveBeenCalledOnce();
+    expect(secondSpawn).not.toHaveBeenCalled();
+  });
+
+  it("uses ambient Gateway context without an admitted caller", async () => {
+    const manager = new TerminalSessionManager({ emit: vi.fn(), spawn: vi.fn() });
+    const list = vi.spyOn(manager, "listAgent");
+    getInProcessGatewayToolContext.mockReturnValue(makeContext(manager));
+    const tool = createTerminalTool({
+      agentId: "main",
+      agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
+    });
+
+    await expect(tool.execute("list", { action: "list" })).resolves.toMatchObject({
+      details: { sessions: [] },
+    });
+    expect(list).toHaveBeenCalledOnce();
+  });
+
   it("opens in the background, reads, writes, resizes, lists, and closes its terminal", async () => {
     const backend = makeBackend();
     const manager = new TerminalSessionManager({ emit: vi.fn(), spawn: async () => backend });
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => makeContext(manager),
     });
     expect(tool.outputSchema).toBeDefined();
     expect(compactToolOutputHint(tool.outputSchema)).toBe(
-      "{ sessions: Array<{ agentId: string; attached: boolean; createdAtMs: number; cwd: string; owner: string; sessionId: string; shell: string }> } | { agentId: string; cwd: string; ok: true; sessionId: string; shell: string } | { sessionId: string; text: string } | { ok: boolean }",
+      "{ sessions: Array<{ agentId: string; attached: boolean; createdAtMs: number; cwd: string; owner: string; sessionId: string; shell: string }> } | { agentId: string; cwd: string; ok: true; sessionId: string; shell: string } | { sessionId: string; text: string } | { ok: true }",
     );
 
     const opened = await tool.execute("open", { action: "open", command: "echo ready" });
@@ -179,6 +356,7 @@ describe("terminal tool", () => {
       createTerminalTool({
         agentId: "main",
         agentSessionKey,
+        sessionId: "shared-session-id",
         runId,
         lookupTaskByRunIdForChildSession,
         getGatewayContext: () => makeContext(manager),
@@ -193,11 +371,18 @@ describe("terminal tool", () => {
       ["run-2", agentSessionKey],
       ["conversation-run", agentSessionKey],
     ]);
-    expect(manager.closeAgentSessions("task-1")).toBe(1);
+    expect(manager.closeTaskSessions("task-1")).toBe(1);
     expect(firstBackend.killed).toBe(true);
     expect(secondBackend.killed).toBe(false);
     expect(persistentBackend.killed).toBe(false);
-    expect(manager.listAgent(agentSessionKey, "main")).toHaveLength(2);
+    expect(
+      manager.listAgent({
+        kind: "agent",
+        agentSessionKey,
+        agentSessionId: "shared-session-id",
+        agentId: "main",
+      }),
+    ).toHaveLength(2);
   });
 
   it("binds the matching child session when task run ids collide", async () => {
@@ -223,6 +408,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey,
+      sessionId: "shared-run-session-id",
       runId: "shared-run",
       lookupTaskByRunIdForChildSession,
       getGatewayContext: () => makeContext(manager),
@@ -231,8 +417,8 @@ describe("terminal tool", () => {
     await tool.execute("open", { action: "open" });
 
     expect(lookupTaskByRunIdForChildSession).toHaveBeenCalledWith("shared-run", agentSessionKey);
-    expect(manager.closeAgentSessions("task-2")).toBe(1);
-    expect(manager.closeAgentSessions("task-1")).toBe(0);
+    expect(manager.closeTaskSessions("task-2")).toBe(1);
+    expect(manager.closeTaskSessions("task-1")).toBe(0);
     expect(backend.killed).toBe(true);
   });
 
@@ -258,6 +444,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey,
+      sessionId: "cron-session-id",
       runId: "cron-agent-run",
       lookupTaskByRunIdForChildSession,
       getGatewayContext: () => makeContext(manager),
@@ -270,7 +457,7 @@ describe("terminal tool", () => {
         "detached-task-run",
         agentSessionKey,
       );
-      expect(manager.closeAgentSessions("cron-task")).toBe(1);
+      expect(manager.closeTaskSessions("cron-task")).toBe(1);
       expect(backend.killed).toBe(true);
     } finally {
       releaseAgentRunContext("cron-agent-run", claimId);
@@ -286,6 +473,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:completed-task",
+      sessionId: "completed-session-id",
       runId: "completed-run",
       lookupTaskByRunIdForChildSession: vi.fn(async () => ({
         taskId: "task-completed",
@@ -308,6 +496,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => ({
         terminalSessions: manager,
         isTerminalEnabled: () => true,
@@ -329,6 +518,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => ({
         terminalSessions: manager,
         isTerminalEnabled: () => true,
@@ -350,6 +540,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => ({
         ...makeContext(manager),
         isTerminalEnabled: () => false,
@@ -366,6 +557,7 @@ describe("terminal tool", () => {
     const tool = createTerminalTool({
       agentId: "main",
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => makeContext(manager),
     });
 
@@ -387,6 +579,7 @@ describe("terminal tool", () => {
       const tool = createTerminalTool({
         agentId: "main",
         agentSessionKey: "agent:main:main",
+        sessionId: "main-session-id",
         getGatewayContext: () => makeContext(manager),
       });
       const opening = tool.execute("open", { action: "open" });
@@ -404,7 +597,7 @@ describe("terminal tool", () => {
     }
   });
 
-  it("cannot read, input, or close connection-owned and other-agent terminals", async () => {
+  it("cannot list or operate connection-owned and replacement-incarnation terminals", async () => {
     const connBackend = makeBackend();
     const otherBackend = makeBackend();
     const backends = [connBackend, otherBackend];
@@ -423,7 +616,12 @@ describe("terminal tool", () => {
       env: {},
     });
     const other = await manager.open({
-      owner: { kind: "agent", agentSessionKey: "agent:main:other" },
+      owner: {
+        kind: "agent",
+        agentSessionKey: "agent:main:main",
+        agentSessionId: "replacement-session-id",
+        agentId: "main",
+      },
       agentId: "main",
       cwd: "/tmp",
       shell: "/bin/sh",
@@ -437,22 +635,27 @@ describe("terminal tool", () => {
     }
     const tool = createTerminalTool({
       agentSessionKey: "agent:main:main",
+      sessionId: "main-session-id",
       getGatewayContext: () => makeContext(manager),
     });
 
     for (const sessionId of [conn.sessionId, other.sessionId]) {
       await expect(tool.execute("read", { action: "read", sessionId })).rejects.toThrow(
-        "terminal not owned by this agent session",
+        "Terminal session unavailable. Use action=list to find an owned terminal or action=open to acquire one.",
       );
       await expect(
         tool.execute("input", { action: "input", sessionId, data: "blocked" }),
-      ).resolves.toMatchObject({ details: { ok: false } });
+      ).rejects.toThrow(
+        "Terminal session unavailable. Use action=list to find an owned terminal or action=open to acquire one.",
+      );
       await expect(
         tool.execute("resize", { action: "resize", sessionId, cols: 120, rows: 40 }),
-      ).resolves.toMatchObject({ details: { ok: false } });
-      await expect(tool.execute("close", { action: "close", sessionId })).resolves.toMatchObject({
-        details: { ok: false },
-      });
+      ).rejects.toThrow(
+        "Terminal session unavailable. Use action=list to find an owned terminal or action=open to acquire one.",
+      );
+      await expect(tool.execute("close", { action: "close", sessionId })).rejects.toThrow(
+        "Terminal session unavailable. Use action=list to find an owned terminal or action=open to acquire one.",
+      );
     }
     await expect(tool.execute("list", { action: "list" })).resolves.toMatchObject({
       details: { sessions: [] },
@@ -462,4 +665,61 @@ describe("terminal tool", () => {
     expect(connBackend.killed).toBe(false);
     expect(otherBackend.killed).toBe(false);
   });
+
+  it.each([
+    {
+      name: "initial command",
+      configure: (backend: ReturnType<typeof makeBackend>) => {
+        backend.write = () => {
+          throw new Error("write failed");
+        };
+      },
+      execute: (tool: ReturnType<typeof createTerminalTool>) =>
+        tool.execute("open", { action: "open", command: "echo ready" }),
+    },
+    {
+      name: "input",
+      configure: (backend: ReturnType<typeof makeBackend>) => {
+        backend.write = () => {
+          throw new Error("write failed");
+        };
+      },
+      execute: async (tool: ReturnType<typeof createTerminalTool>) => {
+        const opened = await tool.execute("open", { action: "open" });
+        const sessionId = (opened.details as { sessionId: string }).sessionId;
+        return tool.execute("input", { action: "input", sessionId, data: "yes\r" });
+      },
+    },
+    {
+      name: "resize",
+      configure: (backend: ReturnType<typeof makeBackend>) => {
+        backend.resize = () => {
+          throw new Error("resize failed");
+        };
+      },
+      execute: async (tool: ReturnType<typeof createTerminalTool>) => {
+        const opened = await tool.execute("open", { action: "open" });
+        const sessionId = (opened.details as { sessionId: string }).sessionId;
+        return tool.execute("resize", { action: "resize", sessionId, cols: 120, rows: 40 });
+      },
+    },
+  ])(
+    "throws actionable recovery when backend $name fails",
+    async ({ name, configure, execute }) => {
+      const backend = makeBackend();
+      configure(backend);
+      const manager = new TerminalSessionManager({ emit: vi.fn(), spawn: async () => backend });
+      const tool = createTerminalTool({
+        agentId: "main",
+        agentSessionKey: "agent:main:main",
+        sessionId: "main-session-id",
+        getGatewayContext: () => makeContext(manager),
+      });
+
+      await expect(execute(tool)).rejects.toThrow(
+        `Terminal ${name} failed. Use action=list to find an owned terminal or action=open to acquire one.`,
+      );
+      expect(manager.size).toBe(0);
+    },
+  );
 });
