@@ -1065,6 +1065,53 @@ describe("sendMessageDiscord", () => {
     expect(String(error)).not.toContain("ViewChannel/SendMessages/");
   });
 
+  it.each([ChannelType.GuildVoice, ChannelType.GuildStageVoice])(
+    "reports message permissions for voice channel type %s",
+    async (channelType) => {
+      const { rest, postMock, getMock } = makeDiscordRest();
+      postMock.mockRejectedValueOnce(
+        Object.assign(new Error("Missing Permissions"), {
+          code: 50013,
+          status: 403,
+        }),
+      );
+      getMock
+        .mockResolvedValueOnce({ type: channelType })
+        .mockResolvedValueOnce({
+          id: "voice1",
+          guild_id: "guild1",
+          type: channelType,
+          permission_overwrites: [],
+        })
+        .mockResolvedValueOnce({ id: "bot1" })
+        .mockResolvedValueOnce({
+          id: "guild1",
+          roles: [
+            {
+              id: "guild1",
+              permissions: PermissionFlagsBits.ViewChannel.toString(),
+            },
+          ],
+        })
+        .mockResolvedValueOnce({ roles: [] });
+
+      let error: unknown;
+      try {
+        await sendMessageDiscord("channel:voice1", "hello", {
+          rest,
+          token: "t",
+          cfg: DISCORD_TEST_CFG,
+        });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toMatchObject({
+        missingPermissions: ["SendMessages"],
+      });
+    },
+  );
+
   it("uploads media attachments", async () => {
     const { rest, postMock } = makeDiscordRest();
     postMock.mockResolvedValue({ id: "msg", channel_id: "789" });
