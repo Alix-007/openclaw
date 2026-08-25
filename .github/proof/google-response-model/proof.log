@@ -1,0 +1,4 @@
+PASS exact product 3adc4c0f7d92b4f2f358f69bfadf3e8fe3f67663
+PASS @google/genai 2.17.1 issued one real loopback HTTP SSE request
+PASS requested gemini-2.5-pro and retained served gemini-2.5-pro-002
+PASS responseId=google-response-model-proof stopReason=stop
