@@ -8,6 +8,7 @@ import {
   agentCommandMock,
   getGatewayTestPort,
   installGatewayTestHooks,
+  prepareGatewayReplyRuntimeForTest,
   startTestGatewayServer,
   testState,
 } from "../../src/gateway/test-helpers.js";
@@ -59,6 +60,7 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
     process.env.OPENCLAW_GATEWAY_PORT = String(port);
     process.env.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
     await approveLocalCliDevice();
+    await prepareGatewayReplyRuntimeForTest();
 
     vi.mocked(agentCommandMock).mockResolvedValue({
       payloads: [{ text: "requester handoff attempted" }],
