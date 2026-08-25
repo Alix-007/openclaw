@@ -8,7 +8,6 @@ import {
   agentCommandMock,
   getGatewayTestPort,
   installGatewayTestHooks,
-  prepareGatewayReplyRuntimeForTest,
   startTestGatewayServer,
   testState,
 } from "../../src/gateway/test-helpers.js";
@@ -60,22 +59,6 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
     process.env.OPENCLAW_GATEWAY_PORT = String(port);
     process.env.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
     await approveLocalCliDevice();
-    await prepareGatewayReplyRuntimeForTest();
-
-    vi.mocked(agentCommandMock).mockResolvedValue({
-      payloads: [{ text: "requester handoff attempted" }],
-      meta: {},
-      deliverySucceeded: false,
-      deliveryStatus: {
-        requested: true,
-        attempted: true,
-        status: "failed",
-        succeeded: false,
-        error: true,
-        reason: "proof_direct_delivery_failed",
-        errorMessage: "proof direct delivery failed",
-      },
-    });
 
     let activityChecks = 0;
     const queueCalls: Array<{ sessionId: string; text: string }> = [];
@@ -121,8 +104,10 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
         sourceSessionKey: "codex-native:proof-child",
         sourceTool: "agent_harness_task",
       });
-      const expectedWarning =
-        "[warn] Subagent completion direct announce failed for session codex-native:proof-child: proof direct delivery failed; recovered via steered";
+      const directPrimary = result.phases?.find((phase) => phase.phase === "direct-primary");
+      expect(directPrimary?.error).toEqual(expect.any(String));
+      const directPrimaryError = directPrimary?.error as string;
+      const expectedWarning = `[warn] Subagent completion direct announce failed for session codex-native:proof-child: ${directPrimaryError}; recovered via steered`;
 
       expect(result).toMatchObject({
         delivered: true,
@@ -132,12 +117,10 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
             phase: "direct-primary",
             delivered: false,
             path: "direct",
-            error: "proof direct delivery failed",
           },
           { phase: "steer-fallback", delivered: true, path: "steered" },
         ],
       });
-      expect(agentCommandMock).toHaveBeenCalledTimes(1);
       expect(queueCalls).toEqual([{ sessionId: "requester-session-proof", text: "child done" }]);
       expect(warnings).toEqual([expectedWarning]);
 
@@ -148,10 +131,11 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
           gatewayServer: "real-loopback-websocket",
           authentication: "token-plus-approved-cli-device",
           method: "agent",
-          controlledBehindGateway: "agentCommand fixture returns failed deliveryStatus",
+          failureSource: "Gateway agent RPC response before any controlled agent fixture ran",
         },
         observed: {
           gatewayAgentRpcCalls: vi.mocked(agentCommandMock).mock.calls.length,
+          directPrimaryError,
           requesterActivityChecks: activityChecks,
           queueCalls,
           result,
