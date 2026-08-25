@@ -132,6 +132,23 @@ describe("file operation provenance", () => {
 });
 
 describe("serializeConversation", () => {
+  it("omits provider thinking while preserving visible assistant state", () => {
+    const messages = [
+      {
+        role: "assistant",
+        content: [
+          { type: "thinking", thinking: "PRIVATE_REASONING_SENTINEL" },
+          { type: "text", text: "Visible answer" },
+          { type: "toolCall", name: "read", arguments: { path: "src/index.ts" } },
+        ],
+      },
+    ] as unknown as Message[];
+
+    expect(serializeConversation(messages)).toBe(
+      '[Assistant]: Visible answer\n\n[Assistant tool calls]: read(path="src/index.ts")',
+    );
+  });
+
   it.each([
     {
       name: "Codex nested toolResult text",
