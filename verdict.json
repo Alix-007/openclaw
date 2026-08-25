@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "pr": 129488,
+  "headSha": "568619d7d831a4aaa352096ece33c27cc448b9a2",
+  "baseSha": "e9a000452a23e1b5740a51bc49e162fc44a5a05b",
+  "generatedAt": "2026-08-25T17:10:52.853Z",
+  "credentialMode": "none",
+  "surface": {
+    "browser": "Chromium via Playwright",
+    "mountedControlUi": true,
+    "gatewayBoundary": "deterministic mocked Gateway WebSocket",
+    "productionOwners": [
+      "ApplicationGateway",
+      "GatewayBrowserClient",
+      "SecretsPage",
+      "SecretsStore"
+    ]
+  },
+  "command": "node scripts/run-vitest.mjs run --config test/vitest/vitest.ui-e2e.config.ts --configLoader runner ui/src/pages/secrets/secrets.e2e.test.ts",
+  "testFile": {
+    "path": "ui/src/pages/secrets/secrets.e2e.test.ts",
+    "passed": 5,
+    "failed": 0,
+    "durationMs": 33017.50312
+  },
+  "observations": {
+    "replacementClient": {
+      "sameGatewayUrl": true,
+      "clientIdentityChanged": true,
+      "deleteRequests": 0,
+      "rowRetained": true,
+      "visibleError": "The secret was not deleted. Reload the list and try again.",
+      "pass": true
+    },
+    "sameClientReconnect": {
+      "clientIdentityChanged": false,
+      "deleteRequests": 1,
+      "rowRemoved": true,
+      "pass": true
+    }
+  },
+  "artifacts": {
+    "screenshot": {
+      "path": "client-replacement-delete-rejected.png",
+      "sha256": "5a384ee0e7d7d5802fa39e08f937c7df390dc606be67f7d5a71784b031156852",
+      "width": 1280,
+      "height": 720
+    },
+    "vitestResults": {
+      "path": "vitest-results.json",
+      "sha256": "62826a98be67994262356d74c88d2aaf0cebc2ea6d6de4a6e7f4e3b0cc756e88"
+    }
+  },
+  "redaction": "No credentials, user data, private identifiers, external services, or agent transcript. Fixture names and URLs are synthetic.",
+  "limitation": "The production browser owner boundary is mounted against the repository's mocked Gateway WebSocket, not a live external Gateway service.",
+  "pass": true
+}
