@@ -624,6 +624,59 @@ async function isPortClosed(host: string, port: number): Promise<boolean> {
   });
 }
 
+async function activeGatewayIdentity(page: Page): Promise<{
+  clientInstanceId: string;
+  gatewayUrl: string;
+  phase: string;
+}> {
+  return await page.evaluate(() => {
+    const app = document.querySelector("openclaw-app") as HTMLElement & {
+      runtime?: {
+        context: {
+          gateway: {
+            connection: { gatewayUrl: string };
+            snapshot: { client: { instanceId?: string } | null; phase: string };
+          };
+        };
+      };
+    };
+    const gateway = app.runtime?.context.gateway;
+    const instanceId = gateway?.snapshot.client?.instanceId;
+    if (!gateway || !instanceId) {
+      throw new Error("expected a connected Gateway client");
+    }
+    return {
+      clientInstanceId: instanceId,
+      gatewayUrl: gateway.connection.gatewayUrl,
+      phase: gateway.snapshot.phase,
+    };
+  });
+}
+
+function deleteRequestCount(): number {
+  return proxy.evidence
+    .flatMap((entry) => entry.requestMethods)
+    .filter((method) => method === "secrets.store.delete").length;
+}
+
+async function addReadableSecret(page: Page, name: string): Promise<void> {
+  await page.getByRole("button", { name: "Add", exact: true }).click();
+  const dialog = page.locator('openclaw-modal-dialog[label="Add"]');
+  await dialog.getByLabel("Name", { exact: true }).fill(name);
+  await dialog.getByLabel("Value", { exact: true }).fill("https://proof.invalid");
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByRole("row").filter({ hasText: name }).waitFor();
+}
+
+async function openDeleteConfirmation(page: Page, name: string) {
+  const row = page.getByRole("row").filter({ hasText: name });
+  await row.getByRole("button", { name: `Actions: ${name}` }).click();
+  await row.locator('wa-dropdown-item[value="delete"]').click();
+  const confirmation = page.locator('openclaw-modal-dialog[label="Delete"]');
+  await confirmation.getByText(`Delete ${name}?`, { exact: true }).waitFor();
+  return { confirmation, row };
+}
+
 describeControlUiE2e("Control UI real auth transports E2E", () => {
   beforeAll(async () => {
     console.info("[real-config-id-proof] setup-start");
@@ -677,6 +730,154 @@ describeControlUiE2e("Control UI real auth transports E2E", () => {
   afterEach(async () => {
     await Promise.all([...openContexts].map((context) => context.close().catch(() => {})));
     openContexts.clear();
+  });
+
+  it("binds confirmed secret deletion to the real Gateway client owner", async () => {
+    const servedBundle = await verifyGatewayServedControlUiBundle(gateway.httpUrl);
+    const connected = await createBrowserPage(gateway.httpUrl, proxy.trustedUrl);
+    await connected.page
+      .locator("openclaw-app-shell")
+      .waitFor({ timeout: controlUiSettleTimeoutMs });
+    expect(
+      await connected.page.evaluate((assetPath) =>
+        performance
+          .getEntriesByType("resource")
+          .some((entry) => new URL(entry.name).pathname.endsWith(`/${assetPath}`)),
+      servedBundle.assetPath,
+    ).toBe(true);
+
+    const secretsUrl = new URL("settings/secrets", gateway.httpUrl);
+    expect((await connected.page.goto(secretsUrl.toString()))?.status()).toBe(200);
+    await connected.page.getByRole("heading", { name: "Secrets" }).waitFor();
+
+    const replacementName = "REPLACEMENT_URL";
+    await addReadableSecret(connected.page, replacementName);
+    const replacementDelete = await openDeleteConfirmation(connected.page, replacementName);
+    const beforeReplacement = await activeGatewayIdentity(connected.page);
+    const replacementConnectionCount = proxy.evidence.length;
+    const replacementDeleteCount = deleteRequestCount();
+
+    await connected.page.evaluate(() => {
+      const app = document.querySelector("openclaw-app") as HTMLElement & {
+        runtime?: {
+          context: {
+            gateway: { connect: (options: { token: string }) => void };
+          };
+        };
+      };
+      const gateway = app.runtime?.context.gateway;
+      if (!gateway) {
+        throw new Error("expected the application Gateway owner");
+      }
+      gateway.connect({ token: "replacement-client-proof" });
+    });
+    await expect.poll(() => proxy.evidence.length).toBeGreaterThan(replacementConnectionCount);
+    await expect
+      .poll(() => activeGatewayIdentity(connected.page))
+      .toMatchObject({ gatewayUrl: beforeReplacement.gatewayUrl, phase: "connected" });
+    const afterReplacement = await activeGatewayIdentity(connected.page);
+    expect(afterReplacement.clientInstanceId).not.toBe(beforeReplacement.clientInstanceId);
+
+    await replacementDelete.confirmation
+      .getByRole("button", { name: "Delete", exact: true })
+      .click();
+    const visibleFailure = connected.page
+      .getByRole("alert")
+      .getByText("The secret was not deleted. Reload the list and try again.", { exact: true });
+    await expect
+      .poll(async () => ({
+        deleteRequests: deleteRequestCount(),
+        visibleFailure: await visibleFailure.count(),
+      }))
+      .not.toEqual({ deleteRequests: replacementDeleteCount, visibleFailure: 0 });
+    const afterReplacementDeleteCount = deleteRequestCount();
+    const replacementObservation = {
+      deleteRequests: afterReplacementDeleteCount - replacementDeleteCount,
+      rowRetained: (await replacementDelete.row.count()) === 1,
+      visibleFailure: await visibleFailure.isVisible(),
+    };
+    console.info(
+      `[pr129488-proof] replacement-observation ${JSON.stringify(replacementObservation)}`,
+    );
+    expect(afterReplacementDeleteCount).toBe(replacementDeleteCount);
+    await visibleFailure.waitFor();
+    await replacementDelete.row.waitFor();
+    await captureChromiumScreenshot(
+      connected.page,
+      "05-secret-delete-client-replacement-rejected.png",
+    );
+
+    const reconnectName = "RECONNECT_URL";
+    await addReadableSecret(connected.page, reconnectName);
+    const reconnectDelete = await openDeleteConfirmation(connected.page, reconnectName);
+    const beforeReconnect = await activeGatewayIdentity(connected.page);
+    const reconnectConnectionCount = proxy.evidence.length;
+    const reconnectDeleteCount = deleteRequestCount();
+    await connected.page.evaluate(() => {
+      const app = document.querySelector("openclaw-app") as HTMLElement & {
+        runtime?: {
+          context: {
+            gateway: {
+              snapshot: { client: { forceReconnect: (reason: string) => void } | null };
+            };
+          };
+        };
+      };
+      const client = app.runtime?.context.gateway.snapshot.client;
+      if (!client) {
+        throw new Error("expected the active Gateway client");
+      }
+      client.forceReconnect("secret delete real transport proof");
+    });
+    await expect.poll(() => proxy.evidence.length).toBeGreaterThan(reconnectConnectionCount);
+    await expect
+      .poll(() => activeGatewayIdentity(connected.page))
+      .toMatchObject({
+        clientInstanceId: beforeReconnect.clientInstanceId,
+        gatewayUrl: beforeReconnect.gatewayUrl,
+        phase: "connected",
+      });
+
+    await reconnectDelete.confirmation
+      .getByRole("button", { name: "Delete", exact: true })
+      .click();
+    await expect.poll(deleteRequestCount).toBe(reconnectDeleteCount + 1);
+    await expect.poll(() => reconnectDelete.row.count()).toBe(0);
+    const reconnectObservation = {
+      deleteRequests: deleteRequestCount() - reconnectDeleteCount,
+      rowRemoved: (await reconnectDelete.row.count()) === 0,
+    };
+    console.info(
+      `[pr129488-proof] reconnect-observation ${JSON.stringify(reconnectObservation)}`,
+    );
+    await captureChromiumScreenshot(connected.page, "06-secret-delete-same-client-reconnect.png");
+
+    const proof = {
+      exactProductHead: process.env.OPENCLAW_PROOF_PRODUCT_HEAD ?? null,
+      gatewayServedAsset: servedBundle,
+      realGateway: true,
+      realGatewayRequests: {
+        replacementDeleteCount: replacementObservation.deleteRequests,
+        reconnectDeleteCount: reconnectObservation.deleteRequests,
+      },
+      sameClientReconnect: {
+        clientRetained: beforeReconnect.clientInstanceId === afterReplacement.clientInstanceId,
+        ...reconnectObservation,
+      },
+      sameUrlReplacement: {
+        clientReplaced: beforeReplacement.clientInstanceId !== afterReplacement.clientInstanceId,
+        ...replacementObservation,
+      },
+      uiSource: "gateway-dist-control-ui",
+    };
+    await writeFile(
+      path.join(artifactDir, "pr129488-real-gateway-proof.json"),
+      `${JSON.stringify(proof, null, 2)}\n`,
+      "utf8",
+    );
+    console.info(`[pr129488-proof] ${JSON.stringify(proof)}`);
+    expect(connected.errors).toEqual([]);
+    await closeConnectedContext(connected.context);
   });
 
   it("preserves a 64-bit identifier through a real Gateway form save", async () => {

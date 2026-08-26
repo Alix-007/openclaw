@@ -1,0 +1,166 @@
+name: Proof PR 129488 real Gateway owner binding
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - proof/pr129488-real-gateway-568619
+
+permissions:
+  contents: read
+
+concurrency:
+  group: proof-pr129488-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PARENT_HEAD: e9a000452a23e1b5740a51bc49e162fc44a5a05b
+  PRODUCT_HEAD: 568619d7d831a4aaa352096ece33c27cc448b9a2
+  PROOF_TEST: ui/src/e2e/control-ui-auth-transports.e2e.test.ts
+  TEST_NAME: binds confirmed secret deletion to the real Gateway client owner
+
+jobs:
+  prove:
+    name: exact-head real Gateway and Chromium proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Checkout proof branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify proof-only delta and exact product ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "$PRODUCT_HEAD")" = "$PRODUCT_HEAD"
+          test "$(git rev-parse "$PARENT_HEAD")" = "$PARENT_HEAD"
+          git merge-base --is-ancestor "$PARENT_HEAD" "$PRODUCT_HEAD"
+          mapfile -t changed < <(git diff --name-only "$PRODUCT_HEAD" HEAD | sort)
+          expected=(
+            ".github/workflows/proof-pr129488-real-gateway.yml"
+            "ui/src/e2e/control-ui-auth-transports.e2e.test.ts"
+          )
+          test "${changed[*]}" = "${expected[*]}"
+          git diff --exit-code "$PRODUCT_HEAD" -- \
+            ui/src/i18n/locales/en.ts \
+            ui/src/pages/secrets/secrets-page.ts \
+            ui/src/lib/secrets-store/index.ts \
+            ui/src/app/gateway-store.ts \
+            src/gateway/server-methods/secrets.ts
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+
+      - name: Install exact lockfile dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Install Playwright Chromium
+        run: pnpm --dir ui exec playwright install --with-deps chromium
+
+      - name: Capture parent-red owner-boundary reproduction
+        id: parent_red
+        shell: bash
+        env:
+          OPENCLAW_CAPTURE_UI_PROOF: "0"
+          OPENCLAW_PROOF_PRODUCT_HEAD: ${{ env.PARENT_HEAD }}
+          OPENCLAW_UI_E2E_ARTIFACT_DIR: .artifacts/pr129488/parent-red
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/pr129488/parent-red
+          git checkout "$PARENT_HEAD" -- \
+            ui/src/i18n/locales/en.ts \
+            ui/src/pages/secrets/secrets-page.ts
+          pnpm ui:build
+          set +e
+          node scripts/run-vitest.mjs run \
+            --config test/vitest/vitest.ui-e2e.config.ts \
+            --configLoader runner \
+            "$PROOF_TEST" \
+            -t "$TEST_NAME" \
+            2>&1 | tee .artifacts/pr129488/parent-red/test.log
+          status=${PIPESTATUS[0]}
+          set -e
+          test "$status" -ne 0
+          grep -F '[pr129488-proof] replacement-observation {"deleteRequests":1' \
+            .artifacts/pr129488/parent-red/test.log
+          printf '%s\n' "$status" > .artifacts/pr129488/parent-red/exit-code.txt
+
+      - name: Restore exact product head
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout "$PRODUCT_HEAD" -- \
+            ui/src/i18n/locales/en.ts \
+            ui/src/pages/secrets/secrets-page.ts
+          git diff --exit-code "$PRODUCT_HEAD" -- \
+            ui/src/i18n/locales/en.ts \
+            ui/src/pages/secrets/secrets-page.ts
+
+      - name: Build exact product Control UI
+        run: pnpm ui:build
+
+      - name: Capture exact-head real Gateway proof
+        shell: bash
+        env:
+          OPENCLAW_CAPTURE_UI_PROOF: "1"
+          OPENCLAW_PROOF_PRODUCT_HEAD: ${{ env.PRODUCT_HEAD }}
+          OPENCLAW_UI_E2E_ARTIFACT_DIR: .artifacts/pr129488/exact-head
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/pr129488/exact-head
+          node scripts/run-vitest.mjs run \
+            --config test/vitest/vitest.ui-e2e.config.ts \
+            --configLoader runner \
+            "$PROOF_TEST" \
+            -t "$TEST_NAME" \
+            2>&1 | tee .artifacts/pr129488/exact-head/test.log
+          grep -F '[pr129488-proof] replacement-observation {"deleteRequests":0,"rowRetained":true,"visibleFailure":true}' \
+            .artifacts/pr129488/exact-head/test.log
+          grep -F '[pr129488-proof] reconnect-observation {"deleteRequests":1,"rowRemoved":true}' \
+            .artifacts/pr129488/exact-head/test.log
+
+      - name: Bind and digest sanitized proof artifacts
+        if: always()
+        shell: bash
+        env:
+          PROOF_COMMIT: ${{ github.sha }}
+          PROOF_RUN_ATTEMPT: ${{ github.run_attempt }}
+          PROOF_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/pr129488
+          node -e '
+            const fs = require("node:fs");
+            const value = {
+              exactProductHead: process.env.PRODUCT_HEAD,
+              parentHead: process.env.PARENT_HEAD,
+              proofCommit: process.env.PROOF_COMMIT,
+              runAttempt: process.env.PROOF_RUN_ATTEMPT,
+              runId: process.env.PROOF_RUN_ID,
+              source: "secretless fork GitHub Actions",
+            };
+            fs.writeFileSync(".artifacts/pr129488/run-identity.json", JSON.stringify(value, null, 2) + "\n");
+          '
+          find .artifacts/pr129488 -type f ! -name SHA256SUMS -print0 \
+            | sort -z \
+            | xargs -0 sha256sum > /tmp/pr129488-sha256sums
+          mv /tmp/pr129488-sha256sums .artifacts/pr129488/SHA256SUMS
+
+      - name: Upload inspectable proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr129488-real-gateway-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .artifacts/pr129488
+          if-no-files-found: error
+          retention-days: 14
