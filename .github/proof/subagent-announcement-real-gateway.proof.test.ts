@@ -111,6 +111,11 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
       // Server startup owns and resets the reply runtime; publish the controlled
       // agent fixture only after that lifecycle boundary is live.
       await prepareGatewayReplyRuntimeForTest();
+      const externalOrigin = {
+        channel: "telegram",
+        to: "proof-requester-chat",
+        accountId: "proof-account",
+      } as const;
       const result = await deliverSubagentAnnouncement({
         requesterSessionKey: "agent:main:main",
         targetRequesterSessionKey: "agent:main:main",
@@ -120,6 +125,8 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
         expectsCompletionMessage: true,
         bestEffortDeliver: true,
         directIdempotencyKey: "proof-steer-recovery",
+        completionDirectOrigin: externalOrigin,
+        directOrigin: externalOrigin,
         sourceSessionKey: "codex-native:proof-child",
         sourceTool: "agent_harness_task",
       });
@@ -145,6 +152,13 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
         ],
       });
       expect(agentCommandMock).toHaveBeenCalledTimes(1);
+      expect(agentCommandMock.mock.calls[0]?.[0]).toMatchObject({
+        deliver: true,
+        bestEffortDeliver: true,
+        channel: externalOrigin.channel,
+        to: externalOrigin.to,
+        accountId: externalOrigin.accountId,
+      });
       expect(queueCalls).toEqual([{ sessionId: "requester-session-proof", text: "child done" }]);
       expect(warnings).toEqual([expectedWarning]);
 
@@ -159,6 +173,14 @@ describe("subagent completion recovery through a real Gateway boundary", () => {
         },
         observed: {
           gatewayAgentRpcCalls: vi.mocked(agentCommandMock).mock.calls.length,
+          gatewayAgentRpc: {
+            deliver: agentCommandMock.mock.calls[0]?.[0]?.deliver,
+            bestEffortDeliver: agentCommandMock.mock.calls[0]?.[0]?.bestEffortDeliver,
+            channel: agentCommandMock.mock.calls[0]?.[0]?.channel,
+            to: agentCommandMock.mock.calls[0]?.[0]?.to,
+            accountId: agentCommandMock.mock.calls[0]?.[0]?.accountId,
+            deliveryStatus: "failed",
+          },
           directPrimaryError,
           requesterActivityChecks: activityChecks,
           queueCalls,
