@@ -1,0 +1,77 @@
+name: PR 129567 real provider compaction proof
+
+on:
+  push:
+    branches:
+      - proof/pr-129567-real-ollama
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PRODUCT_HEAD: a0658c572070eb98f18f117ec255e05765881ea0
+  OLLAMA_MODEL: qwen3:0.6b
+
+jobs:
+  real-provider-session-compaction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Verify exact product parent
+        run: |
+          test "$(git rev-parse HEAD^)" = "$PRODUCT_HEAD"
+          git diff --exit-code "$PRODUCT_HEAD" -- packages/agent-core/src/harness/compaction/utils.ts packages/agent-core/src/harness/compaction/utils.test.ts
+      - name: Install workspace dependencies
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+      - name: Start a real thinking-capable Ollama provider
+        run: |
+          docker pull ollama/ollama:latest
+          docker run --detach --name ollama-pr-129567 --publish 127.0.0.1:11434:11434 ollama/ollama:latest
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:11434/api/version >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:11434/api/version >/dev/null
+          docker exec ollama-pr-129567 ollama pull "$OLLAMA_MODEL"
+          echo "OLLAMA_IMAGE_DIGEST=$(docker image inspect ollama/ollama:latest --format '{{index .RepoDigests 0}}')" >> "$GITHUB_ENV"
+      - name: Run exact-head real provider and persistent session proof
+        env:
+          OLLAMA_BASE_URL: http://127.0.0.1:11434
+          PROOF_OUTPUT: artifacts/pr-129567-proof.json
+        run: pnpm exec tsx .github/proof/pr-129567/real-compaction-proof.ts
+      - name: Record artifact digest
+        run: |
+          sha256sum artifacts/pr-129567-proof.json | tee artifacts/pr-129567-proof.sha256
+          {
+            echo '## PR 129567 real provider/session compaction proof'
+            echo
+            echo '```json'
+            cat artifacts/pr-129567-proof.json
+            echo '```'
+            echo
+            echo '```text'
+            cat artifacts/pr-129567-proof.sha256
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload redacted exact-head evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr-129567-real-provider-compaction-${{ github.run_id }}
+          path: artifacts/pr-129567-proof.*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Stop provider
+        if: always()
+        run: docker rm --force ollama-pr-129567 2>/dev/null || true
