@@ -80,9 +80,9 @@ jobs:
           mkdir -p .artifacts/pr129488/parent-red
           git restore --source="$PRODUCT_HEAD" --staged --worktree "$PROOF_TEST"
           git checkout --detach "$PARENT_HEAD"
-          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
           test "$(git rev-parse HEAD)" = "$PARENT_HEAD"
           pnpm ui:build
+          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
           set +e
           node scripts/run-vitest.mjs run \
             --config test/vitest/vitest.ui-e2e.config.ts \
@@ -103,7 +103,6 @@ jobs:
           set -euo pipefail
           git restore --source="$PARENT_HEAD" --staged --worktree "$PROOF_TEST"
           git checkout --detach "$PRODUCT_HEAD"
-          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
           test "$(git rev-parse HEAD)" = "$PRODUCT_HEAD"
           git diff --exit-code "$PRODUCT_HEAD" -- \
             ui/src/i18n/locales/en.ts \
@@ -111,10 +110,15 @@ jobs:
             ui/src/lib/secrets-store/index.ts \
             ui/src/app/gateway-store.ts \
             src/gateway/server-methods/secrets.ts
-          test "$(git diff --name-only "$PRODUCT_HEAD")" = "$PROOF_TEST"
+          git diff --quiet "$PRODUCT_HEAD"
 
       - name: Build exact product Control UI
-        run: pnpm ui:build
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm ui:build
+          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
+          test "$(git diff --name-only "$PRODUCT_HEAD")" = "$PROOF_TEST"
 
       - name: Capture exact-head real Gateway proof
         shell: bash
