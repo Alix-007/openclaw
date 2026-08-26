@@ -1,0 +1,121 @@
+name: PR 121144 exact-head Discord proof
+run-name: PR 121144 exact-head proof ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - proof/pr-121144-fa993
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PRODUCT_SHA: fa993f424269bc084cdcb7019ee5621900ac37ae
+  HARNESS_SHA256: 796b887daa2180efc045b440d85ce19407702ef3a39e93abf4a04972b93cb643
+
+jobs:
+  proof:
+    name: Discord permission diagnostic boundary
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Checkout proof source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: proof-source
+          fetch-depth: 1
+          fetch-tags: false
+          persist-credentials: false
+          submodules: false
+
+      - name: Checkout exact product head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fa993f424269bc084cdcb7019ee5621900ac37ae
+          path: product
+          fetch-depth: 1
+          fetch-tags: false
+          persist-credentials: false
+          submodules: false
+
+      - name: Verify immutable proof inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C product rev-parse HEAD)" = "$PRODUCT_SHA"
+          harness="proof-source/extensions/qa-lab/src/scenarios/pr121144-discord-thread-permission-proof.e2e.test.ts"
+          printf '%s  %s\n' "$HARNESS_SHA256" "$harness" | sha256sum --check --strict
+          cp "$harness" product/extensions/qa-lab/src/scenarios/
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Install exact-head dependencies
+        working-directory: product
+        env:
+          CI: "true"
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+        run: |
+          set -euo pipefail
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: Run production-boundary proof
+        working-directory: product
+        env:
+          CI: "true"
+          OPENCLAW_E2E_VERBOSE: "1"
+          OPENCLAW_VITEST_MAX_WORKERS: "1"
+          PR121144_EXPECTED_HEAD: fa993f424269bc084cdcb7019ee5621900ac37ae
+          PR121144_PROOF_DIR: ${{ runner.temp }}/pr121144-proof
+        run: |
+          set -euo pipefail
+          mkdir -p "$PR121144_PROOF_DIR"
+          node scripts/run-vitest.mjs run \
+            --config test/vitest/vitest.e2e.config.ts \
+            extensions/qa-lab/src/scenarios/pr121144-discord-thread-permission-proof.e2e.test.ts \
+            --maxWorkers=1
+
+      - name: Seal proof metadata
+        if: always()
+        shell: bash
+        env:
+          PROOF_DIR: ${{ runner.temp }}/pr121144-proof
+          PROOF_SOURCE_SHA: ${{ github.sha }}
+          RUN_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$PROOF_DIR"
+          jq -n \
+            --arg productSha "$PRODUCT_SHA" \
+            --arg proofSourceSha "$PROOF_SOURCE_SHA" \
+            --arg harnessSha256 "$HARNESS_SHA256" \
+            --arg runUrl "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --arg runStatus "$RUN_STATUS" \
+            --arg generatedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{
+              productSha: $productSha,
+              proofSourceSha: $proofSourceSha,
+              harnessSha256: $harnessSha256,
+              runUrl: $runUrl,
+              runStatus: $runStatus,
+              generatedAt: $generatedAt,
+              credentialMode: "none",
+              boundary: "production sendMessageDiscord and RequestClient against controlled Discord-compatible loopback REST, plus real ephemeral Gateway health RPC"
+            }' > "$PROOF_DIR/proof-metadata.json"
+          find "$PROOF_DIR" -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
+            | sort -z \
+            | xargs -0 sha256sum \
+            | sed "s#  $PROOF_DIR/#  #" > "$PROOF_DIR/SHA256SUMS"
+
+      - name: Upload inspectable proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr121144-fa993-proof-${{ github.run_id }}
+          path: ${{ runner.temp }}/pr121144-proof
+          if-no-files-found: error
+          retention-days: 30
