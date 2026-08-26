@@ -121,6 +121,9 @@ type GoogleVideoSlots = Map<Record<string, unknown>, VideoContent>;
 const GOOGLE_GEMINI3_FIRST_RESPONSE_RETRY_DEFAULT_MS = 45_000;
 const GOOGLE_GEMINI3_FIRST_RESPONSE_RETRY_ENV = "OPENCLAW_GOOGLE_GEMINI_FIRST_RESPONSE_RETRY_MS";
 const GOOGLE_SSE_EVENT_BOUNDARY_RE = /(?:\r\n|\r(?!\n)|\n){2}/u;
+// Compare Google-owned publisher resources without changing outbound request paths.
+const GOOGLE_VERTEX_MODEL_RESOURCE_PREFIX =
+  /^(?:projects\/[^/]+\/locations\/[^/]+\/)?publishers\/google\/models\//u;
 
 type GoogleTransportContentBlock =
   | { type: "text"; text: string; textSignature?: string }
@@ -1553,7 +1556,8 @@ function createGoogleTransportStreamFn(kind: CanonicalGoogleTransportApi): Strea
           const responseModel = normalizeOptionalString(chunk.modelVersion);
           if (
             responseModel &&
-            resolveGoogleModelPath(model.id) !== resolveGoogleModelPath(responseModel)
+            resolveGoogleModelPath(model.id.replace(GOOGLE_VERTEX_MODEL_RESOURCE_PREFIX, "")) !==
+              resolveGoogleModelPath(responseModel.replace(GOOGLE_VERTEX_MODEL_RESOURCE_PREFIX, ""))
           ) {
             output.responseModel ||= responseModel;
           }

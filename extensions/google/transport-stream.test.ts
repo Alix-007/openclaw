@@ -850,6 +850,41 @@ describe("google transport stream", () => {
       returned: ["gemini-2.5-pro"],
     },
     {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: ["publishers/google/models/gemini-2.5-pro"],
+    },
+    {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: [
+        "projects/fixture-project/locations/global/publishers/google/models/gemini-2.5-pro",
+      ],
+    },
+    {
+      provider: "google-vertex",
+      requested: "publishers/google/models/gemini-2.5-pro",
+      returned: ["gemini-2.5-pro"],
+    },
+    {
+      provider: "google-vertex",
+      requested:
+        "projects/fixture-project/locations/global/publishers/google/models/gemini-2.5-pro",
+      returned: ["gemini-2.5-pro"],
+    },
+    {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: ["publishers/meta/models/gemini-2.5-pro"],
+      expected: "publishers/meta/models/gemini-2.5-pro",
+    },
+    {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: ["tunedModels/gemini-2.5-pro"],
+      expected: "tunedModels/gemini-2.5-pro",
+    },
+    {
       provider: "google",
       requested: "gemini-2.5-pro",
       returned: [undefined, "", "   "],
@@ -932,6 +967,16 @@ describe("google transport stream", () => {
       provider: "google",
       requested: "models/gemini-2.5-pro",
       returned: "gemini-2.5-pro",
+    },
+    {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: "publishers/google/models/gemini-2.5-pro",
+    },
+    {
+      provider: "google-vertex",
+      requested: "gemini-2.5-pro",
+      returned: "projects/fixture-project/locations/global/publishers/google/models/gemini-2.5-pro",
     },
   ])(
     "keeps the registered $provider model identity across actual localhost HTTP SSE",
