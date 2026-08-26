@@ -142,6 +142,7 @@ const GOOGLE_VERTEX_DEFAULT_API_VERSION = "v1";
 
 type GoogleSseChunk = {
   responseId?: string;
+  modelVersion?: string;
   promptFeedback?: {
     blockReason?: string;
     blockReasonMessage?: string;
@@ -1549,6 +1550,13 @@ function createGoogleTransportStreamFn(kind: CanonicalGoogleTransportApi): Strea
               })(sse.firstChunk);
         for await (const chunk of chunks) {
           output.responseId ||= chunk.responseId;
+          const responseModel = normalizeOptionalString(chunk.modelVersion);
+          if (
+            responseModel &&
+            resolveGoogleModelPath(model.id) !== resolveGoogleModelPath(responseModel)
+          ) {
+            output.responseModel ||= responseModel;
+          }
           updateUsage(output, model, chunk, knownUsage);
           const candidate = chunk.candidates?.[0];
           const promptFeedback = chunk.promptFeedback;
