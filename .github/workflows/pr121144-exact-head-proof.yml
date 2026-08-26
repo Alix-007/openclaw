@@ -46,6 +46,7 @@ jobs:
           test "$(git -C product rev-parse HEAD)" = "$PRODUCT_SHA"
           harness="proof-source/extensions/qa-lab/src/scenarios/pr121144-discord-thread-permission-proof.e2e.test.ts"
           printf '%s  %s\n' "$HARNESS_SHA256" "$harness" | sha256sum --check --strict
+          mkdir -p product/extensions/qa-lab/src/scenarios
           cp "$harness" product/extensions/qa-lab/src/scenarios/
 
       - name: Setup Node
