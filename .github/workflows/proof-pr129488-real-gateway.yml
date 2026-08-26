@@ -51,6 +51,7 @@ jobs:
             ui/src/lib/secrets-store/index.ts \
             ui/src/app/gateway-store.ts \
             src/gateway/server-methods/secrets.ts
+          cp "$PROOF_TEST" "$RUNNER_TEMP/pr129488-proof-test.ts"
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -77,9 +78,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .artifacts/pr129488/parent-red
-          git checkout "$PARENT_HEAD" -- \
-            ui/src/i18n/locales/en.ts \
-            ui/src/pages/secrets/secrets-page.ts
+          git restore --source="$PRODUCT_HEAD" --staged --worktree "$PROOF_TEST"
+          git checkout --detach "$PARENT_HEAD"
+          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
+          test "$(git rev-parse HEAD)" = "$PARENT_HEAD"
           pnpm ui:build
           set +e
           node scripts/run-vitest.mjs run \
@@ -99,12 +101,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git checkout "$PRODUCT_HEAD" -- \
-            ui/src/i18n/locales/en.ts \
-            ui/src/pages/secrets/secrets-page.ts
+          git restore --source="$PARENT_HEAD" --staged --worktree "$PROOF_TEST"
+          git checkout --detach "$PRODUCT_HEAD"
+          cp "$RUNNER_TEMP/pr129488-proof-test.ts" "$PROOF_TEST"
+          test "$(git rev-parse HEAD)" = "$PRODUCT_HEAD"
           git diff --exit-code "$PRODUCT_HEAD" -- \
             ui/src/i18n/locales/en.ts \
-            ui/src/pages/secrets/secrets-page.ts
+            ui/src/pages/secrets/secrets-page.ts \
+            ui/src/lib/secrets-store/index.ts \
+            ui/src/app/gateway-store.ts \
+            src/gateway/server-methods/secrets.ts
+          test "$(git diff --name-only "$PRODUCT_HEAD")" = "$PROOF_TEST"
 
       - name: Build exact product Control UI
         run: pnpm ui:build
