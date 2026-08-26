@@ -863,6 +863,8 @@ describe("google transport stream", () => {
   ])(
     "retains the concrete provider-returned model only when it actually differs ($provider, $requested)",
     async ({ provider, requested, returned, expected }) => {
+      vi.stubEnv("GOOGLE_CLOUD_PROJECT", "fixture-google-project");
+      vi.stubEnv("GOOGLE_CLOUD_LOCATION", "global");
       guardedFetchMock.mockResolvedValueOnce(
         buildSseResponse(
           returned.map((modelVersion, index) => ({
@@ -898,8 +900,6 @@ describe("google transport stream", () => {
           { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
           {
             apiKey: "fixture-google-api-key",
-            project: "fixture-google-project",
-            location: "global",
           },
         ),
       );
@@ -936,6 +936,8 @@ describe("google transport stream", () => {
   ])(
     "keeps the registered $provider model identity across actual localhost HTTP SSE",
     async ({ provider, requested, returned, expected }) => {
+      vi.stubEnv("GOOGLE_CLOUD_PROJECT", "fixture-google-project");
+      vi.stubEnv("GOOGLE_CLOUD_LOCATION", "global");
       const observedRequests: Array<{ method?: string; url?: string }> = [];
       const server = createServer((request, response) => {
         observedRequests.push({ method: request.method, url: request.url });
@@ -989,8 +991,6 @@ describe("google transport stream", () => {
             { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
             {
               apiKey: "fixture-google-api-key",
-              project: "fixture-google-project",
-              location: "global",
             },
           ),
         );
