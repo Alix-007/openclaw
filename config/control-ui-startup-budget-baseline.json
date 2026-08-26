@@ -1,5 +1,5 @@
 {
-  "startupJsGzipBytes": 345049,
-  "reason": "streamed-markdown highlighting changes (#127749, #127754) consumed the ratchet",
-  "updatedAt": "2026-08-22"
+  "startupJsGzipBytes": 340901,
+  "reason": "refresh after cumulative current-main UI fixes exhausted the startup tolerance",
+  "updatedAt": "2026-08-26"
 }

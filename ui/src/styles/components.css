@@ -24,18 +24,21 @@
 
 openclaw-session-owner-chip {
   display: inline-flex;
-  flex: 0 0 auto;
+  flex: none;
 }
 
 .session-owner-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
   border: 1px solid hsl(var(--owner-hue) 52% 18% / 0.9);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: hsl(var(--owner-hue) 58% 26%);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.24);
   color: white;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1;
   transition:
@@ -46,18 +49,6 @@ openclaw-session-owner-chip {
 .session-owner-chip--away {
   filter: grayscale(0.8);
   opacity: 0.45;
-}
-
-.session-owner-chip--row {
-  width: 20px;
-  height: 20px;
-  font-size: 10px;
-}
-
-.session-owner-chip--header {
-  width: 20px;
-  height: 20px;
-  font-size: 10px;
 }
 
 .session-owner-chip .viewer-avatar {
@@ -78,7 +69,6 @@ openclaw-session-owner-chip {
 
 .session-owner-stack__back {
   position: absolute;
-  z-index: 0;
   left: 0;
   display: inline-flex;
 }
@@ -196,29 +186,9 @@ openclaw-session-owner-chip {
   color: var(--accent);
 }
 
-.connect-splash__logo {
-  width: 44px;
-  height: 44px;
-  animation: connect-splash-wiggle 1.8s ease-in-out infinite;
-}
-
-@keyframes connect-splash-wiggle {
-  0%,
-  100% {
-    transform: rotate(-6deg);
-  }
-  50% {
-    transform: rotate(6deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .connect-splash {
     opacity: 1;
-    animation: none;
-  }
-
-  .connect-splash__logo {
     animation: none;
   }
 }
@@ -576,19 +546,19 @@ openclaw-session-owner-chip {
   height: 8px;
   border-radius: var(--radius-full);
   background: var(--danger);
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--danger) 50%, transparent);
   animation: pulse-subtle 2s ease-in-out infinite;
 }
 
 .statusDot.ok {
   background: var(--ok);
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ok) 50%, transparent);
   animation: none;
 }
 
 .statusDot.warn {
   background: var(--warn);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--warn) 50%, transparent);
   animation: none;
 }
 
@@ -702,7 +672,7 @@ openclaw-session-owner-chip {
 }
 
 .btn.danger:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background: color-mix(in srgb, var(--danger) 15%, transparent);
 }
 
 .btn--sm {
@@ -802,6 +772,10 @@ openclaw-session-owner-chip {
     left: var(--app-toast-anchor-center);
     right: auto;
     max-width: calc(var(--app-toast-anchor-width) - 24px);
+  }
+
+  .app-toast:not(.app-toast--anchored) .app-toast__message {
+    flex: 1 1 auto;
   }
 }
 
@@ -1467,102 +1441,10 @@ select.input {
   height: 16px;
 }
 
-/* ===========================================
-   Cron Form
-   =========================================== */
-
-/* Stat strip used by the tasks page. */
-.summary-strip {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px 18px;
-  padding: 14px 16px;
-}
-
-.summary-strip__stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.summary-stat {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.summary-stat__icon {
-  width: 30px;
-  height: 30px;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  background: var(--accent-subtle);
-  padding: 6px;
-  flex-shrink: 0;
-}
-
-.summary-stat__icon svg {
-  width: 100%;
-  height: 100%;
-  stroke: currentColor;
-  fill: none;
-}
-
-.summary-stat--danger .summary-stat__icon {
-  color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 12%, transparent);
-}
-
-.summary-stat__copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.summary-stat__label {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.summary-stat__value {
-  color: var(--text-strong);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.3;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  white-space: nowrap;
-}
-
 .field input[aria-invalid="true"],
 .field textarea[aria-invalid="true"],
 .field select[aria-invalid="true"] {
   border-color: var(--danger);
-}
-
-@media (max-width: 1100px) {
-  .summary-strip {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .summary-strip__stats {
-    width: 100%;
-    gap: 8px 18px;
-  }
 }
 
 :root[data-theme-mode="light"] .field input,
@@ -1692,49 +1574,6 @@ select.input {
   stroke-linejoin: round;
 }
 
-.scope-upgrade-status-trigger {
-  color: color-mix(in srgb, var(--warn) 82%, var(--text-strong));
-  background: color-mix(in srgb, var(--warn) 11%, transparent);
-}
-
-.scope-upgrade-status-trigger:hover {
-  background: color-mix(in srgb, var(--warn) 14%, var(--bg-elevated));
-}
-
-.scope-upgrade-status-trigger:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.scope-upgrade-details-popover {
-  --max-width: min(380px, calc(100vw - 32px));
-}
-
-.scope-upgrade-details-popover::part(body) {
-  padding: 0;
-}
-
-.scope-upgrade-details {
-  width: min(380px, calc(100vw - 32px));
-  box-shadow: var(--overlay-shadow);
-}
-
-.scope-upgrade-details-dialog .scope-upgrade-details {
-  width: 100%;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  box-shadow: 0 -18px 48px color-mix(in srgb, black 24%, transparent);
-}
-
-@media (max-width: 560px) {
-  .scope-upgrade-details {
-    flex-wrap: wrap;
-  }
-
-  .scope-upgrade-details .callout__content {
-    flex-basis: calc(100% - 38px);
-  }
-}
-
 .callout.danger {
   border-color: color-mix(in srgb, var(--danger) 34%, var(--border));
   background: linear-gradient(
@@ -1756,14 +1595,22 @@ select.input {
 }
 
 .callout.info {
-  border-color: rgba(59, 130, 246, 0.25);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.04) 100%);
+  border-color: color-mix(in srgb, var(--info) 25%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--info) 8%, transparent) 0%,
+    color-mix(in srgb, var(--info) 4%, transparent) 100%
+  );
   color: var(--info);
 }
 
 .callout.success {
-  border-color: rgba(34, 197, 94, 0.25);
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(34, 197, 94, 0.04) 100%);
+  border-color: color-mix(in srgb, var(--ok) 25%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ok) 8%, transparent) 0%,
+    color-mix(in srgb, var(--ok) 4%, transparent) 100%
+  );
   color: var(--ok);
 }
 
@@ -1883,7 +1730,7 @@ select.input {
 
 .compaction-indicator--active {
   color: var(--info);
-  border-color: rgba(59, 130, 246, 0.35);
+  border-color: color-mix(in srgb, var(--info) 35%, transparent);
 }
 
 .compaction-indicator--active svg {
@@ -1892,17 +1739,17 @@ select.input {
 
 .compaction-indicator--complete {
   color: var(--ok);
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
 }
 
 .compaction-indicator--fallback {
   color: var(--warn-strong);
-  border-color: rgba(217, 119, 6, 0.35);
+  border-color: color-mix(in srgb, var(--warn-strong) 35%, transparent);
 }
 
 .compaction-indicator--fallback-cleared {
   color: var(--ok);
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
 }
 
 @keyframes compaction-spin {
@@ -2440,12 +2287,12 @@ openclaw-chat-session-rail {
 
 :is(.code-block, .code-block-wrapper pre code.hljs) .hljs-deletion {
   color: var(--hljs-deletion);
-  background: rgba(248, 81, 73, 0.12);
+  background: var(--danger-subtle);
 }
 
 :is(.code-block, .code-block-wrapper pre code.hljs) .hljs-addition {
   color: var(--hljs-addition);
-  background: rgba(46, 160, 67, 0.12);
+  background: var(--ok-subtle);
 }
 
 :is(.code-block, .code-block-wrapper pre code.hljs) .hljs-emphasis {
@@ -2707,19 +2554,19 @@ openclaw-chat-session-rail {
 
 .chip-ok {
   color: var(--ok);
-  border-color: rgba(34, 197, 94, 0.3);
+  border-color: color-mix(in srgb, var(--ok) 30%, transparent);
   background: var(--ok-subtle);
 }
 
 .chip-warn {
   color: var(--warn);
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: color-mix(in srgb, var(--warn) 30%, transparent);
   background: var(--warn-subtle);
 }
 
 .chip-danger {
   color: var(--danger);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: color-mix(in srgb, var(--danger) 30%, transparent);
   background: var(--danger-subtle);
 }
 
@@ -3035,7 +2882,7 @@ td.data-table-key-col {
 
 .log-level.info {
   color: var(--info);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: color-mix(in srgb, var(--info) 30%, transparent);
 }
 
 .log-level.warn {
@@ -3056,7 +2903,7 @@ td.data-table-key-col {
 
 .log-chip.info {
   color: var(--info);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: color-mix(in srgb, var(--info) 30%, transparent);
 }
 
 .log-chip.warn {
@@ -3760,8 +3607,7 @@ td.data-table-key-col {
   gap: 12px;
 }
 
-/* Same tile geometry as .summary-stat__icon, in the ok tone: the outcome is settled,
-   and the mark says so before any sentence is read. */
+/* The compact ok-tone tile makes the settled outcome visible before its copy. */
 .secret-reveal__status {
   width: 28px;
   height: 28px;
@@ -4433,7 +4279,11 @@ td.data-table-key-col {
   overscroll-behavior: contain;
   padding: clamp(18px, 3vw, 28px);
   background:
-    radial-gradient(circle at top right, rgba(255, 92, 92, 0.055), transparent 32%),
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--accent) 5.5%, transparent),
+      transparent 32%
+    ),
     radial-gradient(circle at bottom left, rgba(20, 184, 166, 0.045), transparent 28%),
     linear-gradient(
       180deg,
@@ -5817,13 +5667,15 @@ td.data-table-key-col {
   display: inline;
 }
 
-/* ── Session row primitives ──
-   Shared by the sidebar recents list and the chat session picker. Rows read
-   as plain text lines: attribute badges follow the title, and the trailing
-   aside stacks transient state, relative time, and management actions in one
-   grid cell, so hovering swaps state for actions without any layout shift. */
+/* Session row primitives shared by sidebar recents and the chat session picker.
+   Reserve hover-action width without moving the row or hiding trailing state. */
 .session-row-host {
+  --session-row-actions-reserve: 52px;
   position: relative;
+}
+
+.session-row-host[data-session-row-action-count="1"] {
+  --session-row-actions-reserve: 28px;
 }
 
 .session-row-host--draft {
@@ -5896,14 +5748,20 @@ td.data-table-key-col {
 }
 
 .session-row-state {
-  display: inline-flex;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 14px;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   gap: 6px;
-  min-width: 24px;
-  min-height: 24px;
-  transition: opacity var(--duration-fast) ease;
   pointer-events: none;
+}
+
+/* The 16px PR glyph inks 1px beyond its 14px track. Inset only that glyph so
+   the other trailing atoms keep their shared axis inside the clipped endcap. */
+.session-row-state [data-session-pr-state] {
+  position: relative;
+  left: 1px;
 }
 
 .sidebar-session-fork-indicator {
@@ -5936,7 +5794,8 @@ td.data-table-key-col {
   color: var(--muted);
 }
 
-.session-row-badge--attention {
+.session-row-badge--attention,
+.session-row-badge--approval {
   gap: 2px;
   color: var(--warn);
   font-size: 10px;
@@ -5952,13 +5811,8 @@ td.data-table-key-col {
   color: var(--accent);
 }
 
-.session-row-badge--approval {
-  display: inline-flex;
-  align-items: center;
-  color: var(--warn);
-}
-
-.session-row-badge--cloud[data-placement-state="failed"] {
+.session-row-badge--cloud[data-placement-state="failed"],
+.session-row-badge--cloud[data-disk-space-status="critical"] {
   color: var(--danger);
 }
 
@@ -5973,16 +5827,9 @@ td.data-table-key-col {
   color: var(--accent);
 }
 
-.session-row-badge--cloud[data-workspace-conflicts] {
-  color: var(--warn);
-}
-
+.session-row-badge--cloud[data-workspace-conflicts],
 .session-row-badge--cloud[data-disk-space-status="warning"] {
   color: var(--warn);
-}
-
-.session-row-badge--cloud[data-disk-space-status="critical"] {
-  color: var(--danger);
 }
 
 .session-row-badge svg {
@@ -6053,36 +5900,26 @@ td.data-table-key-col {
   pointer-events: auto;
 }
 
-.session-row-host:is(:hover, :focus-within) :is(.session-row-trail, .session-row-state) {
-  opacity: 0;
-}
-
 /* Sidebar rows are now the direct management surface after removing the
    duplicate picker; touch users need pin/menu controls without hover. */
 @media (hover: none), (pointer: coarse) {
+  .sidebar-recent-session.session-row-host {
+    --session-row-actions-reserve: 92px;
+  }
+
+  .sidebar-recent-session.session-row-host[data-session-row-action-count="1"] {
+    --session-row-actions-reserve: 48px;
+  }
+
   .sidebar-recent-session .session-action {
+    width: 44px;
+    height: 44px;
     opacity: 1;
     pointer-events: auto;
   }
 
   .sidebar-recent-session .session-action:disabled {
     opacity: 0.35;
-  }
-
-  .sidebar-recent-session .session-row-trail {
-    opacity: 0;
-  }
-
-  .sidebar-recent-session .session-row-aside:has(> .session-row-state) {
-    column-gap: 1px;
-  }
-
-  .sidebar-recent-session .session-row-state {
-    grid-area: 1 / 1;
-  }
-
-  .sidebar-recent-session .session-row-actions {
-    grid-area: 1 / 2;
   }
 }
 

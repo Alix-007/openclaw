@@ -22,6 +22,7 @@ import type { UpdateProgress } from "../app/update-confirmation.ts";
 import type { ApplicationStatusBanner } from "../app/update-overlay-helpers.ts";
 import { t } from "../i18n/index.ts";
 import { shouldHandleNavigationClick } from "../lib/navigation-click.ts";
+import { findSettingsSearchBlocks } from "../pages/config/settings-search.ts";
 import { icons } from "./icons.ts";
 import { redactLoginFailureError } from "./login-gate.ts";
 import { renderOfflineSidebarStatus } from "./session-row-badges.ts";
@@ -54,6 +55,7 @@ type SettingsSidebarProps = {
   onReviewUpdate?: () => void;
   searchQuery: string;
   searchBlockMatches?: readonly SettingsSearchBlock[];
+  searchParams?: Parameters<typeof findSettingsSearchBlocks>[0];
   onExit: () => void;
   onRetryConnect: () => void;
   onNavigate: (routeId: RouteId, options?: ApplicationNavigationOptions) => void;
@@ -169,8 +171,7 @@ function filterSettingsNavigationGroups(
 }
 
 function renderItem(props: SettingsSidebarProps, routeId: RouteId, label?: string) {
-  const active =
-    !props.searchQuery && settingsNavigationOwnerRoute(props.activeRouteId) === routeId;
+  const active = settingsNavigationOwnerRoute(props.activeRouteId) === routeId;
   return html`
     <a
       href=${pathForRoute(routeId, props.basePath)}
@@ -243,9 +244,12 @@ function syncSettingsSearchScrollShadow(nav: HTMLElement) {
 
 export function renderSettingsSidebar(props: SettingsSidebarProps) {
   const reconnecting = t("connection.reconnecting");
+  const searchBlockMatches =
+    props.searchBlockMatches ??
+    (props.searchParams ? findSettingsSearchBlocks(props.searchParams) : []);
   const navigationGroups = filterSettingsNavigationGroups(
     props.searchQuery,
-    props.searchBlockMatches ?? [],
+    searchBlockMatches,
     props.canAdmin !== false,
   );
   return html`

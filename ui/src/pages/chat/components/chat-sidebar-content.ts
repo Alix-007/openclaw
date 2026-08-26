@@ -28,6 +28,7 @@ import {
   type EmbedSandboxMode,
 } from "../../../lib/chat/tool-display.ts";
 import { shouldHandleNavigationClick } from "../../../lib/navigation-click.ts";
+import { detectTextDirection } from "../../../lib/text-direction.ts";
 import { openInlineChatImage } from "./chat-image-lightbox.ts";
 import { openResolvedImage } from "./chat-message-image-open.ts";
 import type { SidebarContent } from "./chat-sidebar-content-types.ts";
@@ -177,8 +178,9 @@ function renderMarkdownSidebar(props: MarkdownSidebarProps) {
                 ? html`<openclaw-session-diff
                     .loader=${content.load}
                     .loadFileText=${content.loadFileText ?? null}
+                    .execNode=${props.fileView?.execNode ?? null}
                     .openFile=${content.openFile ?? null}
-                    .revealFile=${content.revealFile ?? null}
+                    .revealFile=${props.fileView?.onReveal ?? null}
                   ></openclaw-session-diff>`
                 : content.kind === "canvas"
                   ? html`
@@ -259,7 +261,10 @@ function renderMarkdownSidebar(props: MarkdownSidebarProps) {
                           </div>
                           ${markdownHtml
                             ? html`
-                                <article class="sidebar-markdown-reader sidebar-markdown">
+                                <article
+                                  class="sidebar-markdown-reader sidebar-markdown"
+                                  dir=${detectTextDirection(content.content)}
+                                >
                                   ${unsafeHTML(markdownHtml)}
                                 </article>
                               `

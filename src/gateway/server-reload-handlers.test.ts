@@ -2,6 +2,7 @@
  * Gateway config reload handler tests.
  */
 import fs from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createDeferred } from "../../test/helpers/promise.js";
@@ -58,6 +59,8 @@ import {
   tryBeginGatewaySuspendAdmission,
 } from "../process/gateway-work-admission.js";
 import { CommandLane } from "../process/lanes.js";
+import { getProcessSupervisor } from "../process/supervisor/index.js";
+import { buildWindowsCmdExeCommandLine } from "../process/windows-command.js";
 import { resolveAuthProfileSecretOwnerId } from "../secrets/runtime-auth-profile-owner.js";
 import { listActiveDegradedSecretOwners } from "../secrets/runtime-degraded-state.js";
 import { createEmptyRuntimeWebToolsMetadata } from "../secrets/runtime-fast-path.js";
@@ -261,6 +264,7 @@ const hoisted = vi.hoisted(() => ({
   reloadEvents: [] as string[],
   loadModelCatalog: vi.fn(async (_params: { config: OpenClawConfig }) => []),
   resetModelCatalogCache: vi.fn(() => {}),
+  advancePreparedModelRuntimeConfig: vi.fn((_cfg: OpenClawConfig) => {}),
   markPreparedModelRuntimeSnapshotsStale: vi.fn(
     (
       _reason?: string,
@@ -372,6 +376,8 @@ vi.mock("../agents/model-catalog.js", () => ({
 }));
 
 vi.mock("../agents/prepared-model-runtime.js", () => ({
+  advancePreparedModelRuntimeConfig: (cfg: OpenClawConfig) =>
+    hoisted.advancePreparedModelRuntimeConfig(cfg),
   markPreparedModelRuntimeSnapshotsStale: (
     reason?: string,
     options?: { waitForReplacement?: boolean; preserveReplacementWait?: boolean },
@@ -931,6 +937,7 @@ afterEach(() => {
   hoisted.runtimeConfig.value = { session: { store: "/tmp/active-sessions.json" } };
   hoisted.assertOpenClawDatabasesReadyForRestart.mockClear();
   hoisted.reloadEvents.length = 0;
+  hoisted.advancePreparedModelRuntimeConfig.mockClear();
   hoisted.markPreparedModelRuntimeSnapshotsStale.mockClear();
   hoisted.rejectPendingPreparedModelRuntimeReplacement.mockClear();
   hoisted.refreshPreparedModelRuntimeSnapshots.mockClear();
@@ -949,11 +956,18 @@ afterEach(() => {
 
 async function runManagedOwnershipScenario(params: {
   kind: "noop" | "hot" | "restart";
+  getPluginMetadataSnapshot?: ManagedReloaderParams["getPluginMetadataSnapshot"];
   loggingChanged?: boolean;
   queueRevert: boolean;
+  secretProviderChanged?: boolean;
+  /** Makes secrets activation resolve to a different object than it received. */
+  resolveToDistinctConfig?: boolean;
 }) {
   const initialConfig = {
     gateway: { reload: { mode: "off" as const } },
+    ...(params.secretProviderChanged
+      ? { secrets: { providers: { default: { source: "file" as const, path: "/old" } } } }
+      : {}),
     hooks: { enabled: true, token: "test-token", path: "/old" },
   } satisfies OpenClawConfig;
   const configA = {
@@ -967,6 +981,12 @@ async function runManagedOwnershipScenario(params: {
       token: "test-token",
       path: params.kind === "noop" ? "/old" : "/a",
     },
+    ...(params.kind === "noop"
+      ? { talk: { realtime: { instructions: "updated instructions" } } }
+      : {}),
+    ...(params.secretProviderChanged
+      ? { secrets: { providers: { default: { source: "file" as const, path: "/new" } } } }
+      : {}),
     ...(params.loggingChanged ? { logging: { level: "debug" as const } } : {}),
   } satisfies OpenClawConfig;
   const configB = structuredClone(initialConfig);
@@ -982,6 +1002,7 @@ async function runManagedOwnershipScenario(params: {
   const reconcileTerminalSessions = vi.fn();
   const requestRecoveryRestart = vi.fn(() => ({ status: "emitted" as const }));
   let queuedB = false;
+  const resolvedConfigs: OpenClawConfig[] = [];
   const activateRuntimeSecrets = vi.fn(async (config: OpenClawConfig) => {
     if (params.queueRevert && !queuedB) {
       queuedB = true;
@@ -989,11 +1010,19 @@ async function runManagedOwnershipScenario(params: {
         createConfigWriteNotification(configB, "hash-b", 2, "runtime-b", "source-b"),
       );
     }
-    return snapshot(config);
+    if (!params.resolveToDistinctConfig) {
+      return snapshot(config);
+    }
+    // Real secret resolution returns a NEW config object. Returning the input
+    // unchanged is what let a rebuild against the source candidate look correct.
+    const resolved = { ...config } as OpenClawConfig;
+    resolvedConfigs.push(resolved);
+    return snapshot(resolved);
   });
   activateSecretsRuntimeSnapshot(snapshot(initialConfig));
   const reloader = startManagedGatewayConfigReloader({
     initialConfig,
+    getPluginMetadataSnapshot: params.getPluginMetadataSnapshot,
     readSnapshot: vi.fn(async () => createValidConfigSnapshot(configB, "hash-b")) as never,
     subscribeToWrites: captureConfigWriteListener(writeListenerRef, false),
     activateRuntimeSecrets: activateRuntimeSecrets as never,
@@ -1015,6 +1044,7 @@ async function runManagedOwnershipScenario(params: {
       configA,
       configB,
       prepareTerminalConfig,
+      resolvedConfigs,
       reconcileTerminalSessions,
       requestRecoveryRestart,
     };
@@ -1024,9 +1054,74 @@ async function runManagedOwnershipScenario(params: {
 }
 
 describe("managed reload transaction ownership", () => {
+  it("advances prepared model config stamps for a no-op publication", async () => {
+    const result = await runManagedOwnershipScenario({ kind: "noop", queueRevert: false });
+
+    expect(hoisted.advancePreparedModelRuntimeConfig).toHaveBeenCalledExactlyOnceWith(
+      result.configA,
+    );
+    expect(hoisted.refreshPreparedModelRuntimeSnapshots).not.toHaveBeenCalled();
+  });
+
+  it("rebuilds prepared model owners for a no-op secret-provider publication", async () => {
+    const pluginMetadataSnapshot = {} as never;
+    const result = await runManagedOwnershipScenario({
+      kind: "noop",
+      queueRevert: false,
+      secretProviderChanged: true,
+      getPluginMetadataSnapshot: () => pluginMetadataSnapshot,
+    });
+
+    expect(hoisted.advancePreparedModelRuntimeConfig).not.toHaveBeenCalled();
+    expect(hoisted.refreshPreparedModelRuntimeSnapshots).toHaveBeenCalledExactlyOnceWith(
+      result.configA,
+      {
+        gatewayLifecycle: true,
+        catalogMode: "static",
+        allowGatewaySubagentBinding: true,
+        pluginMetadataSnapshot,
+      },
+    );
+  });
+
+  it("rebuilds a no-op secret-provider publication from the resolved committed config", async () => {
+    // Regression: the rebuild used the source-derived candidate. When secret
+    // resolution yields a different object, the rebuilt owner carries an
+    // identity no reader supplies, so every strict catalog read rejects it --
+    // reviving the failure on the very fallback meant to be safe.
+    const pluginMetadataSnapshot = {} as never;
+    const result = await runManagedOwnershipScenario({
+      kind: "noop",
+      queueRevert: false,
+      secretProviderChanged: true,
+      resolveToDistinctConfig: true,
+      getPluginMetadataSnapshot: () => pluginMetadataSnapshot,
+    });
+
+    const resolved = result.resolvedConfigs.at(-1);
+    expect(resolved).toBeDefined();
+    expect(resolved).not.toBe(result.configA);
+    expect(hoisted.advancePreparedModelRuntimeConfig).not.toHaveBeenCalled();
+    expect(hoisted.refreshPreparedModelRuntimeSnapshots).toHaveBeenCalledOnce();
+    // Identity, not deep equality: the resolved config is a clone of the source
+    // candidate, so toHaveBeenCalledWith would match either object and prove
+    // nothing about which one the rebuild actually used.
+    const [rebuiltWith, options] = hoisted.refreshPreparedModelRuntimeSnapshots.mock.calls[0] ?? [];
+    expect(rebuiltWith).toBe(resolved);
+    expect(rebuiltWith).not.toBe(result.configA);
+    expect(options).toEqual({
+      gatewayLifecycle: true,
+      catalogMode: "static",
+      allowGatewaySubagentBinding: true,
+      pluginMetadataSnapshot,
+    });
+  });
+
   it("applies a current in-process hot config", async () => {
     const result = await runManagedOwnershipScenario({ kind: "hot", queueRevert: false });
 
+    // Hot plans rebuild prepared owners. Advancing the stamp in place is reserved for no-op plans.
+    expect(hoisted.advancePreparedModelRuntimeConfig).not.toHaveBeenCalled();
     expect(result.activateRuntimeSecrets).toHaveBeenCalledOnce();
     expect(result.commitTerminalConfig).toHaveBeenCalledOnce();
     expect(result.acceptTerminalConfig).toHaveBeenCalledOnce();
@@ -1178,6 +1273,110 @@ describe("provider auth hot reload path ownership", () => {
 });
 
 describe("gateway hot reload model state", () => {
+  it("keeps a supervised on-exit child alive exactly once across same-store cron reload", async () => {
+    const fixtureDir = autoCleanupTempDirs.make("openclaw-cron-exit-reload-");
+    const childScriptPath = path.join(fixtureDir, "watcher.cjs");
+    const markerPath = path.join(fixtureDir, "watcher-runs.txt");
+    const releasePath = path.join(fixtureDir, "release-watcher");
+    const config = {
+      session: { mainKey: "main", store: path.join(fixtureDir, "sessions.json") },
+      cron: { enabled: true, store: path.join(fixtureDir, "jobs.json") },
+    } as OpenClawConfig;
+    await writeFile(
+      childScriptPath,
+      "const fs=require('node:fs');" +
+        "fs.appendFileSync(process.argv[2],'run\\n');" +
+        "const timer=setInterval(()=>{if(fs.existsSync(process.argv[3]))clearInterval(timer)},10)",
+      "utf8",
+    );
+    const childArgs = [childScriptPath, markerPath, releasePath];
+    const command =
+      process.platform === "win32"
+        ? buildWindowsCmdExeCommandLine(process.execPath, childArgs)
+        : [process.execPath, ...childArgs].map((argument) => JSON.stringify(argument)).join(" ");
+    const supervisor = getProcessSupervisor();
+    const spawn = vi.spyOn(supervisor, "spawn");
+    let state: ReturnType<ReloadHandlerParams["getState"]> | undefined;
+
+    vi.stubEnv("OPENCLAW_STATE_DIR", fixtureDir);
+    vi.stubEnv("OPENCLAW_SKIP_CRON", "0");
+    hoisted.runtimeConfig.value = config;
+    setRuntimeConfigSnapshot(config, config);
+
+    try {
+      const actualCron =
+        await vi.importActual<typeof import("./server-cron.js")>("./server-cron.js");
+      const initialCronState = actualCron.buildGatewayCronService({
+        cfg: config,
+        deps: {} as never,
+        broadcast: vi.fn(),
+      });
+      state = {
+        ...createDefaultGatewayReloadState(),
+        cronState: initialCronState,
+      };
+      await initialCronState.cron.start();
+      const job = await initialCronState.cron.add({
+        name: "preserve the real watched child",
+        enabled: true,
+        schedule: { kind: "on-exit", command },
+        sessionTarget: "main",
+        wakeMode: "next-heartbeat",
+        payload: { kind: "systemEvent", text: "watched child finished" },
+      });
+      await initialCronState.reconcileExitWatchers();
+      await waitForFast(async () => expect(await readFile(markerPath, "utf8")).toBe("run\n"), {
+        timeout: 10_000,
+      });
+      expect(spawn).toHaveBeenCalledOnce();
+      const watchedRun = await spawn.mock.results[0]?.value;
+      if (!watchedRun) {
+        throw new Error("expected the supervised cron exit watcher to start");
+      }
+
+      hoisted.buildGatewayCronService.mockImplementationOnce(
+        (params) =>
+          actualCron.buildGatewayCronService(
+            params as Parameters<typeof actualCron.buildGatewayCronService>[0],
+          ) as unknown as ReturnType<typeof hoisted.buildGatewayCronService>,
+      );
+      const handlers = createGatewayReloadHandlers({
+        getState: () => {
+          if (!state) {
+            throw new Error("expected gateway state");
+          }
+          return state;
+        },
+        setState: (nextState) => {
+          state = nextState;
+        },
+      });
+
+      await withGatewayRestartSignal(async () => {
+        await handlers.applyHotReload(createCronRestartPlan(), config);
+      });
+
+      expect(supervisor.getRecord(watchedRun.runId)).toMatchObject({
+        pid: watchedRun.pid,
+        state: "running",
+      });
+      expect(await readFile(markerPath, "utf8")).toBe("run\n");
+      expect(spawn).toHaveBeenCalledOnce();
+
+      await writeFile(releasePath, "release");
+      await waitForFast(() => expect(state?.cronState.cron.getJob(job.id)?.enabled).toBe(false), {
+        timeout: 10_000,
+      });
+      expect(await readFile(markerPath, "utf8")).toBe("run\n");
+      expect(spawn).toHaveBeenCalledOnce();
+    } finally {
+      await writeFile(releasePath, "release").catch(() => {});
+      await state?.cronState.cron.stopAndDrain?.();
+      spawn.mockRestore();
+      vi.unstubAllEnvs();
+    }
+  });
+
   it.each([
     "agents.defaults.compaction.model",
     "agents.defaults.compaction.maxActiveTranscriptBytes",

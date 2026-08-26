@@ -50,6 +50,7 @@ import { renderCron, type CronDetailTab, type CronListTab } from "./view.ts";
 
 class CronPage extends OpenClawLightDomElement {
   private static readonly threadScope = /^(delivery(Channel|AccountId|Mode)|agentId|clearAgent)$/;
+
   @consume({ context: applicationContext, subscribe: true })
   private context!: ApplicationContext;
 
@@ -310,7 +311,7 @@ class CronPage extends OpenClawLightDomElement {
       !Object.hasOwn(patch, "deliveryThreadId") &&
       Object.keys(patch).some((key) => CronPage.threadScope.test(key));
     const nextPatch = clearThread ? { ...patch, deliveryThreadId: undefined } : patch;
-    this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...nextPatch });
+    this.cron.cronForm = normalizeCronFormState({ ...this.cron.cronForm, ...nextPatch }, nextPatch);
     this.cron.cronFieldErrors = validateCronForm(this.cron.cronForm);
     this.requestCronUpdate();
   }
