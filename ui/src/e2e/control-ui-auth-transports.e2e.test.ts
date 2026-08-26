@@ -739,11 +739,13 @@ describeControlUiE2e("Control UI real auth transports E2E", () => {
       .locator("openclaw-app-shell")
       .waitFor({ timeout: controlUiSettleTimeoutMs });
     expect(
-      await connected.page.evaluate((assetPath) =>
-        performance
-          .getEntriesByType("resource")
-          .some((entry) => new URL(entry.name).pathname.endsWith(`/${assetPath}`)),
-      servedBundle.assetPath,
+      await connected.page.evaluate(
+        (assetPath) =>
+          performance
+            .getEntriesByType("resource")
+            .some((entry) => new URL(entry.name).pathname.endsWith(`/${assetPath}`)),
+        servedBundle.assetPath,
+      ),
     ).toBe(true);
 
     const secretsUrl = new URL("settings/secrets", gateway.httpUrl);
