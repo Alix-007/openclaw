@@ -13,6 +13,10 @@ describe("command reply delivery", () => {
     expect(isCommandReplyForDelivery([])).toBe(false);
     expect(isCommandReplyForDelivery([{ text: "unmarked" }])).toBe(false);
     expect(isCommandReplyForDelivery(markCommandReplyForDelivery({ text: "ack" }))).toBe(true);
+
+    const marked = { text: "ack" };
+    markCommandReplyForDelivery(marked);
+    expect(isCommandReplyForDelivery([marked, { text: "unmarked" }])).toBe(false);
   });
 });
 
