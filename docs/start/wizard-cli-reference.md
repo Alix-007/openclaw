@@ -38,9 +38,10 @@ not install or modify anything on the remote host.
     - With a configured default model, **Keep existing model config** appears
       first and becomes the default, followed by **QuickStart (recommended)**
       and **Manual setup**.
-      An explicit non-`skip` `--auth-choice` still configures that provider
-      without changing the existing default model, unless the provider requires
-      you to select a model.
+      An explicit non-`skip` `--auth-choice` or a single provider credential
+      flag still configures that provider without changing the existing default
+      model, unless the provider requires you to select a model. Multiple
+      provider flags require an explicit `--auth-choice`.
     - When a migration provider is available, **Import from another agent**
       appears after those setup choices. Selecting it opens a provider list
       with entries such as **Import from Claude**, **Import from Codex**, and
@@ -145,7 +146,7 @@ not install or modify anything on the remote host.
     - Native Windows: Scheduled Task first
       - If task creation is denied, OpenClaw falls back to a per-user Startup-folder login item and starts the gateway immediately.
       - Scheduled Tasks remain preferred because they provide better supervisor status.
-    - Runtime selection: Node is required because OpenClaw's canonical runtime state store uses `node:sqlite`.
+    - Runtime selection: Node is the primary, default, and recommended runtime. Bun 1.4+ with WAL-reset-safe `node:sqlite` is available as an explicit opt-in.
     - A SecretRef-managed `gateway.auth.token` is validated without copying its
       resolved plaintext value into supervisor service metadata. An unresolved
       token ref blocks daemon installation with remediation guidance.

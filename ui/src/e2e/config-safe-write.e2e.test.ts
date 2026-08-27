@@ -111,6 +111,21 @@ function settingsRow(page: Page, title: string): Locator {
   });
 }
 
+function overlapArea(
+  first: { x: number; y: number; width: number; height: number },
+  second: { x: number; y: number; width: number; height: number },
+): number {
+  const width = Math.max(
+    0,
+    Math.min(first.x + first.width, second.x + second.width) - Math.max(first.x, second.x),
+  );
+  const height = Math.max(
+    0,
+    Math.min(first.y + first.height, second.y + second.height) - Math.max(first.y, second.y),
+  );
+  return width * height;
+}
+
 async function capture(page: Page, name: string): Promise<void> {
   if (!captureUiProofEnabled) {
     return;
@@ -124,6 +139,67 @@ async function capture(page: Page, name: string): Promise<void> {
 }
 
 suite.define(() => {
+  it("restores form values when a failed edit is reverted in Raw mode", async () => {
+    await suite.withPage(
+      {
+        colorScheme: "dark",
+        locale: "en-US",
+        recordVideo: captureUiProofEnabled
+          ? { dir: uiProofArtifactDir, size: { height: 1000, width: 1440 } }
+          : undefined,
+        serviceWorkers: "block",
+        viewport: { height: 1000, width: 1440 },
+      },
+      async ({ page }) => {
+        const initialConfig = {
+          laboratory: { endpoint: "saved-api", retryBudget: 2 },
+          tools: {},
+        };
+        const gateway = await installMockGateway(page, {
+          methodResponses: {
+            "config.get": configResponse(initialConfig, "revert-snapshot"),
+            "config.schema": configSchemaResponse(),
+          },
+        });
+        await page.goto(`${suite.server.baseUrl}settings/advanced?section=laboratory`);
+        const endpoint = page.getByRole("textbox", { name: "Endpoint", exact: true });
+        await expect.poll(() => endpoint.inputValue()).toBe("saved-api");
+
+        await gateway.deferNext("config.set");
+        await endpoint.fill("discarded-api");
+        await gateway.waitForRequest("config.set");
+        await gateway.rejectDeferred("config.set", {
+          code: "UNAVAILABLE",
+          message: "QA configuration save failed",
+        });
+        const saveIndicator = page.locator("openclaw-settings-save-indicator");
+        await expect.poll(() => saveIndicator.textContent()).toContain("Save failed");
+        await page.getByRole("button", { name: "Raw", exact: true }).click();
+        await page
+          .locator(".config-raw-field textarea")
+          .fill(JSON.stringify(initialConfig, null, 2));
+        await page.getByRole("button", { name: "Form", exact: true }).click();
+        await endpoint.waitFor();
+        await capture(page, "11-form-after-raw-revert.png");
+        expect.soft(await endpoint.inputValue()).toBe("saved-api");
+
+        const previousSaves = (await gateway.getRequests("config.set")).length;
+        await gateway.deferNext("config.set");
+        await page.getByRole("spinbutton", { name: "Retry budget", exact: true }).fill("3");
+        const save = mutationParams(
+          await gateway.waitForRequest("config.set", { after: previousSaves }),
+        );
+        expect(save.baseHash).toBe("revert-snapshot");
+        expect(JSON.parse(String(save.raw))).toEqual({
+          ...initialConfig,
+          laboratory: { endpoint: "saved-api", retryBudget: 3 },
+        });
+        await gateway.resolveDeferred("config.set");
+        await expect.poll(() => saveIndicator.textContent()).toContain("Saved");
+      },
+    );
+  });
+
   it("edits schema and raw config with guarded set, patch, reload, and apply requests", async () => {
     await suite.withPage(
       {
@@ -194,10 +270,6 @@ suite.define(() => {
 
         await gateway.deferNext("config.set");
         await endpoint.fill("form-api");
-        // A revert to the loaded value here means a boot-time config refresh
-        // ate the edit (the focused-field guard in config-form.node.scalar.ts
-        // protects this); fail loudly instead of timing out on config.set.
-        await expect.poll(() => endpoint.inputValue()).toBe("form-api");
         const staleSetParams = mutationParams(await gateway.waitForRequest("config.set"));
         expect(staleSetParams.baseHash).toBe("snapshot-2");
         expect(JSON.parse(String(staleSetParams.raw))).toMatchObject({
@@ -233,11 +305,12 @@ suite.define(() => {
         await expect.poll(() => endpoint.inputValue()).toBe("external-api");
 
         const setRequestsBeforeRetry = (await gateway.getRequests("config.set")).length;
+        const retriedSetRequest = gateway.waitForRequest("config.set", {
+          after: setRequestsBeforeRetry,
+        });
         await endpoint.fill("form-api");
-        await expect
-          .poll(async () => (await gateway.getRequests("config.set")).length)
-          .toBe(setRequestsBeforeRetry + 1);
-        const retriedSetParams = mutationParams((await gateway.getRequests("config.set")).at(-1)!);
+        const retriedSetParams = mutationParams(await retriedSetRequest);
+        expect(await gateway.getRequests("config.set")).toHaveLength(setRequestsBeforeRetry + 1);
         expect(retriedSetParams.baseHash).toBe("snapshot-3");
         expect(JSON.parse(String(retriedSetParams.raw))).toMatchObject({
           laboratory: { endpoint: "form-api", retryBudget: 4 },
@@ -261,11 +334,12 @@ suite.define(() => {
         await capture(page, "02-raw-draft.png");
 
         const setRequestsBeforeRawSave = (await gateway.getRequests("config.set")).length;
+        const rawSetRequest = gateway.waitForRequest("config.set", {
+          after: setRequestsBeforeRawSave,
+        });
         await rawSave.click();
-        await expect
-          .poll(async () => (await gateway.getRequests("config.set")).length)
-          .toBe(setRequestsBeforeRawSave + 1);
-        const rawSetParams = mutationParams((await gateway.getRequests("config.set")).at(-1)!);
+        const rawSetParams = mutationParams(await rawSetRequest);
+        expect(await gateway.getRequests("config.set")).toHaveLength(setRequestsBeforeRawSave + 1);
         expect(rawSetParams.baseHash).toBe("mock-config-hash-1");
         expect(rawSetParams.raw).toBe(rawDraft);
         await expect
@@ -440,10 +514,40 @@ suite.define(() => {
         await expect
           .poll(() => saveIndicator.textContent())
           .toContain("Autosave paused after reconnect");
+        const saveButton = saveIndicator.getByRole("button", { name: "Save", exact: true });
+        const buildLink = page.locator(".settings-sidebar__footer .sidebar-footer-build");
+        await saveButton.focus();
+        await expect
+          .poll(() => saveButton.evaluate((element) => element === document.activeElement))
+          .toBe(true);
+        const [saveBounds, buildBounds] = await Promise.all([
+          saveButton.boundingBox(),
+          buildLink.boundingBox(),
+        ]);
+        expect(saveBounds).not.toBeNull();
+        expect(buildBounds).not.toBeNull();
+        if (!saveBounds || !buildBounds) {
+          throw new Error("Expected visible settings footer controls");
+        }
+        expect(overlapArea(saveBounds, buildBounds)).toBe(0);
+        expect(await buildLink.textContent()).not.toBe("");
         await capture(page, "07-opaque-revision-reconnect.png");
 
+        await page.setViewportSize({ height: 900, width: 1280 });
+        const [narrowSaveBounds, narrowBuildBounds] = await Promise.all([
+          saveButton.boundingBox(),
+          buildLink.boundingBox(),
+        ]);
+        expect(narrowSaveBounds).not.toBeNull();
+        expect(narrowBuildBounds).not.toBeNull();
+        if (!narrowSaveBounds || !narrowBuildBounds) {
+          throw new Error("Expected visible settings footer controls at 1280px");
+        }
+        expect(overlapArea(narrowSaveBounds, narrowBuildBounds)).toBe(0);
+        await capture(page, "07-opaque-revision-reconnect-1280.png");
+
         await gateway.deferNext("config.set");
-        await saveIndicator.getByRole("button", { name: "Save", exact: true }).click();
+        await saveButton.click();
         const save = mutationParams(await gateway.waitForRequest("config.set"));
         expect(save.baseHash).toBe("hmac-sha256:v1:opaque-current");
         expect(JSON.parse(String(save.raw))).toMatchObject({

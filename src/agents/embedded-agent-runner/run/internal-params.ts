@@ -5,7 +5,11 @@ import type { RunEmbeddedAgentParams } from "./params.js";
 
 export type RunEmbeddedAgentInternalParams = RunEmbeddedAgentParams & {
   onSuccessfulAuthBinding?: (binding: AgentExecutionAuthBinding) => void;
+  /** Maintenance needs the winning profile, not native runtime artifact capture. */
+  onSuccessfulAuthProfile?: (profileId: string | undefined) => void;
   authProfileStateMode?: "read-write" | "read-only";
+  /** Prepare only the requested candidate with this runtime; fallbacks keep their own policy. */
+  agentHarnessRuntimePreparationHint?: string;
   /** Keep staged setup config and credentials outside configured Gateway ownership. */
   preparedModelRuntimeMode?: "isolated-read-only";
   /** Ring-zero tool override, supplied only by the OpenClaw orchestrator. */

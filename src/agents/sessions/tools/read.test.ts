@@ -8,7 +8,7 @@ import { Value } from "typebox/value";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAutoCleanupTempDirTracker } from "../../../../test/helpers/temp-dir.js";
 import { withEnvAsync } from "../../../test-utils/env.js";
-import { createReadToolDefinition } from "./read.js";
+import { createReadTool, createReadToolDefinition } from "./read.js";
 import { DEFAULT_MAX_BYTES, DEFAULT_MAX_LINES } from "./truncate.js";
 
 const decodeWindowsTextFileBufferMock = vi.hoisted(() =>
@@ -38,9 +38,7 @@ function createTinyBmp(): Buffer {
   return buffer;
 }
 
-function textContent(
-  result: Awaited<ReturnType<ReturnType<typeof createReadToolDefinition>["execute"]>>,
-): string {
+function textContent(result: { content: Array<{ type: string; text?: string }> }): string {
   const first = result.content[0];
   return first?.type === "text" ? (first.text ?? "") : "";
 }
@@ -107,6 +105,46 @@ describe("read tool", () => {
     }
   });
 
+  it.each([
+    { source: "extension", modelHasVision: false },
+    { source: "extension", modelHasVision: true },
+    { source: "embedded", modelHasVision: false },
+    { source: "embedded", modelHasVision: true },
+    { source: "embedded", modelHasVision: undefined },
+  ])("matches image attachments to $source vision capability $modelHasVision", async (testCase) => {
+    const stateDir = tempDirs.make("openclaw-read-vision-");
+    const imagePath = path.join(stateDir, "pixel.png");
+    await fs.writeFile(imagePath, Buffer.from(ONE_PIXEL_PNG_BASE64, "base64"));
+
+    const result =
+      testCase.source === "embedded"
+        ? await createReadTool(stateDir, {
+            autoResizeImages: false,
+            modelHasVision: testCase.modelHasVision,
+          }).execute("embedded-read", { path: imagePath })
+        : await createReadToolDefinition(stateDir, { autoResizeImages: false }).execute(
+            "extension-read",
+            { path: imagePath },
+            undefined,
+            undefined,
+            {
+              model: { input: testCase.modelHasVision ? ["text", "image"] : ["text"] },
+            } as never,
+          );
+    const imageParts = result.content.filter((part) => part.type === "image");
+    const omitted = testCase.modelHasVision === false;
+
+    expect(imageParts).toHaveLength(omitted ? 0 : 1);
+    expect(textContent(result).includes("does not support images")).toBe(omitted);
+    if (!omitted) {
+      expect(imageParts[0]).toStrictEqual({
+        type: "image",
+        data: ONE_PIXEL_PNG_BASE64,
+        mimeType: "image/png",
+      });
+    }
+  });
+
   it("converts BMP files to PNG attachments", async () => {
     const tempDir = tempDirs.make("openclaw-read-bmp-");
     const filePath = path.join(tempDir, "pixel.bmp");
@@ -134,10 +172,96 @@ describe("read tool", () => {
     const tool = createReadToolDefinition(tempDir);
 
     await expect(
-      tool.execute("call-directory", { path: "." }, undefined, undefined, {} as never),
+      tool.execute(
+        "call-directory",
+        { path: ".", optional: true },
+        undefined,
+        undefined,
+        {} as never,
+      ),
     ).rejects.toThrow(
       "Read requires a file path, but . is a directory. List the directory, then read a specific file.",
     );
+  });
+
+  it("returns not_found only for optional missing paths", async () => {
+    const tempDir = tempDirs.make("openclaw-read-optional-");
+    await fs.writeFile(path.join(tempDir, "present.txt"), "present");
+    const tool = createReadToolDefinition(tempDir);
+
+    const missing = await tool.execute(
+      "call-optional-missing",
+      { path: "missing.txt", optional: true },
+      undefined,
+      undefined,
+      {} as never,
+    );
+    expect(missing).toStrictEqual({
+      content: [{ type: "text", text: "Optional file not found: missing.txt." }],
+      details: {
+        kind: "not_found",
+        status: "not_found",
+        path: "missing.txt",
+        optional: true,
+      },
+    });
+
+    await expect(
+      tool.execute(
+        "call-required-missing",
+        { path: "missing.txt" },
+        undefined,
+        undefined,
+        {} as never,
+      ),
+    ).rejects.toThrow(/not found/i);
+
+    const present = await tool.execute(
+      "call-optional-present",
+      { path: "present.txt", optional: true },
+      undefined,
+      undefined,
+      {} as never,
+    );
+    expect(textContent(present)).toBe("present");
+    expect(present.details).toEqual({ kind: "text", content: "present" });
+  });
+
+  it("treats ENOTDIR as optional not_found without swallowing permission errors", async () => {
+    const tempDir = tempDirs.make("openclaw-read-enotdir-");
+    await fs.writeFile(path.join(tempDir, "file.txt"), "present");
+    const local = createReadToolDefinition(tempDir);
+    const missing = await local.execute(
+      "call-optional-enotdir",
+      { path: "file.txt/child", optional: true },
+      undefined,
+      undefined,
+      {} as never,
+    );
+    expect(missing.details).toEqual({
+      kind: "not_found",
+      status: "not_found",
+      path: "file.txt/child",
+      optional: true,
+    });
+
+    const denied = createReadToolDefinition(tempDir, {
+      operations: {
+        access: async () => {
+          throw Object.assign(new Error("permission denied"), { code: "EACCES" });
+        },
+        readFile: async () => Buffer.from("unreachable"),
+      },
+    });
+    await expect(
+      denied.execute(
+        "call-optional-denied",
+        { path: "secret.txt", optional: true },
+        undefined,
+        undefined,
+        {} as never,
+      ),
+    ).rejects.toThrow("permission denied");
   });
 
   it.runIf(process.platform !== "win32")(
@@ -537,7 +661,13 @@ describe("read tool", () => {
     });
 
     await expect(
-      tool.execute("call-1", { path: "notes.txt", offset }, undefined, undefined, {} as never),
+      tool.execute(
+        "call-1",
+        { path: "notes.txt", offset, optional: true },
+        undefined,
+        undefined,
+        {} as never,
+      ),
     ).rejects.toThrow("Offset must be an integer at least 1");
     expect(access).not.toHaveBeenCalled();
     expect(detectImageMimeType).not.toHaveBeenCalled();
@@ -555,6 +685,14 @@ describe("read tool", () => {
     for (const cursor of [-1, 1.5]) {
       expect(Value.Check(tool.parameters, { path: "notes.txt", cursor })).toBe(false);
     }
+  });
+
+  it("accepts only literal true for optional reads", () => {
+    const schema = createReadToolDefinition("/workspace").parameters;
+
+    expect(Value.Check(schema, { path: "notes.txt", optional: true })).toBe(true);
+    expect(Value.Check(schema, { path: "notes.txt", optional: false })).toBe(false);
+    expect(Value.Check(schema, { path: "notes.txt", optional: "true" })).toBe(false);
   });
 
   it("uses the shared Windows decoder for local filesystem reads", async () => {

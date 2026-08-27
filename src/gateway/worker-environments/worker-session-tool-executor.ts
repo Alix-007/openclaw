@@ -36,6 +36,11 @@ import {
 import type { WorkerPlacementDispatchContract } from "./service-contract.js";
 import type { WorkerEnvironmentService } from "./service.js";
 import {
+  createWorkerPortalToolExecutor,
+  type WorkerPortalToolExecutorDependencies,
+  type WorkerPortalToolRequest,
+} from "./worker-portal-tool-executor.js";
+import {
   serializeWorkerSessionToolResult as serializeResult,
   workerSessionToolErrorResult as errorResult,
 } from "./worker-session-tool-result.js";
@@ -49,24 +54,12 @@ import {
 } from "./worker-session-tool-topology.js";
 
 type WorkerSessionToolRequest =
-  | {
-      identity: WorkerConnectionIdentity;
-      toolName: "sessions_spawn";
-      request: WorkerSessionsSpawnParams;
-      signal?: AbortSignal;
-    }
-  | {
-      identity: WorkerConnectionIdentity;
-      toolName: "sessions_send";
-      request: WorkerSessionsSendParams;
-      signal?: AbortSignal;
-    }
-  | {
-      identity: WorkerConnectionIdentity;
-      toolName: "github_publish";
-      request: WorkerGitHubPublishParams;
-      signal?: AbortSignal;
-    };
+  | WorkerPortalToolRequest
+  | ({ identity: WorkerConnectionIdentity; signal?: AbortSignal } & (
+      | { toolName: "sessions_spawn"; request: WorkerSessionsSpawnParams }
+      | { toolName: "sessions_send"; request: WorkerSessionsSendParams }
+      | { toolName: "github_publish"; request: WorkerGitHubPublishParams }
+    ));
 
 class WorkerSessionToolOutcomeUnknownError extends Error {
   constructor(cause: unknown) {
@@ -100,8 +93,10 @@ export function createWorkerSessionToolExecutor(params: {
   environments: Pick<WorkerEnvironmentService, "get">;
   dispatchChild: WorkerPlacementDispatchContract["dispatch"];
   githubPublication: Pick<GitHubPublicationCoordinator, "requestForClaim">;
+  portals: WorkerPortalToolExecutorDependencies["portals"];
 }) {
   const inFlight = new Map<string, Promise<string>>();
+  const executePortal = createWorkerPortalToolExecutor(params);
 
   const spawn = async (operation: {
     source: ExactSource;
@@ -126,12 +121,10 @@ export function createWorkerSessionToolExecutor(params: {
     const authorizedTools = WORKER_TOOL_NAMES.filter((name) =>
       params.placements.isWorkerTurnToolAuthorized(operation.source.turnClaim, name),
     );
-    const lineageCapability = getWorkerTurnExecutionIdentityCapability(params.placements, {
-      sessionId: operation.source.sessionId,
-      environmentId: operation.source.turnClaim.owner.environmentId,
-      ownerEpoch: operation.source.turnClaim.owner.ownerEpoch,
-      runId: operation.source.turnClaim.runId,
-    });
+    const lineageCapability = getWorkerTurnExecutionIdentityCapability(
+      params.placements,
+      operation.source.turnClaim,
+    );
     let workerIdentity: WorkerTurnExecutionIdentity | undefined;
     const gatewayCall: InProcessGatewayCaller = async <T = Record<string, unknown>>(
       method: string,
@@ -172,6 +165,9 @@ export function createWorkerSessionToolExecutor(params: {
       } else {
         const createParams: Record<string, unknown> = {
           ...requestParams,
+          ...(operation.source.entry.permissionMode
+            ? { permissionMode: operation.source.entry.permissionMode }
+            : {}),
           key: operation.childSessionKey,
         };
         delete createParams.task;
@@ -430,6 +426,7 @@ export function createWorkerSessionToolExecutor(params: {
                 sessionKey: identity.sessionKey,
                 operationalRunInstance: identity.operationalRunInstance,
                 executionIdentityToken: identity.executionIdentityToken,
+                receiptAuthority: identity.receiptAuthority,
                 workerTurnClaim: identity.turnClaim,
                 workerTurnExecutionIdentityCapability: lineageCapability,
               },
@@ -520,6 +517,9 @@ export function createWorkerSessionToolExecutor(params: {
 
   return async (request: WorkerSessionToolRequest): Promise<WorkerSessionToolResult> => {
     const source = exactSource({ identity: request.identity, placements: params.placements });
+    if (request.toolName === "portal") {
+      return await executePortal(request);
+    }
     if (request.toolName === "github_publish") {
       const assertPublicationAuthority = () => {
         const current = exactSource({ identity: request.identity, placements: params.placements });

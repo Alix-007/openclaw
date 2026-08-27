@@ -1,5 +1,5 @@
 {
-  "startupJsGzipBytes": 348351,
-  "reason": "cumulative Control UI startup growth since #126474 (automation condition triggers, persistent Settings approvals, sidebar row fixes)",
-  "updatedAt": "2026-08-20"
+  "startupJsGzipBytes": 344044,
+  "reason": "mobile drawer modal ownership and breakpoint-gated swipe loader; measured 344044 B with desktop request and modal regression coverage",
+  "updatedAt": "2026-08-27"
 }

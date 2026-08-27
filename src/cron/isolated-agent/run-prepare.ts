@@ -97,6 +97,7 @@ export type PreparedCronRunContext = {
   agentCfg: AgentDefaultsConfig;
   agentDir: string;
   agentSessionKey: string;
+  sourceSessionKey?: string;
   runSessionId: string;
   currentRunSessionId: () => string;
   runSessionKey: string;
@@ -292,7 +293,7 @@ export async function prepareCronRunContext(params: {
           upserts: [
             {
               sessionKey,
-              resetBoundaryReason,
+              resetBoundary: { context: "preserve-tail", reason: resetBoundaryReason },
               buildEntry: ({ currentEntry }) => update(currentEntry),
             },
           ],
@@ -310,6 +311,7 @@ export async function prepareCronRunContext(params: {
     const persistSessionEntry = createPersistCronSessionEntry({
       cronSession,
       agentSessionKey,
+      createdActor: input.job.createdActor,
       persistSessionEntry: persistCronSessionRow,
     });
     const withRunSession: WithRunSession = (result) => ({
@@ -640,6 +642,9 @@ export async function prepareCronRunContext(params: {
       config: cfgWithAgentDefaults,
       workspaceDir,
       allowGatewaySubagentBinding: true,
+      // The published owner already selected this run's metadata generation.
+      // Reloading it here re-hashes every installed plugin on each hook/cron run.
+      ...(modelOwner.metadataSnapshot ? { metadataSnapshot: modelOwner.metadataSnapshot } : {}),
       selections: runtimePluginCandidates.map((candidate) => {
         const runtime = resolveSessionRuntimeOverrideForProvider({
           provider: candidate.provider,
@@ -655,6 +660,7 @@ export async function prepareCronRunContext(params: {
       ? createCronRunContinuationSession({
           cronSession,
           runSessionKey,
+          createdActor: input.job.createdActor,
           thinkingLevel: requestedThinkLevel,
           toolsAllow: agentPayload?.toolsAllow,
           toolsAllowIsDefault: agentPayload?.toolsAllowIsDefault,
@@ -682,6 +688,7 @@ export async function prepareCronRunContext(params: {
         agentCfg,
         agentDir,
         agentSessionKey,
+        sourceSessionKey,
         runSessionId,
         currentRunSessionId,
         runSessionKey,

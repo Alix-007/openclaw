@@ -22,6 +22,7 @@ import type { SystemAgentApprovalRequestPayload } from "../../infra/system-agent
 import type { createSubsystemLogger } from "../../logging/subsystem.js";
 import type { PluginSubagentRequesterContext } from "../../plugins/runtime/subagent-requester-context.js";
 import type { RuntimePluginToolGrant } from "../../plugins/runtime/tool-grant.js";
+import type { PluginRuntimeCore } from "../../plugins/runtime/types-core.js";
 import type { SystemAgentOperation } from "../../system-agent/operation-types.js";
 import type { WizardSession } from "../../wizard/session.js";
 import type {
@@ -37,8 +38,10 @@ import type { AuthenticatedGitHubIdentitySync } from "../github-user-identity.js
 import type { HealthSummary } from "../health/types.js";
 import type { GatewayMethodRegistryView } from "../methods/descriptor.js";
 import type { NodeRegistry } from "../node-registry.js";
+import type { GatewayOperatorRoleActor } from "../operator-role-actor.js";
 import type { PluginNodeCapabilitySurface } from "../plugin-node-capability.js";
 import type { GatewayPortalService } from "../portals/portal-service.js";
+import type { QuestionManager } from "../question-manager.js";
 import type { GatewayBroadcastFn, GatewayBroadcastToConnIdsFn } from "../server-broadcast-types.js";
 import type {
   ChannelRuntimeSnapshot,
@@ -83,11 +86,22 @@ type SubsystemLogger = ReturnType<typeof createSubsystemLogger>;
     must never get a second row. */
 export type GatewayAgentRunTaskOwner = "plugin_subagent" | "native_subagent";
 
+/** Host-minted role authority; leaf contract re-exported for method handlers. */
+export type { GatewayOperatorRoleActor };
+
 /** Caller identity captured by a built-in agent tool before trusted in-process dispatch. */
 export type TrustedAgentToolCaller = Readonly<{
   agentId: string;
   sessionKey: string;
 }>;
+
+/** Closure-bound streaming hooks attached only to trusted plugin-owned synthetic clients. */
+export type GatewayNodeInvokeStream = {
+  onProgress: (chunk: string) => void;
+  onDispatchReady: (invokeId: string) => void;
+  idleTimeoutMs?: number;
+  isRuntimeCurrent: () => boolean;
+};
 
 /** Per-connection client metadata captured after the gateway handshake. */
 export type GatewayClient = {
@@ -117,6 +131,8 @@ export type GatewayClient = {
     isLocalClient?: true;
     /** Marks the server-constructed client used by trusted in-process dispatch. */
     syntheticClient?: true;
+    /** Host-owned role authority retained separately from an autonomous run principal. */
+    operatorRoleActor?: GatewayOperatorRoleActor;
     /** Overrides persisted sender attribution without changing the authorizing client identity. */
     senderAttribution?: { id: string; name?: string };
     /** Trusted session creation provenance; never accepted from Gateway wire params. */
@@ -128,6 +144,8 @@ export type GatewayClient = {
     cronRunContinuation?: boolean;
     agentRuntimeIdentity?: AgentRuntimeIdentity;
     pluginRuntimeOwnerId?: string;
+    /** Plugin-owned in-process invoke hooks; never accepted from Gateway wire params. */
+    nodeInvokeStream?: GatewayNodeInvokeStream;
     agentRunTracking?: GatewayAgentRunTaskOwner;
     /** Host-captured requester lineage for opt-in plugin subagent completion delivery. */
     pluginSubagentRequester?: PluginSubagentRequesterContext;
@@ -136,6 +154,8 @@ export type GatewayClient = {
     internalDeliverySuppressText?: boolean;
     /** Plugin-owned tools authorized for this internal subagent run. */
     runtimePluginToolGrant?: RuntimePluginToolGrant;
+    /** Host-owned exact tool cap for a tracked plugin subagent run. */
+    pluginSubagentToolsAllow?: string[];
     /** Opaque in-process subagent-completion capability; never accepted from wire params. */
     delegatedToolPolicyHandoffId?: string;
   };
@@ -213,6 +233,11 @@ type GatewaySystemAgentSession = {
 /** Kernel-owned services and state that can be constructed without binding sockets. */
 type GatewayKernelContext = {
   deps: CliDeps;
+  /** Host-bound plugin ingress; the transport owns its shared hook dispatch queue. */
+  dispatchHookAgentTurn?: (
+    pluginId: string,
+    params: Parameters<PluginRuntimeCore["hooks"]["dispatchHookAgentTurn"]>[0],
+  ) => ReturnType<PluginRuntimeCore["hooks"]["dispatchHookAgentTurn"]>;
   configRevisionProjector: GatewayConfigRevisionProjector;
   cron: GatewayCronServiceContract;
   cronStorePath: string;
@@ -224,6 +249,7 @@ type GatewayKernelContext = {
   resolveTerminalLaunchPolicy: (agentId?: string) => TerminalLaunchResolution;
   isTerminalEnabled: () => boolean;
   execApprovalManager?: ExecApprovalManager;
+  questionManager?: QuestionManager;
   scopeUpgradeCoordinator?: ScopeUpgradeCoordinator;
   /** Cancels durable approvals owned by one actively aborted run. */
   cancelRunBoundApprovals?: (runId: string) => number;
@@ -263,7 +289,7 @@ type GatewayKernelContext = {
   readChatMetadata: (params: ChatMetadataReadParams) => Promise<ChatMetadataResult>;
   readChatStartupProjection?: (
     params: ChatStartupProjectionReadParams,
-  ) => Promise<ChatStartupProjectionResult>;
+  ) => Promise<ChatStartupProjectionResult | undefined>;
   getHealthCache: () => HealthSummary | null;
   logHealth: { error: (message: string) => void };
   logGateway: SubsystemLogger;
@@ -306,6 +332,7 @@ type GatewayTransportContext = {
   ensureSandboxHostPort?: () => Promise<number>;
   broadcast: GatewayBroadcastFn;
   broadcastToConnIds: GatewayBroadcastToConnIdsFn;
+  getClientConnIds?: (filter?: (client: GatewayClient) => boolean) => ReadonlySet<string>;
   nodeSendToSession: (sessionKey: string, event: string, payload: unknown) => void;
   nodeSendToAllSubscribed: (event: string, payload: unknown) => void;
   nodeSubscribe: (nodeId: string, sessionKey: string, connId?: string) => void;
@@ -321,6 +348,7 @@ type GatewayTransportContext = {
     record?: ExecApprovalRecord<TPayload>;
   }) => ReadonlySet<string>;
   disconnectClientsForDevice?: (deviceId: string, opts?: { role?: string }) => void;
+  disconnectClientsForUserProfile?: (profileId: string) => void;
   invalidateClientsForDevice?: (
     deviceId: string,
     opts?: { role?: string; reason?: string },
