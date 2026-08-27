@@ -389,6 +389,7 @@ describe("handleInlineActions", () => {
     });
     expect(getReplyPayloadMetadata(delivered as object)).toEqual({
       assistantMessageIndex: 7,
+      commandReply: true,
       deliverDespiteSourceReplySuppression: true,
     });
   });

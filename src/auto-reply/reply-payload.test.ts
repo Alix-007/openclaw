@@ -1,6 +1,20 @@
 // Reply payload tests cover internal reply metadata contracts.
 import { describe, expect, it } from "vitest";
-import { isReplyPayloadTerminalContent, readPairingQrReplyChannelData } from "./reply-payload.js";
+import {
+  isCommandReplyForDelivery,
+  isReplyPayloadTerminalContent,
+  markCommandReplyForDelivery,
+  readPairingQrReplyChannelData,
+} from "./reply-payload.js";
+
+describe("command reply delivery", () => {
+  it("requires a non-empty reply whose payloads were all produced by the command owner", () => {
+    expect(isCommandReplyForDelivery(undefined)).toBe(false);
+    expect(isCommandReplyForDelivery([])).toBe(false);
+    expect(isCommandReplyForDelivery([{ text: "unmarked" }])).toBe(false);
+    expect(isCommandReplyForDelivery(markCommandReplyForDelivery({ text: "ack" }))).toBe(true);
+  });
+});
 
 describe("pairing QR reply channel data", () => {
   it("reads the private pairing QR payload metadata", () => {

@@ -10,6 +10,7 @@ import { cleanDeferredFinalText } from "../../tts/captioned-final.js";
 import {
   copyReplyPayloadMetadata,
   getReplyPayloadMetadata,
+  isCommandReplyForDelivery,
   isReplyPayloadStatusNotice,
   readAskUserQuestionId,
 } from "../reply-payload.js";
@@ -627,7 +628,10 @@ export async function executeDispatch(state: PrepareDispatchExecutionReadyState)
   }
   const sessionMetadataChanges = takeCommandSessionMetadataChanges(ctx);
   notifySessionMetadataChanges(sessionMetadataChanges);
-  const finalDispatchAcquisition = await state.ensureDispatchReplyOperation("dispatch");
+  const resolvedCommandReply = isCommandReplyForDelivery(replyResult);
+  const finalDispatchAcquisition = resolvedCommandReply
+    ? ({ status: "ready" } as const)
+    : await state.ensureDispatchReplyOperation("dispatch");
   if (finalDispatchAcquisition.status === "aborted") {
     return { status: "complete" as const, result: state.finishReplyOperationAbortedDispatch() };
   }
