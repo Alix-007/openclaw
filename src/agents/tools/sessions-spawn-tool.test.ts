@@ -858,13 +858,35 @@ describe("sessions_spawn tool", () => {
     expect(hoisted.spawnSubagentDirectMock).not.toHaveBeenCalled();
   });
 
-  it.each(["Projects", ""])("rejects category %j without visible mode", async (category) => {
+  it("rejects a non-empty category without visible mode", async () => {
     const tool = createSessionsSpawnTool({ agentSessionKey: "agent:main:main" });
 
-    await expect(tool.execute("hidden-category", { task: "inspect", category })).rejects.toThrow(
-      "Parameters require visible=true: category",
-    );
+    await expect(
+      tool.execute("hidden-category", { task: "inspect", category: "Projects" }),
+    ).rejects.toThrow("Parameters require visible=true: category");
     expect(hoisted.spawnSubagentDirectMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { runtime: "subagent" as const, category: "" },
+    { runtime: "subagent" as const, category: " \t" },
+    { runtime: "acp" as const, category: "" },
+    { runtime: "acp" as const, category: " \t" },
+  ])("treats blank category as omitted for $runtime spawns", async ({ runtime, category }) => {
+    if (runtime === "acp") {
+      registerAcpBackendForTest();
+    }
+    const tool = createSessionsSpawnTool({ agentSessionKey: "agent:main:main" });
+
+    const result = await tool.execute(`hidden-blank-category-${runtime}`, {
+      task: "inspect",
+      runtime,
+      category,
+    });
+
+    expectDetailFields(result.details, { status: "accepted" });
+    const spawn = runtime === "acp" ? hoisted.spawnAcpDirectMock : hoisted.spawnSubagentDirectMock;
+    expect(spawn).toHaveBeenCalledOnce();
   });
 
   it("applies a per-run timeout to visible dashboard sessions", async () => {
