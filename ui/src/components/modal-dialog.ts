@@ -35,7 +35,7 @@ export class OpenClawModalDialog extends OpenClawLitElement {
     wa-dialog {
       --width: min(var(--openclaw-modal-width, 540px), calc(100vw - 48px));
       --spacing: 0;
-      --backdrop-filter: blur(4px);
+      --backdrop-filter: var(--openclaw-modal-backdrop-filter, blur(4px));
     }
 
     wa-dialog::part(dialog) {
@@ -62,6 +62,23 @@ export class OpenClawModalDialog extends OpenClawLitElement {
       max-height: calc(100dvh - 20px);
     }
 
+    :host(.viewport-edge-to-edge) wa-dialog {
+      --width: 100vw;
+    }
+
+    :host(.viewport-edge-to-edge) wa-dialog::part(dialog) {
+      width: 100vw;
+      height: 100dvh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      border-radius: 0;
+    }
+
+    :host(.viewport-edge-to-edge) wa-dialog::part(body) {
+      height: 100%;
+    }
+
     :host(.palette) wa-dialog::part(dialog) {
       margin-block-start: min(20dvh, 160px);
       margin-block-end: auto;
@@ -77,30 +94,6 @@ export class OpenClawModalDialog extends OpenClawLitElement {
       max-height: 100dvh;
       margin: 0 0 0 auto;
       border-radius: 0;
-    }
-
-    :host(.nav-drawer) wa-dialog {
-      --width: min(86vw, 320px);
-    }
-
-    :host(.nav-drawer) wa-dialog::part(dialog) {
-      max-width: min(86vw, 320px);
-      margin: 0 auto 0 0;
-    }
-
-    :host(.nav-drawer) wa-dialog::part(body) {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    ::slotted(.shell-nav-modal__content) {
-      display: flex;
-      flex: 1 1 auto;
-      flex-direction: column;
-      height: 100%;
-      min-height: 0;
-      min-width: 0;
     }
 
     @media (max-width: 640px) {

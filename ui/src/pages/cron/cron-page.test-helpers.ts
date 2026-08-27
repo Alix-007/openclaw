@@ -8,6 +8,7 @@ import type { CronState } from "../../lib/cron/index.ts";
 
 type CronTestPage = HTMLElement & {
   context: ApplicationContext;
+  routeSearch: string;
   updateComplete: Promise<boolean>;
   requestUpdate: () => void;
   render: () => typeof nothing;

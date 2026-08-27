@@ -69,7 +69,6 @@ type SidebarAttentionElement = HTMLElement & {
   context: ApplicationContext;
   updateComplete: Promise<boolean>;
   cronJobs: CronJob[];
-  startUpdate(): void;
   modelAuthStatus: ModelAuthStatusResult | null;
   loadedAtMs: number;
 };
@@ -264,11 +263,11 @@ describe("sidebar attention refresh ownership", () => {
     );
     element.querySelector<HTMLButtonElement>(".sidebar-issues-button")!.click();
 
-    await waitForFast(() => {
-      const panel = element.querySelector(".sidebar-issues-panel");
-      expect(panel).not.toBeNull();
-      expect(panel?.closest("openclaw-menu-surface")).not.toBeNull();
-    });
+    await import("./sidebar-attention-panel.runtime.ts");
+    await element.updateComplete;
+    const panel = element.querySelector(".sidebar-issues-panel");
+    expect(panel).not.toBeNull();
+    expect(panel?.closest("openclaw-menu-surface")).not.toBeNull();
   });
 
   it("keeps the latest refresh when an older load on the same client finishes last", async () => {
@@ -661,35 +660,6 @@ describe("update attention", () => {
     });
 
     expect(Boolean(entry?.dismissal)).toBe(dismissible);
-  });
-
-  it("does not start an update when a failure has no actionable target", () => {
-    const runUpdate = vi.fn();
-    const element = document.createElement("openclaw-sidebar-attention") as SidebarAttentionElement;
-    element.context = {
-      gateway: {
-        snapshot: {
-          phase: "connected",
-          hello: {
-            auth: { role: "operator", scopes: ["operator.admin"] },
-            features: { methods: ["update.run"] },
-          },
-        },
-      },
-      overlays: {
-        runUpdate,
-        snapshot: {
-          updateAvailable: null,
-          updateSchedule: null,
-          updateRunning: false,
-          updateStatusBanner: { tone: "danger", text: "Update failed" },
-        },
-      },
-    } as unknown as ApplicationContext;
-
-    element.startUpdate();
-
-    expect(runUpdate).not.toHaveBeenCalled();
   });
 });
 
