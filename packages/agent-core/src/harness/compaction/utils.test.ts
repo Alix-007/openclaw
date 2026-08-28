@@ -133,16 +133,29 @@ describe("file operation provenance", () => {
 
 describe("serializeConversation", () => {
   it("omits provider thinking while preserving visible assistant state", () => {
-    const messages = [
+    const messages: Message[] = [
       {
         role: "assistant",
         content: [
           { type: "thinking", thinking: "PRIVATE_REASONING_SENTINEL" },
           { type: "text", text: "Visible answer" },
-          { type: "toolCall", name: "read", arguments: { path: "src/index.ts" } },
+          { type: "toolCall", id: "call-1", name: "read", arguments: { path: "src/index.ts" } },
         ],
+        api: "test-api",
+        provider: "test-provider",
+        model: "test-model",
+        usage: {
+          input: 0,
+          output: 0,
+          cacheRead: 0,
+          cacheWrite: 0,
+          totalTokens: 0,
+          cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
+        },
+        stopReason: "stop",
+        timestamp: 1,
       },
-    ] as unknown as Message[];
+    ];
 
     expect(serializeConversation(messages)).toBe(
       '[Assistant]: Visible answer\n\n[Assistant tool calls]: read(path="src/index.ts")',
