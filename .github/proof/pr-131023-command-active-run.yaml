@@ -60,7 +60,7 @@ flow:
           args:
             - lambda:
                 async: true
-                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.hasActiveRun === true && String(session.key).includes('qa-channel')))"
+                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.hasActiveRun === true))"
             - 30000
             - 100
         - set: sessionKey
