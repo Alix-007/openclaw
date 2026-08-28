@@ -106,7 +106,7 @@ const responsePayload = (frame) => frame?.payload ?? frame?.result;
 const runtimeDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-pr-122300-proof-"));
 const stateDir = path.join(runtimeDir, "state");
 const pluginDir = path.join(runtimeDir, "plugin");
-const pluginPath = path.join(pluginDir, "index.mjs");
+const pluginPath = path.join(pluginDir, "index.cjs");
 const configPath = path.join(stateDir, "openclaw.json");
 const gatewayLogPath = path.join(artifactDir, "gateway.log");
 let browser;
@@ -138,7 +138,7 @@ try {
   );
   await writeFile(
     pluginPath,
-    `export default {
+    `module.exports = {
   id: ${JSON.stringify(pluginId)},
   name: "PR 122300 proof provider",
   register(api) {
