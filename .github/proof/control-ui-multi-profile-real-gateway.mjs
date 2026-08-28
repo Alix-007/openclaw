@@ -260,18 +260,37 @@ try {
     await run(process.execPath, orderArgs, { env: proofEnv });
   }
 
-  gateway = spawn(
-    process.execPath,
-    ["openclaw.mjs", "gateway", "--port", String(port), "--bind", "loopback", "--force"],
-    { cwd: process.cwd(), env: proofEnv, stdio: ["ignore", "pipe", "pipe"] },
-  );
-  gateway.stdout.on("data", (chunk) => {
-    gatewayStdout += chunk;
-  });
-  gateway.stderr.on("data", (chunk) => {
-    gatewayStderr += chunk;
-  });
-  await waitForGateway(gateway);
+  let gatewayLaunch = 0;
+  const launchGateway = async () => {
+    gatewayLaunch += 1;
+    gatewayStdout += `\n=== gateway launch ${gatewayLaunch} ===\n`;
+    const child = spawn(
+      process.execPath,
+      ["openclaw.mjs", "gateway", "--port", String(port), "--bind", "loopback", "--force"],
+      { cwd: process.cwd(), env: proofEnv, stdio: ["ignore", "pipe", "pipe"] },
+    );
+    gateway = child;
+    child.stdout.on("data", (chunk) => {
+      gatewayStdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      gatewayStderr += chunk;
+    });
+    await waitForGateway(child);
+  };
+  const stopGateway = async () => {
+    const child = gateway;
+    if (!child || child.exitCode !== null) {
+      return;
+    }
+    child.kill("SIGTERM");
+    await Promise.race([once(child, "exit"), new Promise((resolve) => setTimeout(resolve, 5000))]);
+    if (child.exitCode === null) {
+      child.kill("SIGKILL");
+      await once(child, "exit");
+    }
+  };
+  await launchGateway();
 
   const queryAgent = async (agentId) => {
     const authStatus = await callGateway("models.authStatus", { agentId }, proofEnv);
@@ -305,8 +324,25 @@ try {
         modelsList.providerOutcomes?.filter((item) => item.provider === providerId) ?? [],
     };
   };
-  const rpcDefaultAgent = await queryAgent(defaultAgentId);
-  const rpcSelectedAgent = await queryAgent(selectedAgentId);
+  let rpcDefaultAgent;
+  let rpcSelectedAgent;
+  try {
+    rpcDefaultAgent = await queryAgent(defaultAgentId);
+    rpcSelectedAgent = await queryAgent(selectedAgentId);
+  } catch (error) {
+    if (!String(error).includes("reconstructed a different runtime generation")) {
+      throw error;
+    }
+    await writeFile(
+      path.join(artifactDir, "gateway-generation-restart.json"),
+      `${JSON.stringify({ targetSha, firstLaunch: "generation-mismatch", action: "restart" }, null, 2)}\n`,
+      "utf8",
+    );
+    await stopGateway();
+    await launchGateway();
+    rpcDefaultAgent = await queryAgent(defaultAgentId);
+    rpcSelectedAgent = await queryAgent(selectedAgentId);
+  }
   await writeFile(
     path.join(artifactDir, "rpc-preflight.json"),
     `${JSON.stringify(
