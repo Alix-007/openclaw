@@ -23,6 +23,7 @@ on:
           - responses
           - synology
           - command-active-run
+          - sessions-spawn-blank-category
           - terminal-timeout
           - web-search
       target_sha:
@@ -427,6 +428,51 @@ jobs:
               echo '[command active-run boundary proof] exact-head=true gateway=ephemeral provider=mock-openai channel=qa-channel status-visible=true active-preserved=true ordinary-serialized=true abort-cleanup=true' | tee -a "$log_file"
               marker='[command active-run boundary proof]'
               ;;
+            sessions-spawn-blank-category)
+              output_dir='.artifacts/qa-e2e/pr-131010-blank-category'
+              mkdir -p "$output_dir"
+              cp \
+                .proof-tooling/.github/proof/sessions-spawn-blank-category.proof.test.ts \
+                src/agents/subagents/spawn/sessions-spawn-blank-category.proof.test.ts
+              node scripts/run-vitest.mjs \
+                src/agents/subagents/spawn/sessions-spawn-blank-category.proof.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[sessions_spawn blank-category proof] exact-head=true configured-agent=main gateway-preflight=in-process blank=accepted whitespace=accepted non-empty=rejected dispatches=2'
+              grep -F "$marker" "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const dispatch = {
+                  method: "agent",
+                  forceSyntheticClient: true,
+                  hostAccepted: true,
+                };
+                const verdict = {
+                  schemaVersion: 1,
+                  proofKind: "configured-agent+real-sessions_spawn+in-process-gateway-preflight",
+                  target: {
+                    repository: "Alix-007/openclaw",
+                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
+                    workflowSha: process.env.GITHUB_SHA,
+                  },
+                  observed: {
+                    blank: { status: "accepted" },
+                    whitespace: { status: "accepted" },
+                    nonEmpty: { error: "Parameters require visible=true: category" },
+                    gatewayDispatches: [dispatch, dispatch],
+                  },
+                  assertions: {
+                    exactHead: true,
+                    configuredAgent: "main",
+                    blankAccepted: true,
+                    whitespaceAccepted: true,
+                    nonEmptyRejectedBeforeDispatch: true,
+                  },
+                  result: "pass",
+                };
+                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
+                console.log(JSON.stringify(verdict));
+              ' "$output_dir/verdict.json" | tee -a "$log_file"
+              ;;
             terminal-timeout)
               output_dir='.artifacts/qa-e2e/pr-122036-terminal-timeout'
               mkdir -p "$output_dir"
@@ -541,6 +587,7 @@ jobs:
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
             .artifacts/qa-e2e/pr-131006-discord-steer
+            .artifacts/qa-e2e/pr-131010-blank-category
             .artifacts/qa-e2e/pr-131023-command-active-run
           include-hidden-files: true
           if-no-files-found: warn
