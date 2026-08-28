@@ -1,0 +1,156 @@
+title: PR 131023 active-run command delivery proof
+
+scenario:
+  id: pr-131023-command-active-run
+  surface: channels
+  coverage:
+    primary:
+      - channels.active-run-command-delivery
+    secondary:
+      - channels.ordinary-turn-serialization
+  objective: Verify a command-owned reply is visible while the routed session stays active and ordinary turns remain serialized.
+  successCriteria:
+    - A real delayed agent turn is active through an ephemeral Gateway.
+    - Native `/status` produces a visible reply without ending that active run.
+    - An ordinary turn produces no delivery during a bounded control window and does not end the active run.
+    - Native `/stop` produces a visible acknowledgement and releases the active run.
+  execution:
+    kind: flow
+    channel: qa-channel
+    timeoutMs: 90000
+    retryCount: 0
+    suiteIsolation: isolated
+    summary: Exercise command resolution and ordinary admission against one active qa-channel session.
+    config:
+      requiredProviderMode: mock-openai
+      requiredChannelDriver: qa-channel
+      conversationId: pr-131023-active-run
+      senderId: qa-pr-131023-operator
+      delayedPrompt: "Subagent recovery worker native command target proof. Wait until stopped."
+      abortReplyNeedle: Agent was aborted
+
+flow:
+  steps:
+    - name: command reply bypasses only the command-owned lifecycle phase
+      actions:
+        - assert:
+            expr: "env.providerMode === config.requiredProviderMode"
+            message: this deterministic active-run proof requires mock-openai
+        - call: waitForGatewayHealthy
+          args:
+            - ref: env
+            - 60000
+        - call: waitForTransportReady
+          args:
+            - ref: env
+            - 60000
+        - resetTransport: true
+        - sendInbound:
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            senderId:
+              expr: config.senderId
+            senderName: QA PR 131023 Operator
+            text:
+              expr: config.delayedPrompt
+        - call: waitForCondition
+          saveAs: activeSession
+          args:
+            - lambda:
+                async: true
+                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.hasActiveRun === true && String(session.key).includes('qa-channel')))"
+            - 30000
+            - 100
+        - set: sessionKey
+          value:
+            expr: activeSession.key
+        - set: commandStartIndex
+          value:
+            expr: "state.getSnapshot().messages.filter((message) => message.direction === 'outbound').length"
+        - sendNativeCommand:
+            command: status
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            senderId:
+              expr: config.senderId
+            senderName: QA PR 131023 Operator
+        - waitForOutbound:
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            sinceIndex:
+              ref: commandStartIndex
+            timeoutMs: 15000
+          saveAs: statusReply
+        - assert:
+            expr: "typeof statusReply.text === 'string' && statusReply.text.trim().length > 0"
+            message: status command produced no visible acknowledgement
+        - call: waitForCondition
+          saveAs: activeAfterStatus
+          args:
+            - lambda:
+                async: true
+                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.key === sessionKey && session.hasActiveRun === true))"
+            - 15000
+            - 100
+        - set: ordinaryStartIndex
+          value:
+            expr: "state.getSnapshot().messages.filter((message) => message.direction === 'outbound').length"
+        - sendInbound:
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            senderId:
+              expr: config.senderId
+            senderName: QA PR 131023 Operator
+            text: "Reply exactly: PR-131023-ORDINARY-MUST-WAIT"
+        - waitForNoOutbound:
+            quietMs: 1500
+            sinceIndex:
+              ref: ordinaryStartIndex
+        - call: waitForCondition
+          saveAs: activeAfterOrdinary
+          args:
+            - lambda:
+                async: true
+                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.key === sessionKey && session.hasActiveRun === true))"
+            - 15000
+            - 100
+        - set: abortStartIndex
+          value:
+            expr: "state.getSnapshot().messages.filter((message) => message.direction === 'outbound').length"
+        - sendNativeCommand:
+            command: stop
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            senderId:
+              expr: config.senderId
+            senderName: QA PR 131023 Operator
+        - waitForOutbound:
+            conversation:
+              id:
+                expr: config.conversationId
+              kind: direct
+            sinceIndex:
+              ref: abortStartIndex
+            textIncludes:
+              expr: config.abortReplyNeedle
+            timeoutMs: 15000
+          saveAs: abortReply
+        - call: waitForCondition
+          saveAs: inactiveAfterAbort
+          args:
+            - lambda:
+                async: true
+                expr: "env.gateway.call('sessions.list', {}, { timeoutMs: 30000 }).then((result) => result.sessions?.find((session) => session.key === sessionKey && session.hasActiveRun === false))"
+            - 15000
+            - 100
+      detailsExpr: "`status-visible=${Boolean(statusReply.text?.trim())}; active-after-status=${activeAfterStatus.hasActiveRun}; ordinary-quiet-ms=1500; active-after-ordinary=${activeAfterOrdinary.hasActiveRun}; abort-visible=${abortReply.text.includes(config.abortReplyNeedle)}; active-after-abort=${inactiveAfterAbort.hasActiveRun}; session=${sessionKey}`"

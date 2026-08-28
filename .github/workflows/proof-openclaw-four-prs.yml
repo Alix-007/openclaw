@@ -13,6 +13,7 @@ on:
           - bootstrap
           - bootstrap-review
           - discord
+          - discord-steer
           - foundation
           - heartbeat
           - matrix
@@ -21,6 +22,7 @@ on:
           - qqbot
           - responses
           - synology
+          - command-active-run
           - terminal-timeout
           - web-search
       target_sha:
@@ -63,6 +65,7 @@ jobs:
             echo "repository=Alix-007/openclaw"
             echo "runner_os=$RUNNER_OS"
             echo "run_id=$GITHUB_RUN_ID"
+            echo "workflow_sha=$GITHUB_SHA"
           } | tee proof-metadata.txt
 
       - name: Check out configured proof harness
@@ -190,6 +193,43 @@ jobs:
                 extensions/discord/src/api.test.ts \
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[discord credential redaction proof]'
+              ;;
+            discord-steer)
+              output_dir='.artifacts/qa-e2e/pr-131006-discord-steer'
+              mkdir -p "$output_dir"
+              node scripts/run-vitest.mjs \
+                test/gateway-steer-fifo.e2e.test.ts \
+                -t 'finishes a running tool, skips its sequential tail, and injects a UI steer once' \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              node scripts/run-vitest.mjs \
+                extensions/discord/src/monitor/native-command.plugin-dispatch.test.ts \
+                -t 'settles an accepted active-run steer without an empty warning|returns an explicit warning instead of success when dispatch produces zero visible replies' \
+                --reporter=verbose 2>&1 | tee -a "$log_file"
+              grep -F 'finishes a running tool, skips its sequential tail, and injects a UI steer once' "$log_file"
+              grep -F 'settles an accepted active-run steer without an empty warning' "$log_file"
+              grep -F 'returns an explicit warning instead of success when dispatch produces zero visible replies' "$log_file"
+              node -e '
+                const fs = require("node:fs");
+                const verdict = {
+                  schemaVersion: 1,
+                  proofKind: "mock-channel-api+mock-provider+ephemeral-gateway",
+                  target: {
+                    repository: "Alix-007/openclaw",
+                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
+                    workflowSha: process.env.GITHUB_SHA,
+                  },
+                  observed: {
+                    gateway: "active run accepted one steer while a running tool completed and its sequential tail stayed suppressed",
+                    discordInteraction: "accepted deferredToActiveRun=steer settled through deleteReply with no warning",
+                    zeroOutputControl: "genuine zero-output dispatch emitted one ephemeral warning",
+                  },
+                  result: "pass",
+                };
+                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
+                console.log(JSON.stringify(verdict));
+              ' "$output_dir/verdict.json" | tee -a "$log_file"
+              echo '[discord steer boundary proof] exact-head=true gateway=ephemeral provider=mock-openai interaction=mock-discord accepted-steer-settled=true zero-output-warning=true' | tee -a "$log_file"
+              marker='[discord steer boundary proof]'
               ;;
             foundation)
               pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
@@ -340,6 +380,53 @@ jobs:
                 --reporter=verbose 2>&1 | tee "$log_file"
               marker='[synology webhook retry proof]'
               ;;
+            command-active-run)
+              output_dir='.artifacts/qa-e2e/pr-131023-command-active-run'
+              mkdir -p "$output_dir"
+              cp \
+                .proof-tooling/.github/proof/pr-131023-command-active-run.yaml \
+                qa/scenarios/channels/pr-131023-command-active-run.yaml
+              pnpm openclaw qa suite \
+                --provider-mode mock-openai \
+                --scenario pr-131023-command-active-run \
+                --channel-driver qa-channel \
+                --concurrency 1 \
+                --output-dir "$output_dir" \
+                2>&1 | tee "$log_file"
+              report="$output_dir/qa-suite-report.md"
+              test -f "$report"
+              grep -F 'status-visible=true' "$report"
+              grep -F 'active-after-status=true' "$report"
+              grep -F 'ordinary-quiet-ms=1500' "$report"
+              grep -F 'active-after-ordinary=true' "$report"
+              grep -F 'abort-visible=true' "$report"
+              grep -F 'active-after-abort=false' "$report"
+              node -e '
+                const fs = require("node:fs");
+                const verdict = {
+                  schemaVersion: 1,
+                  proofKind: "mock-channel-api+mock-provider+ephemeral-gateway",
+                  target: {
+                    repository: "Alix-007/openclaw",
+                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
+                    workflowSha: process.env.GITHUB_SHA,
+                  },
+                  observed: {
+                    commandReplyVisible: true,
+                    activeRunPreservedAfterCommand: true,
+                    ordinaryTurnQuietWindowMs: 1500,
+                    activeRunPreservedAfterOrdinaryTurn: true,
+                    abortReplyVisible: true,
+                    activeRunAfterAbort: false,
+                  },
+                  result: "pass",
+                };
+                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
+                console.log(JSON.stringify(verdict));
+              ' "$output_dir/verdict.json" | tee -a "$log_file"
+              echo '[command active-run boundary proof] exact-head=true gateway=ephemeral provider=mock-openai channel=qa-channel status-visible=true active-preserved=true ordinary-serialized=true abort-cleanup=true' | tee -a "$log_file"
+              marker='[command active-run boundary proof]'
+              ;;
             terminal-timeout)
               output_dir='.artifacts/qa-e2e/pr-122036-terminal-timeout'
               mkdir -p "$output_dir"
@@ -453,6 +540,8 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            .artifacts/qa-e2e/pr-131006-discord-steer
+            .artifacts/qa-e2e/pr-131023-command-active-run
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
