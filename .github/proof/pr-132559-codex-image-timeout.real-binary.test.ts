@@ -14,7 +14,6 @@ import { createCodexNativeTestState } from "./native-app-server.test-support.js"
 import type {
   CodexDynamicToolCallParams,
   CodexDynamicToolCallResponse,
-  CodexModelListResponse,
   CodexThreadStartResponse,
   CodexTurnStartResponse,
   JsonValue,
@@ -98,7 +97,17 @@ async function startMockResponsesServer() {
   const requests: unknown[] = [];
   let responseIndex = 0;
   const server = http.createServer(async (request, response) => {
+    if (request.method !== "POST" || !request.url?.endsWith("/responses")) {
+      response.writeHead(404, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "not found" }));
+      return;
+    }
     const body = await readBody(request);
+    if (!body) {
+      response.writeHead(400, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "request body required" }));
+      return;
+    }
     requests.push(JSON.parse(body));
     response.writeHead(200, {
       "content-type": "text/event-stream",
@@ -125,6 +134,7 @@ async function startMockResponsesServer() {
     }
     response.end(
       sse([
+        { type: "response.created", response: { id: "resp-timeout-2" } },
         {
           type: "response.output_item.done",
           item: {
@@ -167,8 +177,17 @@ describe("PR 132559 real Codex app-server image timeout round trip", () => {
       await fs.writeFile(
         path.join(native.codexHome, "config.toml"),
         [
-          `openai_base_url = ${JSON.stringify(mock.baseUrl)}`,
+          'model = "mock-model"',
+          'model_provider = "mock_provider"',
+          'approval_policy = "never"',
+          'sandbox_mode = "read-only"',
           'cli_auth_credentials_store = "file"',
+          "[model_providers.mock_provider]",
+          'name = "PR 132559 proof provider"',
+          `base_url = ${JSON.stringify(mock.baseUrl)}`,
+          'wire_api = "responses"',
+          "request_max_retries = 0",
+          "stream_max_retries = 0",
           "[features]",
           "respect_system_proxy = false",
           "[analytics]",
@@ -183,13 +202,7 @@ describe("PR 132559 real Codex app-server image timeout round trip", () => {
         startOptions: {
           transport: "stdio",
           command: native.command,
-          args: [
-            "-c",
-            `openai_base_url=${JSON.stringify(mock.baseUrl)}`,
-            "app-server",
-            "--listen",
-            "stdio://",
-          ],
+          args: ["app-server", "--listen", "stdio://"],
           commandSource: "config",
           cwd: native.cwd,
           headers: {},
@@ -311,21 +324,12 @@ describe("PR 132559 real Codex app-server image timeout round trip", () => {
       });
 
       try {
-        const models = await client.request<CodexModelListResponse>(
-          "model/list",
-          { limit: 100, cursor: null, includeHidden: false },
-          { timeoutMs: 60_000 },
-        );
-        const model = models.data.find((entry) => entry.isDefault)?.model ?? models.data[0]?.model;
-        if (!model) {
-          throw new Error("Codex model/list returned no model");
-        }
         const thread = await client.request<CodexThreadStartResponse>(
           "thread/start",
           {
             cwd: native.cwd,
-            model,
-            modelProvider: "openai",
+            model: "mock-model",
+            modelProvider: "mock_provider",
             dynamicTools: [
               {
                 name: "view_image",
