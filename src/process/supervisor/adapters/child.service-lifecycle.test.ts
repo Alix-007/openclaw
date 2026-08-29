@@ -62,6 +62,54 @@ afterEach(async () => {
 });
 
 describe.skipIf(process.platform === "win32")("service-managed child lifecycle", () => {
+  it("cleans the detached command group when secret delivery fails", async () => {
+    const tempDir = tempDirs.make("openclaw-child-secret-failure-");
+    const pidPath = path.join(tempDir, "pids");
+    const deliveryError = new Error("synthetic secret delivery failed");
+    let childPids: [number, number] | undefined;
+    const waiter = new Int32Array(new SharedArrayBuffer(4));
+    const rootScript = `
+      const { spawn } = require("node:child_process");
+      const { writeFileSync } = require("node:fs");
+      const descendant = spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], {
+        stdio: "ignore",
+      });
+      descendant.unref();
+      writeFileSync(${JSON.stringify(pidPath)}, process.pid + " " + descendant.pid);
+      setInterval(() => {}, 1000);
+    `;
+
+    await expect(
+      createChildAdapter({
+        argv: [process.execPath, "-e", rootScript],
+        exactEnv: true,
+        stdinMode: "pipe-closed",
+        secretInput: {
+          fd: 3,
+          createData: () => {
+            const deadline = Date.now() + 3_000;
+            while (!childPids && Date.now() < deadline) {
+              try {
+                childPids = parsePidPair(readFileSync(pidPath, "utf8"));
+              } catch {
+                Atomics.wait(waiter, 0, 0, 20);
+              }
+            }
+            if (!childPids) {
+              throw new Error("child command did not publish its process tree");
+            }
+            activePids.add(childPids[0]);
+            activePids.add(childPids[1]);
+            throw deliveryError;
+          },
+        },
+      }),
+    ).rejects.toBe(deliveryError);
+
+    expect(childPids).toBeDefined();
+    await waitFor(() => childPids!.every((pid) => !isAlive(pid)), 1_500);
+  });
+
   it("cancels the complete admitted command group before settling", async () => {
     process.env.OPENCLAW_SERVICE_MARKER = "openclaw";
     const adapter = await createChildAdapter({

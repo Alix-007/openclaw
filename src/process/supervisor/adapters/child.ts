@@ -381,30 +381,37 @@ export async function createChildAdapter(params: ChildAdapterInput): Promise<Wor
     settleWait(resolveObservedExitState(childCloseState));
   });
 
+  // The actual detachment can differ from `useDetached` when spawn retries
+  // without it, so every tree cleanup uses the admitted child's real mode.
+  const childIsDetached = useDetached && !spawned.usedFallback;
+  const signalProcessTreeForChild = (pid: number, signal: "SIGTERM" | "SIGKILL") => {
+    signalProcessTree(pid, signal, { detached: childIsDetached });
+  };
+  const forceKillChildTree = async () => {
+    const pid = child.pid ?? undefined;
+    if (pid) {
+      await new Promise<void>((resolve) => {
+        signalProcessTree(pid, "SIGKILL", { detached: childIsDetached, onComplete: resolve });
+      });
+    }
+    try {
+      child.kill("SIGKILL");
+    } catch {
+      // ignore kill errors
+    }
+  };
+
   if (params.secretInput) {
     try {
       await secretDelivery?.deliverTo(spawned.child);
     } catch (error) {
-      spawned.child.kill("SIGKILL");
+      await forceKillChildTree();
       throw error;
     }
   }
 
   const wait = async () => await completion.promise;
 
-  // The actual detachment of the spawned child can differ from `useDetached`:
-  // when the detached spawn fails, `spawnWithFallback` retries with the
-  // `no-detach` fallback (detached:false). In that case the child shares the
-  // gateway's process group regardless of intent, so the kill must avoid
-  // group-kill. (#71662 follow-up — caught by Greptile review)
-  const childIsDetached = useDetached && !spawned.usedFallback;
-  const signalProcessTreeForChild = (pid: number, signal: "SIGTERM" | "SIGKILL") => {
-    signalProcessTree(pid, signal, { detached: childIsDetached });
-  };
-  const signalProcessTreeForChildAndWait = (pid: number, signal: "SIGTERM" | "SIGKILL") =>
-    new Promise<void>((resolve) => {
-      signalProcessTree(pid, signal, { detached: childIsDetached, onComplete: resolve });
-    });
   const kill = (signal?: NodeJS.Signals) => {
     const pid = child.pid ?? undefined;
     if (signal === undefined || signal === "SIGKILL") {
@@ -414,12 +421,7 @@ export async function createChildAdapter(params: ChildAdapterInput): Promise<Wor
         // Let the tree owner traverse the live root before directly killing it.
         // On Windows, killing the root first can make `taskkill /T` lose the
         // descendant relationship. (#71662)
-        void signalProcessTreeForChildAndWait(pid, "SIGKILL").then(() => {
-          try {
-            child.kill("SIGKILL");
-          } catch {
-            // ignore kill errors
-          }
+        void forceKillChildTree().then(() => {
           windowsTreeKillCompleted = true;
           if (childCloseState) {
             settleWait(resolveObservedExitState(childCloseState));
@@ -430,11 +432,7 @@ export async function createChildAdapter(params: ChildAdapterInput): Promise<Wor
         });
       } else {
         windowsTreeKillCompleted = true;
-        try {
-          child.kill("SIGKILL");
-        } catch {
-          // ignore kill errors
-        }
+        void forceKillChildTree();
       }
       scheduleForceKillWaitFallback("SIGKILL");
       return;
