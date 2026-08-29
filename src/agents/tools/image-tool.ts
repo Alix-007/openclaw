@@ -639,7 +639,7 @@ function createImageToolOperation(params: {
     Object.fromEntries(
       timeoutCandidates.map(({ provider }) => [
         provider,
-        { id: provider, capabilities: ["image"] as const },
+        { id: provider, capabilities: ["image"] } satisfies MediaUnderstandingProvider,
       ]),
     ),
     providerCfg,
