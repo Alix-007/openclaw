@@ -1407,6 +1407,7 @@ advertised for the active run.
 
 ### Turn liveness and timeouts
 
+<<<<<<< HEAD
 Codex owns provider-stream liveness and native turn completion. OpenClaw waits
 for the exact `turn/completed` outcome rather than interrupting a quiet turn or
 treating assistant output as completion. The existing
@@ -1415,6 +1416,24 @@ attempt: progress does not reset it, and `0` means unlimited execution.
 OpenClaw still bounds its own requests, dynamic tools, cancellation, and local
 settlement. See [Timeouts](/plugins/codex-harness-reference#timeouts) for those
 budgets, Stop and replay behavior, and Doctor migration of retired idle settings.
+=======
+OpenClaw-owned dynamic tool calls are bounded independently from
+`appServer.requestTimeoutMs`: Codex `item/tool/call` requests use a 90
+second OpenClaw watchdog by default. A positive per-call `timeoutMs`
+argument extends or shortens that specific tool budget, capped at 600000 ms.
+The `image_generate` tool uses `agents.defaults.mediaModels.image.timeoutMs`
+when the tool call does not provide its own timeout, or a 120 second
+image-generation default otherwise. The media-understanding `view_image` tool
+uses the selected image-capable `tools.media.models[]` entry's `timeoutSeconds`
+or its 60 second media default as each request's cap. Image compression, loading,
+sequential images, and model fallbacks share one absolute deadline based on the
+longest selected request timeout, capped at 600 seconds, so each stage receives
+only the remaining time. On timeout, OpenClaw aborts the tool signal where
+supported and returns a failed dynamic-tool response to Codex so the turn can
+continue instead of leaving the session in `processing`. Codex keeps a separate
+630 second outer `item/tool/call` watchdog so the owner has time to return that
+structured result.
+>>>>>>> 4f108b220e43d (fix(image): enforce one operation deadline)
 
 ### Parallel chats and thread ownership
 
