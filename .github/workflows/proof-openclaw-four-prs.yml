@@ -12,6 +12,7 @@ on:
         options:
           - bootstrap
           - bootstrap-review
+          - codex-image-timeout
           - discord
           - discord-steer
           - foundation
@@ -188,6 +189,17 @@ jobs:
               grep -F "foreground maintenance rewrites" "$log_file"
               echo '[bootstrap independent-review findings proof] exact-head=true outer-owner=true finalization-failure=true foreground-failure=true foreground-rewrite=true' | tee -a "$log_file"
               marker='[bootstrap independent-review findings proof]'
+              ;;
+            codex-image-timeout)
+              output_dir='.artifacts/qa-e2e/pr-132559-codex-image-timeout'
+              mkdir -p "$output_dir"
+              cp \
+                .proof-tooling/.github/proof/pr-132559-codex-image-timeout.real-binary.test.ts \
+                extensions/codex/src/app-server/pr-132559-codex-image-timeout.real-binary.test.ts
+              node scripts/run-vitest.mjs \
+                extensions/codex/src/app-server/pr-132559-codex-image-timeout.real-binary.test.ts \
+                --reporter=verbose 2>&1 | tee "$log_file"
+              marker='[codex image timeout round-trip proof] exact-head=true real-app-server=true owner-timeout=true codex-completed=true follow-up-output=true generic-outer-timeout=false'
               ;;
             discord)
               node scripts/run-vitest.mjs \
@@ -586,6 +598,7 @@ jobs:
             proof-plugin-sdk-api-baseline.sha256
             .artifacts/qa-e2e/pr-122075-heartbeat
             .artifacts/qa-e2e/pr-122036-terminal-timeout
+            .artifacts/qa-e2e/pr-132559-codex-image-timeout
             .artifacts/qa-e2e/pr-131006-discord-steer
             .artifacts/qa-e2e/pr-131010-blank-category
             .artifacts/qa-e2e/pr-131023-command-active-run
