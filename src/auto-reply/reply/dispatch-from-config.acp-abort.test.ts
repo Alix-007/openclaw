@@ -1300,6 +1300,63 @@ describe("dispatchReplyFromConfig ACP abort", () => {
     expect(getActiveReplyRunCount()).toBe(0);
   });
 
+  it("keeps an executable /bash command behind active-session admission", async () => {
+    const sessionKey = "agent:main:executable-command-active";
+    const activeOperation = createReplyOperation({
+      sessionKey,
+      sessionId: "active-session",
+      resetTriggered: false,
+    });
+    activeOperation.setPhase("running");
+
+    const callerAbort = new AbortController();
+    const replyResolver = vi.fn(async () =>
+      markCommandReplyForDelivery({ text: "Shell command completed." }),
+    );
+    const dispatchPromise = dispatchReplyFromConfig({
+      ctx: buildTestCtx({
+        CommandAuthorized: true,
+        CommandSource: "text",
+        CommandTurn: {
+          kind: "text-slash",
+          source: "text",
+          authorized: true,
+          commandName: "bash",
+          body: "/bash echo unsafe",
+        },
+        SessionKey: sessionKey,
+        Body: "/bash echo unsafe",
+        RawBody: "/bash echo unsafe",
+        CommandBody: "/bash echo unsafe",
+        BodyForAgent: "/bash echo unsafe",
+      }),
+      cfg: {
+        diagnostics: { enabled: true },
+        session: { sendPolicy: { default: "allow" } },
+      } as OpenClawConfig,
+      dispatcher: createDispatcher(),
+      replyOptions: { abortSignal: callerAbort.signal },
+      replyResolver,
+    });
+
+    try {
+      await expect(
+        raceWithTimeoutResult(
+          dispatchPromise.then(() => "settled" as const),
+          100,
+          "pending" as const,
+        ),
+      ).resolves.toBe("pending");
+      expect(replyResolver).not.toHaveBeenCalled();
+    } finally {
+      callerAbort.abort();
+      activeOperation.complete();
+    }
+    await dispatchPromise;
+    expect(replyResolver).not.toHaveBeenCalled();
+    expect(getActiveReplyRunCount()).toBe(0);
+  });
+
   it("delivers a directive acknowledgement while its terminal path stays serialized", async () => {
     const sessionKey = "agent:main:directive-reply-active";
     const activeOperation = createReplyOperation({
