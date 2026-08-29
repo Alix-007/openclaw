@@ -387,6 +387,52 @@ describe("createGatewayCloseHandler", () => {
     },
   );
 
+  it("replaces the process supervisor after a concurrent adapter startup failure", async () => {
+    let markEmbeddingDrainStarted!: () => void;
+    const embeddingDrainStarted = new Promise<void>((resolve) => {
+      markEmbeddingDrainStarted = resolve;
+    });
+    let releaseEmbeddingDrain!: () => void;
+    const embeddingDrainReleased = new Promise<void>((resolve) => {
+      releaseEmbeddingDrain = resolve;
+    });
+    const supervisor = getProcessSupervisor();
+    const close = createGatewayCloseHandler(
+      createGatewayCloseTestDeps({
+        drainRetainedOpenAiEmbeddingProviders: async () => {
+          markEmbeddingDrainStarted();
+          await embeddingDrainReleased;
+        },
+      }),
+    );
+    const closing = close({ reason: "test" });
+    await embeddingDrainStarted;
+
+    const failedStart = supervisor.spawn({
+      mode: "child",
+      argv: [`/openclaw-missing-adapter-${process.pid}`],
+      exactEnv: true,
+      stdinMode: "pipe-closed",
+      sessionId: "gateway-close-startup-failure",
+      backendId: "gateway-close-startup-failure",
+    });
+    releaseEmbeddingDrain();
+
+    await expect(failedStart).rejects.toThrow();
+    await closing;
+    const nextSupervisor = getProcessSupervisor();
+    const run = await nextSupervisor.spawn({
+      mode: "child",
+      argv: [process.execPath, "-e", ""],
+      exactEnv: true,
+      stdinMode: "pipe-closed",
+      sessionId: "gateway-close-fresh-supervisor",
+      backendId: "gateway-close-fresh-supervisor",
+    });
+    await expect(run.wait()).resolves.toMatchObject({ reason: "exit", exitCode: 0 });
+    expect(nextSupervisor).not.toBe(supervisor);
+  });
+
   it("joins an in-flight config reload before mutable runtime teardown", async () => {
     const events: string[] = [];
     mocks.fenceSessionSuspensionWritesForGatewayShutdown.mockImplementation(() => {

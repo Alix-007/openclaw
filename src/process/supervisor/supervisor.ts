@@ -146,7 +146,10 @@ export function createProcessSupervisor(): ProcessSupervisor & {
     }
   };
 
-  const waitForRuns = async (scopeKey: string | null): Promise<void> => {
+  const waitForRuns = async (
+    scopeKey: string | null,
+    ignoreStartupFailures = false,
+  ): Promise<void> => {
     let firstFailure: PromiseRejectedResult | undefined;
     while (true) {
       const starts = Array.from(startingRuns.values())
@@ -164,9 +167,9 @@ export function createProcessSupervisor(): ProcessSupervisor & {
       // Startup can become active while the snapshot settles; recheck both maps
       // so shutdown cannot outrun an admitted command or retained descendants.
       const results = await Promise.allSettled([...owned, ...starts]);
-      firstFailure ??= results.find(
-        (result): result is PromiseRejectedResult => result.status === "rejected",
-      );
+      firstFailure ??= results
+        .slice(0, ignoreStartupFailures ? owned.length : undefined)
+        .find((result): result is PromiseRejectedResult => result.status === "rejected");
     }
   };
   const waitForScope = (scopeKey: string): Promise<void> => waitForRuns(scopeKey);
@@ -600,7 +603,9 @@ export function createProcessSupervisor(): ProcessSupervisor & {
         for (const runId of new Set([...startingRuns.keys(), ...active.keys()])) {
           cancel(runId);
         }
-        await waitForRuns(null);
+        // A failed startup owns no live process; only failed owner extinction
+        // must keep the process-wide supervisor fenced for operator recovery.
+        await waitForRuns(null, true);
       }
     }));
   };

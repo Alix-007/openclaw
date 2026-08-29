@@ -242,6 +242,36 @@ describe("process supervisor", () => {
     await expect(run.wait()).resolves.toMatchObject({ reason: "manual-cancel" });
   });
 
+  it("keeps shutdown fenced when live ownership extinction fails", async () => {
+    const extinction = createDeferred();
+    const adapter = createStubChildAdapter({
+      onKill: (signal, current) => {
+        current.settle(null, signal ?? "SIGTERM");
+      },
+    });
+    adapter.waitForExtinction = () => extinction.promise;
+    createChildAdapterMock.mockResolvedValueOnce(adapter);
+    const supervisor = createProcessSupervisor();
+    await spawnChild(supervisor, {
+      runId: "shutdown-failed-extinction",
+      sessionId: "shutdown-failed-extinction",
+      argv: createSilentIdleArgv(),
+    });
+
+    const shutdown = supervisor.shutdown();
+    extinction.reject(new Error("owner extinction failed"));
+
+    await expect(shutdown).rejects.toThrow("owner extinction failed");
+    await expect(
+      spawnChild(supervisor, {
+        runId: "shutdown-after-failed-extinction",
+        sessionId: "shutdown-after-failed-extinction",
+        argv: createSilentIdleArgv(),
+      }),
+    ).rejects.toThrow("process supervisor is shut down");
+    expect(createChildAdapterMock).toHaveBeenCalledOnce();
+  });
+
   it("cancels every starting scoped process without canceling a later arrival", async () => {
     const runCount = 16;
     const startups = Array.from({ length: runCount }, () => createDeferred<StubChildAdapter>());
