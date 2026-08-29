@@ -22,6 +22,7 @@ import { createIsolatedCodexAppServerClient } from "./shared-client.js";
 
 const TARGET_SHA = process.env.OPENCLAW_PROOF_HEAD_SHA ?? "unknown";
 const CALL_ID = "call-pr-132559-image-timeout";
+const TOOL_NAMESPACE = "openclaw";
 const TINY_PNG =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==";
 const OWNER_TIMEOUT = "Image inspection timed out after 1000ms";
@@ -123,6 +124,7 @@ async function startMockResponsesServer() {
             item: {
               type: "function_call",
               call_id: CALL_ID,
+              namespace: TOOL_NAMESPACE,
               name: "view_image",
               arguments: JSON.stringify({ path: TINY_PNG }),
             },
@@ -332,14 +334,22 @@ describe("PR 132559 real Codex app-server image timeout round trip", () => {
             modelProvider: "mock_provider",
             dynamicTools: [
               {
-                name: "view_image",
-                description: "Inspect an image through OpenClaw.",
-                inputSchema: {
-                  type: "object",
-                  properties: { path: { type: "string" } },
-                  required: ["path"],
-                  additionalProperties: false,
-                },
+                type: "namespace",
+                name: TOOL_NAMESPACE,
+                description: "OpenClaw tools.",
+                tools: [
+                  {
+                    type: "function",
+                    name: "view_image",
+                    description: "Inspect an image through OpenClaw.",
+                    inputSchema: {
+                      type: "object",
+                      properties: { path: { type: "string" } },
+                      required: ["path"],
+                      additionalProperties: false,
+                    },
+                  },
+                ],
               },
             ],
           },
