@@ -320,27 +320,35 @@ describe("PR 132559 real Codex app-server image timeout round trip", () => {
         if (!model) {
           throw new Error("Codex model/list returned no model");
         }
-        const thread = await client.request<CodexThreadStartResponse>("thread/start", {
-          cwd: native.cwd,
-          model,
-          modelProvider: "openai",
-          dynamicTools: [
-            {
-              name: "view_image",
-              description: "Inspect an image through OpenClaw.",
-              inputSchema: {
-                type: "object",
-                properties: { path: { type: "string" } },
-                required: ["path"],
-                additionalProperties: false,
+        const thread = await client.request<CodexThreadStartResponse>(
+          "thread/start",
+          {
+            cwd: native.cwd,
+            model,
+            modelProvider: "openai",
+            dynamicTools: [
+              {
+                name: "view_image",
+                description: "Inspect an image through OpenClaw.",
+                inputSchema: {
+                  type: "object",
+                  properties: { path: { type: "string" } },
+                  required: ["path"],
+                  additionalProperties: false,
+                },
               },
-            },
-          ],
-        });
-        const turn = await client.request<CodexTurnStartResponse>("turn/start", {
-          threadId: thread.thread.id,
-          input: [{ type: "text", text: "Inspect the image.", textElements: [] }],
-        });
+            ],
+          },
+          { timeoutMs: 60_000 },
+        );
+        const turn = await client.request<CodexTurnStartResponse>(
+          "turn/start",
+          {
+            threadId: thread.thread.id,
+            input: [{ type: "text", text: "Inspect the image.", textElements: [] }],
+          },
+          { timeoutMs: 60_000 },
+        );
         await withDeadline(turnCompleted, 30_000, "Codex turn did not complete");
 
         expect(turn.turn.id).toBeTruthy();
