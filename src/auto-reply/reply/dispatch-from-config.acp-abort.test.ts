@@ -1300,6 +1300,65 @@ describe("dispatchReplyFromConfig ACP abort", () => {
     expect(getActiveReplyRunCount()).toBe(0);
   });
 
+  it("delivers a directive acknowledgement while its terminal path stays serialized", async () => {
+    const sessionKey = "agent:main:directive-reply-active";
+    const activeOperation = createReplyOperation({
+      sessionKey,
+      sessionId: "active-session",
+      resetTriggered: false,
+    });
+    activeOperation.setPhase("running");
+
+    const acknowledgement = { text: "Thinking level set to high.", isStatusNotice: true };
+    const dispatcher = createDispatcher();
+    const dispatchPromise = dispatchReplyFromConfig({
+      ctx: buildTestCtx({
+        CommandAuthorized: true,
+        CommandSource: "text",
+        CommandTurn: {
+          kind: "text-slash",
+          source: "text",
+          authorized: true,
+          commandName: "think",
+          body: "/think high",
+        },
+        SessionKey: sessionKey,
+        Body: "/think high",
+        RawBody: "/think high",
+        CommandBody: "/think high",
+        BodyForAgent: "/think high",
+      }),
+      cfg: {
+        diagnostics: { enabled: true },
+        session: { sendPolicy: { default: "allow" } },
+      } as OpenClawConfig,
+      dispatcher,
+      replyResolver: async (_resolverCtx, options) => {
+        await options.onBlockReply?.(acknowledgement);
+        return undefined;
+      },
+    });
+
+    try {
+      await vi.waitFor(() => {
+        expect(dispatcher.sendBlockReply).toHaveBeenCalledWith(acknowledgement);
+      });
+      expect(dispatcher.sendFinalReply).not.toHaveBeenCalled();
+      expect(replyRunRegistry.get(sessionKey)).toBe(activeOperation);
+      await expect(
+        raceWithTimeoutResult(
+          dispatchPromise.then(() => "settled" as const),
+          100,
+          "pending" as const,
+        ),
+      ).resolves.toBe("pending");
+    } finally {
+      activeOperation.complete();
+    }
+    await expect(dispatchPromise).resolves.toMatchObject({ queuedFinal: false });
+    expect(getActiveReplyRunCount()).toBe(0);
+  });
+
   it("admits authorized native /status on the source while the target has an active run", async () => {
     const sourceSessionKey = "agent:main:telegram:slash:user-auth";
     const targetSessionKey = "agent:main:telegram:group:status-target";
