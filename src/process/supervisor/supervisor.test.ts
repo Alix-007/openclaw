@@ -209,6 +209,39 @@ describe("process supervisor", () => {
     },
   );
 
+  it("fences new runs and drains an unscoped startup during shutdown", async () => {
+    const adapter = createStubChildAdapter({
+      onKill: (signal, current) => {
+        current.settle(null, signal ?? "SIGTERM");
+      },
+    });
+    const startup = createDeferred<StubChildAdapter>();
+    createChildAdapterMock.mockReturnValueOnce(startup.promise);
+    const supervisor = createProcessSupervisor();
+    const pendingRun = spawnChild(supervisor, {
+      runId: "shutdown-starting",
+      sessionId: "shutdown-starting",
+      argv: createSilentIdleArgv(),
+    });
+
+    const shutdown = supervisor.shutdown();
+    await expect(
+      spawnChild(supervisor, {
+        runId: "shutdown-late",
+        sessionId: "shutdown-late",
+        argv: createSilentIdleArgv(),
+      }),
+    ).rejects.toThrow("process supervisor is shut down");
+    expect(createChildAdapterMock).toHaveBeenCalledTimes(1);
+
+    startup.resolve(adapter);
+    const run = await pendingRun;
+    await expect(shutdown).resolves.toBeUndefined();
+
+    expect(adapter.killMock).toHaveBeenCalledWith("SIGTERM");
+    await expect(run.wait()).resolves.toMatchObject({ reason: "manual-cancel" });
+  });
+
   it("cancels every starting scoped process without canceling a later arrival", async () => {
     const runCount = 16;
     const startups = Array.from({ length: runCount }, () => createDeferred<StubChildAdapter>());
