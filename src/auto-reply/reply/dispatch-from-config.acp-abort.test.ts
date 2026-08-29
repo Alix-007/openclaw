@@ -1334,7 +1334,7 @@ describe("dispatchReplyFromConfig ACP abort", () => {
       } as OpenClawConfig,
       dispatcher,
       replyResolver: async (_resolverCtx, options) => {
-        await options.onBlockReply?.(acknowledgement);
+        await options?.onBlockReply?.(acknowledgement);
         return undefined;
       },
     });

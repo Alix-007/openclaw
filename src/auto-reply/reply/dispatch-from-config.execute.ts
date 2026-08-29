@@ -17,7 +17,7 @@ import {
 import { buildTerminalAgentRunFailureReplyPayload } from "./agent-runner-failure-reply.js";
 import { takeCommandSessionMetadataChanges } from "./command-session-metadata.js";
 import { runWithDispatchAbortSignal } from "./dispatch-from-config.abort.js";
-import { createReplyDispatchEvent } from "./dispatch-from-config.events.js";
+import { handleAcpDispatchTailAfterReset } from "./dispatch-from-config.acp-tail.js";
 import type { InternalReplyResolverOptions } from "./dispatch-from-config.events.js";
 import {
   hasAskUserPayload,
@@ -45,7 +45,6 @@ export async function executeDispatch(state: PrepareDispatchExecutionReadyState)
     getAgentRunTerminalOutcome,
     getDispatchAbortOperation,
     getDispatchAbortSignal,
-    hookRunner,
     isDispatchOperationAborted,
     markInboundDedupeReplayUnsafe,
     markProgress,
@@ -55,7 +54,6 @@ export async function executeDispatch(state: PrepareDispatchExecutionReadyState)
     onToolResultFromReplyOptions,
     params,
     reasoningPayloadsEnabled,
-    recordAgentDispatchCompleted,
     replyConfig,
     replyRoute,
     resolveToolDeliveryPayload,
@@ -647,73 +645,9 @@ export async function executeDispatch(state: PrepareDispatchExecutionReadyState)
     };
   }
 
-  if (ctx.AcpDispatchTailAfterReset === true) {
-    // Command handling prepared a trailing prompt after ACP in-place reset.
-    // Route that tail through ACP now (same turn) instead of embedded dispatch.
-    ctx.AcpDispatchTailAfterReset = false;
-    if (hookRunner?.hasHooks("reply_dispatch", { dispatchKind: state.dispatchKind })) {
-      const tailDispatchResult = await runWithDispatchLifecycleAdmission(
-        async () =>
-          await runWithDispatchAbortSignal(
-            getDispatchAbortSignal(),
-            () =>
-              hookRunner.runReplyDispatch(
-                createReplyDispatchEvent({
-                  ctx,
-                  runId: params.replyOptions?.runId,
-                  sessionKey: state.acpDispatchSessionKey,
-                  toolsAllow: params.replyOptions?.toolsAllow,
-                  images: params.replyOptions?.images,
-                  inboundAudio: state.inboundAudio,
-                  sessionTtsAuto,
-                  ttsChannel: deliveryChannel,
-                  suppressUserDelivery: state.suppressHookUserDelivery,
-                  suppressReplyLifecycle: state.suppressHookReplyLifecycle,
-                  sourceReplyDeliveryMode: state.sourceReplyDeliveryMode,
-                  shouldRouteToOriginating,
-                  originatingChannel: state.routeReplyChannel,
-                  originatingTo: state.routeReplyTo,
-                  originatingAccountId: state.replyContextAccountId,
-                  originatingThreadId: state.routeReplyThreadId,
-                  originatingChatType: replyRoute.chatType,
-                  shouldSendToolSummaries: state.shouldSendToolSummaries,
-                  shouldSendFullToolDetails: state.shouldEmitFullVerboseProgress(),
-                  sendPolicy: state.sendPolicy,
-                  isTailDispatch: true,
-                }),
-                {
-                  cfg,
-                  dispatchKind: state.dispatchKind,
-                  dispatcher: state.dispatchHookDispatcher,
-                  abortSignal:
-                    state.getPreDispatchAbortSignal() ?? params.replyOptions?.abortSignal,
-                  onReplyStart: params.replyOptions?.onReplyStart,
-                  onAgentRunStart: params.replyOptions?.onAgentRunStart,
-                  userTurnTranscriptRecorder: params.replyOptions?.userTurnTranscriptRecorder,
-                  prepareAssistantTranscriptMessage:
-                    params.replyOptions?.prepareAssistantTranscriptMessage,
-                  recordProcessed: state.recordProcessed,
-                  markIdle: state.markIdle,
-                },
-              ),
-            trackDispatchLifecycleWork,
-          ),
-      );
-      if (tailDispatchResult?.handled) {
-        recordAgentDispatchCompleted("completed");
-        state.completeDispatchReplyOperation();
-        return {
-          status: "complete" as const,
-          result: state.attachSourceReplyDeliveryMode({
-            queuedFinal: tailDispatchResult.queuedFinal,
-            counts: tailDispatchResult.counts,
-            ...(state.routeState.sessionMetadataChangesForResult
-              ? { sessionMetadataChanges: state.routeState.sessionMetadataChangesForResult }
-              : {}),
-          }),
-        };
-      }
-    }
+  const acpTailResult = await handleAcpDispatchTailAfterReset(state);
+  if (acpTailResult) {
+    return acpTailResult;
   }
   const nextState = extendPreparedDispatchState(state, {
     deliberateSilentTerminalReply,
