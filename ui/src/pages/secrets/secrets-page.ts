@@ -274,6 +274,8 @@ class SecretsPage extends OpenClawLightDomElement {
   }
 
   private async removeEntry(entry: (typeof this.store.entries)[number]) {
+    // A confirmation belongs to the client that opened it. Same-client reconnects remain valid,
+    // but a replacement client must never inherit this destructive action.
     const gateway = this.context.gateway;
     const client = this.store.client;
     if (
