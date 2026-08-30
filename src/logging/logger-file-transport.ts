@@ -107,12 +107,15 @@ function buildDroppedMarker(target: FileLogQueueEntry, count: number): FileLogQu
   };
 }
 
-function writeFileTransportWarning(message: string): boolean {
+function writeFileTransportWarning(message: string, synchronous: boolean): boolean {
   try {
     const redactedMessage = redactSensitiveText(message);
-    process.stderr.write(
-      `${formatConsoleDiagnosticLine({ level: "warn", message: redactedMessage })}\n`,
-    );
+    const line = `${formatConsoleDiagnosticLine({ level: "warn", message: redactedMessage })}\n`;
+    if (synchronous) {
+      fs.writeSync(process.stderr.fd, line);
+    } else {
+      process.stderr.write(line);
+    }
     return true;
   } catch {
     // Logging diagnostics must not stop the file queue.
@@ -120,16 +123,16 @@ function writeFileTransportWarning(message: string): boolean {
   }
 }
 
-function warnAboutRotationFailure(entry: FileLogQueueEntry): void {
+function warnAboutRotationFailure(entry: FileLogQueueEntry, synchronous: boolean): void {
   if (warnedRotationFiles.get(entry.file) === entry.maxFileBytes) {
     return;
   }
   warnedRotationFiles.set(entry.file, entry.maxFileBytes);
   const message = `[openclaw] log file rotation failed; continuing writes file=${entry.file} maxFileBytes=${entry.maxFileBytes}`;
-  writeFileTransportWarning(message);
+  writeFileTransportWarning(message, synchronous);
 }
 
-function warnAboutAppendFailure(entry: FileLogQueueEntry): void {
+function warnAboutAppendFailure(entry: FileLogQueueEntry, synchronous: boolean): void {
   if (warnedAppendFiles.has(entry.file)) {
     return;
   }
@@ -140,7 +143,7 @@ function warnAboutAppendFailure(entry: FileLogQueueEntry): void {
   const message = saturated
     ? "[openclaw] log file append failure diagnostics saturated; suppressing new file targets"
     : `[openclaw] log file append failed; record dropped; check that the path is a writable regular file; file=${entry.file}`;
-  if (!writeFileTransportWarning(message)) {
+  if (!writeFileTransportWarning(message, synchronous)) {
     return;
   }
   if (saturated) {
@@ -169,7 +172,7 @@ function claimQueuedEntries(): FileLogQueueEntry[] {
   return entries;
 }
 
-function rotateIfNeeded(entry: FileLogQueueEntry, cursor: FileCursor): void {
+function rotateIfNeeded(entry: FileLogQueueEntry, cursor: FileCursor, synchronous: boolean): void {
   const payloadBytes = Buffer.byteLength(entry.payload, "utf8");
   if (cursor.bytes === 0 || cursor.bytes + payloadBytes <= entry.maxFileBytes) {
     return;
@@ -178,7 +181,7 @@ function rotateIfNeeded(entry: FileLogQueueEntry, cursor: FileCursor): void {
     cursor.bytes = 0;
     warnedRotationFiles.delete(entry.file);
   } else {
-    warnAboutRotationFailure(entry);
+    warnAboutRotationFailure(entry, synchronous);
   }
 }
 
@@ -201,7 +204,7 @@ async function writeEntries(entries: FileLogQueueEntry[], generation: number): P
       }
       cursors.set(entry.file, cursor);
     }
-    rotateIfNeeded(entry, cursor);
+    rotateIfNeeded(entry, cursor, false);
     const payloadBytes = Buffer.byteLength(entry.payload, "utf8");
     activeAppendInFlight = true;
     try {
@@ -210,7 +213,7 @@ async function writeEntries(entries: FileLogQueueEntry[], generation: number): P
       clearAppendFailure(entry);
     } catch {
       // Match the old best-effort transport: a failed append must not stop later records.
-      warnAboutAppendFailure(entry);
+      warnAboutAppendFailure(entry, false);
     } finally {
       activeAppendInFlight = false;
     }
@@ -232,7 +235,7 @@ function writeEntriesSync(entries: FileLogQueueEntry[]): void {
       cursor = { bytes: getCurrentLogFileBytesSync(entry.file) };
       cursors.set(entry.file, cursor);
     }
-    rotateIfNeeded(entry, cursor);
+    rotateIfNeeded(entry, cursor, true);
     const payloadBytes = Buffer.byteLength(entry.payload, "utf8");
     try {
       appendRegularFileSync({ filePath: entry.file, content: entry.payload });
@@ -240,7 +243,7 @@ function writeEntriesSync(entries: FileLogQueueEntry[]): void {
       clearAppendFailure(entry);
     } catch {
       // Match the old best-effort transport: a failed append must not stop later records.
-      warnAboutAppendFailure(entry);
+      warnAboutAppendFailure(entry, true);
     }
     index += 1;
   }

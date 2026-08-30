@@ -1,5 +1,7 @@
 // Logger file transport tests cover async ordering, overflow, and exit durability.
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { appendRegularFile } from "../infra/regular-file.js";
 import { createSuiteLogPathTracker } from "./log-test-helpers.js";
@@ -169,17 +171,35 @@ describe("async logger file transport", () => {
     expect(fs.readFileSync(secondPath, "utf8")).toContain("second-file-recovery");
   });
 
-  it("warns when the synchronous exit drain drops a record", () => {
+  it("writes a piped append warning before process exit", () => {
     const logPath = logPathTracker.nextPath();
     fs.mkdirSync(logPath);
-    const stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
-    setLoggerOverride({ level: "info", file: logPath });
+    const loaderPath = fileURLToPath(new URL("../../scripts/tsx.mjs", import.meta.url));
+    const loggerUrl = new URL("./logger.ts", import.meta.url).href;
+    const script = `
+      import { getLogger, setLoggerOverride } from ${JSON.stringify(loggerUrl)};
+      const writeStderr = process.stderr.write.bind(process.stderr);
+      process.stderr.write = (chunk, ...args) => {
+        setImmediate(() => writeStderr(chunk, ...args));
+        return true;
+      };
+      setLoggerOverride({ level: "info", file: ${JSON.stringify(logPath)}, consoleStyle: "compact" });
+      getLogger().info("exit-dropped-record");
+      process.exit(0);
+    `;
 
-    getLogger().info("sync-dropped-record");
-    testApi.drainFileLogQueueSyncForTests();
+    const result = spawnSync(
+      process.execPath,
+      ["--import", loaderPath, "--input-type=module", "--eval", script],
+      {
+        encoding: "utf8",
+        env: { ...process.env, VITEST: "false" },
+      },
+    );
 
-    const warnings = stderrSpy.mock.calls.map(([line]) => String(line));
-    expect(warnings.filter((line) => line.includes(`file=${logPath}`))).toHaveLength(1);
+    expect(result.error).toBeUndefined();
+    expect(result.status).toBe(0);
+    expect(result.stderr).toContain("log file append failed; record dropped");
   });
 
   it("retries the warning after stderr rejects it", async () => {
