@@ -98,6 +98,14 @@ type EmbeddedToolRuntime = {
 };
 
 const workflowExts = new Set([".lobster", ".yaml", ".yml", ".json"]);
+const inputRequestModelLimits = {
+  prompt: 4 * 1024,
+  responseSchema: 8 * 1024,
+  defaults: 4 * 1024,
+  subject: 2 * 1024,
+  resumeToken: 4 * 1024,
+  total: 16 * 1024,
+} as const;
 
 export function resolveLobsterCwd(cwdRaw: unknown): string {
   if (typeof cwdRaw !== "string" || !cwdRaw.trim()) {
@@ -189,7 +197,7 @@ function normalizeInputRequest(
   ) {
     throw new Error("lobster runtime returned an invalid input request");
   }
-  return {
+  const normalized: NonNullable<Extract<LobsterEnvelope, { ok: true }>["requiresInput"]> = {
     type: "input_request",
     prompt: inputRequest.prompt,
     responseSchema: inputRequest.responseSchema,
@@ -197,6 +205,52 @@ function normalizeInputRequest(
     ...(inputRequest.subject !== undefined ? { subject: inputRequest.subject } : {}),
     resumeToken: inputRequest.resumeToken,
   };
+  assertInputRequestModelBudget(normalized);
+  return normalized;
+}
+
+function jsonByteLength(value: unknown): number {
+  let serialized: string | undefined;
+  try {
+    serialized = JSON.stringify(value);
+  } catch {
+    throw new Error("lobster runtime returned a non-JSON input request");
+  }
+  if (serialized === undefined) {
+    throw new Error("lobster runtime returned a non-JSON input request");
+  }
+  return Buffer.byteLength(serialized, "utf8");
+}
+
+function assertInputRequestFieldBudget(
+  field: keyof Omit<typeof inputRequestModelLimits, "total">,
+  value: unknown,
+): void {
+  if (jsonByteLength(value) <= inputRequestModelLimits[field]) {
+    return;
+  }
+  throw new Error(
+    `lobster input request ${field} exceeded its model-context limit; shorten that field in the Lobster ask step and retry`,
+  );
+}
+
+function assertInputRequestModelBudget(
+  inputRequest: NonNullable<Extract<LobsterEnvelope, { ok: true }>["requiresInput"]>,
+): void {
+  assertInputRequestFieldBudget("prompt", inputRequest.prompt);
+  assertInputRequestFieldBudget("responseSchema", inputRequest.responseSchema);
+  if (inputRequest.defaults !== undefined) {
+    assertInputRequestFieldBudget("defaults", inputRequest.defaults);
+  }
+  if (inputRequest.subject !== undefined) {
+    assertInputRequestFieldBudget("subject", inputRequest.subject);
+  }
+  assertInputRequestFieldBudget("resumeToken", inputRequest.resumeToken);
+  if (jsonByteLength(inputRequest) > inputRequestModelLimits.total) {
+    throw new Error(
+      "lobster input request exceeded its model-context limit; shorten the ask prompt, schema, defaults, or subject and retry",
+    );
+  }
 }
 
 export function assertLobsterResumeDecision(

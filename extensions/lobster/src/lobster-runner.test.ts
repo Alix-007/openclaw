@@ -134,6 +134,78 @@ describe("createEmbeddedLobsterRunner", () => {
   );
 
   it.each([
+    [
+      "prompt",
+      { prompt: "x".repeat(4097) },
+      "lobster input request prompt exceeded its model-context limit",
+    ],
+    [
+      "responseSchema",
+      { responseSchema: { type: "string", description: "x".repeat(8193) } },
+      "lobster input request responseSchema exceeded its model-context limit",
+    ],
+    [
+      "defaults",
+      { defaults: "x".repeat(4097) },
+      "lobster input request defaults exceeded its model-context limit",
+    ],
+    [
+      "subject",
+      { subject: "x".repeat(2049) },
+      "lobster input request subject exceeded its model-context limit",
+    ],
+    [
+      "resume token",
+      { resumeToken: "x".repeat(4097) },
+      "lobster input request resumeToken exceeded its model-context limit",
+    ],
+    [
+      "complete envelope",
+      {
+        prompt: "x".repeat(4090),
+        responseSchema: { type: "string", description: "x".repeat(7900) },
+        defaults: "x".repeat(3900),
+        subject: "x".repeat(1900),
+        resumeToken: "x".repeat(300),
+      },
+      "lobster input request exceeded its model-context limit",
+    ],
+  ])(
+    "rejects an oversized structured-input %s with a fixed model budget",
+    async (_field, patch, expectedError) => {
+      const runtime = {
+        runToolRequest: vi.fn().mockResolvedValue({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Choose an outcome",
+            responseSchema: { type: "string" },
+            resumeToken: "input-token",
+            ...patch,
+          },
+        }),
+        resumeToolRequest: vi.fn(),
+      };
+      const runner = createEmbeddedLobsterRunner({
+        loadRuntime: vi.fn().mockResolvedValue(runtime),
+      });
+
+      await expect(
+        runner.run({
+          action: "run",
+          pipeline: "ask --prompt 'Choose an outcome'",
+          cwd: process.cwd(),
+          timeoutMs: 2000,
+          maxStdoutBytes: 1_000_000,
+        }),
+      ).rejects.toThrow(expectedError);
+    },
+  );
+
+  it.each([
     "exec --json=true cat data.json",
     "exec --json=true cat config.yaml",
     "exec --json=true cat flow.lobster",
