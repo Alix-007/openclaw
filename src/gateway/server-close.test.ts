@@ -13,7 +13,7 @@ import {
   setActivePluginRegistry,
 } from "../plugins/runtime.js";
 import { getProcessSupervisor, type ManagedRun } from "../process/supervisor/index.js";
-import { resolveGlobalMap } from "../shared/global-singleton.js";
+import { resolveGlobalMap, resolveGlobalSingleton } from "../shared/global-singleton.js";
 
 type TriggerInternalHookMock = (event: InternalHookEvent) => Promise<void>;
 
@@ -336,6 +336,30 @@ describe("createGatewayCloseHandler", () => {
 
     expect(lifecycleSlot.size).toBe(0);
     expect(getActivePluginRegistry()).toBeNull();
+  });
+
+  it("rejects close when an ambient lifecycle owner cannot drain", async () => {
+    const drainError = new Error("owner drain failed");
+    let rejectDrain = true;
+    resolveGlobalSingleton(
+      Symbol("openclaw.test.gatewayCloseFailedLifecycleOwner"),
+      () => ({}),
+      () => {
+        if (rejectDrain) {
+          rejectDrain = false;
+          throw drainError;
+        }
+      },
+    );
+    const clearSecretsRuntimeSnapshot = vi.fn();
+    const close = createGatewayCloseHandler(
+      createGatewayCloseTestDeps({ clearSecretsRuntimeSnapshot }),
+    );
+
+    await expect(close({ reason: "test" })).rejects.toThrow(
+      "Failed to reset global singleton lifecycle state",
+    );
+    expect(clearSecretsRuntimeSnapshot).toHaveBeenCalledOnce();
   });
 
   it.skipIf(process.platform === "win32")(
