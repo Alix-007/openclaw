@@ -109,7 +109,10 @@ function buildDroppedMarker(target: FileLogQueueEntry, count: number): FileLogQu
 
 function writeFileTransportWarning(message: string): boolean {
   try {
-    process.stderr.write(`${formatConsoleDiagnosticLine({ level: "warn", message })}\n`);
+    const redactedMessage = redactSensitiveText(message);
+    process.stderr.write(
+      `${formatConsoleDiagnosticLine({ level: "warn", message: redactedMessage })}\n`,
+    );
     return true;
   } catch {
     // Logging diagnostics must not stop the file queue.
