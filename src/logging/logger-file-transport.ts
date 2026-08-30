@@ -10,6 +10,7 @@ import { formatTimestamp } from "./timestamps.js";
 // Keep burst memory bounded while one equally bounded batch is in flight.
 const DEFAULT_MAX_QUEUED_RECORDS = 4_096;
 const MAX_ROTATED_LOG_FILES = 5;
+// A failing path stays armed until recovery; cap retained paths so target churn cannot leak memory.
 const MAX_TRACKED_APPEND_FAILURE_FILES = 64;
 
 type FileLogQueueEntry = {
@@ -106,11 +107,13 @@ function buildDroppedMarker(target: FileLogQueueEntry, count: number): FileLogQu
   };
 }
 
-function writeFileTransportWarning(message: string): void {
+function writeFileTransportWarning(message: string): boolean {
   try {
     process.stderr.write(`${formatConsoleDiagnosticLine({ level: "warn", message })}\n`);
+    return true;
   } catch {
     // Logging diagnostics must not stop the file queue.
+    return false;
   }
 }
 
@@ -127,18 +130,21 @@ function warnAboutAppendFailure(entry: FileLogQueueEntry): void {
   if (warnedAppendFiles.has(entry.file)) {
     return;
   }
-  if (warnedAppendFiles.size >= MAX_TRACKED_APPEND_FAILURE_FILES) {
-    if (!appendFailureTrackingSaturated) {
-      appendFailureTrackingSaturated = true;
-      writeFileTransportWarning(
-        "[openclaw] log file append failure diagnostics saturated; suppressing new file targets",
-      );
-    }
+  const saturated = warnedAppendFiles.size >= MAX_TRACKED_APPEND_FAILURE_FILES;
+  if (saturated && appendFailureTrackingSaturated) {
     return;
   }
-  warnedAppendFiles.add(entry.file);
-  const message = `[openclaw] log file append failed; record dropped; continuing file=${entry.file}`;
-  writeFileTransportWarning(message);
+  const message = saturated
+    ? "[openclaw] log file append failure diagnostics saturated; suppressing new file targets"
+    : `[openclaw] log file append failed; record dropped; check that the path is a writable regular file; file=${entry.file}`;
+  if (!writeFileTransportWarning(message)) {
+    return;
+  }
+  if (saturated) {
+    appendFailureTrackingSaturated = true;
+  } else {
+    warnedAppendFiles.add(entry.file);
+  }
 }
 
 function clearAppendFailure(entry: FileLogQueueEntry): void {
