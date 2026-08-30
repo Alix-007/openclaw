@@ -106,6 +106,86 @@ describe("lobster plugin tool", () => {
     expect(approval.resumeToken).toBe("resume-token-1");
   });
 
+  it("returns structured input requests and parses their resume response", async () => {
+    const runner = {
+      run: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Choose a destination",
+            responseSchema: {
+              type: "object",
+              properties: { destination: { type: "string" } },
+              required: ["destination"],
+            },
+            resumeToken: "input-token-1",
+          },
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "ok",
+          output: [{ destination: "archive" }],
+          requiresApproval: null,
+        }),
+    };
+    const tool = createLobsterTool(fakeApi(), { runner });
+
+    const first = await tool.execute("call-input-run", {
+      action: "run",
+      pipeline: "ask --prompt 'Choose a destination'",
+    });
+    const firstDetails = requireRecord(first.details, "input request details");
+    expect(firstDetails.status).toBe("needs_input");
+    expect(requireRecord(firstDetails.requiresInput, "input request")).toMatchObject({
+      prompt: "Choose a destination",
+      resumeToken: "input-token-1",
+    });
+
+    const resumed = await tool.execute("call-input-resume", {
+      action: "resume",
+      token: "input-token-1",
+      responseJson: '{"destination":"archive"}',
+    });
+    expect(runner.run).toHaveBeenLastCalledWith({
+      action: "resume",
+      token: "input-token-1",
+      response: { destination: "archive" },
+      cwd: process.cwd(),
+      timeoutMs: 20_000,
+      maxStdoutBytes: 512_000,
+    });
+    expect(requireRecord(resumed.details, "input resume details").output).toEqual([
+      { destination: "archive" },
+    ]);
+  });
+
+  it("rejects invalid or ambiguous structured input responses", async () => {
+    const runner = { run: vi.fn() };
+    const tool = createLobsterTool(fakeApi(), { runner });
+
+    await expect(
+      tool.execute("call-invalid-input-response", {
+        action: "resume",
+        token: "input-token-1",
+        responseJson: "{bad",
+      }),
+    ).rejects.toThrow("responseJson must be valid JSON");
+    await expect(
+      tool.execute("call-ambiguous-input-response", {
+        action: "resume",
+        token: "input-token-1",
+        approve: true,
+        responseJson: '{"destination":"archive"}',
+      }),
+    ).rejects.toThrow(/exactly one of approve or response required/);
+    expect(runner.run).not.toHaveBeenCalled();
+  });
+
   it("keeps ordinary run on the runner for neutral flow defaults and ignores resume credentials", async () => {
     const runner = {
       run: vi.fn().mockResolvedValue({
@@ -550,6 +630,24 @@ describe("lobster plugin tool", () => {
     expect(details.status).toBe("ok");
     const mutation = requireRecord(details.mutation, "managed resume mutation details");
     expect(mutation.applied).toBe(true);
+  });
+
+  it("keeps managed TaskFlow resumes approval-only", async () => {
+    const runner = { run: vi.fn() };
+    const taskFlow = createFakeTaskFlow();
+    const tool = createLobsterTool(fakeApi(), { runner, taskFlow });
+
+    await expect(
+      tool.execute("call-managed-input-resume", {
+        action: "resume",
+        token: "input-token-1",
+        responseJson: '{"destination":"archive"}',
+        flowId: "flow-1",
+        flowExpectedRevision: 1,
+      }),
+    ).rejects.toThrow("managed TaskFlow resume mode only supports approval decisions");
+    expect(taskFlow.resume).not.toHaveBeenCalled();
+    expect(runner.run).not.toHaveBeenCalled();
   });
 
   it("normalizes numeric string flowExpectedRevision before managed resume", async () => {

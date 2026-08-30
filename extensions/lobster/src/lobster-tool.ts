@@ -11,6 +11,7 @@ import { jsonResult } from "openclaw/plugin-sdk/tool-results";
 import { Type } from "typebox";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
+  assertLobsterResumeDecision,
   createEmbeddedLobsterRunner,
   resolveLobsterCwd,
   type LobsterRunner,
@@ -71,6 +72,24 @@ function parseOptionalFlowStateJson(value: unknown): JsonLike | undefined {
     return JSON.parse(trimmed) as JsonLike;
   } catch {
     throw new Error("flowStateJson must be valid JSON");
+  }
+}
+
+function parseOptionalResponseJson(value: unknown): unknown {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (typeof value !== "string") {
+    throw new Error("responseJson must be a JSON string");
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new Error("responseJson must be valid JSON");
+  }
+  try {
+    return JSON.parse(trimmed) as unknown;
+  } catch {
+    throw new Error("responseJson must be valid JSON");
   }
 }
 
@@ -167,6 +186,9 @@ function parseManagedFlowParams(
   if (!credentialParams) {
     throw new Error("token or approvalId required when using managed TaskFlow resume mode");
   }
+  if (runnerParams.response !== undefined) {
+    throw new Error("managed TaskFlow resume mode only supports approval decisions");
+  }
   if (approve === undefined) {
     throw new Error("approve required when using managed TaskFlow resume mode");
   }
@@ -209,7 +231,7 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
     name: "lobster",
     label: "Lobster Workflow",
     description:
-      "Run Lobster pipelines as a local-first workflow runtime (typed JSON envelope + resumable approvals).",
+      "Run Lobster pipelines as a local-first workflow runtime with typed JSON envelopes, resumable approvals, and structured input requests.",
     parameters: Type.Object({
       action: Type.Enum(["run", "resume"], { type: "string" }),
       pipeline: Type.Optional(Type.String()),
@@ -217,6 +239,12 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
       token: Type.Optional(Type.String()),
       approvalId: Type.Optional(Type.String()),
       approve: Type.Optional(Type.Boolean()),
+      responseJson: Type.Optional(
+        Type.String({
+          description:
+            "JSON response matching requiresInput.responseSchema. Use instead of approve when resuming needs_input.",
+        }),
+      ),
       cwd: Type.Optional(
         Type.String({
           description:
@@ -245,6 +273,8 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
       const cwd = resolveLobsterCwd(params.cwd);
       const timeoutMs = readPositiveIntegerParam(params, "timeoutMs") ?? 20_000;
       const maxStdoutBytes = readPositiveIntegerParam(params, "maxStdoutBytes") ?? 512_000;
+      const response =
+        action === "resume" ? parseOptionalResponseJson(params.responseJson) : undefined;
 
       if (api.runtime?.version && api.logger?.debug) {
         api.logger.debug(`lobster plugin runtime=${api.runtime.version}`);
@@ -257,6 +287,7 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
         ...(typeof params.token === "string" ? { token: params.token } : {}),
         ...(typeof params.approvalId === "string" ? { approvalId: params.approvalId } : {}),
         ...(typeof params.approve === "boolean" ? { approve: params.approve } : {}),
+        ...(response !== undefined ? { response } : {}),
         cwd,
         timeoutMs,
         maxStdoutBytes,
@@ -294,6 +325,9 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
         );
       }
 
+      if (action === "resume") {
+        assertLobsterResumeDecision(runnerParams);
+      }
       const envelope = await runner.run(runnerParams);
       if (!envelope.ok) {
         throw new Error(envelope.error.message);
