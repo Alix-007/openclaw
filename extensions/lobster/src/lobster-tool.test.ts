@@ -3,8 +3,6 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import { createRequireRecord } from "openclaw/plugin-sdk/test-fixtures";
 import { describe, expect, it, vi } from "vitest";
 import type { OpenClawPluginApi, OpenClawPluginToolContext } from "../runtime-api.js";
-import type { LobsterContinuationOwner } from "./lobster-continuations.js";
-import { LobsterRunnerError } from "./lobster-runner.js";
 import { createLobsterTool } from "./lobster-tool.js";
 import { createFakeTaskFlow } from "./taskflow-test-helpers.js";
 
@@ -36,54 +34,6 @@ function fakeCtx(overrides: Partial<OpenClawPluginToolContext> = {}): OpenClawPl
 
 const requireRecord = createRequireRecord("record", "expected-label-record");
 
-function createContinuationStore() {
-  const values = new Map<string, unknown>();
-  return {
-    register: (key: string, value: unknown) => {
-      values.set(key, value);
-    },
-    registerIfAbsent: (key: string, value: unknown) => {
-      if (values.has(key)) {
-        return false;
-      }
-      values.set(key, value);
-      return true;
-    },
-    lookup: (key: string) => values.get(key),
-    update: (key: string, updateValue: (current: unknown) => unknown) => {
-      const next = updateValue(values.get(key));
-      if (next === undefined) {
-        return false;
-      }
-      values.set(key, next);
-      return true;
-    },
-    consume: (key: string) => {
-      const value = values.get(key);
-      values.delete(key);
-      return value;
-    },
-    delete: (key: string) => values.delete(key),
-    deleteIf: (key: string, predicate: (current: unknown) => boolean) => {
-      const current = values.get(key);
-      return current !== undefined && predicate(current) ? values.delete(key) : false;
-    },
-    entries: () => [...values].map(([key, value]) => ({ key, value, createdAt: 0 })),
-    clear: () => values.clear(),
-  };
-}
-
-function continuationOwner(
-  store = createContinuationStore(),
-  sessionId = "session-a",
-): LobsterContinuationOwner {
-  return {
-    sessionKey: "agent:main:main",
-    sessionId,
-    openStore: () => store,
-  };
-}
-
 describe("lobster plugin tool", () => {
   it("returns the Lobster envelope in details", async () => {
     const runner = {
@@ -95,7 +45,7 @@ describe("lobster plugin tool", () => {
       }),
     };
 
-    const tool = createLobsterTool(fakeApi(), { runner, continuationOwner: continuationOwner() });
+    const tool = createLobsterTool(fakeApi(), { runner });
     const res = await tool.execute("call1", {
       action: "run",
       pipeline: "noop",
@@ -131,7 +81,7 @@ describe("lobster plugin tool", () => {
       }),
     };
 
-    const tool = createLobsterTool(fakeApi(), { runner, continuationOwner: continuationOwner() });
+    const tool = createLobsterTool(fakeApi(), { runner });
     const res = await tool.execute("call-injected-runner", {
       action: "run",
       pipeline: "noop",
@@ -155,235 +105,6 @@ describe("lobster plugin tool", () => {
     expect(approval.type).toBe("approval_request");
     expect(approval.prompt).toBe("Send these alerts?");
     expect(approval.resumeToken).toBe("resume-token-1");
-  });
-
-  it("returns structured input requests and parses their resume response", async () => {
-    const runner = {
-      run: vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "needs_input",
-          output: [],
-          requiresApproval: null,
-          requiresInput: {
-            type: "input_request",
-            prompt: "Choose a destination",
-            responseSchema: {
-              type: "object",
-              properties: { destination: { type: "string" } },
-              required: ["destination"],
-            },
-            resumeToken: "input-token-1",
-          },
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "ok",
-          output: [{ destination: "archive" }],
-          requiresApproval: null,
-        }),
-    };
-    const tool = createLobsterTool(fakeApi(), { runner, continuationOwner: continuationOwner() });
-
-    const first = await tool.execute("call-input-run", {
-      action: "run",
-      pipeline: "ask --prompt 'Choose a destination'",
-    });
-    const firstDetails = requireRecord(first.details, "input request details");
-    expect(firstDetails.status).toBe("needs_input");
-    expect(requireRecord(firstDetails.requiresInput, "input request")).toMatchObject({
-      prompt: "Choose a destination",
-      resumeToken: "input-token-1",
-    });
-
-    const resumed = await tool.execute("call-input-resume", {
-      action: "resume",
-      token: "input-token-1",
-      responseJson: '{"destination":"archive"}',
-    });
-    expect(runner.run).toHaveBeenLastCalledWith({
-      action: "resume",
-      token: "input-token-1",
-      response: { destination: "archive" },
-      cwd: process.cwd(),
-      timeoutMs: 20_000,
-      maxStdoutBytes: 512_000,
-    });
-    expect(requireRecord(resumed.details, "input resume details").output).toEqual([
-      { destination: "archive" },
-    ]);
-    await expect(
-      tool.execute("call-input-replay", {
-        action: "resume",
-        token: "input-token-1",
-        responseJson: '{"destination":"archive"}',
-      }),
-    ).rejects.toThrow(/unavailable, expired, or already used/);
-    expect(runner.run).toHaveBeenCalledTimes(2);
-  });
-
-  it("makes approval tokens and ids share one atomic continuation claim", async () => {
-    const runner = {
-      run: vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "needs_approval",
-          output: [],
-          requiresApproval: {
-            type: "approval_request",
-            prompt: "Continue?",
-            items: [],
-            resumeToken: "approval-token-shared-claim",
-            approvalId: "approval-id-shared-claim",
-          },
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "ok",
-          output: ["approved"],
-          requiresApproval: null,
-        }),
-    };
-    const tool = createLobsterTool(fakeApi(), {
-      runner,
-      continuationOwner: continuationOwner(),
-    });
-    await tool.execute("call-approval-run", { action: "run", pipeline: "approve" });
-
-    const tokenResume = tool.execute("call-approval-token-resume", {
-      action: "resume",
-      token: "approval-token-shared-claim",
-      approve: true,
-    });
-    await expect(
-      tool.execute("call-approval-id-concurrent-resume", {
-        action: "resume",
-        approvalId: "approval-id-shared-claim",
-        approve: true,
-      }),
-    ).rejects.toThrow(/unavailable, expired, or already used/);
-    await expect(tokenResume).resolves.toBeDefined();
-    expect(runner.run).toHaveBeenCalledTimes(2);
-  });
-
-  it("releases a structured-input claim when Lobster rejects the response before execution", async () => {
-    const runner = {
-      run: vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "needs_input",
-          output: [],
-          requiresApproval: null,
-          requiresInput: {
-            type: "input_request",
-            prompt: "Choose a destination",
-            responseSchema: { enum: ["archive"] },
-            resumeToken: "input-token-retry",
-          },
-        })
-        .mockRejectedValueOnce(
-          new LobsterRunnerError("response failed schema validation", "parse_error"),
-        )
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "ok",
-          output: ["archive"],
-          requiresApproval: null,
-        }),
-    };
-    const tool = createLobsterTool(fakeApi(), {
-      runner,
-      continuationOwner: continuationOwner(),
-    });
-    await tool.execute("call-input-retry-run", { action: "run", pipeline: "ask" });
-
-    await expect(
-      tool.execute("call-input-invalid-response", {
-        action: "resume",
-        token: "input-token-retry",
-        responseJson: '"inbox"',
-      }),
-    ).rejects.toThrow(/response failed schema validation/);
-    await expect(
-      tool.execute("call-input-valid-response", {
-        action: "resume",
-        token: "input-token-retry",
-        responseJson: '"archive"',
-      }),
-    ).resolves.toBeDefined();
-    expect(runner.run).toHaveBeenCalledTimes(3);
-  });
-
-  it("rejects a copied structured-input token before a foreign session reaches the runner", async () => {
-    const runner = {
-      run: vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "needs_input",
-          output: [],
-          requiresApproval: null,
-          requiresInput: {
-            type: "input_request",
-            prompt: "Choose a destination",
-            responseSchema: { type: "string" },
-            resumeToken: "input-token-foreign-control",
-          },
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          status: "ok",
-          output: ["unexpected"],
-          requiresApproval: null,
-        }),
-    };
-    const store = createContinuationStore();
-    const creatingTool = createLobsterTool(fakeApi(), {
-      runner,
-      continuationOwner: continuationOwner(store, "session-a"),
-    });
-    await creatingTool.execute("call-input-run", {
-      action: "run",
-      pipeline: "ask --prompt 'Choose a destination'",
-    });
-
-    const foreignTool = createLobsterTool(fakeApi(), {
-      runner,
-      continuationOwner: continuationOwner(store, "session-b"),
-    });
-    await expect(
-      foreignTool.execute("call-input-foreign-resume", {
-        action: "resume",
-        token: "input-token-foreign-control",
-        responseJson: '"archive"',
-      }),
-    ).rejects.toThrow(/continuation belongs to another OpenClaw session/);
-    expect(runner.run).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not return an unbound continuation from one-shot contexts", async () => {
-    const runner = {
-      run: vi.fn().mockResolvedValue({
-        ok: true,
-        status: "needs_input",
-        output: [],
-        requiresApproval: null,
-        requiresInput: {
-          type: "input_request",
-          prompt: "Choose a destination",
-          responseSchema: { type: "string" },
-          resumeToken: "unbound-input-token",
-        },
-      }),
-    };
-    const tool = createLobsterTool(fakeApi(), { runner });
-
-    await expect(
-      tool.execute("call-unbound-input-run", { action: "run", pipeline: "ask" }),
-    ).rejects.toThrow(/requires a bound OpenClaw session/);
   });
 
   it("rejects invalid or ambiguous structured input responses", async () => {
@@ -427,7 +148,6 @@ describe("lobster plugin tool", () => {
     const tool = createLobsterTool(fakeApi(), {
       runner,
       taskFlow,
-      continuationOwner: continuationOwner(),
     });
     const res = await tool.execute("call-default-flow-run", {
       action: "run",
@@ -504,7 +224,6 @@ describe("lobster plugin tool", () => {
     const tool = createLobsterTool(fakeApi(), {
       runner,
       taskFlow,
-      continuationOwner: continuationOwner(),
     });
     await tool.execute("call-default-flow-run", {
       action: "run",

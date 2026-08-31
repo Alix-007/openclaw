@@ -7,7 +7,10 @@ import type {
   OpenClawPluginToolContext,
   OpenClawPluginToolFactory,
 } from "./runtime-api.js";
-import type { LobsterContinuationOwner } from "./src/lobster-continuations.js";
+import {
+  LOBSTER_CONTINUATION_TTL_MS,
+  type LobsterContinuationOwner,
+} from "./src/lobster-continuations.js";
 import { createLobsterTool } from "./src/lobster-tool.js";
 
 export default definePluginEntry({
@@ -21,6 +24,7 @@ export default definePluginEntry({
         namespace: "continuations",
         maxEntries: 10_000,
         overflowPolicy: "reject-new",
+        defaultTtlMs: LOBSTER_CONTINUATION_TTL_MS,
       }));
     api.registerTool(
       ((ctx: OpenClawPluginToolContext) => {
@@ -37,6 +41,12 @@ export default definePluginEntry({
                 sessionKey: ctx.sessionKey,
                 sessionId: ctx.sessionId,
                 openStore: openContinuationStore,
+                resolveCurrentSessionId: () =>
+                  api.runtime.agent.session.getSessionEntry({
+                    agentId: ctx.agentId,
+                    sessionKey: ctx.sessionKey!,
+                    readConsistency: "latest",
+                  })?.sessionId,
               }
             : undefined;
         return createLobsterTool(api, { taskFlow, continuationOwner }) as AnyAgentTool;

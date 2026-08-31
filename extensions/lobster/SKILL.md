@@ -65,9 +65,7 @@ Present the prompt to the user. If they approve:
 }
 ```
 
-Resume from the same OpenClaw session that produced the checkpoint. Tokens and
-approval IDs cannot be moved across sessions or reused after execution starts.
-A response rejected by pre-execution validation may be corrected and retried.
+Approval tokens and IDs retain Lobster's existing resume behavior.
 
 ### Handle structured input
 
@@ -84,7 +82,9 @@ with the returned token and `responseJson`, not `approve`:
 ```
 
 Use ordinary Lobster mode for structured input. Managed Task Flow mode remains
-approval-only.
+approval-only. Resume from the same OpenClaw session within seven days. Input
+tokens cannot be moved across sessions or reused after execution starts; a
+response rejected by pre-execution validation may be corrected and retried.
 
 ## Example workflows
 
@@ -109,7 +109,7 @@ Same as above, but halts for approval before returning.
 - **Deterministic**: Same input → same output (no LLM variance in pipeline execution)
 - **Approval gates**: `approve` command halts execution, returns token
 - **Resumable**: Use `resume` with `approve` for approval gates or `responseJson` for input requests
-- **Session-bound**: Resume credentials are valid only in the creating session and cannot replay execution
+- **Session-bound input**: Structured-input tokens are valid for seven days only in the creating session and cannot replay execution
 - **Structured output**: Always returns JSON envelope with `protocolVersion`
 
 ## Don't use Lobster for

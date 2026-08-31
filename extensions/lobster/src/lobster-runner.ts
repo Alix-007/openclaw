@@ -45,7 +45,10 @@ export type LobsterRunnerParams = {
 };
 
 export type LobsterRunner = {
-  run: (params: LobsterRunnerParams) => Promise<LobsterEnvelope>;
+  run: (
+    params: LobsterRunnerParams,
+    hooks?: { beforeResumeIo?: () => void },
+  ) => Promise<LobsterEnvelope>;
 };
 
 type EmbeddedToolContext = {
@@ -362,7 +365,7 @@ export function createEmbeddedLobsterRunner(options?: {
   const loadRuntime = options?.loadRuntime ?? loadEmbeddedToolRuntimeFromPackage;
   let runtimePromise: Promise<EmbeddedToolRuntime> | undefined;
   return {
-    async run(params) {
+    async run(params, hooks) {
       runtimePromise ??= loadRuntime();
       const runtime = await runtimePromise;
       return await withTimeout(params.timeoutMs, async (signal) => {
@@ -397,6 +400,9 @@ export function createEmbeddedLobsterRunner(options?: {
             throw new Error("token or approvalId required");
           }
           assertLobsterResumeDecision(params);
+          // The runtime load above may yield while /new or /reset rotates the
+          // session. Recheck immediately before Lobster can consume the token.
+          hooks?.beforeResumeIo?.();
           envelope = await runtime.resumeToolRequest({
             ...(token ? { token } : {}),
             ...(approvalId ? { approvalId } : {}),

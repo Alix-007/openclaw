@@ -76,10 +76,11 @@ OpenClaw runs Lobster workflows **in-process** using the bundled
 subprocess is spawned; the tool call returns a JSON envelope directly. If the
 pipeline halts for approval or input, the envelope carries a resume token so
 you can continue later. Approval requests may also carry a short approval ID.
-OpenClaw binds each ordinary-mode checkpoint to the exact session that created
-it. A token or approval ID cannot be resumed after `/new`, `/reset`, from
-another session, or again after the continuation starts executing. A response
-rejected by Lobster's pre-execution validation may be corrected and retried.
+OpenClaw binds each structured-input checkpoint to the exact session that
+created it for seven days. Its token cannot be resumed after `/new`, `/reset`,
+from another session, or again after the continuation starts executing. A
+response rejected by Lobster's pre-execution validation may be corrected and
+retried. Approval tokens and IDs retain Lobster's existing resume behavior.
 
 ## Enable
 
@@ -333,8 +334,8 @@ Run a workflow file with args:
 For approval gates, `resume` accepts either `token` or the short `approvalId`
 from `requiresApproval`, and `approve` is required. For structured input,
 provide the `token` from `requiresInput` and a `responseJson` value matching its
-schema. Supply exactly one of `approve` or `responseJson`, and resume from the
-same OpenClaw session that created the checkpoint.
+schema. Supply exactly one of `approve` or `responseJson`. Structured-input
+tokens must be resumed from the same OpenClaw session within seven days.
 
 ### Managed Task Flow mode
 
@@ -383,9 +384,9 @@ pointer to that state, not the full pipeline state.
 - **No secrets** - Lobster doesn't manage OAuth; it calls OpenClaw tools that
   do.
 - **Sandbox-aware** - disabled when the tool context is sandboxed.
-- **Session-bound resume** - ordinary approval and input credentials are stored
-  as redacted SQLite bindings and atomically claimed before Lobster resumes;
-  only pre-execution parse failures release the claim for correction.
+- **Session-bound input resume** - structured-input credentials are stored as
+  seven-day redacted SQLite bindings and atomically claimed before Lobster
+  resumes; only pre-execution parse failures release the claim for correction.
 - **Hardened** - timeouts and output caps enforced by the embedded runner.
 
 ## Troubleshooting

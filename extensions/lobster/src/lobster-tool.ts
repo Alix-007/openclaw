@@ -11,6 +11,7 @@ import { jsonResult } from "openclaw/plugin-sdk/tool-results";
 import { Type } from "typebox";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
+  assertLobsterContinuationClaimCurrent,
   bindLobsterContinuation,
   claimLobsterContinuation,
   releaseLobsterContinuation,
@@ -340,10 +341,21 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
       const continuationOwner = options?.continuationOwner;
       // Claim before awaiting Lobster: copied or concurrent credentials must never reach the runtime.
       const continuationClaim =
-        action === "resume" ? claimLobsterContinuation(continuationOwner, runnerParams) : undefined;
+        action === "resume" && runnerParams.response !== undefined
+          ? claimLobsterContinuation(continuationOwner, runnerParams)
+          : undefined;
       let envelope;
       try {
-        envelope = await runner.run(runnerParams);
+        envelope = continuationClaim
+          ? await runner.run(runnerParams, {
+              beforeResumeIo: () => {
+                if (!continuationOwner) {
+                  throw new Error("Lobster continuation owner is unavailable");
+                }
+                assertLobsterContinuationClaimCurrent(continuationOwner, continuationClaim);
+              },
+            })
+          : await runner.run(runnerParams);
       } catch (error) {
         if (
           continuationClaim &&
