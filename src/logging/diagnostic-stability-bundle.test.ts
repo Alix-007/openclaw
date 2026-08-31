@@ -217,42 +217,46 @@ describe("diagnostic stability bundles", () => {
     expect(files[1]).toContain("12-00-03");
   });
 
-  it("retains the just-published bundle when an older file has a future mtime", () => {
-    const older = writeDiagnosticStabilityBundleForFailureSync(
-      "gateway.startup_failed",
-      undefined,
-      {
-        stateDir: tempDir,
-        retention: 1,
-        now: new Date("2026-04-22T12:00:00.000Z"),
-      },
-    );
-    if (older.status !== "written") {
-      throw new Error(`expected written bundle, got ${older.status}`);
-    }
-    const future = new Date("2036-04-22T12:00:00.000Z");
-    fs.utimesSync(older.path, future, future);
+  it.each([1, 2])(
+    "keeps the published bundle within retention %i despite future mtimes",
+    (retention) => {
+      for (let index = 0; index < retention; index++) {
+        const older = writeDiagnosticStabilityBundleForFailureSync(
+          "gateway.startup_failed",
+          undefined,
+          {
+            stateDir: tempDir,
+            retention,
+            now: new Date(Date.UTC(2026, 3, 22, 12, 0, index)),
+          },
+        );
+        expect(older.status).toBe("written");
+        if (older.status !== "written") {
+          throw new Error("Fixture publication failed");
+        }
+        const future = new Date(Date.UTC(2036, 3, 22, 12, 0, index));
+        fs.utimesSync(older.path, future, future);
+      }
 
-    const current = writeDiagnosticStabilityBundleForFailureSync(
-      "gateway.restart_respawn_failed",
-      undefined,
-      {
-        stateDir: tempDir,
-        retention: 1,
-        now: new Date("2026-04-22T12:00:01.000Z"),
-      },
-    );
-
-    expect(current.status).toBe("written");
-    if (current.status !== "written") {
-      return;
-    }
-    expect(fs.existsSync(current.path)).toBe(true);
-    expect(current.message).toContain(current.path);
-    expect(fs.readdirSync(path.dirname(current.path))).toEqual([path.basename(current.path)]);
-    const latest = readLatestDiagnosticStabilityBundleSync({ stateDir: tempDir });
-    expect(latest.status === "found" ? latest.path : "").toBe(current.path);
-  });
+      const current = writeDiagnosticStabilityBundleForFailureSync(
+        "gateway.restart_respawn_failed",
+        undefined,
+        {
+          stateDir: tempDir,
+          retention,
+          now: new Date("2026-04-22T12:01:00.000Z"),
+        },
+      );
+      expect(current.status).toBe("written");
+      if (current.status !== "written") {
+        throw new Error("Current publication failed");
+      }
+      expect(current.message).toContain(current.path);
+      expect(fs.existsSync(current.path)).toBe(true);
+      expect(readDiagnosticStabilityBundleFileSync(current.path).status).toBe("found");
+      expect(fs.readdirSync(path.dirname(current.path))).toHaveLength(retention);
+    },
+  );
 
   it("reads the newest retained bundle", () => {
     startDiagnosticStabilityRecorder();
