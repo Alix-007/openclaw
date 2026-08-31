@@ -26,7 +26,7 @@ function fakeApi(): OpenClawPluginApi {
 const requireRecord = createRequireRecord("record", "expected-label-record");
 
 function createContinuationStore(options: { maxEntries?: number } = {}) {
-  let nowMs = 0;
+  let nowMs = Date.now();
   const maxEntries = options.maxEntries ?? Number.POSITIVE_INFINITY;
   const values = new Map<string, { value: unknown; expiresAt?: number }>();
   const read = (key: string) => {
@@ -96,6 +96,7 @@ function createContinuationStore(options: { maxEntries?: number } = {}) {
             ];
       }),
     size: () => values.size,
+    now: () => nowMs,
     clear: () => values.clear(),
     advanceBy: (durationMs: number) => {
       nowMs += durationMs;
@@ -458,6 +459,64 @@ describe("lobster structured-input continuations", () => {
       }),
     ).resolves.toBeDefined();
     expect(runner.run).toHaveBeenCalledTimes(3);
+  });
+
+  it("does not extend the original deadline after an invalid response", async () => {
+    const store = createContinuationStore();
+    const dateNow = vi.spyOn(Date, "now").mockImplementation(() => store.now());
+    const runner = {
+      run: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Choose a destination",
+            responseSchema: { enum: ["archive"] },
+            resumeToken: "input-token-fixed-deadline",
+          },
+        })
+        .mockRejectedValueOnce(
+          new LobsterRunnerError("response failed schema validation", "parse_error"),
+        )
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "ok",
+          output: ["unexpected"],
+          requiresApproval: null,
+        }),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+
+    try {
+      await tool.execute("call-input-fixed-deadline-run", { action: "run", pipeline: "ask" });
+      store.advanceBy(LOBSTER_CONTINUATION_TTL_MS - 1);
+      await expect(
+        tool.execute("call-input-fixed-deadline-invalid", {
+          action: "resume",
+          token: "input-token-fixed-deadline",
+          responseJson: '"inbox"',
+        }),
+      ).rejects.toThrow(/response failed schema validation/);
+
+      store.advanceBy(1);
+      await expect(
+        tool.execute("call-input-fixed-deadline-expired", {
+          action: "resume",
+          token: "input-token-fixed-deadline",
+          responseJson: '"archive"',
+        }),
+      ).rejects.toThrow(/unavailable, expired, or already used/);
+      expect(runner.run).toHaveBeenCalledTimes(2);
+    } finally {
+      dateNow.mockRestore();
+    }
   });
 
   it("rejects a copied structured-input token before a foreign session reaches the runner", async () => {
