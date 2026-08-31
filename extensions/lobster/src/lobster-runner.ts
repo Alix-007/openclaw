@@ -77,9 +77,20 @@ type EmbeddedToolEnvelope = {
     resumeToken?: string;
   } | null;
   error?: {
+    type?: string;
     message: string;
   };
 };
+
+export class LobsterRunnerError extends Error {
+  readonly type?: string;
+
+  constructor(message: string, type?: string) {
+    super(message);
+    this.name = "LobsterRunnerError";
+    this.type = type;
+  }
+}
 
 type EmbeddedToolRuntime = {
   runToolRequest: (params: {
@@ -143,7 +154,10 @@ function normalizeEnvelope(
   maxStdoutBytes: number,
 ): Extract<LobsterEnvelope, { ok: true }> {
   if (!envelope.ok) {
-    throw new Error(envelope.error?.message ?? "lobster runtime failed");
+    throw new LobsterRunnerError(
+      envelope.error?.message ?? "lobster runtime failed",
+      envelope.error?.type,
+    );
   }
   const status = envelope.status ?? "ok";
   const inputRequest =

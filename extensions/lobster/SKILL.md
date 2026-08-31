@@ -65,6 +65,10 @@ Present the prompt to the user. If they approve:
 }
 ```
 
+Resume from the same OpenClaw session that produced the checkpoint. Tokens and
+approval IDs cannot be moved across sessions or reused after execution starts.
+A response rejected by pre-execution validation may be corrected and retried.
+
 ### Handle structured input
 
 An `ask` step pauses with `status: "needs_input"`. Present `requiresInput.prompt`
@@ -105,6 +109,7 @@ Same as above, but halts for approval before returning.
 - **Deterministic**: Same input → same output (no LLM variance in pipeline execution)
 - **Approval gates**: `approve` command halts execution, returns token
 - **Resumable**: Use `resume` with `approve` for approval gates or `responseJson` for input requests
+- **Session-bound**: Resume credentials are valid only in the creating session and cannot replay execution
 - **Structured output**: Always returns JSON envelope with `protocolVersion`
 
 ## Don't use Lobster for

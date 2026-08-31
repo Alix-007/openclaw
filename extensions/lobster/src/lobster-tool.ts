@@ -11,8 +11,16 @@ import { jsonResult } from "openclaw/plugin-sdk/tool-results";
 import { Type } from "typebox";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
+  bindLobsterContinuation,
+  claimLobsterContinuation,
+  releaseLobsterContinuation,
+  retireLobsterContinuation,
+  type LobsterContinuationOwner,
+} from "./lobster-continuations.js";
+import {
   assertLobsterResumeDecision,
   createEmbeddedLobsterRunner,
+  LobsterRunnerError,
   resolveLobsterCwd,
   type LobsterRunner,
   type LobsterRunnerParams,
@@ -28,6 +36,7 @@ import {
 type LobsterToolOptions = {
   runner?: LobsterRunner;
   taskFlow?: BoundTaskFlow;
+  continuationOwner?: LobsterContinuationOwner;
 };
 
 function readOptionalTrimmedString(value: unknown, fieldName: string): string | undefined {
@@ -328,9 +337,33 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
       if (action === "resume") {
         assertLobsterResumeDecision(runnerParams);
       }
-      const envelope = await runner.run(runnerParams);
+      const continuationOwner = options?.continuationOwner;
+      // Claim before awaiting Lobster: copied or concurrent credentials must never reach the runtime.
+      const continuationClaim =
+        action === "resume" ? claimLobsterContinuation(continuationOwner, runnerParams) : undefined;
+      let envelope;
+      try {
+        envelope = await runner.run(runnerParams);
+      } catch (error) {
+        if (
+          continuationClaim &&
+          continuationOwner &&
+          error instanceof LobsterRunnerError &&
+          error.type === "parse_error"
+        ) {
+          releaseLobsterContinuation(continuationOwner, continuationClaim);
+        }
+        throw error;
+      }
       if (!envelope.ok) {
+        if (envelope.error.type === "parse_error" && continuationClaim && continuationOwner) {
+          releaseLobsterContinuation(continuationOwner, continuationClaim);
+        }
         throw new Error(envelope.error.message);
+      }
+      bindLobsterContinuation(continuationOwner, envelope);
+      if (continuationClaim && continuationOwner) {
+        retireLobsterContinuation(continuationOwner, continuationClaim);
       }
       return jsonResult(envelope);
     },
