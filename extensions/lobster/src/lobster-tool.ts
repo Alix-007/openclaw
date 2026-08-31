@@ -373,10 +373,12 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
         }
         throw new Error(envelope.error.message);
       }
-      bindLobsterContinuation(continuationOwner, envelope);
       if (continuationClaim && continuationOwner) {
+        // Lobster consumed this checkpoint before returning; retire it first so
+        // a chained input pause can reuse the same slot in a full store.
         retireLobsterContinuation(continuationOwner, continuationClaim);
       }
+      bindLobsterContinuation(continuationOwner, envelope);
       return jsonResult(envelope);
     },
   };

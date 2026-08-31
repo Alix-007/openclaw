@@ -1,18 +1,15 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { PluginStateSyncKeyedStore } from "openclaw/plugin-sdk/plugin-state-runtime";
 import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
 import type { LobsterEnvelope, LobsterRunnerParams } from "./lobster-runner.js";
 
-type Binding = {
-  kind: "binding";
-  sessionKey: string;
-  sessionId: string;
-  claimKey: string;
-  credentialKeys: string[];
-};
+type ContinuationRecord =
+  | { kind: "binding"; sessionKey: string; sessionId: string }
+  | { kind: "claim"; sessionKey: string; sessionId: string; claimId: string };
+type ClaimRecord = Extract<ContinuationRecord, { kind: "claim" }>;
 
-// Structured-input replies are short-lived conversation continuations. Expiry
-// bounds abandoned bindings so they cannot permanently exhaust plugin state.
+// Expiry after each valid state transition bounds abandoned continuations so
+// they cannot permanently exhaust plugin state.
 export const LOBSTER_CONTINUATION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export type LobsterContinuationOwner = {
@@ -23,8 +20,8 @@ export type LobsterContinuationOwner = {
 };
 
 export type LobsterContinuationClaim = {
-  claimKey: string;
-  credentialKeys: string[];
+  credentialKey: string;
+  claimId: string;
 };
 
 function credentialKey(value: string): string {
@@ -32,48 +29,51 @@ function credentialKey(value: string): string {
   return `credential:${digest}`;
 }
 
-function credentialKeys(params: Pick<LobsterRunnerParams, "token">): string[] {
-  return params.token?.trim() ? [credentialKey(params.token)] : [];
+function paramsCredentialKey(params: Pick<LobsterRunnerParams, "token">): string | undefined {
+  return params.token?.trim() ? credentialKey(params.token) : undefined;
 }
 
-function envelopeCredentialKeys(envelope: Extract<LobsterEnvelope, { ok: true }>): string[] {
+function envelopeCredentialKey(
+  envelope: Extract<LobsterEnvelope, { ok: true }>,
+): string | undefined {
   if (envelope.status === "needs_input" && envelope.requiresInput) {
-    return [credentialKey(envelope.requiresInput.resumeToken)];
+    return credentialKey(envelope.requiresInput.resumeToken);
   }
-  return [];
+  return undefined;
 }
 
-function readBinding(value: unknown): Binding | undefined {
-  const rawKeys = isRecord(value) ? value.credentialKeys : undefined;
-  const keys = Array.isArray(rawKeys)
-    ? rawKeys.filter((key): key is string => typeof key === "string")
-    : [];
+function readContinuationRecord(value: unknown): ContinuationRecord | undefined {
   if (
     !isRecord(value) ||
-    value.kind !== "binding" ||
     typeof value.sessionKey !== "string" ||
-    typeof value.sessionId !== "string" ||
-    typeof value.claimKey !== "string" ||
-    !Array.isArray(rawKeys) ||
-    keys.length !== rawKeys.length
+    typeof value.sessionId !== "string"
   ) {
     return undefined;
   }
-  return {
-    kind: "binding",
-    sessionKey: value.sessionKey,
-    sessionId: value.sessionId,
-    claimKey: value.claimKey,
-    credentialKeys: keys,
-  };
+  if (value.kind === "binding") {
+    return { kind: "binding", sessionKey: value.sessionKey, sessionId: value.sessionId };
+  }
+  return value.kind === "claim" && typeof value.claimId === "string"
+    ? {
+        kind: "claim",
+        sessionKey: value.sessionKey,
+        sessionId: value.sessionId,
+        claimId: value.claimId,
+      }
+    : undefined;
 }
 
-function isOwnedClaim(value: unknown, owner: LobsterContinuationOwner): boolean {
+function isOwnedClaim(
+  value: unknown,
+  owner: LobsterContinuationOwner,
+  claimId: string,
+): value is ClaimRecord {
+  const binding = readContinuationRecord(value);
   return (
-    isRecord(value) &&
-    value.kind === "claim" &&
-    value.sessionKey === owner.sessionKey &&
-    value.sessionId === owner.sessionId
+    binding?.kind === "claim" &&
+    binding.sessionKey === owner.sessionKey &&
+    binding.sessionId === owner.sessionId &&
+    binding.claimId === claimId
   );
 }
 
@@ -95,8 +95,8 @@ export function bindLobsterContinuation(
   owner: LobsterContinuationOwner | undefined,
   envelope: Extract<LobsterEnvelope, { ok: true }>,
 ): void {
-  const keys = envelopeCredentialKeys(envelope);
-  if (keys.length === 0) {
+  const key = envelopeCredentialKey(envelope);
+  if (!key) {
     return;
   }
   if (!owner) {
@@ -105,28 +105,13 @@ export function bindLobsterContinuation(
     );
   }
   assertCurrentSession(owner);
-  const claimKey = `claim:${keys[0]?.slice("credential:".length)}`;
-  const binding: Binding = {
+  const binding: ContinuationRecord = {
     kind: "binding",
     sessionKey: owner.sessionKey,
     sessionId: owner.sessionId,
-    claimKey,
-    credentialKeys: keys,
   };
-  const store = owner.openStore();
-  const registered: string[] = [];
-  try {
-    for (const key of keys) {
-      if (!store.registerIfAbsent(key, binding, { ttlMs: LOBSTER_CONTINUATION_TTL_MS })) {
-        throw new Error("Lobster runtime returned a duplicate continuation credential");
-      }
-      registered.push(key);
-    }
-  } catch (error) {
-    for (const key of registered) {
-      store.deleteIf?.(key, (current) => readBinding(current)?.claimKey === claimKey);
-    }
-    throw error;
+  if (!owner.openStore().registerIfAbsent(key, binding, { ttlMs: LOBSTER_CONTINUATION_TTL_MS })) {
+    throw new Error("Lobster runtime returned a duplicate continuation credential");
   }
 }
 
@@ -139,37 +124,36 @@ export function claimLobsterContinuation(
   }
   assertCurrentSession(owner);
   const store = owner.openStore();
-  let binding: Binding | undefined;
-  for (const key of credentialKeys(params)) {
-    const current = readBinding(store.lookup(key));
-    if (!current) {
-      throw unavailableError();
-    }
-    if (current.sessionKey !== owner.sessionKey || current.sessionId !== owner.sessionId) {
+  const key = paramsCredentialKey(params);
+  if (!key) {
+    throw unavailableError();
+  }
+  const claimId = randomUUID();
+  let foreignOwner = false;
+  const claimed = store.update?.(
+    key,
+    (current) => {
+      const latest = readContinuationRecord(current);
+      if (!latest) {
+        return undefined;
+      }
+      if (latest.sessionKey !== owner.sessionKey || latest.sessionId !== owner.sessionId) {
+        foreignOwner = true;
+        return undefined;
+      }
+      return latest.kind === "binding" ? { ...latest, kind: "claim", claimId } : undefined;
+    },
+    { ttlMs: LOBSTER_CONTINUATION_TTL_MS },
+  );
+  if (!claimed) {
+    if (foreignOwner) {
       throw new Error(
         "Lobster continuation belongs to another OpenClaw session; resume it from the session that created it",
       );
     }
-    if (binding && binding.claimKey !== current.claimKey) {
-      throw unavailableError();
-    }
-    binding = current;
-  }
-  if (
-    !binding ||
-    !store.registerIfAbsent(
-      binding.claimKey,
-      {
-        kind: "claim",
-        sessionKey: owner.sessionKey,
-        sessionId: owner.sessionId,
-      },
-      { ttlMs: LOBSTER_CONTINUATION_TTL_MS },
-    )
-  ) {
     throw unavailableError();
   }
-  return { claimKey: binding.claimKey, credentialKeys: binding.credentialKeys };
+  return { credentialKey: key, claimId };
 }
 
 export function assertLobsterContinuationClaimCurrent(
@@ -177,7 +161,7 @@ export function assertLobsterContinuationClaimCurrent(
   claim: LobsterContinuationClaim,
 ): void {
   assertCurrentSession(owner);
-  if (!isOwnedClaim(owner.openStore().lookup(claim.claimKey), owner)) {
+  if (!isOwnedClaim(owner.openStore().lookup(claim.credentialKey), owner, claim.claimId)) {
     throw unavailableError();
   }
 }
@@ -186,23 +170,22 @@ export function retireLobsterContinuation(
   owner: LobsterContinuationOwner,
   claim: LobsterContinuationClaim,
 ): void {
-  const store = owner.openStore();
-  for (const key of claim.credentialKeys) {
-    store.deleteIf?.(key, (current) => {
-      const binding = readBinding(current);
-      return (
-        binding?.claimKey === claim.claimKey &&
-        binding.sessionKey === owner.sessionKey &&
-        binding.sessionId === owner.sessionId
-      );
-    });
-  }
-  store.deleteIf?.(claim.claimKey, (current) => isOwnedClaim(current, owner));
+  owner
+    .openStore()
+    .deleteIf?.(claim.credentialKey, (current) => isOwnedClaim(current, owner, claim.claimId));
 }
 
 export function releaseLobsterContinuation(
   owner: LobsterContinuationOwner,
   claim: LobsterContinuationClaim,
 ): void {
-  owner.openStore().deleteIf?.(claim.claimKey, (current) => isOwnedClaim(current, owner));
+  const store = owner.openStore();
+  store.update?.(
+    claim.credentialKey,
+    (current) =>
+      isOwnedClaim(current, owner, claim.claimId)
+        ? { kind: "binding", sessionKey: current.sessionKey, sessionId: current.sessionId }
+        : undefined,
+    { ttlMs: LOBSTER_CONTINUATION_TTL_MS },
+  );
 }

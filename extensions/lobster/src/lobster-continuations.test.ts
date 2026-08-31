@@ -3,7 +3,11 @@ import { createRequireRecord } from "openclaw/plugin-sdk/test-fixtures";
 import { describe, expect, it, vi } from "vitest";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
+  assertLobsterContinuationClaimCurrent,
+  claimLobsterContinuation,
   LOBSTER_CONTINUATION_TTL_MS,
+  releaseLobsterContinuation,
+  retireLobsterContinuation,
   type LobsterContinuationOwner,
 } from "./lobster-continuations.js";
 import { createEmbeddedLobsterRunner, LobsterRunnerError } from "./lobster-runner.js";
@@ -21,8 +25,9 @@ function fakeApi(): OpenClawPluginApi {
 
 const requireRecord = createRequireRecord("record", "expected-label-record");
 
-function createContinuationStore() {
+function createContinuationStore(options: { maxEntries?: number } = {}) {
   let nowMs = 0;
+  const maxEntries = options.maxEntries ?? Number.POSITIVE_INFINITY;
   const values = new Map<string, { value: unknown; expiresAt?: number }>();
   const read = (key: string) => {
     const record = values.get(key);
@@ -33,6 +38,9 @@ function createContinuationStore() {
     return record?.value;
   };
   const write = (key: string, value: unknown, opts?: { ttlMs?: number }) => {
+    if (!values.has(key) && values.size >= maxEntries) {
+      throw new Error(`continuation store reached its ${maxEntries}-row limit`);
+    }
     values.set(key, {
       value,
       ...(opts?.ttlMs !== undefined ? { expiresAt: nowMs + opts.ttlMs } : {}),
@@ -87,6 +95,7 @@ function createContinuationStore() {
               },
             ];
       }),
+    size: () => values.size,
     clear: () => values.clear(),
     advanceBy: (durationMs: number) => {
       nowMs += durationMs;
@@ -220,6 +229,145 @@ describe("lobster structured-input continuations", () => {
     ).rejects.toThrow(/unavailable, expired, or already used/);
     await expect(firstResume).resolves.toBeDefined();
     expect(runner.run).toHaveBeenCalledTimes(2);
+  });
+
+  it("resumes a valid structured-input continuation when the 10,000-row store is full", async () => {
+    const store = createContinuationStore({ maxEntries: 10_000 });
+    for (let index = 0; index < 9_999; index += 1) {
+      store.register(`filler:${index}`, { kind: "filler" });
+    }
+    const runner = {
+      run: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Continue?",
+            responseSchema: { type: "boolean" },
+            resumeToken: "input-token-at-capacity",
+          },
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "ok",
+          output: ["resumed"],
+          requiresApproval: null,
+        }),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+    await tool.execute("call-input-capacity-run", { action: "run", pipeline: "ask" });
+    expect(store.size()).toBe(10_000);
+
+    await expect(
+      tool.execute("call-input-capacity-resume", {
+        action: "resume",
+        token: "input-token-at-capacity",
+        responseJson: "true",
+      }),
+    ).resolves.toBeDefined();
+    expect(runner.run).toHaveBeenCalledTimes(2);
+    expect(store.size()).toBe(9_999);
+  });
+
+  it("hands off a full continuation slot when resume needs another input", async () => {
+    const store = createContinuationStore({ maxEntries: 1 });
+    const runner = {
+      run: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "First input",
+            responseSchema: { type: "boolean" },
+            resumeToken: "input-token-first",
+          },
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Second input",
+            responseSchema: { type: "boolean" },
+            resumeToken: "input-token-second",
+          },
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "ok",
+          output: ["done"],
+          requiresApproval: null,
+        }),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+    await tool.execute("call-input-chain-run", { action: "run", pipeline: "ask" });
+
+    await expect(
+      tool.execute("call-input-chain-first-resume", {
+        action: "resume",
+        token: "input-token-first",
+        responseJson: "true",
+      }),
+    ).resolves.toBeDefined();
+    expect(store.size()).toBe(1);
+    await expect(
+      tool.execute("call-input-chain-second-resume", {
+        action: "resume",
+        token: "input-token-second",
+        responseJson: "true",
+      }),
+    ).resolves.toBeDefined();
+    expect(store.size()).toBe(0);
+  });
+
+  it("keeps stale claim handles from releasing or retiring a newer claim", async () => {
+    const store = createContinuationStore();
+    const owner = continuationOwner(store);
+    const tool = createLobsterTool(fakeApi(), {
+      runner: {
+        run: vi.fn().mockResolvedValue({
+          ok: true,
+          status: "needs_input",
+          output: [],
+          requiresApproval: null,
+          requiresInput: {
+            type: "input_request",
+            prompt: "Continue?",
+            responseSchema: { type: "boolean" },
+            resumeToken: "input-token-claim-generation",
+          },
+        }),
+      },
+      continuationOwner: owner,
+    });
+    await tool.execute("call-input-claim-generation-run", { action: "run", pipeline: "ask" });
+    const firstClaim = claimLobsterContinuation(owner, {
+      token: "input-token-claim-generation",
+    });
+    releaseLobsterContinuation(owner, firstClaim);
+    const secondClaim = claimLobsterContinuation(owner, {
+      token: "input-token-claim-generation",
+    });
+
+    releaseLobsterContinuation(owner, firstClaim);
+    retireLobsterContinuation(owner, firstClaim);
+    expect(() => assertLobsterContinuationClaimCurrent(owner, secondClaim)).not.toThrow();
   });
 
   it("expires an abandoned structured-input continuation", async () => {
