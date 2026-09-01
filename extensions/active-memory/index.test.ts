@@ -1685,6 +1685,23 @@ describe("active-memory plugin", () => {
     },
   );
 
+  it("records why default escalation skips an ordinary turn", async () => {
+    registerPluginConfig({ mode: undefined });
+
+    const result = await runPromptBuild(
+      { prompt: "Explain the current configuration" },
+      {
+        sessionKey: "agent:main:webchat:direct:operator",
+        messageProvider: "webchat",
+        channelId: "operator",
+      },
+    );
+
+    expect(result).toBeUndefined();
+    expect(runEmbeddedAgent).not.toHaveBeenCalled();
+    expect(hasDebugLine("active-memory: recall skipped reason=no-recall-intent")).toBe(true);
+  });
+
   it("fails closed when the live active-memory plugin entry is removed", async () => {
     configFile = {
       plugins: {
@@ -4229,6 +4246,7 @@ describe("active-memory plugin", () => {
       .mocked(api.logger.info)
       .mock.calls.map((call: unknown[]) => String(call[0]));
     expectLinesToContain(infoLines, "done status=ok");
+    expectLinesNotToContain(infoLines, "reason=search-error");
     expectLinesNotToContain(infoLines, "done status=unavailable");
     const lines = getActiveMemoryLines(sessionKey);
     expect(lines).toHaveLength(2);
@@ -5029,6 +5047,10 @@ describe("active-memory plugin", () => {
     );
 
     expect(result).toBeUndefined();
+    const infoLines = vi
+      .mocked(api.logger.info)
+      .mock.calls.map((call: unknown[]) => String(call[0]));
+    expectLinesToContain(infoLines, "done status=unavailable reason=search-unavailable");
     expectLinesToContain(getActiveMemoryLines(sessionKey), "status=unavailable");
   });
 
@@ -5091,6 +5113,9 @@ describe("active-memory plugin", () => {
 
   it("fast-fails configured-provider-missing memory_search results without injecting provider errors", async () => {
     const CONFIGURED_TIMEOUT_MS = 1_000;
+    const sensitiveSearchError =
+      `Memory search unavailable: credential=fixture-secret path=/private/runtime ` +
+      "x".repeat(400);
     testing.setMinimumTimeoutMsForTests(1);
     testing.setSetupGraceTimeoutMsForTests(0);
     registerPluginConfig({ timeoutMs: CONFIGURED_TIMEOUT_MS, logging: true });
@@ -5107,8 +5132,7 @@ describe("active-memory plugin", () => {
                 disabled: true,
                 warning: "Memory search is unavailable due to an embedding/provider error.",
                 action: "Check the embedding provider configuration, then retry memory_search.",
-                error:
-                  'Memory search unavailable: embedding provider "openai" is configured but unavailable.',
+                error: sensitiveSearchError,
               },
             },
           },
@@ -5127,6 +5151,9 @@ describe("active-memory plugin", () => {
       .mocked(api.logger.info)
       .mock.calls.map((call: unknown[]) => String(call[0]));
     expectLinesToContain(infoLines, "done status=unavailable");
+    expectLinesToContain(infoLines, "reason=search-error");
+    expectLinesNotToContain(infoLines, "fixture-secret");
+    expectLinesNotToContain(infoLines, "/private/runtime");
     expectLinesNotToContain(infoLines, "done status=timeout");
     const lines = getActiveMemoryLines(sessionKey);
     expect(lines).toHaveLength(2);

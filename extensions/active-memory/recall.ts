@@ -40,6 +40,23 @@ import type {
   TerminalMemorySearchWatch,
 } from "./types.js";
 
+function buildRecallDoneLogLine(logPrefix: string, result: ActiveRecallResult): string {
+  const reason =
+    result.status === "unavailable"
+      ? result.searchDebug?.error
+        ? "search-error"
+        : "search-unavailable"
+      : undefined;
+  return [
+    logPrefix,
+    "done",
+    `status=${result.status}`,
+    ...(reason ? [`reason=${reason}`] : []),
+    `elapsedMs=${String(result.elapsedMs)}`,
+    `summaryChars=${String(result.summary?.length ?? 0)}`,
+  ].join(" ");
+}
+
 function formatActiveMemoryFastMode(fastMode: ActiveMemoryFastMode | undefined): string {
   return fastMode === undefined
     ? "inherit"
@@ -332,9 +349,7 @@ async function resolveActiveRecall(
         toolsAllow: params.config.toolsAllow,
       });
       if (params.config.logging) {
-        params.api.logger.info?.(
-          `${logPrefix} done status=${result.status} elapsedMs=${String(result.elapsedMs)} summaryChars=${String(result.summary?.length ?? 0)}`,
-        );
+        params.api.logger.info?.(buildRecallDoneLogLine(logPrefix, result));
       }
       params.abortSignal?.throwIfAborted();
       await persistPluginStatusLines({
@@ -358,9 +373,7 @@ async function resolveActiveRecall(
         searchDebug: raceResult.searchDebug,
       };
       if (params.config.logging) {
-        params.api.logger.info?.(
-          `${logPrefix} done status=${result.status} elapsedMs=${String(result.elapsedMs)} summaryChars=${String(result.summary?.length ?? 0)}`,
-        );
+        params.api.logger.info?.(buildRecallDoneLogLine(logPrefix, result));
       }
       resetCircuitBreaker(cbKey);
       params.abortSignal?.throwIfAborted();
@@ -390,9 +403,7 @@ async function resolveActiveRecall(
       maxSummaryChars: params.config.maxSummaryChars,
     });
     if (params.config.logging) {
-      params.api.logger.info?.(
-        `${logPrefix} done status=${result.status} elapsedMs=${String(result.elapsedMs)} summaryChars=${String(result.summary?.length ?? 0)}`,
-      );
+      params.api.logger.info?.(buildRecallDoneLogLine(logPrefix, result));
     }
     resetCircuitBreaker(cbKey);
     params.abortSignal?.throwIfAborted();
@@ -431,9 +442,7 @@ async function resolveActiveRecall(
         toolsAllow: params.config.toolsAllow,
       });
       if (params.config.logging) {
-        params.api.logger.info?.(
-          `${logPrefix} done status=${result.status} elapsedMs=${String(result.elapsedMs)} summaryChars=${String(result.summary?.length ?? 0)}`,
-        );
+        params.api.logger.info?.(buildRecallDoneLogLine(logPrefix, result));
       }
       params.abortSignal?.throwIfAborted();
       await persistPluginStatusLines({

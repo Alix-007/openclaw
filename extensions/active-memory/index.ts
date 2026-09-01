@@ -18,7 +18,7 @@ import {
   setMinimumTimeoutMsForTests,
   setSetupGraceTimeoutMsForTests,
 } from "./config.js";
-import { shouldEscalateRecall } from "./escalation.js";
+import { resolveRecallEscalationDecision } from "./escalation.js";
 import { buildMetadata, buildPromptPrefix } from "./prompt.js";
 import { buildQuery, buildSearchQuery, extractRecentTurns, getModelRef } from "./query.js";
 import {
@@ -467,13 +467,15 @@ export default definePluginEntry({
               });
               return laneOneContext ? { prependContext: laneOneContext } : undefined;
             }
-            if (
-              !shouldEscalateRecall({
-                mode: invocationConfig.mode,
-                message: event.prompt,
-                hasStrongLaneOneHit: laneOne.hasStrongHit,
-              })
-            ) {
+            const escalationDecision = resolveRecallEscalationDecision({
+              mode: invocationConfig.mode,
+              message: event.prompt,
+              hasStrongLaneOneHit: laneOne.hasStrongHit,
+            });
+            if (!escalationDecision.shouldEscalate) {
+              api.logger.debug?.(
+                `active-memory: recall skipped reason=${escalationDecision.reason}`,
+              );
               return laneOneContext ? { prependContext: laneOneContext } : undefined;
             }
             const conversationRecall: ConversationRecallContext | undefined =
