@@ -58,6 +58,10 @@ Use this with `$release-openclaw-maintainer` and `$openclaw-testing` when a rele
 - Same-parent continuation requires the original root to have been dispatched
   with `fail_fast=false`. The controller verifies that exact logged input
   before any rerun mutation.
+- A parent that produced its own sealed candidate artifacts cannot be continued:
+  GitHub reruns make those prior-attempt artifacts unavailable. Keep the
+  candidate and Tooling SHAs frozen, supersede that parent, and start a fresh
+  all-group Full Release Validation.
 - After dispatch, one immutable execution-plan artifact records the original
   parent attempt, exact child tuples and titles, selected coverage, gates, and
   reuse identity. The same bytes are saved under an exact run-ID cache key.
@@ -195,6 +199,19 @@ until their dependent enforcement changes land.
   against the current publish gate.
 
 ## Preflight
+
+Before full matrix dispatch, run both `pnpm ui:i18n:check` and
+`pnpm native:i18n:check` against the frozen trusted target in approved isolation.
+Bind both results to that exact SHA; either generated-locale drift blocks
+dispatch. Keep target execution outside the trusted dispatch helper—do not
+execute an arbitrary target checkout as helper code.
+
+Before expensive full validation, also run `pnpm ui:build` on the same frozen
+trusted target with its frozen dependencies in approved isolation, outside the
+trusted dispatch helper. Record the target SHA with the successful production
+build, precompressed-asset verification, and startup/largest-asset budget results;
+any failure blocks fanout. Do not substitute a dev server or raise budgets to admit
+the target.
 
 Before full release validation:
 
