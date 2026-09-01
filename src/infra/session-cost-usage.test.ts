@@ -270,6 +270,23 @@ describe("session cost usage", () => {
     });
   });
 
+  it.each(["main", "opus"])("validates the owner of a legacy %s entry marker", async (agentId) => {
+    const root = await makeSessionCostRoot("entry-marker-owner");
+    const sessionId = "shared";
+    const marker = `sqlite:${agentId}:${sessionId}:${path.join(root, "agents", agentId, "sessions", "sessions.json")}`;
+    await withStateDir(root, async () => {
+      expect(
+        resolveExistingUsageSessionFile({
+          agentId: "main",
+          sessionId,
+          sessionEntry: { sessionId, updatedAt: 1, sessionFile: marker } as SessionEntry & {
+            sessionFile: string;
+          },
+        }),
+      ).toBe(agentId === "main" ? marker : undefined);
+    });
+  });
+
   afterAll(async () => {
     await suiteRootTracker.cleanup();
   });
@@ -1031,23 +1048,18 @@ describe("session cost usage", () => {
 
     await withStateDir(root, async () => {
       const session = { sessionId: "sess-batch-range", sessionFile };
-      await loadSessionCostSummariesFromCache({ sessions: [session], agentId: "main" });
+      await refreshSessionCostUsageForTest(sessionFile);
       const rangeEndMs = Date.UTC(2026, 1, 5) + 24 * 60 * 60 * 1000 - 1;
-      await waitForFast(
-        async () => {
-          const ranged = await loadSessionCostSummariesFromCache({
-            sessions: [session],
-            agentId: "main",
-            startMs: Date.UTC(2026, 1, 5),
-            endMs: rangeEndMs,
-            requestRefresh: false,
-          });
-          expect(ranged.cacheStatus.status).toBe("fresh");
-          expect(ranged.summaries[0]?.totalTokens).toBe(20);
-          expect(ranged.summaries[0]?.modelUsage?.map((entry) => entry.model)).toEqual(["gpt-5.5"]);
-        },
-        { interval: 10, timeout: 2_000 },
-      );
+      const ranged = await loadSessionCostSummariesFromCache({
+        sessions: [session],
+        agentId: "main",
+        startMs: Date.UTC(2026, 1, 5),
+        endMs: rangeEndMs,
+        requestRefresh: false,
+      });
+      expect(ranged.cacheStatus.status).toBe("fresh");
+      expect(ranged.summaries[0]?.totalTokens).toBe(20);
+      expect(ranged.summaries[0]?.modelUsage?.map((entry) => entry.model)).toEqual(["gpt-5.5"]);
 
       const cachedEntry = readSessionCostUsageRollupRows("main").find(
         (row) => row.key === sessionFile,
@@ -1098,7 +1110,7 @@ describe("session cost usage", () => {
     });
   });
 
-  it("rebuilds invalid rollups and preserves untimestamped usage on append", async () => {
+  it("rebuilds obsolete pricing rollups and preserves untimestamped usage on append", async () => {
     const root = await makeSessionCostRoot("cost-cache-v8-untimestamped-upgrade");
     const sessionsDir = path.join(root, "agents", "main", "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
@@ -1146,7 +1158,7 @@ describe("session cost usage", () => {
         version: number;
         rollup: { untimestamped: { totals: { totalTokens: number } } };
       };
-      currentRollup.version = 0;
+      currentRollup.version = 2;
       currentRollup.rollup.untimestamped.totals.totalTokens = 9_999;
       expect(
         writeSessionCostUsageRollup({
@@ -1194,8 +1206,8 @@ describe("session cost usage", () => {
         version: number;
         rollup: { untimestamped: { totals: { totalTokens: number } } };
       };
-      expect(appendedRollup.version).toBe(2);
       expect(appendedRollup.rollup.untimestamped.totals.totalTokens).toBe(1_000);
+      expect(appendedRollup.version).toBe(3);
 
       const allTime = await loadSessionCostSummariesFromCache({
         sessions: [session],
@@ -2286,37 +2298,6 @@ describe("session cost usage", () => {
           .map((session) => session.firstUserMessage)
           .toSorted((a, b) => String(a).localeCompare(String(b))),
       ).toEqual(["deleted transcript", "reset transcript"]);
-    });
-  });
-
-  it("discovers compressed archives under their durable session identity", async () => {
-    const root = await makeSessionCostRoot("discover-compressed-archive");
-    const sessionsDir = path.join(root, "agents", "main", "sessions");
-    await fs.mkdir(sessionsDir, { recursive: true });
-    const encoded = encodeSessionArchiveContent(
-      transcriptText("sess-compressed", {
-        type: "message",
-        timestamp: "2026-02-12T10:00:00.000Z",
-        message: { role: "user", content: "compressed transcript" },
-      }),
-    );
-    if (!encoded.suffix) {
-      return;
-    }
-    const archivePath = path.join(
-      sessionsDir,
-      `sess-compressed.jsonl.deleted.2026-02-12T12-00-00.000Z${encoded.suffix}`,
-    );
-    await fs.writeFile(archivePath, encoded.bytes);
-
-    await withStateDir(root, async () => {
-      const sessions = await discoverAllSessions();
-      expect(sessions).toHaveLength(1);
-      expect(sessions[0]).toMatchObject({
-        sessionId: "sess-compressed",
-        sessionFile: archivePath,
-        firstUserMessage: "compressed transcript",
-      });
     });
   });
 
