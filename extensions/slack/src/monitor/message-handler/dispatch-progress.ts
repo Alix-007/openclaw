@@ -452,6 +452,7 @@ export function createSlackProgressRuntime(runtimeParams: {
       await delivery.nativeProgressStreamStartPromise.catch(() => null);
     }
     const session = delivery.streamSession;
+    delivery.stopStreamBoundaryTracking();
     if (session && !session.stopped) {
       try {
         if (completionChunks?.length) {
@@ -644,6 +645,19 @@ export function createSlackProgressRuntime(runtimeParams: {
     delivery.resetDeliveryTracker();
     return true;
   };
+  delivery.setInterveningMessageHandler(
+    useNativeProgressStreaming
+      ? () => {
+          void withNativeStreamOrder(async () => {
+            await beginNewProgressTurn({ force: true });
+          }).catch((err) => {
+            runtime.error?.(
+              danger(`slack-stream: failed to rotate after human reply: ${formatSlackError(err)}`),
+            );
+          });
+        }
+      : undefined,
+  );
   const onDraftBoundary =
     !shouldUseDraftStream && !useNativeProgressStreaming
       ? undefined

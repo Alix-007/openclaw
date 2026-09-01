@@ -564,6 +564,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
   // Finalize the stream if one was started
   // -----------------------------------------------------------------------
   let streamFallbackDelivered = false;
+  delivery.stopStreamBoundaryTracking();
   const finalStream = delivery.streamSession as SlackStreamSession | null;
   if (finalStream && !finalStream.stopped) {
     try {

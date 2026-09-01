@@ -52,6 +52,7 @@ export function createSlackNativeProgressTransport(params: {
       return false;
     }
     delivery.nativeProgressStreamThreadTs = streamThreadTs;
+    delivery.startStreamBoundaryTracking(streamThreadTs);
     const startPromise = (async () => {
       const session = await startSlackStream({
         client: slackClient,
@@ -70,6 +71,7 @@ export function createSlackNativeProgressTransport(params: {
         userId: message.user,
       });
       delivery.streamSession = session;
+      delivery.syncStreamBoundaryMessageTs(session);
       return session;
     })();
     delivery.nativeProgressStreamStartPromise = startPromise;
@@ -97,6 +99,7 @@ export function createSlackNativeProgressTransport(params: {
       ...(update.text ? { text: update.text } : {}),
       ...(update.chunks?.length ? { chunks: update.chunks } : {}),
     });
+    delivery.syncStreamBoundaryMessageTs(session);
     const delivered = markDelivered(delivery.nativeProgressStreamThreadTs);
     return update.chunks?.length ? delivered : true;
   };

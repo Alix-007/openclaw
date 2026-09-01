@@ -1,7 +1,7 @@
 // Slack tests cover draft stream plugin behavior.
 import { createMessageReceiptFromOutboundResults } from "openclaw/plugin-sdk/channel-outbound";
 import { describe, expect, it, vi } from "vitest";
-import { noteSlackDraftConversationMessage } from "./draft-message-boundaries.js";
+import { noteSlackConversationMessage } from "./draft-message-boundaries.js";
 import { createSlackDraftStream } from "./draft-stream.js";
 
 type DraftStreamParams = Parameters<typeof createSlackDraftStream>[0];
@@ -243,7 +243,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_first card_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -258,7 +258,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_second card_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -337,7 +337,7 @@ describe("createSlackDraftStream", () => {
     stream.update("_looking into the original question_");
     await stream.flush();
 
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -379,7 +379,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_first update_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -389,7 +389,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_second update_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -428,7 +428,7 @@ describe("createSlackDraftStream", () => {
       expect(send).toHaveBeenCalledOnce();
     });
 
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -459,7 +459,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_looking into this_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       messageTs: "100.200",
@@ -491,7 +491,7 @@ describe("createSlackDraftStream", () => {
 
     stream.update("_first workspace_");
     await stream.flush();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       teamId: "T_SECOND",
       channelId: "C123",
@@ -505,7 +505,7 @@ describe("createSlackDraftStream", () => {
     expect(send).toHaveBeenCalledOnce();
     expect(edit).toHaveBeenCalledOnce();
 
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       teamId: "T_FIRST",
       channelId: "C123",
@@ -550,7 +550,7 @@ describe("createSlackDraftStream", () => {
         botId: "B_OTHER",
       },
     ]) {
-      noteSlackDraftConversationMessage({ accountId, ...event });
+      noteSlackConversationMessage({ accountId, ...event });
     }
 
     stream.update("_latest update_");
@@ -579,7 +579,7 @@ describe("createSlackDraftStream", () => {
       await finalEdit;
     });
 
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -607,7 +607,7 @@ describe("createSlackDraftStream", () => {
     stream.update("_nearly finished_");
     await stream.flush();
     await stream.seal();
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",
@@ -629,7 +629,7 @@ describe("createSlackDraftStream", () => {
     await stream.seal();
     await stream.finalizeMessage("111.222", async () => {});
 
-    noteSlackDraftConversationMessage({
+    noteSlackConversationMessage({
       accountId,
       channelId: "C123",
       threadTs: "100.000",

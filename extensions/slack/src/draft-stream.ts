@@ -4,7 +4,7 @@ import type { Block, KnownBlock } from "@slack/web-api";
 import { createFinalizableDraftStreamControlsForState } from "openclaw/plugin-sdk/channel-outbound";
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { deleteSlackMessage, editSlackMessage } from "./actions.js";
-import { trackSlackDraftMessage } from "./draft-message-boundaries.js";
+import { trackSlackConversationMessage } from "./draft-message-boundaries.js";
 import { formatSlackError } from "./errors.js";
 import { SLACK_TEXT_LIMIT } from "./limits.js";
 import type { SlackEventScope } from "./monitor/event-scope.js";
@@ -105,7 +105,7 @@ export function createSlackDraftStream(params: {
       }
       const threadTs = params.resolveThreadTs?.();
       const pendingBoundary = params.conversationChannelId
-        ? trackSlackDraftMessage({
+        ? trackSlackConversationMessage({
             accountId: params.accountId,
             teamId: params.eventScope?.teamId,
             channelId: params.conversationChannelId,
@@ -136,7 +136,7 @@ export function createSlackDraftStream(params: {
         pendingBoundary.setMessageTs(streamMessage.messageId);
       } else {
         stopTrackingConversationBoundary();
-        const tracker = trackSlackDraftMessage({
+        const tracker = trackSlackConversationMessage({
           accountId: params.accountId,
           teamId: params.eventScope?.teamId,
           channelId: streamMessage.channelId,

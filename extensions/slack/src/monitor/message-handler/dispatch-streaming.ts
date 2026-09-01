@@ -2,6 +2,10 @@ import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
 import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
 import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
 import { danger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import {
+  trackSlackConversationMessage,
+  type SlackMessageBoundaryTracker,
+} from "../../draft-message-boundaries.js";
 import { formatSlackError } from "../../errors.js";
 import { emitSlackMessageSentHooks } from "../../message-sent-hook.js";
 import { resolveSlackReplyRenderPlan } from "../../reply-blocks.js";
@@ -51,6 +55,34 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     usedBlockReplyThreadTs: undefined as string | undefined,
     observedReplyDelivery: false,
     observedFinalReplyDelivery: false,
+  };
+  let streamBoundaryTracker: SlackMessageBoundaryTracker | null = null;
+  let onInterveningMessage: (() => void) | undefined;
+
+  const stopStreamBoundaryTracking = () => {
+    streamBoundaryTracker?.stop();
+    streamBoundaryTracker = null;
+  };
+  const startStreamBoundaryTracking = (threadTs: string) => {
+    stopStreamBoundaryTracking();
+    streamBoundaryTracker = trackSlackConversationMessage({
+      accountId: account.accountId,
+      teamId: prepared.eventScope?.teamId,
+      channelId: message.channel,
+      threadTs,
+      onInterveningMessage: () => {
+        // Once a human reply overtakes this stream, no later payload may be
+        // appended to it. Progress mode additionally seals its task card.
+        state.streamFailed = true;
+        onInterveningMessage?.();
+      },
+    });
+  };
+  const syncStreamBoundaryMessageTs = (session: SlackStreamSession) => {
+    const messageTs = session.streamer?.ts;
+    if (messageTs) {
+      streamBoundaryTracker?.setMessageTs(messageTs);
+    }
   };
   // Reply payloads routed through the native text stream. Track Slack
   // acknowledgement separately because a later buffered suffix can fall back
@@ -454,6 +486,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
           return;
         }
 
+        startStreamBoundaryTracking(streamThreadTs);
         state.streamSession = await startSlackStream({
           client: slackClient,
           channel: message.channel,
@@ -477,6 +510,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
           acknowledgeStoppedStreamedDeliveries(state.streamSession);
           return;
         }
+        syncStreamBoundaryMessageTs(state.streamSession);
         refreshStreamedAcknowledgements(state.streamSession);
         // startSlackStream may only buffer locally. Count delivery only after
         // the SDK reports a real Slack response.
@@ -530,6 +564,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
         acknowledgeStoppedStreamedDeliveries(state.streamSession);
         return;
       }
+      syncStreamBoundaryMessageTs(state.streamSession);
       refreshStreamedAcknowledgements(state.streamSession);
       // appendSlackStream also buffers locally below the SDK threshold; avoid
       // optimistic "done" status until Slack acknowledges a flush.
@@ -615,6 +650,12 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     isStreamingEligible,
     markPreviewPayloadDelivered,
     rememberDeliveredThreadTs,
+    setInterveningMessageHandler: (handler?: () => void) => {
+      onInterveningMessage = handler;
+    },
+    startStreamBoundaryTracking,
+    stopStreamBoundaryTracking,
+    syncStreamBoundaryMessageTs,
     resetDeliveryTracker: () => {
       deliveryTracker = createSlackEventDeliveryTracker();
     },

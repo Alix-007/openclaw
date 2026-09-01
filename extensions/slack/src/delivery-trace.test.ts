@@ -24,7 +24,7 @@ import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { createDeferred } from "openclaw/plugin-sdk/extension-shared";
 import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { noteSlackDraftConversationMessage } from "./draft-message-boundaries.js";
+import { noteSlackConversationMessage } from "./draft-message-boundaries.js";
 import type { PreparedSlackMessage } from "./monitor/message-handler/types.js";
 import { setSlackSessionStatus } from "./session-status.js";
 import { markSlackStreamsStopped } from "./streaming.js";
@@ -870,6 +870,110 @@ describe("slack delivery trace goldens", () => {
     expect(traceRuntimeError).not.toHaveBeenCalled();
   });
 
+  it("seals native progress before answering a later human message", async () => {
+    const followupText = "Please also check the rollout guard.";
+    const events = await runDeliveryTraceScenario({
+      scenario: {
+        name: "progress-native-intervening-message",
+        steps: [
+          { kind: "reply-start" },
+          { kind: "partial", text: NATIVE_PROGRESS_NARRATION },
+          { kind: "tool-progress", name: "write", phase: "start" },
+          { kind: "advance", ms: 2000 },
+          { kind: "partial", text: followupText },
+          { kind: "final", text: "The rollout guard is enabled." },
+          { kind: "idle" },
+        ],
+      },
+      setup: async (recorder) => {
+        const dispatch = await setupSlackTrace(recorder, "progress-native-unified");
+        return async (step) => {
+          if (step.kind === "partial" && step.text === followupText) {
+            traceState.tsCounter += 1;
+            noteSlackConversationMessage({
+              accountId: "default",
+              channelId: CHANNEL_ID,
+              threadTs: INBOUND_TS,
+              messageTs: `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
+              userId: "U_SECOND",
+              botUserId: "UBOT",
+            });
+            return;
+          }
+          await dispatch(step);
+        };
+      },
+      normalize: createSlackTsNormalizer(),
+    });
+
+    const starts = events.filter((event) => event.kind === "chat.startStream");
+    expect(starts).toHaveLength(1);
+    expect(starts[0]?.data).toMatchObject({ payload: { thread_ts: "ts#1" } });
+    const stopIndex = events.findIndex((event) => event.kind === "chat.stopStream");
+    const followupIndex = events.findIndex(
+      (event) =>
+        event.kind === "chat.postMessage" &&
+        JSON.stringify(event.data).includes("The rollout guard is enabled."),
+    );
+    expect(stopIndex).toBeGreaterThan(-1);
+    expect(stopIndex).toBeLessThan(followupIndex);
+    expect(events.filter((event) => event.kind === "chat.stopStream")).toHaveLength(1);
+    expect(
+      events
+        .filter((event) => event.kind === "chat.appendStream" || event.kind === "chat.stopStream")
+        .some((event) => JSON.stringify(event.data).includes("The rollout guard is enabled.")),
+    ).toBe(false);
+    expect(collectSlackWireTexts(events)).toContain("The rollout guard is enabled.");
+  });
+
+  it("routes partial-stream output below a later human message", async () => {
+    const followupAnswer = "The follow-up audit is complete.";
+    const events = await runDeliveryTraceScenario({
+      scenario: {
+        name: "partial-native-intervening-message",
+        steps: [
+          { kind: "reply-start" },
+          { kind: "final", text: NATIVE_FINAL_TEXT },
+          { kind: "partial", text: "Please audit the follow-up too." },
+          { kind: "final", text: followupAnswer },
+          { kind: "idle" },
+        ],
+      },
+      setup: async (recorder) => {
+        const dispatch = await setupSlackTrace(recorder, "streaming-happy-native");
+        return async (step) => {
+          if (step.kind === "partial") {
+            traceState.tsCounter += 1;
+            noteSlackConversationMessage({
+              accountId: "default",
+              channelId: CHANNEL_ID,
+              threadTs: INBOUND_TS,
+              messageTs: `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
+              userId: "U_SECOND",
+              botUserId: "UBOT",
+            });
+            return;
+          }
+          await dispatch(step);
+        };
+      },
+      normalize: createSlackTsNormalizer(),
+    });
+
+    expect(events.filter((event) => event.kind === "chat.startStream")).toHaveLength(1);
+    expect(
+      events.some(
+        (event) =>
+          event.kind === "chat.postMessage" && JSON.stringify(event.data).includes(followupAnswer),
+      ),
+    ).toBe(true);
+    expect(
+      events
+        .filter((event) => event.kind === "chat.appendStream" || event.kind === "chat.stopStream")
+        .some((event) => JSON.stringify(event.data).includes(followupAnswer)),
+    ).toBe(false);
+  });
+
   it("removes a progress card detached by a later human message", async () => {
     const events = await runDeliveryTraceScenario({
       scenario: {
@@ -889,7 +993,7 @@ describe("slack delivery trace goldens", () => {
         return async (step) => {
           if (step.kind === "partial") {
             traceState.tsCounter += 1;
-            noteSlackDraftConversationMessage({
+            noteSlackConversationMessage({
               accountId: "default",
               channelId: CHANNEL_ID,
               threadTs: INBOUND_TS,
