@@ -586,6 +586,24 @@ describe("GitHubIdentityController", () => {
     expect(controller.authorization).toEqual({ phase: "idle" });
   });
 
+  it("surfaces actionable authorization-start failures from the Gateway", async () => {
+    const message =
+      "GitHub CLI (gh) is required on the Gateway host. Install it from https://cli.github.com/ and retry.";
+    const request = vi.fn(async (method: string) => {
+      if (method === "tools.github.authorize.start") {
+        throw new Error(message);
+      }
+      throw new Error(`unexpected method ${method}`);
+    });
+    const client = { request } as unknown as GatewayBrowserClient;
+    const controller = createStatusOnlyController(client);
+    sync(controller, client);
+
+    await controller.startAuthorization();
+
+    expect(controller.authorization).toEqual({ phase: "failed", message });
+  });
+
   it.each([
     { label: "selected agent changes", overrides: { agentId: "reviewer" } },
     { label: "connection generation changes", overrides: { clientRevision: 2 } },

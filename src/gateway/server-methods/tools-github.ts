@@ -15,6 +15,7 @@ import {
   resolveGitHubToolIdentityStatus,
   resolveManagedGitHubProfileDir,
 } from "../../agents/github-tool-identity.js";
+import { detectBinary } from "../../infra/detect-binary.js";
 import { consumeGitHubSetupHandoff } from "../../secrets/store/secret-store.js";
 import { updateGitHubToolIdentityConfig } from "../github-tool-identity-config.js";
 import { resolveAgentIdOrRespondError } from "./agent-id-shared.js";
@@ -169,6 +170,17 @@ export const toolsGitHubHandlers: GatewayRequestHandlers = {
       const service = context.githubOAuthService;
       if (!service) {
         throw new Error("GitHub authorization lifecycle is unavailable.");
+      }
+      if (!(await detectBinary("gh"))) {
+        respond(
+          false,
+          undefined,
+          errorShape(
+            ErrorCodes.UNAVAILABLE,
+            "GitHub CLI (gh) is required on the Gateway host. Install it from https://cli.github.com/ and retry.",
+          ),
+        );
+        return;
       }
       respond(
         true,

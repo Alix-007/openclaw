@@ -11,6 +11,7 @@ const github = vi.hoisted(() => ({
   updateConfig: vi.fn(),
 }));
 const secrets = vi.hoisted(() => ({ consumeHandoff: vi.fn() }));
+const binaries = vi.hoisted(() => ({ detect: vi.fn() }));
 const oauth = {
   startAuthorization: vi.fn(),
   pollAuthorization: vi.fn(),
@@ -32,6 +33,7 @@ vi.mock("../github-tool-identity-config.js", () => ({
 vi.mock("../../secrets/store/secret-store.js", () => ({
   consumeGitHubSetupHandoff: secrets.consumeHandoff,
 }));
+vi.mock("../../infra/detect-binary.js", () => ({ detectBinary: binaries.detect }));
 vi.mock("../../agents/agent-scope.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../agents/agent-scope.js")>()),
   listAgentIds: vi.fn(() => ["main", "reviewer"]),
@@ -101,6 +103,7 @@ describe("tools.github handlers", () => {
     github.configured.mockReturnValue(undefined);
     github.status.mockResolvedValue(status);
     github.updateConfig.mockResolvedValue({ next: true });
+    binaries.detect.mockReset().mockResolvedValue(true);
     oauth.startAuthorization.mockReset();
     oauth.pollAuthorization.mockReset();
     oauth.cancelAuthorization.mockReset();
@@ -287,6 +290,7 @@ describe("tools.github handlers", () => {
     const cancel = await invoke("tools.github.authorize.cancel", { requestId });
 
     expect(oauth.startAuthorization).toHaveBeenCalledWith({ scope: "agent", agentId: "main" });
+    expect(binaries.detect).toHaveBeenCalledWith("gh");
     expect(oauth.pollAuthorization).toHaveBeenCalledWith(requestId);
     expect(oauth.cancelAuthorization).toHaveBeenCalledWith(requestId);
     expect(start.mock.calls[0]?.[1]).toEqual({
@@ -300,6 +304,38 @@ describe("tools.github handlers", () => {
     expect(cancel).toHaveBeenCalledWith(true, { cancelled: true });
     expect(JSON.stringify(start.mock.calls)).not.toContain("device_code");
     expect(JSON.stringify(start.mock.calls)).not.toContain("access_token");
+  });
+
+  it("rejects device authorization before code issuance when GitHub CLI is unavailable", async () => {
+    binaries.detect.mockResolvedValue(false);
+
+    const respond = await invoke("tools.github.authorize.start", {
+      scope: "system",
+      agentId: "main",
+    });
+
+    expect(binaries.detect).toHaveBeenCalledWith("gh");
+    expect(oauth.startAuthorization).not.toHaveBeenCalled();
+    expect(respond.mock.calls[0]?.[0]).toBe(false);
+    expect(JSON.stringify(respond.mock.calls)).toContain(
+      "GitHub CLI (gh) is required on the Gateway host. Install it from https://cli.github.com/ and retry.",
+    );
+  });
+
+  it("keeps unrelated authorization-start failures bounded", async () => {
+    oauth.startAuthorization.mockRejectedValue(
+      new Error("device_code=private access_token=private upstream failure"),
+    );
+
+    const respond = await invoke("tools.github.authorize.start", {
+      scope: "system",
+      agentId: "main",
+    });
+
+    expect(respond.mock.calls[0]?.[0]).toBe(false);
+    expect(JSON.stringify(respond.mock.calls)).toContain("GitHub authorization could not start");
+    expect(JSON.stringify(respond.mock.calls)).not.toContain("device_code");
+    expect(JSON.stringify(respond.mock.calls)).not.toContain("access_token");
   });
 
   it("returns bounded authorization failures without forwarding diagnostics", async () => {
