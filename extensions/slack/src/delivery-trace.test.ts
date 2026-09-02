@@ -24,7 +24,8 @@ import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { createDeferred } from "openclaw/plugin-sdk/extension-shared";
 import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { noteSlackConversationMessage } from "./draft-message-boundaries.js";
+import { registerSlackMessageEvents } from "./monitor/events/messages.js";
+import { createSlackSystemEventTestHarness } from "./monitor/events/system-event-test-harness.js";
 import type { PreparedSlackMessage } from "./monitor/message-handler/types.js";
 import { setSlackSessionStatus } from "./session-status.js";
 import { markSlackStreamsStopped } from "./streaming.js";
@@ -763,6 +764,28 @@ function collectSlackWireTexts(events: readonly TraceEvent[]): string[] {
   return texts;
 }
 
+function createTopLevelSlackMessageIngress() {
+  const harness = createSlackSystemEventTestHarness({ dmPolicy: "open" });
+  registerSlackMessageEvents({ ctx: harness.ctx, handleSlackMessage: async () => {} });
+  const handler = harness.getHandler("message");
+  if (!handler) {
+    throw new Error("expected Slack message ingress handler");
+  }
+  return async (messageTs: string) => {
+    await handler({
+      event: {
+        type: "message",
+        channel: CHANNEL_ID,
+        channel_type: "channel",
+        user: "U_SECOND",
+        text: "Please audit the follow-up too.",
+        ts: messageTs,
+      },
+      body: {},
+    });
+  };
+}
+
 function buildSlackDeliveryProofVerdict(params: {
   scenario: SlackTraceScenarioName;
   events: readonly TraceEvent[];
@@ -872,6 +895,7 @@ describe("slack delivery trace goldens", () => {
 
   it("seals native progress before answering a later human message", async () => {
     const followupText = "Please also check the rollout guard.";
+    const emitTopLevelMessage = createTopLevelSlackMessageIngress();
     const events = await runDeliveryTraceScenario({
       scenario: {
         name: "progress-native-intervening-message",
@@ -890,14 +914,9 @@ describe("slack delivery trace goldens", () => {
         return async (step) => {
           if (step.kind === "partial" && step.text === followupText) {
             traceState.tsCounter += 1;
-            noteSlackConversationMessage({
-              accountId: "default",
-              channelId: CHANNEL_ID,
-              threadTs: INBOUND_TS,
-              messageTs: `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
-              userId: "U_SECOND",
-              botUserId: "UBOT",
-            });
+            await emitTopLevelMessage(
+              `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
+            );
             return;
           }
           await dispatch(step);
@@ -926,8 +945,9 @@ describe("slack delivery trace goldens", () => {
     expect(collectSlackWireTexts(events)).toContain("The rollout guard is enabled.");
   });
 
-  it("routes partial-stream output below a later human message", async () => {
+  it("routes partial-stream output below a later top-level message from Slack ingress", async () => {
     const followupAnswer = "The follow-up audit is complete.";
+    const emitTopLevelMessage = createTopLevelSlackMessageIngress();
     const events = await runDeliveryTraceScenario({
       scenario: {
         name: "partial-native-intervening-message",
@@ -944,14 +964,9 @@ describe("slack delivery trace goldens", () => {
         return async (step) => {
           if (step.kind === "partial") {
             traceState.tsCounter += 1;
-            noteSlackConversationMessage({
-              accountId: "default",
-              channelId: CHANNEL_ID,
-              threadTs: INBOUND_TS,
-              messageTs: `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
-              userId: "U_SECOND",
-              botUserId: "UBOT",
-            });
+            await emitTopLevelMessage(
+              `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
+            );
             return;
           }
           await dispatch(step);
@@ -960,13 +975,24 @@ describe("slack delivery trace goldens", () => {
       normalize: createSlackTsNormalizer(),
     });
 
-    expect(events.filter((event) => event.kind === "chat.startStream")).toHaveLength(1);
-    expect(
-      events.some(
-        (event) =>
-          event.kind === "chat.postMessage" && JSON.stringify(event.data).includes(followupAnswer),
-      ),
-    ).toBe(true);
+    const starts = events.filter((event) => event.kind === "chat.startStream");
+    expect(starts).toHaveLength(1);
+    expect(starts[0]?.data).toMatchObject({ payload: { thread_ts: "ts#1" } });
+    const followupPosts = events.filter(
+      (event) =>
+        event.kind === "chat.postMessage" && JSON.stringify(event.data).includes(followupAnswer),
+    );
+    expect(followupPosts).toHaveLength(1);
+    const followupPayload = followupPosts[0]?.data as
+      | { payload?: { thread_ts?: string } }
+      | undefined;
+    expect(followupPayload?.payload?.thread_ts).toBeDefined();
+    expect(followupPayload?.payload?.thread_ts).not.toBe("ts#1");
+    const stopIndex = events.findIndex((event) => event.kind === "chat.stopStream");
+    const followupIndex = events.indexOf(followupPosts[0] as TraceEvent);
+    expect(stopIndex).toBeGreaterThan(-1);
+    expect(stopIndex).toBeLessThan(followupIndex);
+    expect(events.filter((event) => event.kind === "chat.stopStream")).toHaveLength(1);
     expect(
       events
         .filter((event) => event.kind === "chat.appendStream" || event.kind === "chat.stopStream")
@@ -975,6 +1001,7 @@ describe("slack delivery trace goldens", () => {
   });
 
   it("removes a progress card detached by a later human message", async () => {
+    const emitTopLevelMessage = createTopLevelSlackMessageIngress();
     const events = await runDeliveryTraceScenario({
       scenario: {
         name: "progress-session-card-detached",
@@ -993,14 +1020,9 @@ describe("slack delivery trace goldens", () => {
         return async (step) => {
           if (step.kind === "partial") {
             traceState.tsCounter += 1;
-            noteSlackConversationMessage({
-              accountId: "default",
-              channelId: CHANNEL_ID,
-              threadTs: INBOUND_TS,
-              messageTs: `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
-              userId: "U_SECOND",
-              botUserId: "UBOT",
-            });
+            await emitTopLevelMessage(
+              `1767225601.${String(traceState.tsCounter).padStart(6, "0")}`,
+            );
             // A changed authored status moves progress below the human message;
             // ordinary tool activity intentionally leaves the summary unchanged.
             await traceState.turn?.replyOptions.onItemEvent?.({

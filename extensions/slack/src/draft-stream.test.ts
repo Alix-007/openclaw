@@ -33,6 +33,7 @@ function createDraftStreamHarness(
     accountId?: string;
     maxChars?: number;
     threadTs?: string;
+    conversationThreadTs?: string;
     send?: DraftSendFn;
     edit?: DraftEditFn;
     eventScope?: DraftStreamParams["eventScope"];
@@ -50,6 +51,9 @@ function createDraftStreamHarness(
     token: "xoxb-test",
     accountId: params.accountId,
     conversationChannelId: "C123",
+    conversationThreadTs: Object.hasOwn(params, "conversationThreadTs")
+      ? params.conversationThreadTs
+      : params.threadTs,
     throttleMs: 250,
     maxChars: params.maxChars,
     eventScope: params.eventScope,
@@ -362,6 +366,28 @@ describe("createSlackDraftStream", () => {
       expect.objectContaining({ accountId }),
     );
     expect(stream.messageId()).toBe("100.300");
+  });
+
+  it("keys a top-level conversation separately from its threaded outbound reply", async () => {
+    const accountId = "top-level-threaded-reply";
+    const send = vi.fn<DraftSendFn>(async () => slackDraftSendResult("100.100"));
+    const { stream } = createDraftStreamHarness({
+      accountId,
+      threadTs: "100.000",
+      conversationThreadTs: undefined,
+      send,
+    });
+
+    stream.update("_working on the first message_");
+    await stream.flush();
+    noteSlackConversationMessage({
+      accountId,
+      channelId: "C123",
+      messageTs: "100.200",
+      userId: "U_OWNER",
+    });
+
+    expect(stream.messageId()).toBeUndefined();
   });
 
   it("keeps moving below repeated interruptions from different participants", async () => {

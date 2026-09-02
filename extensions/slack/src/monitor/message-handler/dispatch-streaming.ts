@@ -4,6 +4,7 @@ import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-
 import { danger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
 import {
   trackSlackConversationMessage,
+  type SlackConversationMessageBoundary,
   type SlackMessageBoundaryTracker,
 } from "../../draft-message-boundaries.js";
 import { formatSlackError } from "../../errors.js";
@@ -50,6 +51,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     streamSession: null as SlackStreamSession | null,
     nativeProgressStreamStartPromise: null as Promise<SlackStreamSession | null> | null,
     nativeProgressStreamThreadTs: undefined as string | undefined,
+    interveningReplyThreadTs: undefined as string | undefined,
     streamFailed: false,
     usedReplyThreadTs: undefined as string | undefined,
     usedBlockReplyThreadTs: undefined as string | undefined,
@@ -57,22 +59,26 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     observedFinalReplyDelivery: false,
   };
   let streamBoundaryTracker: SlackMessageBoundaryTracker | null = null;
+  let interveningStreamStopPromise: Promise<void> | null = null;
   let onInterveningMessage: (() => void) | undefined;
 
   const stopStreamBoundaryTracking = () => {
     streamBoundaryTracker?.stop();
     streamBoundaryTracker = null;
   };
-  const startStreamBoundaryTracking = (threadTs: string) => {
+  const startStreamBoundaryTracking = () => {
     stopStreamBoundaryTracking();
     streamBoundaryTracker = trackSlackConversationMessage({
       accountId: account.accountId,
       teamId: prepared.eventScope?.teamId,
       channelId: message.channel,
-      threadTs,
-      onInterveningMessage: () => {
+      // Boundary ownership follows the inbound conversation. The outbound
+      // reply target may be the top-level message ts when replyToMode=all.
+      threadTs: message.thread_ts,
+      onInterveningMessage: (boundary: SlackConversationMessageBoundary) => {
         // Once a human reply overtakes this stream, no later payload may be
         // appended to it. Progress mode additionally seals its task card.
+        state.interveningReplyThreadTs = boundary.threadTs ?? boundary.messageTs;
         state.streamFailed = true;
         onInterveningMessage?.();
       },
@@ -401,6 +407,52 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     return true;
   };
 
+  const settleIntervenedStream = async () => {
+    if (onInterveningMessage) {
+      return;
+    }
+    if (interveningStreamStopPromise) {
+      await interveningStreamStopPromise;
+      return;
+    }
+    const session = state.streamSession;
+    if (!session || session.stopped) {
+      return;
+    }
+    const stopPromise = (async () => {
+      try {
+        const stopResult = await stopSlackStream({
+          session,
+          ...(slackMessageMetadata ? { metadata: slackMessageMetadata } : {}),
+        });
+        acknowledgeStoppedStreamedDeliveries(session, stopResult.messageId);
+        state.observedReplyDelivery = true;
+        state.usedReplyThreadTs ??= session.threadTs;
+      } catch (err) {
+        if (err instanceof SlackStreamNotDeliveredError) {
+          await deliverPendingStreamFallback(session, err);
+        } else {
+          const error = formatSlackError(err);
+          emitAcknowledgedStreamedDeliveries();
+          emitFailedPendingStreamedDeliveries(error);
+          runtime.error?.(danger(`slack-stream: failed to seal before human reply: ${error}`));
+        }
+      } finally {
+        if (state.streamSession === session) {
+          state.streamSession = null;
+        }
+      }
+    })();
+    interveningStreamStopPromise = stopPromise;
+    try {
+      await stopPromise;
+    } finally {
+      if (interveningStreamStopPromise === stopPromise) {
+        interveningStreamStopPromise = null;
+      }
+    }
+  };
+
   const isStreamingEligible = (payload: ReplyPayload, options?: { maxTextBytes?: number }) => {
     const reply = resolveSendableOutboundReplyParts(payload);
     const renderPlan = resolveSlackReplyRenderPlan(payload);
@@ -430,10 +482,16 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     }
     const reply = resolveSendableOutboundReplyParts(params.payload);
     if (!isStreamingEligible(params.payload)) {
+      if (state.streamFailed) {
+        await settleIntervenedStream();
+      }
       await deliverNormally({
         payload: params.payload,
         kind: params.kind,
-        forcedThreadTs: state.streamSession?.threadTs ?? state.nativeProgressStreamThreadTs,
+        forcedThreadTs:
+          state.interveningReplyThreadTs ??
+          state.streamSession?.threadTs ??
+          state.nativeProgressStreamThreadTs,
       });
       return;
     }
@@ -453,15 +511,19 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
         return;
       }
       if (state.streamFailed) {
+        await settleIntervenedStream();
         await deliverNormally({
           payload: params.payload,
           kind: params.kind,
-          forcedThreadTs: state.streamSession?.threadTs ?? state.nativeProgressStreamThreadTs,
+          forcedThreadTs:
+            state.interveningReplyThreadTs ??
+            state.streamSession?.threadTs ??
+            state.nativeProgressStreamThreadTs,
         });
         return;
       }
       if (!state.streamSession) {
-        const streamThreadTs = replyPlan.nextThreadTs();
+        const streamThreadTs = state.interveningReplyThreadTs ?? replyPlan.nextThreadTs();
         plannedThreadTs = streamThreadTs;
         if (!streamThreadTs) {
           logVerbose(
@@ -486,7 +548,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
           return;
         }
 
-        startStreamBoundaryTracking(streamThreadTs);
+        startStreamBoundaryTracking();
         state.streamSession = await startSlackStream({
           client: slackClient,
           channel: message.channel,
@@ -653,6 +715,7 @@ export function createSlackStreamingDeliveryRuntime(setup: SlackDispatchSetup) {
     setInterveningMessageHandler: (handler?: () => void) => {
       onInterveningMessage = handler;
     },
+    nextStreamThreadTs: () => state.interveningReplyThreadTs ?? replyPlan.nextThreadTs(),
     startStreamBoundaryTracking,
     stopStreamBoundaryTracking,
     syncStreamBoundaryMessageTs,

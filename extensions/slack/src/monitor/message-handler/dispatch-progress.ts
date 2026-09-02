@@ -71,6 +71,7 @@ export function createSlackProgressRuntime(runtimeParams: {
         token: ctx.botToken,
         accountId: account.accountId,
         conversationChannelId: message.channel,
+        conversationThreadTs: message.thread_ts,
         eventScope: prepared.eventScope,
         // Impersonated Slack messages cannot be deleted. Keep the temporary
         // preview app-authored and apply custom identity only to final delivery.
@@ -650,7 +651,7 @@ export function createSlackProgressRuntime(runtimeParams: {
       ? () => {
           void withNativeStreamOrder(async () => {
             await beginNewProgressTurn({ force: true });
-          }).catch((err) => {
+          }).catch((err: unknown) => {
             runtime.error?.(
               danger(`slack-stream: failed to rotate after human reply: ${formatSlackError(err)}`),
             );

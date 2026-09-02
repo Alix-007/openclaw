@@ -41,6 +41,7 @@ export function createSlackDraftStream(params: {
   token: string;
   accountId?: string;
   conversationChannelId?: string;
+  conversationThreadTs?: string;
   eventScope?: SlackEventScope;
   identity?: SlackSendIdentity;
   maxChars?: number;
@@ -109,7 +110,7 @@ export function createSlackDraftStream(params: {
             accountId: params.accountId,
             teamId: params.eventScope?.teamId,
             channelId: params.conversationChannelId,
-            threadTs,
+            threadTs: params.conversationThreadTs,
             onInterveningMessage: forceNewMessage,
           })
         : undefined;
@@ -140,7 +141,7 @@ export function createSlackDraftStream(params: {
           accountId: params.accountId,
           teamId: params.eventScope?.teamId,
           channelId: streamMessage.channelId,
-          threadTs,
+          threadTs: params.conversationThreadTs,
           messageTs: streamMessage.messageId,
           onInterveningMessage: forceNewMessage,
         });

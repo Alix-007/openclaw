@@ -7,8 +7,13 @@ type SlackDraftConversation = {
 
 type ActiveSlackReply = {
   messageTs?: string;
-  latestHumanMessageTs?: string;
-  onInterveningMessage: () => void;
+  latestHumanMessage?: SlackConversationMessageBoundary;
+  onInterveningMessage: (boundary: SlackConversationMessageBoundary) => void;
+};
+
+export type SlackConversationMessageBoundary = {
+  messageTs: string;
+  threadTs?: string;
 };
 
 export type SlackMessageBoundaryTracker = {
@@ -62,10 +67,10 @@ export function trackSlackConversationMessage(
     setMessageTs: (messageTs) => {
       activeReply.messageTs = messageTs;
       if (
-        activeReply.latestHumanMessageTs &&
-        isLaterSlackMessage(activeReply.latestHumanMessageTs, messageTs)
+        activeReply.latestHumanMessage &&
+        isLaterSlackMessage(activeReply.latestHumanMessage.messageTs, messageTs)
       ) {
-        activeReply.onInterveningMessage();
+        activeReply.onInterveningMessage(activeReply.latestHumanMessage);
       }
     },
     stop,
@@ -98,18 +103,22 @@ export function noteSlackConversationMessage(
   }
 
   for (const reply of replies) {
+    const boundary: SlackConversationMessageBoundary = {
+      messageTs: conversation.messageTs,
+      ...(conversation.threadTs ? { threadTs: conversation.threadTs } : {}),
+    };
     if (!reply.messageTs) {
       if (
-        !reply.latestHumanMessageTs ||
-        isLaterSlackMessage(conversation.messageTs, reply.latestHumanMessageTs)
+        !reply.latestHumanMessage ||
+        isLaterSlackMessage(conversation.messageTs, reply.latestHumanMessage.messageTs)
       ) {
         // Slack can deliver the next message before chat.postMessage returns its timestamp.
-        reply.latestHumanMessageTs = conversation.messageTs;
+        reply.latestHumanMessage = boundary;
       }
       continue;
     }
     if (isLaterSlackMessage(conversation.messageTs, reply.messageTs)) {
-      reply.onInterveningMessage();
+      reply.onInterveningMessage(boundary);
     }
   }
 }

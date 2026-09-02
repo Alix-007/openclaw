@@ -8,12 +8,11 @@ import type { SlackStreamingDeliveryRuntime } from "./dispatch-streaming.js";
 export function createSlackNativeProgressTransport(params: {
   setup: Pick<
     SlackDispatchSetup,
-    "ctx" | "message" | "replyPlan" | "slackClient" | "slackIdentity" | "slackStreamFallbackTeamId"
+    "ctx" | "message" | "slackClient" | "slackIdentity" | "slackStreamFallbackTeamId"
   >;
   delivery: SlackStreamingDeliveryRuntime;
 }) {
-  const { ctx, message, replyPlan, slackClient, slackIdentity, slackStreamFallbackTeamId } =
-    params.setup;
+  const { ctx, message, slackClient, slackIdentity, slackStreamFallbackTeamId } = params.setup;
   const { delivery } = params;
 
   const markDelivered = (threadTs?: string) => {
@@ -43,7 +42,7 @@ export function createSlackNativeProgressTransport(params: {
   };
 
   const start = async (update: { text?: string; chunks?: AnyChunk[] }): Promise<boolean> => {
-    const streamThreadTs = replyPlan.nextThreadTs();
+    const streamThreadTs = delivery.nextStreamThreadTs();
     if (!streamThreadTs) {
       logVerbose(
         "slack-stream: no reply thread target for native progress stream start, falling back",
@@ -52,7 +51,7 @@ export function createSlackNativeProgressTransport(params: {
       return false;
     }
     delivery.nativeProgressStreamThreadTs = streamThreadTs;
-    delivery.startStreamBoundaryTracking(streamThreadTs);
+    delivery.startStreamBoundaryTracking();
     const startPromise = (async () => {
       const session = await startSlackStream({
         client: slackClient,
