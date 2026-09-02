@@ -196,8 +196,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
           await delivery.deliverNormally({
             payload,
             kind: info.kind,
-            forcedThreadTs:
-              delivery.streamSession?.threadTs ?? delivery.nativeProgressStreamThreadTs,
+            forcedThreadTs: delivery.resolvePostBoundaryThreadTs(),
           });
           return;
         }
@@ -208,7 +207,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
       await delivery.deliverNormally({
         payload,
         kind: info.kind,
-        forcedThreadTs: delivery.streamSession?.threadTs ?? delivery.nativeProgressStreamThreadTs,
+        forcedThreadTs: delivery.resolvePostBoundaryThreadTs(),
       });
       return;
     }

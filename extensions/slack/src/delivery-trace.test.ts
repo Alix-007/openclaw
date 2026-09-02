@@ -943,6 +943,10 @@ describe("slack delivery trace goldens", () => {
         .some((event) => JSON.stringify(event.data).includes("The rollout guard is enabled.")),
     ).toBe(false);
     expect(collectSlackWireTexts(events)).toContain("The rollout guard is enabled.");
+    const followupPost = events[followupIndex];
+    expect(
+      (followupPost?.data as { payload?: { thread_ts?: string } } | undefined)?.payload?.thread_ts,
+    ).toBe("ts#3");
   });
 
   it("routes partial-stream output below a later top-level message from Slack ingress", async () => {

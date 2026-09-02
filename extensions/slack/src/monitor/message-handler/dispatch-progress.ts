@@ -387,7 +387,7 @@ export function createSlackProgressRuntime(runtimeParams: {
   const deliverNativeFinalNow = async (payload: ReplyPayload, kind: ReplyDispatchKind) => {
     progressDraft.markFinalReplyStarted();
     const streamReady = await nativeTransport.waitForStart();
-    const finalThreadTs = delivery.streamSession?.threadTs ?? delivery.nativeProgressStreamThreadTs;
+    const finalThreadTs = delivery.resolvePostBoundaryThreadTs();
     // A short narration leaves the session buffered locally (`delivered` false)
     // because `stop` can be its first network call. Requiring delivery here
     // sent the final normally and then finalized the stream anyway, which is
