@@ -19,7 +19,7 @@ import {
   setSetupGraceTimeoutMsForTests,
 } from "./config.js";
 import { resolveRecallEscalationDecision } from "./escalation.js";
-import { buildMetadata, buildPromptPrefix } from "./prompt.js";
+import { buildMetadata, buildPromptPrefix, buildRecallOutcomePrefix } from "./prompt.js";
 import { buildQuery, buildSearchQuery, extractRecentTurns, getModelRef } from "./query.js";
 import {
   buildCacheKey,
@@ -472,11 +472,14 @@ export default definePluginEntry({
               message: event.prompt,
               hasStrongLaneOneHit: laneOne.hasStrongHit,
             });
-            if (!escalationDecision.shouldEscalate) {
-              api.logger.debug?.(
-                `active-memory: recall skipped reason=${escalationDecision.reason}`,
-              );
-              return laneOneContext ? { prependContext: laneOneContext } : undefined;
+            if (escalationDecision !== "recall") {
+              api.logger.debug?.(`active-memory: recall skipped reason=${escalationDecision}`);
+              const outcomeContext =
+                escalationDecision === "no-recall-intent"
+                  ? buildRecallOutcomePrefix("skipped-no-recall-intent")
+                  : undefined;
+              const prependContext = [laneOneContext, outcomeContext].filter(Boolean).join("\n");
+              return prependContext ? { prependContext } : undefined;
             }
             const conversationRecall: ConversationRecallContext | undefined =
               productRecallAllowed && resolvedSessionKey
@@ -521,16 +524,13 @@ export default definePluginEntry({
             });
             deadlineController.signal.throwIfAborted();
             toolAuthority.assertActive();
-            if (!result.summary) {
-              return laneOneContext ? { prependContext: laneOneContext } : undefined;
-            }
-            const promptPrefix = buildPromptPrefix(result.summary);
-            if (!promptPrefix) {
-              return laneOneContext ? { prependContext: laneOneContext } : undefined;
-            }
-            return {
-              prependContext: [laneOneContext, promptPrefix].filter(Boolean).join("\n"),
-            };
+            const recallContext = result.summary
+              ? buildPromptPrefix(result.summary)
+              : result.status === "unavailable"
+                ? buildRecallOutcomePrefix(result.status)
+                : undefined;
+            const prependContext = [laneOneContext, recallContext].filter(Boolean).join("\n");
+            return prependContext ? { prependContext } : undefined;
           } catch (error) {
             if (deadlineController.signal.aborted) {
               return undefined;

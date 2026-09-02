@@ -57,12 +57,7 @@ export function hasRecallIntent(message: string): boolean {
   );
 }
 
-type RecallEscalationDecision =
-  | { shouldEscalate: true }
-  | {
-      shouldEscalate: false;
-      reason: "mode-off" | "strong-lane-one-hit" | "no-recall-intent";
-    };
+type RecallEscalationDecision = "recall" | "mode-off" | "strong-lane-one-hit" | "no-recall-intent";
 
 export function resolveRecallEscalationDecision(params: {
   mode: ActiveMemoryMode;
@@ -70,15 +65,13 @@ export function resolveRecallEscalationDecision(params: {
   hasStrongLaneOneHit: boolean;
 }): RecallEscalationDecision {
   if (params.mode === "off") {
-    return { shouldEscalate: false, reason: "mode-off" };
+    return "mode-off";
   }
   if (params.mode === "always") {
-    return { shouldEscalate: true };
+    return "recall";
   }
   if (params.hasStrongLaneOneHit) {
-    return { shouldEscalate: false, reason: "strong-lane-one-hit" };
+    return "strong-lane-one-hit";
   }
-  return hasRecallIntent(params.message)
-    ? { shouldEscalate: true }
-    : { shouldEscalate: false, reason: "no-recall-intent" };
+  return hasRecallIntent(params.message) ? "recall" : "no-recall-intent";
 }
