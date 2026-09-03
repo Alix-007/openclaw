@@ -80,6 +80,7 @@ type CardDraft = {
   ids: Set<string>;
   card: ModelProviderCard;
   hasModelAuth: boolean;
+  catalogOutcome?: ModelCatalogProviderOutcome;
 };
 
 // Canonicalize alias provider ids (claude-cli → anthropic, minimax-* →
@@ -101,26 +102,10 @@ function authKindForProvider(provider: ModelAuthStatusProvider): ModelProviderAu
   }
 }
 
-const CATALOG_OUTCOME_SEVERITY: ReadonlyArray<ModelCatalogProviderOutcome["status"]> = [
-  "auth-rejected",
-  "unavailable",
-  "ready",
-];
-
-function resolveCatalogStatus(
-  outcomes: ModelCatalogProviderOutcome[],
-): ModelCatalogProviderOutcome["status"] | undefined {
-  const providerWide = outcomes.filter((outcome) => outcome.profileId === undefined);
-  const candidates = providerWide.length > 0 ? providerWide : outcomes;
-  // Provider-wide failures cover every credential. Otherwise one ready profile
-  // keeps the shared provider card usable when a sibling profile is rejected.
-  if (providerWide.length === 0 && candidates.some((outcome) => outcome.status === "ready")) {
-    return "ready";
-  }
-  return CATALOG_OUTCOME_SEVERITY.find((status) =>
-    candidates.some((outcome) => outcome.status === status),
-  );
-}
+const CATALOG_OUTCOME_PRIORITY = {
+  provider: ["auth-rejected", "unavailable", "ready"],
+  profile: ["ready", "auth-rejected", "unavailable"],
+} as const;
 
 function findDraft(drafts: CardDraft[], ids: string[]): CardDraft | undefined {
   return drafts.find((draft) => ids.some((id) => draft.ids.has(id)));
@@ -216,21 +201,24 @@ export function buildModelProviderCards(input: ModelProviderCardsInput): ModelPr
     }
   }
 
-  const catalogOutcomes = new Map<string, ModelCatalogProviderOutcome[]>();
   for (const outcome of input.providerOutcomes ?? []) {
     const id = canonicalProviderId(outcome.provider);
     if (!id) {
       continue;
     }
-    ensureDraft(drafts, id, providerDisplayLabel(id));
-    const outcomes = catalogOutcomes.get(id) ?? [];
-    outcomes.push(outcome);
-    catalogOutcomes.set(id, outcomes);
-  }
-  for (const [id, outcomes] of catalogOutcomes) {
-    const catalogStatus = resolveCatalogStatus(outcomes);
-    if (catalogStatus) {
-      ensureDraft(drafts, id, providerDisplayLabel(id)).card.catalogStatus = catalogStatus;
+    const draft = ensureDraft(drafts, id, providerDisplayLabel(id));
+    const current = draft.catalogOutcome;
+    const providerWide = outcome.profileId === undefined;
+    const priority = CATALOG_OUTCOME_PRIORITY[providerWide ? "provider" : "profile"];
+    // Unscoped diagnostics own the provider card. Within profile-scoped results,
+    // one ready profile keeps a rejected sibling from hiding the usable catalog.
+    if (
+      !current ||
+      (providerWide !== (current.profileId === undefined)
+        ? providerWide
+        : priority.indexOf(outcome.status) < priority.indexOf(current.status))
+    ) {
+      draft.catalogOutcome = outcome;
     }
   }
 
@@ -343,7 +331,7 @@ export function buildModelProviderCards(input: ModelProviderCardsInput): ModelPr
         (input.configProviderIds ?? []).some((id) => canonicalProviderId(id) === draft.card.id) ||
         Boolean(draft.card.usage) ||
         draft.card.modelCount > 0 ||
-        Boolean(draft.card.catalogStatus) ||
+        Boolean(draft.catalogOutcome) ||
         (draft.card.localCost?.totalTokens ?? 0) > 0,
     )
     .map((draft) => {
@@ -351,6 +339,7 @@ export function buildModelProviderCards(input: ModelProviderCardsInput): ModelPr
       return Object.assign(
         {},
         draft.card,
+        draft.catalogOutcome ? { catalogStatus: draft.catalogOutcome.status } : {},
         apiKeySupported === undefined ? {} : { apiKeySupported },
       );
     })
