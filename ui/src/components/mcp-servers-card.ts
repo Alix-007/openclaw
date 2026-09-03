@@ -59,15 +59,20 @@ class McpServersCard extends OpenClawLightDomElement {
   @state() private busy = false;
   @state() private message: McpServerMessage | null = null;
   @state() private formOpen = false;
-  private mutationGeneration = 0;
+  private feedbackGeneration = 0;
 
   private readonly subscriptions = new SubscriptionsController(this)
     .effect(
       () => this.context?.runtimeConfig,
       (runtimeConfig) => {
+        const generation = this.feedbackGeneration;
         this.syncRows();
         void runtimeConfig.ensureLoaded().catch((error: unknown) => {
-          if (!this.isConnected || runtimeConfig !== this.context?.runtimeConfig) {
+          if (
+            generation !== this.feedbackGeneration ||
+            !this.isConnected ||
+            runtimeConfig !== this.context?.runtimeConfig
+          ) {
             return;
           }
           this.message = {
@@ -79,7 +84,7 @@ class McpServersCard extends OpenClawLightDomElement {
         return () => {
           // Async config work belongs to one connected source. Retire its UI
           // feedback before a replacement source or retained card can reuse it.
-          this.mutationGeneration += 1;
+          this.feedbackGeneration += 1;
           this.busy = false;
           this.message = null;
           unsubscribe();
@@ -124,11 +129,11 @@ class McpServersCard extends OpenClawLightDomElement {
     if (!this.context || !this.canMutate() || this.busy) {
       return false;
     }
-    const generation = this.mutationGeneration;
+    const generation = this.feedbackGeneration;
     this.busy = true;
     this.message = null;
     const result = await patchMcpServers(this.context.runtimeConfig, options);
-    if (generation !== this.mutationGeneration) {
+    if (generation !== this.feedbackGeneration) {
       return false;
     }
     this.busy = false;
