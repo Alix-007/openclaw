@@ -1467,8 +1467,7 @@ describe("image tool implicit imageModel config", () => {
 
         await expectImageToolExecOk(tool, imagePath);
 
-        expect(firstImageRequest(describeImage).timeoutMs).toBeGreaterThan(179_000);
-        expect(firstImageRequest(describeImage).timeoutMs).toBeLessThanOrEqual(180_000);
+        expect(firstImageRequest(describeImage).timeoutMs).toBe(180_000);
       });
     });
   });
@@ -1509,23 +1508,21 @@ describe("image tool implicit imageModel config", () => {
 
         await expectImageToolExecOk(tool, imagePath);
 
-        expect(firstImageRequest(describeImage).timeoutMs).toBeGreaterThan(299_000);
-        expect(firstImageRequest(describeImage).timeoutMs).toBeLessThanOrEqual(300_000);
+        expect(firstImageRequest(describeImage).timeoutMs).toBe(300_000);
       });
     });
   });
 
-  it("uses the longest candidate timeout as one shrinking sequential-image budget", async () => {
+  it("keeps each sequential request timeout whole under one owner signal", async () => {
     await withTempWorkspacePng(async ({ workspaceDir, imagePath }) => {
       await withTempAgentDir(async (agentDir) => {
         const secondImagePath = path.join(workspaceDir, "second.png");
         await fs.copyFile(imagePath, secondImagePath);
-        let nowMs = 1_000;
-        vi.spyOn(Date, "now").mockImplementation(() => nowMs);
         const requestTimeouts: number[] = [];
+        const requestSignals: Array<AbortSignal | undefined> = [];
         const describeImage = vi.fn(async (params: ImageDescriptionRequest) => {
           requestTimeouts.push(params.timeoutMs);
-          nowMs += 250;
+          requestSignals.push(params.signal);
           return { text: "ok", model: params.model };
         });
         installFastLocalImageProviderStubs({
@@ -1558,11 +1555,13 @@ describe("image tool implicit imageModel config", () => {
         };
         const tool = createRequiredImageTool({ config: cfg, agentDir, workspaceDir });
 
-        await tool.execute("shrinking-image-budget", {
+        await tool.execute("whole-request-budget", {
           paths: [imagePath, secondImagePath],
         });
 
-        expect(requestTimeouts).toEqual([2_000, 1_750]);
+        expect(requestTimeouts).toEqual([2_000, 2_000]);
+        expect(requestSignals[0]).toBeInstanceOf(AbortSignal);
+        expect(requestSignals[1]).toBe(requestSignals[0]);
       });
     });
   });
@@ -1570,11 +1569,17 @@ describe("image tool implicit imageModel config", () => {
   it("returns the owner timeout before starting a fallback after the deadline", async () => {
     await withTempWorkspacePng(async ({ workspaceDir, imagePath }) => {
       await withTempAgentDir(async (agentDir) => {
-        let nowMs = 1_000;
-        vi.spyOn(Date, "now").mockImplementation(() => nowMs);
-        const primary = vi.fn(async (params: ImageDescriptionRequest) => {
-          nowMs += params.timeoutMs;
-          throw new Error("primary request timed out");
+        const operationController = new AbortController();
+        const timeoutSpy = vi
+          .spyOn(AbortSignal, "timeout")
+          .mockReturnValue(operationController.signal);
+        let markPrimaryStarted!: () => void;
+        const primaryStarted = new Promise<void>((resolve) => {
+          markPrimaryStarted = resolve;
+        });
+        const primary = vi.fn(async () => {
+          markPrimaryStarted();
+          return await new Promise<never>(() => {});
         });
         const fallback = vi.fn(async (params: ImageDescriptionRequest) => ({
           text: "fallback should not start",
@@ -1597,11 +1602,19 @@ describe("image tool implicit imageModel config", () => {
         };
         const tool = createRequiredImageTool({ config: cfg, agentDir, workspaceDir });
 
-        await expect(tool.execute("image-operation-timeout", { path: imagePath })).rejects.toThrow(
-          "Image inspection timed out after 1000ms",
-        );
-        expect(primary).toHaveBeenCalledTimes(1);
-        expect(fallback).not.toHaveBeenCalled();
+        try {
+          const execution = tool.execute("image-operation-timeout", { path: imagePath });
+          await primaryStarted;
+          operationController.abort(new DOMException("owner timeout", "TimeoutError"));
+
+          await expect(execution).rejects.toThrow("Image inspection timed out after 600000ms");
+          expect(timeoutSpy).toHaveBeenCalledWith(600_000);
+          expect(firstImageRequest(primary).timeoutMs).toBe(1_000);
+          expect(primary).toHaveBeenCalledTimes(1);
+          expect(fallback).not.toHaveBeenCalled();
+        } finally {
+          timeoutSpy.mockRestore();
+        }
       });
     });
   });
@@ -3693,91 +3706,38 @@ describe("image tool run abort", () => {
 
   it("times out delayed image preparation before starting the provider", async () => {
     vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
+    const operationController = new AbortController();
+    const timeoutSpy = vi.spyOn(AbortSignal, "timeout").mockReturnValue(operationController.signal);
+    let markLoadStarted!: () => void;
+    const loadStarted = new Promise<void>((resolve) => {
+      markLoadStarted = resolve;
+    });
     const loadWebMedia: MockImageLoadWebMedia = vi.fn(async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 1_100);
-      });
-      return {
-        buffer: Buffer.from(ONE_PIXEL_PNG_B64, "base64"),
-        contentType: "image/png",
-        kind: "image" as const,
-      };
+      markLoadStarted();
+      return await new Promise<never>(() => {});
     });
     const spies = makeDescribeSpies();
     installAbortImageDeps(loadWebMedia, spies);
 
     await withTempAgentDir(async (agentDir) => {
       const cfg = createMinimaxImageConfig();
-      cfg.tools = { media: { image: { timeoutSeconds: 1 } } };
       const tool = createRequiredImageTool({ config: cfg, agentDir });
-      const execution = tool.execute("t1", {
-        prompt: "Describe the image.",
-        path: "https://example.test/a.png",
-        model: "minimax/MiniMax-VL-01",
-      });
-      const assertion = expect(execution).rejects.toThrow(
-        "Image inspection timed out after 1000ms",
-      );
-
-      await assertion;
-      expect(spies.describeImage).not.toHaveBeenCalled();
-      expect(spies.describeImages).not.toHaveBeenCalled();
-    });
-  });
-
-  it("times out stalled media runtime initialization before starting the provider", async () => {
-    vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
-    const spies = makeDescribeSpies();
-    installImageUnderstandingProviderDeps([minimaxProvider, moonshotProvider], {
-      loadImageWebMediaRuntime: () => new Promise<never>(() => {}),
-      describeImageWithModel: spies.describeImage,
-      describeImagesWithModel: spies.describeImages,
-    });
-
-    await withTempAgentDir(async (agentDir) => {
-      const cfg = createMinimaxImageConfig();
-      cfg.tools = { media: { image: { timeoutSeconds: 1 } } };
-      const tool = createRequiredImageTool({ config: cfg, agentDir });
-
-      await expect(
-        tool.execute("stalled-runtime", {
-          path: `data:image/png;base64,${ONE_PIXEL_PNG_B64}`,
+      try {
+        const execution = tool.execute("t1", {
+          prompt: "Describe the image.",
+          path: "https://example.test/a.png",
           model: "minimax/MiniMax-VL-01",
-        }),
-      ).rejects.toThrow("Image inspection timed out after 1000ms");
-      expect(spies.describeImage).not.toHaveBeenCalled();
-      expect(spies.describeImages).not.toHaveBeenCalled();
-    });
-  });
+        });
+        await loadStarted;
+        operationController.abort(new DOMException("owner timeout", "TimeoutError"));
 
-  it("times out stalled sandbox reference access before loading media", async () => {
-    vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
-    const loadWebMedia: MockImageLoadWebMedia = vi.fn();
-    const spies = makeDescribeSpies();
-    installAbortImageDeps(loadWebMedia, spies);
-
-    await withTempSandboxState(async ({ agentDir, sandboxRoot }) => {
-      const bridge = {
-        ...createHostSandboxFsBridge(sandboxRoot),
-        stat: () => new Promise<never>(() => {}),
-      };
-      const cfg = createMinimaxImageConfig();
-      cfg.tools = { media: { image: { timeoutSeconds: 1 } } };
-      const tool = createRequiredImageTool({
-        config: cfg,
-        agentDir,
-        sandbox: { root: sandboxRoot, bridge },
-      });
-
-      await expect(
-        tool.execute("stalled-reference", {
-          path: "@/Users/operator/.openclaw/media/inbound/photo.png",
-          model: "minimax/MiniMax-VL-01",
-        }),
-      ).rejects.toThrow("Image inspection timed out after 1000ms");
-      expect(loadWebMedia).not.toHaveBeenCalled();
-      expect(spies.describeImage).not.toHaveBeenCalled();
-      expect(spies.describeImages).not.toHaveBeenCalled();
+        await expect(execution).rejects.toThrow("Image inspection timed out after 600000ms");
+        expect(timeoutSpy).toHaveBeenCalledWith(600_000);
+        expect(spies.describeImage).not.toHaveBeenCalled();
+        expect(spies.describeImages).not.toHaveBeenCalled();
+      } finally {
+        timeoutSpy.mockRestore();
+      }
     });
   });
 

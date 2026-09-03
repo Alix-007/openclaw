@@ -400,7 +400,7 @@ Configures inbound media understanding (image/audio/video):
 
     - `capabilities`: list containing one or more of `image`, `audio`, and `video`.
     - `prompt`, `maxChars`, `maxBytes`, `timeoutSeconds`, `language`: per-entry overrides.
-    - Matching image model `timeoutSeconds` entries also apply when the agent calls the explicit `view_image` tool. For image understanding, this is a single end-to-end operation budget shared by preparation, image loading, sequential images, provider requests, retries, and fallbacks; each request receives only the remaining budget.
+    - Matching image model `timeoutSeconds` entries also apply when the agent calls the explicit `view_image` tool. For image understanding, this timeout applies to each provider request and is not reduced by earlier preparation work. The explicit tool has a separate fixed 600-second operation ceiling covering preparation, sequential images, retries, and fallbacks.
     - Failures fall back to the next entry.
 
     Provider auth follows standard order: SQLite auth profiles → env vars → `models.providers.*.apiKey`.

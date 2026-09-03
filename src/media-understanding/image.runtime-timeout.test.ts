@@ -724,7 +724,7 @@ describe("describeImageWithModelCore", () => {
     expect(releasePreparedModelRuntimeMock).toHaveBeenCalledOnce();
   });
 
-  it("subtracts runtime setup from the provider request deadline", async () => {
+  it("keeps the full CLI provider request timeout after runtime setup", async () => {
     vi.useFakeTimers();
     const slowSetupMs = 400;
     discoverModelsMock.mockReturnValue({
@@ -788,11 +788,11 @@ describe("describeImageWithModelCore", () => {
     if (!options?.signal) {
       throw new Error("Expected image completion abort signal");
     }
-    expect(options.timeoutMs).toBe(1000 - slowSetupMs);
+    expect(options.timeoutMs).toBe(1000);
     await expect(result).resolves.toEqual({ text: "ok", model: "gpt-5.4-mini" });
   });
 
-  it("subtracts a reasoning-only response from the retry deadline", async () => {
+  it("keeps the full provider request timeout for a reasoning retry", async () => {
     vi.useFakeTimers();
     discoverModelsMock.mockReturnValue({
       find: vi.fn(() => ({
@@ -842,8 +842,12 @@ describe("describeImageWithModelCore", () => {
 
     await vi.advanceTimersByTimeAsync(400);
     await expect(result).resolves.toEqual({ text: "retry ok", model: "gpt-5.4-mini" });
-    expect(requireMockCallAt(completeMock, 0, "initial image completion")[2].timeoutMs).toBe(1000);
-    expect(requireMockCallAt(completeMock, 1, "retry image completion")[2].timeoutMs).toBe(600);
+    expect(
+      expectDefined(completeMock.mock.calls[0], "initial image completion call 0")[2].timeoutMs,
+    ).toBe(1000);
+    expect(
+      expectDefined(completeMock.mock.calls[1], "retry image completion call 1")[2].timeoutMs,
+    ).toBe(1000);
   });
 
   it("rejects when image runtime setup exceeds the request timeout", async () => {

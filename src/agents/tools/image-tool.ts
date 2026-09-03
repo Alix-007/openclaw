@@ -19,7 +19,6 @@ import { resolveTimeoutMs } from "../../media-understanding/resolve.js";
 import {
   createProviderOperationDeadline,
   createProviderOperationTimeoutError,
-  resolveProviderOperationTimeoutMs,
 } from "../../media-understanding/shared.js";
 import {
   classifyMediaReferenceSource,
@@ -590,66 +589,19 @@ function resolveImageToolTimeoutMs(params: {
   );
 }
 
-function resolveImageToolOperationTimeoutMs(params: {
-  cfg: OpenClawConfig;
-  modelOverride?: string;
-  providerRegistry: Map<string, MediaUnderstandingProvider>;
-}): number {
-  return Math.min(
-    MAX_IMAGE_TOOL_OPERATION_TIMEOUT_MS,
-    Math.max(
-      ...resolveImageFallbackCandidates({
-        cfg: params.cfg,
-        defaultProvider: resolveImageFallbackDefaultProvider(params.cfg),
-        modelOverride: params.modelOverride,
-      }).map(({ provider, model }) =>
-        resolveImageToolTimeoutMs({
-          cfg: params.cfg,
-          provider,
-          model,
-          providerRegistry: params.providerRegistry,
-        }),
-      ),
-    ),
-  );
-}
-
 type ImageSandboxConfig = MediaToolSandbox;
 
 function createImageToolOperation(params: {
   cfg?: OpenClawConfig;
   imageModelConfig: ImageModelConfig;
-  modelOverride?: string;
-  preparedModelRuntime?: PreparedModelRuntimeSnapshot;
   signal?: AbortSignal;
 }) {
   params.signal?.throwIfAborted();
   const effectiveCfg = applyImageModelConfigDefaults(params.cfg, params.imageModelConfig);
   const providerCfg: OpenClawConfig = effectiveCfg ?? {};
-  const preparedProviders =
-    params.preparedModelRuntime?.mediaCapabilityProviders?.mediaUnderstandingProviders;
-  const timeoutCandidates = resolveImageFallbackCandidates({
-    cfg: providerCfg,
-    defaultProvider: resolveImageFallbackDefaultProvider(providerCfg),
-    modelOverride: params.modelOverride,
-  });
-  // Candidate refs already define an image route. Build timeout metadata without
-  // initializing unrelated plugin owners; the selected owner loads inside run().
-  const timeoutProviderRegistry = imageToolProviderDeps.buildProviderRegistry(
-    Object.fromEntries(
-      timeoutCandidates.map(({ provider }) => [
-        provider,
-        { id: provider, capabilities: ["image"] } satisfies MediaUnderstandingProvider,
-      ]),
-    ),
-    providerCfg,
-    preparedProviders ?? [],
-  );
-  const timeoutMs = resolveImageToolOperationTimeoutMs({
-    cfg: providerCfg,
-    modelOverride: params.modelOverride,
-    providerRegistry: timeoutProviderRegistry,
-  });
+  // This owner cap is independent from tools.media.*.timeoutSeconds, which
+  // remains the full allowance for each provider request.
+  const timeoutMs = MAX_IMAGE_TOOL_OPERATION_TIMEOUT_MS;
   const deadline = createProviderOperationDeadline({ label: "Image inspection", timeoutMs });
   const timeoutSignal = AbortSignal.timeout(timeoutMs);
   return {
@@ -696,7 +648,7 @@ async function runImagePrompt(params: {
   model: string;
   attempts: Array<{ provider: string; model: string; error: string }>;
 }> {
-  const { deadline, effectiveCfg, providerCfg } = params.operation;
+  const { effectiveCfg, providerCfg } = params.operation;
   const preparedProviders =
     params.preparedModelRuntime?.mediaCapabilityProviders?.mediaUnderstandingProviders;
 
@@ -728,8 +680,6 @@ async function runImagePrompt(params: {
         model: modelId,
         providerRegistry,
       });
-      const resolveRequestTimeoutMs = () =>
-        resolveProviderOperationTimeoutMs({ deadline, defaultTimeoutMs: requestTimeoutMs });
       const imageProvider = imageToolProviderDeps.getMediaUnderstandingProvider(
         provider,
         providerRegistry,
@@ -752,7 +702,7 @@ async function runImagePrompt(params: {
           model: modelId,
           prompt: params.prompt,
           maxTokens: resolveImageToolMaxTokens(undefined),
-          timeoutMs: resolveRequestTimeoutMs(),
+          timeoutMs: requestTimeoutMs,
           signal: params.signal,
           cfg: providerCfg,
           ...(params.agentId ? { agentId: params.agentId } : {}),
@@ -782,7 +732,7 @@ async function runImagePrompt(params: {
           model: modelId,
           prompt: params.prompt,
           maxTokens: resolveImageToolMaxTokens(undefined),
-          timeoutMs: resolveRequestTimeoutMs(),
+          timeoutMs: requestTimeoutMs,
           signal: params.signal,
           cfg: providerCfg,
           ...(params.agentId ? { agentId: params.agentId } : {}),
@@ -808,7 +758,7 @@ async function runImagePrompt(params: {
           model: modelId,
           prompt: `${params.prompt}\n\nDescribe image ${index + 1} of ${params.images.length}.`,
           maxTokens: resolveImageToolMaxTokens(undefined),
-          timeoutMs: resolveRequestTimeoutMs(),
+          timeoutMs: requestTimeoutMs,
           signal: params.signal,
           cfg: providerCfg,
           ...(params.agentId ? { agentId: params.agentId } : {}),
@@ -1000,8 +950,6 @@ export function createImageTool(options?: {
         const operation = createImageToolOperation({
           cfg: options?.config,
           imageModelConfig,
-          modelOverride,
-          preparedModelRuntime: options?.preparedModelRuntime,
           signal,
         });
         const imageCompression = await withImageToolOperationDeadline(operation, async () =>

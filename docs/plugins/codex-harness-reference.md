@@ -735,11 +735,10 @@ first available timeout in this order:
 - For `image_generate` without a configured timeout, the 120 second
   image-generation default.
 - For the media-understanding `view_image` tool, a fixed 630 second outer
-  watchdog. Its inner image operation uses the longest selected image-capable
-  `tools.media.models[]` entry's `timeoutSeconds`, or the 60 second media
-  default, capped at 600 seconds. Image compression, loading, sequential images,
-  and model fallbacks share that one absolute deadline, so each stage receives
-  only the remaining time.
+  watchdog. The OpenClaw-owned image operation has a separate fixed 600 second
+  ceiling so its structured result has 30 seconds to reach Codex. Selected
+  image-capable `tools.media.models[]` entries keep their `timeoutSeconds` as a
+  full per-provider-request allowance; preparation does not consume it.
 - For the `message` tool, a fixed 600 second outer budget that covers Gateway delivery and bounded same-key reconciliation.
 - The 90 second dynamic-tool default.
 
