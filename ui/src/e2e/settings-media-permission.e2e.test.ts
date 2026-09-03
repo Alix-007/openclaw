@@ -22,17 +22,19 @@ type MediaEvent = {
   trusted?: boolean;
   kind?: string;
 };
-type MediaProofWindow = Window & {
-  settingsMediaProof: {
-    events: MediaEvent[];
-    settle: (id: number, reject?: boolean) => void;
-  };
-};
+declare global {
+  interface Window {
+    settingsMediaProof: {
+      events: MediaEvent[];
+      settle: (id: number, reject?: boolean) => void;
+    };
+  }
+}
 
-async function installMediaBoundary(page: Page, holdRecovery: boolean) {
+async function installMediaBoundary(page: Page, holdRecoveryEnumeration: boolean) {
   await page.addInitScript(
     ({ holdRecovery }) => {
-      const events: MediaEvent[] = [];
+      const recordedEvents: MediaEvent[] = [];
       const pending = new Map<
         number,
         { resolve: (devices: MediaDeviceInfo[]) => void; reject: () => void }
@@ -40,7 +42,7 @@ async function installMediaBoundary(page: Page, holdRecovery: boolean) {
       const granted = new Set<string>();
       let sequence = 0;
       const record = (event: Omit<MediaEvent, "route">) =>
-        events.push({ ...event, route: location.pathname });
+        recordedEvents.push({ ...event, route: location.pathname });
       const devices = () =>
         [...granted].map((kind) => ({
           deviceId: `synthetic-${kind}`,
@@ -55,13 +57,13 @@ async function installMediaBoundary(page: Page, holdRecovery: boolean) {
           const id = ++sequence;
           record({ type: "enumerate", id });
           if (id <= 2 || (holdRecovery && id === 3)) {
-            return new Promise<MediaDeviceInfo[]>((resolve, reject) =>
+            return new Promise<MediaDeviceInfo[]>((resolve, reject) => {
               pending.set(id, {
                 resolve,
                 reject: () =>
                   reject(new DOMException("Synthetic enumeration failure", "InvalidStateError")),
-              }),
-            );
+              });
+            });
           }
           return Promise.resolve(devices());
         },
@@ -92,8 +94,8 @@ async function installMediaBoundary(page: Page, holdRecovery: boolean) {
         },
         true,
       );
-      (window as MediaProofWindow).settingsMediaProof = {
-        events,
+      window.settingsMediaProof = {
+        events: recordedEvents,
         settle(id, reject = false) {
           const operation = pending.get(id);
           if (!operation) {
@@ -109,20 +111,33 @@ async function installMediaBoundary(page: Page, holdRecovery: boolean) {
         },
       };
     },
-    { holdRecovery },
+    { holdRecovery: holdRecoveryEnumeration },
   );
 }
 
 async function events(page: Page) {
-  return page.evaluate(() => [...(window as MediaProofWindow).settingsMediaProof.events]);
+  return page.evaluate(() => [...window.settingsMediaProof.events]);
 }
 
-async function settle(page: Page, id: number, reject = false) {
-  await page.evaluate(
+async function settle(page: Page, enumerationId: number, rejectEnumeration = false) {
+  return page.evaluate(
     ({ id, reject }) => {
-      (window as MediaProofWindow).settingsMediaProof.settle(id, reject);
+      const owner = document.querySelector("openclaw-config-page");
+      const pageId = owner ? Reflect.get(owner, "pageId") : undefined;
+      const surface = {
+        route: location.pathname,
+        ownerConnected: owner?.isConnected ?? false,
+        ownerPageId: typeof pageId === "string" ? pageId : null,
+        headings: Array.from(owner?.querySelectorAll("h1, h2") ?? [], (heading) =>
+          heading.textContent?.trim(),
+        ),
+        appearancePickerCount: document.querySelectorAll(".settings-select--media-device").length,
+      };
+      // Record the rendered owner in the same browser task that releases the held API.
+      window.settingsMediaProof.settle(id, reject);
+      return surface;
     },
-    { id, reject },
+    { id: enumerationId, reject: rejectEnumeration },
   );
 }
 
@@ -203,6 +218,12 @@ suite.define(() => {
           } else if (transition !== "stay") {
             await sidebar.locator('a[href="/settings/advanced"]').click();
             await expect.poll(() => new URL(page.url()).pathname).toBe("/settings/advanced");
+            // History moves before the route module and Lit view commit. Retire the
+            // actual Appearance surface before releasing its pending enumeration.
+            await page.getByRole("heading", { name: "Advanced", exact: true }).waitFor({
+              state: "visible",
+            });
+            await expect.poll(() => page.locator(".settings-select--media-device").count()).toBe(0);
           }
           record.exitRoute = new URL(page.url()).pathname;
           record.ownerConnectedAfterExit = await configOwner!.evaluate(
@@ -211,7 +232,18 @@ suite.define(() => {
           if (transition === "disconnect") {
             expect(record.ownerConnectedAfterExit).toBe(false);
           }
-          await settle(page, transition === "second await" ? 3 : target);
+          const settlementSurface = await settle(page, transition === "second await" ? 3 : target);
+          record.settlementSurface = settlementSurface;
+          if (transition === "route leave" || transition === "second await") {
+            expect(record.ownerConnectedAfterExit).toBe(true);
+            expect(settlementSurface).toMatchObject({
+              route: "/settings/advanced",
+              ownerConnected: true,
+              ownerPageId: "advanced",
+              appearancePickerCount: 0,
+            });
+            expect(settlementSurface.headings).toContain("Advanced");
+          }
           await renderedAfterMediaSettlement(page);
           record.eventsAfterSettlement = await events(page);
           record.probesAfterSettlement = (await events(page)).filter(
@@ -242,10 +274,9 @@ suite.define(() => {
           const pointers = rows.filter((row) => row.type === "pointer");
           expect(pointers.length).toBe(transition === "stay" ? 1 : 2);
           expect(pointers.every((row) => row.trusted)).toBe(true);
-          expect(probes).toHaveLength(1);
-          expect(probes[0].constraints).toEqual(
+          expect(probes.map((probe) => probe.constraints)).toEqual([
             kind === "microphone" ? { audio: true } : { video: true },
-          );
+          ]);
           expect(rows.filter((row) => row.type === "stop")).toHaveLength(1);
           expect(record.probesAfterSettlement).toBe(transition === "stay" ? 1 : 0);
           if (transition !== "stay") {
