@@ -74,16 +74,17 @@ function envelopeCredentialKey(
 }
 
 function readContinuationRecord(value: unknown): ContinuationRecord | undefined {
+  const expiresAt = isRecord(value) ? value.expiresAt : undefined;
   if (
     !isRecord(value) ||
     typeof value.sessionKey !== "string" ||
     typeof value.sessionId !== "string" ||
-    !Number.isSafeInteger(value.expiresAt) ||
-    (value.expiresAt as number) <= 0
+    typeof expiresAt !== "number" ||
+    !Number.isSafeInteger(expiresAt) ||
+    expiresAt <= 0
   ) {
     return undefined;
   }
-  const expiresAt = value.expiresAt as number;
   if (value.kind === "binding" && typeof value.credentialKey === "string") {
     return {
       kind: "binding",
