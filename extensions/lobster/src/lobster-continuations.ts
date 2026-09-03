@@ -4,15 +4,29 @@ import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
 import type { LobsterEnvelope, LobsterRunnerParams } from "./lobster-runner.js";
 
 type ContinuationRecord =
-  | { kind: "binding"; sessionKey: string; sessionId: string; expiresAt: number }
+  | {
+      kind: "reservation";
+      sessionKey: string;
+      sessionId: string;
+      expiresAt: number;
+      leaseId: string;
+    }
+  | {
+      kind: "binding";
+      sessionKey: string;
+      sessionId: string;
+      expiresAt: number;
+      credentialKey: string;
+    }
   | {
       kind: "claim";
       sessionKey: string;
       sessionId: string;
       expiresAt: number;
-      claimId: string;
+      credentialKey: string;
+      leaseId: string;
     };
-type ClaimRecord = Extract<ContinuationRecord, { kind: "claim" }>;
+type LeasedContinuationRecord = Extract<ContinuationRecord, { kind: "reservation" | "claim" }>;
 
 // Each checkpoint gets one fixed deadline so retries cannot keep abandoned
 // continuations alive and permanently exhaust plugin state.
@@ -26,10 +40,20 @@ export type LobsterContinuationOwner = {
 };
 
 export type LobsterContinuationClaim = {
-  credentialKey: string;
-  claimId: string;
+  kind: "claim";
+  slotKey: string;
+  leaseId: string;
   expiresAt: number;
 };
+
+export type LobsterContinuationReservation = {
+  kind: "reservation";
+  slotKey: string;
+  leaseId: string;
+  expiresAt: number;
+};
+
+type LobsterContinuationLease = LobsterContinuationClaim | LobsterContinuationReservation;
 
 function credentialKey(value: string): string {
   const digest = createHash("sha256").update("token\0").update(value.trim()).digest("hex");
@@ -60,21 +84,34 @@ function readContinuationRecord(value: unknown): ContinuationRecord | undefined 
     return undefined;
   }
   const expiresAt = value.expiresAt as number;
-  if (value.kind === "binding") {
+  if (value.kind === "binding" && typeof value.credentialKey === "string") {
     return {
       kind: "binding",
       sessionKey: value.sessionKey,
       sessionId: value.sessionId,
       expiresAt,
+      credentialKey: value.credentialKey,
     };
   }
-  return value.kind === "claim" && typeof value.claimId === "string"
+  if (value.kind === "reservation" && typeof value.leaseId === "string") {
+    return {
+      kind: "reservation",
+      sessionKey: value.sessionKey,
+      sessionId: value.sessionId,
+      expiresAt,
+      leaseId: value.leaseId,
+    };
+  }
+  return value.kind === "claim" &&
+    typeof value.credentialKey === "string" &&
+    typeof value.leaseId === "string"
     ? {
         kind: "claim",
         sessionKey: value.sessionKey,
         sessionId: value.sessionId,
         expiresAt,
-        claimId: value.claimId,
+        credentialKey: value.credentialKey,
+        leaseId: value.leaseId,
       }
     : undefined;
 }
@@ -84,27 +121,27 @@ function readActiveContinuationRecord(value: unknown): ContinuationRecord | unde
   return record && record.expiresAt > Date.now() ? record : undefined;
 }
 
-function isStoredOwnedClaim(
+function isStoredOwnedLease(
   value: unknown,
   owner: LobsterContinuationOwner,
-  claim: LobsterContinuationClaim,
-): value is ClaimRecord {
-  const binding = readContinuationRecord(value);
+  lease: LobsterContinuationLease,
+): value is LeasedContinuationRecord {
+  const record = readContinuationRecord(value);
   return (
-    binding?.kind === "claim" &&
-    binding.sessionKey === owner.sessionKey &&
-    binding.sessionId === owner.sessionId &&
-    binding.claimId === claim.claimId &&
-    binding.expiresAt === claim.expiresAt
+    record?.kind === lease.kind &&
+    record.sessionKey === owner.sessionKey &&
+    record.sessionId === owner.sessionId &&
+    record.leaseId === lease.leaseId &&
+    record.expiresAt === lease.expiresAt
   );
 }
 
-function isActiveOwnedClaim(
+function isActiveOwnedLease(
   value: unknown,
   owner: LobsterContinuationOwner,
-  claim: LobsterContinuationClaim,
-): value is ClaimRecord {
-  return isStoredOwnedClaim(value, owner, claim) && claim.expiresAt > Date.now();
+  lease: LobsterContinuationLease,
+): value is LeasedContinuationRecord {
+  return isStoredOwnedLease(value, owner, lease) && lease.expiresAt > Date.now();
 }
 
 function remainingTtlMs(expiresAt: number): number | undefined {
@@ -129,27 +166,76 @@ function assertCurrentSession(owner: LobsterContinuationOwner): void {
 export function bindLobsterContinuation(
   owner: LobsterContinuationOwner | undefined,
   envelope: Extract<LobsterEnvelope, { ok: true }>,
-): void {
+  lease: LobsterContinuationLease | undefined,
+): boolean {
   const key = envelopeCredentialKey(envelope);
   if (!key) {
-    return;
+    return false;
   }
-  if (!owner) {
+  if (!owner || !lease) {
     throw new Error(
       "Lobster continuation requires a bound OpenClaw session; rerun the workflow from a persistent session",
     );
   }
   assertCurrentSession(owner);
+  const store = owner.openStore();
+  // Plugin tool calls share one Gateway event loop and these store operations
+  // are synchronous, so duplicate detection plus the slot update cannot interleave.
+  const duplicate = store.entries().some((entry) => {
+    if (entry.key === lease.slotKey) {
+      return false;
+    }
+    const record = readActiveContinuationRecord(entry.value);
+    return record?.kind !== "reservation" && record?.credentialKey === key;
+  });
+  if (duplicate) {
+    throw new Error("Lobster runtime returned a duplicate continuation credential");
+  }
   const expiresAt = Date.now() + LOBSTER_CONTINUATION_TTL_MS;
   const binding: ContinuationRecord = {
     kind: "binding",
     sessionKey: owner.sessionKey,
     sessionId: owner.sessionId,
     expiresAt,
+    credentialKey: key,
   };
-  if (!owner.openStore().registerIfAbsent(key, binding, { ttlMs: LOBSTER_CONTINUATION_TTL_MS })) {
-    throw new Error("Lobster runtime returned a duplicate continuation credential");
+  if (
+    !store.update?.(
+      lease.slotKey,
+      (current) => (isActiveOwnedLease(current, owner, lease) ? binding : undefined),
+      { ttlMs: LOBSTER_CONTINUATION_TTL_MS },
+    )
+  ) {
+    throw unavailableError();
   }
+  return true;
+}
+
+export function reserveLobsterContinuation(
+  owner: LobsterContinuationOwner | undefined,
+): LobsterContinuationReservation | undefined {
+  if (!owner) {
+    return undefined;
+  }
+  assertCurrentSession(owner);
+  const leaseId = randomUUID();
+  const slotKey = `slot:${leaseId}`;
+  const expiresAt = Date.now() + LOBSTER_CONTINUATION_TTL_MS;
+  const reservation: ContinuationRecord = {
+    kind: "reservation",
+    sessionKey: owner.sessionKey,
+    sessionId: owner.sessionId,
+    expiresAt,
+    leaseId,
+  };
+  if (
+    !owner
+      .openStore()
+      .registerIfAbsent(slotKey, reservation, { ttlMs: LOBSTER_CONTINUATION_TTL_MS })
+  ) {
+    throw new Error("Lobster continuation slot reservation collided");
+  }
+  return { kind: "reservation", slotKey, leaseId, expiresAt };
 }
 
 export function claimLobsterContinuation(
@@ -165,25 +251,34 @@ export function claimLobsterContinuation(
   if (!key) {
     throw unavailableError();
   }
-  const initial = readActiveContinuationRecord(store.lookup(key));
+  const match = store.entries().find((entry) => {
+    const record = readActiveContinuationRecord(entry.value);
+    return record?.kind !== "reservation" && record?.credentialKey === key;
+  });
+  const initial = match ? readActiveContinuationRecord(match.value) : undefined;
   const ttlMs = initial ? remainingTtlMs(initial.expiresAt) : undefined;
-  if (!initial || ttlMs === undefined) {
+  if (!match || !initial || initial.kind === "reservation" || ttlMs === undefined) {
     throw unavailableError();
   }
-  const claimId = randomUUID();
+  const leaseId = randomUUID();
   let foreignOwner = false;
   const claimed = store.update?.(
-    key,
+    match.key,
     (current) => {
       const latest = readActiveContinuationRecord(current);
-      if (!latest || latest.expiresAt !== initial.expiresAt) {
+      if (
+        !latest ||
+        latest.kind === "reservation" ||
+        latest.credentialKey !== key ||
+        latest.expiresAt !== initial.expiresAt
+      ) {
         return undefined;
       }
       if (latest.sessionKey !== owner.sessionKey || latest.sessionId !== owner.sessionId) {
         foreignOwner = true;
         return undefined;
       }
-      return latest.kind === "binding" ? { ...latest, kind: "claim", claimId } : undefined;
+      return latest.kind === "binding" ? { ...latest, kind: "claim", leaseId } : undefined;
     },
     { ttlMs },
   );
@@ -195,7 +290,12 @@ export function claimLobsterContinuation(
     }
     throw unavailableError();
   }
-  return { credentialKey: key, claimId, expiresAt: initial.expiresAt };
+  return {
+    kind: "claim",
+    slotKey: match.key,
+    leaseId,
+    expiresAt: initial.expiresAt,
+  };
 }
 
 export function assertLobsterContinuationClaimCurrent(
@@ -203,18 +303,18 @@ export function assertLobsterContinuationClaimCurrent(
   claim: LobsterContinuationClaim,
 ): void {
   assertCurrentSession(owner);
-  if (!isActiveOwnedClaim(owner.openStore().lookup(claim.credentialKey), owner, claim)) {
+  if (!isActiveOwnedLease(owner.openStore().lookup(claim.slotKey), owner, claim)) {
     throw unavailableError();
   }
 }
 
 export function retireLobsterContinuation(
   owner: LobsterContinuationOwner,
-  claim: LobsterContinuationClaim,
+  lease: LobsterContinuationLease,
 ): void {
   owner
     .openStore()
-    .deleteIf?.(claim.credentialKey, (current) => isStoredOwnedClaim(current, owner, claim));
+    .deleteIf?.(lease.slotKey, (current) => isStoredOwnedLease(current, owner, lease));
 }
 
 export function releaseLobsterContinuation(
@@ -228,14 +328,15 @@ export function releaseLobsterContinuation(
     return;
   }
   store.update?.(
-    claim.credentialKey,
+    claim.slotKey,
     (current) =>
-      isActiveOwnedClaim(current, owner, claim)
+      isActiveOwnedLease(current, owner, claim) && current.kind === "claim"
         ? {
             kind: "binding",
             sessionKey: current.sessionKey,
             sessionId: current.sessionId,
             expiresAt: current.expiresAt,
+            credentialKey: current.credentialKey,
           }
         : undefined,
     { ttlMs },

@@ -15,6 +15,7 @@ import {
   bindLobsterContinuation,
   claimLobsterContinuation,
   releaseLobsterContinuation,
+  reserveLobsterContinuation,
   retireLobsterContinuation,
   type LobsterContinuationOwner,
 } from "./lobster-continuations.js";
@@ -344,42 +345,54 @@ export function createLobsterTool(api: OpenClawPluginApi, options?: LobsterToolO
         action === "resume" && runnerParams.response !== undefined
           ? claimLobsterContinuation(continuationOwner, runnerParams)
           : undefined;
+      const continuationReservation = continuationClaim
+        ? undefined
+        : reserveLobsterContinuation(continuationOwner);
+      const continuationLease = continuationClaim ?? continuationReservation;
+      let continuationLeaseSettled = false;
       let envelope;
       try {
-        envelope = continuationClaim
-          ? await runner.run(runnerParams, {
-              beforeResumeIo: () => {
-                if (!continuationOwner) {
-                  throw new Error("Lobster continuation owner is unavailable");
-                }
-                assertLobsterContinuationClaimCurrent(continuationOwner, continuationClaim);
-              },
-            })
-          : await runner.run(runnerParams);
-      } catch (error) {
-        if (
-          continuationClaim &&
-          continuationOwner &&
-          error instanceof LobsterRunnerError &&
-          error.type === "parse_error"
-        ) {
-          releaseLobsterContinuation(continuationOwner, continuationClaim);
+        try {
+          envelope = continuationClaim
+            ? await runner.run(runnerParams, {
+                beforeResumeIo: () => {
+                  if (!continuationOwner) {
+                    throw new Error("Lobster continuation owner is unavailable");
+                  }
+                  assertLobsterContinuationClaimCurrent(continuationOwner, continuationClaim);
+                },
+              })
+            : await runner.run(runnerParams);
+        } catch (error) {
+          if (
+            continuationClaim &&
+            continuationOwner &&
+            error instanceof LobsterRunnerError &&
+            error.type === "parse_error"
+          ) {
+            releaseLobsterContinuation(continuationOwner, continuationClaim);
+            continuationLeaseSettled = true;
+          }
+          throw error;
         }
-        throw error;
-      }
-      if (!envelope.ok) {
-        if (envelope.error.type === "parse_error" && continuationClaim && continuationOwner) {
-          releaseLobsterContinuation(continuationOwner, continuationClaim);
+        if (!envelope.ok) {
+          if (envelope.error.type === "parse_error" && continuationClaim && continuationOwner) {
+            releaseLobsterContinuation(continuationOwner, continuationClaim);
+            continuationLeaseSettled = true;
+          }
+          throw new Error(envelope.error.message);
         }
-        throw new Error(envelope.error.message);
+        continuationLeaseSettled = bindLobsterContinuation(
+          continuationOwner,
+          envelope,
+          continuationLease,
+        );
+        return jsonResult(envelope);
+      } finally {
+        if (!continuationLeaseSettled && continuationLease && continuationOwner) {
+          retireLobsterContinuation(continuationOwner, continuationLease);
+        }
       }
-      if (continuationClaim && continuationOwner) {
-        // Lobster consumed this checkpoint before returning; retire it first so
-        // a chained input pause can reuse the same slot in a full store.
-        retireLobsterContinuation(continuationOwner, continuationClaim);
-      }
-      bindLobsterContinuation(continuationOwner, envelope);
-      return jsonResult(envelope);
     },
   };
 }

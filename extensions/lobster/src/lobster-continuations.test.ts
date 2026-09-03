@@ -232,6 +232,109 @@ describe("lobster structured-input continuations", () => {
     expect(runner.run).toHaveBeenCalledTimes(2);
   });
 
+  it("binds only one of two concurrent runs that return the same continuation token", async () => {
+    const store = createContinuationStore({ maxEntries: 2 });
+    let startedRuns = 0;
+    let releaseInitialRuns!: () => void;
+    const initialRunsReady = new Promise<void>((resolve) => {
+      releaseInitialRuns = resolve;
+    });
+    const runner = {
+      run: vi.fn(async () => {
+        startedRuns += 1;
+        if (startedRuns <= 2) {
+          if (startedRuns === 2) {
+            releaseInitialRuns();
+          }
+          await initialRunsReady;
+          return {
+            ok: true as const,
+            status: "needs_input" as const,
+            output: [],
+            requiresApproval: null,
+            requiresInput: {
+              type: "input_request" as const,
+              prompt: "Continue?",
+              responseSchema: { type: "boolean" },
+              resumeToken: "input-token-duplicate",
+            },
+          };
+        }
+        return {
+          ok: true as const,
+          status: "ok" as const,
+          output: ["resumed"],
+          requiresApproval: null,
+        };
+      }),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+
+    const initialResults = await Promise.allSettled([
+      tool.execute("call-duplicate-run-a", { action: "run", pipeline: "ask a" }),
+      tool.execute("call-duplicate-run-b", { action: "run", pipeline: "ask b" }),
+    ]);
+    expect(initialResults.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+    const rejected = initialResults.find((result) => result.status === "rejected");
+    expect(rejected).toMatchObject({
+      status: "rejected",
+      reason: expect.objectContaining({
+        message: "Lobster runtime returned a duplicate continuation credential",
+      }),
+    });
+    expect(store.size()).toBe(1);
+
+    await expect(
+      tool.execute("call-duplicate-resume", {
+        action: "resume",
+        token: "input-token-duplicate",
+        responseJson: "true",
+      }),
+    ).resolves.toBeDefined();
+    await expect(
+      tool.execute("call-duplicate-replay", {
+        action: "resume",
+        token: "input-token-duplicate",
+        responseJson: "true",
+      }),
+    ).rejects.toThrow(/unavailable, expired, or already used/);
+    expect(runner.run).toHaveBeenCalledTimes(3);
+  });
+
+  it("rejects an initial run before Lobster executes when the continuation store is full", async () => {
+    const store = createContinuationStore({ maxEntries: 10_000 });
+    for (let index = 0; index < 10_000; index += 1) {
+      store.register(`filler:${index}`, { kind: "filler" });
+    }
+    const runner = {
+      run: vi.fn().mockResolvedValue({
+        ok: true,
+        status: "needs_input",
+        output: [],
+        requiresApproval: null,
+        requiresInput: {
+          type: "input_request",
+          prompt: "Continue?",
+          responseSchema: { type: "boolean" },
+          resumeToken: "input-token-full-store",
+        },
+      }),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+
+    await expect(
+      tool.execute("call-input-full-store-run", { action: "run", pipeline: "ask" }),
+    ).rejects.toThrow(/continuation store reached its 10000-row limit/);
+    expect(runner.run).not.toHaveBeenCalled();
+    expect(store.size()).toBe(10_000);
+  });
+
   it("resumes a valid structured-input continuation when the 10,000-row store is full", async () => {
     const store = createContinuationStore({ maxEntries: 10_000 });
     for (let index = 0; index < 9_999; index += 1) {
@@ -334,6 +437,42 @@ describe("lobster structured-input continuations", () => {
         responseJson: "true",
       }),
     ).resolves.toBeDefined();
+    expect(store.size()).toBe(0);
+  });
+
+  it("releases initial reservations for non-input results and errors", async () => {
+    const store = createContinuationStore({ maxEntries: 1 });
+    const runner = {
+      run: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: "ok",
+          output: ["done"],
+          requiresApproval: null,
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          error: { type: "runtime_error", message: "runtime failed" },
+        })
+        .mockRejectedValueOnce(new Error("runner failed")),
+    };
+    const tool = createLobsterTool(fakeApi(), {
+      runner,
+      continuationOwner: continuationOwner(store),
+    });
+
+    await expect(
+      tool.execute("call-reservation-success", { action: "run", pipeline: "echo ok" }),
+    ).resolves.toBeDefined();
+    expect(store.size()).toBe(0);
+    await expect(
+      tool.execute("call-reservation-envelope-error", { action: "run", pipeline: "fail" }),
+    ).rejects.toThrow("runtime failed");
+    expect(store.size()).toBe(0);
+    await expect(
+      tool.execute("call-reservation-thrown-error", { action: "run", pipeline: "throw" }),
+    ).rejects.toThrow("runner failed");
     expect(store.size()).toBe(0);
   });
 
