@@ -1,31 +1,17 @@
-name: Alix OpenClaw exact-head proof
+name: Alix Apple archive exact-head proof
 
-run-name: ${{ inputs.proof_kind }} proof at ${{ inputs.target_sha }}
+run-name: apple-archive-${{ inputs.expected }} proof at ${{ inputs.target_sha }}
 
 on:
   workflow_dispatch:
     inputs:
-      proof_kind:
-        description: PR behavior to prove
+      expected:
+        description: Expected result for the unchanged focused test entry
         required: true
         type: choice
         options:
-          - bootstrap
-          - bootstrap-review
-          - discord
-          - discord-steer
-          - foundation
-          - heartbeat
-          - matrix
-          - memory
-          - ollama
-          - qqbot
-          - responses
-          - synology
-          - command-active-run
-          - sessions-spawn-blank-category
-          - terminal-timeout
-          - web-search
+          - red
+          - green
       target_sha:
         description: Immutable full SHA from the Alix fork
         required: true
@@ -35,12 +21,11 @@ permissions: {}
 
 jobs:
   proof:
-    name: ${{ inputs.proof_kind }} exact-head runtime proof
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    name: Apple active-session archive ${{ inputs.expected }} proof
+    runs-on: macos-26
+    timeout-minutes: 30
     env:
-      OPENCLAW_PROOF_HEAD_SHA: ${{ inputs.target_sha }}
-      PROOF_KIND: ${{ inputs.proof_kind }}
+      EXPECTED: ${{ inputs.expected }}
       TARGET_SHA: ${{ inputs.target_sha }}
     steps:
       - name: Check out immutable Alix source
@@ -51,7 +36,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify immutable source identity
+      - name: Verify immutable source and toolchain
         shell: bash
         run: |
           set -euo pipefail
@@ -61,534 +46,53 @@ jobs:
             exit 1
           fi
           {
-            echo "proof_kind=$PROOF_KIND"
+            echo "expected=$EXPECTED"
             echo "target_sha=$actual_sha"
             echo "repository=Alix-007/openclaw"
             echo "runner_os=$RUNNER_OS"
-            echo "run_id=$GITHUB_RUN_ID"
-            echo "workflow_sha=$GITHUB_SHA"
+            sw_vers
+            xcodebuild -version
+            swift --version
           } | tee proof-metadata.txt
 
-      - name: Check out configured proof harness
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
-        with:
-          repository: Alix-007/openclaw
-          ref: ${{ github.sha }}
-          path: .proof-tooling
-          sparse-checkout: .github/proof
-          persist-credentials: false
-
-      - name: Check out terminal-timeout proof harness
-        if: inputs.proof_kind == 'terminal-timeout'
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
-        with:
-          repository: Alix-007/openclaw
-          ref: 9af4f079faa1e605f3d9cf26a52f2820aa4d0c65
-          path: .timeout-proof-tooling
-          sparse-checkout: |
-            src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts
-            src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts
-          persist-credentials: false
-
-      - name: Set up Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
-        with:
-          node-version: 24.18.0
-
-      - name: Install pinned dependencies
+      - name: Run unchanged focused Swift entry
         shell: bash
         run: |
-          set -euo pipefail
-          corepack enable
-          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
-          pnpm install --frozen-lockfile
+          set -uo pipefail
+          set +e
+          swift test \
+            --package-path apps/shared/OpenClawKit \
+            --filter ChatSessionSidebarModelTests \
+            --no-parallel \
+            2>&1 | tee proof-apple-archive-${EXPECTED}.log
+          test_status=${PIPESTATUS[0]}
+          set -e
 
-      - name: Install configured proxy proof dependency
-        if: inputs.proof_kind == 'ollama'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! command -v nginx >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install --yes nginx
+          if [[ "$EXPECTED" == "red" ]]; then
+            if [[ "$test_status" -eq 0 ]]; then
+              echo "expected current-main acceptance-red, but focused tests passed" >&2
+              exit 1
+            fi
+            grep -F 'active sessions remain archivable for gateway drain' \
+              proof-apple-archive-red.log
+            marker='[apple archive acceptance-red] exact-head=true focused-entry=ChatSessionSidebarModelTests active-session-archive=false'
+          else
+            if [[ "$test_status" -ne 0 ]]; then
+              echo "expected acceptance-green, but focused tests failed" >&2
+              exit "$test_status"
+            fi
+            marker='[apple archive acceptance-green] exact-head=true focused-entry=ChatSessionSidebarModelTests active-session-archive=true controls=main-global-missing-id-rejected'
           fi
-          nginx -v
 
-      - name: Run exact-head behavior proof
-        shell: bash
-        run: |
-          set -euo pipefail
-          log_file="proof-${PROOF_KIND}.log"
-          case "$PROOF_KIND" in
-            bootstrap)
-              node scripts/run-vitest.mjs \
-                src/agents/bootstrap-routing.test.ts \
-                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.context-injection.test.ts \
-                src/agents/embedded-agent-runner/run/attempt.spawn-workspace.bootstrap-marker.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              node scripts/run-vitest.mjs \
-                src/agents/agent-command.live-model-switch.test.ts \
-                src/agents/bootstrap-files.test.ts \
-                src/agents/cli-runner/prepare.test.ts \
-                src/agents/cli-runner.reliability.test.ts \
-                -t 'skips CLI workspace context after a completed continuation-skip turn|persists a completion marker through the canonical helper|persists a CLI bootstrap completion marker after its runner-owned transcript|defers the CLI bootstrap marker when command post-run owns the transcript|does not persist a CLI bootstrap marker after post-output cancellation|records CLI bootstrap completion after the post-run transcript commit|keeps CLI bootstrap completion pending until post-run compaction settles|does not record CLI bootstrap completion after post-run compaction|does not record CLI bootstrap completion when deferred maintenance settles after compaction|does not record CLI bootstrap completion when post-run transcript persistence fails|skips post-run persistence after the session is deleted' \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              grep -F 'does not persist a CLI bootstrap marker after post-output cancellation' "$log_file"
-              grep -F 'records CLI bootstrap completion after the post-run transcript commit' "$log_file"
-              grep -F 'keeps CLI bootstrap completion pending until post-run compaction settles' "$log_file"
-              grep -F 'does not record CLI bootstrap completion after post-run compaction' "$log_file"
-              grep -F 'does not record CLI bootstrap completion when deferred maintenance settles after compaction' "$log_file"
-              grep -F 'does not record CLI bootstrap completion when post-run transcript persistence fails' "$log_file"
-              grep -F 'skips post-run persistence after the session is deleted' "$log_file"
-              node --import tsx \
-                .proof-tooling/.github/proof/bootstrap-continuation-sqlite.ts \
-                2>&1 | tee -a "$log_file"
-              grep -F '[bootstrap deferred finalization proof]' "$log_file"
-              check_changed_base='866c78a5e23f5b3978cc73266d14d0f26c0b720d'
-              git merge-base --is-ancestor "$check_changed_base" "$TARGET_SHA"
-              mapfile -t changed_paths < <(
-                git diff --name-only --diff-filter=ACMRD "$check_changed_base...$TARGET_SHA"
-              )
-              test "${#changed_paths[@]}" -gt 0
-              format_probe='src/agents/cli-runner.reliability.test.ts'
-              corepack pnpm exec oxfmt "$format_probe"
-              git diff -- "$format_probe" | tee -a "$log_file"
-              git checkout -- "$format_probe"
-              test "$(git rev-parse HEAD)" = "$TARGET_SHA"
-              git diff --quiet
-              corepack pnpm check:changed \
-                --base "$check_changed_base" \
-                --head "$TARGET_SHA" \
-                --timed \
-                -- "${changed_paths[@]}" \
-                2>&1 | tee -a "$log_file"
-              echo '[bootstrap changed-check proof] exact-head=true base=866c78a5 paths=38 format=true typecheck=true lint=true guards=true' | tee -a "$log_file"
-              echo '[bootstrap transcript-commit proof] runner-owned=true deferred=true post-run-commit=true compaction-settled=true compaction-mutated=false write-failure=false session-rebind=false cancellation=false' | tee -a "$log_file"
-              marker='[bootstrap continuation SQLite proof]'
-              ;;
-            bootstrap-review)
-              set +e
-              node scripts/run-vitest.mjs \
-                src/auto-reply/reply/agent-runner-cli-dispatch.test.ts \
-                -t 'leaves bootstrap settlement to the outer fallback owner' \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              dispatch_status=${PIPESTATUS[0]}
-              node scripts/run-vitest.mjs \
-                src/agents/cli-runner.context-engine.test.ts \
-                -t 'does not record bootstrap completion when' \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              context_status=${PIPESTATUS[0]}
-              set -e
-              if ((dispatch_status != 0 || context_status != 0)); then
-                exit 1
-              fi
-              grep -F 'leaves bootstrap settlement to the outer fallback owner' "$log_file"
-              grep -F "does not record bootstrap completion when 'afterTurn fails'" "$log_file"
-              grep -F "does not record bootstrap completion when 'foreground maintenance fails'" "$log_file"
-              grep -F "foreground maintenance rewrites" "$log_file"
-              echo '[bootstrap independent-review findings proof] exact-head=true outer-owner=true finalization-failure=true foreground-failure=true foreground-rewrite=true' | tee -a "$log_file"
-              marker='[bootstrap independent-review findings proof]'
-              ;;
-            discord)
-              node scripts/run-vitest.mjs \
-                extensions/discord/src/api.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              marker='[discord credential redaction proof]'
-              ;;
-            discord-steer)
-              output_dir='.artifacts/qa-e2e/pr-131006-discord-steer'
-              mkdir -p "$output_dir"
-              node scripts/run-vitest.mjs \
-                test/gateway-steer-fifo.e2e.test.ts \
-                -t 'finishes a running tool, skips its sequential tail, and injects a UI steer once' \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              node scripts/run-vitest.mjs \
-                extensions/discord/src/monitor/native-command.plugin-dispatch.test.ts \
-                -t 'settles an accepted active-run steer without an empty warning|returns an explicit warning instead of success when dispatch produces zero visible replies' \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              grep -F 'finishes a running tool, skips its sequential tail, and injects a UI steer once' "$log_file"
-              grep -F 'settles an accepted active-run steer without an empty warning' "$log_file"
-              grep -F 'returns an explicit warning instead of success when dispatch produces zero visible replies' "$log_file"
-              node -e '
-                const fs = require("node:fs");
-                const verdict = {
-                  schemaVersion: 1,
-                  proofKind: "mock-channel-api+mock-provider+ephemeral-gateway",
-                  target: {
-                    repository: "Alix-007/openclaw",
-                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
-                    workflowSha: process.env.GITHUB_SHA,
-                  },
-                  observed: {
-                    gateway: "active run accepted one steer while a running tool completed and its sequential tail stayed suppressed",
-                    discordInteraction: "accepted deferredToActiveRun=steer settled through deleteReply with no warning",
-                    zeroOutputControl: "genuine zero-output dispatch emitted one ephemeral warning",
-                  },
-                  result: "pass",
-                };
-                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
-                console.log(JSON.stringify(verdict));
-              ' "$output_dir/verdict.json" | tee -a "$log_file"
-              echo '[discord steer boundary proof] exact-head=true gateway=ephemeral provider=mock-openai interaction=mock-discord accepted-steer-settled=true zero-output-warning=true' | tee -a "$log_file"
-              marker='[discord steer boundary proof]'
-              ;;
-            foundation)
-              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
-                proof-plugin-sdk-api-baseline.sha256
-              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.sha256 \
-                2>&1 | tee -a "$log_file"
-              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
-              pnpm plugin-sdk:surface:check 2>&1 | tee -a "$log_file"
-              node scripts/run-vitest.mjs \
-                src/logging/redact.test.ts \
-                src/agents/provider-http-errors.test.ts \
-                src/agents/tools/web-search-provider-common.redact.test.ts \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              grep -F 'redacts a reflected credential through the trusted guarded transport' "$log_file"
-              grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
-              grep -F 'redacts raw and encoded request secrets from provider metadata' "$log_file"
-              grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
-              grep -F 'suppresses a request-secret prefix truncated at' "$log_file"
-              grep -F 'suppresses a request-secret prefix split by the provider error-body cap' "$log_file"
-              grep -F 'redacts a raw or encoded request secret' "$log_file"
-              grep -F 'removes a request-secret prefix at a truncation boundary' "$log_file"
-              echo '[foundation credential redaction proof] shared-logging=true provider-http=true guarded-web-transport=true raw=true json=true url=true form=true truncation-boundary=true sdk-baseline=true secret-output=false' | tee -a "$log_file"
-              marker='[foundation credential redaction proof]'
-              ;;
-            heartbeat)
-              output_dir='.artifacts/qa-e2e/pr-122075-heartbeat'
-              pnpm openclaw qa suite \
-                --provider-mode mock-openai \
-                --scenario heartbeat-inbound-metadata \
-                --channel-driver qa-channel \
-                --concurrency 1 \
-                --output-dir "$output_dir" \
-                2>&1 | tee "$log_file"
-              report="$output_dir/qa-suite-report.md"
-              test -f "$report"
-              grep -F '"heartbeatConversationInfoPresent":false' "$report"
-              grep -F '"heartbeatRawRoutePresent":false' "$report"
-              grep -F '"deliveredTo":"direct:qa-heartbeat-metadata-route"' "$report"
-              grep -F '"normalConversationInfoPresent":true' "$report"
-              grep -F '"normalRawRoutePresent":true' "$report"
-              echo '[heartbeat inbound metadata proof] configured=true gateway=ephemeral-child provider=mock-openai heartbeat-metadata=false route-delivered=true normal-metadata=true' | tee -a "$log_file"
-              marker='[heartbeat inbound metadata proof]'
-              ;;
-            matrix)
-              node scripts/run-vitest.mjs \
-                extensions/matrix/src/matrix/client/shared.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              node --import tsx \
-                .proof-tooling/.github/proof/matrix-shared-client.ts \
-                2>&1 | tee -a "$log_file"
-              marker='[matrix shared-client proof]'
-              ;;
-            memory)
-              node scripts/run-vitest.mjs \
-                packages/memory-host-sdk/src/host/remote-error-redaction.test.ts \
-                packages/memory-host-sdk/src/host/error-utils.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'redacts lower-case bearer credentials through the real remote embedding fetch path' "$log_file"
-              grep -F 'redacts quoted short bearer credentials through the real JSON error path' "$log_file"
-              grep -F 'redacts lower-case bearer credentials from batch errors without changing success' "$log_file"
-              grep -F 'redacts quoted short bearer header values' "$log_file"
-              grep -F 'redacts bearer schemes case-insensitively' "$log_file"
-              echo '[memory credential redaction proof] loopback-json=true loopback-batch=true token68=true lowercase-scheme=true short-quoted=true secret-output=false' | tee -a "$log_file"
-              marker='[memory credential redaction proof]'
-              ;;
-            ollama)
-              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
-                proof-plugin-sdk-api-baseline.sha256
-              git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
-              git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
-              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
-              node scripts/run-vitest.mjs \
-                extensions/ollama/src/embedding-provider.fetchok.transport.test.ts \
-                extensions/ollama/src/embedding-provider.test.ts \
-                extensions/ollama/src/stream-runtime.test.ts \
-                extensions/ollama/src/stream.test.ts \
-                extensions/ollama/src/web-search-provider.fetchok.transport.test.ts \
-                extensions/ollama/src/web-search-provider.test.ts \
-                src/logging/redact.test.ts \
-                --reporter=verbose 2>&1 | tee -a "$log_file"
-              pnpm build 2>&1 | tee -a "$log_file"
-              proof_runtime="$PWD/.ollama-proof-runtime"
-              proof_config="$PWD/.proof-tooling/.github/proof/ollama-nginx.conf"
-              mkdir -p "$proof_runtime/logs"
-              python3 .proof-tooling/.github/proof/ollama-upstream.py \
-                --port 18766 >"$proof_runtime/upstream.log" 2>&1 &
-              upstream_pid="$!"
-              cleanup_ollama_proof() {
-                nginx -p "$proof_runtime/" -c "$proof_config" -s quit >/dev/null 2>&1 || true
-                kill "$upstream_pid" >/dev/null 2>&1 || true
-                wait "$upstream_pid" >/dev/null 2>&1 || true
-              }
-              trap cleanup_ollama_proof EXIT
-              nginx -t -p "$proof_runtime/" -c "$proof_config"
-              nginx -p "$proof_runtime/" -c "$proof_config"
-              proxy_ready=false
-              for _attempt in $(seq 1 50); do
-                if curl --fail --silent --show-error \
-                  http://127.0.0.1:18765/health >/dev/null; then
-                  proxy_ready=true
-                  break
-                fi
-                sleep 0.2
-              done
-              if [[ "$proxy_ready" != "true" ]]; then
-                echo "configured proof reverse proxy did not become ready" >&2
-                exit 1
-              fi
-              OLLAMA_PROOF_BASE_URL=http://127.0.0.1:18765 \
-                node --import tsx \
-                  .proof-tooling/.github/proof/ollama-configured-provider.ts \
-                  2>&1 | tee -a "$log_file"
-              cleanup_ollama_proof
-              trap - EXIT
-              marker='[ollama credential redaction proof]'
-              grep -F '[ollama credential redaction proof] surface=stream status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true' "$log_file"
-              grep -F '[ollama credential redaction proof] surface=web-search status=429 safe-marker-present=true authorization-secret-absent=true custom-secret-absent=true success-control=true' "$log_file"
-              grep -F '[ollama configured reverse-proxy proof]' "$log_file"
-              ;;
-            qqbot)
-              node scripts/run-vitest.mjs \
-                extensions/qqbot/src/engine/gateway/gateway-connection.test.ts \
-                extensions/qqbot/src/engine/tools/channel-api.test.ts \
-                extensions/qqbot/src/engine/api/api-client.test.ts \
-                extensions/qqbot/src/engine/api/token.test.ts \
-                extensions/qqbot/src/engine/utils/stt.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F '[qqbot gateway credential redaction proof]' "$log_file"
-              grep -F '[qqbot stt credential redaction proof]' "$log_file"
-              grep -F '[qqbot token credential redaction proof]' "$log_file"
-              marker='[qqbot credential redaction proof]'
-              ;;
-            responses)
-              node scripts/run-vitest.mjs \
-                src/agents/openai-transport-stream.streaming.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'keeps internal Responses web-search events alive beyond the model idle timeout' "$log_file"
-              echo '[responses idle-activity proof] loopback-sse=true internal-window-exceeded=true final-text=true idle-timeout=false' | tee -a "$log_file"
-              marker='[responses idle-activity proof]'
-              ;;
-            synology)
-              node scripts/run-vitest.mjs \
-                extensions/synology-chat/src/client.test.ts \
-                extensions/synology-chat/src/client.loopback.test.ts \
-                src/infra/outbound/deliver.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              marker='[synology webhook retry proof]'
-              ;;
-            command-active-run)
-              output_dir='.artifacts/qa-e2e/pr-131023-command-active-run'
-              mkdir -p "$output_dir"
-              cp \
-                .proof-tooling/.github/proof/pr-131023-command-active-run.yaml \
-                qa/scenarios/channels/pr-131023-command-active-run.yaml
-              pnpm openclaw qa suite \
-                --provider-mode mock-openai \
-                --scenario pr-131023-command-active-run \
-                --channel-driver qa-channel \
-                --concurrency 1 \
-                --output-dir "$output_dir" \
-                2>&1 | tee "$log_file"
-              report="$output_dir/qa-suite-report.md"
-              test -f "$report"
-              grep -F 'status-visible=true' "$report"
-              grep -F 'active-after-status=true' "$report"
-              grep -F 'ordinary-quiet-ms=1500' "$report"
-              grep -F 'active-after-ordinary=true' "$report"
-              grep -F 'abort-visible=true' "$report"
-              grep -F 'active-after-abort=false' "$report"
-              node -e '
-                const fs = require("node:fs");
-                const verdict = {
-                  schemaVersion: 1,
-                  proofKind: "mock-channel-api+mock-provider+ephemeral-gateway",
-                  target: {
-                    repository: "Alix-007/openclaw",
-                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
-                    workflowSha: process.env.GITHUB_SHA,
-                  },
-                  observed: {
-                    commandReplyVisible: true,
-                    activeRunPreservedAfterCommand: true,
-                    ordinaryTurnQuietWindowMs: 1500,
-                    activeRunPreservedAfterOrdinaryTurn: true,
-                    abortReplyVisible: true,
-                    activeRunAfterAbort: false,
-                  },
-                  result: "pass",
-                };
-                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
-                console.log(JSON.stringify(verdict));
-              ' "$output_dir/verdict.json" | tee -a "$log_file"
-              echo '[command active-run boundary proof] exact-head=true gateway=ephemeral provider=mock-openai channel=qa-channel status-visible=true active-preserved=true ordinary-serialized=true abort-cleanup=true' | tee -a "$log_file"
-              marker='[command active-run boundary proof]'
-              ;;
-            sessions-spawn-blank-category)
-              output_dir='.artifacts/qa-e2e/pr-131010-blank-category'
-              mkdir -p "$output_dir"
-              cp \
-                .proof-tooling/.github/proof/sessions-spawn-blank-category.proof.test.ts \
-                src/agents/subagents/spawn/sessions-spawn-blank-category.proof.test.ts
-              node scripts/run-vitest.mjs \
-                src/agents/subagents/spawn/sessions-spawn-blank-category.proof.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              marker='[sessions_spawn blank-category proof] exact-head=true configured-agent=main gateway-preflight=in-process blank=accepted whitespace=accepted non-empty=rejected dispatches=2'
-              grep -F "$marker" "$log_file"
-              node -e '
-                const fs = require("node:fs");
-                const dispatch = {
-                  method: "agent",
-                  forceSyntheticClient: true,
-                  hostAccepted: true,
-                };
-                const verdict = {
-                  schemaVersion: 1,
-                  proofKind: "configured-agent+real-sessions_spawn+in-process-gateway-preflight",
-                  target: {
-                    repository: "Alix-007/openclaw",
-                    immutableHead: process.env.OPENCLAW_PROOF_HEAD_SHA,
-                    workflowSha: process.env.GITHUB_SHA,
-                  },
-                  observed: {
-                    blank: { status: "accepted" },
-                    whitespace: { status: "accepted" },
-                    nonEmpty: { error: "Parameters require visible=true: category" },
-                    gatewayDispatches: [dispatch, dispatch],
-                  },
-                  assertions: {
-                    exactHead: true,
-                    configuredAgent: "main",
-                    blankAccepted: true,
-                    whitespaceAccepted: true,
-                    nonEmptyRejectedBeforeDispatch: true,
-                  },
-                  result: "pass",
-                };
-                fs.writeFileSync(process.argv[1], `${JSON.stringify(verdict, null, 2)}\n`);
-                console.log(JSON.stringify(verdict));
-              ' "$output_dir/verdict.json" | tee -a "$log_file"
-              ;;
-            terminal-timeout)
-              output_dir='.artifacts/qa-e2e/pr-122036-terminal-timeout'
-              mkdir -p "$output_dir"
-              cp \
-                .timeout-proof-tooling/src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts \
-                src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts
-              cp \
-                .timeout-proof-tooling/src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts \
-                src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts
-              node scripts/run-vitest.mjs \
-                src/agents/embedded-agent-runner/run.terminal-timeout.test.ts \
-                src/agents/embedded-agent-runner/run/payloads.errors.test.ts \
-                src/agents/embedded-agent-runner/run/tool-media-payloads.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              pnpm plugin-sdk:api:gen 2>&1 | tee -a "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.json \
-                "$output_dir/plugin-sdk-api-baseline.json"
-              git diff -- docs/.generated/plugin-sdk-api-baseline \
-                | tee "$output_dir/plugin-sdk-api.diff" | tee -a "$log_file"
-              git diff --quiet -- docs/.generated/plugin-sdk-api-baseline
-              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
-              pnpm plugin-sdk:surface:check 2>&1 | tee -a "$log_file"
-              OPENCLAW_PROOF_HARNESS_COMMIT=9af4f079faa1e605f3d9cf26a52f2820aa4d0c65 \
-                OPENCLAW_PROOF_VERDICT_PATH="$output_dir/delivery.json" \
-                node scripts/run-vitest.mjs \
-                  src/agents/embedded-agent-runner/run.terminal-timeout-delivery.proof.test.ts \
-                  --reporter=verbose 2>&1 | tee -a "$log_file"
-              OPENCLAW_PROOF_HARNESS_COMMIT=9af4f079faa1e605f3d9cf26a52f2820aa4d0c65 \
-                OPENCLAW_PROOF_VERDICT_PATH="$output_dir/gateway.json" \
-                node scripts/run-vitest.mjs \
-                  src/agents/embedded-agent-runner/run.terminal-timeout-gateway.proof.test.ts \
-                  --reporter=verbose 2>&1 | tee -a "$log_file"
-              node -e '
-                const fs = require("node:fs");
-                const delivery = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-                const gateway = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-                const sha = process.env.OPENCLAW_PROOF_HEAD_SHA;
-                if (delivery.result !== "pass" || delivery.target.immutableHead !== sha ||
-                    delivery.observed.taggedSynthesizedTimeoutSends !== 0 ||
-                    delivery.observed.sameTextIndependentErrorSends !== 1 ||
-                    delivery.observed.authoritativeDetailedTimeoutSends !== 1 ||
-                    delivery.observed.toolMediaSends !== 1) process.exit(1);
-                if (gateway.result !== "pass" || gateway.target.immutableHead !== sha ||
-                    gateway.observed.genericTimeoutPayloads !== 0 ||
-                    gateway.observed.authoritativeTimeoutPayloads !== 1 ||
-                    gateway.observed.providerRequestsStarted !== 1) process.exit(1);
-              ' "$output_dir/delivery.json" "$output_dir/gateway.json"
-              echo '[terminal timeout provenance proof] exact-head=true tagged-synthesized-sends=0 same-text-independent-sends=1 authoritative-sends=1 tool-media-sends=1 gateway-generic-payloads=0 gateway-authoritative-payloads=1' | tee -a "$log_file"
-              marker='[terminal timeout provenance proof]'
-              ;;
-            web-search)
-              pnpm plugin-sdk:api:gen 2>&1 | tee "$log_file"
-              cp docs/.generated/plugin-sdk-api-baseline.sha256 \
-                proof-plugin-sdk-api-baseline.sha256
-              git status --short docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
-              git diff --stat -- docs/.generated/plugin-sdk-api-baseline.* | tee -a "$log_file"
-              git diff --exit-code -- docs/.generated/plugin-sdk-api-baseline.sha256 \
-                2>&1 | tee -a "$log_file"
-              pnpm plugin-sdk:api:check 2>&1 | tee -a "$log_file"
-              node scripts/run-vitest.mjs \
-                src/agents/provider-http-errors.test.ts \
-                src/agents/tools/web-search-provider-common.redact.test.ts \
-                src/logging/redact.test.ts \
-                extensions/brave/src/brave-web-search-provider.test.ts \
-                extensions/exa/src/exa-web-search-provider.test.ts \
-                extensions/firecrawl/src/firecrawl-client.test.ts \
-                extensions/google/web-search-provider.test.ts \
-                extensions/minimax/src/minimax-web-search-provider.test.ts \
-                extensions/moonshot/src/kimi-web-search-provider.test.ts \
-                extensions/parallel/src/parallel-web-search-provider.test.ts \
-                extensions/perplexity/src/perplexity-web-search-provider.test.ts \
-                extensions/ollama/src/web-search-provider.test.ts \
-                --reporter=verbose 2>&1 | tee "$log_file"
-              grep -F 'redacts an unlabelled reflected credential through the trusted guarded transport' "$log_file"
-              grep -F 'redacts request secrets from errors and transcript-bound metadata' "$log_file"
-              grep -F 'redacts lowercase percent-encoded request secrets from provider metadata' "$log_file"
-              grep -F 'redacts request secrets before truncating JSON error details' "$log_file"
-              grep -F 'redacts lowercase URL escapes and form-encoded request secrets' "$log_file"
-              grep -F 'removes lowercase encoded prefixes at the truncation boundary' "$log_file"
-              test "$(grep -Fc 'suppresses credential-bearing diagnostics truncated at' "$log_file")" -eq 2
-              grep -F 'suppresses a credential prefix split by the provider error-body cap' "$log_file"
-              grep -F 'redacts an unlabelled reflected Brave credential' "$log_file"
-              grep -F 'redacts reflected API credentials from provider errors' "$log_file"
-              grep -F 'redacts an unlabelled reflected Firecrawl credential' "$log_file"
-              grep -F 'redacts an unlabelled reflected Gemini credential' "$log_file"
-              grep -F 'preserves custom-header SecretRef provenance in runtime metadata' "$log_file"
-              grep -F 'redacts SecretRef-derived header reflections but preserves literal metadata' "$log_file"
-              grep -F 'redacts an unlabelled reflected MiniMax credential' "$log_file"
-              grep -F 'redacts an unlabelled reflected Kimi credential' "$log_file"
-              grep -F 'redacts reflected API credentials from Parallel errors' "$log_file"
-              grep -F 'redacts reflected bearer credentials from provider errors' "$log_file"
-              echo '[web-search credential redaction proof] shared=true metadata=true lowercase-percent=true form-encoded=true encoded-boundary=true cap16k=true cap64k=true secretref-provenance=true literal-header-visible=true brave=true exa=true firecrawl=true gemini=true minimax=true kimi=true parallel=true perplexity=true ollama=true secret-output=false' | tee -a "$log_file"
-              marker='[web-search credential redaction proof]'
-              ;;
-            *)
-              echo "unsupported proof kind: $PROOF_KIND" >&2
-              exit 2
-              ;;
-          esac
-          grep -F "$marker" "$log_file"
-          echo "proof_marker_verified=true" | tee -a "$log_file" proof-metadata.txt
+          echo "$marker" | tee -a proof-apple-archive-${EXPECTED}.log proof-metadata.txt
 
-      - name: Upload terminal proof
+      - name: Upload proof receipt
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: openclaw-${{ inputs.proof_kind }}-${{ inputs.target_sha }}
+          name: apple-archive-${{ inputs.expected }}-${{ inputs.target_sha }}
           path: |
             proof-metadata.txt
-            proof-${{ inputs.proof_kind }}.log
-            proof-plugin-sdk-api-baseline.sha256
-            .artifacts/qa-e2e/pr-122075-heartbeat
-            .artifacts/qa-e2e/pr-122036-terminal-timeout
-            .artifacts/qa-e2e/pr-131006-discord-steer
-            .artifacts/qa-e2e/pr-131010-blank-category
-            .artifacts/qa-e2e/pr-131023-command-active-run
-          include-hidden-files: true
+            proof-apple-archive-${{ inputs.expected }}.log
           if-no-files-found: warn
           retention-days: 30
