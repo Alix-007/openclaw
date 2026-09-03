@@ -55,6 +55,21 @@ jobs:
             swift --version
           } | tee proof-metadata.txt
 
+      - name: Set up Node for canonical Apple resources
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Prepare canonical Apple Mermaid resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile --filter '@openclaw/mermaid-renderer...'
+          node scripts/prepare-apple-mermaid.mjs
+          test -f apps/shared/OpenClawKit/Sources/OpenClawChatUI/Resources/Mermaid/index.html
+
       - name: Run unchanged focused Swift entry
         shell: bash
         run: |
