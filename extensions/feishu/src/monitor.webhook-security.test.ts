@@ -8,11 +8,15 @@ import {
 } from "./monitor.test-mocks.js";
 import {
   buildWebhookConfig,
+  createFeishuWebhookTestAccount,
   getFreePort,
+  signFeishuPayload,
+  waitUntilServerReady,
   withRunningWebhookMonitor,
 } from "./monitor.webhook.test-helpers.js";
 
 const probeFeishuMock = vi.hoisted(() => vi.fn());
+const webhookBodyTimeoutMs = vi.hoisted(() => ({ value: 50 }));
 
 vi.mock("./probe.js", () => ({
   probeFeishu: probeFeishuMock,
@@ -29,13 +33,16 @@ vi.mock("@larksuiteoapi/node-sdk", () => ({
       res.end("ok");
     },
   ),
+  generateChallenge: vi.fn(() => ({ isChallenge: false })),
 }));
 
 vi.mock("./monitor.state.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./monitor.state.js")>();
   return {
     ...actual,
-    FEISHU_WEBHOOK_BODY_TIMEOUT_MS: 50,
+    get FEISHU_WEBHOOK_BODY_TIMEOUT_MS() {
+      return webhookBodyTimeoutMs.value;
+    },
   };
 });
 
@@ -158,6 +165,70 @@ async function waitForOversizedBodyResponse(url: string): Promise<string> {
       reject(new Error("payload-too-large response did not arrive within 1000ms"));
     }, 1_000);
   });
+}
+
+function openIncompleteWebhookRequest(url: string): {
+  socket: ReturnType<typeof createConnection>;
+  response: Promise<string>;
+  finish: () => void;
+  isClosed: () => boolean;
+} {
+  const target = new URL(url);
+  const body = '{"type":"url_verification"}';
+  const bodyPrefix = body.slice(0, -1);
+  const bodySuffix = body.slice(-1);
+  const socket = createConnection({
+    host: target.hostname,
+    port: Number(target.port),
+  });
+  let response = "";
+  let settled = false;
+  const responsePromise = new Promise<string>((resolve, reject) => {
+    const failTimer = setTimeout(() => {
+      socket.destroy();
+      if (!settled) {
+        settled = true;
+        reject(new Error("incomplete webhook request did not close within 10000ms"));
+      }
+    }, 10_000);
+    const finish = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearTimeout(failTimer);
+      resolve(response);
+    };
+
+    socket.setEncoding("utf8");
+    socket.on("data", (chunk) => {
+      response += chunk.toString();
+    });
+    socket.on("close", finish);
+    socket.on("error", (error) => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(failTimer);
+        reject(error);
+      }
+    });
+    socket.once("connect", () => {
+      socket.write(`POST ${target.pathname} HTTP/1.1\r\n`);
+      socket.write(`Host: ${target.hostname}\r\n`);
+      socket.write("Content-Type: application/json\r\n");
+      socket.write(`Content-Length: ${Buffer.byteLength(body)}\r\n`);
+      socket.write("Connection: close\r\n");
+      socket.write("\r\n");
+      socket.write(bodyPrefix);
+    });
+  });
+
+  return {
+    socket,
+    response: responsePromise,
+    finish: () => socket.write(bodySuffix),
+    isClosed: () => settled,
+  };
 }
 
 function resolveTestClientIp(remoteAddress: string | undefined): string | undefined {
@@ -337,6 +408,90 @@ describe("Feishu webhook security hardening", () => {
         expect(statusSink).not.toHaveBeenCalled();
       },
     );
+  });
+
+  it("rejects excess concurrent pre-auth webhook reads and recovers capacity", async () => {
+    webhookBodyTimeoutMs.value = 5_000;
+    const accountId = "pre-auth-inflight";
+    const path = "/hook-pre-auth-inflight";
+    const port = await getFreePort();
+    const abortController = new AbortController();
+    const invokeWebhookEvent = vi.fn(async () => ({
+      kind: "durable" as const,
+      value: { accepted: true },
+    }));
+    const openRequests: Array<ReturnType<typeof openIncompleteWebhookRequest>> = [];
+    const monitorPromise = monitorWebhook({
+      account: createFeishuWebhookTestAccount(accountId, port, path),
+      accountId,
+      runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
+      abortSignal: abortController.signal,
+      eventDispatcher: {} as never,
+      invokeWebhookEvent,
+    });
+
+    try {
+      const url = `http://127.0.0.1:${port}${path}`;
+      await waitUntilServerReady(url);
+      const server = httpServers.get(accountId);
+      if (!server) {
+        throw new Error("expected webhook server");
+      }
+      const heldRequestsReceived = new Promise<void>((resolve) => {
+        let requestCount = 0;
+        const onRequest = () => {
+          requestCount += 1;
+          if (requestCount === 64) {
+            server.off("request", onRequest);
+            resolve();
+          }
+        };
+        server.on("request", onRequest);
+      });
+      const held = Array.from({ length: 64 }, () => openIncompleteWebhookRequest(url));
+      openRequests.push(...held);
+      await heldRequestsReceived;
+      expect(held.every((request) => !request.isClosed())).toBe(true);
+
+      const overflowStartedAt = Date.now();
+      const overflow = openIncompleteWebhookRequest(url);
+      openRequests.push(overflow);
+      const overflowResponse = await overflow.response;
+
+      expect(overflowResponse).toContain("429 Too Many Requests");
+      expect(overflowResponse).toMatch(/connection: close/i);
+      expect(Date.now() - overflowStartedAt).toBeLessThan(400);
+      expect(invokeWebhookEvent).not.toHaveBeenCalled();
+
+      for (const request of held) {
+        request.finish();
+      }
+      const heldResponses = await Promise.all(held.map((request) => request.response));
+      expect(heldResponses).toHaveLength(64);
+      expect(heldResponses.every((response) => response.includes("401 Unauthorized"))).toBe(true);
+
+      const rawBody = JSON.stringify({
+        schema: "2.0",
+        header: { event_type: "test.pre_auth_inflight" },
+        event: {},
+      });
+      const recovered = await fetch(url, {
+        method: "POST",
+        headers: signFeishuPayload({ encryptKey: "encrypt_key", rawBody }),
+        body: rawBody,
+      });
+
+      expect(recovered.status).toBe(200);
+      expect(recovered.headers.get("x-openclaw-delivery-accepted")).toBe("durable");
+      expect(invokeWebhookEvent).toHaveBeenCalledTimes(1);
+    } finally {
+      for (const request of openRequests) {
+        request.socket.destroy();
+      }
+      webhookBodyTimeoutMs.value = 50;
+      abortController.abort();
+      await monitorPromise;
+    }
   });
 
   it("rate limits webhook burst traffic with 429", async () => {
