@@ -606,6 +606,9 @@ describe("fleet restore runtime", () => {
     ) as { gateway?: { controlUi?: { allowedOrigins?: string[] } } };
     expect(config.gateway?.controlUi?.allowedOrigins).toContain("http://127.0.0.1:19100");
     expect(containers.run.mock.calls[0]?.[0].environment.OPENCLAW_GATEWAY_TOKEN).toBe("new-token");
+    expect(containers.run.mock.calls[0]?.[0].environment.XDG_CACHE_HOME).toBe(
+      "/home/node/.openclaw/cache",
+    );
     // The disk limit must survive restore via the fleet label even on Podman,
     // whose inspect schema has no HostConfig.StorageOpt.
     expect(containers.run.mock.calls[0]?.[0].diskSize).toBe("10g");

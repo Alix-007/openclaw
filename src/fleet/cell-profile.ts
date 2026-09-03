@@ -9,6 +9,9 @@ export const FLEET_GATEWAY_PORT = 18_789;
 const FLEET_CONTAINER_HOME = "/home/node";
 const FLEET_CONTAINER_STATE_DIR = "/home/node/.openclaw";
 const FLEET_CONTAINER_AUTH_SECRET_DIR = "/home/node/.config/openclaw";
+const FLEET_DEFAULT_ENVIRONMENT: Readonly<Record<string, string>> = {
+  XDG_CACHE_HOME: `${FLEET_CONTAINER_STATE_DIR}/cache`,
+};
 export const FLEET_TENANT_LABEL = "openclaw.fleet.tenant";
 export const FLEET_OWNER_LABEL = "openclaw.fleet.owner";
 export const FLEET_ATTEMPT_LABEL = "openclaw.fleet.attempt";
@@ -160,6 +163,7 @@ export function buildCellEnvironment(
     OPENCLAW_CONFIG_PATH: `${FLEET_CONTAINER_STATE_DIR}/openclaw.json`,
     OPENCLAW_WORKSPACE_DIR: `${FLEET_CONTAINER_STATE_DIR}/workspace`,
     OPENCLAW_GATEWAY_TOKEN: token,
+    ...FLEET_DEFAULT_ENVIRONMENT,
     ...userEnv,
   };
 }
@@ -260,8 +264,13 @@ function buildCellContainerArgs(
         `${profile.containerUser.uid}:${profile.containerUser.gid}`,
       ]
     : [];
-  const userEnvironmentKeys = Object.keys(profile.environment)
-    .filter((key) => !RESERVED_ENV_KEYS.has(key))
+  // Fleet defaults are rebuilt on upgrade/restore; only differing operator
+  // values belong in the provenance label, or today's default becomes pinned.
+  const userEnvironmentKeys = Object.entries(profile.environment)
+    .filter(
+      ([key, value]) => !RESERVED_ENV_KEYS.has(key) && FLEET_DEFAULT_ENVIRONMENT[key] !== value,
+    )
+    .map(([key]) => key)
     .toSorted();
   const mountSuffix = profile.selinuxRelabel ? ":Z" : "";
 
