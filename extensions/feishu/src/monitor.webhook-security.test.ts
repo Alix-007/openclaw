@@ -17,6 +17,24 @@ import {
 
 const probeFeishuMock = vi.hoisted(() => vi.fn());
 const webhookBodyTimeoutMs = vi.hoisted(() => ({ value: 50 }));
+const preAuthInFlightLimit = vi.hoisted(() => ({ value: undefined as number | undefined }));
+
+vi.mock("openclaw/plugin-sdk/webhook-request-guards", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("openclaw/plugin-sdk/webhook-request-guards")>();
+  return {
+    ...actual,
+    createWebhookInFlightLimiter: (
+      options?: Parameters<typeof actual.createWebhookInFlightLimiter>[0],
+    ) =>
+      actual.createWebhookInFlightLimiter({
+        ...options,
+        ...(preAuthInFlightLimit.value === undefined
+          ? {}
+          : { maxInFlightPerKey: preAuthInFlightLimit.value }),
+      }),
+  };
+});
 
 vi.mock("./probe.js", () => ({
   probeFeishu: probeFeishuMock,
@@ -249,6 +267,8 @@ function waitForWebhookResponseClose(accountId: string): Promise<void> {
 }
 
 afterEach(async () => {
+  preAuthInFlightLimit.value = undefined;
+  webhookBodyTimeoutMs.value = 50;
   feishuWebhookRateLimiter.clear();
   cleanupFeishuMonitorStateForTests();
 });
@@ -489,6 +509,68 @@ describe("Feishu webhook security hardening", () => {
         request.socket.destroy();
       }
       webhookBodyTimeoutMs.value = 50;
+      abortController.abort();
+      await monitorPromise;
+    }
+  });
+
+  it("releases pre-auth capacity before signed event dispatch", { timeout: 15_000 }, async () => {
+    preAuthInFlightLimit.value = 1;
+    const accountId = "pre-auth-dispatch";
+    const path = "/hook-pre-auth-dispatch";
+    const port = await getFreePort();
+    const abortController = new AbortController();
+    let releaseDispatch = () => {};
+    const dispatchGate = new Promise<void>((resolve) => {
+      releaseDispatch = resolve;
+    });
+    const invokeWebhookEvent = vi.fn(async () => {
+      await dispatchGate;
+      return { kind: "durable" as const, value: { accepted: true } };
+    });
+    let signedRequest: Promise<Response> | undefined;
+    const monitorPromise = monitorWebhook({
+      account: createFeishuWebhookTestAccount(accountId, port, path),
+      accountId,
+      runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
+      abortSignal: abortController.signal,
+      eventDispatcher: {} as never,
+      invokeWebhookEvent,
+    });
+
+    try {
+      const url = `http://127.0.0.1:${port}${path}`;
+      await waitUntilServerReady(url);
+      const rawBody = JSON.stringify({
+        schema: "2.0",
+        header: { event_type: "test.pre_auth_dispatch" },
+        event: {},
+      });
+      signedRequest = fetch(url, {
+        method: "POST",
+        headers: signFeishuPayload({ encryptKey: "encrypt_key", rawBody }),
+        body: rawBody,
+      });
+      await vi.waitFor(() => expect(invokeWebhookEvent).toHaveBeenCalledOnce(), {
+        timeout: 5_000,
+        interval: 10,
+      });
+
+      const admittedInvalidSignature = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: "{}",
+      });
+      expect(admittedInvalidSignature.status).toBe(401);
+      expect(invokeWebhookEvent).toHaveBeenCalledOnce();
+
+      releaseDispatch();
+      expect((await signedRequest).status).toBe(200);
+    } finally {
+      releaseDispatch();
+      if (signedRequest) {
+        await signedRequest.catch(() => undefined);
+      }
       abortController.abort();
       await monitorPromise;
     }

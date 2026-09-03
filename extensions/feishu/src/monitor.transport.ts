@@ -453,7 +453,7 @@ export async function monitorWebhook({
         429,
         "Rate limit exceeded",
         "text/plain; charset=utf-8",
-      ).catch((err) => {
+      ).catch((err: unknown) => {
         error(`feishu[${accountId}]: webhook concurrency rejection failed: ${String(err)}`);
       });
       return;
@@ -471,31 +471,39 @@ export async function monitorWebhook({
 
     void (async () => {
       try {
-        const body = await readWebhookBodyOrReject({
-          req,
-          res,
-          maxBytes: FEISHU_WEBHOOK_MAX_BODY_BYTES,
-          timeoutMs: FEISHU_WEBHOOK_BODY_TIMEOUT_MS,
-          profile: "pre-auth",
-        });
-        if (!body.ok || res.writableEnded) {
-          return;
-        }
-        if (guard.isTripped()) {
-          return;
-        }
-        const rawBody = body.value;
+        let rawBody: string;
+        try {
+          const body = await readWebhookBodyOrReject({
+            req,
+            res,
+            maxBytes: FEISHU_WEBHOOK_MAX_BODY_BYTES,
+            timeoutMs: FEISHU_WEBHOOK_BODY_TIMEOUT_MS,
+            profile: "pre-auth",
+          });
+          if (!body.ok || res.writableEnded) {
+            return;
+          }
+          if (guard.isTripped()) {
+            return;
+          }
+          rawBody = body.value;
 
-        // Reject invalid signatures before any JSON parsing to keep the auth boundary strict.
-        if (
-          !isFeishuWebhookSignatureValid({
-            headers: req.headers,
-            rawBody,
-            encryptKey,
-          })
-        ) {
-          respondText(res, 401, "Invalid signature");
-          return;
+          // Reject invalid signatures before any JSON parsing to keep the auth boundary strict.
+          if (
+            !isFeishuWebhookSignatureValid({
+              headers: req.headers,
+              rawBody,
+              encryptKey,
+            })
+          ) {
+            respondText(res, 401, "Invalid signature");
+            return;
+          }
+        } finally {
+          // This slot owns only untrusted body and signature work; authenticated
+          // parsing and dispatch must not reject new reads when downstream stalls.
+          guard.dispose();
+          preAuthInFlightLimiter.release(preAuthInFlightKey);
         }
 
         const payload = parseFeishuWebhookPayload(rawBody);
@@ -536,9 +544,6 @@ export async function monitorWebhook({
         if (!res.headersSent) {
           respondText(res, 500, "Internal Server Error");
         }
-      } finally {
-        guard.dispose();
-        preAuthInFlightLimiter.release(preAuthInFlightKey);
       }
     })();
   });
