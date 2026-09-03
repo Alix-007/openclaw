@@ -51,6 +51,7 @@ export interface CellContainerProfile {
   diskSize?: string;
   pidsLimit: number;
   environment: Readonly<Record<string, string>>;
+  userEnvironmentKeys: readonly string[];
   containerUser?:
     | { mode: "numeric"; uid: number; gid: number }
     | { mode: "podman-keep-id"; uid: number; gid: number };
@@ -264,14 +265,9 @@ function buildCellContainerArgs(
         `${profile.containerUser.uid}:${profile.containerUser.gid}`,
       ]
     : [];
-  // Fleet defaults are rebuilt on upgrade/restore; only differing operator
-  // values belong in the provenance label, or today's default becomes pinned.
-  const userEnvironmentKeys = Object.entries(profile.environment)
-    .filter(
-      ([key, value]) => !RESERVED_ENV_KEYS.has(key) && FLEET_DEFAULT_ENVIRONMENT[key] !== value,
-    )
-    .map(([key]) => key)
-    .toSorted();
+  // Explicit origin cannot be inferred from final values: a user override may
+  // equal today's default and still need to survive a later default change.
+  const userEnvironmentKeys = profile.userEnvironmentKeys.toSorted();
   const mountSuffix = profile.selinuxRelabel ? ":Z" : "";
 
   return [

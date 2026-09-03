@@ -593,7 +593,10 @@ describe("fleet restore runtime", () => {
 
   it("swaps state, repins config, and rotates the token", async () => {
     const archive = await createArchive();
-    const containers = containerMock();
+    const current = inspection();
+    current.labels["openclaw.fleet.env-keys"] = "XDG_CACHE_HOME";
+    current.environment.XDG_CACHE_HOME = "/home/node/.openclaw/cache";
+    const containers = containerMock(current);
     const result = await restoreFleetCell(restoreParams(containers, archive));
     await expect(fs.readFile(path.join(record.dataDir, "restored.txt"), "utf8")).resolves.toBe(
       "new-data",
@@ -609,6 +612,7 @@ describe("fleet restore runtime", () => {
     expect(containers.run.mock.calls[0]?.[0].environment.XDG_CACHE_HOME).toBe(
       "/home/node/.openclaw/cache",
     );
+    expect(containers.run.mock.calls[0]?.[0].userEnvironmentKeys).toEqual(["XDG_CACHE_HOME"]);
     // The disk limit must survive restore via the fleet label even on Podman,
     // whose inspect schema has no HostConfig.StorageOpt.
     expect(containers.run.mock.calls[0]?.[0].diskSize).toBe("10g");
