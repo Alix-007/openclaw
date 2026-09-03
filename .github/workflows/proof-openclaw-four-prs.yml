@@ -33,7 +33,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Verify immutable source and toolchain
