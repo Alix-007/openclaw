@@ -498,7 +498,7 @@ public enum ChatSessionSidebarModel {
         mainSessionKey: String) -> Bool
     {
         // The Gateway drains active work before archive commit; keep only client-side identity guards.
-        return self.normalized(session.sessionId) != nil &&
+        self.normalized(session.sessionId) != nil &&
             self.canDeleteSession(key: session.key, mainSessionKey: mainSessionKey)
     }
 
