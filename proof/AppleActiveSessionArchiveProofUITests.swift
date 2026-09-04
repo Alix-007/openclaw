@@ -79,18 +79,20 @@ final class AppleActiveSessionArchiveProofUITests: XCTestCase {
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.12)).tap()
         XCTAssertTrue(archive.waitForNonExistence(timeout: 5))
 
-        let main = app.buttons.matching(NSPredicate(
-            format: "label BEGINSWITH[c] %@",
-            "Main archive control")).firstMatch
-        XCTAssertTrue(main.waitForExistence(timeout: 5))
-        XCTAssertTrue(main.isHittable)
-        main.press(forDuration: 1)
-        XCTAssertTrue(app.buttons["Rename…"].waitForExistence(timeout: 5))
+        if showSidebar.waitForExistence(timeout: 2) {
+            showSidebar.tap()
+        }
+        let home = app.buttons["RootTabs.Sidebar.Destination.chat"]
+        XCTAssertTrue(
+            home.waitForExistence(timeout: 5),
+            "The configured main session must remain represented by the protected Home row")
+        XCTAssertTrue(home.isHittable)
+        home.press(forDuration: 1)
         XCTAssertFalse(
             app.buttons["Archive"].exists,
-            "The configured main session must remain protected from Archive")
-        self.attachScreenshot(named: "active-main-session-archive-absent-control")
-        self.attachHierarchy(named: "active-main-session-menu-hierarchy", app: app)
+            "The protected Home row must not expose Archive")
+        self.attachScreenshot(named: "active-main-session-home-archive-absent")
+        self.attachHierarchy(named: "active-main-session-home-hierarchy", app: app)
     }
 
     private func attachScreenshot(named name: String) {

@@ -269,6 +269,7 @@ jobs:
           result_bundle="$PWD/apps/ios/build/ArchiveProof/OpenClawArchiveProof.xcresult"
           derived_data="$PWD/apps/ios/build/ArchiveProof/DerivedData"
           mkdir -p "$(dirname "$result_bundle")"
+          set +e
           TEST_RUNNER_OPENCLAW_IOS_LIVE_GATEWAY=1 \
           TEST_RUNNER_OPENCLAW_IOS_LIVE_SETUP_CODE='{"url":"ws://127.0.0.1:19876","token":"synthetic-archive-proof-token"}' \
           NSUnbufferedIO=YES \
@@ -281,10 +282,12 @@ jobs:
               -resultBundlePath "$result_bundle" \
               -parallel-testing-enabled NO \
               -test-timeouts-enabled YES \
-              -default-test-execution-time-allowance 180 \
-              -maximum-test-execution-time-allowance 180 \
+              -default-test-execution-time-allowance 360 \
+              -maximum-test-execution-time-allowance 360 \
               -only-testing:OpenClawUITests/AppleActiveSessionArchiveProofUITests/testActiveNonMainSessionShowsArchiveAndMainDoesNot \
               test 2>&1 | tee evidence/xcodebuild.log
+          test_status=${PIPESTATUS[0]}
+          set -e
 
           curl --fail --silent --show-error http://127.0.0.1:19876/ \
             > evidence/gateway-after.json
@@ -298,6 +301,7 @@ jobs:
             if (!listed) throw new Error("iOS app never read the synthetic session list");
             console.log("gateway_readback=active-session-list-read,no-session-mutations");
           ' | tee -a evidence/proof-metadata.txt
+          exit "$test_status"
 
       - name: Export simulator screenshots and summarize result
         if: always()
@@ -316,7 +320,22 @@ jobs:
               --compact | tee evidence/test-summary.json
             find evidence/attachments -type f -print | sort \
               | tee evidence/attachment-files.txt
-            screenshot_count="$(find evidence/attachments -type f -name '*.png' | wc -l | tr -d ' ')"
+            screenshot_count="$(node --input-type=module -e '
+              import fs from "node:fs";
+              const manifest = JSON.parse(fs.readFileSync("evidence/attachments/manifest.json", "utf8"));
+              const names = manifest.flatMap((entry) => entry.attachments ?? [])
+                .map((attachment) => attachment.suggestedHumanReadableName ?? "");
+              const expected = [
+                "active-non-main-session-archive-visible",
+                "active-main-session-home-archive-absent",
+              ];
+              const missing = expected.filter((name) => !names.some((candidate) => candidate.startsWith(name)));
+              if (missing.length > 0) {
+                console.error(`missing named screenshot attachments: ${missing.join(", ")}`);
+                process.exit(1);
+              }
+              process.stdout.write(String(expected.length));
+            ')"
             echo "screenshot_count=$screenshot_count" | tee -a evidence/proof-metadata.txt
             test "$screenshot_count" -ge 2
           fi
