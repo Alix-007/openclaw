@@ -649,6 +649,42 @@ describe("gateway-cli coverage", () => {
     expect(callGateway).not.toHaveBeenCalled();
   });
 
+  it.each(["--log-lines", "--log-bytes"])(
+    "rejects an explicitly empty gateway diagnostics export %s",
+    async (flag) => {
+      callGateway.mockClear();
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-cli-empty-"));
+      const outputPath = path.join(tempDir, "diagnostics.zip");
+      try {
+        await withEnvOverride(
+          { OPENCLAW_STATE_DIR: tempDir, OPENCLAW_TEST_FILE_LOG: undefined },
+          async () => {
+            await expectGatewayExit([
+              "gateway",
+              "diagnostics",
+              "export",
+              flag,
+              "",
+              "--output",
+              outputPath,
+              "--json",
+            ]);
+          },
+        );
+
+        expect(defaultRuntime.writeJson).toHaveBeenCalledWith({
+          ok: false,
+          error: { type: "cli_error", message: `${flag} must be a positive integer.` },
+        });
+        expect(runtimeErrors).toHaveLength(0);
+        expect(callGateway).not.toHaveBeenCalled();
+        expect(fs.existsSync(outputPath)).toBe(false);
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    },
+  );
+
   it("registers gateway discover and prints json output", async () => {
     discoverGatewayBeacons.mockClear();
     discoverGatewayBeacons.mockResolvedValueOnce([
