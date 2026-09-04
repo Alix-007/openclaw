@@ -593,11 +593,13 @@ type ImageSandboxConfig = MediaToolSandbox;
 
 function createImageToolOperation(params: {
   cfg?: OpenClawConfig;
-  imageModelConfig: ImageModelConfig;
+  imageModelConfig?: ImageModelConfig;
   signal?: AbortSignal;
 }) {
   params.signal?.throwIfAborted();
-  const effectiveCfg = applyImageModelConfigDefaults(params.cfg, params.imageModelConfig);
+  const effectiveCfg = params.imageModelConfig
+    ? applyImageModelConfigDefaults(params.cfg, params.imageModelConfig)
+    : params.cfg;
   const providerCfg: OpenClawConfig = effectiveCfg ?? {};
   // This owner cap is independent from tools.media.*.timeoutSeconds, which
   // remains the full allowance for each provider request.
@@ -920,14 +922,17 @@ export function createImageTool(options?: {
       });
       const maxBytes = pickMaxBytes(options?.config, maxBytesMb);
       let imageRoute:
-        | { kind: "native" }
+        | { kind: "native"; operation: ImageToolOperation }
         | {
             kind: "fallback";
             imageCompression: ImageCompressionPolicy;
             operation: ImageToolOperation;
           };
       if (modelHasVision) {
-        imageRoute = { kind: "native" };
+        imageRoute = {
+          kind: "native",
+          operation: createImageToolOperation({ cfg: options?.config, signal }),
+        };
       } else {
         const imageModelConfig =
           resolvedImageModelConfig ??
@@ -1092,10 +1097,10 @@ export function createImageTool(options?: {
                 });
           return { media, rewrittenFrom };
         };
-        const { media, rewrittenFrom } =
-          imageRoute.kind === "fallback"
-            ? await withImageToolOperationDeadline(imageRoute.operation, prepareMedia)
-            : await prepareMedia(signal);
+        const { media, rewrittenFrom } = await withImageToolOperationDeadline(
+          imageRoute.operation,
+          prepareMedia,
+        );
         if (media.kind !== "image") {
           throw new Error(`Unsupported media type: ${media.kind}`);
         }
@@ -1116,7 +1121,9 @@ export function createImageTool(options?: {
       }
 
       if (imageRoute.kind === "native") {
-        return await buildNativeImageToolResult(loadedImages, options?.config);
+        return await withImageToolOperationDeadline(imageRoute.operation, async () =>
+          buildNativeImageToolResult(loadedImages, options?.config),
+        );
       }
 
       // Do not issue a paid vision-provider call for an already-aborted run.

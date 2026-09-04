@@ -3704,42 +3704,47 @@ describe("image tool run abort", () => {
     expect(providerSignal?.aborted).toBe(true);
   });
 
-  it("times out delayed image preparation before starting the provider", async () => {
-    vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
-    const operationController = new AbortController();
-    const timeoutSpy = vi.spyOn(AbortSignal, "timeout").mockReturnValue(operationController.signal);
-    let markLoadStarted!: () => void;
-    const loadStarted = new Promise<void>((resolve) => {
-      markLoadStarted = resolve;
-    });
-    const loadWebMedia: MockImageLoadWebMedia = vi.fn(async () => {
-      markLoadStarted();
-      return await new Promise<never>(() => {});
-    });
-    const spies = makeDescribeSpies();
-    installAbortImageDeps(loadWebMedia, spies);
+  it.each([false, true])(
+    "times out delayed image preparation before starting the provider (native=%s)",
+    async (modelHasVision) => {
+      vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
+      const operationController = new AbortController();
+      const timeoutSpy = vi
+        .spyOn(AbortSignal, "timeout")
+        .mockReturnValue(operationController.signal);
+      let markLoadStarted!: () => void;
+      const loadStarted = new Promise<void>((resolve) => {
+        markLoadStarted = resolve;
+      });
+      const loadWebMedia: MockImageLoadWebMedia = vi.fn(async () => {
+        markLoadStarted();
+        return await new Promise<never>(() => {});
+      });
+      const spies = makeDescribeSpies();
+      installAbortImageDeps(loadWebMedia, spies);
 
-    await withTempAgentDir(async (agentDir) => {
-      const cfg = createMinimaxImageConfig();
-      const tool = createRequiredImageTool({ config: cfg, agentDir });
-      try {
-        const execution = tool.execute("t1", {
-          prompt: "Describe the image.",
-          path: "https://example.test/a.png",
-          model: "minimax/MiniMax-VL-01",
-        });
-        await loadStarted;
-        operationController.abort(new DOMException("owner timeout", "TimeoutError"));
+      await withTempAgentDir(async (agentDir) => {
+        const cfg = createMinimaxImageConfig();
+        const tool = createRequiredImageTool({ config: cfg, agentDir, modelHasVision });
+        try {
+          const execution = tool.execute("t1", {
+            prompt: "Describe the image.",
+            path: "https://example.test/a.png",
+            ...(modelHasVision ? {} : { model: "minimax/MiniMax-VL-01" }),
+          });
+          await loadStarted;
+          operationController.abort(new DOMException("owner timeout", "TimeoutError"));
 
-        await expect(execution).rejects.toThrow("Image inspection timed out after 600000ms");
-        expect(timeoutSpy).toHaveBeenCalledWith(600_000);
-        expect(spies.describeImage).not.toHaveBeenCalled();
-        expect(spies.describeImages).not.toHaveBeenCalled();
-      } finally {
-        timeoutSpy.mockRestore();
-      }
-    });
-  });
+          await expect(execution).rejects.toThrow("Image inspection timed out after 600000ms");
+          expect(timeoutSpy).toHaveBeenCalledWith(600_000);
+          expect(spies.describeImage).not.toHaveBeenCalled();
+          expect(spies.describeImages).not.toHaveBeenCalled();
+        } finally {
+          timeoutSpy.mockRestore();
+        }
+      });
+    },
+  );
 
   it("throws before downloading or calling the provider when the run signal is already aborted", async () => {
     vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
