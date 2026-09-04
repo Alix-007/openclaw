@@ -1,0 +1,231 @@
+name: Alix Apple active-session archive UI proof
+
+run-name: apple-archive-ui proof at ${{ inputs.target_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        description: Immutable full PR-head SHA from the Alix fork
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  proof:
+    name: iOS simulator active-session Archive proof
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      TARGET_SHA: ${{ inputs.target_sha }}
+    steps:
+      - name: Check out proof harness
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.ref }}
+          path: harness
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out immutable product source
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          path: product
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Select Xcode 26
+        shell: bash
+        run: |
+          set -euo pipefail
+          for xcode_app in /Applications/Xcode_26.6.app /Applications/Xcode-26.6.0.app; do
+            if [[ -d "$xcode_app/Contents/Developer" ]]; then
+              sudo xcode-select -s "$xcode_app/Contents/Developer"
+              break
+            fi
+          done
+          xcodebuild -version
+          xcode_version="$(xcodebuild -version | awk 'NR == 1 { print $2 }')"
+          if [[ "$xcode_version" != 26.6* ]]; then
+            echo "error: expected Xcode 26.6, got $xcode_version" >&2
+            exit 1
+          fi
+          swift --version
+
+      - name: Verify exact product source and overlay test harness
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || [[ "$actual_sha" != "$TARGET_SHA" ]]; then
+            echo "target SHA mismatch: expected=$TARGET_SHA actual=$actual_sha" >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain=v1)"
+          cp ../harness/proof/AppleActiveSessionArchiveProofUITests.swift \
+            apps/ios/UITests/AppleActiveSessionArchiveProofUITests.swift
+          cp ../harness/proof/apple-active-session-archive-gateway.mjs \
+            scripts/apple-active-session-archive-proof-gateway.mjs
+          git diff --exit-code -- apps/ios/Sources apps/shared/OpenClawKit/Sources
+          mkdir -p evidence
+          {
+            echo "product_repository=Alix-007/openclaw"
+            echo "product_head=$actual_sha"
+            echo "workflow_repository=Alix-007/openclaw"
+            echo "workflow_head=$(git -C ../harness rev-parse HEAD)"
+            echo "production_overlay=none"
+            echo "test_overlay=apps/ios/UITests/AppleActiveSessionArchiveProofUITests.swift"
+            echo "gateway_harness_overlay=scripts/apple-active-session-archive-proof-gateway.mjs"
+            echo "owner_source_blob=$(git hash-object apps/shared/OpenClawKit/Sources/OpenClawChatUI/ChatSessionSidebarModel.swift)"
+            echo "root_sidebar_blob=$(git hash-object apps/ios/Sources/RootSidebar.swift)"
+            echo "overlay_status_begin"
+            git status --short
+            echo "overlay_status_end"
+            sw_vers
+            xcodebuild -version
+            swift --version
+          } | tee evidence/proof-metadata.txt
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.18.0
+
+      - name: Install product and iOS tooling
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+          swift_tools_dir="$RUNNER_TEMP/openclaw-swift-tools"
+          ./scripts/install-xcodegen.sh "$swift_tools_dir"
+          ./scripts/install-swift-tools.sh "$swift_tools_dir"
+          echo "$swift_tools_dir" >> "$GITHUB_PATH"
+          "$swift_tools_dir/xcodegen" --version
+          "$swift_tools_dir/swiftformat" --version
+          "$swift_tools_dir/swiftlint" version
+          node scripts/prepare-apple-mermaid.mjs
+          test -f apps/shared/OpenClawKit/Sources/OpenClawChatUI/Resources/Mermaid/index.html
+
+      - name: Generate exact-head iOS project
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          ./scripts/ios-configure-signing.sh
+          ./scripts/ios-write-version-xcconfig.sh
+          node scripts/ios-write-swift-filelist.mjs
+          xcodegen generate --spec apps/ios/project.yml --project apps/ios
+
+      - name: Run active-session Archive interaction
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          simulator_id="$(
+            xcrun simctl list devices available --json | node --input-type=module -e '
+              const chunks = [];
+              for await (const chunk of process.stdin) chunks.push(chunk);
+              const runtimes = JSON.parse(Buffer.concat(chunks).toString("utf8")).devices;
+              const simulator = Object.values(runtimes)
+                .flat()
+                .find((device) => device.isAvailable && device.name.startsWith("iPhone"));
+              if (!simulator) {
+                console.error("No available iPhone simulator for archive proof");
+                process.exit(1);
+              }
+              process.stdout.write(simulator.udid);
+            '
+          )"
+          echo "simulator_id=$simulator_id" | tee -a evidence/proof-metadata.txt
+          xcrun simctl list devices | grep -F "$simulator_id" | tee -a evidence/proof-metadata.txt
+
+          node scripts/apple-active-session-archive-proof-gateway.mjs \
+            > evidence/gateway.log 2>&1 &
+          gateway_pid=$!
+          cleanup() {
+            kill "$gateway_pid" 2>/dev/null || true
+            wait "$gateway_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          for _ in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:19876/ \
+              > evidence/gateway-before.json; then
+              break
+            fi
+            sleep 1
+          done
+          test -s evidence/gateway-before.json
+
+          result_bundle="$PWD/apps/ios/build/ArchiveProof/OpenClawArchiveProof.xcresult"
+          derived_data="$PWD/apps/ios/build/ArchiveProof/DerivedData"
+          mkdir -p "$(dirname "$result_bundle")"
+          TEST_RUNNER_OPENCLAW_IOS_LIVE_GATEWAY=1 \
+          TEST_RUNNER_OPENCLAW_IOS_LIVE_SETUP_CODE='{"url":"ws://127.0.0.1:19876","token":"synthetic-archive-proof-token"}' \
+          NSUnbufferedIO=YES \
+            xcodebuild \
+              -project apps/ios/OpenClaw.xcodeproj \
+              -scheme OpenClawUITests \
+              -configuration Debug \
+              -destination "platform=iOS Simulator,id=${simulator_id}" \
+              -derivedDataPath "$derived_data" \
+              -resultBundlePath "$result_bundle" \
+              -parallel-testing-enabled NO \
+              -test-timeouts-enabled YES \
+              -default-test-execution-time-allowance 180 \
+              -maximum-test-execution-time-allowance 180 \
+              -only-testing:OpenClawUITests/AppleActiveSessionArchiveProofUITests/testActiveNonMainSessionShowsArchiveAndMainDoesNot \
+              test 2>&1 | tee evidence/xcodebuild.log
+
+          curl --fail --silent --show-error http://127.0.0.1:19876/ \
+            > evidence/gateway-after.json
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const state = JSON.parse(fs.readFileSync("evidence/gateway-after.json", "utf8"));
+            if (state.mutationAttempts.length !== 0) {
+              throw new Error(`proof attempted a session mutation: ${JSON.stringify(state.mutationAttempts)}`);
+            }
+            const listed = state.requests.some((entry) => entry.method === "sessions.list");
+            if (!listed) throw new Error("iOS app never read the synthetic session list");
+            console.log("gateway_readback=active-session-list-read,no-session-mutations");
+          ' | tee -a evidence/proof-metadata.txt
+
+      - name: Export simulator screenshots and summarize result
+        if: always()
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          result_bundle="apps/ios/build/ArchiveProof/OpenClawArchiveProof.xcresult"
+          if [[ -d "$result_bundle" ]]; then
+            mkdir -p evidence/attachments
+            xcrun xcresulttool export attachments \
+              --path "$result_bundle" \
+              --output-path evidence/attachments
+            xcrun xcresulttool get test-results summary \
+              --path "$result_bundle" \
+              --compact | tee evidence/test-summary.json
+            find evidence/attachments -type f -print | sort \
+              | tee evidence/attachment-files.txt
+            screenshot_count="$(find evidence/attachments -type f -name '*.png' | wc -l | tr -d ' ')"
+            echo "screenshot_count=$screenshot_count" | tee -a evidence/proof-metadata.txt
+            test "$screenshot_count" -ge 2
+          fi
+
+      - name: Upload exact-head iOS interaction evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: apple-active-session-archive-ui-${{ inputs.target_sha }}
+          path: |
+            product/evidence/
+            product/apps/ios/build/ArchiveProof/OpenClawArchiveProof.xcresult
+          if-no-files-found: warn
+          retention-days: 30
