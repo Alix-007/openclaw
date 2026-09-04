@@ -23,6 +23,7 @@ import {
   displayRecreateResult,
   displaySummary,
 } from "./sandbox-display.js";
+import { isImageBackedSandboxMismatch } from "./sandbox-runtime-filter.js";
 
 // --- Types ---
 
@@ -142,9 +143,7 @@ async function fetchAndFilterContainers(opts: SandboxRecreateOptions): Promise<F
   }
 
   if (opts.mismatched) {
-    containers = containers.filter(
-      (container) => !container.imageMatch && (container.configLabelKind ?? "Image") === "Image",
-    );
+    containers = containers.filter(isImageBackedSandboxMismatch);
     browsers = browsers.filter((browser) => !browser.imageMatch);
   }
 

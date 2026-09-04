@@ -6,6 +6,7 @@ import type { SandboxBrowserInfo, SandboxContainerInfo } from "../agents/sandbox
 import { formatCliCommand } from "../cli/command-format.js";
 import { formatDurationCompact } from "../infra/format-time/format-duration.ts";
 import type { RuntimeEnv } from "../runtime.js";
+import { isImageBackedSandboxMismatch } from "./sandbox-runtime-filter.js";
 
 export function displayContainers(containers: SandboxContainerInfo[], runtime: RuntimeEnv): void {
   if (containers.length === 0) {
@@ -69,7 +70,7 @@ export function displaySummary(
   const mismatchCount =
     containers.filter((c) => !c.imageMatch).length + browsers.filter((b) => !b.imageMatch).length;
   const imageMismatchCount =
-    containers.filter((c) => !c.imageMatch && (c.configLabelKind ?? "Image") === "Image").length +
+    containers.filter(isImageBackedSandboxMismatch).length +
     browsers.filter((b) => !b.imageMatch).length;
 
   runtime.log(`Total: ${totalCount} (${runningCount} running)`);

@@ -145,10 +145,11 @@ describe("sandboxListCommand", () => {
       expectLogContains(runtime, "sandbox recreate --all --mismatched");
     });
 
-    it("should keep broad recreate guidance when non-image labels also mismatch", async () => {
+    it("should keep broad recreate guidance when remote backends also mismatch", async () => {
       mocks.listSandboxContainers.mockResolvedValue([
         createContainer({ imageMatch: false }),
-        createContainer({ configLabelKind: "Target", imageMatch: false }),
+        createContainer({ backendId: "ssh", configLabelKind: undefined, imageMatch: false }),
+        createContainer({ backendId: "openshell", configLabelKind: "Image", imageMatch: false }),
       ]);
 
       await sandboxListCommand({ browser: false, json: false }, runtime as never);
@@ -294,6 +295,23 @@ describe("sandboxRecreateCommand", () => {
         configLabelKind: undefined,
         imageMatch: false,
       });
+      const podmanMismatch = createContainer({
+        backendId: "podman",
+        containerName: "podman-mismatch",
+        imageMatch: false,
+      });
+      const legacySshMismatch = createContainer({
+        backendId: "ssh",
+        containerName: "legacy-ssh-mismatch",
+        configLabelKind: undefined,
+        imageMatch: false,
+      });
+      const legacyOpenShellMismatch = createContainer({
+        backendId: "openshell",
+        containerName: "legacy-openshell-mismatch",
+        configLabelKind: "Image",
+        imageMatch: false,
+      });
       const targetMismatch = createContainer({
         containerName: "target-mismatch",
         configLabelKind: "Target",
@@ -308,6 +326,9 @@ describe("sandboxRecreateCommand", () => {
         matching,
         mismatched,
         legacyMismatch,
+        podmanMismatch,
+        legacySshMismatch,
+        legacyOpenShellMismatch,
         targetMismatch,
         sourceMismatch,
       ]);
@@ -317,9 +338,16 @@ describe("sandboxRecreateCommand", () => {
         runtime as never,
       );
 
-      expect(mocks.removeSandboxContainer).toHaveBeenCalledTimes(2);
+      expect(mocks.removeSandboxContainer).toHaveBeenCalledTimes(3);
       expect(mocks.removeSandboxContainer).toHaveBeenCalledWith(mismatched.containerName);
       expect(mocks.removeSandboxContainer).toHaveBeenCalledWith(legacyMismatch.containerName);
+      expect(mocks.removeSandboxContainer).toHaveBeenCalledWith(podmanMismatch.containerName);
+      expect(mocks.removeSandboxContainer).not.toHaveBeenCalledWith(
+        legacySshMismatch.containerName,
+      );
+      expect(mocks.removeSandboxContainer).not.toHaveBeenCalledWith(
+        legacyOpenShellMismatch.containerName,
+      );
       expect(mocks.removeSandboxContainer).not.toHaveBeenCalledWith(targetMismatch.containerName);
       expect(mocks.removeSandboxContainer).not.toHaveBeenCalledWith(sourceMismatch.containerName);
     });
