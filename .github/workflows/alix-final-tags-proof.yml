@@ -11,8 +11,8 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           repository: Alix-007/openclaw
-          ref: e49d305c8aab40c66e07a2b5dd8c27d4122e6aef
-          fetch-depth: 2
+          ref: 5654f5f36b2dadaab504060017d440cb858e6dc9
+          fetch-depth: 3
           persist-credentials: false
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
@@ -26,7 +26,7 @@ jobs:
       - name: Verify source and install
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "e49d305c8aab40c66e07a2b5dd8c27d4122e6aef"
+          test "$(git rev-parse HEAD)" = "5654f5f36b2dadaab504060017d440cb858e6dc9"
           test "$(git -C .proof-tooling rev-parse HEAD)" = "$GITHUB_SHA"
           corepack enable
           corepack prepare "$(node -p 'require("./package.json").packageManager')" --activate
@@ -35,8 +35,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .proof-output
-          git diff --check HEAD^
-          pnpm exec oxfmt --check src/shared/text/final-tags.ts src/shared/text/final-tags.test.ts src/shared/text/reasoning-tags.ts src/shared/text/reasoning-tags.test.ts src/agents/embedded-agent-helpers.sanitizeuserfacingtext.test.ts
+          git diff --check 336b75a11d13bd173582dc7e3064b412c133bdcd
+          pnpm exec oxfmt --check src/shared/text/final-tags.ts src/shared/text/final-tags.test.ts src/shared/text/reasoning-tags.ts src/shared/text/reasoning-tags.test.ts src/agents/embedded-agent-helpers.sanitizeuserfacingtext.test.ts 2>&1 | tee .proof-output/format.log
       - name: Owner, sibling, and sanitizer regression tests
         run: |
           set -euo pipefail
