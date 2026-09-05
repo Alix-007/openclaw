@@ -12,6 +12,7 @@ const source = process.cwd();
 const output = path.resolve(".proof-output");
 const variant = process.env.PROOF_VARIANT ?? "baseline";
 assert(["baseline", "patched"].includes(variant));
+const sourceHead = (await run("git", ["rev-parse", "HEAD"], { cwd: source })).stdout.trim();
 await fs.mkdir(output, { recursive: true });
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "alix-final-tags-"));
 const state = path.join(temp, "state");
@@ -98,7 +99,7 @@ try {
   const requests = (await fs.readFile(requestPath, "utf8")).trim().split("\n").map((line) => JSON.parse(line));
   assert(requests.some((item) => item.path === "/v1/responses"), "real model request missing");
   const receipt = {
-    variant, command: ["pnpm", ...args], sourceBase: "336b75a11d13bd173582dc7e3064b412c133bdcd",
+    variant, command: ["pnpm", ...args], sourceHead, sourceBase: "336b75a11d13bd173582dc7e3064b412c133bdcd",
     observedAt: new Date().toISOString(), sessionId, input, expected, actual,
     owner: "src/shared/text/final-tags.ts", boundary: "real CLI agent payload JSON; existing loopback mock provider",
     providerRequests: requests.map(({ method, path: requestRoute }) => ({ method, path: requestRoute })),

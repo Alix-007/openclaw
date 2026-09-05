@@ -4,14 +4,15 @@ on:
     branches: [alix/proof-final-tags-20260905]
 permissions: {}
 jobs:
-  baseline:
+  patched:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
-          repository: openclaw/openclaw
-          ref: 336b75a11d13bd173582dc7e3064b412c133bdcd
+          repository: Alix-007/openclaw
+          ref: e49d305c8aab40c66e07a2b5dd8c27d4122e6aef
+          fetch-depth: 2
           persist-credentials: false
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
@@ -25,30 +26,32 @@ jobs:
       - name: Verify source and install
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "336b75a11d13bd173582dc7e3064b412c133bdcd"
+          test "$(git rev-parse HEAD)" = "e49d305c8aab40c66e07a2b5dd8c27d4122e6aef"
           test "$(git -C .proof-tooling rev-parse HEAD)" = "$GITHUB_SHA"
           corepack enable
           corepack prepare "$(node -p 'require("./package.json").packageManager')" --activate
           pnpm install --frozen-lockfile
-      - name: Apply tracked test-only patch
+      - name: Source hygiene and focused formatting
         run: |
           set -euo pipefail
           mkdir -p .proof-output
-          git apply --check .proof-tooling/.github/proof/final-tags/acceptance.patch
-          git apply .proof-tooling/.github/proof/final-tags/acceptance.patch
-      - name: Baseline regression tests
-        continue-on-error: true
+          git diff --check HEAD^
+          pnpm exec oxfmt --check src/shared/text/final-tags.ts src/shared/text/final-tags.test.ts src/shared/text/reasoning-tags.ts src/shared/text/reasoning-tags.test.ts src/agents/embedded-agent-helpers.sanitizeuserfacingtext.test.ts
+      - name: Owner, sibling, and sanitizer regression tests
         run: |
           set -euo pipefail
-          node scripts/run-vitest.mjs src/shared/text/final-tags.test.ts src/agents/embedded-agent-helpers.sanitizeuserfacingtext.test.ts 2>&1 | tee .proof-output/tests.log
-      - name: Build exact baseline
+          node scripts/run-vitest.mjs src/shared/text/final-tags.test.ts src/shared/text/reasoning-tags.test.ts src/agents/embedded-agent-helpers.sanitizeuserfacingtext.test.ts 2>&1 | tee .proof-output/tests.log
+      - name: Build exact product head
         run: pnpm build
-      - name: Actual CLI acceptance red with outside-tag control
+      - name: Actual CLI acceptance green with outside-tag control
+        env:
+          PROOF_VARIANT: patched
         run: node .proof-tooling/.github/proof/final-tags/cli-proof.mjs
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: final-tags-baseline-${{ github.sha }}
+          name: final-tags-patched-${{ github.sha }}
           path: .proof-output
-          if-no-files-found: warn
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 30
