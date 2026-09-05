@@ -1,5 +1,5 @@
 diff --git a/src/gateway/server-methods/terminal.test.ts b/src/gateway/server-methods/terminal.test.ts
-index 9c7e2715287d6..2fa5eaca9251b 100644
+index 9c7e2715287d6..ae46be5a0080c 100644
 --- a/src/gateway/server-methods/terminal.test.ts
 +++ b/src/gateway/server-methods/terminal.test.ts
 @@ -7,6 +7,7 @@ import type { OpenClawConfig } from "../../config/types.openclaw.js";
@@ -10,7 +10,7 @@ index 9c7e2715287d6..2fa5eaca9251b 100644
  import { createTerminalLaunchPolicy } from "../terminal/launch.js";
  import { TerminalSessionManager } from "../terminal/session-manager.js";
  import { makeFakePty } from "../terminal/session-manager.test-helpers.js";
-@@ -409,6 +410,63 @@ describe("terminal gateway policy", () => {
+@@ -409,9 +410,106 @@ describe("terminal gateway policy", () => {
      );
    });
  
@@ -62,7 +62,7 @@ index 9c7e2715287d6..2fa5eaca9251b 100644
 +        const opened = respond.mock.calls.find(([ok]) => ok === true)?.[1] as
 +          | { sessionId?: string }
 +          | undefined;
-+        expect(opened?.sessionId).toEqual(expect.any(String));
++        expect(opened?.sessionId, JSON.stringify(respond.mock.calls)).toEqual(expect.any(String));
 +        await waitForFast(() => expect(chunks.join("")).toContain(marker), { timeout: 5_000 });
 +      } finally {
 +        dateNow.mockRestore();
@@ -71,6 +71,93 @@ index 9c7e2715287d6..2fa5eaca9251b 100644
 +    },
 +  );
 +
++  it("keeps the open budget stable when wall time moves backward", async () => {
++    let wallNow = 1_000_000;
++    const dateNow = vi.spyOn(Date, "now").mockImplementation(() => wallNow);
++    try {
++      installCatalog({
++        id: "clock-step-backward",
++        label: "Clock step backward",
++        list: async () => [],
++        read: async (request) => ({ ...request, items: [] }),
++        openTerminal: async () => {
++          wallNow -= TERMINAL_OPEN_DEADLINE_MS + 1;
++          return { kind: "local", argv: ["codex", "resume", "thread"] };
++        },
++      });
++      const { opts, sessions, respond } = makeOpts(
++        {
++          cols: 80,
++          rows: 24,
++          catalog: {
++            catalogId: "clock-step-backward",
++            hostId: "gateway:local",
++            threadId: "thread",
++          },
++        },
++        { enabled: true },
++      );
++
++      await expectDefined(terminalHandlers["terminal.open"], "terminal.open")(opts);
++
++      expect(sessions.open).toHaveBeenCalledOnce();
++      expect(respond).toHaveBeenCalledWith(
++        true,
++        expect.objectContaining({ sessionId: "terminal-1" }),
++      );
++    } finally {
++      dateNow.mockRestore();
++    }
++  });
++
    it("rejects a catalog plan that finishes after the absolute open deadline", async () => {
      vi.useFakeTimers();
-     vi.setSystemTime(0);
+-    vi.setSystemTime(0);
++    let elapsedMs = 0;
++    const monotonicNow = vi.spyOn(performance, "now").mockImplementation(() => elapsedMs);
+     try {
+       installCatalog({
+         id: "codex",
+@@ -419,7 +517,7 @@ describe("terminal gateway policy", () => {
+         list: async () => [],
+         read: async (request) => ({ ...request, items: [] }),
+         openTerminal: async () => {
+-          vi.setSystemTime(TERMINAL_OPEN_DEADLINE_MS);
++          elapsedMs = TERMINAL_OPEN_DEADLINE_MS;
+           return { kind: "local", argv: ["codex", "resume", "thread"] };
+         },
+       });
+@@ -441,13 +539,15 @@ describe("terminal gateway policy", () => {
+         expect.objectContaining({ message: "terminal open timed out" }),
+       );
+     } finally {
++      monotonicNow.mockRestore();
+       vi.useRealTimers();
+     }
+   });
+ 
+   it("maps a catalog rejection after the absolute deadline to a timeout", async () => {
+     vi.useFakeTimers();
+-    vi.setSystemTime(0);
++    let elapsedMs = 0;
++    const monotonicNow = vi.spyOn(performance, "now").mockImplementation(() => elapsedMs);
+     try {
+       installCatalog({
+         id: "codex",
+@@ -455,7 +555,7 @@ describe("terminal gateway policy", () => {
+         list: async () => [],
+         read: async (request) => ({ ...request, items: [] }),
+         openTerminal: async () => {
+-          vi.setSystemTime(TERMINAL_OPEN_DEADLINE_MS);
++          elapsedMs = TERMINAL_OPEN_DEADLINE_MS;
+           throw new Error("late catalog failure");
+         },
+       });
+@@ -476,6 +576,7 @@ describe("terminal gateway policy", () => {
+         expect.objectContaining({ message: "terminal open timed out" }),
+       );
+     } finally {
++      monotonicNow.mockRestore();
+       vi.useRealTimers();
+     }
+   });

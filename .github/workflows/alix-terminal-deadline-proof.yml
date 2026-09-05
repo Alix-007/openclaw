@@ -9,6 +9,10 @@ permissions: {}
 
 jobs:
   proof:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [baseline, patched]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -37,16 +41,24 @@ jobs:
           pnpm install --frozen-lockfile
       - name: Run exact-source acceptance probe
         shell: bash
+        env:
+          PROOF_VARIANT: ${{ matrix.variant }}
         run: |
           set -euo pipefail
           mkdir -p .proof-output
           git apply --check .proof-tooling/.github/proof/terminal-deadline/acceptance.patch
           git apply .proof-tooling/.github/proof/terminal-deadline/acceptance.patch
-          node scripts/run-vitest.mjs src/gateway/server-methods/terminal.test.ts --testNamePattern 'real PTY when wall time' 2>&1 | tee .proof-output/acceptance.log
+          if [ "$PROOF_VARIANT" = patched ]; then
+            git apply --check .proof-tooling/.github/proof/terminal-deadline/production.patch
+            git apply .proof-tooling/.github/proof/terminal-deadline/production.patch
+            node scripts/run-vitest.mjs src/gateway/server-methods/terminal.test.ts 2>&1 | tee .proof-output/acceptance.log
+          else
+            node scripts/run-vitest.mjs src/gateway/server-methods/terminal.test.ts --testNamePattern 'real PTY when wall time|wall time moves backward' 2>&1 | tee .proof-output/acceptance.log
+          fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: terminal-deadline-acceptance-${{ github.sha }}
+          name: terminal-deadline-${{ matrix.variant }}-${{ github.sha }}
           path: .proof-output
           if-no-files-found: warn
           retention-days: 30
