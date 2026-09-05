@@ -3,7 +3,7 @@ import { stripFinalTags } from "./final-tags.js";
 
 describe("stripFinalTags", () => {
   it.each([
-    "Example:\n```xml\n<final data-model=\"demo\">payload</final>\n```",
+    'Example:\n```xml\n<final data-model="demo">payload</final>\n```',
     "Example:\n~~~xml\n<final>payload</final>\n~~~",
     "Write `<final>payload</final>` as XML.",
     "Use ``<final data-note='`'>payload</final>`` literally.",

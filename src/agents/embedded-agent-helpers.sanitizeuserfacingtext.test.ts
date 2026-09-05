@@ -28,7 +28,7 @@ describe("sanitizeUserFacingText", () => {
   });
 
   it.each([
-    "Example:\n```xml\n<final data-model=\"demo\">payload</final>\n```",
+    'Example:\n```xml\n<final data-model="demo">payload</final>\n```',
     "Write `<final>payload</final>` as XML.",
   ])("preserves literal final tags through user-facing sanitization: %s", (example) => {
     expect(sanitizeUserFacingText(`${example}\n<final>Outside answer</final>`)).toBe(
