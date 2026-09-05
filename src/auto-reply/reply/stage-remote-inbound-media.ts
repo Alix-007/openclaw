@@ -40,8 +40,5 @@ export async function stageRemoteInboundMediaIfNeeded(params: {
     ...params,
     sessionCtx: params.ctx,
   });
-  if (result.staged.size === 0) {
-    return false;
-  }
-  return true;
+  return result.staged.size > 0;
 }

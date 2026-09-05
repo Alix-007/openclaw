@@ -1280,7 +1280,7 @@ export async function getReplyFromConfig(
         agentId,
         sessionKey,
         workspaceDir,
-        abortSignal: resolvedOpts?.abortSignal,
+        abortSignal: internalOptsWithSkillFilter?.abortSignal,
       }),
     );
     stagedAttachmentPaths = stageResult.staged;
