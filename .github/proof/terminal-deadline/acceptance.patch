@@ -1,0 +1,76 @@
+diff --git a/src/gateway/server-methods/terminal.test.ts b/src/gateway/server-methods/terminal.test.ts
+index 9c7e2715287d6..2fa5eaca9251b 100644
+--- a/src/gateway/server-methods/terminal.test.ts
++++ b/src/gateway/server-methods/terminal.test.ts
+@@ -7,6 +7,7 @@ import type { OpenClawConfig } from "../../config/types.openclaw.js";
+ import { createEmptyPluginRegistry } from "../../plugins/registry-empty.js";
+ import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "../../plugins/runtime.js";
+ import type { SessionCatalogProvider } from "../../plugins/session-catalog.js";
++import { TERMINAL_EVENT_DATA } from "../terminal/gateway-transport.js";
+ import { createTerminalLaunchPolicy } from "../terminal/launch.js";
+ import { TerminalSessionManager } from "../terminal/session-manager.js";
+ import { makeFakePty } from "../terminal/session-manager.test-helpers.js";
+@@ -409,6 +410,63 @@ describe("terminal gateway policy", () => {
+     );
+   });
+ 
++  it.runIf(process.platform !== "win32")(
++    "opens a real PTY when wall time jumps during catalog lookup",
++    async () => {
++      const marker = `terminal-deadline-${process.pid}`;
++      const chunks: string[] = [];
++      const manager = new TerminalSessionManager({
++        emit: (_connId, event, payload) => {
++          const data = (payload as { data?: unknown }).data;
++          if (event === TERMINAL_EVENT_DATA && typeof data === "string") {
++            chunks.push(data);
++          }
++        },
++      });
++      let wallNow = 1_000_000;
++      const dateNow = vi.spyOn(Date, "now").mockImplementation(() => wallNow);
++      try {
++        installCatalog({
++          id: "clock-step",
++          label: "Clock step",
++          list: async () => [],
++          read: async (request) => ({ ...request, items: [] }),
++          openTerminal: async () => {
++            wallNow += TERMINAL_OPEN_DEADLINE_MS + 1;
++            return {
++              kind: "local",
++              argv: [
++                process.execPath,
++                "-e",
++                `process.stdout.write(${JSON.stringify(marker)}); setInterval(() => {}, 1_000)`,
++              ],
++            };
++          },
++        });
++        const { opts, respond } = makeOpts(
++          {
++            cols: 80,
++            rows: 24,
++            catalog: { catalogId: "clock-step", hostId: "gateway:local", threadId: "thread" },
++          },
++          { enabled: true },
++        );
++        opts.context.terminalSessions = manager;
++
++        await expectDefined(terminalHandlers["terminal.open"], "terminal.open")(opts);
++
++        const opened = respond.mock.calls.find(([ok]) => ok === true)?.[1] as
++          | { sessionId?: string }
++          | undefined;
++        expect(opened?.sessionId).toEqual(expect.any(String));
++        await waitForFast(() => expect(chunks.join("")).toContain(marker), { timeout: 5_000 });
++      } finally {
++        dateNow.mockRestore();
++        manager.disposeAll();
++      }
++    },
++  );
++
+   it("rejects a catalog plan that finishes after the absolute open deadline", async () => {
+     vi.useFakeTimers();
+     vi.setSystemTime(0);

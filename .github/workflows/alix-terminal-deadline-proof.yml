@@ -1,0 +1,52 @@
+name: Terminal deadline isolated proof
+
+on:
+  push:
+    branches:
+      - alix/proof-terminal-deadline-20260905
+
+permissions: {}
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: openclaw/openclaw
+          ref: 336b75a11d13bd173582dc7e3064b412c133bdcd
+          persist-credentials: false
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          persist-credentials: false
+          sparse-checkout: .github/proof/terminal-deadline
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.18.0
+      - name: Verify source and install pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "336b75a11d13bd173582dc7e3064b412c133bdcd"
+          test "$(git -C .proof-tooling rev-parse HEAD)" = "$GITHUB_SHA"
+          corepack enable
+          corepack prepare "$(node -p 'require("./package.json").packageManager')" --activate
+          pnpm install --frozen-lockfile
+      - name: Run exact-source acceptance probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .proof-output
+          git apply --check .proof-tooling/.github/proof/terminal-deadline/acceptance.patch
+          git apply .proof-tooling/.github/proof/terminal-deadline/acceptance.patch
+          node scripts/run-vitest.mjs src/gateway/server-methods/terminal.test.ts --testNamePattern 'real PTY when wall time' 2>&1 | tee .proof-output/acceptance.log
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: terminal-deadline-acceptance-${{ github.sha }}
+          path: .proof-output
+          if-no-files-found: warn
+          retention-days: 30
