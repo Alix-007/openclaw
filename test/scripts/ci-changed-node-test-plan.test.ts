@@ -74,6 +74,8 @@ it.each([
   [["scripts/e2e/lib/mcp-code-mode-probe-server.ts"], ["mcp-code-mode-gateway"]],
   [["scripts/e2e/lib/mcp-code-mode/scenario.sh"], ["mcp-code-mode-gateway"]],
   [["scripts/e2e/update-channel-switch-docker.sh"], ["update-channel-switch"]],
+  [["scripts/e2e/fleet-cache-docker.sh"], ["fleet-cache"]],
+  [["scripts/e2e/lib/fleet-cache/assert-cell.mjs"], ["fleet-cache"]],
   [["scripts/e2e/lib/update-channel-switch/assertions.mjs"], ["update-channel-switch"]],
   [
     [

@@ -364,6 +364,13 @@ function kitchenSinkRpcLane() {
   );
 }
 
+export const fleetCacheLane = lane("fleet-cache", "pnpm test:docker:fleet-cache", {
+  e2eImageKind: false,
+  resources: ["docker", "service"],
+  timeoutMs: 30 * 60 * 1000,
+  weight: 4,
+});
+
 export const mainLanes: DockerE2eLane[] = [
   lane(
     "docker-selected-plugins",

@@ -161,6 +161,14 @@ describe("scripts/lib/docker-e2e-plan", () => {
     );
   });
 
+  it("runs Fleet host proof only when explicitly selected", () => {
+    expect(planFor().lanes.map((lane) => lane.name)).not.toContain("fleet-cache");
+    expect(planFor({ selectedLaneNames: ["fleet-cache"] }).lanes.map((lane) => lane.name)).toEqual([
+      "fleet-cache",
+    ]);
+    expect(findLaneByName("fleet-cache")?.name).toBe("fleet-cache");
+  });
+
   it("plans the package-backed sandbox browser sidecar lane", () => {
     const plan = planFor({
       selectedLaneNames: ["sandbox-browser-sidecar"],
