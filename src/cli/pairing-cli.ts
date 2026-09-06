@@ -61,6 +61,16 @@ async function notifyApproved(
   });
 }
 
+function resolveAccountId(raw: unknown): string | undefined {
+  const accountId = normalizeStringifiedOptionalString(raw);
+  // Only omission selects the default account; an explicit blank must not widen
+  // list/approve to unscoped pairing state or the default allowlist.
+  if (raw !== undefined && !accountId) {
+    throw new Error("--account must not be blank");
+  }
+  return accountId;
+}
+
 export function registerPairingCli(program: Command) {
   const channels = listPairingChannels();
   // Avoid rendering a bare "()" enum when no channels are configured.
@@ -103,7 +113,7 @@ export function registerPairingCli(program: Command) {
           );
         }
       }
-      const accountId = normalizeStringifiedOptionalString(opts.account) ?? "";
+      const accountId = resolveAccountId(opts.account);
       const requests = accountId
         ? await listChannelPairingRequests(channel, process.env, accountId)
         : await listChannelPairingRequests(channel);
@@ -172,7 +182,7 @@ export function registerPairingCli(program: Command) {
         );
       }
       const channel = parseChannel(channelRaw, channels);
-      const accountId = normalizeStringifiedOptionalString(opts.account) ?? "";
+      const accountId = resolveAccountId(opts.account);
       const approved = accountId
         ? await approveChannelPairingCode({
             channel,
