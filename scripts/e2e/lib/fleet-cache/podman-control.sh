@@ -60,15 +60,27 @@ cleanup() {
   trap - EXIT
   printf '{"control":"podman","cleanupStarted":true,"originalExitCode":%s}\n' "$result"
   if [[ "$cell_attempted" == true ]]; then
-    if (( result != 0 )) && [[ "$interrupted" == false ]]; then
-      capture || echo 'Fleet Podman failure diagnostics were incomplete.' >&2
+    local registered=""
+    if fleet list --json > "$control_root/cleanup-cells.json" && \
+      registered="$(jq --arg tenant "$tenant" 'any(.cells[]; .tenant == $tenant)' "$control_root/cleanup-cells.json")"; then
+      printf '{"control":"podman","registryEntryPresentBeforeCleanup":%s}\n' "$registered"
+      if [[ "$registered" == true ]]; then
+        if (( result != 0 )) && [[ "$interrupted" == false ]]; then
+          capture || echo 'Fleet Podman failure diagnostics were incomplete.' >&2
+        fi
+        fleet rm "$tenant" --force --purge-data || cleanup_result=1
+      fi
+    else
+      echo 'Fleet Podman registry inspection failed during cleanup.' >&2
+      cleanup_result=1
     fi
-    fleet rm "$tenant" --force --purge-data || cleanup_result=1
     local exists_result=0
     runtime container exists "$container" || exists_result=$?
+    printf '{"control":"podman","containerExistsExitCode":%s}\n' "$exists_result"
     [[ "$exists_result" == 1 ]] || cleanup_result=1
     exists_result=0
     runtime network exists "$network" || exists_result=$?
+    printf '{"control":"podman","networkExistsExitCode":%s}\n' "$exists_result"
     [[ "$exists_result" == 1 ]] || cleanup_result=1
   fi
   if [[ "$initialization_attempted" == true && "$private_store_verified" == false ]]; then
@@ -156,6 +168,7 @@ console.log(JSON.stringify({control: 'podman', version: info.version.Version,
   storageDriver: info.store.graphDriverName}));
 JS
 private_store_verified=true
+"$node_bin" "$helper_dir/prepare-podman-storage.mjs" "$cli_entry" "$engine_root" "$runtime_root" "$control_root/info.json"
 timeout --foreground --kill-after=10s 600s "${runtime_env[@]}" podman pull "$image"
 runtime image inspect "$image" > "$control_root/image.json"
 cell_attempted=true

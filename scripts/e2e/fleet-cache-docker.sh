@@ -59,7 +59,7 @@ capture() {
 
 cleanup_cell() {
   if [[ -z "$tenant" ]]; then
-    return
+    return 0
   fi
   fleet rm "$tenant" --force --purge-data
   if docker container inspect "openclaw-cell-$tenant" >/dev/null 2>&1; then

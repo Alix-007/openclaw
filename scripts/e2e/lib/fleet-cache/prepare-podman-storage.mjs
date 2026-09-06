@@ -2,11 +2,13 @@ import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 
-const [cliEntry, engineRoot, runtimeRoot] = process.argv.slice(2);
+const [cliEntry, engineRoot, runtimeRoot, observedInfoFile] = process.argv.slice(2);
 const { parse, stringify, TomlError } = createRequire(cliEntry)("smol-toml");
-const filename = ["/etc/containers/storage.conf", "/usr/share/containers/storage.conf"].find(
-  (name) => fs.existsSync(name),
-);
+const filename = observedInfoFile
+  ? path.join(engineRoot, "storage.conf")
+  : ["/etc/containers/storage.conf", "/usr/share/containers/storage.conf"].find((name) =>
+      fs.existsSync(name),
+    );
 let config = {};
 if (filename) {
   try {
@@ -22,6 +24,11 @@ if (filename) {
   }
 }
 config.storage ??= {};
+if (observedInfoFile && !config.storage.driver) {
+  const info = JSON.parse(fs.readFileSync(observedInfoFile, "utf8"));
+  // The layer-mapping reexec treats even a successful child's warning output as an error.
+  config.storage.driver = info.store.graphDriverName;
+}
 for (const [key, value] of [
   ["storage.imagestore", config.storage.imagestore],
   ["storage.options.imagestore", config.storage.options?.imagestore],

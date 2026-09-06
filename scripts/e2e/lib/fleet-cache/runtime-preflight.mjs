@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { accessSync, constants, readFileSync } from "node:fs";
+import { accessSync, constants, existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 function readText(filename) {
@@ -140,6 +140,50 @@ const rootlessInstall = engine.installed
     )
   : undefined;
 
+let packageIndexRefresh;
+let refreshedRootlessInstall;
+if (
+  rootlessInstall?.exitCode === 100 &&
+  process.env.GITHUB_ACTIONS === "true" &&
+  !existsSync("/.dockerenv")
+) {
+  packageIndexRefresh = command(
+    "timeout",
+    ["--foreground", "--kill-after=10s", "120s", "sudo", "-n", "apt-get", "update"],
+    process.env,
+    135000,
+  );
+  if (packageIndexRefresh.exitCode === 0) {
+    refreshedRootlessInstall = command(
+      "apt-get",
+      [
+        "-s",
+        "--no-upgrade",
+        "--no-install-recommends",
+        "install",
+        `docker-ce-rootless-extras=${engine.version}`,
+        "uidmap",
+        "slirp4netns",
+      ],
+      process.env,
+      10000,
+    );
+  }
+}
+
+function packageObservation(result) {
+  if (!result) {
+    return { attempted: false };
+  }
+  return {
+    commandAvailable: result.available,
+    completed: result.completed,
+    exitCode: result.exitCode,
+    output: result.stdout.replace(/https?:\/\/\S+/gu, "[package source]"),
+    errorOutput: result.stderr.replace(/https?:\/\/\S+/gu, "[package source]"),
+  };
+}
+
 // Report only selected facts: command output can contain account names and host paths.
 console.log(
   JSON.stringify({
@@ -192,15 +236,9 @@ console.log(
       queryCompleted: packageQuery.completed,
       installed: installedPackages,
     },
-    dockerRootlessInstallSimulation: rootlessInstall
-      ? {
-          commandAvailable: rootlessInstall.available,
-          completed: rootlessInstall.completed,
-          exitCode: rootlessInstall.exitCode,
-          output: rootlessInstall.stdout,
-          errorOutput: rootlessInstall.stderr,
-        }
-      : { attempted: false },
+    dockerRootlessInstallSimulation: packageObservation(rootlessInstall),
+    packageIndexRefresh: packageObservation(packageIndexRefresh),
+    refreshedDockerRootlessInstallSimulation: packageObservation(refreshedRootlessInstall),
     policy: {
       unprivilegedUsernsClone: policy("/proc/sys/kernel/unprivileged_userns_clone"),
       maxUserNamespaces: policy("/proc/sys/user/max_user_namespaces"),
