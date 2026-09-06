@@ -108,7 +108,7 @@ jobs:
               printf 'product_root=%s\n' "$product_root"
               printf 'product_sha=%s\n' "$PRODUCT_SHA"
               printf 'argv='
-              printf '%q ' node scripts/run-vitest.mjs run --config test/vitest/vitest.unit.config.ts "$@"
+              printf '%q ' node scripts/run-vitest.mjs run "$@"
               printf '\n'
             } > "$argv_file"
 
@@ -131,8 +131,7 @@ jobs:
                 OPENCLAW_STATE_DIR="$state_dir" \
                 OPENCLAW_CONFIG_PATH="$config_dir/openclaw.json" \
                 node scripts/run-vitest.mjs run \
-                  --config test/vitest/vitest.unit.config.ts \
-                  "$@"
+                "$@"
             ) > "$output" 2>&1
             local status=$?
             set -e
