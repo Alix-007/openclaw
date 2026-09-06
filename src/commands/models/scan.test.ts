@@ -210,6 +210,34 @@ describe("models scan command", () => {
     expect(mocks.scanOpenRouterModels).not.toHaveBeenCalled();
   });
 
+  it.each([
+    [{ minParams: "" }, "--min-params"],
+    [{ maxAgeDays: "" }, "--max-age-days"],
+    [{ maxCandidates: "" }, "--max-candidates"],
+    [{ timeout: "" }, "--timeout"],
+    [{ concurrency: "" }, "--concurrency"],
+  ])("rejects explicitly blank numeric option %s", async (opts, label) => {
+    const runtime = createRuntime();
+
+    await expect(modelsScanCommand(opts, runtime)).rejects.toThrow(label);
+
+    expect(mocks.scanOpenRouterModels).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [{ minParams: "   " }, "--min-params"],
+    [{ maxAgeDays: "   " }, "--max-age-days"],
+    [{ maxCandidates: "   " }, "--max-candidates"],
+    [{ timeout: "   " }, "--timeout"],
+    [{ concurrency: "   " }, "--concurrency"],
+  ])("rejects whitespace-only numeric option %s", async (opts, label) => {
+    const runtime = createRuntime();
+
+    await expect(modelsScanCommand(opts, runtime)).rejects.toThrow(label);
+
+    expect(mocks.scanOpenRouterModels).not.toHaveBeenCalled();
+  });
+
   it("rejects applying auto-downgraded metadata-only scan results before scanning", async () => {
     await withOpenRouterApiKey(undefined, async () => {
       const runtime = createRuntime();
