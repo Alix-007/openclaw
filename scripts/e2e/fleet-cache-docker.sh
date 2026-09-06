@@ -217,7 +217,8 @@ run_previous_default_case() {
   if [[ "$operation" == upgrade ]]; then
     fleet upgrade "$tenant" --image "$image"
   else
-    fleet restore "$tenant" --from "$case_dir/backup.tgz" --force --json
+    fleet restore "$tenant" --from "$case_dir/backup.tgz" --force --json > "$scratch/restore.json"
+    jq -e '.started == true' "$scratch/restore.json" >/dev/null
   fi
   capture "previous-default-$operation"
   assert_cell "$expected_cache" "$keys" ''
