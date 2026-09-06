@@ -15,6 +15,7 @@ export type DockerE2eLane = {
   live: boolean;
   name: string;
   needsLiveImage?: boolean;
+  needsPackage?: boolean;
   noOutputTimeoutMs?: number;
   prepublishPluginPackages?: string[];
   resources: string[];
@@ -115,6 +116,7 @@ function lane(name: string, command: string, options: LaneOptions = {}): DockerE
     noOutputTimeoutMs: options.noOutputTimeoutMs,
     name,
     needsLiveImage: options.needsLiveImage,
+    needsPackage: options.needsPackage,
     prepublishPluginPackages: options.prepublishPluginPackages,
     retryPatterns: options.retryPatterns ?? [],
     retries: options.retries ?? 0,
@@ -366,7 +368,8 @@ function kitchenSinkRpcLane() {
 
 export const fleetCacheLane = lane("fleet-cache", "pnpm test:docker:fleet-cache", {
   e2eImageKind: false,
-  resources: ["docker", "service"],
+  needsPackage: true,
+  resources: ["docker", "service", "npm"],
   timeoutMs: 30 * 60 * 1000,
   weight: 4,
 });

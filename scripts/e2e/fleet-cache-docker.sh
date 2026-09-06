@@ -4,6 +4,8 @@ set -euo pipefail
 umask 022
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+SOURCE_ROOT="${OPENCLAW_DOCKER_E2E_REPO_ROOT:-$ROOT_DIR}"
+source "$ROOT_DIR/scripts/lib/docker-e2e-package.sh"
 if [[ "${GITHUB_ACTIONS:-}" != true || -f /.dockerenv ]]; then
   echo "Fleet Docker proof requires a disposable GitHub Actions Linux host." >&2
   exit 1
@@ -18,23 +20,22 @@ socket_gid="$(stat -c %g "$socket")"
 node_bin="$(command -v node)"
 node_version="$("$node_bin" -p process.versions.node)"
 
-# The host CLI and its dependencies come from this exact checkout. Cell code
-# stays pinned to the official image, so changing the host profile is isolated.
-pnpm build
-
 scratch="$(mktemp -d /tmp/openclaw-fleet-cache-e2e.XXXXXX)"
 chmod 755 "$scratch"
+package_tgz=""
+cli_entry="$scratch/host-runtime/node_modules/openclaw/openclaw.mjs"
 tenant=""
 case_dir=""
 uid=1501
 interrupted=false
 
-fleet() {
-  timeout --foreground 180s sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" \
+fleet() (
+  cd "$scratch"
+  exec timeout --foreground 180s sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" \
     env -i PATH="$PATH" HOME="$case_dir/home" OPENCLAW_HOME="$case_dir/home" \
     OPENCLAW_STATE_DIR="$case_dir/state" XDG_CACHE_HOME="$case_dir/host-cache" \
-    DOCKER_HOST="$endpoint" "$node_bin" "$ROOT_DIR/openclaw.mjs" fleet "$@"
-}
+    DOCKER_HOST="$endpoint" "$node_bin" "$cli_entry" fleet "$@"
+)
 
 capture() {
   local stage="$1"
@@ -78,6 +79,7 @@ cleanup() {
     exit 1
   fi
   sudo -n rm -rf -- "$scratch"
+  docker_e2e_cleanup_package_tgz "$package_tgz"
   exit "$result"
 }
 trap cleanup EXIT
@@ -165,20 +167,33 @@ run_case() {
   cleanup_cell
 }
 
-# CI's Node toolchain lives under runner-private temporary storage. Install the
-# same version in the fixture so alternate users need no runner permission changes.
-timeout --foreground 300s npm install --prefix "$scratch/host-node" --no-save --no-package-lock \
-  --no-audit --no-fund "node@$node_version"
-node_bin="$scratch/host-node/node_modules/node/bin/node"
-export PATH="$scratch/host-node/node_modules/.bin:$PATH"
+# Neither the runner's toolchain nor its checkout is a public install. Use the
+# canonical package and selected Node version in an accessible test-owned prefix.
+package_tgz="$(docker_e2e_prepare_package_tgz fleet-cache "${OPENCLAW_CURRENT_PACKAGE_TGZ:-}")"
+sha256sum "$package_tgz"
+timeout --foreground 600s npm install --prefix "$scratch/host-runtime" --no-save --no-package-lock \
+  --no-audit --no-fund "node@$node_version" "$package_tgz"
+node_bin="$scratch/host-runtime/node_modules/node/bin/node"
+export PATH="$scratch/host-runtime/node_modules/.bin:$PATH"
 sudo -n setpriv --reuid=1501 --regid=1501 --groups="$socket_gid" \
   env -i PATH="$PATH" "$node_bin" --version
+source_sha="$(git -C "$SOURCE_ROOT" rev-parse HEAD)"
+"$node_bin" -e '
+  const assert = require("node:assert/strict");
+  const info = require(process.argv[1]);
+  assert.equal(info.commit, process.argv[2]);
+  console.log(JSON.stringify(info));
+' "$scratch/host-runtime/node_modules/openclaw/dist/build-info.json" "$source_sha"
 umask 077
+case_dir="$scratch/bootstrap"
+mkdir -p "$case_dir/home" "$case_dir/state" "$case_dir/host-cache"
+sudo -n chown -R "$uid:$uid" "$case_dir"
+fleet --help
 
 image_tag="ghcr.io/openclaw/openclaw:2026.8.2"
 timeout --foreground 600s docker pull "$image_tag"
 image="$(docker image inspect "$image_tag" --format '{{index .RepoDigests 0}}')"
-printf 'Fleet host source: %s\nCell image: %s\n' "$(git -C "$ROOT_DIR" rev-parse HEAD)" "$image"
+printf 'Fleet host source: %s\nCell image: %s\n' "$source_sha" "$image"
 
 run_case mismatch 1501 /home/node/.openclaw/cache '' ''
 run_case override 1501 /home/node/.openclaw/operator-cache XDG_CACHE_HOME '' \

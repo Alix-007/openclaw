@@ -163,9 +163,11 @@ describe("scripts/lib/docker-e2e-plan", () => {
 
   it("runs Fleet host proof only when explicitly selected", () => {
     expect(planFor().lanes.map((lane) => lane.name)).not.toContain("fleet-cache");
-    expect(planFor({ selectedLaneNames: ["fleet-cache"] }).lanes.map((lane) => lane.name)).toEqual([
-      "fleet-cache",
-    ]);
+    const selected = planFor({ selectedLaneNames: ["fleet-cache"] });
+    expect(selected.lanes.map((lane) => lane.name)).toEqual(["fleet-cache"]);
+    expect(selected.needs.package).toBe(true);
+    expect(selected.needs.e2eImage).toBe(false);
+    expect(selected.needs.prepublishPluginRegistry).toBe(false);
     expect(findLaneByName("fleet-cache")?.name).toBe("fleet-cache");
   });
 
