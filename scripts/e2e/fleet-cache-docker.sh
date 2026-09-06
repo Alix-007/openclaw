@@ -10,11 +10,14 @@ if [[ "${GITHUB_ACTIONS:-}" != true || -f /.dockerenv ]]; then
   echo "Fleet Docker proof requires a disposable GitHub Actions Linux host." >&2
   exit 1
 fi
+if ! node "$ROOT_DIR/scripts/e2e/lib/fleet-cache/runtime-preflight.mjs" 2>/dev/null; then
+  printf '%s\n' '{"kind":"fleet-runtime-prerequisites","reportCompleted":false,"runtimeControlsExecuted":false}'
+fi
 endpoint="${DOCKER_HOST:-$(docker context inspect --format '{{.Endpoints.docker.Host}}')}"
 [[ "$endpoint" == unix:///* ]]
 socket="${endpoint#unix://}"
 [[ -S "$socket" ]]
-docker info --format '{{json .SecurityOptions}}' | jq -e 'all(.[]; contains("rootless") | not)'
+docker info --format '{{json .SecurityOptions}}' | tee /dev/stderr | jq -e 'all(.[]; contains("rootless") | not)'
 docker version --format '{{.Server.Version}}'
 socket_gid="$(stat -c %g "$socket")"
 node_bin="$(command -v node)"
@@ -65,6 +68,7 @@ cleanup_cell() {
     echo "Fleet proof left a cell network behind: $tenant" >&2
     return 1
   fi
+  echo "Fleet proof removed cell and network: $tenant"
   tenant=""
 }
 
@@ -79,6 +83,8 @@ cleanup() {
     exit 1
   fi
   sudo -n rm -rf -- "$scratch"
+  [[ ! -e "$scratch" ]]
+  echo "Fleet proof removed its scratch directory."
   docker_e2e_cleanup_package_tgz "$PACKAGE_TGZ"
   exit "$result"
 }
@@ -102,9 +108,12 @@ assert_cell() {
     const fs = require("node:fs");
     const os = require("node:os");
     const path = require("node:path");
-    const cache = process.env.XDG_CACHE_HOME;
+    const cache = process.env.XDG_CACHE_HOME ?? path.join(os.homedir(), ".cache");
+    const cacheOwnerUid = fs.statSync(cache).uid;
+    const imageHomeOwnerUid = fs.statSync("/home/node").uid;
     assert.equal(process.getuid(), Number(process.argv[1]));
-    assert.equal(fs.statSync(cache).uid, process.getuid());
+    assert.equal(cacheOwnerUid, process.getuid());
+    assert.equal(imageHomeOwnerUid, 1000);
     const cacheProbe = fs.mkdtempSync(path.join(cache, "write-probe-"));
     const tempProbe = fs.mkdtempSync(path.join(os.tmpdir(), "fleet-write-probe-"));
     for (const directory of [cacheProbe, tempProbe]) {
@@ -112,7 +121,8 @@ assert_cell() {
       fs.rmSync(directory, { recursive: true });
     }
     console.log(JSON.stringify({uid: process.getuid(), gid: process.getgid(),
-      cache, tmpdir: os.tmpdir(), cacheWrite: true, temporaryWrite: true}));
+      imageHomeOwnerUid, cacheOwnerUid, cache, tmpdir: os.tmpdir(),
+      cacheWrite: true, temporaryWrite: true}));
   ' "$expected_uid"
 }
 
@@ -131,6 +141,7 @@ run_case() {
     mkdir -p "$case_dir/state/fleet/cells/$tenant/operator-tmp"
   fi
   sudo -n chown -R "$uid:$uid" "$case_dir"
+  printf 'Fleet invoking UID: %s\n' "$(sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" id -u)"
   local create_result=0
   fleet create "$tenant" --image "$image" --gateway-token fleet-cache-synthetic-token \
     "$@" --json > "$scratch/create.json" || create_result=$?
@@ -164,6 +175,50 @@ run_case() {
   jq -e '.started == true' "$scratch/restore.json" >/dev/null
   capture forced-restore
   assert_cell "$expected_cache" "$expected_keys" "$expected_tmp"
+  cleanup_cell
+}
+
+run_previous_default_case() {
+  local ownership="$1"
+  local operation="$2"
+  local cache=""
+  local keys=""
+  local expected_cache=/home/node/.openclaw/cache
+  local -a overrides=()
+  if [[ "$ownership" == explicit ]]; then
+    cache=/home/node/.cache
+    keys=XDG_CACHE_HOME
+    expected_cache="$cache"
+    overrides=(--env "XDG_CACHE_HOME=$cache")
+  fi
+  uid=1000
+  tenant="fleet-cache-${scratch##*.}-$ownership-$operation"
+  tenant="${tenant,,}"
+  case_dir="$scratch/$ownership-$operation"
+  mkdir -p "$case_dir/home" "$case_dir/state" "$case_dir/host-cache"
+  sudo -n chown -R "$uid:$uid" "$case_dir"
+  printf 'Fleet invoking UID: %s\n' "$(sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" id -u)"
+  # The released CLI inherits the image's cache default. Test the upgrade from
+  # that real default with both generated and equal-valued explicit input.
+  local candidate_entry="$cli_entry"
+  cli_entry="$scratch/previous-runtime/node_modules/openclaw/openclaw.mjs"
+  fleet create "$tenant" --image "$image" --gateway-token fleet-cache-synthetic-token \
+    "${overrides[@]}" --json
+  capture previous-create
+  assert_cell "$cache" "$keys" ''
+  if [[ "$operation" == restore ]]; then
+    fleet stop "$tenant"
+    fleet backup "$tenant" --out "$case_dir/backup.tgz" --json
+    fleet start "$tenant"
+  fi
+  cli_entry="$candidate_entry"
+  if [[ "$operation" == upgrade ]]; then
+    fleet upgrade "$tenant" --image "$image"
+  else
+    fleet restore "$tenant" --from "$case_dir/backup.tgz" --force --json
+  fi
+  capture "previous-default-$operation"
+  assert_cell "$expected_cache" "$keys" ''
   cleanup_cell
 }
 
@@ -204,3 +259,19 @@ run_case temporary 1501 /home/node/.openclaw/cache TMPDIR /home/node/.openclaw/o
   --env TMPDIR=/home/node/.openclaw/operator-tmp
 run_case image-user 1000 /home/node/.openclaw/cache '' ''
 run_case root-invoker 0 /home/node/.openclaw/cache '' ''
+
+(
+  umask 022
+  timeout --foreground 600s npm install --prefix "$scratch/previous-runtime" --no-save --no-package-lock \
+    --no-audit --no-fund openclaw@2026.8.2
+)
+"$node_bin" -e '
+  const assert = require("node:assert/strict");
+  const pkg = require(process.argv[1]);
+  assert.equal(pkg.version, "2026.8.2");
+  console.log(JSON.stringify({ previousCliVersion: pkg.version }));
+' "$scratch/previous-runtime/node_modules/openclaw/package.json"
+run_previous_default_case generated upgrade
+run_previous_default_case explicit upgrade
+run_previous_default_case generated restore
+run_previous_default_case explicit restore

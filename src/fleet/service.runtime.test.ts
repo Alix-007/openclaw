@@ -600,7 +600,26 @@ describe("fleet service", () => {
     expect(containers.logs).not.toHaveBeenCalled();
   });
 
-  it("carries inspected environment and resources through upgrade", async () => {
+  it.each([
+    {
+      name: "generated previous default",
+      cache: "/home/node/.cache",
+      keys: "FEATURE",
+      expectedCache: "/home/node/.openclaw/cache",
+    },
+    {
+      name: "explicit matching default",
+      cache: "/home/node/.openclaw/cache",
+      keys: "FEATURE,XDG_CACHE_HOME",
+      expectedCache: "/home/node/.openclaw/cache",
+    },
+    {
+      name: "explicit previous default",
+      cache: "/home/node/.cache",
+      keys: "FEATURE,XDG_CACHE_HOME",
+      expectedCache: "/home/node/.cache",
+    },
+  ])("carries resources and $name through upgrade", async ({ cache, keys, expectedCache }) => {
     const containers = createContainerMock();
     const service = createFleetService({
       env,
@@ -616,11 +635,11 @@ describe("fleet service", () => {
     const diskLabels = {
       ...fleetLabels(),
       "openclaw.fleet.disk-limit": "10g",
-      "openclaw.fleet.env-keys": "FEATURE,XDG_CACHE_HOME",
+      "openclaw.fleet.env-keys": keys,
     };
     const upgradedEnvironment = {
       ...runningInspection().environment,
-      XDG_CACHE_HOME: "/home/node/.openclaw/cache",
+      XDG_CACHE_HOME: cache,
     };
     containers.inspect
       .mockResolvedValue(
@@ -656,9 +675,9 @@ describe("fleet service", () => {
         HOME: "/home/node",
         OPENCLAW_GATEWAY_TOKEN: "old-token",
         FEATURE: "enabled",
-        XDG_CACHE_HOME: "/home/node/.openclaw/cache",
+        XDG_CACHE_HOME: expectedCache,
       },
-      userEnvironmentKeys: ["FEATURE", "XDG_CACHE_HOME"],
+      userEnvironmentKeys: keys.split(","),
     });
     expect(profile?.environment).not.toHaveProperty("NODE_VERSION");
     expect(getFleetCell(env, "acme")?.image).toBe("ghcr.io/openclaw/openclaw:v2");

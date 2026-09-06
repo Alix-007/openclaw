@@ -14,8 +14,8 @@ export type DockerE2eLane = {
   estimateSeconds?: number;
   live: boolean;
   name: string;
-  needsLiveImage?: boolean;
   needsPackage?: boolean;
+  needsLiveImage?: boolean;
   noOutputTimeoutMs?: number;
   prepublishPluginPackages?: string[];
   resources: string[];
@@ -115,8 +115,8 @@ function lane(name: string, command: string, options: LaneOptions = {}): DockerE
     live: options.live === true,
     noOutputTimeoutMs: options.noOutputTimeoutMs,
     name,
+    ...(options.needsPackage ? { needsPackage: true } : {}),
     needsLiveImage: options.needsLiveImage,
-    needsPackage: options.needsPackage,
     prepublishPluginPackages: options.prepublishPluginPackages,
     retryPatterns: options.retryPatterns ?? [],
     retries: options.retries ?? 0,

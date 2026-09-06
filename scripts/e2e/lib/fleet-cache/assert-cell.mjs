@@ -12,7 +12,11 @@ const environment = Object.fromEntries(
 );
 
 assert.equal(cell.State.Running, true);
-assert.equal(environment.XDG_CACHE_HOME, cache);
+if (cache === "") {
+  assert.equal(Object.hasOwn(environment, "XDG_CACHE_HOME"), false);
+} else {
+  assert.equal(environment.XDG_CACHE_HOME, cache);
+}
 if (tmpdir === "") {
   assert.equal(Object.hasOwn(environment, "TMPDIR"), false);
 } else {
