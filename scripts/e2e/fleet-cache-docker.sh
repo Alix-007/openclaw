@@ -16,17 +16,12 @@ docker info --format '{{json .SecurityOptions}}' | jq -e 'all(.[]; contains("roo
 docker version --format '{{.Server.Version}}'
 socket_gid="$(stat -c %g "$socket")"
 node_bin="$(command -v node)"
-sudo -n setpriv --reuid=1501 --regid=1501 --groups="$socket_gid" "$node_bin" --version
+node_version="$("$node_bin" -p process.versions.node)"
 
 # The host CLI and its dependencies come from this exact checkout. Cell code
 # stays pinned to the official image, so changing the host profile is isolated.
 pnpm build
-image_tag="ghcr.io/openclaw/openclaw:2026.8.2"
-timeout 600s docker pull "$image_tag"
-image="$(docker image inspect "$image_tag" --format '{{index .RepoDigests 0}}')"
-printf 'Fleet host source: %s\nCell image: %s\n' "$(git -C "$ROOT_DIR" rev-parse HEAD)" "$image"
 
-umask 077
 scratch="$(mktemp -d /tmp/openclaw-fleet-cache-e2e.XXXXXX)"
 chmod 755 "$scratch"
 tenant=""
@@ -35,7 +30,7 @@ uid=1501
 interrupted=false
 
 fleet() {
-  timeout 180s sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" \
+  timeout --foreground 180s sudo -n setpriv --reuid="$uid" --regid="$uid" --groups="$socket_gid" \
     env -i PATH="$PATH" HOME="$case_dir/home" OPENCLAW_HOME="$case_dir/home" \
     OPENCLAW_STATE_DIR="$case_dir/state" XDG_CACHE_HOME="$case_dir/host-cache" \
     DOCKER_HOST="$endpoint" "$node_bin" "$ROOT_DIR/openclaw.mjs" fleet "$@"
@@ -130,6 +125,9 @@ run_case() {
   tenant="${tenant,,}"
   case_dir="$scratch/$name"
   mkdir -p "$case_dir/home" "$case_dir/state" "$case_dir/host-cache"
+  if [[ -n "$expected_tmp" ]]; then
+    mkdir -p "$case_dir/state/fleet/cells/$tenant/operator-tmp"
+  fi
   sudo -n chown -R "$uid:$uid" "$case_dir"
   local create_result=0
   fleet create "$tenant" --image "$image" --gateway-token fleet-cache-synthetic-token \
@@ -167,11 +165,27 @@ run_case() {
   cleanup_cell
 }
 
+# CI's Node toolchain lives under runner-private temporary storage. Install the
+# same version in the fixture so alternate users need no runner permission changes.
+timeout --foreground 300s npm install --prefix "$scratch/host-node" --no-save --no-package-lock \
+  --no-audit --no-fund "node@$node_version"
+node_bin="$scratch/host-node/node_modules/node/bin/node"
+export PATH="$scratch/host-node/node_modules/.bin:$PATH"
+sudo -n setpriv --reuid=1501 --regid=1501 --groups="$socket_gid" \
+  env -i PATH="$PATH" "$node_bin" --version
+umask 077
+
+image_tag="ghcr.io/openclaw/openclaw:2026.8.2"
+timeout --foreground 600s docker pull "$image_tag"
+image="$(docker image inspect "$image_tag" --format '{{index .RepoDigests 0}}')"
+printf 'Fleet host source: %s\nCell image: %s\n' "$(git -C "$ROOT_DIR" rev-parse HEAD)" "$image"
+
 run_case mismatch 1501 /home/node/.openclaw/cache '' ''
 run_case override 1501 /home/node/.openclaw/operator-cache XDG_CACHE_HOME '' \
   --env XDG_CACHE_HOME=/home/node/.openclaw/operator-cache
 run_case equal 1501 /home/node/.openclaw/cache XDG_CACHE_HOME '' \
   --env XDG_CACHE_HOME=/home/node/.openclaw/cache
-run_case temporary 1501 /home/node/.openclaw/cache TMPDIR /tmp --env TMPDIR=/tmp
+run_case temporary 1501 /home/node/.openclaw/cache TMPDIR /home/node/.openclaw/operator-tmp \
+  --env TMPDIR=/home/node/.openclaw/operator-tmp
 run_case image-user 1000 /home/node/.openclaw/cache '' ''
 run_case root-invoker 0 /home/node/.openclaw/cache '' ''

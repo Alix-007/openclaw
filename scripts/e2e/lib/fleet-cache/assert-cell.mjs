@@ -13,7 +13,11 @@ const environment = Object.fromEntries(
 
 assert.equal(cell.State.Running, true);
 assert.equal(environment.XDG_CACHE_HOME, cache);
-assert.equal(environment.TMPDIR ?? "", tmpdir);
+if (tmpdir === "") {
+  assert.equal(Object.hasOwn(environment, "TMPDIR"), false);
+} else {
+  assert.equal(environment.TMPDIR, tmpdir);
+}
 assert.equal(cell.Config.Labels["openclaw.fleet.env-keys"], keys);
 assert.equal(environment.HOME, "/home/node");
 assert.equal(environment.OPENCLAW_STATE_DIR, "/home/node/.openclaw");
