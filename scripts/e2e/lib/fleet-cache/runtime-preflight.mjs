@@ -10,13 +10,14 @@ function readText(filename) {
   }
 }
 
-function command(executable, args, env = process.env) {
-  const result = spawnSync(executable, args, { encoding: "utf8", timeout: 3000, env });
+function command(executable, args, env = process.env, timeout = 3000) {
+  const result = spawnSync(executable, args, { encoding: "utf8", timeout, env });
   return {
     available: result.error?.code !== "ENOENT",
     completed: result.status !== null,
     exitCode: result.status,
     stdout: result.stdout ?? "",
+    stderr: result.stderr ?? "",
   };
 }
 
@@ -121,6 +122,24 @@ for (const line of packageQuery.stdout.trim().split("\n")) {
   }
 }
 
+const engine = installedPackages["docker-ce"];
+const rootlessInstall = engine.installed
+  ? command(
+      "apt-get",
+      [
+        "-s",
+        "--no-upgrade",
+        "--no-install-recommends",
+        "install",
+        `docker-ce-rootless-extras=${engine.version}`,
+        "uidmap",
+        "slirp4netns",
+      ],
+      process.env,
+      10000,
+    )
+  : undefined;
+
 // Report only selected facts: command output can contain account names and host paths.
 console.log(
   JSON.stringify({
@@ -173,6 +192,15 @@ console.log(
       queryCompleted: packageQuery.completed,
       installed: installedPackages,
     },
+    dockerRootlessInstallSimulation: rootlessInstall
+      ? {
+          commandAvailable: rootlessInstall.available,
+          completed: rootlessInstall.completed,
+          exitCode: rootlessInstall.exitCode,
+          output: rootlessInstall.stdout,
+          errorOutput: rootlessInstall.stderr,
+        }
+      : { attempted: false },
     policy: {
       unprivilegedUsernsClone: policy("/proc/sys/kernel/unprivileged_userns_clone"),
       maxUserNamespaces: policy("/proc/sys/user/max_user_namespaces"),

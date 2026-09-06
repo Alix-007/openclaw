@@ -17,7 +17,9 @@ endpoint="${DOCKER_HOST:-$(docker context inspect --format '{{.Endpoints.docker.
 [[ "$endpoint" == unix:///* ]]
 socket="${endpoint#unix://}"
 [[ -S "$socket" ]]
-docker info --format '{{json .SecurityOptions}}' | tee /dev/stderr | jq -e 'all(.[]; contains("rootless") | not)'
+security_options="$(docker info --format '{{json .SecurityOptions}}')"
+printf 'Fleet Docker security options: %s\n' "$security_options"
+jq -e 'all(.[]; contains("rootless") | not)' <<< "$security_options"
 docker version --format '{{.Server.Version}}'
 socket_gid="$(stat -c %g "$socket")"
 node_bin="$(command -v node)"
@@ -227,7 +229,7 @@ run_previous_default_case() {
 PACKAGE_TGZ="$(docker_e2e_prepare_package_tgz fleet-cache "${OPENCLAW_CURRENT_PACKAGE_TGZ:-}")"
 sha256sum "$PACKAGE_TGZ"
 timeout --foreground 600s npm install --prefix "$scratch/host-runtime" --no-save --no-package-lock \
-  --no-audit --no-fund "node@$node_version" "$PACKAGE_TGZ"
+  --no-audit --no-fund "node@$node_version" smol-toml@1.8.0 "$PACKAGE_TGZ"
 node_bin="$scratch/host-runtime/node_modules/node/bin/node"
 export PATH="$scratch/host-runtime/node_modules/.bin:$PATH"
 sudo -n setpriv --reuid=1501 --regid=1501 --groups="$socket_gid" \
@@ -275,3 +277,5 @@ run_previous_default_case generated upgrade
 run_previous_default_case explicit upgrade
 run_previous_default_case generated restore
 run_previous_default_case explicit restore
+
+bash "$ROOT_DIR/scripts/e2e/lib/fleet-cache/podman-control.sh" "$node_bin" "$cli_entry" "$image"
