@@ -55,6 +55,7 @@ jobs:
           receipt_dir="$RUNNER_TEMP/cli-proof/$SURFACE"
           mkdir -p "$receipt_dir"
           printf 'surface=%s\n' "$SURFACE" > "$receipt_dir/START.txt"
+          : > "$receipt_dir/index.txt"
 
       - name: Install frozen dependencies and exact source worktrees
         env:
@@ -64,11 +65,105 @@ jobs:
           set -euo pipefail
           base_root="$RUNNER_TEMP/openclaw-base-$SURFACE"
           product_root="$RUNNER_TEMP/openclaw-product-$SURFACE"
+          receipt_dir="$RUNNER_TEMP/cli-proof/$SURFACE"
           pnpm install --frozen-lockfile --ignore-scripts
           git worktree add --detach "$base_root" "$BASE_SHA"
           git worktree add --detach "$product_root" "$PRODUCT_SHA"
           pnpm --dir "$base_root" install --frozen-lockfile --ignore-scripts
           pnpm --dir "$product_root" install --frozen-lockfile --ignore-scripts
+          base_actual="$(git -C "$base_root" rev-parse --verify HEAD)"
+          product_actual="$(git -C "$product_root" rev-parse --verify HEAD)"
+          test "$base_actual" = "$BASE_SHA"
+          test "$product_actual" = "$PRODUCT_SHA"
+          {
+            printf 'base_expected=%s\n' "$BASE_SHA"
+            printf 'base_actual=%s\n' "$base_actual"
+            printf 'product_expected=%s\n' "$PRODUCT_SHA"
+            printf 'product_actual=%s\n' "$product_actual"
+          } > "$receipt_dir/HEADS.txt"
+          cat "$receipt_dir/HEADS.txt"
+
+      - name: Run focused tests for exact product SHA
+        env:
+          SURFACE: ${{ matrix.surface }}
+          PRODUCT_SHA: ${{ matrix.product_sha }}
+        run: |
+          set -euo pipefail
+
+          receipt_dir="$RUNNER_TEMP/cli-proof/$SURFACE"
+          product_root="$RUNNER_TEMP/openclaw-product-$SURFACE"
+          index_file="$receipt_dir/index.txt"
+
+          run_focused_tests() {
+            local label="$1"
+            shift
+            local output="$receipt_dir/$label.log"
+            local argv_file="$receipt_dir/$label.argv"
+            local state_dir="$RUNNER_TEMP/openclaw-test-state-$SURFACE-$label"
+            local home_dir="$RUNNER_TEMP/openclaw-test-home-$SURFACE-$label"
+            local config_dir="$RUNNER_TEMP/openclaw-test-config-$SURFACE-$label"
+            mkdir -p "$state_dir" "$home_dir" "$config_dir"
+            {
+              printf 'label=%s\n' "$label"
+              printf 'product_root=%s\n' "$product_root"
+              printf 'product_sha=%s\n' "$PRODUCT_SHA"
+              printf 'argv='
+              printf '%q ' node scripts/run-vitest.mjs run --config test/vitest/vitest.unit.config.ts "$@"
+              printf '\n'
+            } > "$argv_file"
+
+            set +e
+            (
+              cd "$product_root"
+              env \
+                -u GH_TOKEN \
+                -u GITHUB_TOKEN \
+                -u OPENAI_API_KEY \
+                -u ANTHROPIC_API_KEY \
+                -u AWS_ACCESS_KEY_ID \
+                -u AWS_SECRET_ACCESS_KEY \
+                -u AWS_SESSION_TOKEN \
+                -u GOOGLE_API_KEY \
+                -u TELEGRAM_BOT_TOKEN \
+                -u DISCORD_BOT_TOKEN \
+                HOME="$home_dir" \
+                XDG_CONFIG_HOME="$config_dir" \
+                OPENCLAW_STATE_DIR="$state_dir" \
+                OPENCLAW_CONFIG_PATH="$config_dir/openclaw.json" \
+                node scripts/run-vitest.mjs run \
+                  --config test/vitest/vitest.unit.config.ts \
+                  "$@"
+            ) > "$output" 2>&1
+            local status=$?
+            set -e
+
+            printf '[%s] ' "$label"
+            cat "$argv_file"
+            printf '[%s] exit=%s output=%s\n' "$label" "$status" "$output"
+            cat "$output"
+            printf 'label=%s exit=%s output=%s sha256=' "$label" "$status" "$output" >> "$index_file"
+            sha256sum "$output" >> "$index_file"
+            return "$status"
+          }
+
+          test_status=0
+          case "$SURFACE" in
+            models)
+              run_focused_tests focused-models-scan src/commands/models/scan.test.ts src/cli/models-cli.test.ts || test_status=$?
+              ;;
+            capability)
+              run_focused_tests focused-capability-cli src/cli/capability-cli/shared.test.ts src/cli/capability-cli.test.ts src/cli/parse-timeout.test.ts || test_status=$?
+              ;;
+            pairing)
+              run_focused_tests focused-pairing-cli src/cli/pairing-cli.test.ts || test_status=$?
+              ;;
+            *)
+              printf 'unknown focused-test surface: %s\n' "$SURFACE" >&2
+              test_status=1
+              ;;
+          esac
+          printf 'surface=%s\nproduct_sha=%s\nfocused_test_status=%s\n' "$SURFACE" "$PRODUCT_SHA" "$test_status" > "$receipt_dir/FOCUSED-SUMMARY.txt"
+          exit "$test_status"
 
       - name: Run root CLI proof and write receipts
         env:
@@ -81,7 +176,7 @@ jobs:
           base_root="$RUNNER_TEMP/openclaw-base-$SURFACE"
           product_root="$RUNNER_TEMP/openclaw-product-$SURFACE"
           index_file="$receipt_dir/index.txt"
-          : > "$index_file"
+          : >> "$index_file"
 
           write_summary() {
             local status=$?
@@ -166,6 +261,13 @@ jobs:
             fi
           }
 
+          assert_zero() {
+            if [ "$LAST_STATUS" -ne 0 ]; then
+              printf 'expected zero exit for %s\n' "$LAST_OUTPUT_FILE" >&2
+              return 1
+            fi
+          }
+
           assert_output_nonempty() {
             if [ ! -s "$LAST_OUTPUT_FILE" ]; then
               printf 'expected observable output for %s\n' "$LAST_OUTPUT_FILE" >&2
@@ -197,17 +299,33 @@ jobs:
             assert_not_contains "$parser_message"
           }
 
-          assert_downstream_control() {
+          assert_parser_control() {
             local parser_message="$1"
             assert_nonzero
             assert_output_nonempty
+            assert_contains "$parser_message"
+            assert_not_contains "Cannot apply metadata-only OpenRouter scan results"
+          }
+
+          assert_capability_downstream() {
+            local downstream_message="$1"
+            local parser_message="$2"
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$downstream_message"
             assert_not_contains "$parser_message"
           }
 
-          assert_safe_readback() {
-            local parser_message="$1"
+          assert_pairing_list() {
+            assert_zero
             assert_output_nonempty
-            assert_not_contains "$parser_message"
+            assert_contains '"requests"'
+          }
+
+          assert_pairing_no_pending() {
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains 'No pending pairing request found for code "proof-no-such-code"'
           }
 
           if [ "$SURFACE" = "models" ]; then
@@ -222,17 +340,11 @@ jobs:
               run_cli "base-$name-blank" "$base_root" "${model_args[@]}" "$flag" ""
               assert_metadata_control "$parser_message"
               run_cli "base-$name-whitespace" "$base_root" "${model_args[@]}" "$flag" "   "
-              assert_metadata_control "$parser_message"
+              assert_parser_control "$parser_message"
               run_cli "product-$name-blank" "$product_root" "${model_args[@]}" "$flag" ""
-              assert_nonzero
-              assert_output_nonempty
-              assert_contains "$parser_message"
-              assert_not_contains "Cannot apply metadata-only OpenRouter scan results"
+              assert_parser_control "$parser_message"
               run_cli "product-$name-whitespace" "$product_root" "${model_args[@]}" "$flag" "   "
-              assert_nonzero
-              assert_output_nonempty
-              assert_contains "$parser_message"
-              assert_not_contains "Cannot apply metadata-only OpenRouter scan results"
+              assert_parser_control "$parser_message"
               run_cli "base-$name-legal" "$base_root" "${model_args[@]}" "$flag" "$legal_value"
               assert_metadata_control "$parser_message"
               run_cli "product-$name-legal" "$product_root" "${model_args[@]}" "$flag" "$legal_value"
@@ -250,72 +362,84 @@ jobs:
             run_cli product-omitted "$product_root" "${model_args[@]}"
             assert_metadata_control "--min-params must be >= 0"
           elif [ "$SURFACE" = "capability" ]; then
-            capability_args=(infer web search --query proof --json)
-            parser_message="--limit must be a positive integer"
+            check_capability_option() {
+              local name="$1"
+              local parser_message="$2"
+              local downstream_message="$3"
+              local flag="$4"
+              local legal_value="$5"
+              shift 5
+              local -a command_args=("$@")
 
-            run_cli base-limit-blank "$base_root" "${capability_args[@]}" --limit ""
-            assert_safe_readback "$parser_message"
-            run_cli base-limit-whitespace "$base_root" "${capability_args[@]}" --limit "   "
-            assert_safe_readback "$parser_message"
-            run_cli product-limit-blank "$product_root" "${capability_args[@]}" --limit ""
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
-            run_cli product-limit-whitespace "$product_root" "${capability_args[@]}" --limit "   "
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
-            run_cli base-limit-legal "$base_root" "${capability_args[@]}" --limit 3
-            assert_safe_readback "$parser_message"
-            run_cli product-limit-legal "$product_root" "${capability_args[@]}" --limit 3
-            assert_safe_readback "$parser_message"
-            run_cli base-limit-omitted "$base_root" "${capability_args[@]}"
-            assert_safe_readback "$parser_message"
-            run_cli product-limit-omitted "$product_root" "${capability_args[@]}"
-            assert_safe_readback "$parser_message"
+              run_cli "base-$name-blank" "$base_root" "${command_args[@]}" "$flag" ""
+              assert_capability_downstream "$downstream_message" "$parser_message"
+              run_cli "base-$name-whitespace" "$base_root" "${command_args[@]}" "$flag" "   "
+              assert_capability_downstream "$downstream_message" "$parser_message"
+              run_cli "product-$name-blank" "$product_root" "${command_args[@]}" "$flag" ""
+              assert_parser_control "$parser_message"
+              run_cli "product-$name-whitespace" "$product_root" "${command_args[@]}" "$flag" "   "
+              assert_parser_control "$parser_message"
+              run_cli "base-$name-legal" "$base_root" "${command_args[@]}" "$flag" "$legal_value"
+              assert_capability_downstream "$downstream_message" "$parser_message"
+              run_cli "product-$name-legal" "$product_root" "${command_args[@]}" "$flag" "$legal_value"
+              assert_capability_downstream "$downstream_message" "$parser_message"
+              run_cli "base-$name-omitted" "$base_root" "${command_args[@]}"
+              assert_capability_downstream "$downstream_message" "$parser_message"
+              run_cli "product-$name-omitted" "$product_root" "${command_args[@]}"
+              assert_capability_downstream "$downstream_message" "$parser_message"
+            }
+
+            check_capability_option web-limit "--limit must be a positive integer" \
+              "web_search is disabled or no provider is available." --limit 3 \
+              infer web search --query proof --json
+            check_capability_option image-count "--count must be a positive integer" \
+              "No image-generation model configured." --count 1 \
+              infer image generate --prompt proof --json
+            check_capability_option image-timeout "Invalid --timeout" \
+              "No image-generation model configured." --timeout-ms 1000 \
+              infer image generate --prompt proof --json
+            check_capability_option video-duration "--duration must be a finite number" \
+              "No video-generation model configured." --duration 1 \
+              infer video generate --prompt proof --json
           elif [ "$SURFACE" = "pairing" ]; then
             pairing_channel=telegram
             parser_message="--account must not be blank"
 
             run_cli base-list-account-blank "$base_root" pairing list --channel "$pairing_channel" --account "" --json
-            assert_safe_readback "$parser_message"
+            assert_pairing_list
             run_cli base-list-account-whitespace "$base_root" pairing list --channel "$pairing_channel" --account "   " --json
-            assert_safe_readback "$parser_message"
+            assert_pairing_list
             run_cli product-list-account-blank "$product_root" pairing list --channel "$pairing_channel" --account "" --json
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
+            assert_parser_control "$parser_message"
             run_cli product-list-account-whitespace "$product_root" pairing list --channel "$pairing_channel" --account "   " --json
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
+            assert_parser_control "$parser_message"
 
             run_cli base-list-account-legal "$base_root" pairing list --channel "$pairing_channel" --account proof-account --json
-            assert_safe_readback "$parser_message"
-            assert_contains '"requests"'
+            assert_pairing_list
             run_cli product-list-account-legal "$product_root" pairing list --channel "$pairing_channel" --account proof-account --json
-            assert_safe_readback "$parser_message"
-            assert_contains '"requests"'
+            assert_pairing_list
             run_cli base-list-account-omitted "$base_root" pairing list --channel "$pairing_channel" --json
-            assert_safe_readback "$parser_message"
-            assert_contains '"requests"'
+            assert_pairing_list
             run_cli product-list-account-omitted "$product_root" pairing list --channel "$pairing_channel" --json
-            assert_safe_readback "$parser_message"
-            assert_contains '"requests"'
+            assert_pairing_list
 
             # A nonexistent code exercises approve's selector validation without approving a real request.
             run_cli base-approve-account-blank "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account ""
-            assert_safe_readback "$parser_message"
+            assert_pairing_no_pending
             run_cli product-approve-account-blank "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account ""
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
+            assert_parser_control "$parser_message"
             run_cli base-approve-account-whitespace "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account "   "
-            assert_safe_readback "$parser_message"
+            assert_pairing_no_pending
             run_cli product-approve-account-whitespace "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account "   "
-            assert_nonzero
-            assert_output_nonempty
-            assert_contains "$parser_message"
+            assert_parser_control "$parser_message"
+            run_cli base-approve-account-legal "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account proof-account
+            assert_pairing_no_pending
+            run_cli product-approve-account-legal "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account proof-account
+            assert_pairing_no_pending
+            run_cli base-approve-account-omitted "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code
+            assert_pairing_no_pending
+            run_cli product-approve-account-omitted "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code
+            assert_pairing_no_pending
           else
             printf 'unknown proof surface: %s\n' "$SURFACE" >&2
             exit 1
