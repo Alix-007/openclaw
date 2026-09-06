@@ -1,0 +1,98 @@
+name: CLI explicit numeric blank proof
+
+on:
+  push:
+    branches:
+      - proof/alix-cli-empty-numeric-20260906
+
+permissions:
+  contents: read
+
+jobs:
+  models-scan:
+    name: models scan blank numeric red-green proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout proof branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+        with:
+          cache-mode: off
+          dependency-cache: "false"
+          install-bun: "false"
+          install-deps: "false"
+
+      - name: Install frozen dependencies
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile --ignore-scripts
+          git worktree add --detach "$RUNNER_TEMP/openclaw-base" 07d5b2409af0bee1ceb30b785ad75711ee0cf63a
+          git worktree add --detach "$RUNNER_TEMP/openclaw-models" 472e76d628118fdc0641bc7ac4c3430b8bb33846
+          pnpm --dir "$RUNNER_TEMP/openclaw-base" install --frozen-lockfile --ignore-scripts
+          pnpm --dir "$RUNNER_TEMP/openclaw-models" install --frozen-lockfile --ignore-scripts
+
+      - name: Prove base accepts blanks as omitted and product rejects them
+        run: |
+          set -euo pipefail
+
+          run_cli() {
+            local root="$1"
+            shift
+            set +e
+            local output
+            output="$(cd "$root" && pnpm openclaw models scan --no-probe --set-default --no-input --json "$@" 2>&1)"
+            local status=$?
+            set -e
+            printf '%s\n' "$output"
+            printf '%s\n' "$status"
+          }
+
+          assert_base_metadata_only() {
+            local flag="$1"
+            local result
+            result="$(run_cli "$RUNNER_TEMP/openclaw-base" "$flag" "")"
+            grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$result"
+            ! grep -Fq "must be" <<<"$result"
+          }
+
+          assert_product_numeric_error() {
+            local flag="$1"
+            local message="$2"
+            local result
+            result="$(run_cli "$RUNNER_TEMP/openclaw-models" "$flag" "")"
+            grep -Fq "$message" <<<"$result"
+            ! grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$result"
+          }
+
+          assert_base_metadata_only --min-params
+          assert_base_metadata_only --max-age-days
+          assert_base_metadata_only --max-candidates
+          assert_base_metadata_only --timeout
+          assert_base_metadata_only --concurrency
+
+          assert_product_numeric_error --min-params "--min-params must be >= 0"
+          assert_product_numeric_error --max-age-days "--max-age-days must be >= 0"
+          assert_product_numeric_error --max-candidates "--max-candidates must be a positive integer"
+          assert_product_numeric_error --timeout "--timeout must be > 0"
+          assert_product_numeric_error --concurrency "--concurrency must be a positive integer"
+
+      - name: Prove omitted options keep the existing metadata-only control
+        run: |
+          set -euo pipefail
+          for root in "$RUNNER_TEMP/openclaw-base" "$RUNNER_TEMP/openclaw-models"; do
+            set +e
+            output="$(cd "$root" && pnpm openclaw models scan --no-probe --set-default --no-input --json 2>&1)"
+            status=$?
+            set -e
+            printf '%s\n' "$output"
+            test "$status" -ne 0
+            grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$output"
+          done
