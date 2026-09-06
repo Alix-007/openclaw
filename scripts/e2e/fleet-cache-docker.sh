@@ -22,7 +22,7 @@ node_version="$("$node_bin" -p process.versions.node)"
 
 scratch="$(mktemp -d /tmp/openclaw-fleet-cache-e2e.XXXXXX)"
 chmod 755 "$scratch"
-package_tgz=""
+PACKAGE_TGZ=""
 cli_entry="$scratch/host-runtime/node_modules/openclaw/openclaw.mjs"
 tenant=""
 case_dir=""
@@ -79,7 +79,7 @@ cleanup() {
     exit 1
   fi
   sudo -n rm -rf -- "$scratch"
-  docker_e2e_cleanup_package_tgz "$package_tgz"
+  docker_e2e_cleanup_package_tgz "$PACKAGE_TGZ"
   exit "$result"
 }
 trap cleanup EXIT
@@ -169,10 +169,10 @@ run_case() {
 
 # Neither the runner's toolchain nor its checkout is a public install. Use the
 # canonical package and selected Node version in an accessible test-owned prefix.
-package_tgz="$(docker_e2e_prepare_package_tgz fleet-cache "${OPENCLAW_CURRENT_PACKAGE_TGZ:-}")"
-sha256sum "$package_tgz"
+PACKAGE_TGZ="$(docker_e2e_prepare_package_tgz fleet-cache "${OPENCLAW_CURRENT_PACKAGE_TGZ:-}")"
+sha256sum "$PACKAGE_TGZ"
 timeout --foreground 600s npm install --prefix "$scratch/host-runtime" --no-save --no-package-lock \
-  --no-audit --no-fund "node@$node_version" "$package_tgz"
+  --no-audit --no-fund "node@$node_version" "$PACKAGE_TGZ"
 node_bin="$scratch/host-runtime/node_modules/node/bin/node"
 export PATH="$scratch/host-runtime/node_modules/.bin:$PATH"
 sudo -n setpriv --reuid=1501 --regid=1501 --groups="$socket_gid" \
