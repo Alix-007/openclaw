@@ -4,15 +4,32 @@ on:
   push:
     branches:
       - proof/alix-cli-empty-numeric-20260906
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  BASE_SHA: 07d5b2409af0bee1ceb30b785ad75711ee0cf63a
+  MODELS_SHA: 472e76d628118fdc0641bc7ac4c3430b8bb33846
+  CAPABILITY_SHA: b315b8d6cba8af704023d61c3140bc62f4687e06
+  PAIRING_SHA: 153182a2038de39df3bbe48a9901e6140646a0e1
+
 jobs:
-  models-scan:
-    name: models scan blank numeric red-green proof
+  cli-proof:
+    name: ${{ matrix.surface }} root CLI proof
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - surface: models
+            product_sha: 472e76d628118fdc0641bc7ac4c3430b8bb33846
+          - surface: capability
+            product_sha: b315b8d6cba8af704023d61c3140bc62f4687e06
+          - surface: pairing
+            product_sha: 153182a2038de39df3bbe48a9901e6140646a0e1
     permissions:
       contents: read
     steps:
@@ -30,69 +47,293 @@ jobs:
           install-bun: "false"
           install-deps: "false"
 
-      - name: Install frozen dependencies
+      - name: Prepare isolated receipt directory
+        env:
+          SURFACE: ${{ matrix.surface }}
         run: |
           set -euo pipefail
-          pnpm install --frozen-lockfile --ignore-scripts
-          git worktree add --detach "$RUNNER_TEMP/openclaw-base" 07d5b2409af0bee1ceb30b785ad75711ee0cf63a
-          git worktree add --detach "$RUNNER_TEMP/openclaw-models" 472e76d628118fdc0641bc7ac4c3430b8bb33846
-          pnpm --dir "$RUNNER_TEMP/openclaw-base" install --frozen-lockfile --ignore-scripts
-          pnpm --dir "$RUNNER_TEMP/openclaw-models" install --frozen-lockfile --ignore-scripts
+          receipt_dir="$RUNNER_TEMP/cli-proof/$SURFACE"
+          mkdir -p "$receipt_dir"
+          printf 'surface=%s\n' "$SURFACE" > "$receipt_dir/START.txt"
 
-      - name: Prove base accepts blanks as omitted and product rejects them
+      - name: Install frozen dependencies and exact source worktrees
+        env:
+          SURFACE: ${{ matrix.surface }}
+          PRODUCT_SHA: ${{ matrix.product_sha }}
         run: |
           set -euo pipefail
+          base_root="$RUNNER_TEMP/openclaw-base-$SURFACE"
+          product_root="$RUNNER_TEMP/openclaw-product-$SURFACE"
+          pnpm install --frozen-lockfile --ignore-scripts
+          git worktree add --detach "$base_root" "$BASE_SHA"
+          git worktree add --detach "$product_root" "$PRODUCT_SHA"
+          pnpm --dir "$base_root" install --frozen-lockfile --ignore-scripts
+          pnpm --dir "$product_root" install --frozen-lockfile --ignore-scripts
+
+      - name: Run root CLI proof and write receipts
+        env:
+          SURFACE: ${{ matrix.surface }}
+          PRODUCT_SHA: ${{ matrix.product_sha }}
+        run: |
+          set -euo pipefail
+
+          receipt_dir="$RUNNER_TEMP/cli-proof/$SURFACE"
+          base_root="$RUNNER_TEMP/openclaw-base-$SURFACE"
+          product_root="$RUNNER_TEMP/openclaw-product-$SURFACE"
+          index_file="$receipt_dir/index.txt"
+          : > "$index_file"
+
+          write_summary() {
+            local status=$?
+            set +e
+            {
+              printf 'surface=%s\n' "$SURFACE"
+              printf 'proof_branch_head=%s\n' "$(git rev-parse --verify HEAD)"
+              printf 'base_expected=%s\n' "$BASE_SHA"
+              printf 'base_actual=%s\n' "$(git -C "$base_root" rev-parse --verify HEAD 2>/dev/null || true)"
+              printf 'product_expected=%s\n' "$PRODUCT_SHA"
+              printf 'product_actual=%s\n' "$(git -C "$product_root" rev-parse --verify HEAD 2>/dev/null || true)"
+              printf 'proof_status=%s\n' "$status"
+            } > "$receipt_dir/SUMMARY.txt"
+            : > "$receipt_dir/SHA256SUMS"
+            for output in "$receipt_dir"/*.log; do
+              if [ -f "$output" ]; then
+                sha256sum "$output" >> "$receipt_dir/SHA256SUMS"
+              fi
+            done
+            exit "$status"
+          }
+          trap write_summary EXIT
 
           run_cli() {
-            local root="$1"
-            shift
+            local label="$1"
+            local root="$2"
+            shift 2
+            local output="$receipt_dir/$label.log"
+            local argv_file="$receipt_dir/$label.argv"
+            local state_dir="$RUNNER_TEMP/openclaw-state-$SURFACE-$label"
+            local home_dir="$RUNNER_TEMP/openclaw-home-$SURFACE-$label"
+            local config_dir="$RUNNER_TEMP/openclaw-config-$SURFACE-$label"
+            local root_head
+
+            mkdir -p "$state_dir" "$home_dir" "$config_dir"
+            root_head="$(git -C "$root" rev-parse --verify HEAD)"
+            {
+              printf 'label=%s\n' "$label"
+              printf 'root=%s\n' "$root"
+              printf 'head=%s\n' "$root_head"
+              printf 'argv='
+              printf '%q ' "$@"
+              printf '\n'
+            } > "$argv_file"
+
             set +e
-            local output
-            output="$(cd "$root" && pnpm openclaw models scan --no-probe --set-default --no-input --json "$@" 2>&1)"
-            local status=$?
+            (
+              cd "$root"
+              env \
+                -u GH_TOKEN \
+                -u GITHUB_TOKEN \
+                -u OPENAI_API_KEY \
+                -u ANTHROPIC_API_KEY \
+                -u AWS_ACCESS_KEY_ID \
+                -u AWS_SECRET_ACCESS_KEY \
+                -u AWS_SESSION_TOKEN \
+                -u GOOGLE_API_KEY \
+                -u TELEGRAM_BOT_TOKEN \
+                -u DISCORD_BOT_TOKEN \
+                HOME="$home_dir" \
+                XDG_CONFIG_HOME="$config_dir" \
+                OPENCLAW_STATE_DIR="$state_dir" \
+                OPENCLAW_CONFIG_PATH="$config_dir/openclaw.json" \
+                pnpm openclaw "$@"
+            ) > "$output" 2>&1
+            LAST_STATUS=$?
             set -e
-            printf '%s\n' "$output"
-            printf '%s\n' "$status"
+
+            printf '[%s] ' "$label"
+            cat "$argv_file"
+            printf '[%s] exit=%s output=%s\n' "$label" "$LAST_STATUS" "$output"
+            cat "$output"
+            printf 'label=%s exit=%s output=%s sha256=' "$label" "$LAST_STATUS" "$output" >> "$index_file"
+            sha256sum "$output" >> "$index_file"
+            LAST_OUTPUT_FILE="$output"
           }
 
-          assert_base_metadata_only() {
-            local flag="$1"
-            local result
-            result="$(run_cli "$RUNNER_TEMP/openclaw-base" "$flag" "")"
-            grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$result"
-            ! grep -Fq "must be" <<<"$result"
+          assert_nonzero() {
+            if [ "$LAST_STATUS" -eq 0 ]; then
+              printf 'expected non-zero exit for %s\n' "$LAST_OUTPUT_FILE" >&2
+              return 1
+            fi
           }
 
-          assert_product_numeric_error() {
-            local flag="$1"
-            local message="$2"
-            local result
-            result="$(run_cli "$RUNNER_TEMP/openclaw-models" "$flag" "")"
-            grep -Fq "$message" <<<"$result"
-            ! grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$result"
+          assert_output_nonempty() {
+            if [ ! -s "$LAST_OUTPUT_FILE" ]; then
+              printf 'expected observable output for %s\n' "$LAST_OUTPUT_FILE" >&2
+              return 1
+            fi
           }
 
-          assert_base_metadata_only --min-params
-          assert_base_metadata_only --max-age-days
-          assert_base_metadata_only --max-candidates
-          assert_base_metadata_only --timeout
-          assert_base_metadata_only --concurrency
+          assert_contains() {
+            local message="$1"
+            if ! grep -Fq -- "$message" "$LAST_OUTPUT_FILE"; then
+              printf 'missing expected output %s in %s\n' "$message" "$LAST_OUTPUT_FILE" >&2
+              return 1
+            fi
+          }
 
-          assert_product_numeric_error --min-params "--min-params must be >= 0"
-          assert_product_numeric_error --max-age-days "--max-age-days must be >= 0"
-          assert_product_numeric_error --max-candidates "--max-candidates must be a positive integer"
-          assert_product_numeric_error --timeout "--timeout must be > 0"
-          assert_product_numeric_error --concurrency "--concurrency must be a positive integer"
+          assert_not_contains() {
+            local message="$1"
+            if grep -Fq -- "$message" "$LAST_OUTPUT_FILE"; then
+              printf 'unexpected output %s in %s\n' "$message" "$LAST_OUTPUT_FILE" >&2
+              return 1
+            fi
+          }
 
-      - name: Prove omitted options keep the existing metadata-only control
+          assert_metadata_control() {
+            local parser_message="$1"
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "Cannot apply metadata-only OpenRouter scan results"
+            assert_not_contains "$parser_message"
+          }
+
+          assert_downstream_control() {
+            local parser_message="$1"
+            assert_nonzero
+            assert_output_nonempty
+            assert_not_contains "$parser_message"
+          }
+
+          assert_safe_readback() {
+            local parser_message="$1"
+            assert_output_nonempty
+            assert_not_contains "$parser_message"
+          }
+
+          if [ "$SURFACE" = "models" ]; then
+            model_args=(models scan --no-probe --set-default --no-input --json)
+
+            check_model_option() {
+              local name="$1"
+              local flag="$2"
+              local parser_message="$3"
+              local legal_value="$4"
+
+              run_cli "base-$name-blank" "$base_root" "${model_args[@]}" "$flag" ""
+              assert_metadata_control "$parser_message"
+              run_cli "base-$name-whitespace" "$base_root" "${model_args[@]}" "$flag" "   "
+              assert_metadata_control "$parser_message"
+              run_cli "product-$name-blank" "$product_root" "${model_args[@]}" "$flag" ""
+              assert_nonzero
+              assert_output_nonempty
+              assert_contains "$parser_message"
+              assert_not_contains "Cannot apply metadata-only OpenRouter scan results"
+              run_cli "product-$name-whitespace" "$product_root" "${model_args[@]}" "$flag" "   "
+              assert_nonzero
+              assert_output_nonempty
+              assert_contains "$parser_message"
+              assert_not_contains "Cannot apply metadata-only OpenRouter scan results"
+              run_cli "base-$name-legal" "$base_root" "${model_args[@]}" "$flag" "$legal_value"
+              assert_metadata_control "$parser_message"
+              run_cli "product-$name-legal" "$product_root" "${model_args[@]}" "$flag" "$legal_value"
+              assert_metadata_control "$parser_message"
+            }
+
+            check_model_option min-params --min-params "--min-params must be >= 0" 1
+            check_model_option max-age-days --max-age-days "--max-age-days must be >= 0" 1
+            check_model_option max-candidates --max-candidates "--max-candidates must be a positive integer" 1
+            check_model_option timeout --timeout "--timeout must be > 0" 1000
+            check_model_option concurrency --concurrency "--concurrency must be a positive integer" 1
+
+            run_cli base-omitted "$base_root" "${model_args[@]}"
+            assert_metadata_control "--min-params must be >= 0"
+            run_cli product-omitted "$product_root" "${model_args[@]}"
+            assert_metadata_control "--min-params must be >= 0"
+          elif [ "$SURFACE" = "capability" ]; then
+            capability_args=(infer web search --query proof --json)
+            parser_message="--limit must be a positive integer"
+
+            run_cli base-limit-blank "$base_root" "${capability_args[@]}" --limit ""
+            assert_safe_readback "$parser_message"
+            run_cli base-limit-whitespace "$base_root" "${capability_args[@]}" --limit "   "
+            assert_safe_readback "$parser_message"
+            run_cli product-limit-blank "$product_root" "${capability_args[@]}" --limit ""
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+            run_cli product-limit-whitespace "$product_root" "${capability_args[@]}" --limit "   "
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+            run_cli base-limit-legal "$base_root" "${capability_args[@]}" --limit 3
+            assert_safe_readback "$parser_message"
+            run_cli product-limit-legal "$product_root" "${capability_args[@]}" --limit 3
+            assert_safe_readback "$parser_message"
+            run_cli base-limit-omitted "$base_root" "${capability_args[@]}"
+            assert_safe_readback "$parser_message"
+            run_cli product-limit-omitted "$product_root" "${capability_args[@]}"
+            assert_safe_readback "$parser_message"
+          elif [ "$SURFACE" = "pairing" ]; then
+            pairing_channel=telegram
+            parser_message="--account must not be blank"
+
+            run_cli base-list-account-blank "$base_root" pairing list --channel "$pairing_channel" --account "" --json
+            assert_safe_readback "$parser_message"
+            run_cli base-list-account-whitespace "$base_root" pairing list --channel "$pairing_channel" --account "   " --json
+            assert_safe_readback "$parser_message"
+            run_cli product-list-account-blank "$product_root" pairing list --channel "$pairing_channel" --account "" --json
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+            run_cli product-list-account-whitespace "$product_root" pairing list --channel "$pairing_channel" --account "   " --json
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+
+            run_cli base-list-account-legal "$base_root" pairing list --channel "$pairing_channel" --account proof-account --json
+            assert_safe_readback "$parser_message"
+            assert_contains '"requests"'
+            run_cli product-list-account-legal "$product_root" pairing list --channel "$pairing_channel" --account proof-account --json
+            assert_safe_readback "$parser_message"
+            assert_contains '"requests"'
+            run_cli base-list-account-omitted "$base_root" pairing list --channel "$pairing_channel" --json
+            assert_safe_readback "$parser_message"
+            assert_contains '"requests"'
+            run_cli product-list-account-omitted "$product_root" pairing list --channel "$pairing_channel" --json
+            assert_safe_readback "$parser_message"
+            assert_contains '"requests"'
+
+            # A nonexistent code exercises approve's selector validation without approving a real request.
+            run_cli base-approve-account-blank "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account ""
+            assert_safe_readback "$parser_message"
+            run_cli product-approve-account-blank "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account ""
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+            run_cli base-approve-account-whitespace "$base_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account "   "
+            assert_safe_readback "$parser_message"
+            run_cli product-approve-account-whitespace "$product_root" pairing approve --channel "$pairing_channel" proof-no-such-code --account "   "
+            assert_nonzero
+            assert_output_nonempty
+            assert_contains "$parser_message"
+          else
+            printf 'unknown proof surface: %s\n' "$SURFACE" >&2
+            exit 1
+          fi
+
+      - name: Upload CLI proof receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cli-proof-${{ matrix.surface }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cli-proof/${{ matrix.surface }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Cleanup isolated worktrees
+        if: always()
+        env:
+          SURFACE: ${{ matrix.surface }}
         run: |
-          set -euo pipefail
-          for root in "$RUNNER_TEMP/openclaw-base" "$RUNNER_TEMP/openclaw-models"; do
-            set +e
-            output="$(cd "$root" && pnpm openclaw models scan --no-probe --set-default --no-input --json 2>&1)"
-            status=$?
-            set -e
-            printf '%s\n' "$output"
-            test "$status" -ne 0
-            grep -Fq "Cannot apply metadata-only OpenRouter scan results" <<<"$output"
-          done
+          git worktree remove --force "$RUNNER_TEMP/openclaw-base-$SURFACE" || true
+          git worktree remove --force "$RUNNER_TEMP/openclaw-product-$SURFACE" || true
