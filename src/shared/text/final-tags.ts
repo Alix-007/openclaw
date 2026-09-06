@@ -145,10 +145,12 @@ export function stripFinalTags(text: string): string {
   let lastIndex = 0;
   for (const match of matches) {
     // Both lists are ordered; advance once rather than rescanning every code region per tag.
-    while (codeIndex < codeRegions.length && codeRegions[codeIndex].end <= match.index) {
+    let codeRegion = codeRegions[codeIndex];
+    while (codeRegion && codeRegion.end <= match.index) {
       codeIndex += 1;
+      codeRegion = codeRegions[codeIndex];
     }
-    if (codeIndex < codeRegions.length && codeRegions[codeIndex].start <= match.index) {
+    if (codeRegion && codeRegion.start <= match.index) {
       continue;
     }
     output += text.slice(lastIndex, match.index);
