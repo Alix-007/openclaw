@@ -1,0 +1,72 @@
+name: CLI numeric parent-red proof
+
+on:
+  push:
+    branches:
+      - proof/alix-cli-numeric-parent-red-20260907
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Exact unpatched parent. The proof branch supplies only this workflow and
+  # runner; all product commands run from the archived parent tree below.
+  BASE_SHA: b7ec235a5cc05ae9577095498de5cfd6b8e2d293
+  EXPECTATION_MODE: parent
+
+jobs:
+  cli-numeric-parent-red:
+    name: Exact parent CLI numeric smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout proof controls only
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.15.0
+
+      - name: Materialize and install the exact parent
+        run: |
+          set -euo pipefail
+          base_root="$RUNNER_TEMP/openclaw-parent"
+          receipt_dir="$RUNNER_TEMP/cli-numeric-parent-red"
+          mkdir -p "$base_root" "$receipt_dir"
+          actual_sha="$(git rev-parse "${BASE_SHA}^{commit}")"
+          test "$actual_sha" = "$BASE_SHA"
+          git archive --format=tar "$actual_sha" | tar -xf - -C "$base_root"
+          corepack enable
+          cd "$base_root"
+          pnpm install --frozen-lockfile --ignore-scripts
+          {
+            printf 'expected_source_sha=%s\n' "$BASE_SHA"
+            printf 'actual_source_sha=%s\n' "$actual_sha"
+            printf 'node=%s\n' "$(node --version)"
+            printf 'pnpm=%s\n' "$(pnpm --version)"
+          } > "$receipt_dir/BOOTSTRAP.txt"
+          cat "$receipt_dir/BOOTSTRAP.txt"
+
+      - name: Run real CLI parent baseline proof
+        run: |
+          set -euo pipefail
+          bash "$GITHUB_WORKSPACE/.github/pr-proof/run-channels-logs-parent-red.sh" \
+            "$RUNNER_TEMP/openclaw-parent" \
+            "$BASE_SHA" \
+            "$RUNNER_TEMP/cli-numeric-parent-red"
+
+      - name: Upload observable receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cli-numeric-parent-red-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cli-numeric-parent-red
+          if-no-files-found: error
+          retention-days: 7
