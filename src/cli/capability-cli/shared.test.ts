@@ -1,4 +1,3 @@
-// Capability CLI shared option tests cover omitted, explicit empty, and valid numeric values.
 import { describe, expect, it } from "vitest";
 import {
   parseOptionalFiniteNumber,
