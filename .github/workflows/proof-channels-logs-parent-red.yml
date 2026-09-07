@@ -1,4 +1,4 @@
-name: CLI numeric parent-red proof
+name: CLI numeric product proof
 
 on:
   push:
@@ -10,23 +10,21 @@ permissions:
   contents: read
 
 env:
-  # Exact unpatched parent. The proof branch supplies only this workflow and
-  # runner; all product commands run from the archived parent tree below.
-  BASE_SHA: b7ec235a5cc05ae9577095498de5cfd6b8e2d293
-  EXPECTATION_MODE: parent
+  PRODUCT_SHA: de214aa2f357adafd8f8919e885ddfdd5e7abd14
+  EXPECTATION_MODE: product
 
 jobs:
-  cli-numeric-parent-red:
-    name: Exact parent CLI numeric smoke
+  cli-numeric-product:
+    name: Exact product CLI numeric proof
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     permissions:
       contents: read
     steps:
       - name: Checkout proof controls only
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: 2
           persist-credentials: false
 
       - name: Setup Node 24
@@ -34,39 +32,97 @@ jobs:
         with:
           node-version: 24.15.0
 
-      - name: Materialize and install the exact parent
+      - name: Materialize and install the exact product
         run: |
           set -euo pipefail
-          base_root="$RUNNER_TEMP/openclaw-parent"
-          receipt_dir="$RUNNER_TEMP/cli-numeric-parent-red"
-          mkdir -p "$base_root" "$receipt_dir"
-          actual_sha="$(git rev-parse "${BASE_SHA}^{commit}")"
-          test "$actual_sha" = "$BASE_SHA"
-          git archive --format=tar "$actual_sha" | tar -xf - -C "$base_root"
+          product_root="$RUNNER_TEMP/openclaw-product"
+          receipt_dir="$RUNNER_TEMP/cli-numeric-product"
+          mkdir -p "$product_root" "$receipt_dir"
+          git fetch --no-tags --depth=1 origin "$PRODUCT_SHA"
+          actual_sha="$(git rev-parse "${PRODUCT_SHA}^{commit}")"
+          test "$actual_sha" = "$PRODUCT_SHA"
+          git archive --format=tar "$actual_sha" | tar -xf - -C "$product_root"
           corepack enable
-          cd "$base_root"
+          cd "$product_root"
           pnpm install --frozen-lockfile --ignore-scripts
           {
-            printf 'expected_source_sha=%s\n' "$BASE_SHA"
-            printf 'actual_source_sha=%s\n' "$actual_sha"
+            printf 'expected_product_sha=%s\n' "$PRODUCT_SHA"
+            printf 'actual_product_sha=%s\n' "$actual_sha"
             printf 'node=%s\n' "$(node --version)"
             printf 'pnpm=%s\n' "$(pnpm --version)"
           } > "$receipt_dir/BOOTSTRAP.txt"
           cat "$receipt_dir/BOOTSTRAP.txt"
 
-      - name: Run real CLI parent baseline proof
+      - name: Run focused and sibling tests
+        id: focused_tests
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/openclaw-product"
+          receipt_dir="$RUNNER_TEMP/cli-numeric-product"
+          cd "$product_root"
+          : > "$receipt_dir/TESTS.tsv"
+          failures=0
+
+          run_check() {
+            local label=$1
+            shift
+            local stdout_file="$receipt_dir/$label.stdout"
+            local stderr_file="$receipt_dir/$label.stderr"
+            local argv_file="$receipt_dir/$label.argv"
+            {
+              printf 'label=%s\n' "$label"
+              printf 'argv='; printf '%q ' "$@"; printf '\n'
+            } > "$argv_file"
+            set +e
+            "$@" > "$stdout_file" 2> "$stderr_file"
+            local status=$?
+            set -e
+            printf '%s\texit=%s\n' "$label" "$status" | tee -a "$receipt_dir/TESTS.tsv"
+            if [ "$status" -ne 0 ]; then
+              failures=$((failures + 1))
+            fi
+          }
+
+          run_check focused-and-sibling \
+            node scripts/run-vitest.mjs run \
+            src/commands/channels.logs.test.ts \
+            src/commands/models/list.status.test.ts \
+            src/commands/models/list.probe.test.ts
+          run_check format \
+            pnpm --silent format:check -- \
+            src/commands/channels/logs.ts \
+            src/commands/channels.logs.test.ts \
+            src/commands/models/list.status-command.ts \
+            src/commands/models/list.status.test.ts
+          printf 'test_failures=%s\n' "$failures" >> "$receipt_dir/TESTS.tsv"
+          if [ "$failures" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Run real CLI product proof
+        if: always()
         run: |
           set -euo pipefail
           bash "$GITHUB_WORKSPACE/.github/pr-proof/run-channels-logs-parent-red.sh" \
-            "$RUNNER_TEMP/openclaw-parent" \
-            "$BASE_SHA" \
-            "$RUNNER_TEMP/cli-numeric-parent-red"
+            "$RUNNER_TEMP/openclaw-product" \
+            "$PRODUCT_SHA" \
+            "$RUNNER_TEMP/cli-numeric-product"
+
+      - name: Enforce combined product proof result
+        if: always()
+        run: |
+          set -euo pipefail
+          receipt_dir="$RUNNER_TEMP/cli-numeric-product"
+          test -f "$receipt_dir/TESTS.tsv"
+          grep -Fq -- 'test_failures=0' "$receipt_dir/TESTS.tsv"
+          grep -Fq -- 'failures=0' "$receipt_dir/SUMMARY.txt"
 
       - name: Upload observable receipts
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: cli-numeric-parent-red-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/cli-numeric-parent-red
+          name: cli-numeric-product-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cli-numeric-product
           if-no-files-found: error
           retention-days: 7
