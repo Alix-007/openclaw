@@ -1,0 +1,53 @@
+name: ClawRouter captured error baseline
+on:
+  push:
+    branches: [proof/alix-clawrouter-parent-20260908]
+permissions:
+  contents: read
+env:
+  PRODUCT_SHA: c6f1ab37481a1d946d73e921c1950dbf48f416b3
+  EXPECTATION_MODE: parent
+jobs:
+  proof:
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.16.0
+      - name: Prepare exact source
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/clawrouter-product"
+          mkdir -p "$product_root" "$RUNNER_TEMP/clawrouter-receipts"
+          git fetch --no-tags --depth=1 https://github.com/openclaw/openclaw.git "$PRODUCT_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$PRODUCT_SHA"
+          git archive "$PRODUCT_SHA" | tar -xf - -C "$product_root"
+          corepack enable
+          cd "$product_root"
+          unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Real captured usage request and SQLite readback
+        run: |
+          set -euo pipefail
+          proof_home="$RUNNER_TEMP/clawrouter-isolated-home"
+          mkdir -p "$proof_home"
+          cd "$RUNNER_TEMP/clawrouter-product"
+          env -i PATH="$PATH" HOME="$proof_home" CI=true \
+            PRODUCT_SHA="$PRODUCT_SHA" EXPECTATION_MODE="$EXPECTATION_MODE" \
+            OPENCLAW_STATE_DIR="$proof_home/state" \
+            OPENCLAW_CONFIG_PATH="$proof_home/openclaw.json" \
+            PROOF_RECEIPT_DIR="$RUNNER_TEMP/clawrouter-receipts" \
+            timeout 90s node node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.json \
+            "$GITHUB_WORKSPACE/.github/pr-proof/clawrouter-cleanup.ts"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: clawrouter-parent-${{ github.run_id }}
+          path: ${{ runner.temp }}/clawrouter-receipts
+          if-no-files-found: error
+          retention-days: 7
