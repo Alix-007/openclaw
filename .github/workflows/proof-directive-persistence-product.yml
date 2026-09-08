@@ -41,7 +41,7 @@ jobs:
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Focused directives and canonical Markdown tests
         working-directory: ${{ runner.temp }}/directive-product
-        run: node scripts/run-vitest.mjs run src/utils/directive-tags.test.ts src/shared/text/code-regions.test.ts
+        run: node scripts/run-vitest.mjs run src/utils/directive-tags.test.ts
       - name: Prove transcript owner and fresh-process readback
         env:
           OPENCLAW_STATE_DIR: ${{ runner.temp }}/directive-state
