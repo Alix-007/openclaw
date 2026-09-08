@@ -128,9 +128,10 @@ try {
       const terminals = events.filter((event) => event.kind === 'response' || event.kind === 'error');
       assert.equal(terminals.length, 1, 'capture must have exactly one recorded terminal event');
       const terminal = terminals[0];
-      if (mode === 'product' && name === 'delayed-eof' && terminal.kind === 'error') {
+      if (mode === 'product' && terminal.kind === 'error') {
         // Capture persists Error.message, not Error.name. These exact messages
         // are Node AbortController's default and Undici's AbortError fallback.
+        // [DONE] is authoritative even if capture has not consumed an immediate EOF.
         assert(['This operation was aborted', 'The operation was aborted.'].includes(terminal.errorText as string),
           `unexpected capture terminal error: ${terminal.errorText}`);
       } else {
@@ -198,7 +199,7 @@ try {
         const matching = terminals.filter((terminal) => terminal.flowId === request.flowId);
         assert.equal(matching.length, 1, 'each usage request needs its own terminal');
         const terminal = matching[0];
-        if (mode === 'product' && name === 'usage-unauthorized-delayed' && terminal.kind === 'error') {
+        if (mode === 'product' && name !== 'usage-success' && terminal.kind === 'error') {
           assert(['This operation was aborted', 'The operation was aborted.'].includes(terminal.errorText as string),
             `unexpected usage capture terminal: ${terminal.errorText}`);
         } else {
