@@ -1,0 +1,66 @@
+name: Music completion product behavior proof
+on:
+  push:
+    branches:
+      - proof/alix-openrouter-product-20260908
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PRODUCT_SHA: 797ed9e6b350fe3a8c7e49f0adaa27b1e842cd36
+  EXPECTATION_MODE: product
+jobs:
+  proof:
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout proof controls without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Node 24
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.16.0
+      - name: Materialize exact product and bootstrap dependencies
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/openclaw-product"
+          mkdir -p "$product_root" "$RUNNER_TEMP/music-receipts"
+          git fetch --no-tags --depth=1 https://github.com/Alix-007/openclaw.git "$PRODUCT_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$PRODUCT_SHA"
+          git archive "$PRODUCT_SHA" | tar -xf - -C "$product_root"
+          corepack enable
+          cd "$product_root"
+          unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
+          pnpm install --frozen-lockfile --ignore-scripts
+          printf 'source_sha=%s\nnode=%s\npnpm=%s\n' "$PRODUCT_SHA" "$(node --version)" "$(pnpm --version)" > "$RUNNER_TEMP/music-receipts/bootstrap.txt"
+      - name: Focused provider and transport tests
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: node scripts/run-vitest.mjs run extensions/openrouter/music-generation-provider.test.ts extensions/openrouter/usage.test.ts
+      - name: Generate music through real guarded HTTP and capture
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/openclaw-product"
+          proof_home="$RUNNER_TEMP/music-isolated-home"
+          mkdir -p "$proof_home"
+          cd "$product_root"
+          # This clean environment carries no runner/account credential into code.
+          # Root tsconfig preserves the source SDK aliases, not stale dist code.
+          env -i PATH="$PATH" HOME="$proof_home" CI=true \
+            PRODUCT_SHA="$PRODUCT_SHA" EXPECTATION_MODE="$EXPECTATION_MODE" \
+            OPENCLAW_STATE_DIR="$proof_home/state" \
+            OPENCLAW_CONFIG_PATH="$proof_home/openclaw.json" \
+            PROOF_RECEIPT_DIR="$RUNNER_TEMP/music-receipts" \
+            timeout 90s node node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.json \
+            "$GITHUB_WORKSPACE/.github/pr-proof/music-completion.ts"
+      - name: Upload audio bytes and observable receipts only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: music-product-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/music-receipts
+          if-no-files-found: error
+          retention-days: 7
+
