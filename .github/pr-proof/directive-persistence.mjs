@@ -17,7 +17,9 @@ if (process.argv[2] === '--read') {
   const target = JSON.parse(process.argv[3]);
   const events = await loadTranscriptEvents(target);
   const reopened = SessionManager.open(target, process.argv[4]);
-  assert.deepEqual(reopened.getEntries(), events);
+  // SessionManager exposes the header separately from its tree entries.
+  assert.deepEqual(reopened.getHeader(), events.find((entry) => entry.type === 'session'));
+  assert.deepEqual(reopened.getEntries(), events.filter((entry) => entry.type !== 'session'));
   console.log(JSON.stringify(events));
 } else {
   const receiptDir = process.argv[2];
