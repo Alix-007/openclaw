@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 env:
-  PRODUCT_SHA: 8a2e72344bec8acaef4f4f85eae388277f074a18
+  PRODUCT_SHA: dee8d07bbc2f2a5f7064473112189def3e9aecff
 jobs:
   proof:
     if: github.repository == 'Alix-007/openclaw'
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24.16.0
-      - name: Build exact product without account credentials or SDK declarations
+      - name: Materialize exact product without account credentials
         run: |
           set -euo pipefail
           product_root="$RUNNER_TEMP/openclaw-product"
@@ -31,10 +31,18 @@ jobs:
           cd "$product_root"
           unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
           pnpm install --frozen-lockfile --ignore-scripts
-          pnpm build:docker
       - name: Focused message-id sanitizer tests
         working-directory: ${{ runner.temp }}/openclaw-product
-        run: node scripts/run-vitest.mjs run src/shared/chat-envelope.test.ts
+        run: node scripts/run-vitest.mjs run src/shared/chat-envelope.test.ts src/shared/text/message-id-hints.test.ts src/gateway/chat-sanitize.test.ts src/gateway/control-ui-public-session-render.test.ts
+      - name: Isolated SDK module identity regression
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: node scripts/run-vitest.mjs run src/state/openclaw-agent-db-module-identity.test.ts
+      - name: Isolated plugin resolver packaging regression
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: pnpm test extensions/onepassword/src/secret-ref-resolver.test.ts
+      - name: Build real Gateway without SDK declarations
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: pnpm build:docker
       - name: Real Gateway history and canonical transcript readback
         run: |
           set -euo pipefail
