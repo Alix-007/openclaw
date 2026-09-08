@@ -97,7 +97,11 @@ try {
     const result = await run(`cli-${label}`, [...base, ...flags]);
     if (mode === "parent") {
       assert.notEqual(result.code, 0);
-      assert.match(result.stderr + result.stdout, /unknown option/);
+      const rejection = JSON.parse(result.stdout);
+      assert.equal(rejection.ok, false);
+      assert.equal(rejection.error.type, "cli_error");
+      assert.equal(rejection.error.message,
+        `OpenClaw does not recognize option "${flags[0]}".\nTry: openclaw cron runs --help`);
       observations.push(`${label}: parent CLI rejects a Gateway-supported query`);
     } else { page(result, summaries, total, offset); }
   }
