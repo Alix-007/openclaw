@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 env:
-  PRODUCT_SHA: 00a2cb0d8325625943574631eec0b3d9ee83b8e2
+  PRODUCT_SHA: 404bdb96b3c7f5d2c5569792f282f51826faf7d8
 jobs:
   proof:
     if: github.repository == 'Alix-007/openclaw'
@@ -50,4 +50,3 @@ jobs:
           path: ${{ runner.temp }}/cron-runs-receipts
           if-no-files-found: error
           retention-days: 7
-
