@@ -5,7 +5,7 @@ import path from "node:path";
 const root = process.argv[2];
 const readbackOnly = process.argv[3] === "readback";
 const source = (file) => import(pathToFileURL(path.join(root, "src", file)).href);
-const { saveTaskRegistryStateToSqlite, listTaskRegistryRecordsByRuntimeSourceIdFromSqlite } =
+const { upsertTaskWithDeliveryStateToSqlite, listTaskRegistryRecordsByRuntimeSourceIdFromSqlite } =
   await source("tasks/task-registry.store.sqlite.ts");
 const { cronRunLogEntryToTaskDetail, cronRunStatusToTaskStatus } =
   await source("cron/task-run-detail.ts");
@@ -34,8 +34,7 @@ const rows = [
     detail: cronRunLogEntryToTaskDetail(entry, { storeKey }) };
 });
 if (!readbackOnly) {
-  saveTaskRegistryStateToSqlite({ tasks: new Map(rows.map((row) => [row.taskId, row])),
-    deliveryStates: new Map() });
+  for (const task of rows) upsertTaskWithDeliveryStateToSqlite({ task });
 }
 const stored = listTaskRegistryRecordsByRuntimeSourceIdFromSqlite({ runtime: "cron", sourceId: jobId });
 assert.equal(stored.length, 4);
