@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 env:
-  PRODUCT_SHA: ea6a2fe15b63eea9794d76dcdd7e0f6308aec8b5
+  PRODUCT_SHA: 0a34ee8a2c5d5a90e5e7785fbe8ab30843d2889a
   EXPECTATION_MODE: product
 jobs:
   proof:
