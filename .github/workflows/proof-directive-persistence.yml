@@ -1,0 +1,60 @@
+name: Directive persistence parent proof
+on:
+  push:
+    branches:
+      - proof/alix-directive-parent-20260908
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PRODUCT_SHA: 59f57f3cc5fa4beaba0d2f08bcc7e5ed3d947b3e
+  EXPECTATION_MODE: parent-red
+jobs:
+  proof:
+    # Proof controls run only in the contributor fork, never upstream.
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.16.0
+      - name: Archive exact product and install without hooks
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/directive-product"
+          receipt_dir="$RUNNER_TEMP/directive-receipts"
+          mkdir -p "$product_root" "$receipt_dir"
+          git fetch --no-tags --depth=1 https://github.com/openclaw/openclaw.git "$PRODUCT_SHA"
+          actual_sha="$(git rev-parse "${PRODUCT_SHA}^{commit}")"
+          test "$actual_sha" = "$PRODUCT_SHA"
+          git archive "$actual_sha" | tar -xf - -C "$product_root"
+          mkdir -p "$product_root/.proof"
+          cp .github/pr-proof/directive-persistence.mjs "$product_root/.proof/"
+          sha256sum .github/pr-proof/directive-persistence.mjs > "$receipt_dir/control.sha256"
+          printf 'source_sha=%s\nmode=%s\n' "$actual_sha" "$EXPECTATION_MODE" > "$receipt_dir/bootstrap.txt"
+          corepack enable
+          cd "$product_root"
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Prove transcript owner and fresh-process readback
+        env:
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/directive-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/directive-state/openclaw.json
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/directive-product"
+          env -u GH_TOKEN -u GITHUB_TOKEN -u NODE_AUTH_TOKEN \
+            node node_modules/tsx/dist/cli.mjs --tsconfig "$PWD/tsconfig.json" \
+            .proof/directive-persistence.mjs "$RUNNER_TEMP/directive-receipts" \
+            > "$RUNNER_TEMP/directive-receipts/result.stdout" \
+            2> "$RUNNER_TEMP/directive-receipts/result.stderr"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: directive-persistence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/directive-receipts
+          if-no-files-found: error
+          retention-days: 7
