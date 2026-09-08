@@ -1,0 +1,59 @@
+name: ClawRouter captured error product proof
+on:
+  push:
+    branches: [proof/alix-clawrouter-product-20260908]
+permissions:
+  contents: read
+env:
+  PRODUCT_SHA: 52e33c2956ca8a52c03f4e771641b7d91514b66f
+  EXPECTATION_MODE: product
+jobs:
+  proof:
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.16.0
+      - name: Prepare exact source
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/clawrouter-product"
+          mkdir -p "$product_root" "$RUNNER_TEMP/clawrouter-receipts"
+          git fetch --no-tags --depth=1 https://github.com/Alix-007/openclaw.git "$PRODUCT_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$PRODUCT_SHA"
+          git archive "$PRODUCT_SHA" | tar -xf - -C "$product_root"
+          corepack enable
+          cd "$product_root"
+          unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Formatting then focused owner and sibling tests
+        working-directory: ${{ runner.temp }}/clawrouter-product
+        run: |
+          set -euo pipefail
+          pnpm exec oxfmt --check extensions/clawrouter/usage.ts extensions/clawrouter/usage.test.ts
+          node scripts/run-vitest.mjs extensions/clawrouter/usage.test.ts extensions/clawrouter/provider-catalog.test.ts extensions/clawrouter/index.test.ts
+      - name: Real captured usage request and SQLite readback
+        run: |
+          set -euo pipefail
+          proof_home="$RUNNER_TEMP/clawrouter-isolated-home"
+          mkdir -p "$proof_home"
+          cd "$RUNNER_TEMP/clawrouter-product"
+          env -i PATH="$PATH" HOME="$proof_home" CI=true \
+            PRODUCT_SHA="$PRODUCT_SHA" EXPECTATION_MODE="$EXPECTATION_MODE" \
+            OPENCLAW_STATE_DIR="$proof_home/state" \
+            OPENCLAW_CONFIG_PATH="$proof_home/openclaw.json" \
+            PROOF_RECEIPT_DIR="$RUNNER_TEMP/clawrouter-receipts" \
+            timeout 90s node node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.json \
+            "$GITHUB_WORKSPACE/.github/pr-proof/clawrouter-cleanup.ts"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: clawrouter-product-${{ github.run_id }}
+          path: ${{ runner.temp }}/clawrouter-receipts
+          if-no-files-found: error
+          retention-days: 7
