@@ -1,0 +1,53 @@
+name: Cron runs CLI product gap proof
+on:
+  push:
+    branches: [proof/alix-cron-runs-product-20260908]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PRODUCT_SHA: 00a2cb0d8325625943574631eec0b3d9ee83b8e2
+jobs:
+  proof:
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.16.0
+      - name: Materialize immutable product and build without account credentials
+        run: |
+          set -euo pipefail
+          product_root="$RUNNER_TEMP/openclaw-product"
+          mkdir -p "$product_root"
+          git fetch --no-tags --depth=1 https://github.com/Alix-007/openclaw.git "$PRODUCT_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$PRODUCT_SHA"
+          git archive "$PRODUCT_SHA" | tar -xf - -C "$product_root"
+          corepack enable
+          cd "$product_root"
+          unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm build:docker
+      - name: Focused CLI and history tests
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: node scripts/run-vitest.mjs run src/cli/cron-cli/register.cron-simple.test.ts src/cli/cron-cli.test.ts src/cron/task-run-history.test.ts
+      - name: Real isolated Gateway, canonical SQLite, CLI stdout and readback
+        run: |
+          set -euo pipefail
+          unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
+          node "$GITHUB_WORKSPACE/.github/pr-proof/run-cron-runs-proof.mjs" \
+            "$RUNNER_TEMP/openclaw-product" "$PRODUCT_SHA" \
+            "$RUNNER_TEMP/cron-runs-receipts" product
+      - name: Upload only explicit observable receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cron-runs-product-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cron-runs-receipts
+          if-no-files-found: error
+          retention-days: 7
+
