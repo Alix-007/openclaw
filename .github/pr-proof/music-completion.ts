@@ -28,7 +28,27 @@ const server = createServer(async (req, res) => {
   try {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
-  const body = JSON.parse(Buffer.concat(chunks).toString());
+  const bodyText = Buffer.concat(chunks).toString();
+  if (req.method === 'GET') {
+    assert.equal(req.headers.host, 'openrouter.ai');
+    assert.equal(bodyText, '');
+    const requestPath = new URL(req.url ?? '', 'http://openrouter.ai').pathname;
+    assert(['/api/v1/credits', '/api/v1/key'].includes(requestPath));
+    assert(scenario.startsWith('usage-'));
+    requests.push({ scenario, method: req.method, url: req.url });
+    const status = scenario === 'usage-success' ? 200 : 401;
+    res.writeHead(status, { 'content-type': 'application/json' });
+    const payload = status === 401 ? { error: { message: 'fixture unauthorized' } }
+      : requestPath.endsWith('/credits') ? { data: { total_credits: 100, total_usage: 25 } }
+      : { data: { limit: 20, limit_remaining: 15, usage: 5 } };
+    if (scenario === 'usage-unauthorized-delayed') {
+      res.write(JSON.stringify(payload));
+      const timer = setTimeout(() => res.end(), 3000);
+      res.once('close', () => clearTimeout(timer));
+    } else res.end(JSON.stringify(payload));
+    return;
+  }
+  const body = JSON.parse(bodyText);
   requests.push({ scenario, method: req.method, url: req.url, body });
   assert.equal(req.method, 'POST');
   assert.equal(req.headers.host, 'openrouter.ai');
@@ -71,6 +91,7 @@ for (const key of ['http_proxy', 'https_proxy', 'no_proxy', 'ALL_PROXY', 'all_pr
 process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = 'music-completion-proof';
 let closeCaptureStore: (() => void) | undefined;
 const observations = [];
+const usageObservations = [];
 try {
   const { buildOpenRouterMusicGenerationProvider } = await import(pathToFileURL(path.join(root, 'extensions/openrouter/music-generation-provider.ts')).href);
   const { getDebugProxyCaptureStore, closeDebugProxyCaptureStore } = await import(pathToFileURL(path.join(root, 'src/proxy-capture/store.sqlite.ts')).href);
@@ -123,13 +144,80 @@ try {
   assert(observations[1].elapsedMs < 2000, 'capture-disabled control');
   if (mode === 'parent') assert(delayed.elapsedMs >= 2500, 'parent must exhibit cleanup delay');
   else assert(delayed.elapsedMs < 2000, 'product must finish before fixture EOF');
+
+  const { fetchOpenRouterUsage } = await import(pathToFileURL(path.join(root, 'extensions/openrouter/usage.ts')).href);
+  const { resolveProxyFetchFromEnv } = await import(pathToFileURL(path.join(root, 'src/infra/net/proxy-fetch.ts')).href);
+  // This is the real provider-usage.load caller's proxy-aware fetch, not a mock.
+  // Refuse fallback to bare fetch so the fixture cannot send a real API request.
+  const usageFetch = resolveProxyFetchFromEnv(process.env);
+  assert(usageFetch, 'required local proxy fetch could not be created');
+  for (const [name, capture] of [
+    ['usage-success', true], ['usage-unauthorized-eof', true],
+    ['usage-unauthorized-delayed', false], ['usage-unauthorized-delayed', true],
+  ] as const) {
+    scenario = name;
+    process.env.OPENCLAW_DEBUG_PROXY_ENABLED = capture ? '1' : '0';
+    const sessionId = `${name}-${capture}`;
+    process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = sessionId;
+    const requestStart = requests.length;
+    const started = performance.now();
+    const snapshot = await fetchOpenRouterUsage({
+      token: 'fixture-not-a-secret', baseUrl: 'http://openrouter.ai/api/v1',
+      timeoutMs: 8000, fetchFn: usageFetch,
+    });
+    const elapsedMs = Math.round(performance.now() - started);
+    let events = getDebugProxyCaptureStore().getSessionEvents(sessionId);
+    for (let attempt = 0; capture && events.filter((event) => event.kind === 'response' || event.kind === 'error').length < 2 && attempt < 45; attempt++) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      events = getDebugProxyCaptureStore().getSessionEvents(sessionId);
+    }
+    const captureEvents = events.map(({ kind, status, host, path, flowId, errorText }) => ({
+      kind, status, host, path, flowId,
+      ...(typeof errorText === 'string' ? { errorText: errorText.replaceAll('fixture-not-a-secret', '[REDACTED]') } : {}),
+    }));
+    usageObservations.push({ name, capture, elapsedMs, snapshot, captureEvents });
+    assert.equal(requests.length - requestStart, 2, 'both real usage endpoints must reach the fixture');
+    if (name === 'usage-success') {
+      assert.equal(snapshot.error, undefined);
+      assert.deepEqual(snapshot.windows, [{ label: 'API key budget', usedPercent: 25 }]);
+      assert.deepEqual(snapshot.billing, [
+        { type: 'balance', label: 'Account balance', amount: 75, unit: 'USD' },
+        { type: 'spend', label: 'Account usage', amount: 25, unit: 'USD' },
+        { type: 'budget', label: 'API key budget', used: 5, limit: 20, unit: 'USD' },
+      ]);
+    } else {
+      assert.equal(snapshot.error, 'HTTP 401');
+      assert.deepEqual(snapshot.windows, []);
+    }
+    if (capture) {
+      const capturedRequests = events.filter((event) => event.kind === 'request');
+      assert.equal(capturedRequests.length, 2);
+      const terminals = events.filter((event) => event.kind === 'response' || event.kind === 'error');
+      assert.equal(terminals.length, 2);
+      for (const request of capturedRequests) {
+        const matching = terminals.filter((terminal) => terminal.flowId === request.flowId);
+        assert.equal(matching.length, 1, 'each usage request needs its own terminal');
+        const terminal = matching[0];
+        if (mode === 'product' && name === 'usage-unauthorized-delayed' && terminal.kind === 'error') {
+          assert(['This operation was aborted', 'The operation was aborted.'].includes(terminal.errorText as string),
+            `unexpected usage capture terminal: ${terminal.errorText}`);
+        } else {
+          assert.equal(terminal.kind, 'response');
+          assert.equal(terminal.status, name === 'usage-success' ? 200 : 401);
+        }
+      }
+    } else assert.equal(events.length, 0);
+    if (mode === 'parent' && name === 'usage-unauthorized-delayed' && capture) {
+      assert(elapsedMs >= 2500, 'parent usage must exhibit cleanup delay');
+    } else assert(elapsedMs < 2000, 'usage must finish before delayed fixture EOF');
+  }
   assert.deepEqual(fixtureErrors, []);
-  assert.equal(requests.length, 3);
-  const result = { mode, productSha: process.env.PRODUCT_SHA, entry: 'buildOpenRouterMusicGenerationProvider().generateMusic', observations, requests, tunnels, passed: true, limitations: 'Loopback fixture through supported HTTP_PROXY; no real OpenRouter inference or channels. Actual provider, guarded fetch, capture tee and audio readback; no production mocks.' };
+  assert.equal(requests.length, 11);
+  const result = { mode, productSha: process.env.PRODUCT_SHA, entry: 'buildOpenRouterMusicGenerationProvider().generateMusic + fetchOpenRouterUsage', observations, usageObservations, requests, tunnels, passed: true, limitations: 'Loopback fixture through supported HTTP_PROXY; no real OpenRouter inference or channels. Actual provider, guarded fetch, capture tee, audio and usage snapshot readback; no production mocks.' };
   await writeFile(path.join(receipt, 'receipt.json'), JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result));
 } catch (error) {
-  await writeFile(path.join(receipt, 'failure.json'), JSON.stringify({ mode, observations, requests, tunnels, fixtureErrors, error: String(error) }, null, 2));
+  await writeFile(path.join(receipt, 'failure.json'), JSON.stringify({ mode, observations, usageObservations, requests, tunnels, fixtureErrors, error: String(error) }, null, 2));
   console.error(error);
   console.error('[music-completion-proof] FAILED (exit 1)');
   process.exitCode = 1;
