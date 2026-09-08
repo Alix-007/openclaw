@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 env:
-  PRODUCT_SHA: dee8d07bbc2f2a5f7064473112189def3e9aecff
+  PRODUCT_SHA: 9ab7bd0401db2f0794058f14cc43e7e2ee7cabf5
 jobs:
   proof:
     if: github.repository == 'Alix-007/openclaw'
@@ -31,6 +31,9 @@ jobs:
           cd "$product_root"
           unset GH_TOKEN GITHUB_TOKEN NODE_AUTH_TOKEN NPM_TOKEN
           pnpm install --frozen-lockfile --ignore-scripts
+      - name: Check exact changed-file formatting before expensive proof
+        working-directory: ${{ runner.temp }}/openclaw-product
+        run: pnpm exec oxfmt --check src/auto-reply/reply/display-text-sanitize.ts src/auto-reply/reply/user-envelope-display.ts src/gateway/chat-sanitize.ts src/gateway/control-ui-public-session-render.ts src/infra/session-cost-usage-reporting.ts src/shared/chat-envelope.ts src/shared/chat-envelope.test.ts src/shared/text/message-id-hints.ts src/shared/text/message-id-hints.test.ts
       - name: Focused message-id sanitizer tests
         working-directory: ${{ runner.temp }}/openclaw-product
         run: node scripts/run-vitest.mjs run src/shared/chat-envelope.test.ts src/shared/text/message-id-hints.test.ts src/gateway/chat-sanitize.test.ts src/gateway/control-ui-public-session-render.test.ts
