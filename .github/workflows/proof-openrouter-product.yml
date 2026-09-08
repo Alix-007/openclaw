@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 env:
-  PRODUCT_SHA: 797ed9e6b350fe3a8c7e49f0adaa27b1e842cd36
+  PRODUCT_SHA: a07a8fdbc519170d187d4d4eb78b4c0abdfd06d6
   EXPECTATION_MODE: product
 jobs:
   proof:
@@ -63,4 +63,3 @@ jobs:
           path: ${{ runner.temp }}/music-receipts
           if-no-files-found: error
           retention-days: 7
-
