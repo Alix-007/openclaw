@@ -39,6 +39,7 @@ import {
   type ChatMediaResource,
   type ImageRenderOptions,
 } from "./chat-message-media.ts";
+import type { AttachmentSidebarState } from "./chat-sidebar-content-types.ts";
 import type { SidebarContent } from "./chat-sidebar.ts";
 
 type OmittedMediaItem = Extract<MessageContentItem, { type: "omitted_media" }>;
@@ -71,7 +72,7 @@ type ManagedAttachmentAvailability =
       refreshAfter?: number;
       refreshAttempts?: number;
     }
-  | { status: "unavailable"; reason: string; checkedAt: number };
+  | { status: "unavailable"; reason: string; checkedAt: number; error?: true };
 
 function unavailableManagedAttachment(): ManagedAttachmentAvailability {
   return {
@@ -267,6 +268,9 @@ function resolveManagedAttachmentAvailability(
         }
       } catch {
         availability = handleResolutionFailure();
+        if (availability.status === "unavailable") {
+          availability = { ...availability, error: true };
+        }
       }
       if (!isChatMediaResourceCurrent(resource)) {
         return null;
@@ -321,27 +325,20 @@ function resolveAttachmentSource(
 ) {
   const { resourceBasePath, authToken, onRequestUpdate, resolveArtifactDownload, connectionEpoch } =
     options;
-  const assistantAvailability = resolveAssistantAttachmentAvailability(
-    attachment.url,
-    options.localMediaPreviewRoots ?? [],
-    resourceBasePath,
-    authToken,
-    onRequestUpdate,
-  );
+  const assistantAvailability = resolveAssistantAttachmentAvailability(attachment.url, options);
   if (assistantAvailability.status !== "available") {
     return {
       status: assistantAvailability.status,
       reason:
         assistantAvailability.status === "unavailable" ? assistantAvailability.reason : undefined,
+      error: assistantAvailability.status === "unavailable" && assistantAvailability.unconfirmed,
+      onAllow:
+        assistantAvailability.status === "unavailable" && assistantAvailability.canAllow
+          ? () => retryAssistantAttachmentAvailability(attachment.url, options, true)
+          : undefined,
       onRetry:
         assistantAvailability.status === "unavailable" && assistantAvailability.recoverable
-          ? () =>
-              retryAssistantAttachmentAvailability(
-                attachment.url,
-                resourceBasePath,
-                authToken,
-                onRequestUpdate,
-              )
+          ? () => retryAssistantAttachmentAvailability(attachment.url, options)
           : undefined,
     };
   }
@@ -355,6 +352,7 @@ function resolveAttachmentSource(
     return {
       status: managedAvailability.status,
       reason: managedAvailability.status === "unavailable" ? managedAvailability.reason : undefined,
+      error: managedAvailability.status === "unavailable" && managedAvailability.error,
       onRetry:
         managedAvailability.status === "unavailable" &&
         attachment.artifactId &&
@@ -369,6 +367,7 @@ function resolveAttachmentSource(
         attachment.url,
         resourceBasePath,
         assistantAvailability.mediaTicket,
+        options,
       )
     : isManagedOutgoingMediaSource(attachment.url)
       ? applyResourceBasePath(managedAvailability.url, resourceBasePath)
@@ -440,6 +439,8 @@ export function renderAssistantAttachments(
         badge: resolved.status === "unavailable" ? t("chat.attachments.unavailable") : "",
         reason: resolved.status === "unavailable" ? resolved.reason : undefined,
         onRetry: resolved.onRetry,
+        onAllow: imageAttachment ? resolved.onAllow : undefined,
+        path: isLocalAssistantAttachmentSource(attachment.url) ? attachment.url : undefined,
       });
     }
     const { src: attachmentUrl, ...media } = resolved.source;
@@ -482,12 +483,23 @@ export function renderAssistantAttachments(
               voiceNote: attachment.isVoiceNote === true,
               ...(hasLiveSidebarSource
                 ? {
-                    resolveSource: (sidebarUpdate, runtime) => {
+                    resolveSource: (sidebarUpdate, runtime): AttachmentSidebarState => {
                       const next = resolveAttachmentSource(attachment, {
                         ...runtime,
                         onRequestUpdate: sidebarUpdate,
                       });
-                      return next.status === "available" ? next.source : null;
+                      if (next.status === "available") {
+                        return { status: "ready", ...next.source };
+                      }
+                      if (next.status === "checking") {
+                        return { status: "pending" };
+                      }
+                      return next.error
+                        ? {
+                            status: "error",
+                            reason: next.reason ?? t("chat.attachments.unavailable"),
+                          }
+                        : { status: "unavailable" };
                     },
                   }
                 : {}),

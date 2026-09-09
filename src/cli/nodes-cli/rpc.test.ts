@@ -185,19 +185,21 @@ describe("node invoke envelope", () => {
 });
 
 describe("node numeric option parsing", () => {
-  it("rejects explicit empty values while preserving omitted options", () => {
-    expect(() => parseOptionalNodePositiveInteger("", "--positive")).toThrow(
+  it.each(["", " \t "])("rejects explicit blank numeric values %j", (value) => {
+    expect(() => parseOptionalNodePositiveInteger(value, "--positive")).toThrow(
       "--positive must be a positive integer",
     );
-    expect(() => parseOptionalNodeNonNegativeInteger("", "--non-negative")).toThrow(
+    expect(() => parseOptionalNodeNonNegativeInteger(value, "--non-negative")).toThrow(
       "--non-negative must be a non-negative integer",
     );
-    expect(() => parseOptionalNodeFiniteNumber("", "--finite")).toThrow(
+    expect(() => parseOptionalNodeFiniteNumber(value, "--finite")).toThrow(
       "--finite must be a finite number",
     );
+  });
 
-    expect(parseOptionalNodePositiveInteger(undefined, "--positive")).toBeUndefined();
-    expect(parseOptionalNodeNonNegativeInteger(undefined, "--non-negative")).toBeUndefined();
-    expect(parseOptionalNodeFiniteNumber(undefined, "--finite")).toBeUndefined();
+  it.each([undefined, null])("preserves omitted numeric values %s", (value) => {
+    expect(parseOptionalNodePositiveInteger(value, "--positive")).toBeUndefined();
+    expect(parseOptionalNodeNonNegativeInteger(value, "--non-negative")).toBeUndefined();
+    expect(parseOptionalNodeFiniteNumber(value, "--finite")).toBeUndefined();
   });
 });
