@@ -198,10 +198,13 @@ describe("PR 101923 exact-head media-understanding resize proof", () => {
         providerRegistry: new Map([[PROVIDER_ID, provider]]),
       }),
     ).resolves.toMatchObject({
-      kind: "image.description",
-      provider: PROVIDER_ID,
-      model: PRIMARY_MODEL,
-      text: "configured described",
+      ok: true,
+      value: {
+        kind: "image.description",
+        provider: PROVIDER_ID,
+        model: PRIMARY_MODEL,
+        text: "configured described",
+      },
     });
 
     const prepared = await prepareImageDescriptionInput({
