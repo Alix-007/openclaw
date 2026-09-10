@@ -1,0 +1,80 @@
+name: Alix OpenClaw exact-head proof
+run-name: cron-auto-disabled proof at ${{ inputs.target_sha }}
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        required: true
+        type: string
+      generate_snapshots:
+        required: true
+        type: boolean
+        default: true
+permissions: {}
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      EXPECTED_HEAD: ${{ inputs.target_sha }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          persist-credentials: false
+      - name: Verify exact source
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          mkdir -p .artifacts/pr133150
+          printf '%s\n' "$EXPECTED_HEAD" > .artifacts/pr133150/product-head.txt
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.18.0
+      - name: Install exact lockfile
+        run: |
+          corepack enable
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+          pnpm install --frozen-lockfile
+      - name: Generate prompt fixtures
+        if: inputs.generate_snapshots
+        run: pnpm prompt:snapshots:gen
+      - name: Check prompt fixtures
+        run: pnpm prompt:snapshots:check
+      - name: Focused tests
+        run: |
+          set -euo pipefail
+          node scripts/run-vitest.mjs src/agents/tools/cron-tool.test.ts src/agents/tools/cron-tool.management.test.ts src/agents/agent-tools.construction-routing.test.ts src/gateway/server-methods/cron.validation.test.ts test/scripts/prompt-snapshots.test.ts 2>&1 | tee .artifacts/pr133150/focused-tests.log
+      - name: Changed source formatting
+        run: pnpm format:check src/agents/tools/cron-tool.ts src/agents/tools/cron-tool.test.ts src/agents/tools/cron-tool.management.test.ts src/gateway/server-methods/cron.ts src/gateway/server-methods/cron.validation.test.ts docs/automation/cron-jobs/managing-jobs.md
+      - name: Documentation contracts
+        run: |
+          set -euo pipefail
+          pnpm docs:list > .artifacts/pr133150/docs-list.log
+          node scripts/check-docs-mdx.mjs docs/automation/cron-jobs/managing-jobs.md
+      - name: Real Gateway proof
+        run: |
+          set -euo pipefail
+          node --import ./scripts/tsx.mjs .proof-tooling/.github/proof/cron-auto-disabled-gateway-proof.mjs "$PWD" "$EXPECTED_HEAD" .artifacts/pr133150/receipt.json 2>&1 | tee .artifacts/pr133150/gateway.log
+      - name: Capture generated fixture delta
+        if: always()
+        run: |
+          git diff --check
+          git diff -- test/fixtures/agents/prompt-snapshots > .artifacts/pr133150/prompt-fixtures.patch
+          git diff --stat > .artifacts/pr133150/diff-stat.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: openclaw-cron-auto-disabled-${{ inputs.target_sha }}
+          path: .artifacts/pr133150/
+          include-hidden-files: true
+          retention-days: 30
