@@ -6,12 +6,10 @@ import { readImageMetadataFromHeader } from "../media/media-services.js";
 import type { ImageCompressionModelPolicy } from "../media/web-media.js";
 
 const mocks = vi.hoisted(() => ({
-  resolveImageCompressionModelPolicy: vi.fn(
-    async (): Promise<ImageCompressionModelPolicy> => ({
-      maxSidePx: 32,
-      preferredSidePx: 32,
-    }),
-  ),
+  resolveImageCompressionModelPolicy: vi.fn(async (): Promise<ImageCompressionModelPolicy> => ({
+    maxSidePx: 32,
+    preferredSidePx: 32,
+  })),
 }));
 
 vi.mock("../agents/image-compression-policy.js", () => ({

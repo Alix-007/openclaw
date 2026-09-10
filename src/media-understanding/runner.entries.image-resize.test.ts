@@ -9,12 +9,10 @@ import type { MediaAttachmentCache } from "./attachments.js";
 import type { ImageDescriptionRequest, MediaUnderstandingProvider } from "./types.js";
 
 const mocks = vi.hoisted(() => ({
-  resolveImageCompressionModelPolicy: vi.fn(
-    async (): Promise<ImageCompressionModelPolicy> => ({
-      maxSidePx: 1600,
-      preferredSidePx: 1400,
-    }),
-  ),
+  resolveImageCompressionModelPolicy: vi.fn(async (): Promise<ImageCompressionModelPolicy> => ({
+    maxSidePx: 1600,
+    preferredSidePx: 1400,
+  })),
 }));
 
 vi.mock("../agents/image-compression-policy.js", () => ({
