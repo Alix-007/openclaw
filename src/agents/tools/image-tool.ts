@@ -479,7 +479,6 @@ async function resolveImageCompressionPolicy(params: {
 
 function matchesImageTimeoutEntry(params: {
   entry: MediaUnderstandingModelConfig;
-  source: "capability" | "shared";
   provider: string;
   model: string;
   providerRegistry: Map<string, MediaUnderstandingProvider>;
@@ -492,7 +491,6 @@ function matchesImageTimeoutEntry(params: {
   if (
     !matchesMediaEntryCapability({
       entry: params.entry,
-      source: params.source,
       capability: "image",
       providerRegistry: params.providerRegistry,
     })
@@ -519,7 +517,6 @@ function resolveImageToolTimeoutMs(params: {
   const sharedEntry = params.cfg.tools?.media?.models?.find((entry) =>
     matchesImageTimeoutEntry({
       entry,
-      source: "shared",
       provider: params.provider,
       model: params.model,
       providerRegistry: params.providerRegistry,
@@ -989,13 +986,7 @@ export function createImageTool(options?: {
           throw new Error(`Unsupported media type: ${media.kind}`);
         }
 
-        const contentType =
-          "contentType" in media && typeof media.contentType === "string"
-            ? media.contentType
-            : undefined;
-        const legacyMimeType =
-          "mimeType" in media && typeof media.mimeType === "string" ? media.mimeType : undefined;
-        const mimeType = contentType ?? legacyMimeType ?? "image/png";
+        const mimeType = media.contentType ?? "image/png";
         loadedImages.push({
           buffer: media.buffer,
           mimeType,
