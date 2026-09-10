@@ -87,6 +87,7 @@ data class Question(
   val questionId: String,
   val header: String,
   val question: String,
+  val url: String? = null,
   val options: List<QuestionOption>,
   val multiSelect: Boolean? = null,
   val isOther: Boolean? = null,
@@ -134,6 +135,8 @@ data class SessionObserverPlanProgress(
 data class SessionObserverDigest(
   val sessionKey: String,
   val agentId: String? = null,
+  val sessionId: String? = null,
+  val lifecycleRevision: String? = null,
   val runId: String? = null,
   val revision: Long,
   val updatedAt: Long,
@@ -916,6 +919,18 @@ enum class GatewayMethod(
   PluginsControlUiReload("plugins.controlUi.reload"),
   PluginsControlUiReport("plugins.controlUi.report"),
   PluginsControlUiStatus("plugins.controlUi.status"),
+  UpdateRunsGet("update.runs.get"),
+  UpdateRunsList("update.runs.list"),
+  GatewaySuspendHandoff("gateway.suspend.handoff"),
+  TranscriptsExport("transcripts.export"),
+  TranscriptsStatus("transcripts.status"),
+  UpdateReport("update.report"),
+  SkillsWorkshopRead("skills.workshop.read"),
+  SessionPublicShareSet("session.publicShare.set"),
+  ClawsMonitors("claws.monitors"),
+  PluginsCatalogBrowse("plugins.catalog.browse"),
+  PluginsCatalogCategories("plugins.catalog.categories"),
+  PluginsCatalogGet("plugins.catalog.get"),
 }
 
 enum class GatewayEvent(
@@ -977,6 +992,7 @@ enum class GatewayEvent(
   TerminalData("terminal.data"),
   TerminalExit("terminal.exit"),
   UpdateAvailable("update.available"),
+  UpdateRunChanged("update.run.changed"),
   PortalChanged("portal.changed"),
   ProgressCardChanged("progressCard.changed"),
   MentionsChanged("mentions.changed"),
