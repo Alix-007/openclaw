@@ -39,7 +39,7 @@ jobs:
           let source = fs.readFileSync(file, 'utf8');
           const anchor = '    const baseAssets = path.join(baseDist, "assets");';
           if (!source.includes(anchor)) throw new Error('comparison instrumentation anchor missing');
-          source = 'import { collectControlUiPerformanceMetrics } from "./check-control-ui-performance.mts";\n' + source.replace(anchor, anchor + '\n    console.log("EXACT_UI_BYTES=" + JSON.stringify({head, base, node:process.version, headMetrics:collectControlUiPerformanceMetrics(path.join(repoRoot,"dist/control-ui")), baseMetrics:collectControlUiPerformanceMetrics(baseDist)}));');
+          source = source.replace('import { spawnSync }', 'import { collectControlUiPerformanceMetrics } from "./check-control-ui-performance.mts";\nimport { spawnSync }').replace(anchor, anchor + '\n    console.log("EXACT_UI_BYTES=" + JSON.stringify({head, base, node:process.version, headMetrics:collectControlUiPerformanceMetrics(path.join(repoRoot,"dist/control-ui")), baseMetrics:collectControlUiPerformanceMetrics(baseDist)}));');
           fs.writeFileSync(file, source);
           JS
           set +e
