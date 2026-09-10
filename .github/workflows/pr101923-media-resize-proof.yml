@@ -73,6 +73,14 @@ jobs:
           corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
           pnpm install --frozen-lockfile
 
+      - name: Focused media regressions and lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-vitest.mjs src/media-understanding/runtime.test.ts src/media-understanding/runtime.audio-input-budget.test.ts src/media-understanding/runner.vision-skip.test.ts src/media-understanding/image-input-normalize.test.ts src/media-understanding/runner.entries.image-resize.test.ts src/media/image-ops.rastermill-adapter.test.ts src/agents/tools/image-tool.test.ts
+          node scripts/run-oxlint.mjs src/media-understanding/runtime.test.ts src/media-understanding/runtime.audio-input-budget.test.ts src/media-understanding/runner.vision-skip.test.ts src/media-understanding/image-input-normalize.ts
+          pnpm format:check src/media-understanding/runtime.test.ts src/media-understanding/runtime.audio-input-budget.test.ts src/media-understanding/runner.vision-skip.test.ts src/media-understanding/image-input-normalize.ts
+
       - name: Ensure ImageMagick fixture generator
         shell: bash
         run: |
