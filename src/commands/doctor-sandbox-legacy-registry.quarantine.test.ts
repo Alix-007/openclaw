@@ -7,14 +7,14 @@ const { tempRoot, paths, insertContainer, insertBrowser } = await vi.hoisted(asy
   const { mkdtemp } = await import("node:fs/promises");
   const { tmpdir } = await import("node:os");
   const nodePath = await import("node:path");
-  const tempRoot = await mkdtemp(nodePath.join(tmpdir(), "openclaw-quarantine-"));
+  const createdTempRoot = await mkdtemp(nodePath.join(tmpdir(), "openclaw-quarantine-"));
   return {
-    tempRoot,
+    tempRoot: createdTempRoot,
     paths: {
-      SANDBOX_REGISTRY_PATH: nodePath.join(tempRoot, "containers.json"),
-      SANDBOX_BROWSER_REGISTRY_PATH: nodePath.join(tempRoot, "browsers.json"),
-      SANDBOX_CONTAINERS_DIR: nodePath.join(tempRoot, "containers"),
-      SANDBOX_BROWSERS_DIR: nodePath.join(tempRoot, "browsers"),
+      SANDBOX_REGISTRY_PATH: nodePath.join(createdTempRoot, "containers.json"),
+      SANDBOX_BROWSER_REGISTRY_PATH: nodePath.join(createdTempRoot, "browsers.json"),
+      SANDBOX_CONTAINERS_DIR: nodePath.join(createdTempRoot, "containers"),
+      SANDBOX_BROWSERS_DIR: nodePath.join(createdTempRoot, "browsers"),
     },
     insertContainer: vi.fn(),
     insertBrowser: vi.fn(),
