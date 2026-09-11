@@ -3,18 +3,18 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { root, paths, insertContainer, insertBrowser } = await vi.hoisted(async () => {
+const { tempRoot, paths, insertContainer, insertBrowser } = await vi.hoisted(async () => {
   const { mkdtemp } = await import("node:fs/promises");
   const { tmpdir } = await import("node:os");
   const nodePath = await import("node:path");
-  const root = await mkdtemp(nodePath.join(tmpdir(), "openclaw-quarantine-"));
+  const tempRoot = await mkdtemp(nodePath.join(tmpdir(), "openclaw-quarantine-"));
   return {
-    root,
+    tempRoot,
     paths: {
-      SANDBOX_REGISTRY_PATH: nodePath.join(root, "containers.json"),
-      SANDBOX_BROWSER_REGISTRY_PATH: nodePath.join(root, "browsers.json"),
-      SANDBOX_CONTAINERS_DIR: nodePath.join(root, "containers"),
-      SANDBOX_BROWSERS_DIR: nodePath.join(root, "browsers"),
+      SANDBOX_REGISTRY_PATH: nodePath.join(tempRoot, "containers.json"),
+      SANDBOX_BROWSER_REGISTRY_PATH: nodePath.join(tempRoot, "browsers.json"),
+      SANDBOX_CONTAINERS_DIR: nodePath.join(tempRoot, "containers"),
+      SANDBOX_BROWSERS_DIR: nodePath.join(tempRoot, "browsers"),
     },
     insertContainer: vi.fn(),
     insertBrowser: vi.fn(),
@@ -40,11 +40,11 @@ beforeEach(() => {
 });
 afterEach(async () => {
   vi.restoreAllMocks();
-  for (const name of await fs.readdir(root)) {
-    await fs.rm(path.join(root, name), { recursive: true, force: true });
+  for (const name of await fs.readdir(tempRoot)) {
+    await fs.rm(path.join(tempRoot, name), { recursive: true, force: true });
   }
 });
-afterAll(async () => await fs.rm(root, { recursive: true, force: true }));
+afterAll(async () => await fs.rm(tempRoot, { recursive: true, force: true }));
 
 describe("monolithic legacy registry quarantine", () => {
   it.each(targets)("keeps $kind bytes when the real rename fails", async ({ registryPath }) => {
@@ -85,7 +85,7 @@ describe("monolithic legacy registry quarantine", () => {
 
       const results = await migrateLegacySandboxRegistryFiles();
       expect(results).toContainEqual({ kind, status: "missing" });
-      expect((await fs.readdir(root)).filter((name) => name.includes(".invalid-"))).toEqual([]);
+      expect((await fs.readdir(tempRoot)).filter((name) => name.includes(".invalid-"))).toEqual([]);
       await expect(fs.stat(`${registryPath}.lock`)).rejects.toMatchObject({ code: "ENOENT" });
       expect(insertContainer).not.toHaveBeenCalled();
       expect(insertBrowser).not.toHaveBeenCalled();
