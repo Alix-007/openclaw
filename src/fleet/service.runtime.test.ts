@@ -553,15 +553,8 @@ describe("fleet service", () => {
     await service.create({ tenant: "acme", gatewayToken: "token" });
     containers.inspect.mockResolvedValue(runningInspection());
 
-    await expect(
-      service.logs({
-        tenant: "acme",
-        follow: true,
-        timestamps: true,
-        tail: 100,
-        since: "10m",
-      }),
-    ).resolves.toBeUndefined();
+    const logOptions = { tenant: "acme", follow: true, timestamps: true, tail: 100, since: "10m" };
+    await expect(service.logs(logOptions)).resolves.toBeUndefined();
 
     expect(containers.logs).toHaveBeenCalledWith("docker", "container-id", {
       follow: true,
