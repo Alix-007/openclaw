@@ -1,0 +1,70 @@
+name: P11 isolated proof
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        required: true
+        type: string
+      phase:
+        required: true
+        type: choice
+        options: [baseline, product]
+permissions: {}
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      EXPECTED_HEAD: ${{ inputs.target_sha }}
+      PROOF_PHASE: ${{ inputs.phase }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ github.sha }}
+          path: .proof-tooling
+          sparse-checkout: .github/proof/p11
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.18.0
+      - name: Install frozen dependencies
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          corepack enable
+          corepack prepare "$(node -p 'require("./package.json").packageManager')" --activate
+          pnpm install --frozen-lockfile
+          mkdir -p .artifacts/p11 .proof-tooling/.github/proof/p11/packet/evidence
+      - name: Intended acceptance baseline
+        if: inputs.phase == 'baseline'
+        run: |
+          test "$(git rev-parse HEAD:src/cli/fleet-cli/commands.runtime.ts)" = cd64ff1b0c9a6cdf3f772acace8784859172dc50
+          git apply .proof-tooling/.github/proof/p11/packet/patches/P11.tests.patch
+          set +e
+          node scripts/run-vitest.mjs run src/cli/fleet-cli/commands.status-runtime.test.ts --reporter=json --outputFile=.artifacts/p11/baseline.json > .artifacts/p11/baseline.log 2>&1
+          result=$?
+          set -e
+          cat .artifacts/p11/baseline.log
+          test "$result" = 1
+          node .proof-tooling/.github/proof/p11/verify-baseline.mjs .artifacts/p11/baseline.json
+      - name: Exact packet checks
+        if: inputs.phase == 'product'
+        run: |
+          pnpm docs:list > .artifacts/p11/docs-list.log
+          bash .proof-tooling/.github/proof/p11/packet/scripts/check.sh "$PWD" P11
+      - name: Canonical registry and registered CLI proof
+        run: node --import ./scripts/tsx.mjs .proof-tooling/.github/proof/p11/cli-proof.mjs "$EXPECTED_HEAD" "$PROOF_PHASE" .artifacts/p11/receipt.json
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p11-${{ inputs.phase }}-${{ inputs.target_sha }}
+          include-hidden-files: true
+          path: |
+            .artifacts/p11
+            .proof-tooling/.github/proof/p11/packet/evidence
