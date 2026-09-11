@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { isVolatileBackupPath } from "../infra/backup-volatile-filter.js";
 import { hasErrnoCode } from "../infra/errno.js";
+import { isUpdateCapturePath } from "../infra/update-capture-paths.js";
 import type { ResolvedPluginBackupResource } from "../plugins/manifest-backup-resources.js";
 import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
 import { isPathWithin } from "./cleanup-utils.js";
@@ -100,8 +101,8 @@ async function listDefaultAgentTemporaryRoots(
 /** Build the one immutable owner inventory used by backup planning and archive consumers. */
 export async function createBackupResourceInventory(params: {
   stateDir: string;
-  configPath: string;
-  oauthDir: string;
+  configPaths: readonly string[];
+  oauthDirs: readonly string[];
   workspaceDirs: readonly string[];
   excludedWorkspaceDirs: readonly string[];
   agentRoots: readonly BackupAgentRoot[];
@@ -110,7 +111,7 @@ export async function createBackupResourceInventory(params: {
   onlyConfig?: boolean;
 }): Promise<BackupResourceInventory> {
   const stateDir = path.resolve(params.stateDir);
-  const configPath = path.resolve(params.configPath);
+  const configPaths = new Set(params.configPaths.map((configPath) => path.resolve(configPath)));
   const agentRoots = Object.freeze(
     params.agentRoots.map((root) =>
       Object.freeze({
@@ -121,7 +122,7 @@ export async function createBackupResourceInventory(params: {
     ),
   );
   const protectedPathSet = new Set<string>([
-    configPath,
+    ...configPaths,
     resolveOpenClawStateSqlitePath({ ...process.env, OPENCLAW_STATE_DIR: stateDir }),
   ]);
   const regenerableRoots: BackupRegenerableRoot[] = [];
@@ -130,7 +131,9 @@ export async function createBackupResourceInventory(params: {
   };
 
   if (!params.onlyConfig) {
-    protectedPathSet.add(path.resolve(params.oauthDir));
+    for (const oauthDir of params.oauthDirs) {
+      protectedPathSet.add(path.resolve(oauthDir));
+    }
     for (const workspaceDir of params.workspaceDirs) {
       protectedPathSet.add(path.resolve(workspaceDir));
     }
@@ -195,6 +198,9 @@ export async function createBackupResourceInventory(params: {
 
   const isIncluded = (sourcePath: string): boolean => {
     const candidate = path.resolve(sourcePath);
+    if (isUpdateCapturePath(candidate, stateDir)) {
+      return false;
+    }
     const exclusion = excludedPaths.find((excludedPath) => isPathWithin(candidate, excludedPath));
     if (!exclusion) {
       return true;
@@ -208,6 +214,9 @@ export async function createBackupResourceInventory(params: {
   };
   const isTraversable = (sourcePath: string): boolean => {
     const candidate = path.resolve(sourcePath);
+    if (isUpdateCapturePath(candidate, stateDir)) {
+      return false;
+    }
     return (
       isIncluded(candidate) ||
       protectedPaths.some((protectedPath) => isPathWithin(protectedPath, candidate))
@@ -245,10 +254,15 @@ export async function createBackupResourceInventory(params: {
     return segments.includes("node_modules");
   };
   const volatilePlan = { stateDirs: [stateDir] };
-  // Keep the explicit config file; the planner selects it separately when a
-  // volatile parent would otherwise prune it along with its neighbors.
-  const isVolatile = (sourcePath: string): boolean =>
-    path.resolve(sourcePath) !== configPath && isVolatileBackupPath(sourcePath, volatilePlan);
+  const isVolatile = (sourcePath: string): boolean => {
+    const candidate = path.resolve(sourcePath);
+    // Explicit owners survive volatile filters; excluded ancestors stay pruned
+    // and the planner archives a selected link through its own asset instead.
+    const ownedPath = protectedPaths.some((protectedPath) =>
+      isPathWithin(candidate, protectedPath),
+    );
+    return !ownedPath && isVolatileBackupPath(candidate, volatilePlan);
+  };
 
   return Object.freeze({
     stateDir,

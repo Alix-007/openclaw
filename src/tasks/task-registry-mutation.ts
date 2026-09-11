@@ -15,6 +15,7 @@ import { findLatestTaskForFlowId, listTasksForFlowId } from "./task-registry-que
 import {
   cloneTaskDeliveryState,
   cloneTaskRecord,
+  cloneTaskRecordForObserver,
   normalizeTaskTimestamps,
 } from "./task-registry-records.js";
 import {
@@ -179,6 +180,8 @@ export function updateTask(taskId: string, patch: Partial<TaskRecord>): TaskReco
     next.cleanupAfter = resolveTaskCleanupAfter({ ...next, createdAt });
   }
   const sessionIndexChanged =
+    normalizeOptionalString(current.requesterSessionKey) !==
+      normalizeOptionalString(next.requesterSessionKey) ||
     normalizeOptionalString(current.ownerKey) !== normalizeOptionalString(next.ownerKey) ||
     normalizeOptionalString(current.childSessionKey) !==
       normalizeOptionalString(next.childSessionKey);
@@ -223,14 +226,17 @@ export function updateTask(taskId: string, patch: Partial<TaskRecord>): TaskReco
   }
   emitTaskRegistryObserverEvent(() => ({
     kind: "upserted",
-    task: cloneTaskRecord(next),
-    previous: cloneTaskRecord(current),
+    task: cloneTaskRecordForObserver(next),
+    previous: cloneTaskRecordForObserver(current),
   }));
   return cloneTaskRecord(next);
 }
 
 /** Publishes a record already committed by a cross-owner shared-state transaction. */
-export function publishTaskRecordAfterAtomicStore(record: TaskRecord): TaskRecord {
+export function publishTaskRecordAfterAtomicStore(
+  record: TaskRecord,
+  options?: { syncTaskFlow?: boolean; deferredObserverEvents?: Array<() => void> },
+): TaskRecord {
   const next = normalizeTaskTimestamps(cloneTaskRecord(record));
   const current = tasks.get(next.taskId);
   const becomesTerminal =
@@ -254,12 +260,20 @@ export function publishTaskRecordAfterAtomicStore(record: TaskRecord): TaskRecor
   addParentFlowIdIndex(next.taskId, next);
   addRelatedSessionKeyIndex(next.taskId, next);
   rebuildRunIdIndex();
-  syncFlowFromTaskAfterTaskMutation(next, "atomic completion admission");
-  emitTaskRegistryObserverEvent(() => ({
-    kind: "upserted",
-    task: cloneTaskRecord(next),
-    ...(current ? { previous: cloneTaskRecord(current) } : {}),
-  }));
+  if (options?.syncTaskFlow !== false) {
+    syncFlowFromTaskAfterTaskMutation(next, "atomic completion admission");
+  }
+  const emit = () =>
+    emitTaskRegistryObserverEvent(() => ({
+      kind: "upserted",
+      task: cloneTaskRecordForObserver(next),
+      ...(current ? { previous: cloneTaskRecordForObserver(current) } : {}),
+    }));
+  if (options?.deferredObserverEvents) {
+    options.deferredObserverEvents.push(emit);
+  } else {
+    emit();
+  }
   return cloneTaskRecord(next);
 }
 

@@ -83,9 +83,7 @@ function expectServiceContexts(
   config: Parameters<typeof startPluginServices>[0]["config"],
 ) {
   expect(contexts).not.toHaveLength(0);
-  contexts.forEach((ctx) => {
-    expectServiceContext(ctx, config);
-  });
+  contexts.forEach((ctx) => expectServiceContext(ctx, config));
 }
 
 function expectServiceLifecycleState(params: {

@@ -1,10 +1,14 @@
+import type { ModelChoice } from "../../../packages/gateway-protocol/src/schema/agents-models-skills.js";
+import type { ChatAccountSelection } from "../../../packages/gateway-protocol/src/schema/users.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
+import type { UserModelAccountSelection } from "../model-account-authority.js";
 
 export type ChatMetadataSessionEntry = Partial<
   Pick<
     SessionEntry,
     | "sessionId"
     | "agentHarnessId"
+    | "agentRuntimeOverride"
     | "modelSelectionLocked"
     | "pluginOwnerId"
     | "providerOverride"
@@ -18,11 +22,14 @@ export type ChatMetadataSessionEntry = Partial<
 export type ChatMetadataReadParams = {
   agentId: string;
   sessionKey?: string;
+  requesterProfileId?: string;
   sessionEntry?: ChatMetadataSessionEntry;
+  draftAccountSelection?: UserModelAccountSelection;
 };
 
 export type ChatMetadataResult = {
   commands?: unknown[];
-  models?: unknown[];
+  models?: ModelChoice[];
   swarmEnabled: boolean;
+  accountSelection?: ChatAccountSelection;
 };
