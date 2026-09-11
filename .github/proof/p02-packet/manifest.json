@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "repository": "openclaw/openclaw",
+  "base_commit": "872cb0a3613d3541d3bb7f4b263a7d49c99efc54",
+  "tasks": {
+    "P02": {
+      "production_path": "src/cli/nodes-cli/register.push.ts",
+      "expected_base_blob": "e5812dee8887b3fe143b679cc158e86ee9ecd127",
+      "expected_after_blob": "a3f6ad5d04492c702b2a2d6457c05876f6f30d7a",
+      "test_path": "src/cli/nodes-cli/register.push.test.ts",
+      "test_blob": "9e4fc4053aa5eb1a3c5cdbbe9a0b35c7dcbd3d5f",
+      "test_count": 12,
+      "files": [
+        "src/cli/nodes-cli/register.push.ts",
+        "src/cli/nodes-cli/register.push.test.ts"
+      ],
+      "title": "fix(cli): reject blank APNs environment before node lookup",
+      "branch": "alix/fix-nodes-push-empty-environment"
+    },
+    "P09": {
+      "production_path": "extensions/memory-wiki/src/obsidian.ts",
+      "expected_base_blob": "3fc955f1b89a33fafd4115cc37839bdac1b88335",
+      "expected_after_blob": "5a0040fa254142301cac0f1c503d0b8218deb5e4",
+      "test_path": "extensions/memory-wiki/src/obsidian.discovery.test.ts",
+      "test_blob": "7e635aebbf25c86241bbfe185da344185ed077e4",
+      "test_count": 9,
+      "files": [
+        "extensions/memory-wiki/src/obsidian.ts",
+        "extensions/memory-wiki/src/obsidian.discovery.test.ts"
+      ],
+      "title": "fix(memory-wiki): ignore directories during Obsidian CLI discovery",
+      "branch": "alix/fix-obsidian-path-directories"
+    },
+    "P11": {
+      "production_path": "src/cli/fleet-cli/commands.runtime.ts",
+      "expected_base_blob": "cd64ff1b0c9a6cdf3f772acace8784859172dc50",
+      "expected_after_blob": "3bb94a7c086ba6882f50ffec201eeb52af7134d4",
+      "test_path": "src/cli/fleet-cli/commands.status-runtime.test.ts",
+      "test_blob": "dcc2468dd7d9e06a40a024b4587ea136e7d2f413",
+      "test_count": 7,
+      "files": [
+        "src/cli/fleet-cli/commands.runtime.ts",
+        "src/cli/fleet-cli/commands.status-runtime.test.ts",
+        "docs/cli/fleet.md"
+      ],
+      "title": "feat(fleet): show the recorded container runtime in status",
+      "branch": "alix/feat-fleet-status-runtime"
+    }
+  }
+}

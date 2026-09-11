@@ -1,6 +1,6 @@
-name: PR 101923 media-understanding resize proof
+name: P02 APNs environment packet proof
 
-run-name: PR 101923 proof at ${{ inputs.product_sha }}
+run-name: P02 proof at ${{ inputs.product_sha }}
 
 on:
   workflow_dispatch:
@@ -13,6 +13,14 @@ on:
         description: Immutable full proof-harness SHA from the Alix fork
         required: true
         type: string
+
+      phase:
+        description: Baseline reproduction or supplied packet checks
+        required: true
+        type: choice
+        options:
+          - baseline
+          - green
 
 permissions: {}
 
@@ -38,7 +46,7 @@ jobs:
           repository: Alix-007/openclaw
           ref: ${{ inputs.harness_sha }}
           path: .proof-tooling
-          sparse-checkout: .github/proof
+          sparse-checkout: .github/proof/p02-packet
           persist-credentials: false
 
       - name: Verify immutable source identities
@@ -73,8 +81,22 @@ jobs:
           corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
           pnpm install --frozen-lockfile
 
-      - name: Check formatting across complete PR TypeScript delta
-        shell: bash
+      - name: Baseline registered command reproduction
+        if: inputs.phase == 'baseline'
+        run: node scripts/run-vitest.mjs run src/cli/nodes-cli/register.push.test.ts
+
+      - name: Supplied packet checks
+        if: inputs.phase == 'green'
         run: |
-          set -euo pipefail
-          pnpm format:check src/agents/image-compression-policy.ts src/agents/tools/image-tool.ts src/media-understanding/apply.test.ts src/media-understanding/image-input-normalize.test.ts src/media-understanding/image-input-normalize.ts src/media-understanding/runner.entries.image-resize.test.ts src/media-understanding/runner.entries.ts src/media-understanding/runner.vision-skip.test.ts src/media-understanding/runtime.audio-input-budget.test.ts src/media-understanding/runtime.test.ts src/media-understanding/runtime.ts src/media/image-ops.rastermill-adapter.test.ts src/media/image-ops.ts src/media/image-optimization-error.ts src/media/image-processor.ts src/media/web-media.ts
+          git fetch origin 872cb0a3613d3541d3bb7f4b263a7d49c99efc54 --depth=1
+          mkdir -p .proof-tooling/.github/proof/p02-packet/evidence
+          bash .proof-tooling/.github/proof/p02-packet/scripts/check.sh "$GITHUB_WORKSPACE" P02
+
+      - name: Upload packet check evidence
+        if: always() && inputs.phase == 'green'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: p02-check-evidence
+          path: .proof-tooling/.github/proof/p02-packet/evidence
+          include-hidden-files: true
+          if-no-files-found: error
