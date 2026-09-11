@@ -1,18 +1,29 @@
 name: Alix OpenClaw exact-head proof
-run-name: P09 exact parent-red filesystem discovery
+run-name: P09 exact green and packet checks
 on:
   workflow_dispatch:
 permissions: {}
 jobs:
   proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: source
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           repository: Alix-007/openclaw
-          ref: c17a5d775c71db5c8f83cea4043c75ceda53e29d
+          ref: 98de95a65c35d03d5d32e80985610db79313bf36
+          path: source
           fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: proof/p09-green-harness-20260911
+          path: harness
+          sparse-checkout: .proof-p09
           persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
@@ -21,22 +32,30 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = c17a5d775c71db5c8f83cea4043c75ceda53e29d
-          test "$(git rev-parse HEAD:extensions/memory-wiki/src/obsidian.ts)" = 3fc955f1b89a33fafd4115cc37839bdac1b88335
+          test "$(git rev-parse HEAD)" = 98de95a65c35d03d5d32e80985610db79313bf36
+          test "$(git rev-parse HEAD:extensions/memory-wiki/src/obsidian.ts)" = 5a0040fa254142301cac0f1c503d0b8218deb5e4
           test "$(git rev-parse HEAD:extensions/memory-wiki/src/obsidian.discovery.test.ts)" = 7e635aebbf25c86241bbfe185da344185ed077e4
           pin='pnpm@12.3.4+sha512.961aa41fb077da3a04a441d9f8e15ebc0c96da8ef710b2eb67bf9ee7cb0610eabd48f1fd85f51cffe73846785fa0f87c56a3a872a1d893f8446741b5cce45457'
           test "$(node -p 'require("./package.json").packageManager')" = "$pin"
           corepack enable
           corepack prepare "$pin" --activate
           pnpm install --frozen-lockfile
-      - name: Expected parent-red discovery tests
+      - name: Exact supplied packet checks
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/run-vitest.mjs run extensions/memory-wiki/src/obsidian.discovery.test.ts extensions/memory-wiki/src/obsidian.test.ts --reporter=verbose 2>&1 | tee parent-red.log
+          git fetch --no-tags --depth=1 https://github.com/openclaw/openclaw.git 872cb0a3613d3541d3bb7f4b263a7d49c99efc54
+          mkdir -p "$GITHUB_WORKSPACE/harness/.proof-p09/evidence"
+          bash "$GITHUB_WORKSPACE/harness/.proof-p09/scripts/check.sh" "$PWD" P09
+      - name: Official memory-wiki plugin lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm test:extension memory-wiki 2>&1 | tee "$GITHUB_WORKSPACE/harness/.proof-p09/evidence/extension.log"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: p09-parent-red
-          path: parent-red.log
+          name: p09-green-packet-checks
+          path: harness/.proof-p09/evidence/
+          include-hidden-files: true
           retention-days: 14
