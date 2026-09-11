@@ -887,7 +887,9 @@ describe("event Web Push classification", () => {
       canReceiveSessionEventMock.mockReturnValue(false);
       emitCompletion();
 
-      await new Promise<void>((resolve) => setImmediate(resolve));
+      await new Promise<void>((resolve) => {
+        setImmediate(resolve);
+      });
       expect(preparedWebPushSendMock).not.toHaveBeenCalled();
       expect(resolveSessionSharingTargetMock).not.toHaveBeenCalled();
     });
@@ -898,7 +900,9 @@ describe("event Web Push classification", () => {
       listBoundWebPushSubscriptionsMock.mockReturnValue([subscription]);
       emitCompletion();
 
-      await new Promise<void>((resolve) => setImmediate(resolve));
+      await new Promise<void>((resolve) => {
+        setImmediate(resolve);
+      });
       expect(preparedWebPushSendMock).not.toHaveBeenCalled();
       expect(resolveSessionSharingTargetMock).not.toHaveBeenCalled();
     });
@@ -978,7 +982,9 @@ describe("event Web Push classification", () => {
     it("does not resolve a completion label for a yielding parent", async () => {
       emitCompletion(scope, { ...completion, yielded: true });
 
-      await new Promise<void>((resolve) => setImmediate(resolve));
+      await new Promise<void>((resolve) => {
+        setImmediate(resolve);
+      });
       expect(preparedWebPushSendMock).not.toHaveBeenCalled();
       expect(resolveSessionSharingTargetMock).not.toHaveBeenCalled();
     });
