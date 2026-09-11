@@ -1,0 +1,42 @@
+name: Alix OpenClaw exact-head proof
+run-name: P09 exact parent-red filesystem discovery
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: Alix-007/openclaw
+          ref: c17a5d775c71db5c8f83cea4043c75ceda53e29d
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.19.0
+      - name: Verify exact source and pinned toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = c17a5d775c71db5c8f83cea4043c75ceda53e29d
+          test "$(git rev-parse HEAD:extensions/memory-wiki/src/obsidian.ts)" = 3fc955f1b89a33fafd4115cc37839bdac1b88335
+          test "$(git rev-parse HEAD:extensions/memory-wiki/src/obsidian.discovery.test.ts)" = 7e635aebbf25c86241bbfe185da344185ed077e4
+          pin='pnpm@12.3.4+sha512.961aa41fb077da3a04a441d9f8e15ebc0c96da8ef710b2eb67bf9ee7cb0610eabd48f1fd85f51cffe73846785fa0f87c56a3a872a1d893f8446741b5cce45457'
+          test "$(node -p 'require("./package.json").packageManager')" = "$pin"
+          corepack enable
+          corepack prepare "$pin" --activate
+          pnpm install --frozen-lockfile
+      - name: Expected parent-red discovery tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-vitest.mjs run extensions/memory-wiki/src/obsidian.discovery.test.ts extensions/memory-wiki/src/obsidian.test.ts --reporter=verbose 2>&1 | tee parent-red.log
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p09-parent-red
+          path: parent-red.log
+          retention-days: 14
