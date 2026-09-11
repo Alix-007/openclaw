@@ -245,7 +245,7 @@ export function registerCronSimpleCommands(cron: Command) {
           const offset =
             opts.offset === undefined ? undefined : parseStrictNonNegativeInteger(opts.offset);
           if (opts.offset !== undefined && offset === undefined) {
-            throw new Error("Invalid --offset (must be a non-negative integer).");
+            throw new CronCliError("Invalid --offset (must be a non-negative integer).");
           }
           if (typeof opts.runId === "string" && !opts.runId.trim()) {
             throw new CronCliError("--run-id must not be blank");

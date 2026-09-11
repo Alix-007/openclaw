@@ -3,6 +3,7 @@ import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CronJob } from "../../cron/types.js";
 import { defaultRuntime } from "../../runtime.js";
+import { ExpectedCliError, formatCliJsonFailure } from "../failure-output.js";
 import { isCommandJsonOutputMode } from "../program/json-mode.js";
 
 const callGatewayFromCli = vi.fn();
@@ -424,6 +425,32 @@ describe("cron runs query options", () => {
       "Invalid --offset (must be a non-negative integer).",
     );
     expect(callGatewayFromCli).not.toHaveBeenCalled();
+  });
+
+  it("reports an invalid offset as an expected JSON failure before RPC", async () => {
+    const program = new Command().name("openclaw").exitOverride();
+    registerCronCli(program);
+    const argv = process.argv;
+    process.argv = [...argv.slice(0, 2), "cron", "runs", "job-1", "--offset", "-1", "--json"];
+    try {
+      let thrown: unknown;
+      try {
+        await program.parseAsync(process.argv);
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toBeInstanceOf(ExpectedCliError);
+      expect(formatCliJsonFailure(thrown)).toEqual({
+        ok: false,
+        error: {
+          type: "cli_error",
+          message: "Invalid --offset (must be a non-negative integer).",
+        },
+      });
+      expect(callGatewayFromCli).not.toHaveBeenCalled();
+    } finally {
+      process.argv = argv;
+    }
   });
 
   it.each([
