@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           repository: Alix-007/openclaw
-          ref: proof/p09-green-harness-20260911
+          ref: ${{ github.sha }}
           path: harness
           sparse-checkout: .proof-p09
           persist-credentials: false
