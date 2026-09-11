@@ -21,6 +21,7 @@ on:
         options:
           - baseline
           - green
+          - focused
 
 permissions: {}
 
@@ -91,6 +92,14 @@ jobs:
           git fetch origin 872cb0a3613d3541d3bb7f4b263a7d49c99efc54 --depth=1
           mkdir -p .proof-tooling/.github/proof/p02-packet/evidence
           bash .proof-tooling/.github/proof/p02-packet/scripts/check.sh "$GITHUB_WORKSPACE" P02
+
+      - name: Final exact-head focused confirmation
+        if: inputs.phase == 'focused'
+        run: |
+          set -euo pipefail
+          pnpm exec oxfmt --check src/cli/nodes-cli/register.push.ts src/cli/nodes-cli/register.push.test.ts
+          node scripts/run-vitest.mjs run src/cli/nodes-cli/register.push.test.ts
+          git diff --exit-code
 
       - name: Upload packet check evidence
         if: always() && inputs.phase == 'green'
