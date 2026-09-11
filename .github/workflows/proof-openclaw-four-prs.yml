@@ -22,7 +22,7 @@ jobs:
         with:
           repository: Alix-007/openclaw
           ref: ${{ inputs.target_sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
@@ -47,15 +47,16 @@ jobs:
           test "$(git rev-parse HEAD:src/cli/fleet-cli/commands.runtime.ts)" = cd64ff1b0c9a6cdf3f772acace8784859172dc50
           git apply .proof-tooling/.github/proof/p11/packet/patches/P11.tests.patch
           set +e
-          node scripts/run-vitest.mjs run src/cli/fleet-cli/commands.status-runtime.test.ts --reporter=json --outputFile=.artifacts/p11/baseline.json > .artifacts/p11/baseline.log 2>&1
+          node scripts/run-vitest.mjs run src/cli/fleet-cli/commands.status-runtime.test.ts --reporter=default --reporter=json --outputFile=.artifacts/p11/baseline.json > .artifacts/p11/baseline.log 2>&1
           result=$?
           set -e
           cat .artifacts/p11/baseline.log
           test "$result" = 1
-          node .proof-tooling/.github/proof/p11/verify-baseline.mjs .artifacts/p11/baseline.json
+          node .proof-tooling/.github/proof/p11/verify-baseline.mjs .artifacts/p11/baseline.json .artifacts/p11/baseline.log
       - name: Exact packet checks
         if: inputs.phase == 'product'
         run: |
+          git fetch --no-tags --depth=1 origin 872cb0a3613d3541d3bb7f4b263a7d49c99efc54
           pnpm docs:list > .artifacts/p11/docs-list.log
           bash .proof-tooling/.github/proof/p11/packet/scripts/check.sh "$PWD" P11
       - name: Canonical registry and registered CLI proof
