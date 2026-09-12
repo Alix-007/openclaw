@@ -73,6 +73,46 @@ describe("sessions.search gateway method", () => {
     resolveExistingAgentSessionStoreTargetsSyncMock.mockReturnValue([]);
   });
 
+  it.each([
+    { minTimestampMs: 0 },
+    { beforeTimestampMs: 200 },
+    { minTimestampMs: 100, beforeTimestampMs: 200 },
+  ])("forwards a valid time window to the scoped query: %j", async (bounds) => {
+    const respond = await callSearch({
+      query: "needle",
+      sessionKeys: ["agent:main:main"],
+      ...bounds,
+    });
+    expect(searchSessionTranscriptsMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentId: "main",
+        sessionKeys: ["agent:main:main"],
+        ...bounds,
+      }),
+    );
+    expect(respond).toHaveBeenCalledWith(true, { results: [] });
+  });
+
+  it.each([
+    { minTimestampMs: 200, beforeTimestampMs: 100 },
+    { minTimestampMs: 100, beforeTimestampMs: 100 },
+    { minTimestampMs: "100" },
+    { beforeTimestampMs: null },
+    { beforeTimestampMs: Number.MAX_SAFE_INTEGER + 1 },
+  ])("rejects invalid windows without searching any store: %j", async (bounds) => {
+    const respond = await callSearch({
+      query: "needle",
+      sessionKeys: ["agent:main:main"],
+      ...bounds,
+    });
+    expect(respond).toHaveBeenCalledWith(
+      false,
+      undefined,
+      expect.objectContaining({ code: "INVALID_REQUEST" }),
+    );
+    expect(searchSessionTranscriptsMock).not.toHaveBeenCalled();
+  });
+
   it("validates params and rejects whitespace-only queries", async () => {
     const invalidLimit = await callSearch({ query: "needle", limit: 26 });
     expect(invalidLimit).toHaveBeenCalledWith(

@@ -115,6 +115,112 @@ function agentKysely() {
 }
 
 describe("searchSessionTranscripts", () => {
+  it("applies inclusive and exclusive timestamp bounds inside SQLite", async () => {
+    for (const now of [1_000, 2_000, 3_000, 4_000]) {
+      await appendTranscriptMessage(transcriptScope("time-session", "agent:main:time"), {
+        now,
+        message: { role: "user", content: [{ type: "text", text: "window needle" }] },
+      });
+    }
+    const base = { agentId: "main", env: env(), query: "needle" };
+    const timestamps = (options: { minTimestampMs?: number; beforeTimestampMs?: number }) =>
+      searchSessionTranscripts({ ...base, ...options }).hits.map((hit) => hit.timestamp);
+    expect(timestamps({ minTimestampMs: 2_000, beforeTimestampMs: 4_000 })).toEqual([3_000, 2_000]);
+    expect(timestamps({ minTimestampMs: 3_000 })).toEqual([4_000, 3_000]);
+    expect(timestamps({ beforeTimestampMs: 2_000 })).toEqual([1_000]);
+    expect(timestamps({ minTimestampMs: 0 })).toEqual([4_000, 3_000, 2_000, 1_000]);
+    expect(timestamps({ beforeTimestampMs: 0 })).toEqual([]);
+    expect(timestamps({})).toEqual([4_000, 3_000, 2_000, 1_000]);
+  });
+
+  it("finds an in-window result behind more than 25 out-of-window matches", async () => {
+    for (let index = 0; index < 30; index += 1) {
+      await appendTranscriptMessage(transcriptScope("outside-window", "agent:main:outside"), {
+        now: 10_000 + index,
+        message: { role: "user", content: [{ type: "text", text: "window needle" }] },
+      });
+    }
+    await appendTranscriptMessage(transcriptScope("inside-window", "agent:main:inside"), {
+      now: 2_000,
+      message: { role: "user", content: [{ type: "text", text: "window needle" }] },
+    });
+    const params = {
+      agentId: "main",
+      env: env(),
+      query: "needle",
+      limit: 1,
+      minTimestampMs: 1_000,
+      beforeTimestampMs: 3_000,
+    };
+    expect(searchSessionTranscripts(params)).toEqual({
+      hits: [expect.objectContaining({ sessionId: "inside-window", timestamp: 2_000 })],
+      indexing: false,
+      truncated: false,
+    });
+    expect(
+      searchSessionTranscripts({ ...params, sessionKeys: ["agent:main:outside"] }).hits,
+    ).toEqual([]);
+  });
+
+  it("reports truncation only for remaining in-window hits", async () => {
+    for (const now of [1_000, 2_000, 3_000, 10_000]) {
+      await appendTranscriptMessage(transcriptScope("time-page", "agent:main:time-page"), {
+        now,
+        message: { role: "user", content: [{ type: "text", text: "window needle" }] },
+      });
+    }
+    const params = { agentId: "main", env: env(), query: "needle", beforeTimestampMs: 4_000 };
+    expect(searchSessionTranscripts({ ...params, limit: 2 }).truncated).toBe(true);
+    expect(searchSessionTranscripts({ ...params, limit: 3 }).truncated).toBe(false);
+  });
+
+  it("compares numeric-string FTS timestamps numerically", async () => {
+    const appended = await appendTranscriptMessage(
+      transcriptScope("text-time", "agent:main:text-time"),
+      {
+        now: 2_000,
+        message: { role: "user", content: [{ type: "text", text: "window needle" }] },
+      },
+    );
+    if (!appended) {
+      throw new Error("expected a committed fixture message");
+    }
+    const { db, kysely } = agentKysely();
+    executeSqliteQuerySync(
+      db,
+      kysely
+        .updateTable("session_transcript_fts")
+        .set({ timestamp: "2000" })
+        .where("message_id", "=", appended.messageId),
+    );
+    const params = {
+      agentId: "main",
+      env: env(),
+      query: "needle",
+      minTimestampMs: 1_000,
+      beforeTimestampMs: 3_000,
+    };
+    expect(searchSessionTranscripts(params).hits).toEqual([
+      expect.objectContaining({ timestamp: 2_000, messageId: appended.messageId }),
+    ]);
+  });
+
+  it.each([
+    { minTimestampMs: -1 },
+    { minTimestampMs: 1.5 },
+    { beforeTimestampMs: Number.NaN },
+    { beforeTimestampMs: Number.POSITIVE_INFINITY },
+    { minTimestampMs: Number.MAX_SAFE_INTEGER + 1 },
+    { minTimestampMs: 2_000, beforeTimestampMs: 2_000 },
+    { minTimestampMs: 3_000, beforeTimestampMs: 2_000 },
+  ])("rejects invalid timestamp windows before opening storage: %j", (bounds) => {
+    const databasePath = resolveOpenClawAgentSqlitePath({ agentId: "main", env: env() });
+    expect(() =>
+      searchSessionTranscripts({ agentId: "main", env: env(), query: "needle", ...bounds }),
+    ).toThrow(/TimestampMs/);
+    expect(fs.existsSync(databasePath)).toBe(false);
+  });
+
   it.each([false, true])(
     "searches a populated closed database without reopening a writer (shared: %s)",
     async (shared) => {

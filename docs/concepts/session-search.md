@@ -23,6 +23,35 @@ For SQLite transcript history, a missing or off-path message returns empty histo
 the newest tail; a `sessionId` that does not belong to the selected session key is rejected.
 These rules also apply in local embedded mode, without a running Gateway.
 
+## Time-bounded search
+
+Use `minTimestampMs` (inclusive) and `beforeTimestampMs` (exclusive) to search
+message timestamps within a period. Both are optional non-negative safe integers
+in Unix epoch milliseconds. With both present, `minTimestampMs` must be less than
+`beforeTimestampMs`. A bound of zero is an explicit boundary, not an omitted value.
+
+For example, search for deployment decisions recorded on September 1, 2026 in UTC:
+
+```json
+{
+  "query": "deployment decision",
+  "minTimestampMs": 1788220800000,
+  "beforeTimestampMs": 1788307200000,
+  "limit": 10
+}
+```
+
+Convert dates using the user's intended timezone before supplying milliseconds.
+The search does not parse natural-language dates. The same parameters are accepted
+by Gateway `sessions.search` and local embedded mode.
+
+Filtering happens in SQLite before relevance ordering and the result limit, so
+out-of-window matches cannot fill the returned page first. Ordering within the
+window, visibility checks, redaction, indexing warnings, and output limits stay
+unchanged. These fields constrain message timestamps, not session update times.
+Omitting both preserves the unbounded-in-time search. A non-empty text query is
+still required; this is not a time-only transcript listing or a pagination API.
+
 ## Visibility and output
 
 Search uses the same configured session visibility rules as `sessions_history`. The default

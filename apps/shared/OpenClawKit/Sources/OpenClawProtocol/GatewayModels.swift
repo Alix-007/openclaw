@@ -16956,17 +16956,23 @@ public struct SessionsSearchParams: Codable, Sendable {
     public let sessionkeys: [String]?
     public let query: String
     public let limit: Int?
+    public let mintimestampms: Int?
+    public let beforetimestampms: Int?
 
     public init(
         agentid: String? = nil,
         sessionkeys: [String]? = nil,
         query: String,
-        limit: Int? = nil)
+        limit: Int? = nil,
+        mintimestampms: Int? = nil,
+        beforetimestampms: Int? = nil)
     {
         self.agentid = agentid
         self.sessionkeys = sessionkeys
         self.query = query
         self.limit = limit
+        self.mintimestampms = mintimestampms
+        self.beforetimestampms = beforetimestampms
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -16974,6 +16980,8 @@ public struct SessionsSearchParams: Codable, Sendable {
         case sessionkeys = "sessionKeys"
         case query
         case limit
+        case mintimestampms = "minTimestampMs"
+        case beforetimestampms = "beforeTimestampMs"
     }
 }
 

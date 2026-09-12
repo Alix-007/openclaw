@@ -72,6 +72,35 @@ describe("embedded gateway stub", () => {
     runtime.listSessionsFromStoreAsync.mockClear();
   });
 
+  it("forwards an embedded search window after canonicalizing its session keys", async () => {
+    await createEmbeddedCallGateway()({
+      method: "sessions.search",
+      params: { query: "needle", sessionKeys: ["main"], minTimestampMs: 0, beforeTimestampMs: 200 },
+    });
+    expect(runtime.searchSessionTranscripts).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sessionKeys: ["agent:main:main"],
+        minTimestampMs: 0,
+        beforeTimestampMs: 200,
+      }),
+    );
+  });
+
+  it.each([
+    { minTimestampMs: 200, beforeTimestampMs: 100 },
+    { minTimestampMs: 100, beforeTimestampMs: 100 },
+    { minTimestampMs: "100" },
+    { beforeTimestampMs: null },
+  ])("rejects an invalid embedded window instead of silently ignoring it: %j", async (bounds) => {
+    await expect(
+      createEmbeddedCallGateway()({
+        method: "sessions.search",
+        params: { query: "needle", ...bounds },
+      }),
+    ).rejects.toThrow(/TimestampMs/);
+    expect(runtime.searchSessionTranscripts).not.toHaveBeenCalled();
+  });
+
   it("scopes embedded session lists to the requested agent", async () => {
     const callGateway = createEmbeddedCallGateway();
     await callGateway({

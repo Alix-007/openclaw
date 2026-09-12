@@ -8,6 +8,7 @@ import {
   isIncognitoSessionKey,
   parseAgentSessionKey,
 } from "../../routing/session-key.js";
+import { parseSessionSearchTimeRange } from "../../shared/session-search-time-range.js";
 import { truncateUtf16Safe } from "../../utils.js";
 import { resolveSessionAgentId } from "../agent-scope.js";
 import { optionalPositiveIntegerSchema } from "../schema/typebox.js";
@@ -55,6 +56,20 @@ const SessionsSearchToolSchema = Type.Object({
   query: Type.String({ maxLength: SESSIONS_SEARCH_MAX_QUERY_CHARS }),
   sessionKey: Type.Optional(Type.String()),
   limit: optionalPositiveIntegerSchema({ maximum: SESSIONS_SEARCH_MAX_LIMIT }),
+  minTimestampMs: Type.Optional(
+    Type.Integer({
+      minimum: 0,
+      maximum: Number.MAX_SAFE_INTEGER,
+      description: "Inclusive lower bound on message timestamps in Unix epoch milliseconds.",
+    }),
+  ),
+  beforeTimestampMs: Type.Optional(
+    Type.Integer({
+      minimum: 0,
+      maximum: Number.MAX_SAFE_INTEGER,
+      description: "Exclusive upper bound on message timestamps in Unix epoch milliseconds.",
+    }),
+  ),
 });
 
 const SessionsSearchHitSchema = Type.Object(
@@ -369,6 +384,10 @@ export function createSessionsSearchTool(opts?: {
         readPositiveIntegerParam(params, "limit", {
           max: SESSIONS_SEARCH_MAX_LIMIT,
         }) ?? SESSIONS_SEARCH_DEFAULT_LIMIT;
+      const timeRange = parseSessionSearchTimeRange(params);
+      if (!timeRange.ok) {
+        throw new ToolInputError(timeRange.error);
+      }
       const requestedSessionKey = readToolStringParam(params, "sessionKey");
       const {
         cfg,
@@ -552,6 +571,7 @@ export function createSessionsSearchTool(opts?: {
               params: {
                 agentId,
                 query,
+                ...timeRange.value,
                 limit: SESSIONS_SEARCH_MAX_LIMIT,
                 sessionKeys: chunk.map((candidate) => candidate.key),
               },

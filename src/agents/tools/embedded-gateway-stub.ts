@@ -11,6 +11,7 @@ import type {
 import type { CallGatewayOptions } from "../../gateway/call.js";
 import { jsonUtf8Bytes } from "../../infra/json-utf8-bytes.js";
 import { parseAgentSessionKey, scopeLegacySessionKeyToAgent } from "../../routing/session-key.js";
+import { parseSessionSearchTimeRange } from "../../shared/session-search-time-range.js";
 import {
   readNonNegativeIntegerParam,
   readPositiveIntegerParam,
@@ -88,6 +89,10 @@ async function handleSessionsSearch(params: Record<string, unknown>) {
   if (query.length > SESSIONS_SEARCH_MAX_QUERY_CHARS) {
     throw new Error(`query must not exceed ${SESSIONS_SEARCH_MAX_QUERY_CHARS} characters`);
   }
+  const timeRange = parseSessionSearchTimeRange(params);
+  if (!timeRange.ok) {
+    throw new Error(timeRange.error);
+  }
   if (params.agentId !== undefined && params.sessionKeys === undefined) {
     throw new Error("agentId requires sessionKeys");
   }
@@ -131,6 +136,7 @@ async function handleSessionsSearch(params: Record<string, unknown>) {
     agentId,
     storePath: rt.resolveSessionStorePathCore(cfg.session?.store, { agentId }),
     query,
+    ...timeRange.value,
     limit: readPositiveIntegerParam(params, "limit"),
     sessionKeys,
   });

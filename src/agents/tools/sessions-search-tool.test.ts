@@ -107,6 +107,55 @@ function createTool(params: {
 describe("sessions_search tool", () => {
   const tempDirs = useAutoCleanupTempDirTracker(afterEach);
 
+  it("forwards time bounds to the search owner without changing visible session targeting", async () => {
+    const requests: CallGatewayRequest[] = [];
+    const plainRequests: CallGatewayRequest[] = [];
+    await createTool({ requests: plainRequests, results: [hit()] }).execute("plain-search", {
+      query: "text",
+    });
+    const tool = createTool({ requests, results: [hit()] });
+    await tool.execute("time-search", { query: "text", minTimestampMs: 0, beforeTimestampMs: 200 });
+    const searches = requests.filter((request) => request.method === "sessions.search");
+    const plainSearches = plainRequests.filter((request) => request.method === "sessions.search");
+    expect(searches).not.toHaveLength(0);
+    expect(searches).toHaveLength(plainSearches.length);
+    for (const [index, request] of searches.entries()) {
+      const plainParams = plainSearches[index]?.params;
+      if (typeof plainParams !== "object" || plainParams === null) {
+        throw new Error("expected the unbounded control search request");
+      }
+      expect(request.params).toEqual({ ...plainParams, minTimestampMs: 0, beforeTimestampMs: 200 });
+    }
+  });
+
+  it("describes and validates optional numeric time bounds in the tool schema", () => {
+    const schema = createTool({}).parameters;
+    expect(Value.Check(schema, { query: "text", minTimestampMs: 0, beforeTimestampMs: 200 })).toBe(
+      true,
+    );
+    expect(Value.Check(schema, { query: "text", minTimestampMs: "100" })).toBe(false);
+    expect(Value.Check(schema, { query: "text", beforeTimestampMs: null })).toBe(false);
+    expect(
+      Value.Check(schema, { query: "text", beforeTimestampMs: Number.MAX_SAFE_INTEGER + 1 }),
+    ).toBe(false);
+  });
+
+  it.each([
+    { minTimestampMs: "100" },
+    { minTimestampMs: null },
+    { minTimestampMs: -1 },
+    { beforeTimestampMs: 1.5 },
+    { minTimestampMs: 200, beforeTimestampMs: 100 },
+    { minTimestampMs: 100, beforeTimestampMs: 100 },
+  ])("rejects invalid windows before any Gateway call: %j", async (bounds) => {
+    const requests: CallGatewayRequest[] = [];
+    const tool = createTool({ requests });
+    await expect(tool.execute("invalid-window", { query: "text", ...bounds })).rejects.toThrow(
+      /TimestampMs/,
+    );
+    expect(requests).toEqual([]);
+  });
+
   it("rejects a literal global target owned by another fixed-store agent when agent-to-agent is disabled", async () => {
     const requests: CallGatewayRequest[] = [];
     const tool = createTool({

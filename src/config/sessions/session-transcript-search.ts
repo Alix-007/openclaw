@@ -6,6 +6,7 @@ import { sql } from "kysely";
 import { executeSqliteQueryTakeFirstSync, getNodeSqliteKysely } from "../../infra/kysely-sync.js";
 import { runSqliteDeferredTransactionSync } from "../../infra/sqlite-transaction.js";
 import { toAgentStoreSessionKey } from "../../routing/session-key.js";
+import { parseSessionSearchTimeRange } from "../../shared/session-search-time-range.js";
 import { withOpenClawAgentDatabaseReadOnly } from "../../state/openclaw-agent-db-readonly.js";
 import type { DB } from "../../state/openclaw-agent-db.generated.js";
 import { truncateUtf16Safe } from "../../utils.js";
@@ -53,6 +54,8 @@ export function searchSessionTranscripts(params: {
   query: string;
   sessionKeys?: string[];
   storePath?: string;
+  minTimestampMs?: number;
+  beforeTimestampMs?: number;
 }): SessionTranscriptSearchResult {
   const query = params.query.trim();
   if (!query) {
@@ -61,6 +64,11 @@ export function searchSessionTranscripts(params: {
   if (query.length > SEARCH_QUERY_MAX_CHARS) {
     throw new Error(`query must not exceed ${SEARCH_QUERY_MAX_CHARS} characters`);
   }
+  const timeRange = parseSessionSearchTimeRange(params);
+  if (!timeRange.ok) {
+    throw new Error(timeRange.error);
+  }
+  const { minTimestampMs, beforeTimestampMs } = timeRange.value;
   const scope = resolveSqliteReadScope(params);
   const databaseOptions = toDatabaseOptions(scope);
   const result = withOpenClawAgentDatabaseReadOnly(
@@ -86,6 +94,17 @@ export function searchSessionTranscripts(params: {
               : sessionFilterValues.length > 0
                 ? ` AND session_windows.session_key IN (${sessionFilterValues.map(() => "?").join(", ")})`
                 : "";
+          // FTS columns have no numeric affinity; keep numeric-string timestamps comparable too.
+          let whereTime = "";
+          const timeValues: number[] = [];
+          if (minTimestampMs !== undefined) {
+            whereTime += " AND CAST(session_transcript_fts.timestamp AS NUMERIC) >= ?";
+            timeValues.push(minTimestampMs);
+          }
+          if (beforeTimestampMs !== undefined) {
+            whereTime += " AND CAST(session_transcript_fts.timestamp AS NUMERIC) < ?";
+            timeValues.push(beforeTimestampMs);
+          }
           const archivedTranscriptsExcluded =
             executeSqliteQueryTakeFirstSync(
               database.db,
@@ -122,14 +141,14 @@ export function searchSessionTranscripts(params: {
       bm25(session_transcript_fts) AS rank
     FROM session_transcript_fts
     JOIN session_windows ON session_windows.session_id = session_transcript_fts.session_id
-    WHERE session_transcript_fts MATCH ?${whereSession}
+    WHERE session_transcript_fts MATCH ?${whereSession}${whereTime}
       AND session_transcript_fts.session_id NOT IN (
         SELECT session_id FROM session_transcript_index_state WHERE needs_rebuild != 0
       )
     ORDER BY rank ASC, timestamp DESC, message_id ASC
     LIMIT ?
     `);
-          const values = [toFtsQuery(query), ...sessionFilterValues, limit + 1];
+          const values = [toFtsQuery(query), ...sessionFilterValues, ...timeValues, limit + 1];
           const rows = statement.all(...values) as Array<{
             message_id: unknown;
             rank: unknown;

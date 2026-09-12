@@ -1176,9 +1176,21 @@
         "description": "Search visible past sessions for matching user and assistant text. Follow up with sessions_history using a returned sessionKey, sessionId, and messageId for neighboring context.",
         "inputSchema": {
           "properties": {
+            "beforeTimestampMs": {
+              "description": "Exclusive upper bound on message timestamps in Unix epoch milliseconds.",
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
             "limit": {
               "maximum": 25,
               "minimum": 1,
+              "type": "integer"
+            },
+            "minTimestampMs": {
+              "description": "Inclusive lower bound on message timestamps in Unix epoch milliseconds.",
+              "maximum": 9007199254740991,
+              "minimum": 0,
               "type": "integer"
             },
             "query": {

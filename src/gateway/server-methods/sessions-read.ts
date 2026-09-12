@@ -35,6 +35,7 @@ import {
   normalizeAgentId,
   parseAgentSessionKey,
 } from "../../routing/session-key.js";
+import { parseSessionSearchTimeRange } from "../../shared/session-search-time-range.js";
 import { hasOperatorBoundary } from "../operator-role-policy.js";
 import {
   resolveRequestedSessionAgentId as resolveRequestedGlobalAgentId,
@@ -83,6 +84,11 @@ export const sessionReadHandlers: GatewayRequestHandlers = {
     const query = params.query.trim();
     if (!query) {
       respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, "query must not be empty"));
+      return;
+    }
+    const timeRange = parseSessionSearchTimeRange(params);
+    if (!timeRange.ok) {
+      respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, timeRange.error));
       return;
     }
     const cfg = context.getRuntimeConfig();
@@ -159,6 +165,7 @@ export const sessionReadHandlers: GatewayRequestHandlers = {
           searchSessionTranscripts({
             ...target,
             query,
+            ...timeRange.value,
             // Over-fetch retired multi-store searches so deduplication can still fill the caller's
             // requested page when the same transcript was copied during a store migration.
             limit: configured ? params.limit : 25,

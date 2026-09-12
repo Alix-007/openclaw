@@ -414,6 +414,8 @@ export const SessionsSearchParamsSchema = closedObject({
   sessionKeys: Type.Optional(Type.Array(NonEmptyString, { minItems: 1, maxItems: 200 })),
   query: Type.String({ minLength: 1, maxLength: 4096 }),
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 25 })),
+  minTimestampMs: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER })),
+  beforeTimestampMs: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER })),
 });
 
 /** One full-text session transcript match with follow-up provenance. */
