@@ -48,7 +48,7 @@ function runtime() {
     exit: vi.fn(),
     writeStdout: vi.fn(),
     writeJson: vi.fn((value: unknown) => {
-      documents.push(JSON.parse(JSON.stringify(value)));
+      documents.push(structuredClone(value));
     }),
   };
 }
