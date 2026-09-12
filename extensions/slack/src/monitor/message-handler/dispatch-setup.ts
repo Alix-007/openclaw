@@ -125,6 +125,7 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
   const messageTs = message.ts ?? message.event_ts;
   const incomingThreadTs = message.thread_ts;
   let didSetStatus = false;
+  let statusWasSet = false;
   let didAddTypingReaction = false;
   const statusReactionsEnabled =
     prepared.ctxPayload.InboundEventKind !== "room_event" &&
@@ -190,14 +191,15 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
       start: async () => {
         if (!didSetStatus && !threadStatusGate.hasVisibleOutput()) {
           didSetStatus = true;
-          await ctx.setSlackSessionStatus({
-            channelId: message.channel,
-            threadTs: statusThreadTs,
-            status: "processing",
-            // Initialize new sessions with core's derived label; later title changes use rename.
-            title: prepared.sessionDisplayName ?? prepared.ctxPayload.ThreadLabel,
-            eventScope: prepared.eventScope,
-          });
+          statusWasSet =
+            (await ctx.setSlackSessionStatus({
+              channelId: message.channel,
+              threadTs: statusThreadTs,
+              status: "processing",
+              // Initialize new sessions with core's derived label; later title changes use rename.
+              title: prepared.sessionDisplayName ?? prepared.ctxPayload.ThreadLabel,
+              eventScope: prepared.eventScope,
+            })) === true;
         }
         if (typingReaction && message.ts) {
           didAddTypingReaction = true;
@@ -212,12 +214,24 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
       stop: async () => {
         if (didSetStatus) {
           didSetStatus = false;
-          await ctx.setSlackSessionStatus({
+          const reportFailure = statusWasSet;
+          statusWasSet = false;
+          const restored = await ctx.setSlackSessionStatus({
             channelId: message.channel,
             threadTs: statusThreadTs,
             status: "active",
             eventScope: prepared.eventScope,
           });
+          if (reportFailure && restored === false) {
+            try {
+              runtime.error?.(
+                "Slack session status could not return to active after processing. " +
+                  "Status was not retried; enable verbose logging to inspect the Slack API failure.",
+              );
+            } catch {
+              // Diagnostics must not prevent the remaining typing-reaction cleanup.
+            }
+          }
         }
         // Tracked apart from the status write: a suppressed status refresh
         // still adds the reaction, and that reaction must still be removed.
