@@ -191,15 +191,14 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
       start: async () => {
         if (!didSetStatus && !threadStatusGate.hasVisibleOutput()) {
           didSetStatus = true;
-          statusWasSet =
-            (await ctx.setSlackSessionStatus({
-              channelId: message.channel,
-              threadTs: statusThreadTs,
-              status: "processing",
-              // Initialize new sessions with core's derived label; later title changes use rename.
-              title: prepared.sessionDisplayName ?? prepared.ctxPayload.ThreadLabel,
-              eventScope: prepared.eventScope,
-            })) === true;
+          statusWasSet = await ctx.setSlackSessionStatus({
+            channelId: message.channel,
+            threadTs: statusThreadTs,
+            status: "processing",
+            // Initialize new sessions with core's derived label; later title changes use rename.
+            title: prepared.sessionDisplayName ?? prepared.ctxPayload.ThreadLabel,
+            eventScope: prepared.eventScope,
+          });
         }
         if (typingReaction && message.ts) {
           didAddTypingReaction = true;
@@ -222,7 +221,7 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
             status: "active",
             eventScope: prepared.eventScope,
           });
-          if (reportFailure && restored === false) {
+          if (reportFailure && !restored) {
             try {
               runtime.error?.(
                 "Slack session status could not return to active after processing. " +

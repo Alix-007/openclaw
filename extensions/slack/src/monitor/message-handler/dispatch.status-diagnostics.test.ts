@@ -10,6 +10,12 @@ import { createSlackDispatchSetup } from "./dispatch-setup.js";
 import { createInboundSlackTestContext, createSlackTestAccount } from "./prepare.test-helpers.js";
 import type { PreparedSlackMessage } from "./types.js";
 
+type SlackSessionStatus = "processing" | "active" | "suspended" | "closed";
+type SlackSessionResponse = WebAPICallResult & {
+  status?: SlackSessionStatus;
+  agent_status?: SlackSessionStatus;
+};
+
 type PipelineOptions = Parameters<
   typeof import("openclaw/plugin-sdk/channel-outbound").createChannelMessageReplyPipeline
 >[0];
@@ -32,8 +38,8 @@ vi.mock("../../actions.js", async (importOriginal) => ({
 
 async function fixture(
   params: {
-    processing?: WebAPICallResult;
-    active?: WebAPICallResult | Error;
+    processing?: SlackSessionResponse;
+    active?: SlackSessionResponse | Error;
     typingReaction?: boolean;
   } = {},
 ) {
