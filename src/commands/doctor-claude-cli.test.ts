@@ -327,4 +327,69 @@ describe("noteClaudeCliHealth", () => {
       expect(body).not.toContain(`Agent zeta workspace: ${zetaWorkspace}`);
     });
   });
+
+  it.each(["EACCES", "EPERM", "EIO", "ELOOP"])(
+    "reports metadata failures instead of missing directories: %s",
+    async (code) => {
+      await withTempHome(({ homeDir, workspaceDir }) => {
+        const realStat = fs.statSync.bind(fs);
+        vi.spyOn(fs, "statSync").mockImplementation((...args: Parameters<typeof fs.statSync>) => {
+          if (String(args[0]) === workspaceDir) {
+            throw Object.assign(new Error("fixture metadata failure"), { code });
+          }
+          return realStat(...args);
+        });
+        const noteFn = vi.fn();
+        noteClaudeCliHealth(
+          {
+            agents: {
+              defaults: { model: "claude-cli/claude-sonnet-4-6" },
+              entries: { main: { default: true } },
+            },
+          },
+          {
+            homeDir,
+            workspaceDir,
+            noteFn,
+            isAuthenticated: () => true,
+            resolveCommandPath: () => process.execPath,
+          },
+        );
+        expect(noteFn).toHaveBeenCalledTimes(1);
+        expect(noteBody(noteFn)).toContain("is not readable by this user");
+        expect(noteBody(noteFn)).toContain("readable, writable directory");
+      });
+    },
+  );
+
+  it.each(["missing", "blocked"])("distinguishes a %s workspace path", async (state) => {
+    await withTempHome(({ homeDir, workspaceDir }) => {
+      const parent = path.join(workspaceDir, "parent");
+      if (state === "blocked") {
+        fs.writeFileSync(parent, "not a directory");
+      }
+      const noteFn = vi.fn();
+      noteClaudeCliHealth(
+        {
+          agents: {
+            defaults: { model: "claude-cli/claude-sonnet-4-6" },
+            entries: { main: { default: true } },
+          },
+        },
+        {
+          homeDir,
+          workspaceDir: path.join(parent, "child"),
+          noteFn,
+          isAuthenticated: () => true,
+          resolveCommandPath: () => process.execPath,
+        },
+      );
+      if (state === "missing") {
+        expect(noteFn).not.toHaveBeenCalled();
+      } else {
+        expect(noteBody(noteFn)).toContain("is not readable by this user");
+        expect(fs.readFileSync(parent, "utf8")).toBe("not a directory");
+      }
+    });
+  });
 });
