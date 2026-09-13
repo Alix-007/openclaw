@@ -43,3 +43,66 @@ describe("detectBinary", () => {
     );
   });
 });
+
+describe("detectBinary explicit paths", () => {
+  it("rejects a searchable directory without probing PATH", async () => {
+    const { tmpdir } = await import("node:os");
+    const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-dir-"));
+    try {
+      await expect(detectBinary(root)).resolves.toBe(false);
+      expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it.skipIf(process.platform === "win32")(
+    "observes execution-bit changes without a stale path cache",
+    async () => {
+      const { tmpdir } = await import("node:os");
+      const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-mode-"));
+      const file = path.join(root, "tool");
+      try {
+        fs.writeFileSync(file, "#!/bin/sh\nexit 0\n", { mode: 0o644 });
+        await expect(detectBinary(file)).resolves.toBe(false);
+        fs.chmodSync(file, 0o755);
+        await expect(detectBinary(file)).resolves.toBe(true);
+        fs.chmodSync(file, 0o644);
+        await expect(detectBinary(file)).resolves.toBe(false);
+        expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+      } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+
+  it.skipIf(process.platform === "win32")(
+    "accepts a file symlink but rejects directory and dangling symlinks",
+    async () => {
+      const { tmpdir } = await import("node:os");
+      const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-links-"));
+      try {
+        const executable = path.join(root, "tool");
+        const fileLink = path.join(root, "tool-link");
+        const dirLink = path.join(root, "directory-link");
+        const missingLink = path.join(root, "missing-link");
+        fs.writeFileSync(executable, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+        fs.symlinkSync(executable, fileLink);
+        fs.symlinkSync(root, dirLink);
+        fs.symlinkSync(path.join(root, "absent"), missingLink);
+        await expect(detectBinary(fileLink)).resolves.toBe(true);
+        await expect(detectBinary(dirLink)).resolves.toBe(false);
+        await expect(detectBinary(missingLink)).resolves.toBe(false);
+        expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+      } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+
+  it("accepts the current native runtime and rejects a missing explicit path", async () => {
+    await expect(detectBinary(process.execPath)).resolves.toBe(true);
+    await expect(detectBinary(path.join(process.execPath, "absent"))).resolves.toBe(false);
+    expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+  });
+});
