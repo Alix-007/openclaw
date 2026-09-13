@@ -106,3 +106,78 @@ describe("detectBinary explicit paths", () => {
     expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
   });
 });
+
+describe.skipIf(process.platform === "win32")("detectBinary POSIX path traversal", () => {
+  it.each(["/", "//", "/.", "/../tool"])(
+    "does not erase an invalid executable suffix: %s",
+    async (suffix) => {
+      const { tmpdir } = await import("node:os");
+      const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-suffix-"));
+      try {
+        const file = path.join(root, "tool");
+        const link = path.join(root, "tool-link");
+        fs.writeFileSync(file, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+        fs.symlinkSync(file, link);
+        await expect(detectBinary(file)).resolves.toBe(true);
+        await expect(detectBinary(link)).resolves.toBe(true);
+        // Do not use path.join: it would remove the invalid suffix from the fixture.
+        await expect(detectBinary(`${file}${suffix}`)).resolves.toBe(false);
+        await expect(detectBinary(`${link}${suffix}`)).resolves.toBe(false);
+        expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+      } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+
+  it.each(["absolute", "relative"])(
+    "follows the filesystem parent of a symlink in a %s path",
+    async (form) => {
+      const { tmpdir } = await import("node:os");
+      const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-parent-"));
+      try {
+        const configured = path.join(root, "configured");
+        const actual = path.join(root, "actual");
+        fs.mkdirSync(configured);
+        fs.mkdirSync(path.join(actual, "bin"), { recursive: true });
+        fs.writeFileSync(path.join(actual, "tool"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+        fs.symlinkSync(path.join(actual, "bin"), path.join(configured, "alias"));
+        const prefix = form === "relative" ? path.relative(process.cwd(), configured) : configured;
+        const input = `${prefix}/alias/../tool`;
+        expect(fs.realpathSync.native(input)).toBe(fs.realpathSync.native(path.join(actual, "tool")));
+        expect(fs.existsSync(path.resolve(input))).toBe(false);
+        await expect(detectBinary(input)).resolves.toBe(true);
+        expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+      } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+
+  it.each(["missing", "non-executable"])(
+    "does not accept a lexical decoy when the filesystem target is %s",
+    async (state) => {
+      const { tmpdir } = await import("node:os");
+      const root = fs.mkdtempSync(path.join(tmpdir(), "openclaw-binary-decoy-"));
+      try {
+        const configured = path.join(root, "configured");
+        const actual = path.join(root, "actual");
+        fs.mkdirSync(configured);
+        fs.mkdirSync(path.join(actual, "bin"), { recursive: true });
+        const decoy = path.join(configured, "tool");
+        fs.writeFileSync(decoy, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+        if (state === "non-executable") {
+          fs.writeFileSync(path.join(actual, "tool"), "not executable\n", { mode: 0o644 });
+        }
+        fs.symlinkSync(path.join(actual, "bin"), path.join(configured, "alias"));
+        const input = `${configured}/alias/../tool`;
+        expect(path.resolve(input)).toBe(decoy);
+        await expect(detectBinary(decoy)).resolves.toBe(true);
+        await expect(detectBinary(input)).resolves.toBe(false);
+        expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
+      } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+});
