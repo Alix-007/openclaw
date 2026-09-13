@@ -21,10 +21,8 @@ import {
 import { ABANDONED_UPDATE_RUN_MS } from "../infra/update-run-timeouts.js";
 import { resetLogger, setLoggerOverride } from "../logging/logger.js";
 import { loggingState } from "../logging/state.js";
-import {
-  readPersistedInstalledPluginIndexInstallRecords,
-  writePersistedInstalledPluginIndexInstallRecords,
-} from "../plugins/installed-plugin-index-records.js";
+import { readPersistedInstalledPluginIndexInstallRecords } from "../plugins/installed-plugin-index-records.js";
+import { seedInstalledPluginIndex } from "../plugins/test-helpers/installed-plugin-index.js";
 import { readConfigMachineState } from "../state/config-machine-state.js";
 import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
 import {
@@ -125,6 +123,29 @@ async function seedLastKnownGood(
 }
 
 describe("runDoctorConfigPreflight", () => {
+  it("reports an activation timeout without reopening its finished history", async () => {
+    await withDoctorConfigPreflightHome(async (home) => {
+      await writeOpenClawConfig(home, { gateway: { mode: "local" } });
+      const run = createUpdateRun({ trigger: "cli" });
+      const finished = finishUpdateRun(run.runId, {
+        status: "failed",
+        reason: "update-activation-timeout",
+      });
+
+      await runDoctorConfigPreflight({ migrateState: false, migrateLegacyConfig: false });
+
+      expect(noteMock).toHaveBeenCalledWith(
+        expect.stringContaining("update-activation-timeout"),
+        "Update history",
+      );
+      const output = noteMock.mock.calls.flat().join("\n");
+      expect(output).toContain("openclaw update status");
+      expect(output).toContain("Wait for the owning updater and its child processes to stop");
+      expect(output).toContain("openclaw update repair");
+      expect(getUpdateRun(run.runId)).toEqual(finished);
+    });
+  });
+
   it("surfaces recorded cleanup warnings from a successful update", async () => {
     await withDoctorConfigPreflightHome(async (home) => {
       await writeOpenClawConfig(home, { gateway: { mode: "local" } });
@@ -254,7 +275,7 @@ describe("runDoctorConfigPreflight", () => {
         const configPath = await writeOpenClawConfig(home, config);
         const canonical = { source: "path" as const, installPath: path.join(home, "canonical") };
         const legacy = { source: "path" as const, installPath: path.join(home, "legacy") };
-        await writePersistedInstalledPluginIndexInstallRecords({ existing: canonical }, { config });
+        await seedInstalledPluginIndex({ existing: canonical }, { config });
         const options = { ...startupCheckpointOptions, skipPristineStartupStateMigrations: true };
         const checkpointStatus = (
           preflight: Awaited<ReturnType<typeof runDoctorConfigPreflight>>,

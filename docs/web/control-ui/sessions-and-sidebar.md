@@ -81,6 +81,8 @@ Each group contains the agent's pinned and recent sessions, with the usual sessi
 
 Groups share a window of at most 300 sessions across agents with [Agents home](/web/control-ui#agents-home), loading pinned sessions first and then the most recent sessions. Pinned sessions count toward that limit, so more than 300 pinned sessions cannot all appear in this view. The open conversation can remain visible outside this window. **Involving me** loads the same bounded window filtered by the Gateway; the other filters apply to the loaded sessions across groups.
 
+Activity refreshes pause while the browser tab is hidden and catch up when you return. Changes that arrive during a roster read share one follow-up refresh; switching filters never combines pages from different filters.
+
 The **Online** list opens a person's activity card with their reported device,
 platform, and connection type: **Web**, **App**, **Terminal** for the TUI, or
 **Command line**. Renaming a device does not change its connection type. Duplicate
@@ -106,7 +108,7 @@ Enable **Hide empty groups** in the same menu to hide custom groups with no sess
 
 Selecting a specific owner or **Involving me** automatically hides session sections with no matching sessions, including empty custom groups, **Groups**, and **Other**. Populated sections stay visible even when collapsed. Clearing the filter restores the normal collaborator and drag-target behavior without changing the **Hide empty groups** preference.
 
-Native CLI catalogs appear only when they contain sessions matching the current owner filter. Empty catalogs stay hidden even when discovery fails or the CLI can start new sessions. If more pages remain, discovery advances one page per catalog between refreshes until a matching session appears, the catalog is exhausted, or a host reports an error. It preserves that progress and pauses while the browser tab is hidden. Returning to the tab or connecting a host queues a fresh scan after any in-flight discovery page finishes. Populated catalogs remain visible when another host fails, with discovery details in their status indicator. Hidden catalogs do not keep the **Other** heading visible when it is the only remaining section. Native CLI starts remain available from **New session**.
+Native CLI catalogs appear only when they contain sessions matching the current owner filter. Empty catalogs stay hidden even when discovery fails or the CLI can start new sessions. If more pages remain, discovery advances one page per catalog between refreshes until a matching session appears, the catalog is exhausted, or a host reports an error. It preserves that progress and pauses while the browser tab is hidden. Returning to the tab or connecting a host queues a fresh scan after any in-flight discovery page finishes. Refreshes still check the first page for new sessions, while empty discovery pages advance without replaying the entire prefix. A completed empty scan starts again on the next regular refresh so older sessions that become visible are still discovered. Populated catalogs remain visible when another host fails, with discovery details in their status indicator. Hidden catalogs do not keep the **Other** heading visible when it is the only remaining section. Native CLI starts remain available from **New session**.
 
 **Mark as unread** creates a reminder that remains unread while the current chat stays open, including while a run streams or completes. Leave and reopen the session, or choose **Mark as read**, to clear it.
 

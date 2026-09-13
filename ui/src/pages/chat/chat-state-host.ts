@@ -47,6 +47,7 @@ export type ChatPageHost = ChatHost &
   PullRequestRefreshHost &
   SessionWorkspaceHost &
   BackgroundTasksHost & {
+    chatMetadataIsPresented?: () => boolean;
     chatSubmissions: ApplicationContext["chatSubmissions"];
     password: string;
     onboarding: boolean;
@@ -152,7 +153,10 @@ export type ChatPageHost = ChatHost &
     submitQueuedChatMessageEdit: () => void;
     cancelQueuedChatMessageEdit: () => void;
     handleCloseSidebar: (slot: "detail" | "workspace") => void;
-    updateSidebarLayout: (layout: SidebarLayout) => void;
+    updateSidebarLayout: (
+      layout: SidebarLayout,
+      options?: { persist?: boolean; dashboardPresentation?: "personal"; geometryOnly?: boolean },
+    ) => void;
     beginImageOpen: () => number;
     handleOpenImage: (item: ImageLightboxItem, requestVersion?: number) => void;
     handleCloseImage: () => void;

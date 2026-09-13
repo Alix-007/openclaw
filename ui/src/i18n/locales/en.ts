@@ -13,12 +13,15 @@ export const en: TranslationMap & {
   // Lazy en-devices.ts assigns into this namespace.
   devices: TranslationMap;
   desktop: TranslationMap &
-    Record<"title" | "openWindow" | "unavailable" | "toggle" | "reconnect", string>;
+    Record<"title" | "openWindow" | "unavailable" | "toggle" | "reconnect" | "connecting", string>;
   updates: TranslationMap;
   login: TranslationMap;
   skillWorkshop: TranslationMap;
 } = {
   pluginUi: {
+    sessionRecentMessages: "Recent messages",
+    sessionHistoryUnavailable: "Session history could not be loaded. Try again.",
+    sessionHistoryEmpty: "No recent messages.",
     customize: "Customize UI",
     selectionScope: "Choose views for this browser window. Built-in views are always available.",
     builtin: "Built-in view",
@@ -1305,6 +1308,8 @@ export const en: TranslationMap & {
     },
     iconEmojiSection: "Emoji",
     iconGlyphSection: "Icons",
+    noIcon: "No icon",
+    noColor: "No color",
     customEmojiCell: "Custom emoji…",
     customEmojiTitle: "Custom emoji",
     customEmojiSet: "Set",
@@ -1886,6 +1891,12 @@ export const en: TranslationMap & {
     autoSavePaused: "Autosave paused after reconnect",
     saveNow: "Save",
     autoSaveFailed: "Save failed",
+    recoveryNotRestored:
+      "Settings could not be restored. Your draft is kept. Check {path} before saving again.",
+    recoveryUnknown:
+      "Settings restoration could not be confirmed. Your draft is kept. Check {path} before saving again.",
+    recoveryBackup: "Inspect the recovery backup at {path}.",
+    recoveryReload: "Discard draft and reload",
     autoSaveConflict: "Settings changed elsewhere",
     retry: "Retry",
     applyChanges: "Apply changes",
@@ -2370,6 +2381,7 @@ export const en: TranslationMap & {
     unavailable: "Desktop viewing is unavailable for this connection.",
     toggle: "Toggle desktop panel",
     reconnect: "Reconnect",
+    connecting: "Connecting to desktop…",
   },
   routeTitles: {
     modelProviders: "Models",
@@ -3148,69 +3160,7 @@ export const en: TranslationMap & {
     gatewayVersionHint:
       "Reported by the active Gateway connection; separate from this Control UI build.",
   },
-  appsPage: {
-    heroTitle: "Take OpenClaw everywhere",
-    heroTagline:
-      "Companion apps for your phone, watch, desktop, and browser — plus plugins to extend what your agent can do.",
-    sectionMobile: "On your phone",
-    havePhone: "Already have the app?",
-    pairDevice: "Pair your device",
-    sectionWatch: "On your wrist",
-    sectionDesktop: "On your desktop",
-    sectionBrowser: "In your browser",
-    sectionCommunity: "Community",
-    badgeBundledIos: "Included with the iOS app",
-    badgeBundledAndroid: "Included with the Android app",
-    ctaAppStore: "App Store",
-    ctaPlayStore: "Google Play",
-    ctaDownload: "Download",
-    ctaOpenMac: "Open in Mac app",
-    ctaDocs: "Docs",
-    ctaSetupGuide: "Setup guide",
-    ctaChromeWebStore: "Chrome Web Store",
-    ctaOpenPlugins: "Open Plugins",
-    ctaBrowseClawHub: "Browse ClawHub",
-    linkDiscord: "Discord community",
-    linkDocs: "Docs",
-    cards: {
-      ios: {
-        title: "iPhone",
-        desc: "Chat, talk, approve actions, and share into OpenClaw from iOS.",
-      },
-      android: {
-        title: "Android",
-        desc: "Your Android phone as a full OpenClaw device — chat, camera, and Canvas.",
-      },
-      appleWatch: {
-        title: "Apple Watch",
-        desc: "Glanceable chats and quick replies from your wrist.",
-      },
-      wearOs: {
-        title: "Wear OS",
-        desc: "The Android companion extends OpenClaw to your watch.",
-      },
-      macos: {
-        title: "macOS",
-        desc: "Menu bar companion for your Gateway — notifications, approvals, quick chat.",
-      },
-      windows: {
-        title: "Windows",
-        desc: "The Windows companion connects your PC as an OpenClaw device.",
-      },
-      linux: {
-        title: "Linux",
-        desc: "Native desktop app — .deb and AppImage builds.",
-      },
-      chrome: {
-        title: "Chrome extension",
-        desc: "Let OpenClaw drive your existing Chrome — tabs, pages, and forms.",
-      },
-      plugins: {
-        title: "Plugins & ClawHub",
-        desc: "Extend OpenClaw with channels, tools, and skills from the community.",
-      },
-    },
-  },
+  appsPage: {},
   presence: {
     sharedOwner: {
       name: "Shared owner",
@@ -3773,6 +3723,8 @@ export const en: TranslationMap & {
   palette: {
     placeholder: "Search chats and commands…",
     noResults: "No results",
+    searchingSessions: "Searching sessions…",
+    searchingCommands: "Searching commands…",
     searchFailed: "Chat search failed — check the gateway logs and retry",
     modelSearchFailed: "Model search unavailable. Change your search to retry.",
     searchPartial: "Transcript search unavailable — showing chat titles and metadata",
@@ -4384,6 +4336,7 @@ export const en: TranslationMap & {
       runningSetup: "Running setup…",
       provisioningEnvironment: "Provisioning environment…",
       preparingContext: "Preparing this turn…",
+      memoryFlushing: "Saving conversation memory…",
       startingModel: "Waiting for a response…",
     },
     archivedSessionDisabled: "This session is archived. Unarchive it to continue the conversation.",
@@ -5221,6 +5174,12 @@ export const en: TranslationMap & {
       expand: "Focus",
       expandPanel: "Expand {panel}",
       restore: "Restore split",
+      useViewAsDefault: "Use current view as default",
+      savingDefault: "Saving default…",
+      defaultSaved: "Dashboard default saved for future opens.",
+      defaultSaveFailed:
+        "Could not save the dashboard default. Check the connection and try again.",
+      defaultSaveError: "Could not save the dashboard default: {error}",
       swap: "Swap {main} and {side}",
       layout: "Layout",
       dockLeft: "Move side panel left",
@@ -5314,7 +5273,9 @@ export const en: TranslationMap & {
       browserAnnotationRemoved: "Browser annotation removed.",
       browserAnnotationUndoUnavailable:
         "Undo is unavailable because the browser annotation limit has been reached.",
+      preparingAttachments: "Preparing attachments…",
       removeAttachment: "Remove attachment",
+      removeNamedAttachment: "Remove {name}",
       removeBrowserAnnotation: "Remove browser annotation: {name}",
       addAttachment: "Add attachment",
       attachPhoto: "Photo",
