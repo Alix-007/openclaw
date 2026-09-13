@@ -144,7 +144,9 @@ describe.skipIf(process.platform === "win32")("detectBinary POSIX path traversal
         fs.symlinkSync(path.join(actual, "bin"), path.join(configured, "alias"));
         const prefix = form === "relative" ? path.relative(process.cwd(), configured) : configured;
         const input = `${prefix}/alias/../tool`;
-        expect(fs.realpathSync.native(input)).toBe(fs.realpathSync.native(path.join(actual, "tool")));
+        expect(fs.realpathSync.native(input)).toBe(
+          fs.realpathSync.native(path.join(actual, "tool")),
+        );
         expect(fs.existsSync(path.resolve(input))).toBe(false);
         await expect(detectBinary(input)).resolves.toBe(true);
         expect(runCommandWithTimeoutMock).not.toHaveBeenCalled();
