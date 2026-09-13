@@ -1,0 +1,66 @@
+name: PR 146988 native availability proof
+on:
+  push:
+    branches: [alix/proof-146988-501e289-20260913]
+permissions:
+  contents: read
+concurrency:
+  group: pr146988-proof-501e289
+  cancel-in-progress: false
+jobs:
+  proof:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Read proof harness
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: harness
+          persist-credentials: false
+      - name: Read exact product revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: Alix-007/openclaw
+          ref: 501e289e4acef40a68f171b3e2666d8a00241fbc
+          path: product
+          persist-credentials: false
+      - name: Set supported Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 26.1.0
+      - name: Install locked product dependencies
+        id: install
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          manager="$(node -p 'require("./package.json").packageManager.split("+")[0]')"
+          npm install --global "$manager"
+          pnpm install --frozen-lockfile
+      - name: Check affected formatting
+        if: runner.os == 'Linux'
+        shell: bash
+        working-directory: product
+        run: pnpm exec oxfmt --check src/infra/detect-binary.ts src/infra/detect-binary.test.ts src/infra/executable-path.ts
+      - name: Run focused existing tests
+        if: runner.os == 'Linux' && !cancelled() && steps.install.outcome == 'success'
+        shell: bash
+        working-directory: product
+        run: node scripts/run-vitest.mjs src/infra/detect-binary.test.ts src/infra/executable-path.test.ts
+      - name: Read native detector behavior
+        if: '!cancelled() && steps.install.outcome == ''success'''
+        shell: bash
+        working-directory: product
+        run: node --import ./scripts/tsx.mjs ../harness/proof.mjs . "$RUNNER_TEMP/pr146988-evidence/proof.json"
+      - name: Retain actual observations
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pr146988-501e289-${{ runner.os }}
+          path: ${{ runner.temp }}/pr146988-evidence/
+          if-no-files-found: warn
+          retention-days: 30
