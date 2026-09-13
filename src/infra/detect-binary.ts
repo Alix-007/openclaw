@@ -3,7 +3,7 @@ import path from "node:path";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { resolveUserPath } from "../utils.js";
 import { isSafeExecutableValue } from "./exec-safety.js";
-import { resolveExecutablePath } from "./executable-path.js";
+import { isExecutableFile } from "./executable-path.js";
 import { getWindowsSystem32ExePath } from "./windows-install-roots.js";
 
 // Binary detection accepts safe executable names or explicit paths and avoids
@@ -23,9 +23,9 @@ export async function detectBinary(name: string): Promise<boolean> {
     resolved.includes("/") ||
     resolved.includes("\\")
   ) {
-    // Explicit paths use the same file-type and execution checks as command resolution.
-    // Resolve dot-prefixed names here so they remain cwd-relative rather than PATH lookups.
-    return resolveExecutablePath(path.resolve(resolved), { useCache: false }) !== undefined;
+    // Callers execute this path as supplied. Let the filesystem resolve symlink/..
+    // and trailing separators instead of changing their meaning with path.resolve.
+    return isExecutableFile(resolved);
   }
 
   const command =
