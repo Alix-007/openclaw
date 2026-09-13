@@ -151,9 +151,10 @@ async function readLogSlice(params: {
       lines = lines.slice(lines.length - limit);
     }
 
-    // Keep an unterminated record pending so a later read can emit it whole.
+    // Advance only through complete records actually read, not the earlier stat size:
+    // concurrent truncation can shorten the read, and later appends must remain visible.
     const lastNewline = buffer.subarray(0, bytesRead).lastIndexOf(0x0a);
-    cursor = text.endsWith("\n") ? size : start + lastNewline + 1;
+    cursor = start + lastNewline + 1;
 
     return {
       cursor,
