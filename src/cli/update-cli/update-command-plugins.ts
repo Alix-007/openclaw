@@ -17,8 +17,10 @@ import {
   withoutPluginInstallRecords,
   withPluginInstallRecords,
 } from "../../plugins/installed-plugin-index-records.js";
+import { listPersistedBundledPluginLocationBridges } from "../../plugins/location-bridges.js";
 import { isTrustedOfficialPluginInstallRecord } from "../../plugins/official-external-install-records.js";
 import type { MissingPluginInstallPayload } from "../../plugins/payload-verification.js";
+import { withPluginLifecycleLease } from "../../plugins/plugin-lifecycle-lease.js";
 import { refreshPluginRegistryAfterConfigMutation } from "../../plugins/registry-refresh.js";
 import { convergePluginReleaseCohort } from "../../plugins/update-cohort.js";
 import {
@@ -33,13 +35,14 @@ import {
 import { defaultRuntime, type RuntimeEnv } from "../../runtime.js";
 import { formatCliCommand } from "../command-format.js";
 import { resolvePluginCapabilityConsentCliOptions } from "../plugin-capability-consent.js";
-import { listPersistedBundledPluginLocationBridges } from "../plugins-location-bridges.js";
 import { readPackageVersion } from "./shared.js";
 import {
+  assessPluginUpdate,
   buildInvalidConfigPostCoreUpdateResult,
   createPluginUpdateWarning,
   type PluginUpdateWarning,
   type PostCorePluginUpdateResult,
+  type ProducedPluginUpdateResult,
 } from "./update-command-plugins-internals.js";
 
 export type { PostCorePluginUpdateResult } from "./update-command-plugins-internals.js";
@@ -82,7 +85,9 @@ function isActionableSkippedPostUpdateOutcome(outcome: PluginUpdateOutcome): boo
 
 export async function updatePluginsAfterCoreUpdate(params: {
   root: string;
-  beforePersistentEffect?: () => void | Promise<void>;
+  assertCurrent?: () => void;
+  /** Requirements for this installation, supplied by its owner. Missing is not optional. */
+  pluginRequirements?: Readonly<Record<string, "optional" | "required">>;
   channel: UpdateChannel;
   configSnapshot: Awaited<ReturnType<typeof readConfigFileSnapshot>>;
   configWriteOptions: ConfigWriteOptions;
@@ -94,8 +99,10 @@ export async function updatePluginsAfterCoreUpdate(params: {
   acceptCapabilities?: boolean;
   onCapabilityConsent?: PluginCapabilityConsentHandler;
   runtime?: RuntimeEnv;
-}): Promise<PostCorePluginUpdateResult> {
+}): Promise<ProducedPluginUpdateResult> {
+  params.assertCurrent?.();
   const runtime = params.runtime ?? defaultRuntime;
+  const requirements = { ...params.pluginRequirements };
   if (!params.configSnapshot.valid) {
     const invalid = buildInvalidConfigPostCoreUpdateResult();
     if (!params.json) {
@@ -104,7 +111,7 @@ export async function updatePluginsAfterCoreUpdate(params: {
         runtime.log(theme.muted(`  ${line}`));
       }
     }
-    return invalid.result;
+    return { ...invalid.result, assessment: { kind: "core-critical", reason: "invalid-config" } };
   }
 
   const clawHubTrustNotices = new Set<string>();
@@ -204,6 +211,10 @@ export async function updatePluginsAfterCoreUpdate(params: {
     return false;
   };
 
+  const externalizedBundledPluginBridges = await listPersistedBundledPluginLocationBridges({
+    workspaceDir: params.root,
+  });
+  params.assertCurrent?.();
   const cohort = await convergePluginReleaseCohort({
     config: withPluginInstallRecords(params.configSnapshot.sourceConfig, pluginInstallRecords),
     channel: pluginUpdateChannel,
@@ -211,15 +222,18 @@ export async function updatePluginsAfterCoreUpdate(params: {
     versionBoundPluginIds: VERSION_BOUND_RUNTIME_PLUGIN_IDS,
     timeoutMs: params.timeoutMs,
     workspaceDir: params.root,
-    externalizedBundledPluginBridges: await listPersistedBundledPluginLocationBridges({
-      workspaceDir: params.root,
-    }),
+    externalizedBundledPluginBridges,
+    beforePersistentEffect: params.assertCurrent,
     logger: pluginLogger,
     onIntegrityDrift: onPluginIntegrityDrift,
     ...capabilityConsent,
   });
+  params.assertCurrent?.();
   for (const error of cohort.sync.summary.errors) {
     collectPluginOutcome({ ...error, status: "error" });
+  }
+  for (const warning of cohort.sync.summary.warnings) {
+    getLogger().warn(warning);
   }
   let pluginConfig = cohort.config;
   let pluginsChanged = cohort.changed || params.configChanged === true;
@@ -252,9 +266,10 @@ export async function updatePluginsAfterCoreUpdate(params: {
     env: process.env,
     compatibilityHostVersion: coreVersion ?? undefined,
     baselineInstallRecords: convergenceBaselineRecords,
-    beforePersistentEffect: params.beforePersistentEffect,
+    beforePersistentEffect: params.assertCurrent,
     ...capabilityConsent,
   });
+  params.assertCurrent?.();
   const repairedPluginIds = new Set([
     ...[...cohort.repairOutcomes, ...cohort.updateOutcomes]
       .filter((outcome) => outcome.status === "updated" || outcome.status === "unchanged")
@@ -373,7 +388,7 @@ export async function updatePluginsAfterCoreUpdate(params: {
     // Installed plugin metadata can own migrations that this process has not loaded yet.
     // Finalization runs fresh doctor plus strict validation before the update can complete.
     await commitPluginInstallRecordsWithConfig({
-      beforePersistentEffect: params.beforePersistentEffect,
+      beforePersistentEffect: params.assertCurrent,
       previousInstallRecords: pluginInstallRecords,
       nextInstallRecords,
       nextConfig,
@@ -384,15 +399,19 @@ export async function updatePluginsAfterCoreUpdate(params: {
         skipPluginValidation: true,
       },
     });
-    await params.beforePersistentEffect?.();
-    await refreshPluginRegistryAfterConfigMutation({
-      configPath: params.configSnapshot.path,
-      reason: "source-changed",
-      workspaceDir: params.root,
-      installRecords: nextInstallRecords,
-      invalidateRuntimeCache: false,
-      logger: pluginLogger,
-    });
+    params.assertCurrent?.();
+    await withPluginLifecycleLease({ assertCurrent: params.assertCurrent }, async (lease) =>
+      refreshPluginRegistryAfterConfigMutation({
+        configPath: params.configSnapshot.path,
+        reason: "source-changed",
+        workspaceDir: params.root,
+        installRecords: nextInstallRecords,
+        invalidateRuntimeCache: false,
+        logger: pluginLogger,
+        lease,
+      }),
+    );
+    params.assertCurrent?.();
   }
 
   for (const notice of clawHubTrustNotices) {
@@ -406,15 +425,41 @@ export async function updatePluginsAfterCoreUpdate(params: {
     });
   }
 
+  const assessment = assessPluginUpdate({
+    smokeFailures: convergence.smokeFailures,
+    // A failed cohort repair can disable a plugin before active smoke verification.
+    // Keep that unavailable capability visible; prior failures that were re-enabled
+    // by a successful repair remain diagnostic history only.
+    disabledPluginIds: [
+      ...new Set(
+        pluginUpdateOutcomes
+          .filter(
+            (outcome) =>
+              isDisabledAfterFailureOutcome(outcome) &&
+              pluginConfig.plugins?.entries?.[outcome.pluginId]?.enabled === false,
+          )
+          .map((outcome) => outcome.pluginId),
+      ),
+    ],
+    errored: convergence.errored,
+    outcomes: pluginUpdateOutcomes,
+    integrityDrift: integrityDrifts.length > 0,
+    requirements,
+  });
+  // Keep the established caller status contract. Assessment is separate evidence;
+  // consuming it to change restart/finalization requires a qualified caller cutover.
   const finalPluginOutcomes = [
     ...new Map(pluginUpdateOutcomes.map((outcome) => [outcome.pluginId, outcome])).values(),
   ];
   const status =
-    warnings.length > 0 || finalPluginOutcomes.some((outcome) => outcome.status === "error")
+    warnings.length > 0 ||
+    cohort.sync.summary.warnings.length > 0 ||
+    finalPluginOutcomes.some((outcome) => outcome.status === "error")
       ? "warning"
       : "ok";
-  const result: PostCorePluginUpdateResult = {
+  const result: ProducedPluginUpdateResult = {
     status,
+    assessment,
     changed: pluginsChanged,
     warnings,
     sync: {

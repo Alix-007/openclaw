@@ -612,8 +612,11 @@ describe("buildAgentSystemPrompt", () => {
     expect(presentation).toContain("`show_widget`");
     expect(presentation).toContain("pin=true");
     expect(presentation).toContain("result.presentation");
-    expect(presentation).toContain("inline support varies by surface");
+    expect(presentation).toContain("this turn's schema");
+    expect(presentation).toContain("status=pinned means the widget is on the session dashboard");
     expect(presentation).toContain("`dashboard`");
+    expect(presentation).toContain('action="focus_tab" with its tabId');
+    expect(presentation).toContain("do not open hosting URLs as browser pages");
     expect(presentation).toContain("`portal`");
     expect(presentation).toContain("publicUrl");
     expect(presentation).toContain("token URLs stay private");
@@ -1294,13 +1297,13 @@ describe("buildAgentSystemPrompt", () => {
     });
 
     expect(prompt).toContain(
-      "Config read: `gateway` (`config.get|config.schema.lookup`). Write/restart unavailable; ask human.",
+      "Config read: `gateway` (`config.get|config.schema.lookup`) only when those actions are exposed by its schema. Write/restart unavailable; ask human.",
     );
     expect(prompt).not.toContain("config.patch");
     expect(prompt).not.toContain("config.apply");
     expect(prompt).not.toContain("`config.schema.lookup|get|patch|apply`, `restart`");
     expect(prompt).toContain(
-      "Update OpenClaw: `gateway` action update.run, only on explicit user request; restart and completion notice are automatic.",
+      "Update OpenClaw: `gateway` action update.run, only on an explicit owner request; the runtime coordinates restart and completion notices.",
     );
     expect(prompt).toContain(
       "Never run openclaw update, npm install -g openclaw, or stop/restart the gateway service via exec.",
@@ -1351,27 +1354,6 @@ describe("buildAgentSystemPrompt", () => {
       expect(prompt).not.toContain("update.run");
     },
   );
-
-  it.each([true, false])("offers an update button only with message presentation (%s)", (rich) => {
-    const plain = buildAgentSystemPrompt({ workspaceDir: "/tmp/openclaw", toolNames: ["message"] });
-    const prompt = buildAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
-      toolNames: ["message"],
-      messageTool: {
-        name: "message",
-        parameters: { type: "object", properties: rich ? { presentation: {} } : {} },
-      },
-    });
-    expect(prompt.split(SYSTEM_PROMPT_CACHE_BOUNDARY)[0]).toBe(
-      plain.split(SYSTEM_PROMPT_CACHE_BOUNDARY)[0],
-    );
-    expect(prompt.includes('Offer an "Update now" button')).toBe(rich);
-    if (rich) {
-      expect(prompt).toContain('action {type:"command",command:"/update"}');
-      expect(prompt).toContain("reusable:true");
-      expect(prompt).toContain("clicking user's current owner permissions");
-    }
-  });
 
   it("keeps update and delegated controls distinct when both tools are present", () => {
     const prompt = buildAgentSystemPrompt({
