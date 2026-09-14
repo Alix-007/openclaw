@@ -1,4 +1,8 @@
 import { resolveBootstrapWarningSignaturesSeen } from "../../agents/bootstrap-budget.js";
+import {
+  cliBackendAcceptsAuthProfileForwarding,
+  resolveCliExecutionAuthProfileId,
+} from "../../agents/cli-execution-auth.js";
 import { buildCliMcpDelegationCapabilityBinding } from "../../agents/cli-runner/mcp-grant-context.js";
 import {
   clearCliSessionInStore,
@@ -80,8 +84,10 @@ export async function runCliFallbackCandidate(
       resolveReplyOperationTerminationFields(error, params.runAbortSignal, turn.replyOperation),
   });
   params.onLifecycleBackstop(lifecycleBackstop);
-  const authProfile = resolveRunAuthProfile(params.candidateRun, params.cliExecutionProvider, {
+  const allowCliAuthProfileForwarding = cliBackendAcceptsAuthProfileForwarding({
+    provider: params.cliExecutionProvider,
     config: params.runtimeConfig,
+    agentId: params.candidateRun.agentId,
   });
   const hookMessageProvider = resolveOriginMessageProvider({
     originatingChannel: turn.followupRun.originatingChannel,
@@ -161,6 +167,20 @@ export async function runCliFallbackCandidate(
           throw createAgentRunSupersededAbortError();
         }
         const cliSessionBinding = getCliSessionBinding(sessionEntry, params.cliExecutionProvider);
+        // The CLI owner must see explicit pins before provider scoping can discard them.
+        const authProfileId = allowCliAuthProfileForwarding
+          ? resolveCliExecutionAuthProfileId({
+              cliExecutionProvider: params.cliExecutionProvider,
+              authProfileProvider: params.provider,
+              config: params.runtimeConfig,
+              agentDir: params.candidateRun.agentDir,
+              selected: params.candidateRun,
+              sessionBinding: cliSessionBinding,
+            })
+          : resolveRunAuthProfile(params.candidateRun, params.cliExecutionProvider, {
+              config: params.runtimeConfig,
+            }).authProfileId;
+        const diagnosticOwner = params.deferredLifecycle.handoffToCli();
         const mediaTaskIdsBefore = getGeneratedMediaTaskIdsForSessionKey(turn.sessionKey);
         let droppedCliSessionReplacement = false;
         const candidateResult = await runCliAgentWithLifecycle({
@@ -311,6 +331,7 @@ export async function runCliFallbackCandidate(
               : undefined,
           runParams: {
             preparedRunAdmission: params.preparedRunAdmission,
+            diagnosticOwner,
             sessionId: turn.followupRun.run.sessionId,
             sessionKey,
             sessionTarget,
@@ -386,7 +407,7 @@ export async function runCliFallbackCandidate(
             ownerNumbers: turn.followupRun.run.ownerNumbers,
             cliSessionId: cliSessionBinding?.sessionId,
             cliSessionBinding,
-            authProfileId: authProfile.authProfileId,
+            authProfileId,
             bootstrapContextMode: turn.opts?.bootstrapContextMode,
             bootstrapContextRunKind: params.bootstrapContextRunKind,
             bootstrapPromptWarningSignaturesSeen: params.bootstrapPromptWarningSignaturesSeen,
@@ -472,6 +493,7 @@ export async function runCliFallbackCandidate(
         return candidateResult;
       },
       {
+        preparedRunAdmission: params.preparedRunAdmission,
         lifecycleGeneration: params.lifecycleGeneration,
         abortSignal: params.runAbortSignal,
         trigger: turn.isHeartbeat ? "heartbeat" : "user",

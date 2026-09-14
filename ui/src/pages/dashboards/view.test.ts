@@ -1,7 +1,7 @@
 /* @vitest-environment jsdom */
 
 import { render } from "lit";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { SessionsListResult } from "../../api/types.ts";
 import { renderDashboards, type DashboardsRouteData } from "./view.ts";
 
@@ -23,7 +23,7 @@ function routeData(sessions: SessionsListResult["sessions"], basePath = ""): Das
 
 describe("dashboards index", () => {
   it.each(["", "/openclaw"])(
-    "links each dashboard back to its owning chat with the panel expanded at %s",
+    "links each dashboard to an ordinary open that respects presentation defaults at %s",
     (basePath) => {
       const container = document.createElement("div");
       render(
@@ -40,7 +40,6 @@ describe("dashboards index", () => {
             ],
             basePath,
           ),
-          vi.fn(),
         ),
         container,
       );
@@ -49,13 +48,13 @@ describe("dashboards index", () => {
       expect(row?.textContent).toContain("Deploy monitor");
       expect(
         row?.querySelector<HTMLAnchorElement>(".dashboard-card__main")?.getAttribute("href"),
-      ).toBe(`${basePath}/chat/main/deploy-monitor-12345678?dashboard=expanded`);
+      ).toBe(`${basePath}/dashboard/main/deploy-monitor-12345678`);
     },
   );
 
   it("explains how to create a dashboard when the list is empty", () => {
     const container = document.createElement("div");
-    render(renderDashboards(routeData([]), vi.fn()), container);
+    render(renderDashboards(routeData([])), container);
 
     const empty = container.querySelector("[data-dashboards-empty]");
     expect(empty?.textContent).toContain("No dashboards yet");

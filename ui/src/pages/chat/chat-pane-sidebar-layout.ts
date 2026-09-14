@@ -1,4 +1,4 @@
-import { html, type TemplateResult } from "lit";
+import { html, nothing, type TemplateResult } from "lit";
 import { styleMap } from "lit/directives/style-map.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
 import { ensureCustomElementDefined } from "../../app/lazy-custom-element.ts";
@@ -16,15 +16,15 @@ import type {
   SidebarRegionCallbacks,
 } from "./components/chat-sidebar-region-types.ts";
 import type { SidebarFullMessageLoader } from "./components/chat-sidebar.ts";
+import type { LinkFaviconFetcher } from "./link-favicon-loader.ts";
 import {
   activatePanel,
+  toggleSidebarPanelExpanded,
   closeSlot,
-  ensureSidebarConversation,
   fitSidebarLayout,
   isSidebarRegionCollapsed,
   openSlot,
   reorderPanel,
-  setSidebarExpanded,
   sidebarDock,
   sidebarMainPanel,
   isSidebarSlotVisible,
@@ -110,7 +110,6 @@ export function sidebarRegionCallbacks(params: {
   layout: SidebarLayout;
   closePanelSlot: (slot: SidebarSlotId) => void;
   openPanelSlot: (slot: SidebarSlotId) => void;
-  appendComposerText: (text: string) => void;
   forgetDiscussionUrl: () => void;
   resizePanel: (columnId: string, size: number) => void;
   setPanelOpen: (open: boolean) => void;
@@ -118,7 +117,18 @@ export function sidebarRegionCallbacks(params: {
   const { layout, state } = params;
   return {
     activatePanel: (panelId) => {
-      state.updateSidebarLayout(activatePanel(layout, panelId));
+      const slot = layout.columns[0]?.panels.find((panel) => panel.id === panelId)?.slot;
+      if (slot === "dashboard" && !isSidebarSlotVisible(layout, "dashboard")) {
+        params.openPanelSlot(slot);
+      } else {
+        state.updateSidebarLayout(activatePanel(layout, panelId));
+      }
+      state.updateSidebarActivePanel(panelId);
+    },
+    togglePanelExpanded: (panelId) => {
+      state.updateSidebarLayout(toggleSidebarPanelExpanded(layout, panelId), {
+        dashboardPresentation: "personal",
+      });
       state.updateSidebarActivePanel(panelId);
     },
     closeSlot: (slot) => {
@@ -132,17 +142,15 @@ export function sidebarRegionCallbacks(params: {
       params.closePanelSlot(slot);
     },
     openSlot: params.openPanelSlot,
-    appendComposerText: params.appendComposerText,
     reorderPanel: (panelId, targetPanelId, placement) =>
       state.updateSidebarLayout(reorderPanel(layout, panelId, targetPanelId, placement)),
     resizePanel: params.resizePanel,
-    setExpanded: (expanded) =>
-      state.updateSidebarLayout(setSidebarExpanded(ensureSidebarConversation(layout), expanded)),
     setOpen: params.setPanelOpen,
   };
 }
 
 export function renderSidebarRegion(params: {
+  fetchFavicon?: LinkFaviconFetcher;
   availableWidth: number;
   callbacks: SidebarRegionCallbacks;
   availableSlots: SidebarSlotId[];
@@ -151,6 +159,7 @@ export function renderSidebarRegion(params: {
   panelDefinitions?: SidebarPanelDefinition[];
   panelActions: SidebarPanelTemplates;
   panelTemplates: SidebarPanelTemplates;
+  header?: TemplateResult | typeof nothing;
   primary: TemplateResult;
   requestUpdate: () => void;
 }): TemplateResult {
@@ -183,12 +192,13 @@ export function renderSidebarRegion(params: {
   return html`<div
     class="sidebar-region ${collapsed ? "sidebar-region--narrow" : ""} ${
       params.layout.expanded ? "sidebar-region--expanded" : ""
-    } sidebar-region--${sidebarDock(params.layout)} ${panelOpen ? "sidebar-region--open" : ""}"
+    } ${params.layout.expanded && params.layout.expandedSide ? "sidebar-region--expanded-side" : ""} sidebar-region--${sidebarDock(params.layout)} ${panelOpen ? "sidebar-region--open" : ""}"
     style=${styleMap({
       "--side-panel-width": `${column?.width ?? 480}px`,
       "--side-panel-height": `${column?.height ?? 360}px`,
     })}
   >
+    <div class="sidebar-region__header">${params.header ?? nothing}</div>
     ${
       regionError !== undefined
         ? regionError === null
@@ -196,6 +206,7 @@ export function renderSidebarRegion(params: {
           : null
         : html`<openclaw-chat-sidebar-region
             .layout=${params.layout}
+            .fetchFavicon=${params.fetchFavicon}
             .panelDefinitions=${panelDefinitions}
             .panelTemplates=${panelTemplates ?? params.panelTemplates}
             .panelActions=${params.panelActions}
@@ -222,10 +233,8 @@ export function resolveSidebarLayoutForBoard(params: {
   paneWidth: number;
 }): SidebarLayout {
   let layout = params.layout;
-  if (!params.board.hasBoard) {
-    if (params.board.provider.hasLoadedSnapshot) {
-      layout = closeSlot(layout, "dashboard");
-    }
+  if (!params.board.available) {
+    layout = closeSlot(layout, "dashboard");
     return fitSidebarLayout(layout, params.paneWidth) ?? layout;
   }
   if (params.board.face !== "dashboard" || layout.columns.length > 0) {

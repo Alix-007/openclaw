@@ -1,6 +1,9 @@
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
+import { registerControlUiReloadGuard } from "../../app/document-reload-guard.ts";
 import { hasOperatorReadAccess } from "../../app/operator-access.ts";
+import { t } from "../../i18n/index.ts";
 import { canCallGatewayMethod, isGatewayMethodAdvertised } from "../gateway-methods.ts";
+import { showToast } from "../toast.ts";
 import { createAppliedConfigRefreshController } from "./applied-refresh.ts";
 import { clearConfigDraftTracking } from "./config-draft-model.ts";
 import {
@@ -21,7 +24,6 @@ import {
   clearConfigRequestVersions,
   createInitialConfigState,
   type AgentConfigEntryTarget,
-  type LoadConfigOptions,
   type RuntimeConfigGateway,
   type RuntimeConfigState,
 } from "./config-state-model.ts";
@@ -35,19 +37,19 @@ export type RuntimeConfigCapability = {
   readonly canOpenFile?: boolean;
   ensureLoaded: () => Promise<void>;
   ensureSchemaLoaded: () => Promise<void>;
-  refresh: (options?: LoadConfigOptions) => Promise<void>;
+  refresh: (options?: { background?: boolean }) => Promise<void>;
   refreshSchema: () => Promise<void>;
   patchForm: (path: Array<string | number>, value: unknown) => void;
   removeFormValue: (path: Array<string | number>) => void;
   setRaw: (value: string) => void;
-  resetDraft: () => void;
-  /** Discards pending edits: reloads from disk when connected, else resets locally. */
-  discardDraft: () => Promise<void>;
+  /** Reloads from disk; offline drafts reset locally unless reloadOnly is requested. */
+  discardDraft: (options?: { reloadOnly?: boolean }) => Promise<void>;
   /** Pauses/resumes all config writes (autosave + manual) while e.g. the app updater runs. */
-  setWritesSuspended: (suspended: boolean) => void;
+  setWritesSuspended: (suspended: boolean, refreshAdmission?: () => Promise<void>) => void;
   /** Resolves once no config write is in flight (used as an updater barrier). */
   waitForPendingWrites: () => Promise<void>;
   save: (options?: RuntimeConfigDispatchOptions) => Promise<boolean>;
+  retry: () => Promise<boolean>;
   apply: () => Promise<boolean>;
   openFile: () => Promise<void>;
   /** Resolves the authored keyed entry; ensure returns a writable target without mutating. */
@@ -72,6 +74,12 @@ export function createRuntimeConfigCapability(
   gateway: RuntimeConfigGateway,
 ): RuntimeConfigCapability {
   const state = createInitialConfigState(gateway.snapshot);
+  // Raw edits never autosave; form edits and outstanding writes also remain
+  // owned by this capability when a worker update or reconnect wants to reload.
+  const stopReloadGuard = registerControlUiReloadGuard(
+    () => !state.configFormDirty && !state.configSaving && !state.configApplying,
+    () => showToast({ message: t("configView.reloadBlocked") }),
+  );
   const listeners = new Set<(state: RuntimeConfigState) => void>();
   let configLoad: Promise<void> | null = null;
   let schemaLoad: Promise<void> | null = null;
@@ -222,9 +230,6 @@ export function createRuntimeConfigCapability(
     ensureLoaded,
     ensureSchemaLoaded,
     refresh: async (options) => {
-      if (options?.discardPendingChanges) {
-        await writes.prepareDiscard();
-      }
       appliedRefresh.cancel();
       try {
         await trackLoad(
@@ -243,11 +248,11 @@ export function createRuntimeConfigCapability(
     patchForm: writes.patchForm,
     removeFormValue: writes.removeFormValue,
     setRaw: writes.setRaw,
-    resetDraft: writes.resetDraft,
     discardDraft: writes.discardDraft,
     setWritesSuspended: writes.setWritesSuspended,
     waitForPendingWrites: writes.waitForPendingWrites,
     save: writes.save,
+    retry: writes.retry,
     apply: writes.apply,
     openFile: () =>
       canCallConfigMethod("config.openFile", { requireAdvertisement: false })
@@ -264,6 +269,7 @@ export function createRuntimeConfigCapability(
       return () => listeners.delete(listener);
     },
     dispose() {
+      stopReloadGuard();
       disposed = true;
       writes.dispose();
       listeners.clear();

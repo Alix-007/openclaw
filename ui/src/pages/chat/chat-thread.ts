@@ -17,7 +17,7 @@ import { getOrCreateSessionCacheValue, setSessionCacheValue } from "./session-ca
 export {
   isPendingSendMessage,
   persistedMessageEntryId,
-  readPendingSendFailure,
+  readPendingSendStatus,
 } from "./chat-thread-items.ts";
 export {
   assistantGroupCanOwnActiveRunStatus,
@@ -87,7 +87,8 @@ function sameMessageGroup(previous: MessageGroup, next: MessageGroup): boolean {
         candidate !== undefined &&
         entry.key === candidate.key &&
         entry.message === candidate.message &&
-        entry.duplicateCount === candidate.duplicateCount
+        entry.duplicateCount === candidate.duplicateCount &&
+        entry.hasVisibleContent === candidate.hasVisibleContent
       );
     })
   );
@@ -263,7 +264,10 @@ function sameChatItemsStructuralInput(
     previous.streamSegments === next.streamSegments &&
     previous.streamStartedAt === next.streamStartedAt &&
     previous.queue === next.queue &&
+    previous.initialTurnId === next.initialTurnId &&
     previous.pendingInputs === next.pendingInputs &&
+    previous.workspaceSyncPendingRunIds === next.workspaceSyncPendingRunIds &&
+    previous.workerSetupPending === next.workerSetupPending &&
     previous.showToolCalls === next.showToolCalls &&
     previous.persistCommentary === next.persistCommentary &&
     previous.runWorking === next.runWorking &&
@@ -379,16 +383,6 @@ export function getExpandedUserMessages(sessionKey: string): Map<string, boolean
     }
   }
   return getOrCreateSessionCacheValue(expandedUserMessagesBySession, sessionKey, () => new Map());
-}
-
-export function* collectToolTitleCandidates(items: readonly (ChatItem | MessageGroup)[]) {
-  for (const item of items) {
-    if (item.kind === "group") {
-      for (const entry of item.messages) {
-        yield* extractToolCardsCached(entry.message);
-      }
-    }
-  }
 }
 
 export type AssistantMessageExpansionState =

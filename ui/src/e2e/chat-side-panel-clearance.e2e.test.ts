@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { Locator, Page } from "playwright";
+import type { Page } from "playwright";
 import { beforeEach, expect, it } from "vitest";
 import { createControlUiE2eArtifactDir } from "../test-helpers/control-ui-e2e-artifacts.ts";
 import {
@@ -45,7 +45,7 @@ const historyMessages = [
 
 function scenario(
   options: {
-    custodian?: boolean;
+    home?: boolean;
     operatorScopes?: string[];
   } = {},
 ): ControlUiMockGatewayScenario {
@@ -53,7 +53,7 @@ function scenario(
     featureMethods: [
       "device.scopes.requestUpgrade",
       "device.scopes.waitUpgrade",
-      ...(options.custodian ? ["openclaw.chat"] : []),
+      ...(options.home ? ["chat.history", "chat.send"] : []),
     ],
     historyMessages,
     methodResponses: {
@@ -115,10 +115,6 @@ async function seedSettings(page: Page, themeMode: "light" | "dark") {
   );
 }
 
-function sidePanel(page: Page): Locator {
-  return page.locator(".sidebar-region__right-runtime .side-panel");
-}
-
 async function openExpandedFilesPanel(page: Page, beforeExpandProof?: string): Promise<void> {
   await page.goto(`${suite.server.baseUrl}chat?session=${encodeURIComponent(sessionKey)}`);
   await page.locator(".chat-group").first().waitFor();
@@ -142,9 +138,7 @@ async function expectPanelHeaderControlsClearShellChrome(
   page: Page,
   shellChromeExpected: boolean,
 ): Promise<void> {
-  const panelControls = sidePanel(page).locator(
-    '[data-region-header="main"] :is(button, wa-tab):visible',
-  );
+  const panelControls = page.locator(".chat-pane__actions button:visible");
   const panelCount = await panelControls.count();
   expect(panelCount).toBeGreaterThan(0);
 
@@ -153,15 +147,15 @@ async function expectPanelHeaderControlsClearShellChrome(
       const box = element.getBoundingClientRect();
       return { bottom: box.bottom, left: box.left, right: box.right, top: box.top };
     };
-    const header = document.querySelector('[data-region-header="main"]');
+    const header = document.querySelector(".chat-pane__header");
     if (!header) {
-      throw new Error("Focused main panel has no header");
+      throw new Error("Focused main panel has no task toolbar");
     }
     const headerRect = rect(header);
     const headerStyle = getComputedStyle(header);
-    const panels = [
-      ...document.querySelectorAll('[data-region-header="main"] :is(button, wa-tab):not([hidden])'),
-    ].map(rect);
+    const panels = [...document.querySelectorAll(".chat-pane__actions button:not([hidden])")]
+      .map(rect)
+      .filter((button) => button.bottom > button.top && button.right > button.left);
     const shells = [
       ...document.querySelectorAll(
         ":is(.shell-chrome-controls, .macos-titlebar-controls, .sidebar-attention--floating) button:not([hidden])",
@@ -240,7 +234,7 @@ suite.define(() => {
   it.each([
     {
       beforeExpandProof: "right-docked",
-      custodian: false,
+      home: false,
       deviceLess: false,
       direction: "ltr",
       expectedControl: ".sidebar-brand__search",
@@ -252,7 +246,7 @@ suite.define(() => {
     },
     {
       beforeExpandProof: undefined,
-      custodian: false,
+      home: false,
       deviceLess: false,
       direction: "ltr",
       expectedControl: ".shell-chrome-controls__search",
@@ -264,19 +258,19 @@ suite.define(() => {
     },
     {
       beforeExpandProof: undefined,
-      custodian: true,
+      home: true,
       deviceLess: false,
       direction: "ltr",
-      expectedControl: ".shell-chrome-controls__custodian",
-      name: "collapsed navigation with custodian and attention",
+      expectedControl: ".shell-chrome-controls__home",
+      name: "collapsed navigation with Home and attention",
       navCollapsed: true,
       operatorScopes: undefined,
-      proof: "collapsed-nav-custodian-attention",
+      proof: "collapsed-nav-home-attention",
       themeMode: "dark" as const,
     },
     {
       beforeExpandProof: undefined,
-      custodian: false,
+      home: false,
       deviceLess: true,
       direction: "rtl",
       expectedControl: ".sidebar-attention--floating .sidebar-issues-button",
@@ -302,7 +296,7 @@ suite.define(() => {
         await installMockGateway(
           page,
           scenario({
-            custodian: testCase.custodian,
+            home: testCase.home,
             operatorScopes: testCase.operatorScopes,
           }),
         );

@@ -3,6 +3,7 @@ import { expect, it } from "vitest";
 import { CONTROL_UI_SESSION_PULL_REQUESTS_CHANGED_EVENT } from "../../../src/gateway/control-ui-contract.js";
 import { SESSION_PULL_REQUESTS_SUBSCRIBE_METHOD } from "../lib/session-pull-requests.ts";
 import { createControlUiSessionRow as sessionRow } from "../test-helpers/control-ui-session-fixtures.ts";
+import { createControlUiE2eContextOptions } from "./control-ui-e2e-suite.test-support.ts";
 import {
   activateSelfRemovingControl,
   captureUiProof,
@@ -178,8 +179,8 @@ suite.define(() => {
         const menu = page.locator(".chat-reply-context-menu");
         await menu.waitFor({ state: "visible" });
         const actions = menu.locator("button");
-        expect(await actions.count()).toBe(2);
-        for (const [index, name] of ["Copy", "Fork from here"].entries()) {
+        expect(await actions.count()).toBe(3);
+        for (const [index, name] of ["Copy", "Copy as markdown", "Fork from here"].entries()) {
           expect(
             await menu
               .getByRole("menuitem", { name, exact: true })
@@ -189,7 +190,9 @@ suite.define(() => {
               ),
           ).toBe(true);
         }
-        await captureUiProof(suite, page, `archived-actions-${viewport.label}.png`);
+        await captureUiProof(suite, page, `archived-actions-${viewport.label}.png`, menu, [
+          actions.first(),
+        ]);
         expect(
           await page.evaluate(() => {
             const portal = document.querySelector<HTMLElement>(".chat-reply-context-menu");
@@ -207,6 +210,16 @@ suite.define(() => {
         ).toEqual({ documentOverflows: false, menuFits: true });
 
         await menu.getByRole("menuitem", { name: "Copy", exact: true }).click();
+        await expect
+          .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+          .toBe(messageText);
+
+        await page.evaluate(async () => {
+          window.getSelection()?.removeAllRanges();
+          await navigator.clipboard.writeText("Before archived message copy.");
+        });
+        await userBubble.click({ button: "right" });
+        await menu.getByRole("menuitem", { name: "Copy as markdown", exact: true }).click();
         await expect
           .poll(() => page.evaluate(() => navigator.clipboard.readText()))
           .toBe(messageText);
@@ -236,11 +249,7 @@ suite.define(() => {
   }
 
   it("shows the archived notice when an archived session is cold-loaded outside the active list", async () => {
-    const context = await suite.browser.newContext({
-      locale: "en-US",
-      serviceWorkers: "block",
-      viewport: { height: 900, width: 1280 },
-    });
+    const context = await suite.browser.newContext(createControlUiE2eContextOptions());
     const page = await context.newPage();
     const archived = sessionRow(
       "agent:main:dashboard:cold-archive",

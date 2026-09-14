@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { trackSqliteStatementExecutions } from "../../../test/helpers/sqlite-statement-execution-counter.js";
 import { requireNodeSqlite } from "../../infra/node-sqlite.js";
 import {
   closeOpenClawStateDatabaseForTest,
@@ -10,15 +11,16 @@ import {
 import {
   deleteRegistryWorktree,
   getRegistryWorktreeProvisionedChunk,
+  findLiveRegistryWorktreeByOwner,
   findLiveRegistryWorktreeByPath,
   getRegistryWorktree,
   getRegistryWorktreeProvisionedPaths,
   getRegistryWorktreeProvisionedState,
   insertRegistryWorktreeProvisionedChunk,
   insertRegistryWorktree,
+  listLegacyRegistryWorktreesForMigration,
   listRegistryWorktrees,
   listRegistryWorktreesForMigration,
-  hasLegacyRegistryWorktrees,
   updateRegistryWorktree,
 } from "./registry.js";
 import type { ManagedWorktreeRecord } from "./types.js";
@@ -39,7 +41,7 @@ describe("managed worktree registry", () => {
   });
 
   it("inspects absent legacy worktrees without creating the state database", async () => {
-    expect(hasLegacyRegistryWorktrees(env)).toBe(false);
+    expect(listLegacyRegistryWorktreesForMigration(env)).toEqual([]);
     expect(listRegistryWorktreesForMigration(env)).toEqual([]);
     await expect(fs.stat(env.OPENCLAW_STATE_DIR!)).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -68,9 +70,11 @@ describe("managed worktree registry", () => {
       lastActiveAt: 20,
     });
 
-    expect(hasLegacyRegistryWorktrees(env)).toBe(true);
     expect(listRegistryWorktrees(env).map((entry) => entry.id)).toEqual(["second", "first"]);
     expect(listRegistryWorktreesForMigration(env)).toEqual(listRegistryWorktrees(env));
+    expect(listLegacyRegistryWorktreesForMigration(env).map((entry) => entry.id)).toEqual([
+      "second",
+    ]);
     expect(findLiveRegistryWorktreeByPath(env, record.path)).toMatchObject({
       id: "first",
       ownerKind: "workboard",
@@ -131,6 +135,44 @@ describe("managed worktree registry", () => {
       .db.prepare("UPDATE worktrees SET provisioned_paths_json = ? WHERE id = ?")
       .run("not-json", "second");
     expect(getRegistryWorktreeProvisionedPaths(env, "second")).toBeUndefined();
+  });
+
+  it("keeps record reads bounded when a worktree has a large provisioning manifest", () => {
+    const record: ManagedWorktreeRecord = {
+      id: "provisioned",
+      name: "provisioned",
+      repoFingerprint: "0123456789abcdef",
+      repoRoot: path.join(root, "repo"),
+      path: path.join(root, "provisioned"),
+      branch: "openclaw/provisioned",
+      baseRef: "main",
+      ownerKind: "session",
+      ownerId: "session-1",
+      createdAt: 10,
+      lastActiveAt: 20,
+      snapshotRef: "refs/openclaw/snapshots/provisioned",
+      runEndCleanup: { outcome: "retained-provisioned-drift", at: 30 },
+    };
+    const provisionedPaths = Array.from(
+      { length: 1_000 },
+      (_, index) => `local/settings/component-${index}.json`,
+    );
+    insertRegistryWorktree(env, record, { provisionedPaths });
+    const counter = trackSqliteStatementExecutions(
+      openOpenClawStateDatabase({ env }).db,
+      ["records"],
+      (sql) => (/\bfrom\s+"worktrees"/iu.test(sql) ? "records" : null),
+    );
+    try {
+      expect(listRegistryWorktrees(env)).toEqual([record]);
+      expect(getRegistryWorktree(env, record.id)).toEqual(record);
+      expect(findLiveRegistryWorktreeByPath(env, record.path)).toEqual(record);
+      expect(findLiveRegistryWorktreeByOwner(env, "session", "session-1")).toEqual(record);
+      expect(counter.textBytes.records).toBeLessThan(4_096);
+    } finally {
+      counter.restore();
+    }
+    expect(getRegistryWorktreeProvisionedPaths(env, record.id)).toEqual(provisionedPaths);
   });
 
   it("adds the provisioned-path ledger to an existing worktree registry", () => {

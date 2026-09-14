@@ -13,11 +13,13 @@ import {
   gatewayStartupUnavailableDetails,
   GATEWAY_STARTUP_RETRY_AFTER_MS,
 } from "../../packages/gateway-protocol/src/startup-unavailable.js";
-import { getActivePluginHttpRouteRegistry, getActivePluginRegistry } from "../plugins/runtime.js";
+import type { PluginRegistry } from "../plugins/registry-types.js";
+import { getActivePluginRegistry } from "../plugins/runtime.js";
 import {
   getPluginRuntimeGatewayRequestScope,
   getPluginRuntimeGatewayNodeAuthorities,
   withPluginRuntimeGatewayRequestScope,
+  withPluginRuntimeRegistryScope,
 } from "../plugins/runtime/gateway-request-scope.js";
 import {
   getGatewaySuspendAdmissionPhase,
@@ -123,6 +125,7 @@ const SUSPEND_CONTROL_METHODS = new Set([
   "gateway.suspend.prepare",
   "gateway.suspend.status",
   "gateway.suspend.resume",
+  "gateway.suspend.handoff",
 ]);
 
 function runGatewayPendingWorkContinuation<T>(params: {
@@ -130,6 +133,7 @@ function runGatewayPendingWorkContinuation<T>(params: {
   client: GatewayRequestOptions["client"];
   requestParams: unknown;
   context: GatewayRequestContext;
+  admission?: "continuation";
   run: () => Promise<T>;
 }): Promise<T> | null {
   if (!isRecord(params.requestParams)) {
@@ -137,7 +141,11 @@ function runGatewayPendingWorkContinuation<T>(params: {
   }
   const request = params.requestParams;
   if (params.client?.connect.role === "node") {
-    if (getGatewaySuspendAdmissionPhase() !== "draining" && !isGatewayRestartDraining()) {
+    if (
+      params.admission !== "continuation" &&
+      getGatewaySuspendAdmissionPhase() !== "draining" &&
+      !isGatewayRestartDraining()
+    ) {
       return null;
     }
     const invokeId =
@@ -157,6 +165,7 @@ function runGatewayPendingWorkContinuation<T>(params: {
     });
   }
   if (
+    params.admission === "continuation" ||
     getGatewaySuspendAdmissionPhase() !== "draining" ||
     params.client?.connect.role !== "operator" ||
     typeof request.id !== "string"
@@ -217,7 +226,7 @@ export function createRequestGatewayMethodRegistry(
   extraHandlers?: GatewayRequestHandlers,
 ): GatewayMethodRegistry {
   // Attached gateway methods must not be shadowed by agent-scoped registry loads.
-  const gatewayPluginRegistry = getActivePluginHttpRouteRegistry();
+  const gatewayPluginRegistry = getActivePluginRegistry();
   const gatewayPluginHandlers = gatewayPluginRegistry?.gatewayHandlers ?? {};
   const extraHandlerEntries = Object.entries(extraHandlers ?? {});
   const pluginMethodNames = new Set(Object.keys(gatewayPluginHandlers));
@@ -229,16 +238,14 @@ export function createRequestGatewayMethodRegistry(
       coreDescriptorHandlers[method] = extraHandler;
     }
   }
-  const coreDescriptors = createCoreGatewayMethodDescriptors(coreDescriptorHandlers);
-  const coreMethodNames = new Set(coreDescriptors.map((descriptor) => descriptor.name));
   const auxHandlers = Object.fromEntries(
     extraHandlerEntries.filter(
-      ([method]) => !pluginMethodNames.has(method) && !coreMethodNames.has(method),
+      ([method]) => !pluginMethodNames.has(method) && !isCoreGatewayMethodClassified(method),
     ),
   );
   return createGatewayMethodRegistry(
     [
-      ...coreDescriptors,
+      ...createCoreGatewayMethodDescriptors(coreDescriptorHandlers),
       ...(gatewayPluginRegistry ? createPluginGatewayMethodDescriptors(gatewayPluginRegistry) : []),
       ...createGatewayMethodDescriptorsFromHandlers({
         handlers: auxHandlers,
@@ -261,11 +268,17 @@ export async function authorizeGatewayRequestPreDispatch(params: {
   error: ErrorShape | null;
   sessionMutationAuthorization?: SessionMutationAuthorization;
 }> {
-  const authError = authorizeGatewayMethod(
-    params.method,
-    params.client,
-    params.requestParams,
-    params.methodRegistry,
+  // Dynamic scope lookup must use the same registry as the eventual handler.
+  const authError = withPluginRuntimeRegistryScope(
+    // SAFETY: The host-owned method registry carries the PluginRegistry selected for dispatch.
+    params.methodRegistry.pluginRegistry as PluginRegistry | undefined,
+    () =>
+      authorizeGatewayMethod(
+        params.method,
+        params.client,
+        params.requestParams,
+        params.methodRegistry,
+      ),
   );
   if (authError) {
     return { error: authError };
@@ -326,6 +339,7 @@ type GatewayRequestEnvelopeOptions<T> = Pick<
 > & {
   methodRegistry: GatewayMethodRegistry;
   requestParams?: unknown;
+  admission?: "continuation";
   reject: (error: ReturnType<typeof errorShape>) => T | Promise<T>;
 };
 
@@ -370,11 +384,13 @@ export async function runWithGatewayRequestEnvelope<T>(
     return await options.reject(preAdmissionRateLimitError);
   }
   const rootWorkAdmission =
-    tryBeginGatewayRootWorkAdmission(`ws:${method}`) ??
-    (method === "gateway.restart.request" &&
-    isTargetedNonSafeGatewayRestartRequest(options.requestParams)
-      ? tryBeginGatewayPreparedRestartRootWorkAdmission()
-      : null);
+    options.admission === "continuation"
+      ? null
+      : (tryBeginGatewayRootWorkAdmission(`ws:${method}`) ??
+        (method === "gateway.restart.request" &&
+        isTargetedNonSafeGatewayRestartRequest(options.requestParams)
+          ? tryBeginGatewayPreparedRestartRootWorkAdmission()
+          : null));
   if (!rootWorkAdmission) {
     // Completion frames arrive on separate socket chains. Their exact pending owner
     // may settle them without admitting a new root, including rootless shutdown cleanup.
@@ -383,10 +399,16 @@ export async function runWithGatewayRequestEnvelope<T>(
       client,
       requestParams: options.requestParams,
       context: options.context,
+      admission: options.admission,
       run: invokeWithRequestScope,
     });
     if (continuation) {
       return await continuation;
+    }
+    if (options.admission === "continuation") {
+      return await options.reject(
+        errorShape(ErrorCodes.UNAVAILABLE, `${method} unavailable during gateway shutdown`),
+      );
     }
   }
   if (isSuspendPrepare && rootWorkAdmission && !rootWorkAdmission.ownsRoot) {
@@ -429,9 +451,7 @@ export async function runWithGatewayRequestEnvelope<T>(
     }
     try {
       const pluginRegistry =
-        (options.methodRegistry.pluginRegistry as
-          | NonNullable<ReturnType<typeof getActivePluginRegistry>>
-          | undefined) ??
+        (options.methodRegistry.pluginRegistry as PluginRegistry | undefined) ??
         getPluginRuntimeGatewayRequestScope()?.pluginRegistry ??
         getActivePluginRegistry() ??
         undefined;
@@ -473,11 +493,13 @@ export async function runWithGatewayRequestEnvelope<T>(
 export async function handleGatewayRequest(
   opts: GatewayRequestOptions & {
     extraHandlers?: GatewayRequestHandlers;
+    admission?: "continuation";
     requestEntry?: GatewayRequestEntry;
   },
   diagnostics?: GatewayRpcDiagnostics,
 ): Promise<void> {
-  const { req, respond, client, isWebchatConnect, context, signal } = opts;
+  const { req, respond, client, isWebchatConnect, context, signal, hasCurrentClientAuthority } =
+    opts;
   const entry = opts.requestEntry ?? context.requestEntryLifetime?.enter(opts);
   try {
     entry?.assertOpen();
@@ -523,6 +545,7 @@ export async function handleGatewayRequest(
         respond,
         context,
         signal,
+        ...(hasCurrentClientAuthority ? { hasCurrentClientAuthority } : {}),
         sessionMutationCommitGuard: opts.sessionMutationCommitGuard,
         sessionMutationAuthorization,
       };
@@ -543,6 +566,7 @@ export async function handleGatewayRequest(
       isWebchatConnect,
       methodRegistry,
       requestParams: req.params,
+      admission: opts.admission,
       reject: (error) => respond(false, undefined, error),
     });
   } finally {

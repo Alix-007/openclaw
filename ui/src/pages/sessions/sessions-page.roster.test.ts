@@ -2,10 +2,11 @@
 
 import { nothing } from "lit";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { createDeferred as deferred } from "../../../../test/helpers/promise.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
 import type { SessionCompactionCheckpoint, SessionsListResult } from "../../api/types.ts";
 import type { ApplicationContext } from "../../app/context.ts";
-import { createSessionCapability } from "../../lib/sessions/index.ts";
+import { createTestSessionCapability } from "../../lib/sessions/session-capability.test-support.ts";
 import { sessionMutationGatewayHello } from "../../test-helpers/gateway-methods.ts";
 import { page as sessionsRoute, type SessionsRouteData } from "./route.ts";
 import {
@@ -15,16 +16,6 @@ import {
   createRenderedPage,
   type TestSessionsPage,
 } from "./sessions-page.test-support.ts";
-
-function deferred<T>() {
-  let resolve!: (value: T) => void;
-  let reject!: (error: unknown) => void;
-  const promise = new Promise<T>((nextResolve, nextReject) => {
-    resolve = nextResolve;
-    reject = nextReject;
-  });
-  return { promise, resolve, reject };
-}
 
 async function createPage(context: ApplicationContext): Promise<TestSessionsPage> {
   const page = document.createElement("openclaw-sessions-page") as TestSessionsPage;
@@ -70,7 +61,7 @@ describe("sessions page managed roster", () => {
         return task.promise;
       });
       const { gateway } = createGateway({ request } as unknown as GatewayBrowserClient);
-      const sessions = createSessionCapability(gateway);
+      const sessions = createTestSessionCapability(gateway);
       const page = await createRenderedPage(
         createContext(gateway, sessions),
         result("agent:main:initial"),
@@ -140,7 +131,7 @@ describe("sessions page managed roster", () => {
       return result(params?.offset ?? 0);
     });
     const { gateway } = createGateway({ request } as unknown as GatewayBrowserClient);
-    const sessions = createSessionCapability(gateway);
+    const sessions = createTestSessionCapability(gateway);
     const page = await createRenderedPage(createContext(gateway, sessions), result(0));
     try {
       const input = page.querySelector<HTMLInputElement>(".sessions-toolbar__search input")!;
@@ -180,7 +171,7 @@ describe("sessions page managed roster", () => {
   it.each(["startup", "same-client reconnect"])(
     "retains the current query when a route started before %s completes late",
     async (ordering) => {
-      const config = deferred<void>();
+      const config = deferred();
       const sidebar = deferred<SessionsListResult>();
       const result = (key: string): SessionsListResult => ({
         ts: 1,
@@ -205,7 +196,7 @@ describe("sessions page managed roster", () => {
       if (ordering === "startup") {
         mutableGateway.emit({ phase: "connecting" });
       }
-      const sessions = createSessionCapability(mutableGateway.gateway);
+      const sessions = createTestSessionCapability(mutableGateway.gateway);
       const context = createContext(mutableGateway.gateway, sessions);
       context.runtimeConfig.ensureLoaded = () => config.promise;
       const pendingRoute = sessionsRoute.loader!(context, {
@@ -426,8 +417,15 @@ describe("sessions page managed roster", () => {
       throw new Error("Expected a managed query subscription");
     }
 
+    const refresh = [...page.querySelectorAll<HTMLButtonElement>("button.btn")].find(
+      (button) => button.textContent?.trim() === "Refresh",
+    );
     managed.publish(query, { result, agentId: "main", loading: true, error: null });
+    await page.updateComplete;
     expect(page.loading).toBe(true);
+    expect(page.refreshing).toBe(false);
+    expect(refresh?.textContent?.trim()).toBe("Refresh");
+    expect(refresh?.disabled).toBe(false);
     expect(page.result?.sessions.map((row) => row.key)).toEqual(["last-good"]);
 
     managed.publish(query, {
@@ -439,6 +437,36 @@ describe("sessions page managed roster", () => {
     expect(page.loading).toBe(false);
     expect(page.error).toBe("managed refresh failed");
     expect(page.result?.sessions.map((row) => row.key)).toEqual(["last-good"]);
+  });
+
+  it("shows loading while the page owns an explicit refresh", async () => {
+    const request = deferred();
+    const managed = createManagedSessions({
+      refreshList: vi.fn(() => request.promise),
+    });
+    const context = createContext(
+      createGateway({} as GatewayBrowserClient).gateway,
+      managed.sessions,
+    );
+    const result = { count: 1, sessions: [{ key: "current" }] } as SessionsListResult;
+    const page = await createRenderedPage(context, result);
+
+    const refresh = [...page.querySelectorAll<HTMLButtonElement>("button.btn")].find(
+      (button) => button.textContent?.trim() === "Refresh",
+    );
+    refresh?.click();
+
+    await vi.waitFor(() => expect(managed.sessions.refreshList).toHaveBeenCalledOnce());
+    await page.updateComplete;
+    expect(page.refreshing).toBe(true);
+    expect(refresh?.textContent?.trim()).toBe("Loading…");
+    expect(refresh?.disabled).toBe(true);
+
+    request.resolve();
+    await vi.waitFor(() => expect(page.refreshing).toBe(false));
+    await page.updateComplete;
+    expect(refresh?.textContent?.trim()).toBe("Refresh");
+    expect(refresh?.disabled).toBe(false);
   });
 
   it("reconciles checkpoint caches only when the managed result pointer changes", async () => {

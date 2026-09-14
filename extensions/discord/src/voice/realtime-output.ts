@@ -1,29 +1,34 @@
 import { PassThrough, pipeline } from "node:stream";
-import type { AudioResource } from "@discordjs/voice";
 import {
   createRealtimeVoiceOutputActivityTracker,
-  type RealtimeVoiceOutputActivityDelta,
   type RealtimeVoicePlaybackItem,
 } from "openclaw/plugin-sdk/realtime-voice";
 import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
 import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
-import { createDiscordOpusEncodeStream } from "./audio.js";
+import { createDiscordOpusEncodeStream, createRealtimePcmToDiscordConverter } from "./audio.js";
 import type { DiscordRealtimePlayer, DiscordRealtimePlayerRequest } from "./realtime-player.js";
 import { loadDiscordVoiceSdk } from "./sdk-runtime.js";
 
 const logger = createSubsystemLogger("discord/voice");
 const DISCORD_RAW_PCM_FRAME_BYTES = 3_840;
+const DISCORD_RAW_PCM_BYTES_PER_MS = 192;
 const DISCORD_REALTIME_OUTPUT_PREROLL_FRAMES = 25;
+// Cover the provider's 80 ms reorder window plus two Discord playback ticks.
+const DISCORD_CONTINUOUS_PREROLL_FRAMES = 6;
+const DISCORD_CONTINUOUS_START_DEADLINE_MS = DISCORD_CONTINUOUS_PREROLL_FRAMES * 20;
 // Leave room for the realtime player's two-second missed-frame tolerance.
 const DISCORD_REALTIME_OUTPUT_PLAYBACK_WATCHDOG_MARGIN_MS = 3_000;
 
 /** One output stream retains ownership through queued and audible playback. */
 export class DiscordRealtimeOutput {
   readonly activity = createRealtimeVoiceOutputActivityTracker();
+  private readonly converter = createRealtimePcmToDiscordConverter();
   private readonly stream = new PassThrough({ highWaterMark: DISCORD_RAW_PCM_FRAME_BYTES * 128 });
   private request: DiscordRealtimePlayerRequest | undefined;
-  private resource: AudioResource | undefined;
-  private playbackMarks: Array<{ endMs: number; acknowledge: () => void }> = [];
+  private ready = false;
+  private playbackMarks: Array<{ endBytes: number; acknowledge: () => void }> = [];
+  private playedPcmBytes = 0;
+  private lastAudiblePcmEndBytes = 0;
   private reportedPlaybackMs = 0;
   private readonly audioSpans: Array<{
     item: RealtimeVoicePlaybackItem;
@@ -34,6 +39,7 @@ export class DiscordRealtimeOutput {
   private bufferedBytes = 0;
   private drainHandler: (() => void) | undefined;
   private watchdog: ReturnType<typeof setTimeout> | undefined;
+  private startupTimer: ReturnType<typeof setTimeout> | undefined;
   private closed = false;
   private failed = false;
 
@@ -41,9 +47,10 @@ export class DiscordRealtimeOutput {
     private readonly params: {
       player: DiscordRealtimePlayer;
       logContext: string;
+      continuous: boolean;
       onStart: () => void;
       onClose: (output: DiscordRealtimeOutput, reason: string) => void;
-      onBargeIn: (reason: string) => void;
+      onBargeIn: (reason: string) => boolean;
       onError: (error: unknown) => void;
     },
   ) {
@@ -59,14 +66,18 @@ export class DiscordRealtimeOutput {
   pendingBytes(): number {
     return this.closed
       ? 0
-      : this.bufferedBytes + this.stream.writableLength + this.stream.readableLength;
+      : Math.max(0, this.activity.snapshot().sourceAudioBytes * 4 - this.playedPcmBytes);
+  }
+
+  hasUnplayedAudibleAudio(): boolean {
+    return !this.closed && this.playedPcmBytes < this.lastAudiblePcmEndBytes;
   }
 
   playbackItems(): RealtimeVoicePlaybackItem[] {
-    // Resource duration counts consumed Opus packets, excluding buffering and SDK
-    // silence. Clamp the padded last packet to PCM, and retain progress across starvation.
+    // Only consumed source PCM advances native item offsets; Opus padding and
+    // SDK silence must not accumulate across repeated output underflows.
     const playedMs = Math.min(
-      this.resource?.playbackDuration ?? 0,
+      this.playedPcmBytes / DISCORD_RAW_PCM_BYTES_PER_MS,
       this.activity.snapshot().audioMs,
     );
     for (const span of this.audioSpans) {
@@ -83,29 +94,58 @@ export class DiscordRealtimeOutput {
 
   markPlayback(acknowledge: () => void): void {
     if (!this.closed) {
-      this.playbackMarks.push({ endMs: this.activity.snapshot().audioMs, acknowledge });
+      this.playbackMarks.push({ endBytes: this.activity.snapshot().sinkAudioBytes, acknowledge });
     }
   }
 
-  append(
-    pcm: Buffer,
-    activity: RealtimeVoiceOutputActivityDelta & { audioMs: number },
-    item?: RealtimeVoicePlaybackItem,
-  ): void {
+  append(sourcePcm: Buffer, audible: boolean, item?: RealtimeVoicePlaybackItem): void {
     if (this.closed) {
       return;
     }
-    const startMs = this.activity.snapshot().audioMs;
+    const previous = this.activity.snapshot();
+    const sinkBytes = Math.floor((previous.sourceAudioBytes + sourcePcm.length) / 2) * 8;
+    const audioMs = (sinkBytes - previous.sinkAudioBytes) / DISCORD_RAW_PCM_BYTES_PER_MS;
+    const startMs = previous.audioMs;
     if (item) {
-      const previous = this.audioSpans.at(-1);
-      const endMs = startMs + activity.audioMs;
-      if (previous?.item === item && previous.endMs === startMs) {
-        previous.endMs = endMs;
+      const previousSpan = this.audioSpans.at(-1);
+      const endMs = startMs + audioMs;
+      if (previousSpan?.item === item && previousSpan.endMs === startMs) {
+        previousSpan.endMs = endMs;
       } else {
         this.audioSpans.push({ item, startMs, endMs });
       }
     }
-    this.activity.markAudio(activity);
+    this.activity.markAudio({
+      audioMs,
+      sourceAudioBytes: sourcePcm.length,
+      sinkAudioBytes: sinkBytes - previous.sinkAudioBytes,
+    });
+    if (audible) {
+      this.lastAudiblePcmEndBytes = this.activity.snapshot().sinkAudioBytes;
+    }
+    this.writeConverted(this.converter.process(sourcePcm));
+    if (this.params.continuous) {
+      this.enqueuePlayback();
+    }
+    const prerollFrames = this.params.continuous
+      ? DISCORD_CONTINUOUS_PREROLL_FRAMES
+      : DISCORD_REALTIME_OUTPUT_PREROLL_FRAMES;
+    if (this.activity.snapshot().sinkAudioBytes >= DISCORD_RAW_PCM_FRAME_BYTES * prerollFrames) {
+      this.startPlayback();
+    } else if (this.params.continuous && !this.ready && !this.startupTimer) {
+      // Continuous providers may never send response.done, including short replies.
+      this.startupTimer = setTimeout(() => {
+        this.startupTimer = undefined;
+        this.startPlayback();
+      }, DISCORD_CONTINUOUS_START_DEADLINE_MS);
+      this.startupTimer.unref?.();
+    }
+  }
+
+  private writeConverted(pcm: Buffer): void {
+    if (pcm.length === 0 || this.closed) {
+      return;
+    }
     if (this.activity.snapshot().playbackStarted && !this.drainHandler) {
       // A false write return accepts this chunk; only later chunks are queued.
       if (!this.stream.write(pcm)) {
@@ -115,17 +155,14 @@ export class DiscordRealtimeOutput {
     }
     this.buffers.push(pcm);
     this.bufferedBytes += pcm.length;
-    if (
-      !this.drainHandler &&
-      this.bufferedBytes >= DISCORD_RAW_PCM_FRAME_BYTES * DISCORD_REALTIME_OUTPUT_PREROLL_FRAMES
-    ) {
-      this.startPlayback();
-    }
   }
 
   finish(reason: string, playBuffered: boolean): void {
     if (this.closed) {
       return;
+    }
+    if (playBuffered) {
+      this.writeConverted(this.converter.flush());
     }
     this.activity.markStreamEnding();
     const activity = this.activity.snapshot();
@@ -149,17 +186,18 @@ export class DiscordRealtimeOutput {
     if (this.closed) {
       return;
     }
-    const consumedMs = this.resource?.playbackDuration ?? 0;
     const playbackRetirement =
       reason === "player-idle" ||
       reason === "output-pipeline-error" ||
       reason === "playback-watchdog";
     const heardMarks = playbackRetirement
-      ? this.playbackMarks.filter((mark) => mark.endMs <= consumedMs)
+      ? this.playbackMarks.filter((mark) => mark.endBytes <= this.playedPcmBytes)
       : [];
     const lostPlaybackMarks =
-      playbackRetirement && this.playbackMarks.some((mark) => mark.endMs > consumedMs);
+      playbackRetirement && this.playbackMarks.some((mark) => mark.endBytes > this.playedPcmBytes);
     this.closed = true;
+    clearTimeout(this.startupTimer);
+    this.startupTimer = undefined;
     this.playbackMarks = [];
     this.playbackItems();
     this.clearWatchdog();
@@ -198,10 +236,21 @@ export class DiscordRealtimeOutput {
   }
 
   private startPlayback(): void {
-    if (this.closed || this.request) {
+    if (this.closed || this.ready) {
       return;
     }
-    this.request = {
+    clearTimeout(this.startupTimer);
+    this.startupTimer = undefined;
+    if (this.bufferedBytes < DISCORD_RAW_PCM_FRAME_BYTES) {
+      this.writeConverted(this.converter.drain());
+    }
+    this.ready = true;
+    this.enqueuePlayback();
+  }
+
+  private enqueuePlayback(): void {
+    this.request ??= {
+      isReady: () => this.ready,
       createResource: () => this.createResource(),
       onStart: () => {
         this.activity.markPlaybackStarted();
@@ -242,12 +291,41 @@ export class DiscordRealtimeOutput {
     if (buffered.length > 0 && !this.stream.write(buffered)) {
       this.waitForDrain();
     }
-    this.resource = voiceSdk.createAudioResource(opusStream, {
+    if (
+      this.params.continuous &&
+      buffered.length > 0 &&
+      buffered.length < DISCORD_RAW_PCM_FRAME_BYTES
+    ) {
+      // The player cannot read to flush a partial packet until its first packet exists.
+      opusStream.flushPartialFrameWhenReady();
+    }
+    const resource = voiceSdk.createAudioResource(opusStream, {
       inputType: voiceSdk.StreamType.Opus,
     });
-    const read = this.resource.read.bind(this.resource);
-    this.resource.read = () => {
-      const packet = read();
+    const read = resource.read.bind(resource);
+    resource.read = () => {
+      let packet: Buffer | null;
+      try {
+        packet = read();
+        // Drain a partial frame only when playback needs it, never on chunk arrival.
+        if (!packet && opusStream.flushPartialFrame()) {
+          packet = read();
+        }
+        if (packet) {
+          // SDK cleanup reads the stream directly after destroy; only player reads
+          // count as heard. SDK-generated silence has no source PCM metadata.
+          this.playedPcmBytes += opusStream.takePcmBytes(packet);
+          const remaining = this.activity.snapshot().sinkAudioBytes - this.playedPcmBytes;
+          if (remaining > 0 && remaining <= DISCORD_RAW_PCM_FRAME_BYTES) {
+            // Render the held filter tail before the last packet is needed, giving
+            // the yielding encoder one playback tick to prepare it.
+            this.writeConverted(this.converter.drain());
+          }
+        }
+      } catch (error) {
+        opusStream.destroy(error instanceof Error ? error : new Error(formatErrorMessage(error)));
+        return null;
+      }
       if (this.playbackMarks.length > 0) {
         // Finish the SDK's packet preparation before an acknowledgment can start
         // another response or synchronously cancel this output.
@@ -255,14 +333,14 @@ export class DiscordRealtimeOutput {
       }
       return packet;
     };
-    return this.resource;
+    return resource;
   }
 
   private acknowledgePlayedMarks(): void {
     try {
       while (!this.closed) {
         const mark = this.playbackMarks[0];
-        if (!mark || mark.endMs > (this.resource?.playbackDuration ?? 0)) {
+        if (!mark || mark.endBytes > this.playedPcmBytes) {
           return;
         }
         this.playbackMarks.shift();
