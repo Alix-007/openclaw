@@ -2,9 +2,11 @@
 export { augmentChatHistoryWithCanvasBlocks } from "./chat-display-projection.canvas.js";
 export {
   createCurrentUserProfileMessageProjector,
+  isPendingAssistantError,
   projectChatDisplayMessage,
   projectChatDisplayMessages,
   projectChatDisplayMessagesWithState,
+  projectChatHistoryRecovery,
 } from "./chat-display-projection.core.js";
 export {
   DEFAULT_CHAT_HISTORY_TEXT_MAX_CHARS,

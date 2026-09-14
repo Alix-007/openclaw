@@ -1,11 +1,11 @@
+import type { PrepareAssistantTranscriptMessage } from "../config/sessions/transcript-assistant-delivery.js";
 /**
  * Session manager wrapper for tool-result transcript guards.
  *
  * Installs message-write hooks, input provenance handling, and pending tool-result flush behavior once per manager.
  */
-
-import type { PrepareAssistantTranscriptMessage } from "../config/sessions/transcript-assistant-delivery.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { prepareModelVisibleToolTextBlock } from "../logging/redact.js";
 import { getGlobalHookRunner } from "../plugins/hook-runner-global.js";
 import {
   applyInputProvenanceToUserMessage,
@@ -22,6 +22,8 @@ import {
   type PersistedUserTurnMessage,
   type UserTurnTranscriptRecorder,
 } from "../sessions/user-turn-transcript.js";
+import type { AssistantErrorTranscript } from "./assistant-error-transcript.js";
+import { isMidTurnPrecheckAssistantError } from "./embedded-agent-runner/run/midturn-precheck.js";
 import type { EmbeddedRunTrigger } from "./embedded-agent-runner/run/params.js";
 import { resolveLiveToolResultMaxChars } from "./embedded-agent-runner/tool-result-truncation.js";
 import { runAgentHarnessBeforeMessageWriteHook } from "./harness/hook-helpers.js";
@@ -29,13 +31,16 @@ import { projectAgentHarnessTranscriptMessageForDisplay } from "./harness/transc
 import type { AgentMessage } from "./runtime/index.js";
 import { installSessionToolResultGuard } from "./session-tool-result-guard.js";
 import type { SessionManager } from "./sessions/index.js";
+import { setSessionToolTextPreparer } from "./sessions/session-tool-result-redaction.js";
 import {
   copyCodeModeSourceAppend,
   type CodeModeSourceAppend,
 } from "./transcript-code-mode-source.js";
+import { resolveTranscriptLoggingConfig } from "./transcript-redact-text.js";
 import { redactTranscriptMessage } from "./transcript-redact.js";
 
 type GuardedSessionManager = SessionManager & {
+  hasPendingToolResults?: () => boolean;
   /** Flush any synthetic tool results for pending tool calls. Idempotent. */
   flushPendingToolResults?: () => void;
   /** Clear pending tool calls without persisting synthetic tool results. Idempotent. */
@@ -47,6 +52,7 @@ type GuardedSessionManager = SessionManager & {
     runId: string | undefined,
     prepareAssistantTranscriptMessage: PrepareAssistantTranscriptMessage | undefined,
     skipBeforeMessageWriteHooks: boolean | undefined,
+    assistantErrorTranscript: AssistantErrorTranscript | undefined,
   ) => void;
 };
 
@@ -72,7 +78,7 @@ export function guardSessionManager(
     preparedUserTurnTranscriptRecorder?: UserTurnTranscriptRecorder;
     suppressNextUserMessagePersistence?: boolean;
     suppressTranscriptOnlyAssistantPersistence?: boolean;
-    suppressAssistantErrorPersistence?: boolean;
+    assistantErrorTranscript?: AssistantErrorTranscript;
     /** Finalization keeps core redaction but must not run plugin write hooks. */
     skipBeforeMessageWriteHooks?: boolean;
     onUserMessagePersisted?: (
@@ -94,9 +100,6 @@ export function guardSessionManager(
       append: () => string,
       validateAppend: (entryId: string, appendedText: string) => boolean,
     ) => string;
-    onAssistantErrorMessagePersisted?: (
-      message: Extract<AgentMessage, { role: "assistant" }>,
-    ) => void | Promise<void>;
   },
 ): GuardedSessionManager {
   const guardedSessionManager: GuardedSessionManager = sessionManager;
@@ -108,6 +111,7 @@ export function guardSessionManager(
       opts?.runId,
       prepareAssistantTranscriptMessage,
       skipBeforeMessageWriteHooks,
+      opts?.assistantErrorTranscript,
     );
     return guardedSessionManager;
   }
@@ -128,6 +132,10 @@ export function guardSessionManager(
     event: { message: AgentMessage },
     sourceAppend?: CodeModeSourceAppend,
   ) => {
+    // Persisting a routing signal would force recovery to rewrite the whole archive to remove it.
+    if (isMidTurnPrecheckAssistantError(event.message)) {
+      return { block: true };
+    }
     const runtimeUserMessage = runtimeUserMessageByPersistedMessage.get(event.message);
     let message = event.message;
     let changed = false;
@@ -271,7 +279,7 @@ export function guardSessionManager(
     missingToolResultText: opts?.missingToolResultText,
     allowedToolNames: opts?.allowedToolNames,
     beforeMessageWriteHook: beforeMessageWrite,
-    redactLoggingConfig: opts?.config?.logging,
+    config: opts?.config,
     maxToolResultChars:
       typeof opts?.contextWindowTokens === "number"
         ? resolveLiveToolResultMaxChars({
@@ -281,7 +289,7 @@ export function guardSessionManager(
     suppressNextUserMessagePersistence:
       preparedUserReplayKey === undefined && opts?.suppressNextUserMessagePersistence,
     suppressTranscriptOnlyAssistantPersistence: opts?.suppressTranscriptOnlyAssistantPersistence,
-    suppressAssistantErrorPersistence: opts?.suppressAssistantErrorPersistence,
+    assistantErrorTranscript: opts?.assistantErrorTranscript,
     onMessagePersisted: opts?.onMessagePersisted,
     withCompactionPersistence: opts?.withCompactionPersistence,
     onUserMessagePersisted: async (message, persistence) => {
@@ -299,14 +307,17 @@ export function guardSessionManager(
       await opts?.onUserMessagePersistenceSuppressed?.(message, runtimeMessage);
     },
     onUserMessageBlocked: opts?.onUserMessageBlocked,
-    onAssistantErrorMessagePersisted: opts?.onAssistantErrorMessagePersisted,
   });
+  setSessionToolTextPreparer(guardedSessionManager, (block) =>
+    prepareModelVisibleToolTextBlock(block, resolveTranscriptLoggingConfig(opts?.config)),
+  );
+  guardedSessionManager.hasPendingToolResults = guard.hasPendingToolResults;
   guardedSessionManager.flushPendingToolResults = guard.flushPendingToolResults;
   guardedSessionManager.clearPendingToolResults = guard.clearPendingToolResults;
   guardedSessionManager.clearNextUserMessagePersistenceSuppression =
     guard.clearNextUserMessagePersistenceSuppression;
-  guardedSessionManager.setTranscriptRunContext = (runId, prepare, skipHooks) => {
-    guard.setTranscriptRunId(runId);
+  guardedSessionManager.setTranscriptRunContext = (runId, prepare, skipHooks, errors) => {
+    guard.setTranscriptRunId(runId, errors);
     prepareAssistantTranscriptMessage = prepare;
     skipBeforeMessageWriteHooks = skipHooks;
   };

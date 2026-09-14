@@ -55,9 +55,10 @@ export type NewSessionSubmitBlock =
   | { gate: SilentSubmitGate; reason?: undefined }
   | { gate: ReasonedSubmitGate; reason: string };
 
-// These gates already render a persistent callout on the page; a blocked
+// These gates already render a persistent callout or status on the page; a blocked
 // submit attempt must not duplicate that text as a second notice.
 export const PAGE_RENDERED_GATES: ReadonlySet<string> = new Set([
+  "attachment-reads",
   "outcome-unknown",
   "worktree-name",
 ]);
@@ -86,7 +87,7 @@ export function readNewSessionSubmissionAccess(options: {
   const { gateway, place, pendingPlacement, hasInitialTurn, createParams } = options;
   const pendingPlacementActive = Boolean(pendingPlacement.sessionKey);
   const target = resolveDraftSessionPlacement(pendingPlacement, place).target;
-  const remoteProject = target || !hasInitialTurn ? place.browser.remoteProject : null;
+  const remoteProject = !target && !hasInitialTurn ? place.browser.remoteProject : null;
   if (!pendingPlacementActive && remoteProject && !remoteProject.projectId) {
     const projectAccess = readSessionMethodAccess(gateway, {
       method: "projects.add",
@@ -295,16 +296,18 @@ export function resolveNewSessionSubmitBlock(
   if (
     cloudProfileId &&
     (!gateway.cloudProfilesReady ||
-      !place.worktree ||
+      (!place.worktree && !place.remoteRepository) ||
       !gateway.cloudProfiles.some((profile) => profile.id === cloudProfileId) ||
       Boolean(host.cloudRuntimeUnsupportedReason()))
   ) {
     const reason =
       host.cloudDisabledReason() ??
-      (place.worktree ? t("newSession.placementNotReady") : t("newSession.cloudRequiresWorktree"));
+      (place.worktree || place.remoteRepository
+        ? t("newSession.placementNotReady")
+        : t("newSession.cloudRequiresWorktree"));
     return { gate: "cloud", reason };
   }
-  // Remote placements force a managed worktree; this gate owns repository readiness for both.
+  // Gateway-backed placements still require a usable managed worktree source.
   if (place.worktree && !place.worktreeAvailable()) {
     return {
       gate: "worktree-unavailable",

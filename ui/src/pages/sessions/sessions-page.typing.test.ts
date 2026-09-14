@@ -5,9 +5,9 @@ import { createDeferred } from "../../../../test/helpers/promise.js";
 import type { GatewayBrowserClient } from "../../api/gateway.ts";
 import type { SessionsListResult } from "../../api/types.ts";
 import type { ApplicationContext } from "../../app/context.ts";
-import { createSessionCapability } from "../../lib/sessions/index.ts";
 import {
   createSessionCapabilityHarness,
+  createTestSessionCapability,
   sessionChangedEvent,
 } from "../../lib/sessions/session-capability.test-support.ts";
 import { createContext, createGateway, createRenderedPage } from "./sessions-page.test-support.ts";
@@ -25,12 +25,15 @@ function result(key: string): SessionsListResult {
 async function mountTypingPage(initialResult = result("agent:main:initial")) {
   const pending: Array<ReturnType<typeof createDeferred<SessionsListResult>>> = [];
   const requests: unknown[] = [];
-  const request = vi.fn(async (method: string, params?: unknown) => {
+  const request = vi.fn(async (method: string, params?: { includeUnknown?: boolean }) => {
     if (method === "sessions.subscribe") {
-      return { subscribed: true, list: result("agent:main:sidebar") };
+      return { subscribed: true };
     }
     if (method !== "sessions.list") {
       throw new Error(`Unexpected request: ${method}`);
+    }
+    if (params?.includeUnknown !== false) {
+      return result("agent:main:sidebar");
     }
     requests.push(params);
     if (requests.length === 1) {
@@ -42,7 +45,7 @@ async function mountTypingPage(initialResult = result("agent:main:initial")) {
   });
   const client = { request } as unknown as GatewayBrowserClient;
   const connection = createGateway(client);
-  const sessions = createSessionCapability(connection.gateway);
+  const sessions = createTestSessionCapability(connection.gateway);
   const context = createContext(connection.gateway, sessions);
   let notifyScope: Parameters<ApplicationContext["agentSelection"]["subscribe"]>[0] = () =>
     undefined;
@@ -244,7 +247,7 @@ describe("Sessions page typing ownership", () => {
         return pageRequests === 1 ? before : pageRequests === 2 ? older.promise : after;
       });
       const { gateway } = createGateway({ request } as unknown as GatewayBrowserClient);
-      const sessions = createSessionCapability(gateway);
+      const sessions = createTestSessionCapability(gateway);
       const page = await createRenderedPage(createContext(gateway, sessions), before);
       try {
         page.querySelector<HTMLButtonElement>(".session-details-toggle")!.click();
@@ -309,7 +312,7 @@ describe("Sessions page typing ownership", () => {
       vi.useFakeTimers();
       const harness = await mountTypingPage();
       const { page, input, edit, requests, pending, connection, client } = harness;
-      let replacementSessions: ReturnType<typeof createSessionCapability> | undefined;
+      let replacementSessions: ReturnType<typeof createTestSessionCapability> | undefined;
       try {
         await edit("older");
         await vi.advanceTimersByTimeAsync(200);
@@ -326,7 +329,7 @@ describe("Sessions page typing ownership", () => {
           document.body.append(page);
         } else if (retirement === "context") {
           const replacement = createGateway(client);
-          replacementSessions = createSessionCapability(replacement.gateway);
+          replacementSessions = createTestSessionCapability(replacement.gateway);
           page.context = createContext(replacement.gateway, replacementSessions);
           page.requestUpdate();
         } else {

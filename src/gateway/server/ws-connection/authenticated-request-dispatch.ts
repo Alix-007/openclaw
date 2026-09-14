@@ -2,7 +2,11 @@ import {
   GATEWAY_CLIENT_IDS,
   GATEWAY_CLIENT_MODES,
 } from "../../../../packages/gateway-protocol/src/client-info.js";
-import type { ConnectParams, ErrorShape } from "../../../../packages/gateway-protocol/src/index.js";
+import type {
+  ConnectParams,
+  ErrorShape,
+  ResponseFrame,
+} from "../../../../packages/gateway-protocol/src/index.js";
 import {
   ErrorCodes,
   errorShape,
@@ -82,6 +86,8 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
     parsed: unknown,
     client: GatewayWsClient,
     frameBytes: number,
+    admission?: "continuation",
+    sendResponse: (frame: ResponseFrame) => ReturnType<typeof send> = send,
   ): Promise<void> => {
     // After handshake, accept only req frames
     if (!validateRequestFrame(parsed)) {
@@ -135,13 +141,18 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
       try {
         let responseOk = ok;
         let responseError = error;
-        let sendResult = send({ type: "res", id: req.id, ok, payload, error });
+        let sendResult = sendResponse({ type: "res", id: req.id, ok, payload, error });
         if (sendResult.kind === "serialization") {
           const detail = formatForLog(sendResult.error);
           logGateway.error(`response serialization failed method=${req.method}: ${detail}`);
           responseOk = false;
           responseError = errorShape(ErrorCodes.UNAVAILABLE, "response serialization failed");
-          sendResult = send({ type: "res", id: req.id, ok: responseOk, error: responseError });
+          sendResult = sendResponse({
+            type: "res",
+            id: req.id,
+            ok: responseOk,
+            error: responseError,
+          });
         }
         diagnostics?.response(
           sendResult.kind === "sent" ? (responseOk ? "ok" : "error") : "unavailable",
@@ -238,8 +249,8 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
             credentialMutationBarrier,
             context.requestEntryLifetime?.signal,
           ).catch(() => undefined);
-          // Refuse within the preparation lease; closing neither cancels nor joins
-          // the mutating handler, and must observe this response before entry settles.
+          // Refuse within the preparation lease so its response settles before the
+          // preparation join; the mutating handler retains its execution owner.
           if (context.requestEntryLifetime?.signal.aborted) {
             respondWithAuthority(
               false,
@@ -268,9 +279,13 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
             respondWithAuthority(
               false,
               undefined,
-              errorShape(ErrorCodes.UNAVAILABLE, "gateway request start capacity exceeded", {
-                retryable: true,
-              }),
+              errorShape(
+                ErrorCodes.UNAVAILABLE,
+                "The server is busy. Please try again in a moment.",
+                {
+                  retryable: true,
+                },
+              ),
             );
             return;
           }
@@ -294,9 +309,11 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
               respond: respondWithAuthority,
               client,
               isWebchatConnect: params.isWebchatConnect,
+              hasCurrentClientAuthority,
               extraHandlers,
               methodRegistry: getMethodRegistry?.(),
               context,
+              ...(admission ? { admission } : {}),
               requestEntry: entry,
               ...(requestController ? { signal: requestController.signal } : {}),
             },
@@ -342,7 +359,7 @@ export function createGatewayAuthenticatedRequestDispatcher(params: {
       });
       deviceCredentialMutationBarrier = barrier;
     }
-    void requestDispatch;
+    await requestDispatch;
   };
 
   return { dispatch };

@@ -14,6 +14,10 @@ const CORE_GATEWAY_HANDLER_MODULES = {
   "agent-identity": () =>
     import("./agent-identity.js").then((module) => module.agentIdentityHandlers),
   agents: () => import("./agents.js").then((module) => module.agentsHandlers),
+  "claws-monitors": () =>
+    import("./claws-monitors.js").then((module) => module.clawsMonitorHandlers),
+  "claws-packages": () =>
+    import("./claws-packages.js").then((module) => module.clawsPackageHandlers),
   "agents-workspace": () =>
     import("./agents-workspace.js").then((module) => module.agentsWorkspaceHandlers),
   artifacts: () => import("./artifacts.js").then((module) => module.artifactsHandlers),
@@ -33,10 +37,13 @@ const CORE_GATEWAY_HANDLER_MODULES = {
       "chat.abort": module.handleChatAbortRequest,
     })),
   commands: () => import("./commands.js").then((module) => module.commandsHandlers),
+  computer: () => import("./computer.js").then((module) => module.computerHandlers),
   config: () => import("./config.js").then((module) => module.configHandlers),
   conversations: () => import("./conversations.js").then((module) => module.conversationHandlers),
   connect: () => import("./connect.js").then((module) => module.connectHandlers),
   "control-ui": () => import("./control-ui.js").then((module) => module.controlUiHandlers),
+  "plugins-control-ui": () =>
+    import("./plugins-control-ui.js").then((module) => module.pluginsControlUiHandlers),
   cron: () => import("./cron.js").then((module) => module.cronHandlers),
   devices: () => import("./devices.js").then((module) => module.deviceHandlers),
   "device-pair-setup": () =>
@@ -57,6 +64,8 @@ const CORE_GATEWAY_HANDLER_MODULES = {
   "ui-command": () => import("./ui-command.js").then((module) => module.uiCommandHandlers),
   "models-auth-status": () =>
     import("./models-auth-status.js").then((module) => module.modelsAuthStatusHandlers),
+  "models-auth-login": () =>
+    import("./models-auth-login.js").then((module) => module.modelsAuthLoginHandlers),
   "models-auth-order": () =>
     import("./models-auth-order.js").then((module) => module.modelsAuthOrderHandlers),
   models: () => import("./models.js").then((module) => module.modelsHandlers),
@@ -69,6 +78,8 @@ const CORE_GATEWAY_HANDLER_MODULES = {
   "plugin-host-hooks": () =>
     import("./plugin-host-hooks.js").then((module) => module.pluginHostHookHandlers),
   plugins: () => import("./plugins.js").then((module) => module.pluginsHandlers),
+  "plugins-mutations": () =>
+    import("./plugins-mutations.js").then((module) => module.pluginMutationHandlers),
   projects: () => import("./projects.js").then((module) => module.projectsHandlers),
   portals: () => import("./portals.js").then((module) => module.portalHandlers),
   "progress-card": () => import("./progress-card.js").then((module) => module.progressCardHandlers),
@@ -124,6 +135,8 @@ const CORE_GATEWAY_HANDLER_MODULES = {
     import("./session-catalog.js").then((module) => module.sessionCatalogHandlers),
   "session-discussion": () =>
     import("./session-discussion.js").then((module) => module.sessionDiscussionHandlers),
+  "session-activity-summary": () =>
+    import("./session-activity-summary.js").then((module) => module.sessionActivitySummaryHandlers),
   "session-observer-rpc": () =>
     import("../session-observer-rpc.js").then((module) => module.sessionObserverHandlers),
   "session-companion-rpc": () =>

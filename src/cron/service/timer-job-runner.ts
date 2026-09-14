@@ -153,7 +153,7 @@ async function executeJobCoreWithTimeoutUnfinalized(
   const runAbortController = new AbortController();
   const progress: CronRunProgress = {};
   const assertRunCurrent = opts?.runReceipt
-    ? () => assertServiceCronRunReceiptCurrent(state, opts.runReceipt!)
+    ? () => assertServiceCronRunReceiptCurrent(state, opts.runReceipt!, opts.activeJobMarker)
     : undefined;
   const operatorCancellationMarker = Symbol("cron-operator-cancelled");
   const operatorCancellation = createDeferredCore<typeof operatorCancellationMarker>();
@@ -314,7 +314,11 @@ async function executeJobCoreWithTimeoutUnfinalized(
         settlement: runPromise,
       });
     }
-    trackActiveCronTaskRunSettlement(runPromise, runAbortController.signal);
+    trackActiveCronTaskRunSettlement(
+      runPromise,
+      runAbortController.signal,
+      opts?.runReceipt?.agentId ?? opts?.activeJobMarker?.agentId,
+    );
     void runPromise.catch((err: unknown) => {
       if (runAbortController.signal.aborted) {
         state.deps.log.warn(

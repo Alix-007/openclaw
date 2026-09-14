@@ -35,11 +35,21 @@ describe("subagent spawn envelope", () => {
       expect(`${systemPrompt}\n${message}`.match(/UNIQUE_SUBAGENT_TASK/g)).toHaveLength(1);
       expect(systemPrompt).toMatch(/\[Subagent Task\].*current child session/);
       expect(systemPrompt).toMatch(/inherited task envelopes.*background reference/);
+      const soleChild = buildEnvelope({ completionMode, soleCollectorChild: true });
+      expect(soleChild.systemPrompt).toBe(systemPrompt);
+      expect(soleChild.message).toBe(message);
+      if (completionMode === "collector") {
+        expect(soleChild.acceptedNote).toBe(
+          `${acceptedNote} This is the only collector child in its group so far; unless more parallel children follow, an ordinary spawn (omit collect) is simpler and can be steered.`,
+        );
+      } else {
+        expect(soleChild.acceptedNote).toBe(acceptedNote);
+      }
     },
   );
 
   it.each([
-    { childDepth: undefined, maxSpawnDepth: undefined, parent: "main agent", spawning: false },
+    { childDepth: undefined, maxSpawnDepth: undefined, parent: "main agent", spawning: true },
     { childDepth: 1, maxSpawnDepth: 2, parent: "main agent", spawning: true },
     { childDepth: 2, maxSpawnDepth: 2, parent: "parent orchestrator", spawning: false },
   ])(
@@ -56,6 +66,23 @@ describe("subagent spawn envelope", () => {
       expect(systemPrompt).toContain("no full cat");
     },
   );
+
+  it("describes private completion consistently for child and parent", () => {
+    const envelope = buildEnvelope({ completionTarget: "parent" });
+    for (const text of [envelope.systemPrompt, envelope.acceptedNote]) {
+      expect(text).toContain("No result is automatically sent to a channel");
+      expect(text).toContain("remain silent");
+    }
+    expect(envelope.acceptedNote).toContain("private requester turn");
+    expect(envelope.acceptedNote).not.toContain("after your final answer");
+  });
+
+  it("describes the bounded default recursive depth", () => {
+    const envelope = buildEnvelope();
+
+    expect(envelope.message).toContain("depth 1/5");
+    expect(envelope.systemPrompt).toContain("May delegate descendants");
+  });
 
   it.each([false, true])(
     "gates ACP guidance without overriding collector restrictions: acp=%s",

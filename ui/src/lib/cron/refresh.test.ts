@@ -20,7 +20,7 @@ function createRefreshHarness(method: "cron.status" | "cron.runs") {
     const promise =
       method === "cron.status"
         ? loadCronStatus(state, { coalesce })
-        : loadCronRuns(state, null, { coalesce });
+        : loadCronRuns(state, { coalesce });
     loads.push(promise);
     return promise;
   };
@@ -113,6 +113,29 @@ describe.each(["cron.status", "cron.runs"] as const)("%s event refresh ownership
     },
   );
 
+  it("settles a queued refresh without dispatch when page read admission closes", async () => {
+    const harness = createRefreshHarness(method);
+    let visible = true;
+    harness.state.canRefresh = () => visible;
+    try {
+      const initial = harness.load();
+      const queued = harness.load();
+      visible = false;
+      harness.response(0).resolve(harness.payload(1));
+      await Promise.all([initial, queued]);
+      expect(harness.request).toHaveBeenCalledTimes(1);
+      expect(harness.revision()).toBe(1);
+      visible = true;
+      const resumed = harness.load();
+      expect(harness.request).toHaveBeenCalledTimes(2);
+      harness.response(1).resolve(harness.payload(2));
+      await resumed;
+      expect(harness.revision()).toBe(2);
+    } finally {
+      await harness.close();
+    }
+  });
+
   it("completes an explicit read without waiting for its queued event refresh", async () => {
     const harness = createRefreshHarness(method);
     try {
@@ -174,7 +197,7 @@ describe("cron event refresh replacement", () => {
       harness.state.cronRuns = [{ ts: 1, jobId: "job", action: "finished", status: "ok" }];
       harness.state.cronRunsHasMore = true;
       harness.state.cronRunsNextOffset = 1;
-      const append = loadCronRuns(harness.state, null, { append: true });
+      const append = loadCronRuns(harness.state, { append: true });
       const current = harness.load();
       expect(harness.request).toHaveBeenCalledTimes(2);
       expect(harness.state.cronRunsLoadingMore).toBe(false);

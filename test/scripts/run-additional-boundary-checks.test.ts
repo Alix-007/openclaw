@@ -17,7 +17,7 @@ import {
   runSingleCheck,
   selectChecksForShard,
 } from "../../scripts/run-additional-boundary-checks.mts";
-import { waitForFile, waitForPidFile } from "../helpers/process-wait.js";
+import { waitForChildClose, waitForFile, waitForPidFile } from "../helpers/process-wait.js";
 
 function createOutputBuffer() {
   const chunks: string[] = [];
@@ -87,21 +87,6 @@ async function waitForNotRunning(pid: number, timeoutMs: number): Promise<void> 
   throw new Error(`process still running: ${pid}`);
 }
 
-async function waitForChildClose(
-  child: ReturnType<typeof spawn>,
-  timeoutMs: number,
-): Promise<{ code: number | null; signal: NodeJS.Signals | null }> {
-  return await new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error("child did not close before timeout"));
-    }, timeoutMs);
-    child.once("close", (code, signal) => {
-      clearTimeout(timeout);
-      resolve({ code, signal });
-    });
-  });
-}
-
 describe("run-additional-boundary-checks", () => {
   it("keeps prompt snapshot drift checks out of boundary shards", () => {
     // The snapshot check regenerates prompt fixtures over the full agent
@@ -161,7 +146,7 @@ describe("run-additional-boundary-checks", () => {
     expect(output.read()).toBe("[output truncated to last 5 bytes]\nnew");
   });
 
-  it("parses and applies CI shard specs", () => {
+  it.each([1, 2, 3, 4, 8])("covers every check once across %i shards", (count) => {
     expect(parseShardSpec("2/4")).toEqual({ count: 4, index: 1, label: "2/4" });
     expect(parseShardSelection("2/4,3/4")).toEqual([
       { count: 4, index: 1, label: "2/4" },
@@ -173,16 +158,17 @@ describe("run-additional-boundary-checks", () => {
     expect(selectChecksForShard(BOUNDARY_CHECKS, "2/4,3/4")).toEqual(
       BOUNDARY_CHECKS.filter((_check, index) => index % 4 === 1 || index % 4 === 2),
     );
-    const shardedLabels = [1, 2, 3, 4].flatMap((index) =>
-      selectChecksForShard(BOUNDARY_CHECKS, `${index}/4`).map((check) => check.label),
+    const indices = Array.from({ length: count }, (_, index) => index + 1);
+    const shardedLabels = indices.flatMap((index) =>
+      selectChecksForShard(BOUNDARY_CHECKS, `${index}/${count}`).map((check) => check.label),
     );
     expect(shardedLabels.toSorted((a, b) => a.localeCompare(b))).toEqual(
       BOUNDARY_CHECKS.map((check) => check.label).toSorted((a, b) => a.localeCompare(b)),
     );
     expect(new Set(shardedLabels).size).toBe(BOUNDARY_CHECKS.length);
-    const transferred = [1, 2, 3, 4].flatMap((index) => {
-      const full = selectChecksForShard(BOUNDARY_CHECKS, `${index}/4`);
-      const selected = selectChecksForShard(BOUNDARY_CHECKS, `${index}/4`, "test-types");
+    const transferred = indices.flatMap((index) => {
+      const full = selectChecksForShard(BOUNDARY_CHECKS, `${index}/${count}`);
+      const selected = selectChecksForShard(BOUNDARY_CHECKS, `${index}/${count}`, "test-types");
       expect(selected).toEqual(
         full.filter((check) => check.label !== "lint:tmp:tsgo-core-boundary"),
       );
@@ -295,12 +281,20 @@ describe("run-additional-boundary-checks", () => {
     });
   });
 
-  it("keeps the production plugin normalization boundary in CI checks", () => {
-    expect(BOUNDARY_CHECKS).toContainEqual({
-      label: "extension-normalization-core-bypass-boundary",
-      command: "pnpm",
-      args: ["run", "lint:extensions:no-normalization-core-bypass"],
-    });
+  it("runs all production plugin SDK boundaries in one CI check", () => {
+    const checks = BOUNDARY_CHECKS.filter((check) => check.label.startsWith("extension-"));
+    expect(checks).toEqual([
+      {
+        label: "extension-plugin-sdk-boundaries",
+        command: "node",
+        args: [
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/check-extension-plugin-sdk-boundary.mts",
+          "--all",
+        ],
+      },
+    ]);
   });
 
   it("keeps native and Node state schema versions aligned in CI", () => {

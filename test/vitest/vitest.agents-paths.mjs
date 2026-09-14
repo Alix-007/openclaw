@@ -1,6 +1,11 @@
 // Canonical agent project ownership for focused runs, full suites, and CI.
+import { databaseWorkerCoreTestFiles } from "./vitest.database-worker-core-paths.mjs";
+
 const agentsRoot = "src/agents";
 const embeddedRoot = `${agentsRoot}/embedded-agent-runner`;
+const spawnProductionBoundaryFiles = [
+  "src/agents/subagents/spawn/subagent-spawn.production-boundary.test.ts",
+];
 
 // These suites mock shared runtime, network, or plugin modules and cannot
 // share the non-isolated core worker without leaking module state.
@@ -18,8 +23,11 @@ const coreIsolatedFiles = [
   "src/agents/model-selection.plugin-runtime.test.ts",
   "src/agents/models-config.runtime-source-snapshot.test.ts",
   "src/agents/openai-transport-stream.streaming.test.ts",
+  "src/agents/subagents/announce/subagent-announce.test.ts",
   "src/agents/subagents/registry/subagent-registry.announce-loop-guard.test.ts",
+  "src/agents/subagents/registry/subagent-registry-restart-recovery-notice.test.ts",
   "src/agents/subagents/registry/subagent-registry-restart-recovery.test.ts",
+  "src/agents/subagents/spawn/subagent-spawn.authority.test.ts",
 ];
 const incompleteTurnFiles = [
   `${embeddedRoot}/run.incomplete-turn.classification.test.ts`,
@@ -40,6 +48,15 @@ export const agentVitestProjectOwners = {
     root: agentsRoot,
     dir: agentsRoot,
     include: [`${agentsRoot}/**/*.test.ts`],
+    exclude: databaseWorkerCoreTestFiles,
+  },
+  spawnProductionBoundary: {
+    kind: "agentsSpawnProductionBoundary",
+    name: "agents-spawn-production-boundary",
+    config: "test/vitest/vitest.agents-spawn-production-boundary.config.ts",
+    root: agentsRoot,
+    dir: agentsRoot,
+    include: spawnProductionBoundaryFiles,
     exclude: [],
   },
   coreIsolated: {
@@ -58,7 +75,11 @@ export const agentVitestProjectOwners = {
     root: agentsRoot,
     dir: agentsRoot,
     include: [`${agentsRoot}/*.test.ts`],
-    exclude: coreIsolatedFiles,
+    exclude: [
+      ...spawnProductionBoundaryFiles,
+      ...coreIsolatedFiles,
+      ...databaseWorkerCoreTestFiles,
+    ],
   },
   embedded: {
     kind: "agentEmbedded",
@@ -103,7 +124,12 @@ export const agentVitestProjectOwners = {
     root: agentsRoot,
     dir: agentsRoot,
     include: [`${agentsRoot}/*/**/*.test.ts`],
-    exclude: [...coreIsolatedFiles, `${embeddedRoot}/**`, `${agentsRoot}/tools/**`],
+    exclude: [
+      ...spawnProductionBoundaryFiles,
+      ...coreIsolatedFiles,
+      `${embeddedRoot}/**`,
+      `${agentsRoot}/tools/**`,
+    ],
   },
   tools: {
     kind: "agentTools",
@@ -117,6 +143,7 @@ export const agentVitestProjectOwners = {
 };
 
 export const agentVitestProjectConfigs = [
+  agentVitestProjectOwners.spawnProductionBoundary.config,
   agentVitestProjectOwners.coreIsolated.config,
   agentVitestProjectOwners.core.config,
   agentVitestProjectOwners.embedded.config,
@@ -135,7 +162,12 @@ export const embeddedAgentVitestProjectOwners = [
 ];
 
 const coreIsolatedFileSet = new Set(coreIsolatedFiles);
+const spawnProductionBoundaryFileSet = new Set(spawnProductionBoundaryFiles);
 
 export function isAgentsCoreIsolatedTestFile(value) {
   return coreIsolatedFileSet.has(value.replaceAll("\\", "/"));
+}
+
+export function isAgentsSpawnProductionBoundaryTestFile(value) {
+  return spawnProductionBoundaryFileSet.has(value.replaceAll("\\", "/"));
 }

@@ -8,7 +8,8 @@ export type SidebarSlotId =
   | "discussion"
   | "tasks"
   | "terminal"
-  | "workspace";
+  | "workspace"
+  | `plugin:${string}/${string}`;
 export type SidebarPanel = { id: string; slot: SidebarSlotId };
 export type SidebarDock = "bottom" | "left" | "right";
 export type SidebarColumn = {
@@ -25,4 +26,8 @@ export type SidebarLayout = {
   dock?: SidebarDock;
   open?: boolean;
   expanded?: boolean;
+  /** null inherits the shared default; absence preserves a legacy saved layout verbatim. */
+  dashboardPresentationOverride?: "split" | "expanded" | null;
+  /** Focus the active side panel without swapping its saved main/side placement. */
+  expandedSide?: boolean;
 };
