@@ -3,6 +3,7 @@ import type {
   SessionCatalog,
   SessionsCatalogListResult,
 } from "../../../../packages/gateway-protocol/src/index.ts";
+import { createDeferred as deferred } from "../../../../test/helpers/promise.js";
 import { GatewayRequestError, type GatewayBrowserClient } from "../../api/gateway.ts";
 import type { ApplicationGatewaySnapshot } from "../../app/context.ts";
 import {
@@ -14,7 +15,6 @@ import {
   createGatewayHarness,
   createSessions,
   createSessionsHarness,
-  deferred,
   mountSidebar,
   successfulSessionPatch,
 } from "../app-sidebar.ts";
@@ -294,7 +294,7 @@ describe("AppSidebar multi-select", () => {
     expect(harness.refreshReplacement).not.toHaveBeenCalled();
   });
 
-  it("hides an archived current thread immediately without navigating away", async () => {
+  it("keeps an archiving current thread visible until confirmation without navigating away", async () => {
     const gatewayHarness = createGatewayHarness({} as GatewayBrowserClient);
     const setSessionKeySpy = vi.spyOn(gatewayHarness.gateway, "setSessionKey");
     const harness = createSessionsHarness("main", [
@@ -316,7 +316,9 @@ describe("AppSidebar multi-select", () => {
 
     await waitForFast(() => expect(harness.patch).toHaveBeenCalledOnce());
     await sidebar.updateComplete;
-    expect(sidebar.querySelector('[data-session-key="agent:main:a"]')).toBeNull();
+    const pendingRow = sidebar.querySelector('[data-session-key="agent:main:a"]');
+    expect(pendingRow).not.toBeNull();
+    expect(pendingRow?.querySelector('[role="status"]')?.textContent?.trim()).toBe("Archiving…");
     expect(setSessionKeySpy).not.toHaveBeenCalled();
 
     const result = harness.sessions.state.result;

@@ -72,20 +72,13 @@ import {
   isCommunityInviteEligible,
 } from "./community-invite-state.ts";
 import { icons } from "./icons.ts";
-import {
-  lobsterPetSeed,
-  resolveLobsterPetMode,
-  resolveLobsterRunOutcome,
-} from "./lobster-pet-contract.ts";
 import { renderPanelRefreshStatus } from "./panel-refresh-status.ts";
 import { SessionOrganizerController } from "./session-organizer-controller.ts";
 import { SidebarMenusController } from "./sidebar-menus-controller.ts";
 import { SidebarPeopleController } from "./sidebar-people-controller.ts";
-// The shared loader retries transient chunk failures online; a deploy-pruned
-// chunk still stays off until reload when that retry fails, by design.
-const lobsterPetImport = createIdleImport(() => import("./lobster-pet.runtime.ts"));
 
 class AppSidebar extends AppSidebarSessionNavigationElement implements SessionListHost {
+  @state() teamOnlineExpanded = false;
   @state() override sidebarNarrationLines: ReadonlyMap<string, string> = new Map();
   @state() override sidebarObserverDigests: ReadonlyMap<string, SessionObserverDigest> = new Map();
 
@@ -169,7 +162,6 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
       (plugins, notify) => plugins.subscribe(notify),
     );
   private readonly nativeGatewaysChanged = () => this.sidebarMenus.closeSessionMenu();
-  private readonly refreshAppearanceSettings = () => this.context?.theme.refresh();
   private readonly hiddenSessionCatalogsChanged = () => {
     this.hiddenSessionCatalogIds = loadStoredHiddenSessionCatalogIds();
   };
@@ -192,6 +184,14 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
       }
     },
   );
+  private rosterRenderer: typeof import("./sidebar-agent-roster.ts") | null = null;
+  private readonly rosterRendererImport = createIdleImport(
+    () => import("./sidebar-agent-roster.ts"),
+    (module) => {
+      this.rosterRenderer = module;
+      this.requestUpdate();
+    },
+  );
   @state() catalogProjectGrouping = loadStoredSidebarCatalogGrouping();
 
   constructor() {
@@ -205,6 +205,7 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
   }
 
   override disconnectedCallback() {
+    this.rosterRendererImport.dispose();
     window.removeEventListener("openclaw:native-gateways-changed", this.nativeGatewaysChanged);
     window.removeEventListener(
       SIDEBAR_HIDDEN_SESSION_CATALOGS_CHANGED_EVENT,
@@ -231,7 +232,10 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
     ) {
       this.communityInvitePresentation = "shown";
     }
-    const currentResult = this.sessionData.sessionsResult;
+    const currentResult =
+      this.sidebarAgentsMode === "roster"
+        ? this.rosterSessionSource?.result
+        : this.sessionData.sessionsResult;
     this.sessionProjection.observeRows([
       ...(currentResult ? [currentResult] : []),
       ...Object.values(this.sessionData.sessionResultsByAgent),
@@ -343,9 +347,6 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
     );
     window.addEventListener("storage", this.communityInviteStorageChanged);
     this.syncCommunityInviteState();
-    // The decorative pet's large module stays out of startup and upgrades in place.
-    // Its first visit is at least 15 seconds after load, so idle loading cannot miss one.
-    lobsterPetImport.schedule();
     this.catalogRendererImport.schedule();
   }
 
@@ -456,12 +457,20 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
   }
 
   setVisibleSessionLimit(sectionId: string, limit: number): void {
+    const grouped = this.sidebarAgentsMode === "roster" && sectionId.startsWith("agent:");
     const previousLimit =
-      this.sessionData.visibleSessionLimits.get(sectionId) ?? SIDEBAR_SESSION_PAGE_SIZE;
+      (grouped ? this.rosterVisibleSessionLimits : this.sessionData.visibleSessionLimits).get(
+        sectionId,
+      ) ?? SIDEBAR_SESSION_PAGE_SIZE;
     if (limit < previousLimit) {
       this.sessionProjection.resetMembership(sectionId);
     }
-    this.sessionData.setVisibleSessionLimit(sectionId, limit);
+    if (grouped) {
+      this.rosterVisibleSessionLimits.set(sectionId, limit);
+      this.requestUpdate();
+    } else {
+      this.sessionData.setVisibleSessionLimit(sectionId, limit);
+    }
   }
 
   loadMoreSidebarSessions(): Promise<void> {
@@ -534,6 +543,28 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
   }
 
   private renderSessions() {
+    return renderPluginSurface(
+      "session-list",
+      {
+        sessionKey: this.sessionKey,
+        agentId: this.getSessionNavigationState().selectedAgentId,
+        sessions: this.context?.sessions.state.result?.sessions ?? [],
+      },
+      this.renderSessionsBody(),
+    );
+  }
+
+  private renderSessionsBody() {
+    if (this.sidebarAgentsMode === "roster") {
+      if (!this.rosterRenderer) {
+        void this.rosterRendererImport.load().catch(() => undefined);
+        return nothing;
+      }
+      return this.rosterRenderer.renderSidebarAgentRoster(
+        this,
+        this.projectedSessionSections.sections,
+      );
+    }
     const navigationState = this.getSessionNavigationState();
     const visibleSessions = this.selectedAgentSessionRows(navigationState);
     const expandedAgentId = this.expandedAgentId();
@@ -556,34 +587,26 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
     ) {
       void this.preloadCatalogRenderer().catch(() => undefined);
     }
-    return renderPluginSurface(
-      "session-list",
-      {
-        sessionKey: this.sessionKey,
-        agentId: navigationState.selectedAgentId,
-        sessions: this.context?.sessions.state.result?.sessions ?? [],
+    return renderSessionList({
+      host: this,
+      empty: visibleSessions.length === 0,
+      sections,
+      nativeSessionsHaveMore: this.sessionData.sessionsResult?.hasMore === true,
+      catalogRenderer: this.catalogRenderer,
+      catalogs: {
+        catalogs,
+        basePath: this.basePath,
+        routeSessionKey: catalogRouteSessionKey,
+        newSessionAgentId: expandedAgentId,
+        mainKey: this.sessionMainKey(),
+        loadingMoreCatalogIds: this.sessionData.loadingMoreSessionCatalogIds,
+        projectGrouping: this.catalogProjectGrouping,
+        liveRows: this.catalogLiveRows(),
+        toSidebarSession: navigationState.toSidebarSession,
+        catalogOpenTarget: this.catalogOpenTarget,
+        terminalAvailable: this.terminalAvailable,
       },
-      renderSessionList({
-        host: this,
-        empty: visibleSessions.length === 0,
-        sections,
-        nativeSessionsHaveMore: this.sessionData.sessionsResult?.hasMore === true,
-        catalogRenderer: this.catalogRenderer,
-        catalogs: {
-          catalogs,
-          basePath: this.basePath,
-          routeSessionKey: catalogRouteSessionKey,
-          newSessionAgentId: expandedAgentId,
-          mainKey: this.sessionMainKey(),
-          loadingMoreCatalogIds: this.sessionData.loadingMoreSessionCatalogIds,
-          projectGrouping: this.catalogProjectGrouping,
-          liveRows: this.catalogLiveRows(),
-          toSidebarSession: navigationState.toSidebarSession,
-          catalogOpenTarget: this.catalogOpenTarget,
-          terminalAvailable: this.terminalAvailable,
-        },
-      }),
-    );
+    });
   }
 
   override render() {
@@ -606,7 +629,15 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
         }}
       >
         <div class="sidebar-shell" @mousedown=${beginNativeWindowDragFromTopInset}>
-          ${renderAppSidebarBrand(this)}
+          ${renderAppSidebarBrand(
+            this,
+            this.sidebarAgentsMode === "roster"
+              ? this.rosterRenderer?.renderSidebarNewSessionMenu(
+                  this,
+                  "sidebar-brand__icon sidebar-brand__header-control sidebar-brand__new-thread",
+                )
+              : nothing,
+          )}
           <div class="sidebar-shell__content">
             <div
               class="sidebar-shell__body sidebar-shell__body--scroll-${
@@ -629,9 +660,13 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
                   @drop=${(event: DragEvent) => this.sessionOrganizer.handleSidebarZoneDrop(event)}
                 >
                   ${renderAppSidebarHomeRow(this)}
-                  ${sidebarZone.entries.map((entry) =>
-                    renderAppSidebarZoneEntry(this, entry, sidebarZone.sessionRows),
-                  )}
+                  ${sidebarZone.entries
+                    .filter(
+                      (entry) => this.sidebarAgentsMode !== "roster" || entry.type !== "session",
+                    )
+                    .map((entry) =>
+                      renderAppSidebarZoneEntry(this, entry, sidebarZone.sessionRows),
+                    )}
                   ${sidebarPluginTabs(this.context?.gateway.snapshot.hello?.controlUiTabs)
                     .filter(
                       (tab) =>
@@ -663,18 +698,6 @@ class AppSidebar extends AppSidebarSessionNavigationElement implements SessionLi
           </div>
           <div class="sidebar-shell__invite">
             ${this.communityInvitePresentation === "shown" ? renderCommunityInviteCard(this.dismissCommunityInvite) : nothing}
-            <openclaw-lobster-pet
-              .seed=${lobsterPetSeed(this.sessionKey)}
-              .mode=${resolveLobsterPetMode(
-                !this.offline,
-                this.sessionData.sessionsResult?.sessions,
-              )}
-              .runOutcome=${resolveLobsterRunOutcome(this.sessionData.sessionsResult?.sessions)}
-              .visitsEnabled=${this.lobsterPetVisits}
-              .soundsEnabled=${this.lobsterPetSounds}
-              .gatewayVersion=${this.gatewayVersion}
-              .onVisitsDisabled=${this.refreshAppearanceSettings}
-            ></openclaw-lobster-pet>
           </div>
           <div class="sidebar-shell__footer">
             ${

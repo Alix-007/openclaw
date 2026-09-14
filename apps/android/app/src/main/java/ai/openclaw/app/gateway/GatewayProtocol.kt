@@ -939,6 +939,12 @@ enum class GatewayMethod(
   ModelsAuthSetApiKey("models.authSetApiKey"),
   SessionsStorageStatus("sessions.storage.status"),
   SessionsStorageRun("sessions.storage.run"),
+  PluginsReload("plugins.reload"),
+  ClawsPackagesRemove("claws.packages.remove"),
+  CanvasDocumentPreview("canvas.document.preview"),
+  ComputerStatus("computer.status"),
+  ComputerInvoke("computer.invoke"),
+  SessionsActivitySummaryEnsure("sessions.activitySummary.ensure"),
 }
 
 enum class GatewayEvent(
@@ -948,6 +954,7 @@ enum class GatewayEvent(
   Agent("agent"),
   Chat("chat"),
   ChatMetadataChanged("chat.metadata.changed"),
+  ModelsSnapshot("models.snapshot"),
   UiCommand("ui.command"),
   SessionApproval("session.approval"),
   SessionMessage("session.message"),
@@ -987,6 +994,7 @@ enum class GatewayEvent(
   DevicePairSetupDeliveryUncertain("device.pair.setup.deliveryUncertain"),
   UsersPrefsChanged("users.prefs.changed"),
   SkillsChanged("skills.changed"),
+  PluginsChanged("plugins.changed"),
   VoicewakeChanged("voicewake.changed"),
   VoicewakeRoutingChanged("voicewake.routing.changed"),
   ExecApprovalRequested("exec.approval.requested"),
