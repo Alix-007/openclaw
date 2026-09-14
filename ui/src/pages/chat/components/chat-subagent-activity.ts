@@ -1,9 +1,16 @@
+import { flattenMarkdownToPlainText } from "@openclaw/normalization-core/markdown-plain-text";
 import { html, nothing, type TemplateResult } from "lit";
 import { keyed } from "lit/directives/keyed.js";
 import { repeat } from "lit/directives/repeat.js";
+import remend from "remend";
 import { icons } from "../../../components/icons.ts";
 import { t } from "../../../i18n/index.ts";
-import { isActiveTask, sortTasks, taskTimestampMs, taskTitle } from "../../../lib/tasks/data.ts";
+import {
+  isActiveTask,
+  sortTasks,
+  taskStatusLabel,
+  taskTimestampMs,
+} from "../../../lib/tasks/data.ts";
 import type { TaskSummary } from "../../../lib/tasks/task-summary.ts";
 
 const SUBAGENT_ACTIVITY_LIMIT = 5;
@@ -114,27 +121,40 @@ function renderSubagentActivityRow(
   task: TaskSummary,
   onOpenTaskDetail?: (task: TaskSummary) => void,
 ): TemplateResult {
-  const snippet = subagentActivitySnippet(task);
-  const label = subagentActivityLabel(task);
+  const rawSnippet = subagentActivitySnippet(task);
+  // Previews can end mid-emphasis. Repair delimiters without adding escapes
+  // intended for a Markdown renderer; the row and tooltip stay plain text.
+  const snippet = rawSnippet
+    ? flattenMarkdownToPlainText(
+        remend(rawSnippet, {
+          katex: false,
+          links: false,
+          images: false,
+          comparisonOperators: false,
+          singleTilde: false,
+          setextHeadings: false,
+          htmlTags: false,
+        }),
+      )
+    : undefined;
+  const title = task.title?.trim();
+  const label = title || subagentActivityLabel(task);
   const content = html`
     ${renderSubagentActivityIndicator(task)}
-    <span class="chat-subagent-activity__label">${label}</span>
-    ${
-      snippet
-        ? keyed(
-            `${task.status}:${snippet}`,
-            html`<span
-              class="chat-subagent-activity__snippet chat-subagent-activity__snippet--updated"
-              title=${snippet}
-              >${snippet}</span
-            >`,
-          )
-        : nothing
-    }
+    <span class="chat-subagent-activity__label" title=${label}>${label}</span>
+    ${title ? html`<span class="chat-subagent-activity__status">${taskStatusLabel(task.status)}</span>` : nothing}
+    ${keyed(
+      `${task.status}:${snippet ?? ""}`,
+      html`<span
+        class="chat-subagent-activity__snippet chat-subagent-activity__snippet--updated"
+        title=${snippet ?? ""}
+        >${snippet ?? ""}</span
+      >`,
+    )}
   `;
   if (!onOpenTaskDetail) {
     return html`<div
-      class="chat-subagent-activity__row"
+      class="chat-subagent-activity__row ${title ? "chat-subagent-activity__row--named" : ""}"
       data-subagent-task-id=${task.id}
       role="status"
       aria-live="off"
@@ -143,11 +163,11 @@ function renderSubagentActivityRow(
     </div> `;
   }
   return html`<button
-    class="chat-subagent-activity__row chat-subagent-activity__row--interactive"
+    class="chat-subagent-activity__row chat-subagent-activity__row--interactive ${title ? "chat-subagent-activity__row--named" : ""}"
     data-subagent-task-id=${task.id}
     type="button"
     aria-label=${t("chat.backgroundTasks.subagentActivity.openDetails", {
-      title: taskTitle(task),
+      title: title || t("chat.backgroundTasks.subagentActivity.running"),
     })}
     @click=${() => onOpenTaskDetail(task)}
   >

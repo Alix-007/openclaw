@@ -93,8 +93,69 @@ afterEach(() => {
 });
 
 describe("subagent activity rows", () => {
-  it("opens the selected subagent from an accessible activity control", () => {
-    const task = makeTask({ id: "clickable-subagent" });
+  it.each([
+    {
+      lastActivity: "**Evidence limits:** original regression",
+      expected: "Evidence limits: original regression",
+    },
+    { lastActivity: "**Block", expected: "Block" },
+    {
+      progressSummary: "All runs bind `abc123`, **not final** qualification",
+      expected: "All runs bind abc123, not final qualification",
+    },
+    { lastToolName: "read_file", expected: "read_file" },
+    { lastActivity: "Inspecting items[0", expected: "Inspecting items[0" },
+    {
+      status: "completed" as const,
+      terminalSummary: "## Done\n- Read [results](https://example.com/results)",
+      expected: "Done Read results",
+    },
+    {
+      lastActivity: "Checking foo_bar_baz at ~/.openclaw: 1 < 2 and ~5 files",
+      expected: "Checking foo_bar_baz at ~/.openclaw: 1 < 2 and ~5 files",
+    },
+  ])("shows readable preview text for $expected", ({ expected, ...overrides }) => {
+    const task = makeTask({ id: "markdown-subagent", ...overrides });
+    const container = renderStatusRow({
+      tasks: [task],
+      subagentActivity: deriveSubagentActivity({
+        tasks: [task],
+        sessionKey: "agent:main:current",
+        terminalObservedAtByTask: new Map(),
+        canonicalizeSessionKey: (sessionKey) => sessionKey ?? "",
+        now: 3_000,
+      }),
+    });
+
+    const snippet = container.querySelector(".chat-subagent-activity__snippet");
+    expect(snippet?.textContent).toBe(expected);
+    expect(snippet?.getAttribute("title")).toBe(expected);
+    expect(snippet?.childElementCount).toBe(0);
+  });
+
+  it.each([
+    {
+      title: "  Layout review  ",
+      label: "Layout review",
+      status: "running" as const,
+      statusLabel: "Running",
+    },
+    {
+      title: "Layout review",
+      label: "Layout review",
+      status: "completed" as const,
+      statusLabel: "Completed",
+    },
+    { title: "", label: "Subagent", status: "running" as const, statusLabel: undefined },
+    { title: undefined, label: "Subagent", status: "running" as const, statusLabel: undefined },
+    { title: " \n ", label: "Subagent failed", status: "failed" as const, statusLabel: undefined },
+  ])("opens $label activity with $status status", ({ title, label, status, statusLabel }) => {
+    const task = makeTask({
+      id: "clickable-subagent",
+      title,
+      status,
+      lastActivity: "Checking spacing",
+    });
     const onOpenTaskDetail = vi.fn();
     const container = renderStatusRow({
       tasks: [task],
@@ -103,6 +164,7 @@ describe("subagent activity rows", () => {
         sessionKey: "agent:main:current",
         terminalObservedAtByTask: new Map(),
         canonicalizeSessionKey: (sessionKey) => sessionKey ?? "",
+        now: 3_000,
       }),
       onOpenTaskDetail,
     });
@@ -111,8 +173,14 @@ describe("subagent activity rows", () => {
       '[data-subagent-task-id="clickable-subagent"]',
     );
     expect(row?.tagName).toBe("BUTTON");
-    expect(row?.querySelector(".chat-subagent-activity__label")?.textContent).toBe("Subagent");
-    expect(row?.getAttribute("aria-label")).toBe("Open subagent details for Map codebase");
+    expect(row?.querySelector(".chat-subagent-activity__label")?.textContent).toBe(label);
+    expect(row?.querySelector(".chat-subagent-activity__status")?.textContent).toBe(statusLabel);
+    expect(row?.querySelector(".chat-subagent-activity__snippet")?.textContent).toBe(
+      "Checking spacing",
+    );
+    expect(row?.getAttribute("aria-label")).toBe(
+      `Open subagent details for ${title?.trim() || "Subagent"}`,
+    );
     row?.click();
     expect(onOpenTaskDetail).toHaveBeenCalledWith(task);
   });
@@ -191,7 +259,7 @@ describe("subagent activity rows", () => {
     });
     expect(container.querySelectorAll(".chat-subagent-activity__row")).toHaveLength(2);
     expect(container.textContent).toContain("Reviewing the current session");
-    expect(container.textContent).toContain("Subagent finished");
+    expect(container.textContent).toContain("Completed");
     expect(container.textContent).not.toContain("Wrong requester");
     expect(container.textContent).not.toContain("Too old");
     expect(container.querySelector(".chat-tasks-status__link")?.textContent?.trim()).toBe(
@@ -262,7 +330,7 @@ describe("subagent activity rows", () => {
     const renderCurrent = () =>
       render(html`${renderBackgroundTasksStatusRow(createBackgroundTasksProps(host))}`, container);
     renderCurrent();
-    expect(container.textContent).toContain("Subagent cancelled");
+    expect(container.textContent).toContain("Cancelled");
     expect(container.textContent).not.toContain("Editing the final report");
     expect(container.querySelector(".chat-diffstat")).toBeNull();
 

@@ -23,6 +23,7 @@ describe("image ops Rastermill adapter", () => {
       vi.doUnmock("@silvia-odwyer/photon-node");
       vi.doUnmock("../infra/resolve-system-bin.js");
       vi.doUnmock("../agents/image-compression-policy.js");
+      vi.doUnmock("../infra/worker-task-pool.js");
       vi.resetModules();
     });
 
@@ -41,11 +42,11 @@ describe("image ops Rastermill adapter", () => {
         readImageProbeFromHeader: vi.fn(() => ({ width: 1, height: 1, format: "jpeg" })),
       }));
 
-      const { resizeToJpeg } = await import("./image-ops.js");
+      const { createLocalImageProcessor } = await import("./image-processor-config.js");
 
       await expect(
-        resizeToJpeg({ buffer: Buffer.from("input"), maxSide: 1, quality: 80 }),
-      ).resolves.toEqual(Buffer.from("jpeg"));
+        createLocalImageProcessor("auto").encode(Buffer.from("input"), { format: "jpeg" }),
+      ).resolves.toEqual({ data: Buffer.from("jpeg") });
       expect(photonModuleFactory).not.toHaveBeenCalled();
     });
 
@@ -65,11 +66,12 @@ describe("image ops Rastermill adapter", () => {
         resolveSystemBin,
       }));
 
-      const { resizeToJpeg, MAX_IMAGE_INPUT_PIXELS } = await import("./image-ops.js");
+      const { createLocalImageProcessor, MAX_IMAGE_INPUT_PIXELS } =
+        await import("./image-processor-config.js");
 
       await expect(
-        resizeToJpeg({ buffer: Buffer.from("input"), maxSide: 1, quality: 80 }),
-      ).resolves.toEqual(Buffer.from("jpeg"));
+        createLocalImageProcessor("auto").encode(Buffer.from("input"), { format: "jpeg" }),
+      ).resolves.toEqual({ data: Buffer.from("jpeg") });
 
       expect(createRastermill).toHaveBeenCalledWith({
         execution: "auto",
@@ -147,6 +149,20 @@ describe("image ops Rastermill adapter", () => {
         })),
       }));
 
+      // This adapter fixture observes native fallback construction. A separate real-worker
+      // regression verifies that operation-specific limits also reach worker execution.
+      vi.doMock("../infra/worker-task-pool.js", () => ({
+        WorkerTaskPool: class {
+          async run() {
+            return {
+              kind: "failed",
+              unavailable: true,
+              error: new Error("internal codec unavailable"),
+            };
+          }
+        },
+      }));
+
       const { MAX_IMAGE_INPUT_PIXELS } = await import("./image-ops.js");
       const { optimizeImageBufferForWebMedia } = await import("./web-media.js");
       await optimizeImageBufferForWebMedia({
@@ -208,34 +224,44 @@ describe("image ops Rastermill adapter", () => {
       ).resolves.toBeNull();
     });
 
-    it("exposes Rastermill unavailable errors through the SDK alias", async () => {
+    it("preserves native fallback and the SDK unavailable classification when the worker declines", async () => {
       const actualRastermill = await vi.importActual<typeof import("rastermill")>("rastermill");
       const unavailableError = new actualRastermill.RastermillUnavailableError(
         "encode",
         "Image processor unavailable",
         [new Error("missing backend")],
       );
-      const createRastermill = vi.fn(() => ({
-        encode: vi.fn(async () => {
-          throw unavailableError;
-        }),
-      }));
-
+      const encode = vi.fn(async () => {
+        throw unavailableError;
+      });
       vi.doMock("rastermill", () => ({
         ...actualRastermill,
-        createRastermill,
-        readImageMetadataFromHeader: vi.fn(() => ({ width: 1, height: 1 })),
-        readImageProbeFromHeader: vi.fn(() => ({ width: 1, height: 1, format: "png" })),
+        createRastermill: vi.fn(() => ({ encode })),
       }));
-
-      const { isImageProcessorUnavailableError, resizeToJpeg } = await import("./image-ops.js");
-
+      vi.doMock("../infra/worker-task-pool.js", () => ({
+        WorkerTaskPool: class {
+          async run() {
+            return {
+              kind: "failed",
+              unavailable: true,
+              error: new Error("internal codec unavailable"),
+            };
+          }
+        },
+      }));
+      const { createImageProcessor, isImageProcessorUnavailableError } =
+        await import("./image-ops.js");
+      const input = Buffer.from("input");
+      const options = { format: "jpeg" as const };
       await expect(
-        resizeToJpeg({ buffer: Buffer.from("input"), maxSide: 1, quality: 80 }).then(
-          () => false,
-          (error: unknown) => isImageProcessorUnavailableError(error),
-        ),
+        createImageProcessor()
+          .encode(input, options)
+          .then(
+            () => false,
+            (error: unknown) => isImageProcessorUnavailableError(error),
+          ),
       ).resolves.toBe(true);
+      expect(encode).toHaveBeenCalledWith(input, options);
     });
   });
 

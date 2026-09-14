@@ -27,7 +27,7 @@ import { assertNoWindowsNetworkPath, safeFileURLToPath } from "../infra/local-fi
 import type { PinnedDispatcherPolicy, SsrFPolicy } from "../infra/net/ssrf.js";
 import { isNotFoundPathError, isPathInside } from "../infra/path-guards.js";
 import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
-import { getActivePluginHttpRouteRegistry } from "../plugins/runtime.js";
+import { getPluginRegistryForContext } from "../plugins/runtime.js";
 import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
 import {
   openOpenClawStateDatabase,
@@ -38,6 +38,8 @@ import { chunkItems } from "../utils/chunk-items.js";
 import { readOutboundMediaFile } from "./bounded-read-file.js";
 import { readRemoteMediaBuffer } from "./fetch.js";
 import { ImageOptimizationLimitError } from "./image-optimization-error.js";
+import { MAX_IMAGE_INPUT_PIXELS } from "./image-processor-config.js";
+import { createImageProcessorWithPixelLimits } from "./image-processor.js";
 import type { OutboundMediaReadFile } from "./load-options.js";
 import {
   assertLocalMediaAllowed,
@@ -125,7 +127,7 @@ async function resolveMediaStoreUriToPath(mediaUrl: string): Promise<string | nu
 }
 
 async function resolveHostedPluginMediaUrl(mediaUrl: string): Promise<string | null> {
-  const registry = getActivePluginHttpRouteRegistry();
+  const registry = getPluginRegistryForContext();
   for (const entry of registry?.hostedMediaResolvers ?? []) {
     try {
       const resolved = await entry.resolver(mediaUrl);
@@ -883,7 +885,14 @@ async function optimizeImageWithFallback(params: {
   const grid = resolveImageCompressionGrid(params.imageCompression);
   // Generic callers keep the shared decode limit. An owner with a bounded downscale path may
   // widen source admission explicitly, while every encoded result remains under the output cap.
-  const optimized = await createImageProcessor(params.maxInputPixels).encode(buffer, {
+  const processor =
+    params.maxInputPixels === undefined
+      ? createImageProcessor()
+      : createImageProcessorWithPixelLimits({
+          inputPixels: params.maxInputPixels,
+          outputPixels: MAX_IMAGE_INPUT_PIXELS,
+        });
+  const optimized = await processor.encode(buffer, {
     format: "auto",
     maxBytes: cap,
     opaque: { format: "jpeg" },
