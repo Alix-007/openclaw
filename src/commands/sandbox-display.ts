@@ -60,31 +60,26 @@ export function displayBrowsers(browsers: SandboxBrowserInfo[], runtime: Runtime
 }
 
 export function displaySummary(
-  containers: SandboxContainerInfo[],
-  browsers: SandboxBrowserInfo[],
+  entries: (SandboxContainerInfo | SandboxBrowserInfo)[],
+  browser: boolean,
   runtime: RuntimeEnv,
 ): void {
-  const totalCount = containers.length + browsers.length;
-  const runningCount =
-    containers.filter((c) => c.running).length + browsers.filter((b) => b.running).length;
-  const mismatchCount =
-    containers.filter((c) => !c.imageMatch).length + browsers.filter((b) => !b.imageMatch).length;
-  const imageMismatchCount =
-    containers.filter(isImageBackedSandboxMismatch).length +
-    browsers.filter((b) => !b.imageMatch).length;
+  const runningCount = entries.filter((entry) => entry.running).length;
+  const mismatchCount = entries.filter((entry) => !entry.imageMatch).length;
+  const imageMismatchCount = browser
+    ? mismatchCount
+    : entries.filter(isImageBackedSandboxMismatch).length;
 
-  runtime.log(`Total: ${totalCount} (${runningCount} running)`);
+  runtime.log(`Total: ${entries.length} (${runningCount} running)`);
 
   if (mismatchCount > 0) {
     runtime.log(`\n⚠️  ${mismatchCount} runtime(s) with config mismatch detected.`);
     const onlyImageMismatches = imageMismatchCount === mismatchCount;
-    const command = onlyImageMismatches
-      ? browsers.length > 0
-        ? "openclaw sandbox recreate --browser --all --mismatched"
-        : "openclaw sandbox recreate --all --mismatched"
-      : "openclaw sandbox recreate --all";
+    const command = formatCliCommand(
+      `openclaw sandbox recreate --all${browser ? " --browser" : ""}${onlyImageMismatches ? " --mismatched" : ""}`,
+    );
     runtime.log(
-      `   Run '${formatCliCommand(command)}' to update ${onlyImageMismatches ? "image-mismatched" : "all"} runtimes.`,
+      `   Run '${command}' to update ${onlyImageMismatches ? "image-mismatched" : "all"} runtimes.`,
     );
   }
 }
