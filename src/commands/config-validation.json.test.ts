@@ -87,10 +87,9 @@ describe("command invalid-config JSON", () => {
     rt.exit.mockImplementation(() => {
       order.push("exit");
     });
-    const result = await withOutputMode(true, () =>
-      requireValidConfig(rt, { includeCompatibilityAdvisory: true }),
-    );
-    expect(result).toBeNull();
+    await expect(
+      withOutputMode(true, () => requireValidConfig(rt, { includeCompatibilityAdvisory: true })),
+    ).rejects.toMatchObject({ name: "ExitError", code: 1 });
     expect(rt.documents).toEqual([expectedFailure()]);
     expect(order).toEqual(["json", "exit"]);
     expect(rt.exit).toHaveBeenCalledExactlyOnceWith(1);
@@ -101,7 +100,10 @@ describe("command invalid-config JSON", () => {
 
   it("does not return a writable snapshot when asynchronous validation fails", async () => {
     const rt = runtime();
-    expect(await withOutputMode(true, () => requireValidConfigForWrite(rt))).toBeNull();
+    await expect(withOutputMode(true, () => requireValidConfigForWrite(rt))).rejects.toMatchObject({
+      name: "ExitError",
+      code: 1,
+    });
     expect(rt.documents).toEqual([expectedFailure()]);
     expect(rt.exit).toHaveBeenCalledExactlyOnceWith(1);
     expect(reads.read).not.toHaveBeenCalled();
@@ -148,7 +150,10 @@ describe("command invalid-config JSON", () => {
       ],
     });
     const rt = runtime();
-    await withOutputMode(true, () => requireValidConfig(rt));
+    await expect(withOutputMode(true, () => requireValidConfig(rt))).rejects.toMatchObject({
+      name: "ExitError",
+      code: 1,
+    });
     expect(rt.documents).toEqual([
       {
         ...expectedFailure(),
@@ -168,7 +173,10 @@ describe("command invalid-config JSON", () => {
   it("emits an empty issues array when no issue details are available", async () => {
     reads.read.mockResolvedValue({ ...invalidSnapshot(), issues: [] });
     const rt = runtime();
-    await withOutputMode(true, () => requireValidConfig(rt));
+    await expect(withOutputMode(true, () => requireValidConfig(rt))).rejects.toMatchObject({
+      name: "ExitError",
+      code: 1,
+    });
     expect(rt.documents).toEqual([{ ...expectedFailure(), issues: [] }]);
   });
 
