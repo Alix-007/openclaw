@@ -8,7 +8,7 @@ import type {
 import { resolveConfigWidePluginMetadataSnapshot } from "../config/io.plugin-metadata.js";
 import { resolveIsConfigReadOnly } from "../config/paths.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
-import { resolveClawHubBaseUrl } from "../infra/clawhub-client.js";
+import { isDefaultClawHubBaseUrl, resolveClawHubBaseUrl } from "../infra/clawhub-client.js";
 import { fetchClawHubPluginVersionCategories } from "../infra/clawhub-plugin-catalog.js";
 import { resolvePendingPluginCapabilityReview } from "./capability-consent.js";
 import {
@@ -35,6 +35,9 @@ import {
 } from "./installed-plugin-index.js";
 import { createInstalledPluginOwnershipResolver } from "./installed-plugin-package-ownership.js";
 import {
+  type ManagedPluginIconSource,
+  resolvePluginIconSource,
+  resolvePluginActivityIconSource,
   type ManagedPluginCatalogEntry,
   type ManagedPluginCatalog,
   getManagedPluginCache,
@@ -131,20 +134,6 @@ function resolveManagedPluginDiagnostics(
   return diagnostics;
 }
 
-export type ManagedPluginIconSource = { kind: "file"; path: string; rootPath: string };
-
-function resolvePluginIconSource(params: {
-  metadata: PluginMetadataSnapshot;
-  pluginId: string;
-}): ManagedPluginIconSource | undefined {
-  const normalizedPluginId = params.metadata.normalizePluginId(params.pluginId);
-  const manifest = params.metadata.byPluginId.get(normalizedPluginId);
-  const localIconPath = normalizeOptionalString(manifest?.iconPath);
-  if (localIconPath && manifest) {
-    return { kind: "file", path: localIconPath, rootPath: manifest.rootDir };
-  }
-  return undefined;
-}
 function resolveManagedPluginMetadataParams(config: OpenClawConfig, env: NodeJS.ProcessEnv) {
   const workspace = resolvePluginControlPlaneWorkspace({ config, env });
   return {
@@ -199,6 +188,18 @@ export const resolveManagedPluginIconSource = withManagedPluginCache(
     const env = params.env ?? process.env;
     const metadata = resolveManagedPluginMetadata(params.config, env);
     return resolvePluginIconSource({ metadata, pluginId: params.pluginId });
+  },
+);
+
+export const resolveManagedPluginActivityIconSource = withManagedPluginCache(
+  async (params: {
+    config: OpenClawConfig;
+    pluginId: string;
+    toolName?: string;
+    env?: NodeJS.ProcessEnv;
+  }): Promise<ManagedPluginIconSource | undefined> => {
+    const metadata = resolveManagedPluginMetadata(params.config, params.env ?? process.env);
+    return resolvePluginActivityIconSource({ ...params, metadata });
   },
 );
 
@@ -262,6 +263,8 @@ export const listManagedPlugins = withManagedPluginCache(
     );
     const installedIconsById = new Map<string, ManagedPluginIconSource | undefined>();
     const installedClawHubPackages = new Set<string>();
+    const discoveryRegistry = resolveClawHubBaseUrl();
+    const publicDiscoveryRegistry = isDefaultClawHubBaseUrl(discoveryRegistry);
     const capabilityConsentDiagnostics: PluginDiagnostic[] = [];
     const categoryTargetsByRegistry = new Map<
       string,
@@ -370,10 +373,14 @@ export const listManagedPlugins = withManagedPluginCache(
         plugin.packageName = record.packageName;
       }
       const recordedClawHubPackage =
-        installRecord?.source === "clawhub"
+        installRecord?.source === "clawhub" &&
+        normalizeOptionalString(installRecord.clawhubUrl) &&
+        resolveClawHubBaseUrl(installRecord.clawhubUrl) === discoveryRegistry
           ? normalizeOptionalString(installRecord.clawhubPackage)
           : undefined;
-      const discoveryClawHubPackage = clawhubPackage ?? recordedClawHubPackage;
+      // Discovery names are registry-scoped; trusted official/npm counterparts belong to the public catalog.
+      const discoveryClawHubPackage =
+        (publicDiscoveryRegistry ? clawhubPackage : undefined) ?? recordedClawHubPackage;
       if (discoveryClawHubPackage) {
         plugin.clawhubPackage = discoveryClawHubPackage;
       }
@@ -408,6 +415,16 @@ export const listManagedPlugins = withManagedPluginCache(
       }
       if (installedIconsById.get(normalizedPluginId)) {
         plugin.hasIcon = true;
+      }
+      const iconOwner = metadata.byPluginId.get(normalizedPluginId);
+      if (iconOwner?.activityIconPath) {
+        plugin.hasActivityIcon = true;
+      }
+      if (iconOwner?.toolActivityIconPaths) {
+        plugin.activityIconTools = Object.keys(iconOwner.toolActivityIconPaths).toSorted();
+      }
+      if (manifest?.channels.length) {
+        plugin.channelIds = [...manifest.channels];
       }
       if (error) {
         plugin.error = error;
