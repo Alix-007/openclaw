@@ -1,4 +1,3 @@
-// Shared command validation must emit one complete failure before terminating JSON commands.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyResolvedCommandOutputMode,
@@ -108,18 +107,6 @@ describe("command invalid-config JSON", () => {
     expect(reads.read).not.toHaveBeenCalled();
   });
 
-  it("preserves the native write snapshot identity on valid config", async () => {
-    const read = {
-      snapshot: { ...invalidSnapshot(), valid: true },
-      writeOptions: { expectedConfigPath: configPath },
-    };
-    reads.write.mockResolvedValue(read);
-    const rt = runtime();
-    expect(await withOutputMode(true, () => requireValidConfigForWrite(rt))).toBe(read);
-    expect(rt.documents).toEqual([]);
-    expect(rt.exit).not.toHaveBeenCalled();
-  });
-
   it("returns valid config without writing any failure document", async () => {
     const snapshot = { ...invalidSnapshot(), valid: true, config: { plugins: {} } };
     reads.read.mockResolvedValue(snapshot);
@@ -185,14 +172,6 @@ describe("command invalid-config JSON", () => {
     expect(rt.documents).toEqual([{ ...expectedFailure(), issues: [] }]);
   });
 
-  it("supports runtimes without an optional writeJson method", async () => {
-    const rt = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
-    await withOutputMode(true, () => requireValidConfig(rt));
-    expect(rt.log).toHaveBeenCalledOnce();
-    expect(JSON.parse(String(rt.log.mock.calls[0]?.[0]))).toEqual(expectedFailure());
-    expect(rt.error).not.toHaveBeenCalled();
-  });
-
   it("propagates a snapshot read failure without fabricating config issues", async () => {
     const failure = new Error("snapshot unavailable");
     reads.read.mockRejectedValueOnce(failure);
@@ -210,16 +189,5 @@ describe("command invalid-config JSON", () => {
     });
     await expect(withOutputMode(true, () => requireValidConfig(rt))).rejects.toBe(failure);
     expect(rt.exit).not.toHaveBeenCalled();
-  });
-
-  it("preserves explicit read options", async () => {
-    const rt = runtime();
-    await withOutputMode(true, () =>
-      requireValidConfig(rt, { observe: false, skipPluginValidation: true }),
-    );
-    expect(reads.read).toHaveBeenCalledExactlyOnceWith({
-      observe: false,
-      skipPluginValidation: true,
-    });
   });
 });

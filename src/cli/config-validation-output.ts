@@ -1,4 +1,3 @@
-// Canonical invalid-config JSON projection shared by startup and command validation.
 import { normalizeConfigIssues } from "../config/issue-format.js";
 import type { ConfigFileSnapshot } from "../config/types.js";
 import { type RuntimeEnv, writeRuntimeJson } from "../runtime.js";
