@@ -2,8 +2,11 @@ import type { DatabaseSync } from "node:sqlite";
 import { isRecord } from "@openclaw/normalization-core/record-coerce";
 import type { Insertable, Selectable } from "kysely";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../../infra/kysely-sync.js";
-import { withExistingOpenClawStateDatabaseReadOnly } from "../../state/openclaw-state-db-readonly.js";
-import { tableExists } from "../../state/openclaw-state-db-schema-helpers.js";
+import {
+  withExistingOpenClawStateDatabaseArtifactPreservingReadOnly,
+  withExistingOpenClawStateDatabaseReadOnly,
+} from "../../state/openclaw-state-db-readonly.js";
+import { tableExists, tableHasColumn } from "../../state/openclaw-state-db-schema-helpers.js";
 import type { DB as OpenClawStateKyselyDatabase } from "../../state/openclaw-state-db.generated.js";
 import {
   openOpenClawStateDatabase,
@@ -23,6 +26,22 @@ import type {
 
 type WorktreesTable = OpenClawStateKyselyDatabase["worktrees"];
 type WorktreeRow = Selectable<WorktreesTable>;
+const WORKTREE_RECORD_COLUMNS = [
+  "id",
+  "repo_fingerprint",
+  "repo_root",
+  "path",
+  "branch",
+  "base_ref",
+  "owner_kind",
+  "owner_id",
+  "snapshot_ref",
+  "created_at",
+  "last_active_at",
+  "removed_at",
+  "run_end_cleanup_json",
+] as const satisfies readonly (keyof WorktreeRow)[];
+type WorktreeRecordRow = Pick<WorktreeRow, (typeof WORKTREE_RECORD_COLUMNS)[number]>;
 type WorktreeRegistryDatabase = Pick<OpenClawStateKyselyDatabase, "worktrees">;
 type WorktreeProvisionedDatabase = Pick<
   OpenClawStateKyselyDatabase,
@@ -79,7 +98,7 @@ function parseRunEndCleanup(
   }
 }
 
-function rowToRecord(row: WorktreeRow): ManagedWorktreeRecord {
+function rowToRecord(row: WorktreeRecordRow): ManagedWorktreeRecord {
   const runEndCleanup = parseRunEndCleanup(row.run_end_cleanup_json);
   return {
     id: row.id,
@@ -158,15 +177,18 @@ export function listRegistryWorktrees(env: NodeJS.ProcessEnv): ManagedWorktreeRe
   const db = dbFor(env);
   const query = kyselyFor(db)
     .selectFrom("worktrees")
-    .selectAll()
+    .select(WORKTREE_RECORD_COLUMNS)
     .orderBy("created_at", "desc")
     .orderBy("id", "asc");
   return executeSqliteQuerySync(db, query).rows.map(rowToRecord);
 }
 
-export function listRegistryWorktreesForMigration(env: NodeJS.ProcessEnv): ManagedWorktreeRecord[] {
+export function listRegistryWorktreesForMigration(
+  env: NodeJS.ProcessEnv,
+  behavior: { artifactPreservingReadOnly?: boolean } = {},
+): ManagedWorktreeRecord[] {
   return (
-    readRegistry(env, (db) => {
+    readRegistry(env, behavior, (db) => {
       const query = kyselyFor(db)
         .selectFrom("worktrees")
         .selectAll()
@@ -177,11 +199,31 @@ export function listRegistryWorktreesForMigration(env: NodeJS.ProcessEnv): Manag
   );
 }
 
-function readRegistry<T>(env: NodeJS.ProcessEnv, read: (db: DatabaseSync) => T): T | undefined {
-  return withExistingOpenClawStateDatabaseReadOnly(
-    ({ db }) => (tableExists(db, "worktrees") ? read(db) : undefined),
-    { env },
+export function listLegacyRegistryWorktreesForMigration(
+  env: NodeJS.ProcessEnv,
+  behavior: { artifactPreservingReadOnly?: boolean } = {},
+): ManagedWorktreeRecord[] {
+  return (
+    readRegistry(env, behavior, (db) => {
+      let query = kyselyFor(db).selectFrom("worktrees").selectAll().orderBy("id", "asc");
+      if (tableHasColumn(db, "worktrees", "provisioned_paths_json")) {
+        query = query.where("provisioned_paths_json", "is", null);
+      }
+      return executeSqliteQuerySync(db, query).rows.map(rowToRecord);
+    }) ?? []
   );
+}
+
+function readRegistry<T>(
+  env: NodeJS.ProcessEnv,
+  behavior: { artifactPreservingReadOnly?: boolean },
+  read: (db: DatabaseSync) => T,
+): T | undefined {
+  const operation = ({ db }: { db: DatabaseSync }) =>
+    tableExists(db, "worktrees") ? read(db) : undefined;
+  return behavior.artifactPreservingReadOnly
+    ? withExistingOpenClawStateDatabaseArtifactPreservingReadOnly(operation, { env })
+    : withExistingOpenClawStateDatabaseReadOnly(operation, { env });
 }
 
 export function getRegistryWorktree(
@@ -189,7 +231,10 @@ export function getRegistryWorktree(
   id: string,
 ): ManagedWorktreeRecord | undefined {
   const db = dbFor(env);
-  const query = kyselyFor(db).selectFrom("worktrees").selectAll().where("id", "=", id);
+  const query = kyselyFor(db)
+    .selectFrom("worktrees")
+    .select(WORKTREE_RECORD_COLUMNS)
+    .where("id", "=", id);
   const row = executeSqliteQuerySync(db, query).rows[0];
   return row ? rowToRecord(row) : undefined;
 }
@@ -209,29 +254,25 @@ export function getRegistryWorktreeProvisionedPaths(
   );
 }
 
-export function hasLegacyRegistryWorktrees(env: NodeJS.ProcessEnv): boolean {
-  return (
-    readRegistry(env, (db) => {
-      const query = kyselyFor(db)
-        .selectFrom("worktrees")
-        .select("id")
-        .where("provisioned_paths_json", "is", null)
-        .limit(1);
-      return executeSqliteQuerySync(db, query).rows.length > 0;
-    }) ?? false
-  );
-}
-
-export function discardLegacyRegistryWorktrees(env: NodeJS.ProcessEnv): number {
+export function discardLegacyRegistryWorktrees(
+  env: NodeJS.ProcessEnv,
+  worktreeIds: readonly string[],
+): number {
+  if (worktreeIds.length === 0) {
+    return 0;
+  }
   const db = dbFor(env);
   return runOpenClawStateWriteTransaction(
     () =>
       Number(
         executeSqliteQuerySync(
           db,
-          // Retire every pre-ledger owner row so next use provisions canonically.
-          // The checkout and branch stay untouched; doctor never deletes their user data.
-          kyselyFor(db).deleteFrom("worktrees").where("provisioned_paths_json", "is", null),
+          // Delete only the owner rows captured in the migration receipt. A row that
+          // appears after planning belongs to the next Doctor run.
+          kyselyFor(db)
+            .deleteFrom("worktrees")
+            .where("provisioned_paths_json", "is", null)
+            .where("id", "in", [...worktreeIds]),
         ).numAffectedRows ?? 0n,
       ),
     { env },
@@ -344,7 +385,7 @@ export function findLiveRegistryWorktreeByPath(
   const db = dbFor(env);
   const query = kyselyFor(db)
     .selectFrom("worktrees")
-    .selectAll()
+    .select(WORKTREE_RECORD_COLUMNS)
     .where("path", "=", worktreePath)
     .where("removed_at", "is", null)
     .orderBy("created_at", "desc")
@@ -361,7 +402,7 @@ export function findLiveRegistryWorktreeByOwner(
   const db = dbFor(env);
   const query = kyselyFor(db)
     .selectFrom("worktrees")
-    .selectAll()
+    .select(WORKTREE_RECORD_COLUMNS)
     .where("owner_kind", "=", ownerKind)
     .where("owner_id", "=", ownerId)
     .where("removed_at", "is", null)

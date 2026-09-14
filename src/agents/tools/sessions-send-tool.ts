@@ -25,7 +25,7 @@ import {
   lookupFailedOperationMessage,
   sessionOwnershipLookupFailure,
 } from "../../plugin-sdk/session-visibility-internal.js";
-import { runWithGatewayIndependentRootWorkContinuation } from "../../process/gateway-work-admission.js";
+import { runWithGatewayDetachedWorkContinuation } from "../../process/gateway-work-admission.js";
 import { normalizeRouteBindingChannelId } from "../../routing/binding-scope.js";
 import { resolveAgentRoute } from "../../routing/resolve-route.js";
 import {
@@ -66,22 +66,21 @@ import {
   queueEmbeddedAgentMessageWithOutcomeAsync,
 } from "../embedded-agent-runner/runs.js";
 import { resolveNestedAgentLaneForSession } from "../lanes.js";
-import {
-  type AgentWaitResult,
-  readLatestAssistantReplySnapshot,
-  waitForAgentRunAndReadUpdatedAssistantReply,
-} from "../run-wait.js";
+import { runOutsidePreparedModelRuntimePluginGenerationScope } from "../prepared-model-runtime-generation-scope.js";
+import { type AgentWaitResult, waitForAgentRunReply } from "../run-wait.js";
 import { loadSessionEntryByKey } from "../subagents/announce/subagent-announce-delivery.js";
 import {
   describeSessionsSendTool,
   SESSIONS_SEND_TOOL_DISPLAY_SUMMARY,
 } from "../tool-description-presets.js";
+import { ToolInputError } from "../tool-input-error.js";
 import type { AnyAgentTool } from "./common.js";
 import { jsonResult, readNonNegativeIntegerParam, readToolStringParam } from "./common.js";
 import {
   callAgentToolGatewayRequest,
   callInProcessGatewayToolWithCreation,
   hasInProcessGatewayToolContext,
+  runWithGatewayToolCleanupContext,
   type AgentToolGatewayRequestCaller,
 } from "./in-process-gateway.js";
 import { runWithScopedSessionAccess } from "./scoped-session-access.js";
@@ -177,7 +176,6 @@ const SessionsSendOutputSchema = Type.Union([
 ]);
 
 type GatewayCaller = AgentToolGatewayRequestCaller;
-const SESSIONS_SEND_REPLY_HISTORY_LIMIT = 50;
 const SESSIONS_SEND_MESSAGE_ALIASES = ["SendMessage", "content", "text"] as const;
 const NO_REPLY_MESSAGE = "No visible reply or pending announcement. Continue or retry if needed.";
 
@@ -189,8 +187,8 @@ function normalizeSessionsSendArguments(args: unknown): Record<string, unknown> 
 
   if (typeof params.message !== "string" || !params.message.trim()) {
     for (const alias of SESSIONS_SEND_MESSAGE_ALIASES) {
-      const value = readToolStringParam(params, alias);
-      if (value) {
+      const value = readToolStringParam(params, alias, { trim: false });
+      if (value?.trim()) {
         params.message = stripFormattedReasoningMessage(value);
         break;
       }
@@ -289,21 +287,24 @@ function isRequesterParentOfNativeSubagentSession(params: {
   requesterSessionKey: string | null | undefined;
   targetSessionKey: string;
 }): boolean {
-  if (
-    !params.entry ||
-    params.acpMeta ||
-    params.entry.acp ||
-    !isSubagentSessionKey(params.targetSessionKey)
-  ) {
+  if (!params.entry || params.acpMeta || params.entry.acp) {
     return false;
   }
   const requester = normalizeOptionalString(params.requesterSessionKey);
   if (!requester) {
     return false;
   }
-  const spawnedBy = normalizeOptionalString(params.entry.spawnedBy);
-  const parentSessionKey = normalizeOptionalString(params.entry.parentSessionKey);
-  return requester === spawnedBy || requester === parentSessionKey;
+  // spawnedBy is written only by the spawn policy, so it identifies a native
+  // child regardless of key shape: visible children live under persistent
+  // dashboard keys, not subagent keys. parentSessionKey also records ordinary
+  // UI threading and forks, so it only counts for subagent-keyed targets.
+  if (requester === normalizeOptionalString(params.entry.spawnedBy)) {
+    return true;
+  }
+  return (
+    isSubagentSessionKey(params.targetSessionKey) &&
+    requester === normalizeOptionalString(params.entry.parentSessionKey)
+  );
 }
 
 function isTerminalAgentWaitTimeout(result: AgentWaitResult): boolean {
@@ -521,7 +522,10 @@ export function createSessionsSendTool(opts?: {
       const promptedAt = Date.now();
       const params = normalizeSessionsSendArguments(args);
       const gatewayCall = opts?.callGateway ?? callAgentToolGatewayRequest;
-      const message = readToolStringParam(params, "message", { required: true });
+      const message = readToolStringParam(params, "message", { required: true, trim: false });
+      if (!message.trim()) {
+        throw new ToolInputError("message required");
+      }
       const timeoutSeconds = readNonNegativeIntegerParam(params, "timeoutSeconds") ?? 30;
       const {
         cfg,
@@ -972,8 +976,6 @@ export function createSessionsSendTool(opts?: {
           }
 
           const requesterChannel = opts?.agentChannel;
-          const sameSessionA2A =
-            requesterSessionKey === resolvedKey && targetAgentId === requesterAgentId;
           const isIsolatedCronRequester = isCronRunSessionKey(requesterSessionKey);
           // Watch registration follows successful dispatch: a failed send must not leave
           // a hidden watch, and cron run-scoped sends can fall back to the durable parent
@@ -993,46 +995,6 @@ export function createSessionsSendTool(opts?: {
                 : false;
             return watchRequested ? { watched } : {};
           };
-          const fallbackA2ASessionKey =
-            timeoutSeconds === 0 && isIsolatedCronRequester
-              ? resolveCronRunScopedFallbackSessionKey(displayKey)
-              : undefined;
-
-          // Capture the pre-run assistant snapshot before starting the nested run.
-          // Fast in-process test doubles and short-circuit agent paths can finish
-          // before we reach the post-run read, which would otherwise make the new
-          // reply look like the baseline and hide it from the caller.
-          // Fire-and-forget same-session sends still need this baseline because the
-          // A2A follow-up may deliver directly to the source channel. Isolated cron
-          // requesters also need it to avoid attributing a stale target reply.
-          const baselineReply =
-            timeoutSeconds !== 0
-              ? await readLatestAssistantReplySnapshot({
-                  sessionKey: resolvedKey,
-                  agentId: targetAgentId,
-                  limit: SESSIONS_SEND_REPLY_HISTORY_LIMIT,
-                  callGateway: gatewayCall,
-                })
-              : sameSessionA2A || isIsolatedCronRequester
-                ? await readLatestAssistantReplySnapshot({
-                    sessionKey: resolvedKey,
-                    agentId: targetAgentId,
-                    limit: SESSIONS_SEND_REPLY_HISTORY_LIMIT,
-                    callGateway: gatewayCall,
-                  }).catch(() => undefined)
-                : undefined;
-          // Active-run delivery can fall back to the durable cron parent. Snapshot
-          // that target before dispatch so a fast reply cannot become its baseline.
-          const fallbackBaselineReply =
-            fallbackA2ASessionKey && fallbackA2ASessionKey !== resolvedKey
-              ? await readLatestAssistantReplySnapshot({
-                  sessionKey: fallbackA2ASessionKey,
-                  agentId: targetAgentId,
-                  limit: SESSIONS_SEND_REPLY_HISTORY_LIMIT,
-                  callGateway: gatewayCall,
-                }).catch(() => undefined)
-              : undefined;
-
           const agentMessageContext = buildAgentToAgentMessageContext({
             requesterSessionKey: replyRequesterSessionKey,
             requesterChannel,
@@ -1098,51 +1060,55 @@ export function createSessionsSendTool(opts?: {
             });
           // A scoped grant belongs to one exact session incarnation. Do not create
           // post-return work or durable watches that could follow a reused key.
-          const skipA2AFlow =
-            skipAcpA2AFlow || skipNativeParentA2AFlow || Boolean(expectedSessionId);
+          const skipDelayedA2AFlow = skipAcpA2AFlow || Boolean(expectedSessionId);
+          // Native-parent suppression only covers a reply that already returned inline.
+          // A send is not a registered spawn run, so when the wait expires before the
+          // child finishes, nothing else delivers the late reply: keep that continuation.
+          const skipA2AFlow = skipDelayedA2AFlow || skipNativeParentA2AFlow;
           const startA2AFlow = (
-            roundOneReply?: string,
+            reply?: Awaited<ReturnType<typeof waitForAgentRunReply>>,
             waitRunId?: string,
             flowTargetSessionKey = resolvedKey,
             flowDisplayKey = displayKey,
             notifyRequesterOnWaitFailure = false,
           ) => {
-            if (skipA2AFlow) {
+            if (reply === undefined ? skipDelayedA2AFlow : skipA2AFlow) {
               return;
             }
-            const flowBaseline =
-              flowTargetSessionKey === fallbackA2ASessionKey
-                ? fallbackBaselineReply
-                : baselineReply;
             // This detached flow can outlive the tool request that launched it.
-            // Own a fresh root so parent release cannot retire later nested turns.
-            void runWithGatewayIndependentRootWorkContinuation(
-              () =>
-                runWithoutOwnedSessionTranscriptWrites(() =>
-                  runSessionsSendA2AFlow({
-                    callGateway: gatewayCall,
-                    targetSessionKey: flowTargetSessionKey,
-                    targetAgentId,
-                    displayKey: flowDisplayKey,
-                    message,
-                    announceTimeoutMs,
-                    // Cron runs are isolated jobs; target replies must not become new
-                    // requester turns, but the target-side announce still runs.
-                    maxPingPongTurns: isIsolatedCronRequester ? 0 : maxPingPongTurns,
-                    requesterSessionKey: replyRequesterSessionKey,
-                    requesterAgentId,
-                    requesterChannel,
-                    baseline: flowBaseline,
-                    roundOneReply,
-                    waitRunId,
-                    notifyRequesterOnWaitFailure,
-                  }),
-                ),
-              "session:a2a-send",
-            ).catch((err: unknown) => {
-              log.warn("sessions_send announce flow admission failed", {
-                runId: waitRunId ?? "unknown",
-                error: formatErrorMessage(err),
+            // Later turns need their own resource scope without retaining the
+            // completed caller or its prepared-runtime generation.
+            runWithGatewayToolCleanupContext(() => {
+              void runWithGatewayDetachedWorkContinuation(
+                () =>
+                  runOutsidePreparedModelRuntimePluginGenerationScope(() =>
+                    runWithoutOwnedSessionTranscriptWrites(() =>
+                      runSessionsSendA2AFlow({
+                        callGateway: gatewayCall,
+                        targetSessionKey: flowTargetSessionKey,
+                        targetAgentId,
+                        displayKey: flowDisplayKey,
+                        message,
+                        announceTimeoutMs,
+                        // Cron runs are isolated jobs; target replies must not become new
+                        // requester turns, but the target-side announce still runs.
+                        maxPingPongTurns: isIsolatedCronRequester ? 0 : maxPingPongTurns,
+                        requesterSessionKey: replyRequesterSessionKey,
+                        requesterAgentId,
+                        requesterChannel,
+                        roundOneReply: reply?.replyText,
+                        sourceReplyDelivered: reply?.sourceReplyDelivered,
+                        waitRunId,
+                        notifyRequesterOnWaitFailure,
+                      }),
+                    ),
+                  ),
+                "session:a2a-send",
+              ).catch((err: unknown) => {
+                log.warn("sessions_send announce flow admission failed", {
+                  runId: waitRunId ?? "unknown",
+                  error: formatErrorMessage(err),
+                });
               });
             });
           };
@@ -1176,6 +1142,10 @@ export function createSessionsSendTool(opts?: {
             skipA2AFlow || start.targetDisposition === "steered"
               ? ({ status: "skipped", mode: "announce" } as const)
               : ({ status: "pending", mode: "announce" } as const);
+          const delayedDelivery =
+            skipDelayedA2AFlow || start.targetDisposition === "steered"
+              ? ({ status: "skipped", mode: "announce" } as const)
+              : ({ status: "pending", mode: "announce" } as const);
           recordSessionToolActionFact({
             operation: "send",
             fact: "committed",
@@ -1206,13 +1176,9 @@ export function createSessionsSendTool(opts?: {
             });
           }
 
-          const result = await waitForAgentRunAndReadUpdatedAssistantReply({
+          const result = await waitForAgentRunReply({
             runId,
-            sessionKey: resolvedKey,
-            agentId: targetAgentId,
             timeoutMs,
-            limit: SESSIONS_SEND_REPLY_HISTORY_LIMIT,
-            baseline: baselineReply,
             callGateway: gatewayCall,
           });
 
@@ -1225,7 +1191,7 @@ export function createSessionsSendTool(opts?: {
                 error: result.error,
                 sentBeforeError: true,
                 sessionKey: displayKey,
-                delivery,
+                delivery: delayedDelivery,
                 ...watchField,
               });
             }
@@ -1236,7 +1202,7 @@ export function createSessionsSendTool(opts?: {
                 status: "accepted",
                 sessionKey: displayKey,
                 targetDisposition: start.targetDisposition,
-                delivery,
+                delivery: delayedDelivery,
                 ...watchField,
               });
             }
@@ -1262,9 +1228,14 @@ export function createSessionsSendTool(opts?: {
           const reply = result.replyText;
           const response = reply
             ? { status: "ok" as const, delivery, reply }
-            : { status: "no_reply" as const, message: NO_REPLY_MESSAGE };
+            : {
+                status: "no_reply" as const,
+                message: result.sourceReplyDelivered
+                  ? "The target delivered its final reply directly to its source conversation. Do not resend."
+                  : NO_REPLY_MESSAGE,
+              };
           if (reply) {
-            startA2AFlow(reply);
+            startA2AFlow(result);
           }
           return jsonResult({ runId, sessionKey: displayKey, ...response, ...watchField });
         },

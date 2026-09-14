@@ -3,7 +3,7 @@
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import type { GatewayContextResolver } from "../../../gateway/server-methods/types.js";
 import { getAgentEventLifecycleGeneration } from "../../../infra/agent-events.js";
-import { INTERNAL_MESSAGE_CHANNEL } from "../../../utils/message-channel.js";
+import { INTERNAL_PROVENANCE_SOURCE_CHANNEL } from "../../../sessions/input-provenance.js";
 import { buildAnnounceIdempotencyKey } from "../../announce-idempotency.js";
 import { terminateAcceptedCollectorRun } from "../spawn/subagent-spawn-cleanup.js";
 import {
@@ -12,13 +12,13 @@ import {
   resolveSubagentAnnounceTimeoutMs,
 } from "./subagent-announce-delivery.js";
 import type {
-  callGateway,
+  callSubagentLifecycleGateway,
   dispatchGatewayMethodInProcess,
   getRuntimeConfig,
 } from "./subagent-announce.runtime.js";
 
 type DescendantWakeDeps = {
-  callGateway: typeof callGateway;
+  callGateway: typeof callSubagentLifecycleGateway;
   dispatchGatewayMethodInProcess: typeof dispatchGatewayMethodInProcess;
   getRuntimeConfig: typeof getRuntimeConfig;
   replaceSubagentRunAfterSteer: typeof import("../registry/subagent-registry-runtime.js").replaceSubagentRunAfterSteer;
@@ -105,7 +105,7 @@ export async function runDescendantWake(params: {
             inputProvenance: {
               kind: "inter_session",
               sourceSessionKey: params.childSessionKey,
-              sourceChannel: INTERNAL_MESSAGE_CHANNEL,
+              sourceChannel: INTERNAL_PROVENANCE_SOURCE_CHANNEL,
               sourceTool: "subagent_announce",
             },
             idempotencyKey: buildAnnounceIdempotencyKey(`${params.announceId}:wake`),
@@ -152,7 +152,7 @@ export async function runDescendantWake(params: {
     await terminateUnownedWake();
     return false;
   }
-  const replaced = await params.deps.replaceSubagentRunAfterSteer({
+  const replaced = params.deps.replaceSubagentRunAfterSteer({
     previousRunId: params.runId,
     nextRunId: wakeRunId,
     lifecycleGeneration: wakeLifecycleGeneration,

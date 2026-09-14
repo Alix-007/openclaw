@@ -23,8 +23,8 @@ import {
   getSubagentSessionRuntimeMs,
   getSubagentSessionStartedAt,
 } from "./subagent-registry-read.js";
-import { getSubagentRunsSnapshotForRead } from "./subagent-registry-state.js";
-import type { SubagentRunRecord } from "./subagent-registry.types.js";
+import { getSubagentSessionListRunsSnapshotForRead } from "./subagent-registry-state.js";
+import type { SubagentRunReadRecord, SubagentRunRecord } from "./subagent-registry.types.js";
 import { shouldKeepSubagentRunChildLink } from "./subagent-run-liveness.js";
 import { buildSubagentRunView } from "./subagent-run-view.js";
 import { resolveSubagentDisplayStatus } from "./subagent-session-metrics.js";
@@ -77,10 +77,9 @@ function resolveSessionEntryForKey(params: {
   let store = params.cache.get(storePath);
   if (!store) {
     store = Object.fromEntries(
-      listSessionEntriesReadOnly({ storePath, clone: false }).map(({ sessionKey, entry }) => [
-        sessionKey,
-        entry,
-      ]),
+      listSessionEntriesReadOnly({ storePath, clone: false, projection: "list" }).map(
+        ({ sessionKey, entry }) => [sessionKey, entry],
+      ),
     );
     params.cache.set(storePath, store);
   }
@@ -92,11 +91,15 @@ function resolveSessionEntryForKey(params: {
 
 /** Build child-session indexes from the latest run associated with each child key. */
 function buildLatestSubagentRunIndex(
-  runs: Map<string, SubagentRunRecord>,
+  runs: Map<string, SubagentRunReadRecord>,
   options?: { now?: number },
 ) {
   const now = options?.now ?? Date.now();
-  const readIndex = buildSubagentRunReadIndexFromRuns({ runs, now });
+  const readIndex = buildSubagentRunReadIndexFromRuns({
+    runs,
+    inMemoryRuns: subagentRuns.values(),
+    now,
+  });
 
   const childSessionsByController = new Map<string, string[]>();
   for (const [childSessionKey, entry] of readIndex.latestRunsByChildSessionKey) {
@@ -180,10 +183,11 @@ export function buildSubagentList(params: {
   runs: SubagentRunRecord[];
   recentMinutes: number;
   taskMaxChars?: number;
+  readSnapshot?: Map<string, SubagentRunReadRecord>;
 }): BuiltSubagentList {
   const now = Date.now();
   const cache = new Map<string, Record<string, SessionEntry>>();
-  const snapshot = getSubagentRunsSnapshotForRead(subagentRuns);
+  const snapshot = params.readSnapshot ?? getSubagentSessionListRunsSnapshotForRead(subagentRuns);
   const { childSessionsByController, readIndex } = buildLatestSubagentRunIndex(snapshot);
   const pendingDescendantCount = (sessionKey: string) =>
     readIndex.countPendingDescendantRuns(sessionKey);

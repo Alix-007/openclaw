@@ -1,5 +1,6 @@
 // Qa Lab plugin module implements scenario flow runner behavior.
 import { isRecord as isPlainObject } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { QaEvidenceRttMeasurement } from "./evidence-summary.js";
 import type { QaTransportState } from "./qa-transport.js";
 import type { QaScenarioFlow, QaSeedScenarioWithSource } from "./scenario-catalog.js";
 import type { QaSuiteScenarioResult, QaSuiteStep, QaSuiteStepOutcome } from "./suite-types.js";
@@ -23,6 +24,7 @@ const qaFlowImportLoaders: Record<string, QaFlowImportLoader> = {
   "./auth-profile.fixture.js": () => import("./auth-profile.fixture.js"),
   "./codex-plugin.fixture.js": () => import("./codex-plugin.fixture.js"),
   "./errors.js": () => import("./errors.js"),
+  "./gateway-log-redaction.js": () => import("./gateway-log-redaction.js"),
   "./live-transports/matrix/scenarios/scenario-runtime-allowbots.js": () =>
     import("./live-transports/matrix/scenarios/scenario-runtime-allowbots.js"),
   "./live-transports/matrix/scenarios/scenario-runtime-approval.js": () =>
@@ -51,6 +53,8 @@ const qaFlowImportLoaders: Record<string, QaFlowImportLoader> = {
     import("./live-transports/matrix/scenarios/scenario-runtime-edit.js"),
   "./live-transports/matrix/scenarios/scenario-runtime-media.js": () =>
     import("./live-transports/matrix/scenarios/scenario-runtime-media.js"),
+  "./live-transports/matrix/scenarios/scenario-runtime-message-actions.js": () =>
+    import("./live-transports/matrix/scenarios/scenario-runtime-message-actions.js"),
   "./voice-preflight.fixture.js": () => import("./voice-preflight.fixture.js"),
   "./live-transports/matrix/scenarios/scenario-runtime-policy.js": () =>
     import("./live-transports/matrix/scenarios/scenario-runtime-policy.js"),
@@ -66,6 +70,7 @@ const qaFlowImportLoaders: Record<string, QaFlowImportLoader> = {
     import("./live-transports/slack/scenario-runtime.js"),
   "./live-transports/whatsapp/scenario-runtime.js": () =>
     import("./live-transports/whatsapp/scenario-runtime.js"),
+  "./suite-artifacts.js": () => import("./suite-artifacts.js"),
   "./tool-search-gateway.fixture.js": () => import("./tool-search-gateway.fixture.js"),
 };
 
@@ -82,14 +87,48 @@ function formatFlowDetails(details: unknown) {
   return JSON.stringify(details, null, 2);
 }
 
-function resolveFlowResultRttMs(result: unknown) {
+function resolveFlowRttMeasurement(value: unknown): QaEvidenceRttMeasurement | undefined {
+  if (!isPlainObject(value)) {
+    return undefined;
+  }
+  const { finalMatchedReplyRttMs, requestStartedAt, responseObservedAt, source } = value;
+  if (
+    typeof finalMatchedReplyRttMs !== "number" ||
+    !Number.isFinite(finalMatchedReplyRttMs) ||
+    finalMatchedReplyRttMs <= 0 ||
+    typeof requestStartedAt !== "string" ||
+    !requestStartedAt.trim() ||
+    typeof responseObservedAt !== "string" ||
+    !responseObservedAt.trim() ||
+    typeof source !== "string" ||
+    !source.trim()
+  ) {
+    return undefined;
+  }
+  return {
+    finalMatchedReplyRttMs,
+    requestStartedAt: requestStartedAt.trim(),
+    responseObservedAt: responseObservedAt.trim(),
+    source: source.trim(),
+  };
+}
+
+function resolveFlowResultRtt(result: unknown) {
   if (!isPlainObject(result)) {
     return undefined;
   }
   const timing = isPlainObject(result.timing) ? result.timing : undefined;
-  const measurement = isPlainObject(result.rttMeasurement) ? result.rttMeasurement : undefined;
-  const rttMs = timing?.rttMs ?? measurement?.finalMatchedReplyRttMs ?? result.rttMs;
-  return typeof rttMs === "number" && Number.isFinite(rttMs) && rttMs > 0 ? rttMs : undefined;
+  const measurement = resolveFlowRttMeasurement(result.rttMeasurement);
+  const rawMeasurement = isPlainObject(result.rttMeasurement) ? result.rttMeasurement : undefined;
+  const fallbackRttMs = timing?.rttMs ?? rawMeasurement?.finalMatchedReplyRttMs ?? result.rttMs;
+  const rttMs = measurement?.finalMatchedReplyRttMs ?? fallbackRttMs;
+  if (typeof rttMs !== "number" || !Number.isFinite(rttMs) || rttMs <= 0) {
+    return undefined;
+  }
+  return {
+    timing: { rttMs },
+    ...(measurement ? { rttMeasurement: measurement } : {}),
+  } satisfies Pick<QaSuiteStepOutcome, "timing" | "rttMeasurement">;
 }
 
 function getPathWithParent(
@@ -398,15 +437,15 @@ export async function runScenarioFlow(params: {
         const details = step.detailsExpr
           ? formatFlowDetails(await evalExpr(step.detailsExpr, params.api, vars))
           : undefined;
-        const rttMs = step.resultExpr
-          ? resolveFlowResultRttMs(await evalExpr(step.resultExpr, params.api, vars))
+        const rtt = step.resultExpr
+          ? resolveFlowResultRtt(await evalExpr(step.resultExpr, params.api, vars))
           : undefined;
-        if (rttMs === undefined) {
+        if (!rtt) {
           return details === undefined ? undefined : { details };
         }
         return {
           ...(details === undefined ? {} : { details }),
-          timing: { rttMs },
+          ...rtt,
         } satisfies QaSuiteStepOutcome;
       } finally {
         throwIfFlowAborted(params.api);

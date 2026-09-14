@@ -28,7 +28,7 @@ openclaw-chat-pane {
 .chat-split-view__column {
   display: flex;
   flex-direction: column;
-  min-width: 320px;
+  min-width: min(320px, 100%);
   min-height: 0;
 }
 
@@ -63,7 +63,6 @@ openclaw-chat-pane {
     .chat-pane__sharing-menu,
     .chat-pane__draft-indicator,
     .chat-pane__branches-menu,
-    .chat-pane__gateway-menu,
     .chat-pane__actions
   ) {
   display: none;
@@ -459,105 +458,6 @@ openclaw-chat-pane {
   line-height: 1.3;
 }
 
-.chat-pane__gateway-menu {
-  flex: 0 1 auto;
-  min-width: 0;
-}
-
-.chat-pane__gateway-menu::part(menu) {
-  padding: var(--menu-padding);
-  border: 1px solid var(--overlay-border);
-  border-radius: var(--menu-radius);
-  background: var(--bg-elevated);
-  box-shadow: var(--overlay-shadow);
-}
-
-.chat-pane__gateway-menu-item {
-  min-height: var(--menu-item-height);
-  padding: 0 8px;
-  border-radius: var(--menu-item-radius);
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-}
-
-.chat-pane__gateway-chip {
-  display: inline-flex;
-  max-width: 170px;
-  height: 28px;
-  align-items: center;
-  gap: 6px;
-  padding: 0 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  background: var(--panel);
-  color: var(--muted);
-  font-size: 11px;
-  cursor: var(--cursor-action);
-}
-
-.chat-pane__gateway-chip:hover,
-.chat-pane__gateway-chip:focus-visible {
-  border-color: var(--muted-strong);
-  color: var(--text);
-  outline: none;
-}
-
-.chat-pane__gateway-name {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.chat-pane__gateway-health {
-  width: 7px;
-  height: 7px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--muted);
-}
-
-.chat-pane__gateway-health[data-health="ok"] {
-  background: var(--ok);
-}
-
-.chat-pane__gateway-health[data-health="error"] {
-  background: var(--danger);
-}
-
-.chat-pane__gateway-chevron,
-.chat-pane__gateway-check {
-  display: inline-flex;
-}
-
-.chat-pane__gateway-chevron svg,
-.chat-pane__gateway-check svg {
-  width: 12px;
-  height: 12px;
-}
-
-.chat-pane__gateway-chevron svg {
-  transform: rotate(180deg);
-}
-
-.chat-pane__gateway-details {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chat-pane__gateway-primary {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.chat-pane__gateway-divider {
-  height: 1px;
-  margin: 4px 0;
-  background: var(--border);
-}
-
 .chat-pane__branches-menu {
   flex: 0 0 auto;
 }
@@ -706,6 +606,27 @@ openclaw-chat-pane {
 
 .chat-pane__sharing-menu {
   flex: 0 0 auto;
+}
+
+.chat-pane__public-share-indicator {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 22px;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--border));
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--warn) 12%, var(--panel));
+  color: var(--warn);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.chat-pane__public-share-indicator svg {
+  width: 13px;
+  height: 13px;
 }
 
 .chat-pane__header-center .chat-pane__sharing-menu,
@@ -862,7 +783,6 @@ openclaw-chat-pane {
   .chat-pane__header:has(.chat-pane__close-pane) .chat-side-panel-toggle,
   .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__sharing-menu,
   .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__branches-menu,
-  .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__gateway-menu,
   .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__nav-toggle,
   .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__palette-open,
   .chat-pane__header:has(.chat-pane__close-pane) .chat-pane__participants,
@@ -894,43 +814,6 @@ openclaw-chat-pane {
 .chat-header-session-menu--compact .session-menu__item {
   flex: 0 0 34px;
   min-height: 34px;
-}
-
-.chat-header-session-menu__trigger {
-  position: relative;
-}
-
-.chat-header-session-menu__status-dot {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  border: 1px solid var(--chat-surface);
-  border-radius: 999px;
-  background: var(--info);
-}
-
-.chat-header-session-menu__status-dot[data-tone="warn"],
-.chat-header-session-menu__status-icon[data-tone="warn"] {
-  color: var(--warn);
-}
-
-.chat-header-session-menu__status-dot[data-tone="warn"] {
-  background: var(--warn);
-}
-
-.chat-header-session-menu__status-dot[data-tone="danger"],
-.chat-header-session-menu__status-icon[data-tone="danger"] {
-  color: var(--danger);
-}
-
-.chat-header-session-menu__status-dot[data-tone="danger"] {
-  background: var(--danger);
-}
-
-.chat-header-session-menu__status-icon[data-tone="info"] {
-  color: var(--info);
 }
 
 .chat-header-session-menu--compact .session-menu__back {
@@ -984,7 +867,7 @@ openclaw-chat-pane {
   --shell-titlebar-inset: calc(var(--shell-chrome-safe-area-left) + var(--shell-attention-width));
 }
 
-html.openclaw-native-macos .shell:not(.shell--mobile-nav) {
+html:is(.openclaw-native-macos, .openclaw-native-desktop) .shell:not(.shell--mobile-nav) {
   --shell-titlebar-inset: 12px;
 }
 
@@ -1003,30 +886,64 @@ html.openclaw-native-web-chrome .shell--nav-collapsed:not(.shell--mobile-nav) {
   );
 }
 
-/* Apply the safe edge to whichever header occupies the first content row;
-   mobile has a separate topbar row. */
+/* Only the physical top-left header needs window-control clearance. A left
+   dock puts the side tabs there; mobile has a separate topbar row. */
 .shell:not(.shell--mobile-nav)
-  :is(
-    .chat-split-view__column:first-child
-      > .chat-split-view__cell:first-child
-      :is(.chat-main__conversation-column, .chat-pane-primary-column)
-      > .chat-pane__header,
-    .sidebar-region--expanded .side-panel__header
-  ) {
+  .chat-split-view__column:first-child
+  > .chat-split-view__cell:first-child
+  .sidebar-region:not(
+    .sidebar-region--left.sidebar-region--open:not(.sidebar-region--expanded):not(
+        .sidebar-region--narrow
+      )
+  )
+  > .sidebar-region__header
+  > .chat-pane__header,
+.shell:not(.shell--mobile-nav)
+  .chat-split-view__column:first-child
+  > .chat-split-view__cell:first-child
+  .sidebar-region--left.sidebar-region--open:not(.sidebar-region--expanded):not(
+    .sidebar-region--narrow
+  )
+  [data-region-header="side"] {
   padding-left: var(--shell-titlebar-inset);
 }
 
-/* Native macOS desktop shells: the pane header is the window's top surface,
-   so it adopts the app titlebar height (52px injected by
-   DashboardWindowController; the 50px fallback mirrors
-   .macos-titlebar-controls for older app builds). The web 48px default would
-   center the session title/actions 2px above the traffic-light/hosted-button
-   centerline. Drawer layouts instead fold titlebar clearance into their 58px
-   topbar row (layout.mobile.css). */
-html.openclaw-native-macos
+/* Native pane headers share the window controls' centerline. Drawer layouts
+   instead reserve a separate topbar row (layout.mobile.css). */
+html:is(.openclaw-native-macos, .openclaw-native-desktop)
   .shell:not(.shell--mobile-nav)
-  :is(.chat-pane__header, .sidebar-region--expanded .side-panel__header) {
+  .chat-pane__header {
   min-height: var(--openclaw-native-titlebar-height, 50px);
+}
+
+/* Only the visible top-right header shares the Linux/Windows caption buttons.
+   The side panel can own that edge, move below/left, or expand over the chat. */
+html.openclaw-native-desktop
+  .shell:not(.shell--mobile-nav)
+  .chat-split-view__column:nth-last-child(
+    1 of .chat-split-view__column:not(.chat-split-view__column--narrow-hidden)
+  )
+  > .chat-split-view__cell:nth-child(
+    1 of .chat-split-view__cell:not(.chat-split-view__cell--narrow-hidden)
+  )
+  .sidebar-region {
+  &:not(
+      .sidebar-region--open:not(.sidebar-region--expanded):not(.sidebar-region--left):not(
+          .sidebar-region--bottom
+        ):not(.sidebar-region--narrow)
+    )
+    > .sidebar-region__header
+    > .chat-pane__header,
+  &:is(
+      .sidebar-region--expanded-side,
+      .sidebar-region--open:not(.sidebar-region--expanded):not(.sidebar-region--left):not(
+          .sidebar-region--bottom
+        ):not(.sidebar-region--narrow)
+    )
+    [data-region-header="side"] {
+    padding-right: calc(var(--openclaw-native-window-controls-width, 0px) + 6px);
+    min-height: var(--openclaw-native-titlebar-height, 52px);
+  }
 }
 
 /* Native macOS: with the nav column collapsed the top-left pane header is the
@@ -1039,7 +956,7 @@ html.openclaw-native-macos
    padding: the header's action row cannot
    shrink, and the cell's overflow:hidden would clip the close/split buttons
    at the 320px column minimum otherwise. */
-html.openclaw-native-macos
+html:is(.openclaw-native-macos, .openclaw-native-desktop)
   .shell--nav-collapsed:not(.shell--mobile-nav)
   .chat-split-view__column:first-child {
   min-width: calc(308px + var(--shell-titlebar-inset));

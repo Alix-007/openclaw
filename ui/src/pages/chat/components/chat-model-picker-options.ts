@@ -90,6 +90,7 @@ export function renderChatModelPickerOption(params: {
   entry: ChatModelPickerOption;
   index: number;
   selectedModelValue: string;
+  sessionModelPinned: boolean;
   onHighlight: (row: HTMLButtonElement) => void;
   onSelect: (entry: ChatModelPickerOption, event: MouseEvent) => void;
   onModelSetup?: () => void;
@@ -98,6 +99,11 @@ export function renderChatModelPickerOption(params: {
     params.entry.value === params.selectedModelValue ||
     (params.entry.isDefault && params.selectedModelValue === "");
   const modelLabel = formatModelLabel(params.entry);
+  // A session with a recorded pin (even one pinned to the default's own value)
+  // can always return to Default when the default model is unavailable: the row
+  // commits the reset, not that model. Otherwise an unavailable default routes
+  // to sign-in like any other unavailable row.
+  const resetsPin = params.entry.isDefault && params.sessionModelPinned;
   const needsAuth =
     params.entry.disabled &&
     (params.entry.unavailableReason === "missing-auth" ||
@@ -113,15 +119,15 @@ export function renderChatModelPickerOption(params: {
         .join(" · ");
   const accessibleStatus = needsAuth ? t("modelSetup.candidates.signInNeeded") : "";
   const option = html`<button
-    class="chat-controls__inline-select-option chat-controls__model-option ${selected
-      ? "chat-controls__inline-select-option--selected"
-      : ""}"
+    class="chat-controls__inline-select-option chat-controls__model-option ${
+      selected ? "chat-controls__inline-select-option--selected" : ""
+    }"
     data-chat-model-option=${params.entry.value}
     data-chat-model-default=${params.entry.isDefault ? "true" : nothing}
     data-chat-model-index=${params.index}
-    data-chat-model-keywords=${params.entry.isDefault
-      ? t("chat.modelControls.default").toLocaleLowerCase()
-      : nothing}
+    data-chat-model-keywords=${
+      params.entry.isDefault ? t("chat.modelControls.default").toLocaleLowerCase() : nothing
+    }
     data-chat-model-name=${modelLabel.toLocaleLowerCase()}
     data-chat-model-provider-label=${providerDisplayLabel(
       params.entry.provider,
@@ -136,14 +142,14 @@ export function renderChatModelPickerOption(params: {
       .filter(Boolean)
       .join(". ")}
     type="button"
-    ?disabled=${params.disabled || (params.entry.disabled && !onModelSetup)}
+    ?disabled=${params.disabled || (params.entry.disabled && !onModelSetup && !resetsPin)}
     data-chat-model-setup=${onModelSetup ? "true" : nothing}
     @mouseenter=${(event: MouseEvent) =>
       params.onHighlight(event.currentTarget as HTMLButtonElement)}
     @click=${(event: MouseEvent) => {
       // A sign-in-gated model must not dead-end: the row routes to Model
       // Setup instead of silently ignoring the click on a disabled button.
-      if (params.entry.disabled) {
+      if (params.entry.disabled && !resetsPin) {
         event.stopPropagation();
         onModelSetup?.();
         return;
@@ -157,36 +163,46 @@ export function renderChatModelPickerOption(params: {
     <span class="chat-controls__model-option-copy">
       <span class="chat-controls__model-option-title">
         <span class="chat-controls__model-option-name">${modelLabel}</span>
-        ${params.entry.isDefault
-          ? html`<span
-              class="chat-controls__model-state-label chat-controls__model-state-label--default"
-              >${t("chat.modelControls.default")}</span
-            >`
-          : nothing}
-        ${modelMeta
-          ? html`<span class="chat-controls__model-option-meta">${modelMeta}</span>`
-          : nothing}
-        ${needsAuth
-          ? html`<span
-              class="chat-controls__model-option-auth-warning"
-              data-chat-model-auth-warning
-            >
-              ${icons.alertTriangle}<span>${accessibleStatus}</span>
-            </span>`
-          : nothing}
-        ${params.entry.supportsTools === false
-          ? html`<span class="chat-controls__model-chat-only-info" aria-hidden="true"
-              >${icons.info}</span
-            >`
-          : nothing}
+        ${
+          params.entry.isDefault
+            ? html`<span
+                class="chat-controls__model-state-label chat-controls__model-state-label--default"
+                >${t("chat.modelControls.default")}</span
+              >`
+            : nothing
+        }
+        ${
+          modelMeta
+            ? html`<span class="chat-controls__model-option-meta">${modelMeta}</span>`
+            : nothing
+        }
+        ${
+          needsAuth
+            ? html`<span
+                class="chat-controls__model-option-auth-warning"
+                data-chat-model-auth-warning
+              >
+                ${icons.alertTriangle}<span>${accessibleStatus}</span>
+              </span>`
+            : nothing
+        }
+        ${
+          params.entry.supportsTools === false
+            ? html`<span class="chat-controls__model-chat-only-info" aria-hidden="true"
+                >${icons.info}</span
+              >`
+            : nothing
+        }
       </span>
     </span>
     <span class="chat-controls__model-option-action">
-      ${selected
-        ? html`<span class="chat-controls__inline-select-check" aria-hidden="true"
-            >${icons.check}</span
-          >`
-        : html`<kbd data-chat-model-shortcut="true" aria-hidden="true" hidden></kbd>`}
+      ${
+        selected
+          ? html`<span class="chat-controls__inline-select-check" aria-hidden="true"
+              >${icons.check}</span
+            >`
+          : html`<kbd data-chat-model-shortcut="true" aria-hidden="true" hidden></kbd>`
+      }
     </span>
   </button>`;
   return params.entry.supportsTools === false

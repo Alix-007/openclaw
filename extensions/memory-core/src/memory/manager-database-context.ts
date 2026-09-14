@@ -1,8 +1,26 @@
 // Owns the published index state and the isolated lifetime of shadow reindex work.
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { DatabaseSync } from "node:sqlite";
+import {
+  resolveStateDir,
+  resolveUserPath,
+} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+import { withOpenClawAgentDatabaseWrite } from "openclaw/plugin-sdk/sqlite-runtime";
+import { closeMemoryDatabase } from "./manager-db.js";
+import { MemorySourceIndexKernel } from "./manager-source-index-kernel.js";
 
 export class MemoryIndexDatabase {
+  static captureWriteOptions(agentId: string, databasePath: string, source?: MemoryIndexDatabase) {
+    const env = { ...(source?.writeOptions?.env ?? process.env) };
+    env.OPENCLAW_STATE_DIR = resolveStateDir(env);
+    return {
+      agentId,
+      path: source?.writeOptions?.path ?? resolveUserPath(databasePath),
+      env,
+    };
+  }
+
+  readonly sourceIndex: MemorySourceIndexKernel;
   readonly vector: {
     enabled: boolean;
     available: boolean | null;
@@ -21,7 +39,14 @@ export class MemoryIndexDatabase {
   vectorDegradedWriteWarningShown = false;
   closed = false;
 
-  constructor(readonly db: DatabaseSync) {}
+  constructor(
+    readonly db: DatabaseSync,
+    readonly release: () => void = () => closeMemoryDatabase(db),
+    readonly readOnly = false,
+    readonly writeOptions?: Parameters<typeof withOpenClawAgentDatabaseWrite>[0],
+  ) {
+    this.sourceIndex = new MemorySourceIndexKernel(db, this);
+  }
 }
 
 // One process-lifetime container; stores belong only to their awaited rebuild.
@@ -32,6 +57,25 @@ const reindexDatabase = new AsyncLocalStorage<{
 
 export abstract class MemoryManagerDatabaseContext {
   protected abstract publishedDatabase: MemoryIndexDatabase;
+  protected closed = false;
+
+  protected async withDatabaseWrite<T>(write: () => T): Promise<T> {
+    const database = this.database;
+    const run = () => {
+      if (this.closed || database.closed || !database.db.isOpen || this.database !== database) {
+        throw new Error("Memory database owner closed or changed before write admission");
+      }
+      if (database.readOnly) {
+        throw new Error("Memory status managers are read-only");
+      }
+      return write();
+    };
+    // A shadow index is private to its awaited rebuild; only the published
+    // borrowed database shares the agent's reclamation/write admission owner.
+    return database.writeOptions
+      ? await withOpenClawAgentDatabaseWrite(database.writeOptions, run, database.db)
+      : run();
+  }
 
   protected get database(): MemoryIndexDatabase {
     const context = reindexDatabase.getStore();
@@ -60,10 +104,19 @@ export abstract class MemoryManagerDatabaseContext {
     return reindexDatabase.exit(run);
   }
 
-  protected withReindexDatabase<T>(
+  protected async withReindexDatabase<T>(
     database: MemoryIndexDatabase,
     run: () => Promise<T>,
   ): Promise<T> {
-    return reindexDatabase.run({ manager: this, database }, run);
+    try {
+      const result = await reindexDatabase.run({ manager: this, database }, run);
+      // Publication attaches the finished file only after its writer closes.
+      database.release();
+      return result;
+    } finally {
+      try {
+        database.release();
+      } catch {}
+    }
   }
 }

@@ -10,13 +10,7 @@ import { splitMediaFromOutput } from "../../media/parse.js";
 import { normalizeAgentId } from "../../routing/session-key.js";
 import { parseAgentSessionKey } from "../../sessions/session-key-utils.js";
 import { resolveNestedAgentLaneForSession } from "../lanes.js";
-import {
-  type AgentWaitResult,
-  type AssistantReplySnapshot,
-  hasUpdatedAssistantReplySnapshot,
-  readLatestAssistantReplySnapshot,
-  waitForAgentRun,
-} from "../run-wait.js";
+import { type AgentWaitResult, waitForAgentRunReply } from "../run-wait.js";
 import { runAgentStep } from "./agent-step.js";
 import {
   callAgentToolGatewayRequest,
@@ -61,17 +55,14 @@ async function deliverAnnounceReply(params: {
   callGateway: AgentToolGatewayRequestCaller;
   message: string;
   runContextId: string;
-  targetSessionKey: string;
+  targetAgentId: string;
 }) {
-  // Gateway chooses media roots before its later outbound directive parse, so
-  // project the media and its producing agent at the announcement boundary.
+  // Gateway sends need the selected owner for text routing and media roots;
+  // carry the admitted target instead of relying on an implicit default.
   const { text: message, mediaUrls, audioAsVoice } = splitMediaFromOutput(params.message.trim());
   if (!message && !mediaUrls?.length) {
     return;
   }
-  const mediaAgentId = mediaUrls?.length
-    ? parseAgentSessionKey(params.targetSessionKey)?.agentId
-    : undefined;
   try {
     await params.callGateway({
       method: "send",
@@ -79,7 +70,7 @@ async function deliverAnnounceReply(params: {
         to: params.announceTarget.to,
         message,
         ...(mediaUrls?.length ? { mediaUrls } : {}),
-        ...(mediaAgentId ? { agentId: mediaAgentId } : {}),
+        agentId: params.targetAgentId,
         ...(audioAsVoice ? { asVoice: true } : {}),
         channel: params.announceTarget.channel,
         accountId: params.announceTarget.accountId,
@@ -101,7 +92,7 @@ async function deliverAnnounceReply(params: {
 export async function runSessionsSendA2AFlow(params: {
   callGateway?: AgentToolGatewayRequestCaller;
   targetSessionKey: string;
-  targetAgentId?: string;
+  targetAgentId: string;
   displayKey: string;
   message: string;
   announceTimeoutMs: number;
@@ -109,7 +100,7 @@ export async function runSessionsSendA2AFlow(params: {
   requesterSessionKey?: string;
   requesterAgentId?: string;
   requesterChannel?: string;
-  baseline?: AssistantReplySnapshot;
+  sourceReplyDelivered?: true;
   roundOneReply?: string;
   waitRunId?: string;
   notifyRequesterOnWaitFailure?: boolean;
@@ -118,24 +109,16 @@ export async function runSessionsSendA2AFlow(params: {
   const gatewayCall = params.callGateway ?? callAgentToolGatewayRequest;
   try {
     let primaryReply = params.roundOneReply;
-    let latestReply = params.roundOneReply;
+    let sourceReplyDelivered = params.sourceReplyDelivered;
     if (!primaryReply && params.waitRunId) {
-      const wait = await waitForAgentRun({
+      const wait = await waitForAgentRunReply({
         runId: params.waitRunId,
         timeoutMs: Math.min(params.announceTimeoutMs, 60_000),
         callGateway: gatewayCall,
       });
       if (wait.status === "ok") {
-        const latestSnapshot = await readLatestAssistantReplySnapshot({
-          sessionKey: params.targetSessionKey,
-          agentId: params.targetAgentId,
-          stopAtTranscriptArtifact: true,
-          callGateway: gatewayCall,
-        });
-        primaryReply = hasUpdatedAssistantReplySnapshot(latestSnapshot, params.baseline)
-          ? latestSnapshot.text
-          : undefined;
-        latestReply = primaryReply;
+        primaryReply = wait.replyText;
+        sourceReplyDelivered = wait.sourceReplyDelivered;
       } else {
         if (
           params.notifyRequesterOnWaitFailure === true &&
@@ -147,11 +130,12 @@ export async function runSessionsSendA2AFlow(params: {
           await runAgentStep({
             agentId: params.requesterAgentId,
             sessionKey: params.requesterSessionKey,
-            message:
-              `sessions_send delivery to ${params.displayKey} failed${error}. ` +
-              "The target may not have received the message; retry or report the failure instead of assuming delivery succeeded.",
-            extraSystemPrompt:
-              "A previous sessions_send delivery failed after it was accepted. Decide whether to retry, use another route, or report the failure. Do not assume the target received the message.",
+            message: wait.sourceReplyDelivered
+              ? `sessions_send target run for ${params.displayKey} failed${error}. The target's final reply was already delivered to its source conversation. Do not resend; report the run failure.`
+              : `sessions_send delivery to ${params.displayKey} failed${error}. The target may not have received the message; retry or report the failure instead of assuming delivery succeeded.`,
+            extraSystemPrompt: wait.sourceReplyDelivered
+              ? "The target run failed after its final source reply was delivered. Preserve the run error diagnosis. Do not resend the message or the reply."
+              : "A previous sessions_send delivery failed after it was accepted. Decide whether to retry, use another route, or report the failure. Do not assume the target received the message.",
             timeoutMs: params.announceTimeoutMs,
             lane: resolveNestedAgentLaneForSession(params.requesterSessionKey),
             sourceSessionKey: params.targetSessionKey,
@@ -162,20 +146,13 @@ export async function runSessionsSendA2AFlow(params: {
         return;
       }
     }
+    let latestReply = primaryReply;
     if (!latestReply) {
       return;
     }
     if (isNonDeliverableSessionsReply(latestReply)) {
       return;
     }
-
-    const announceTarget = await resolveAnnounceTarget({
-      sessionKey: params.targetSessionKey,
-      displayKey: params.displayKey,
-      callGateway: gatewayCall,
-      agentId: params.targetAgentId,
-    });
-    const targetChannel = announceTarget?.channel ?? "unknown";
 
     // A same-session send is a human-facing source-channel reply, not a true
     // agent-to-agent announcement. Asking the same session to decide whether to
@@ -186,19 +163,26 @@ export async function runSessionsSendA2AFlow(params: {
       rightKey: params.targetSessionKey,
       rightAgentId: params.targetAgentId,
     });
+    if (sameSessionSourceReply && sourceReplyDelivered) {
+      return;
+    }
+    const announceTarget = await resolveAnnounceTarget({
+      sessionKey: params.targetSessionKey,
+      displayKey: params.displayKey,
+      callGateway: gatewayCall,
+      agentId: params.targetAgentId,
+    });
+    const targetChannel = announceTarget?.channel ?? "unknown";
     const canDirectDeliverSameSessionReply =
       announceTarget &&
       (!params.requesterChannel || params.requesterChannel === announceTarget.channel);
     if (sameSessionSourceReply && canDirectDeliverSameSessionReply) {
-      if (params.waitRunId && !params.roundOneReply && !params.baseline) {
-        return;
-      }
       await deliverAnnounceReply({
         announceTarget,
         callGateway: gatewayCall,
         message: latestReply,
         runContextId,
-        targetSessionKey: params.targetSessionKey,
+        targetAgentId: params.targetAgentId,
       });
       return;
     }
@@ -210,7 +194,7 @@ export async function runSessionsSendA2AFlow(params: {
       let currentSessionKey = params.requesterSessionKey;
       let nextSessionKey = params.targetSessionKey;
       let currentAgentId = params.requesterAgentId;
-      let nextAgentId = params.targetAgentId;
+      let nextAgentId: string | undefined = params.targetAgentId;
       let currentRole: "requester" | "target" = "requester";
       let nextRole: "requester" | "target" = "target";
       let incomingMessage = latestReply;
@@ -288,7 +272,7 @@ export async function runSessionsSendA2AFlow(params: {
         callGateway: gatewayCall,
         message: announceReply,
         runContextId,
-        targetSessionKey: params.targetSessionKey,
+        targetAgentId: params.targetAgentId,
       });
     }
   } catch (err) {

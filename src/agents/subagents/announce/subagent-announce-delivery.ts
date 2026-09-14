@@ -11,6 +11,7 @@ import {
 } from "../../../infra/session-delivery-queue-storage.js";
 import { defaultRuntime } from "../../../runtime.js";
 import {
+  INTERNAL_PROVENANCE_SOURCE_CHANNEL,
   isAgentMediatedCompletionSourceTool,
   type InputProvenance,
 } from "../../../sessions/input-provenance.js";
@@ -83,7 +84,6 @@ function createCompletionUserTurnTranscriptRecorderFactory(params: {
   directIdempotencyKey: string;
   requesterAgentId?: string;
   sourceSessionKey?: string;
-  sourceChannel?: string;
   sourceTool?: string;
   targetRequesterSessionKey: string;
   triggerMessage: string;
@@ -91,7 +91,7 @@ function createCompletionUserTurnTranscriptRecorderFactory(params: {
   const provenance: InputProvenance = {
     kind: "inter_session",
     ...(params.sourceSessionKey ? { sourceSessionKey: params.sourceSessionKey } : {}),
-    sourceChannel: params.sourceChannel ?? INTERNAL_MESSAGE_CHANNEL,
+    sourceChannel: INTERNAL_PROVENANCE_SOURCE_CHANNEL,
     sourceTool: params.sourceTool ?? "subagent_announce",
   };
   const recorders = new Map<string, UserTurnTranscriptRecorder>();
@@ -147,13 +147,14 @@ export async function deliverSubagentAnnouncement(params: {
   directOrigin?: DeliveryContext;
   sourceSessionKey?: string;
   sourceRunId?: string;
-  sourceChannel?: string;
   sourceTool?: string;
   isSourceSessionEffectsAllowed?: () => boolean;
   isCompletionOwnedByRequesterYield?: () => boolean;
   targetRequesterSessionKey: string;
   requesterIsSubagent: boolean;
   expectsCompletionMessage: boolean;
+  completionTarget?: "parent";
+  completionRequesterSessionId?: string;
   requireDirectDelivery?: boolean;
   requireVisibleReply?: boolean;
   bestEffortDeliver?: boolean;
@@ -222,7 +223,7 @@ export async function deliverSubagentAnnouncement(params: {
         inputProvenance: {
           kind: "inter_session",
           ...(params.sourceSessionKey ? { sourceSessionKey: params.sourceSessionKey } : {}),
-          sourceChannel: params.sourceChannel ?? INTERNAL_MESSAGE_CHANNEL,
+          sourceChannel: INTERNAL_PROVENANCE_SOURCE_CHANNEL,
           sourceTool: params.sourceTool ?? "subagent_announce",
         },
         sourceReplyDeliveryMode,
@@ -285,7 +286,7 @@ export async function deliverSubagentAnnouncement(params: {
 
   return await runSubagentAnnounceDispatch({
     expectsCompletionMessage: params.expectsCompletionMessage,
-    requireDirectDelivery: params.requireDirectDelivery,
+    requireDirectDelivery: params.requireDirectDelivery || params.completionTarget === "parent",
     signal: params.signal,
     steer: async () => {
       if (sourceOwnerChanged()) {
@@ -316,11 +317,12 @@ export async function deliverSubagentAnnouncement(params: {
         directOrigin: params.directOrigin,
         requesterSessionOrigin: params.requesterSessionOrigin,
         sourceSessionKey: params.sourceSessionKey,
-        sourceChannel: params.sourceChannel,
         sourceTool: params.sourceTool,
         isSourceSessionEffectsAllowed: params.isSourceSessionEffectsAllowed,
         isCompletionOwnedByRequesterYield: params.isCompletionOwnedByRequesterYield,
         requesterIsSubagent: params.requesterIsSubagent,
+        completionTarget: params.completionTarget,
+        completionRequesterSessionId: params.completionRequesterSessionId,
         expectsCompletionMessage: params.expectsCompletionMessage,
         createUserTurnTranscriptRecorder: createCompletionUserTurnTranscriptRecorder,
         requireVisibleReply: params.requireVisibleReply,

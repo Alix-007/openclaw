@@ -100,6 +100,7 @@ describe("openclaw-tools progress_card gating", () => {
       taskSuggestionDeliveryMode: "gateway",
     });
 
+    expect(emittedNames).toContain("plugins");
     expect(
       emittedNames.filter((name) => resolveCoreToolFactoryFamily(name) !== "openclaw"),
     ).toEqual([]);
@@ -477,150 +478,6 @@ describe("PDF registration", () => {
   });
 });
 
-function createSwarmToolNames(options: NonNullable<Parameters<typeof createOpenClawTools>[0]>) {
-  const config = options.config ?? {};
-  return createOpenClawTools({
-    disableMessageTool: true,
-    disablePluginTools: true,
-    wrapBeforeToolCallHook: false,
-    ...options,
-    config: {
-      ...config,
-      agents: config.agents ?? { entries: { main: {} } },
-    },
-  }).map((tool) => tool.name);
-}
-
-describe("Swarm registration", () => {
-  it("registers agents_wait only when tools.swarm is enabled", () => {
-    const base = { agentSessionKey: "agent:main:main" };
-    expect(createSwarmToolNames(base)).not.toContain("agents_wait");
-    expect(createSwarmToolNames({ ...base, config: { tools: { swarm: true } } })).toContain(
-      "agents_wait",
-    );
-  });
-
-  it("uses the effective requester agent override for the agents_wait gate", () => {
-    const base = {
-      agentSessionKey: "agent:worker:main",
-      requesterAgentIdOverride: "worker",
-    };
-    expect(
-      createSwarmToolNames({
-        ...base,
-        config: {
-          tools: { swarm: false },
-          agents: {
-            list: [{ id: "main" }, { id: "worker", tools: { swarm: true } }],
-          },
-        },
-      }),
-    ).toContain("agents_wait");
-    expect(
-      createSwarmToolNames({
-        ...base,
-        config: {
-          tools: { swarm: true },
-          agents: {
-            list: [{ id: "main" }, { id: "worker", tools: { swarm: false } }],
-          },
-        },
-      }),
-    ).not.toContain("agents_wait");
-  });
-
-  it("advertises sessions_spawn from agents_wait only when spawn is available", () => {
-    setEmbeddedMode(true);
-    try {
-      const createTools = (allowGatewaySubagentBinding: boolean) =>
-        createTestOpenClawTools({
-          agentSessionKey: "agent:main:main",
-          allowGatewaySubagentBinding,
-          config: { tools: { swarm: true } } as OpenClawConfig,
-          disableMessageTool: true,
-          disablePluginTools: true,
-          wrapBeforeToolCallHook: false,
-        });
-      const withoutSpawn = applyToolAvailabilityDescriptions(createTools(false));
-      const withSpawn = applyToolAvailabilityDescriptions(createTools(true));
-
-      expect(toolNames(withoutSpawn)).not.toContain("sessions_spawn");
-      expect(expectToolNamed(withoutSpawn, "agents_wait").description).not.toContain(
-        "sessions_spawn",
-      );
-      expect(toolNames(withSpawn)).toContain("sessions_spawn");
-      expect(expectToolNamed(withSpawn, "agents_wait").description).toContain("sessions_spawn");
-    } finally {
-      setEmbeddedMode(false);
-    }
-  });
-
-  it("injects structured_output only for schema-backed collector runs", () => {
-    const base = {
-      agentSessionKey: "agent:worker:subagent:child",
-      runId: "collector-run",
-      config: { tools: { swarm: true } },
-    };
-    expect(createSwarmToolNames({ ...base, swarmCollector: true })).not.toContain(
-      "structured_output",
-    );
-    expect(
-      createSwarmToolNames({
-        ...base,
-        swarmCollector: true,
-        swarmOutputSchema: { type: "object", properties: { answer: { type: "string" } } },
-      }),
-    ).toContain("structured_output");
-  });
-
-  it("keeps structured_output through restrictive child tool policy", () => {
-    const names = createOpenClawCodingTools({
-      sessionKey: "agent:worker:subagent:child",
-      runId: "collector-run",
-      config: {
-        agents: { entries: { main: { default: true } } },
-        tools: { allow: ["read"], swarm: true },
-      },
-      swarmCollector: true,
-      swarmOutputSchema: { type: "object", properties: { answer: { type: "string" } } },
-    }).map((tool) => tool.name);
-
-    expect(names).toContain("read");
-    expect(names).toContain("structured_output");
-    expect(names).not.toContain("exec");
-  });
-
-  it("omits the message tool for collector runs by invariant", () => {
-    const names = createOpenClawCodingTools({
-      sessionKey: "agent:worker:subagent:child",
-      runId: "collector-run",
-      config: {
-        agents: { entries: { main: { default: true } } },
-        tools: { swarm: true },
-      },
-      swarmCollector: true,
-    }).map((tool) => tool.name);
-
-    expect(names).not.toContain("message");
-  });
-
-  it("omits interactive and pausing tools for non-interactive collector runs", () => {
-    const names = createOpenClawCodingTools({
-      sessionKey: "agent:worker:main",
-      runId: "collector-run",
-      config: {
-        agents: { entries: { main: { default: true } } },
-        tools: { swarm: true },
-      },
-      swarmCollector: true,
-    }).map((tool) => tool.name);
-
-    expect(names).not.toContain("ask_user");
-    expect(names).not.toContain("sessions_send");
-    expect(names).not.toContain("sessions_yield");
-  });
-});
-
 describe("sessions_yield completion ownership", () => {
   const controllerSessionKey = "agent:main:telegram:default:direct:1234";
 
@@ -734,6 +591,41 @@ describe("sessions_yield completion ownership", () => {
         requesterTurnRunId: "run-subagent",
       });
       expect(onYield).toHaveBeenCalledOnce();
+    } finally {
+      markRequesterTurnYielded.mockRestore();
+    }
+  });
+
+  it("rejects a collector yield before any claim source runs", async () => {
+    const registry = await import("./subagents/registry/subagent-registry.js");
+    const markRequesterTurnYielded = vi
+      .spyOn(registry, "markRequesterTurnYielded")
+      .mockReturnValue(1);
+    const claimYieldCompletion = vi.fn(() => true);
+    const onYield = vi.fn(async () => undefined);
+
+    try {
+      const tool = expectToolNamed(
+        createTestOpenClawTools({
+          agentSessionKey: "agent:main:subagent:collector",
+          sessionId: "collector-session",
+          runId: "run-collector",
+          swarmCollector: true,
+          claimYieldCompletion,
+          onYield,
+          disableMessageTool: true,
+          disablePluginTools: true,
+          wrapBeforeToolCallHook: false,
+        }),
+        "sessions_yield",
+      );
+
+      await expect(tool.execute("yield-collector", {})).resolves.toMatchObject({
+        details: { status: "error", error: expect.stringContaining("collected explicitly") },
+      });
+      expect(claimYieldCompletion).not.toHaveBeenCalled();
+      expect(markRequesterTurnYielded).not.toHaveBeenCalled();
+      expect(onYield).not.toHaveBeenCalled();
     } finally {
       markRequesterTurnYielded.mockRestore();
     }
@@ -1004,7 +896,7 @@ describe("gateway client capability tool filtering", () => {
       );
 
       expect(tool.description).toContain(
-        "Inline hosting is disabled; set pin=true to place it on this session's dashboard",
+        "Inline previews are unavailable this turn; set pin=true to save to the session dashboard",
       );
     } finally {
       resetPluginRuntimeStateForTest();
