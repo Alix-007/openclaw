@@ -11,7 +11,7 @@ import { sessionHasPendingApproval } from "../app/approval-presentation.ts";
 import type { ApplicationContext, ApplicationNavigationOptions } from "../app/context.ts";
 import { resolveControlUiAuthCandidates } from "../app/control-ui-auth.ts";
 import { t } from "../i18n/index.ts";
-import { formatDurationCompact } from "../lib/format.ts";
+import { formatDurationCompact } from "../lib/format-duration.ts";
 import {
   restartHoverMarqueeIfHovered,
   startHoverMarqueeFromEvent,
@@ -53,7 +53,9 @@ const SIDEBAR_VISIBLE_CHILD_SESSION_LIMIT = 4;
 export interface SessionListHost {
   readonly sidebarAgentsMode?: "chip" | "roster";
   readonly basePath: string;
-  readonly sessionDataContext: Pick<ApplicationContext, "gateway" | "agentSelection"> | undefined;
+  readonly sessionDataContext:
+    | Pick<ApplicationContext, "gateway" | "agentSelection" | "sessions">
+    | undefined;
   readonly sidebarLiveActivity: boolean;
   readonly sessionsShowPreview: boolean;
   readonly sidebarNarrationLines: ReadonlyMap<string, string>;
@@ -276,6 +278,7 @@ function renderSidebarSessionIndicators(
     originIndicators,
     childrenExpanded,
     content: html` <span class="sidebar-recent-session__details-endcap">
+      ${host.sessionDataContext?.sessions.archiveVisibility(session.key) === "pending" ? html`<span class="session-row-trail" role="status">${t("sessionsView.archiving")}</span>` : nothing}
       <openclaw-viewer-facepile
         .presencePayload=${host.sessionData.presencePayload}
         .selfUser=${host.sessionDataContext?.gateway.snapshot.selfUser}
