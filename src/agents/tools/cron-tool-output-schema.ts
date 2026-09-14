@@ -21,6 +21,7 @@ const CompactCronJobSchema = Type.Object(
     displayName: job.displayName,
     owner: job.owner,
     enabled: job.enabled,
+    autoDisabled: Type.Optional(Type.Literal(true)),
     effectiveAgentId: Type.Optional(nullableString),
     nextRunAt: nullableString,
     nextRunAtMs: nullableNumber,
