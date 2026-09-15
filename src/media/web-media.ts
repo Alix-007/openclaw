@@ -885,13 +885,10 @@ async function optimizeImageWithFallback(params: {
   const grid = resolveImageCompressionGrid(params.imageCompression);
   // Generic callers keep the shared decode limit. An owner with a bounded downscale path may
   // widen source admission explicitly, while every encoded result remains under the output cap.
-  const processor =
-    params.maxInputPixels === undefined
-      ? createImageProcessor()
-      : createImageProcessorWithPixelLimits({
-          inputPixels: params.maxInputPixels,
-          outputPixels: MAX_IMAGE_INPUT_PIXELS,
-        });
+  const processor = createImageProcessorWithPixelLimits({
+    inputPixels: params.maxInputPixels ?? MAX_IMAGE_INPUT_PIXELS,
+    outputPixels: MAX_IMAGE_INPUT_PIXELS,
+  });
   const optimized = await processor.encode(buffer, {
     format: "auto",
     maxBytes: cap,

@@ -16,10 +16,7 @@ export function createLocalImageProcessor(
 ) {
   return createRastermill({
     execution,
-    limits: {
-      inputPixels: limits.inputPixels,
-      outputPixels: limits.outputPixels,
-    },
+    limits,
     temp: {
       rootDir: resolvePreferredOpenClawTmpDir(),
       prefix: "openclaw-img-",

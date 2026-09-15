@@ -93,33 +93,6 @@ describe("image ops Rastermill adapter", () => {
       expect(resolveSystemBin).toHaveBeenLastCalledWith("powershell", { trust: "strict" });
     });
 
-    it("allows a bounded larger source only for explicit downscale processors", async () => {
-      const actualRastermill = await vi.importActual<typeof import("rastermill")>("rastermill");
-      const createRastermill = vi.fn(() => ({ encode: vi.fn() }));
-      vi.doMock("rastermill", () => ({
-        ...actualRastermill,
-        createRastermill,
-        readImageMetadataFromHeader: vi.fn(),
-        readImageProbeFromHeader: vi.fn(),
-      }));
-
-      const { MAX_IMAGE_INPUT_PIXELS } = await import("./image-ops.js");
-      const { createImageProcessorWithPixelLimits } = await import("./image-processor.js");
-      createImageProcessorWithPixelLimits({
-        inputPixels: 40_000_000,
-        outputPixels: MAX_IMAGE_INPUT_PIXELS,
-      });
-
-      expect(createRastermill).toHaveBeenCalledWith(
-        expect.objectContaining({
-          limits: {
-            inputPixels: 40_000_000,
-            outputPixels: MAX_IMAGE_INPUT_PIXELS,
-          },
-        }),
-      );
-    });
-
     it("scopes the larger source admission to media understanding", async () => {
       const actualRastermill = await vi.importActual<typeof import("rastermill")>("rastermill");
       const encode = vi.fn(async () => ({

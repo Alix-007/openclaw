@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createSolidPngBuffer } from "../../test/helpers/image-fixtures.js";
-import type { OpenClawConfig } from "../config/types.js";
 import { ImageOptimizationLimitError } from "../media/image-optimization-error.js";
 import { readImageMetadataFromHeader } from "../media/media-services.js";
 import type { ImageCompressionModelPolicy } from "../media/web-media.js";
@@ -28,7 +27,7 @@ describe("image description input optimization", () => {
       buffer: createSolidPngBuffer(64, 48, { r: 24, g: 96, b: 208 }),
       fileName: "phone.png",
       mime: "image/png",
-      cfg: {} as OpenClawConfig,
+      cfg: {},
       provider: "vision-plugin",
       model: "vision-v1",
       agentDir: "/tmp/agent",

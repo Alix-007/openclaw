@@ -64,9 +64,14 @@ export async function optimizeImageDescriptionInput(params: {
   const modelPolicy = await resolveImageCompressionModelPolicy(params);
   const imageCompression = { imageCount: 1, models: [modelPolicy] };
   const effectiveMaxBytes = effectiveImageBytesCap(maxBytes, imageCompression) ?? maxBytes;
-  // Unknown formats remain provider-owned; making Rastermill decode support a new plugin contract
-  // would regress custom providers that already accept their own image formats.
-  if (!readImageMetadataFromHeader(params.buffer)) {
+  const hasModelLimits = [
+    modelPolicy.maxSidePx,
+    modelPolicy.maxPixels,
+    modelPolicy.preferredSidePx,
+    modelPolicy.maxBytes,
+  ].some((limit) => limit !== undefined && limit > 0);
+  // Undeclared limits and unknown formats retain the provider's existing input contract.
+  if (!hasModelLimits || !readImageMetadataFromHeader(params.buffer)) {
     if (params.buffer.length > effectiveMaxBytes) {
       throw new ImageOptimizationLimitError(
         `Image exceeds maxBytes ${effectiveMaxBytes}`,

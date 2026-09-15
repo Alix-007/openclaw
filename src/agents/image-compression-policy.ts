@@ -10,43 +10,6 @@ const resolveModelAsyncDefault: ResolveModelAsync = async (...args) => {
   return await resolveModelAsync(...args);
 };
 
-type ImageCompressionPolicyDeps = {
-  resolveModelAsync: ResolveModelAsync;
-};
-
-async function resolvePolicyWithHooks(params: {
-  cfg?: OpenClawConfig;
-  deps: ImageCompressionPolicyDeps;
-  provider: string;
-  model: string;
-  agentDir?: string;
-  workspaceDir?: string;
-  preparedModelRuntime?: PreparedModelRuntimeSnapshot;
-  skipProviderRuntimeHooks: boolean;
-}): Promise<ImageCompressionModelPolicy> {
-  try {
-    const resolved = await params.deps.resolveModelAsync(
-      params.provider,
-      params.model,
-      params.agentDir,
-      params.cfg,
-      {
-        allowBundledStaticCatalogFallback: true,
-        skipProviderRuntimeHooks: params.skipProviderRuntimeHooks,
-        skipAgentDiscovery: true,
-        workspaceDir: params.workspaceDir,
-        ...(params.preparedModelRuntime
-          ? { preparedModelRuntime: params.preparedModelRuntime }
-          : {}),
-      },
-    );
-    // SAFETY: model resolution preserves provider runtime fields on its narrower Model result.
-    return (resolved.model as ProviderRuntimeModel | undefined)?.mediaInput?.image ?? {};
-  } catch {
-    return {};
-  }
-}
-
 /** Resolves the authoritative image limits for one selected provider/model. */
 export async function resolveImageCompressionModelPolicy(params: {
   cfg?: OpenClawConfig;
@@ -55,27 +18,39 @@ export async function resolveImageCompressionModelPolicy(params: {
   agentDir?: string;
   workspaceDir?: string;
   preparedModelRuntime?: PreparedModelRuntimeSnapshot;
-  deps?: Partial<ImageCompressionPolicyDeps>;
+  deps?: { resolveModelAsync?: ResolveModelAsync };
 }): Promise<ImageCompressionModelPolicy> {
-  const deps: ImageCompressionPolicyDeps = {
-    resolveModelAsync: params.deps?.resolveModelAsync ?? resolveModelAsyncDefault,
-  };
-  const staticPolicy = await resolvePolicyWithHooks({
-    ...params,
-    deps,
-    skipProviderRuntimeHooks: true,
-  });
+  const resolveModelAsync = params.deps?.resolveModelAsync ?? resolveModelAsyncDefault;
+  async function resolvePolicyWithHooks(
+    skipProviderRuntimeHooks: boolean,
+  ): Promise<ImageCompressionModelPolicy> {
+    try {
+      const resolved = await resolveModelAsync(
+        params.provider,
+        params.model,
+        params.agentDir,
+        params.cfg,
+        {
+          allowBundledStaticCatalogFallback: true,
+          skipProviderRuntimeHooks,
+          skipAgentDiscovery: true,
+          workspaceDir: params.workspaceDir,
+          ...(params.preparedModelRuntime
+            ? { preparedModelRuntime: params.preparedModelRuntime }
+            : {}),
+        },
+      );
+      // SAFETY: model resolution preserves provider runtime fields on its narrower Model result.
+      return (resolved.model as ProviderRuntimeModel | undefined)?.mediaInput?.image ?? {};
+    } catch {
+      return {};
+    }
+  }
+
+  const staticPolicy = await resolvePolicyWithHooks(true);
   if (typeof staticPolicy.maxSidePx === "number" || typeof staticPolicy.maxPixels === "number") {
     return staticPolicy;
   }
-  // Catalog augmentation governs row discovery, not model normalization. Missing
-  // limits still need the selected provider's hooks; explicit static values win.
-  return {
-    ...(await resolvePolicyWithHooks({
-      ...params,
-      deps,
-      skipProviderRuntimeHooks: false,
-    })),
-    ...staticPolicy,
-  };
+  // Explicit static limits win; the selected provider's hooks supply missing limits.
+  return { ...(await resolvePolicyWithHooks(false)), ...staticPolicy };
 }
