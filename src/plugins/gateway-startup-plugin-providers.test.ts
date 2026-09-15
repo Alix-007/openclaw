@@ -110,6 +110,10 @@ describe("selected CLI backend startup ownership", () => {
                 {
                   id: "auto",
                   name: "Auto",
+                  reasoning: false,
+                  input: ["text"],
+                  cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+                  maxTokens: 8192,
                   ...(source === "model" ? { api: "openai-completions" as const } : {}),
                 },
               ],
@@ -148,12 +152,30 @@ describe("selected CLI backend startup ownership", () => {
           "ordinary-http": {
             baseUrl: "https://provider.invalid/v1",
             api: "openai-completions",
-            models: [{ id: "model", name: "Model" }],
+            models: [
+              {
+                id: "model",
+                name: "Model",
+                reasoning: false,
+                input: ["text"],
+                cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+                maxTokens: 8192,
+              },
+            ],
           },
           "selected-cli": {
             baseUrl: "cli://selected",
             api: "openai-completions",
-            models: [{ id: "model", name: "Model" }],
+            models: [
+              {
+                id: "model",
+                name: "Model",
+                reasoning: false,
+                input: ["text"],
+                cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+                maxTokens: 8192,
+              },
+            ],
           },
         },
       },

@@ -92,6 +92,10 @@ Reset-recall metadata crosses the worker boundary with the prepared content.
 If secret registration invalidates both preparation attempts, the export rejects
 for retry instead of reading SQLite on the Gateway thread. Failed index rebuilds
 preserve the published index and retained retry state.
+Chunk preparation from captured session text uses the existing local workspace
+queue without a durable write lease. File and multimodal preparation retain that
+lease, as do all cache, index, and publication mutations. Those mutations recheck
+current ownership and session tombstones after awaited preparation.
 Incognito databases, archive materialization, and caller-owned transcript
 observers retain their existing local execution. Index publication and
 restoration remain with their existing database and lifecycle owners.
@@ -216,9 +220,10 @@ Backup outcome recording and freshness reads expose asynchronous operations from
 the shared-state owner. Archive, SQLite snapshot, and Git backup commands await
 recording before reporting completion; a recording failure remains a warning and
 does not change the backup result. Status and Doctor await freshness before
-formatting it. These operations still execute synchronous SQLite internally;
-they retain the existing insertion-and-pruning transaction, 200-row limit, and
-non-creating freshness reads.
+formatting it. Outcome recording executes its insertion-and-pruning transaction
+in the shared-state worker, preserving the 200-row limit and leaving absent
+databases absent. Freshness reads still execute synchronous SQLite internally
+and remain non-creating.
 
 Explicit session deletion, lifecycle-artifact cleanup, and history disk-budget
 eviction prepare their plans inside the session writer queue. When the parent database handle is cold, its
