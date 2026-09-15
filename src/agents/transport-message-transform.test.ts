@@ -2,6 +2,7 @@
 // tool-call/result sequencing before messages are sent back to transports.
 import type { Api, Context, Model } from "openclaw/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
+import { makeMissingToolResult } from "./session-transcript-repair.js";
 import { makeAssistantMessageFixture } from "./test-helpers/assistant-message-fixtures.js";
 import { transformTransportMessages } from "./transport-message-transform.js";
 
@@ -60,6 +61,86 @@ function assistantToolCall(
 }
 
 describe("transformTransportMessages synthetic tool-result policy", () => {
+  it.each([
+    { api: "openai-responses", expected: "aborted" },
+    { api: "openclaw-openai-responses-transport", expected: "aborted" },
+    { api: "anthropic-messages", expected: "No result provided" },
+    { api: "google-generative-ai", expected: "No result provided" },
+    { api: "openai-completions", expected: "No result provided" },
+  ] as const)(
+    "neutralizes previous repair text for $api without rewriting history",
+    ({ api, expected }) => {
+      for (const legacy of [false, true]) {
+        const missing = makeMissingToolResult({ toolCallId: "call_repaired", toolName: "read" });
+        if (legacy) {
+          delete missing.details;
+        }
+        const alert = makeAssistantMessageFixture({
+          stopReason: "stop",
+          content: [{ type: "text", text: "The service needs attention." }],
+        });
+        const history: Context["messages"] = [assistantToolCall("call_repaired"), missing, alert];
+        const original = structuredClone(history);
+        const model = makeModel(api, "openai", "gpt-5.4");
+        const result = transformTransportMessages(history, model);
+        const replayed = requireToolResultMessage(result[1]);
+        expect(replayed.content).toEqual([{ type: "text", text: expected }]);
+        expect(replayed).toMatchObject({
+          toolCallId: "call_repaired",
+          toolName: "read",
+          isError: true,
+        });
+        expect(replayed.timestamp).toBe(missing.timestamp);
+        expect(replayed.details).toEqual(
+          legacy ? { openclawSyntheticMissingToolResult: true } : missing.details,
+        );
+        expect(result[2]?.content).toEqual(alert.content);
+        expect(history).toEqual(original);
+        expect(transformTransportMessages(result, model)[1]).toBe(replayed);
+      }
+    },
+  );
+
+  it("preserves real error results and successful output quoting repair diagnostics", () => {
+    const missing = makeMissingToolResult({ toolCallId: "call_repaired", toolName: "read" });
+    for (const actual of [
+      {
+        ...missing,
+        details: undefined,
+        content: [{ type: "text" as const, text: "File not found" }],
+      },
+      { ...missing, details: undefined, isError: false },
+    ]) {
+      const result = transformTransportMessages(
+        [assistantToolCall("call_repaired"), actual],
+        makeModel("openai-responses", "openai", "gpt-5.4"),
+      );
+      expect(result[1]).toBe(actual);
+    }
+  });
+
+  it.each([false, true])(
+    "keeps a later real result after a legacy=%s synthetic repair",
+    (legacy) => {
+      const missing = makeMissingToolResult({ toolCallId: "call_repaired", toolName: "read" });
+      if (legacy) {
+        delete missing.details;
+      }
+      const actual: ToolResultMessage = {
+        ...missing,
+        details: undefined,
+        isError: false,
+        content: [{ type: "text", text: "Actual file content" }],
+      };
+      const result = transformTransportMessages(
+        [assistantToolCall("call_repaired"), missing, actual],
+        makeModel("openai-responses", "openai", "gpt-5.4"),
+      );
+      expect(result).toHaveLength(2);
+      expect(result[1]).toBe(actual);
+    },
+  );
+
   it.each(["openai-completions", "openai-responses"] as const)(
     "compacts sparse %s history without changing the source or sharing assistant arrays",
     (api) => {
