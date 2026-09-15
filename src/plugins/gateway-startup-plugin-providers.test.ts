@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
-import { collectConfiguredAgentModelProviderIds } from "./gateway-startup-plugin-providers.js";
+import {
+  collectConfiguredAgentModelProviderIds,
+  manifestOwnsConfiguredModelProvider,
+} from "./gateway-startup-plugin-providers.js";
 import type { PluginManifestRecord, PluginManifestRegistry } from "./manifest-registry.js";
 
 function createManifestRecord(
@@ -85,5 +88,89 @@ describe("configured Gateway model provider ownership", () => {
 
     expect(collectConfiguredAgentModelProviderIds(config, registry)).toEqual(new Set(["selected"]));
     expect(unrelatedNormalizationReads).toBe(0);
+  });
+});
+
+describe("selected CLI backend startup ownership", () => {
+  it.each(["provider", "model"] as const)(
+    "retains the CLI owner when the built-in API is configured on the %s",
+    (source) => {
+      const registry = createManifestRegistry([
+        { id: "selected-plugin", providers: ["selected-cli"], cliBackends: ["selected-cli"] },
+        { id: "unused-plugin", providers: ["unused-cli"], cliBackends: ["unused-cli"] },
+      ]);
+      const config: OpenClawConfig = {
+        agents: { defaults: { model: { primary: "selected-cli/auto" } } },
+        models: {
+          providers: {
+            "selected-cli": {
+              baseUrl: "cli://selected",
+              ...(source === "provider" ? { api: "openai-completions" as const } : {}),
+              models: [
+                {
+                  id: "auto",
+                  name: "Auto",
+                  ...(source === "model" ? { api: "openai-completions" as const } : {}),
+                },
+              ],
+            },
+          },
+        },
+      };
+      const configuredModelProviderIds = collectConfiguredAgentModelProviderIds(config, registry);
+      expect(configuredModelProviderIds).toEqual(new Set(["selected-cli"]));
+      expect(
+        manifestOwnsConfiguredModelProvider({
+          manifest: registry.plugins[0],
+          configuredModelProviderIds,
+        }),
+      ).toBe(true);
+      expect(
+        manifestOwnsConfiguredModelProvider({
+          manifest: registry.plugins[1],
+          configuredModelProviderIds,
+        }),
+      ).toBe(false);
+    },
+  );
+
+  it("honors backend-only manifest ownership without activating ordinary HTTP providers", () => {
+    const registry = createManifestRegistry([
+      { id: "cli-owner", cliBackends: ["selected-cli"] },
+      { id: "http-owner", providers: ["ordinary-http"] },
+    ]);
+    const config: OpenClawConfig = {
+      agents: {
+        defaults: { model: { primary: "ordinary-http/model", fallbacks: ["selected-cli/model"] } },
+      },
+      models: {
+        providers: {
+          "ordinary-http": {
+            baseUrl: "https://provider.invalid/v1",
+            api: "openai-completions",
+            models: [{ id: "model", name: "Model" }],
+          },
+          "selected-cli": {
+            baseUrl: "cli://selected",
+            api: "openai-completions",
+            models: [{ id: "model", name: "Model" }],
+          },
+        },
+      },
+    };
+    const configuredModelProviderIds = collectConfiguredAgentModelProviderIds(config, registry);
+    expect(configuredModelProviderIds).toEqual(new Set(["selected-cli"]));
+    expect(
+      manifestOwnsConfiguredModelProvider({
+        manifest: registry.plugins[0],
+        configuredModelProviderIds,
+      }),
+    ).toBe(true);
+    expect(
+      manifestOwnsConfiguredModelProvider({
+        manifest: registry.plugins[1],
+        configuredModelProviderIds,
+      }),
+    ).toBe(false);
   });
 });
