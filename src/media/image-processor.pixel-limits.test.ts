@@ -19,6 +19,9 @@ describe("operation-specific pixel limits through the image worker", () => {
     const encoded = await downscale.encode(image, { format: "png", resize: { maxSide: 4 } });
     expect(encoded).toMatchObject({ width: 4, height: 4, format: "png" });
     expect(encoded.data.length).toBeGreaterThan(0);
+    await expect(downscale.encode(image, { format: "png" })).rejects.toMatchObject({
+      code: "RASTERMILL_OUTPUT_TOO_LARGE",
+    });
 
     // A scoped downscale limit must not change the shared worker's subsequent default policy.
     const normal = await createImageProcessor().encode(image, { format: "png" });
