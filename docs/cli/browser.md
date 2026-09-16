@@ -222,6 +222,8 @@ retries alone cannot recover that existing process.
 
 ```bash
 openclaw browser tabs
+openclaw browser tabs --title docs
+openclaw browser --json tabs --title openclaw --url-contains docs.example.com
 openclaw browser tab new --label docs
 openclaw browser tab label t1 docs
 openclaw browser tab select 2
@@ -234,6 +236,12 @@ openclaw browser close t1
 `tabs` returns `suggestedTargetId` first, then the stable `tabId` (such as `t1`), the optional label, and the raw `targetId`. Pass `suggestedTargetId` back into `focus`, `close`, snapshots, and actions. Assign a label with `open --label`, `tab new --label`, or `tab label`. Labels, tab ids, raw target ids, and unique target-id prefixes are all accepted. The request field is still named `targetId` for compatibility, but it accepts any of these tab references.
 
 Raw target ids are volatile diagnostic handles, not durable agent memory. Chromium can replace the underlying raw target during a navigation or form submit. OpenClaw then keeps the stable `tabId` or label attached to the replacement tab, when it can prove the match. Prefer `suggestedTargetId`.
+
+`tabs --title <text>` and `--url-contains <text>` apply case-insensitive substring
+filters. When both are provided, a tab must match both. Filtering preserves the
+original tab order, references, and text-mode ordinals used by `tab select` and
+`tab close`; JSON retains the `{ "tabs": [...] }` shape. With no filters, the full
+list is unchanged. `--url` still selects the Gateway, not a tab URL.
 
 ## Snapshot / screenshot / actions
 
