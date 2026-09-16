@@ -783,6 +783,19 @@ describe("cron cli", () => {
     expect(pollTimeouts[1]).toBeLessThan(pollTimeouts[0] ?? 0);
   });
 
+  it.each([
+    ["cron", "--wait-timeout", "1ms"],
+    ["cron", "--wait-timeout=1ms"],
+    ["cron", "--poll-interval", "1s"],
+    ["cron", "--poll-interval=1s"],
+    ["cron", "--wait-timeout", "1ms", "--poll-interval", "1s"],
+    ["automations", "--wait-timeout", "10m", "--poll-interval", "2s"],
+  ])("rejects wait-only options without --wait: %j", async (root, ...options) => {
+    await expectCronCommandExit([root, "run", "job-1", ...options]);
+    expectRuntimeErrorContaining("--wait-timeout and --poll-interval require --wait");
+    expect(callGatewayFromCli).not.toHaveBeenCalled();
+  });
+
   it("rejects zero poll interval for cron run wait before enqueueing", async () => {
     await expectCronCommandExit([
       "cron",

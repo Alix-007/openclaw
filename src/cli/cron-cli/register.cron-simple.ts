@@ -280,6 +280,14 @@ export function registerCronSimpleCommands(cron: Command) {
       .action(async (idArg, opts, command) => {
         try {
           const id = requireCronJobId(idArg);
+          if (
+            !opts.wait &&
+            ["waitTimeout", "pollInterval"].some(
+              (name) => command.getOptionValueSource(name) === "cli",
+            )
+          ) {
+            throw new CronCliError("--wait-timeout and --poll-interval require --wait");
+          }
           let waitTimeoutMs = 0;
           let pollIntervalMs = 0;
           if (opts.wait) {

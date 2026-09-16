@@ -215,6 +215,9 @@ Add `--wait` when a script should block until that exact queued run records a te
 openclaw automations run <job-id> --wait --wait-timeout 10m --poll-interval 2s
 ```
 
+Explicit `--wait-timeout` and `--poll-interval` options require `--wait`. Without
+it, the CLI rejects those options before requesting a run instead of ignoring them.
+
 With `--wait`, the CLI calls `cron.run` first, then polls the durable `cron.runs` row for the returned `runId`. It does not reread mutable job delivery settings. JSON reports payload execution as `status` and whole-run completion as `completionStatus`. The command exits `0` only for `completionStatus: "succeeded"`. `failed`, `unknown`, execution errors or skips, a missing `runId`, and timeout expiry exit non-zero (default `10m`, polled every `2s` by default). `--poll-interval` must be greater than zero. Completed JSON output, including the run summary, is flushed before the command exits, so it can be piped to a JSON reader.
 
 <Note>
