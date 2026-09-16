@@ -48,6 +48,13 @@ type DiscordThreadInitialMessageDelivery = Readonly<{
   totalChunkCount: number;
 }>;
 
+type DiscordThreadCreateResult = APIChannel & {
+  initialMessageDelivery?: Omit<
+    DiscordThreadInitialMessageDelivery,
+    "failedChunkDelivery" | "failedChunkIndex"
+  > & { status: "delivered" };
+};
+
 function resolveDiscordThreadStarterMessageId(thread: APIChannel): string {
   const starterMessage = "message" in thread ? thread.message : undefined;
   if (
@@ -218,7 +225,7 @@ export async function createThreadDiscord(
   channelId: string,
   payload: DiscordThreadCreate,
   opts: DiscordReactOpts,
-) {
+): Promise<DiscordThreadCreateResult> {
   const { rest, request } = createDiscordClient(opts);
   const body: Record<string, unknown> = { name: payload.name };
   if (!payload.messageId && payload.type !== undefined) {
@@ -269,9 +276,9 @@ export async function createThreadDiscord(
   // Forum creation accepts exactly one starter message, so keep the first chunk in the
   // create request and deliver any remainder after Discord returns the new thread.
   const followupChunks = isForumLike ? initialMessageChunks.slice(1) : initialMessageChunks;
+  const deliveredMessageIds = isForumLike ? [resolveDiscordThreadStarterMessageId(thread)] : [];
+  let deliveredChunkCount = isForumLike ? 1 : 0;
   if (followupChunks.length && "id" in thread) {
-    const deliveredMessageIds = isForumLike ? [resolveDiscordThreadStarterMessageId(thread)] : [];
-    let deliveredChunkCount = isForumLike ? 1 : 0;
     const firstFollowupChunkIndex = isForumLike ? 1 : 0;
     for (const [followupIndex, content] of followupChunks.entries()) {
       let chunkMayHaveDelivered = false;
@@ -319,7 +326,20 @@ export async function createThreadDiscord(
     }
   }
 
-  return thread;
+  // Creation counters predate follow-up sends. Keep them unchanged and return
+  // confirmed delivery separately so callers do not retry accepted content.
+  return deliveredChunkCount > 0
+    ? {
+        ...thread,
+        initialMessageDelivery: {
+          status: "delivered",
+          starterMessageDelivered: isForumLike,
+          deliveredChunkCount,
+          deliveredMessageIds,
+          totalChunkCount: initialMessageChunks.length,
+        },
+      }
+    : thread;
 }
 
 export async function listThreadsDiscord(payload: DiscordThreadList, opts: DiscordReactOpts) {
