@@ -1,6 +1,10 @@
 import { Command, Option } from "commander";
 import { describe, expect, it } from "vitest";
-import { runGeneratedBashCompletion } from "./completion-cli.test-support.js";
+import {
+  itWithFish,
+  runGeneratedBashCompletion,
+  runGeneratedFishCompletion,
+} from "./completion-cli.test-support.js";
 import { collectShellCompletionCommandTree } from "./completion-command-tree.js";
 
 function createShadowedOptionProgram(optional = false) {
@@ -17,6 +21,28 @@ function createShadowedOptionProgram(optional = false) {
 }
 
 describe("completion value-option shadowing", () => {
+  itWithFish.each([
+    "openclaw --mode work group show --j",
+    "openclaw --mode group group show --j",
+    "openclaw --mode work group --mode show --j",
+    "openclaw --mode=work group --mode show --j",
+    "openclaw group --mode show --j",
+    "openclaw -m work group --mode show --j",
+  ])("uses the option owner at each Fish token position: %s", (line) => {
+    expect(runGeneratedFishCompletion(createShadowedOptionProgram().program, line)).toEqual([
+      "--json",
+    ]);
+  });
+
+  itWithFish("preserves optional parent values before a boolean child override", () => {
+    expect(
+      runGeneratedFishCompletion(
+        createShadowedOptionProgram(true).program,
+        "openclaw --mode work group --mode show --j",
+      ),
+    ).toEqual(["--json"]);
+  });
+
   it.each([false, true])(
     "keeps the nearest boolean contract when the parent optional=%s",
     (optional) => {
