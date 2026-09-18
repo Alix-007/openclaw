@@ -43,16 +43,18 @@ describe("dashboard turns retain external conversation identity", () => {
     const sessionKey = `agent:main:${channel}:${kind}:${peerId}`;
     const scope = { agentId: "main", storePath };
     const externalContext = () =>
-      buildChannelInboundEventContext({
-        channel,
-        accountId: "default",
-        from: `${channel}:${kind}:${peerId}`,
-        sender: { id: "sender-1" },
-        conversation: { kind, id: peerId },
-        route: { agentId: "main", accountId: "default", routeSessionKey: sessionKey },
-        reply: { to: peerId },
-        message: { rawBody: "external input" },
-      });
+      finalizeInboundContext(
+        buildChannelInboundEventContext({
+          channel,
+          accountId: "default",
+          from: `${channel}:${kind}:${peerId}`,
+          sender: { id: "sender-1" },
+          conversation: { kind, id: peerId },
+          route: { agentId: "main", accountId: "default", routeSessionKey: sessionKey },
+          reply: { to: peerId },
+          message: { rawBody: "external input" },
+        }),
+      );
     await initSessionState({ cfg, ctx: externalContext(), commandAuthorized: true });
     const originalEntry = loadSessionEntry({ ...scope, sessionKey });
     const originalConversations = listConversations(scope, { channel });
