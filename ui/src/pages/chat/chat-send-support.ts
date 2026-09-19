@@ -26,7 +26,11 @@ import type { TerminalFailureChatSendAck } from "./chat-send-ack.ts";
 import type { ChatHost } from "./chat-send-contract.ts";
 import type { ChatState } from "./chat-state-contract.ts";
 import type { ChatQueueAdmissionResult } from "./composer-persistence.ts";
-import { admitChatSubmission, shouldDisplayChatSubmission } from "./history-merge.ts";
+import {
+  admitChatSubmission,
+  retireChatSubmissionDisplay,
+  shouldDisplayChatSubmission,
+} from "./history-merge.ts";
 import {
   captureOutboxPayloadOwner,
   failOutboxPayload,
@@ -107,16 +111,7 @@ function preserveDeliveredUserTurn(
       !state.currentSessionId ||
       submission.sessionId === state.currentSessionId
     ) {
-      // Custody may already own this source before its first delivery retention.
-      if (
-        getChatPendingInputs(state)?.page.items.some(
-          (input) => input.runId === submission.pendingRunId,
-        )
-      ) {
-        submission.pending = false;
-        return;
-      }
-      admitChatSubmission(state, submission);
+      admitChatSubmission(state, getChatPendingInputs(state)?.page.items, submission);
     }
     return;
   }
@@ -137,18 +132,33 @@ function preserveDeliveredUserTurn(
 
 type DeliveredTurnRetirement = "retired" | "retained" | "stale";
 
-/** Transfer every byte to the transcript/cache before retiring its durable owner. */
+/** Preserve local display bytes until canonical consumption retires the submission. */
 export function retireDeliveredQueuedUserTurn(
   host: ChatHost,
   runId: string | undefined,
   scope: StoredChatOutboxScope,
-  options?: { retainUntilConsumed: boolean },
+  options?: { retainUntilConsumed?: boolean; inputConsumed?: boolean },
 ): DeliveredTurnRetirement | Promise<DeliveredTurnRetirement> {
   const client = host.client;
   const owner = client ?? host;
   const submissions = host.chatSubmissions;
   const deliveryKey = chatOutboxDeliveryKey(host, scope, runId);
   const stored = readDeliveredQueuedChatSendForRun(host, runId, scope)?.item;
+  if (options?.inputConsumed && runId) {
+    const remembered = submissions.readDelivered(deliveryKey, owner);
+    if (remembered) {
+      remembered.pending = false;
+    }
+    if (
+      visibleSessionMatches(host, scope.sessionKey, scope.agentId) &&
+      (!stored?.sessionId || stored.sessionId === host.currentSessionId)
+    ) {
+      retireChatSubmissionDisplay(host, new Set([runId]));
+    }
+    return !stored || removeDeliveredQueuedChatSendForRun(host, runId, scope)
+      ? "retired"
+      : "retained";
+  }
   if (!stored) {
     const remembered = submissions.readDelivered(deliveryKey, owner);
     if (remembered) {
@@ -173,11 +183,12 @@ export function retireDeliveredQueuedUserTurn(
     const current = currentItem();
     if (!current) {
       const remembered = submissions.readDelivered(deliveryKey, owner);
-      if (!remembered) {
-        return "stale";
+      if (remembered) {
+        preserveDeliveredUserTurn(host, remembered);
       }
-      preserveDeliveredUserTurn(host, remembered);
-      return "retired";
+      // Consumption can retire the outbox during hydration. A replacement
+      // attempt still owns the row; an absent row must not swallow chat.final.
+      return readQueuedMessageById(host, stored.id) ? "stale" : "retired";
     }
     if (!sameQueuedDeliveryVersion(current, stored)) {
       return "stale";
@@ -241,7 +252,10 @@ export function retireDeliveredQueuedUserTurn(
       }
     }
     const current = currentItem();
-    if (!current || !sameQueuedDeliveryVersion(current, stored)) {
+    if (!current) {
+      return readQueuedMessageById(host, stored.id) ? "stale" : "retired";
+    }
+    if (!sameQueuedDeliveryVersion(current, stored)) {
       return "stale";
     }
     const reason = result.status === "failed" ? result.reason : "missing";
