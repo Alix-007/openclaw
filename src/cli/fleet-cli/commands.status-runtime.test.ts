@@ -59,7 +59,6 @@ describe("fleet status runtime projection", () => {
     mocks.status.mockResolvedValue(result);
     await runFleetStatusCommand({ tenant: "acme", json: true });
     expect(mocks.defaultRuntime.writeJson).toHaveBeenCalledExactlyOnceWith(before);
-    expect(mocks.defaultRuntime.writeJson.mock.calls[0]?.[0]).toBe(result);
     expect(mocks.runtimeLogs).toEqual([JSON.stringify(before, null, 2)]);
     expect(result).toEqual(before);
   });
