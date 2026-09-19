@@ -54,13 +54,13 @@ const SIGNAL_FORMAT_PROFILE = FormatCapabilityProfile.define({
 });
 
 function stripEquivalentSignalLinks(ir: MarkdownIR): MarkdownIR {
-  const normalize = (value: string, preservePathCase: boolean) => {
+  const normalize = (value: string, preserveSuffixCase: boolean) => {
     const normalized = value
       .trim()
       .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
       .replace(/\/+$/, "");
     // HTTP hosts ignore case, but paths, queries, and fragments can identify different targets.
-    return preservePathCase
+    return preserveSuffixCase
       ? normalized.replace(/^[^/?#]+/, (host) => host.toLowerCase())
       : normalizeLowercaseStringOrEmpty(normalized);
   };
@@ -68,12 +68,12 @@ function stripEquivalentSignalLinks(ir: MarkdownIR): MarkdownIR {
   return {
     ...ir,
     links: ir.links.filter((link) => {
-      const label = ir.text.slice(link.start, link.end).trim();
+      const label = ir.text.slice(link.start, link.end);
       const href = link.href.trim();
-      const preservePathCase = /^https?:\/\//i.test(href);
+      const preserveSuffixCase = /^https?:\/\//i.test(href);
       return (
-        normalize(label, preservePathCase) !==
-        normalize(href.replace(/^mailto:/, ""), preservePathCase)
+        normalize(label, preserveSuffixCase) !==
+        normalize(href.replace(/^mailto:/, ""), preserveSuffixCase)
       );
     }),
   };
