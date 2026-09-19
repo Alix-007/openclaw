@@ -48,6 +48,7 @@ import {
   NODE_MCP_TOOLS_CALL_COMMAND,
   NODE_WORKER_DESKTOP_COMPUTER_COMMAND,
 } from "../infra/node-commands.js";
+import { formatSystemRunApprovalPreparationError } from "../infra/system-run-approval-guidance.js";
 import { logWarn } from "../logger.js";
 import { NODE_DESKTOP_STREAM_COMMAND } from "../shared/node-desktop-stream.js";
 import type { NodeHostClient } from "./client.js";
@@ -830,7 +831,12 @@ async function dispatchInvoke(
         execPolicy.globalExec?.strictInlineEval === true;
       const prepared = buildSystemRunApprovalPlan(params, bindApproval);
       if (!prepared.ok) {
-        await sendErrorResult(client, frame, "INVALID_REQUEST", prepared.message);
+        await sendErrorResult(
+          client,
+          frame,
+          "INVALID_REQUEST",
+          formatSystemRunApprovalPreparationError(prepared.message),
+        );
         return;
       }
       const prepareEnv = buildSystemRunPrepareCoverageEnv({
