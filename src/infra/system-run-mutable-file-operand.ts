@@ -29,7 +29,6 @@ import {
   BUN_SUBCOMMANDS,
   DENO_RUN_OPTIONS_WITH_VALUE,
   NODE_OPTIONS_WITH_FILE_VALUE,
-  PERL_UNSAFE_APPROVAL_FLAGS,
   RUBY_UNSAFE_APPROVAL_FLAGS,
 } from "./system-run-mutable-file-options.js";
 import {
@@ -39,7 +38,10 @@ import {
   pathLooksMutableForShellPayloadSync,
   resolvesToExistingFileSync,
 } from "./system-run-mutable-file-policy.js";
-import { hasUnbindableRuntimeApprovalOption } from "./system-run-runtime-file-options.js";
+import {
+  hasPerlUnsafeApprovalFlag,
+  hasUnbindableRuntimeApprovalOption,
+} from "./system-run-runtime-file-options.js";
 import {
   hasPosixShellCodeLoadingOption,
   hasPosixShellStartupEnvironment,
@@ -347,33 +349,6 @@ function hasRubyUnsafeApprovalFlag(argv: string[]): boolean {
       return true;
     }
     if (RUBY_UNSAFE_APPROVAL_FLAGS.has(normalizeLowercaseStringOrEmpty(token))) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function hasPerlUnsafeApprovalFlag(argv: string[]): boolean {
-  let afterDoubleDash = false;
-  for (let i = 1; i < argv.length; i += 1) {
-    const token = readTrimmedArgToken(argv, i);
-    if (!token) {
-      continue;
-    }
-    if (afterDoubleDash) {
-      return false;
-    }
-    if (token === "--") {
-      afterDoubleDash = true;
-      continue;
-    }
-    if (token === "-I" || token === "-M" || token === "-m" || token === "-S") {
-      return true;
-    }
-    if (token.startsWith("-I") || token.startsWith("-M") || token.startsWith("-m")) {
-      return true;
-    }
-    if (PERL_UNSAFE_APPROVAL_FLAGS.has(token)) {
       return true;
     }
   }
