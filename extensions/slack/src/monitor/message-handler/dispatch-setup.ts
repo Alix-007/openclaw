@@ -225,7 +225,7 @@ export async function createSlackDispatchSetup(prepared: PreparedSlackMessage) {
             try {
               runtime.error?.(
                 "Slack session status could not return to active after processing. " +
-                  "Status was not retried; enable verbose logging to inspect the Slack API failure.",
+                  "Enable verbose logging to inspect the Slack API failure.",
               );
             } catch {
               // Diagnostics must not prevent the remaining typing-reaction cleanup.

@@ -80,7 +80,7 @@ openclaw pairing list slack
   </Accordion>
 
   <Accordion title="Session status could not return to active">
-    This normal-level diagnostic means Slack accepted `processing` but rejected the terminal `active` update. Enable [verbose logging](/logging) to inspect the Slack API failure. OpenClaw does not retry the status write.
+    This normal-level diagnostic means Slack accepted `processing` but rejected the terminal `active` update. Enable [verbose logging](/logging) to inspect the Slack API failure. The diagnostic does not change the existing retry or cleanup behavior.
 
     Rejected or unsupported `processing` writes do not trigger this diagnostic. An accepted `active` write does not guarantee that Slack Desktop has refreshed its working indicator.
 
