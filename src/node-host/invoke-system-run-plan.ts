@@ -10,6 +10,7 @@ import {
   type ApprovedCwdSnapshot,
   captureApprovedCwdSnapshotSync,
 } from "../infra/system-run-cwd-binding.js";
+import type { SystemRunBindingFailure } from "../infra/system-run-mutable-file-operand.js";
 
 function shouldPinExecutableForApproval(params: {
   shellCommand: string | null;
@@ -102,7 +103,7 @@ export function buildSystemRunApprovalPlan(
     sessionKey?: unknown;
   },
   bindApproval = true,
-): { ok: true; plan: SystemRunApprovalPlan } | { ok: false; message: string } {
+): { ok: true; plan: SystemRunApprovalPlan } | SystemRunBindingFailure {
   const command = resolveSystemRunCommandRequest({
     command: params.command,
     rawCommand: params.rawCommand,
@@ -116,6 +117,7 @@ export function buildSystemRunApprovalPlan(
   if (bindApproval && command.shellPayload === null && isBlockedShellWrapperCommand(command.argv)) {
     return {
       ok: false,
+      reason: "unsupported-command-shape",
       message: "SYSTEM_RUN_DENIED: approval cannot safely bind this interpreter/runtime command",
     };
   }

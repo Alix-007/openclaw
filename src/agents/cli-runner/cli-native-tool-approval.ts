@@ -25,7 +25,6 @@ import {
   revalidateSystemRunMutableFileBinding,
   type SystemRunMutableFileBinding,
 } from "../../infra/system-run-approval-binding.js";
-import { formatSystemRunApprovalPreparationError } from "../../infra/system-run-approval-guidance.js";
 import { sliceUtf16Safe, truncateUtf16Safe } from "../../utils.js";
 import { callGatewayTool } from "../tools/gateway.js";
 
@@ -218,12 +217,15 @@ export async function requestCliNativeToolApproval(params: {
         env: autoAllow ? params.env : (params.bindingEnv ?? params.env),
       });
       if (!prepared.ok) {
+        const message =
+          prepared.reason === "unsupported-command-shape"
+            ? `${prepared.message}\nNo approval request was created for this attempt; this is not a user denial. Retry a supported direct executable/script command with explicit paths through the normal approval flow.`
+            : prepared.message;
         return {
           kind: "deny",
           reason: "operand-binding",
-          message: sanitizeExecApprovalWarningTextWithStatus(
-            `${formatSystemRunApprovalPreparationError(prepared.message)}\n${description.text}`,
-          ).text,
+          message: sanitizeExecApprovalWarningTextWithStatus(`${message}\n${description.text}`)
+            .text,
         };
       }
       mutableFileBinding = prepared.binding.operands.length > 0 ? prepared.binding : undefined;

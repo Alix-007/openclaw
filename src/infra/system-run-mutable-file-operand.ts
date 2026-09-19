@@ -658,11 +658,17 @@ function pnpmDlxTailMayNeedStableBinding(argv: string[], cwd: string | undefined
   return resolveMutableFileOperandIndex(argv, cwd) !== null;
 }
 
+export type SystemRunBindingFailure = {
+  ok: false;
+  message: string;
+  reason?: "unsupported-command-shape";
+};
+
 export function resolveSystemRunMutableFileOperandTarget(params: {
   argv: string[];
   cwd: string | undefined;
   shellCommand: string | null;
-}): { ok: true; argvIndex: number | null } | { ok: false; message: string } {
+}): { ok: true; argvIndex: number | null } | SystemRunBindingFailure {
   if (hasDispatchCwdOption(params.argv)) {
     return {
       ok: false,
@@ -715,6 +721,7 @@ export function resolveSystemRunMutableFileOperandTarget(params: {
     ) {
       return {
         ok: false,
+        reason: "unsupported-command-shape",
         message: "SYSTEM_RUN_DENIED: approval cannot safely bind this interpreter/runtime command",
       };
     }

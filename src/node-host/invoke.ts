@@ -48,7 +48,6 @@ import {
   NODE_MCP_TOOLS_CALL_COMMAND,
   NODE_WORKER_DESKTOP_COMPUTER_COMMAND,
 } from "../infra/node-commands.js";
-import { formatSystemRunApprovalPreparationError } from "../infra/system-run-approval-guidance.js";
 import { logWarn } from "../logger.js";
 import { NODE_DESKTOP_STREAM_COMMAND } from "../shared/node-desktop-stream.js";
 import type { NodeHostClient } from "./client.js";
@@ -835,7 +834,9 @@ async function dispatchInvoke(
           client,
           frame,
           "INVALID_REQUEST",
-          formatSystemRunApprovalPreparationError(prepared.message),
+          prepared.reason === "unsupported-command-shape"
+            ? `${prepared.message}\nNo approval request was created for this attempt; this is not a user denial. Retry a supported single executable with an absolute path through the normal approval flow. This node approval path cannot bind script/interpreter payloads nested in its shell wrapper.`
+            : prepared.message,
         );
         return;
       }
