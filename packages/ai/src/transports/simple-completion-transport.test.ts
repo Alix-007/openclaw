@@ -321,11 +321,12 @@ describe("prepareModelForSimpleCompletion", () => {
     resolveProviderStreamFn.mockReturnValueOnce(undefined);
     createTransportAwareStreamFnForModel.mockReturnValueOnce(pluginStreamFn);
     let wrappedModelApi: Api | undefined;
-    wrapProviderSimpleCompletionStreamFn.mockImplementationOnce(({ context }) =>
-      (runtimeModel, streamContext, options) => {
-        wrappedModelApi = runtimeModel.api;
-        return context.streamFn(runtimeModel, streamContext, options);
-      },
+    wrapProviderSimpleCompletionStreamFn.mockImplementationOnce(
+      ({ context }) =>
+        (runtimeModel, streamContext, options) => {
+          wrappedModelApi = runtimeModel.api;
+          return context.streamFn(runtimeModel, streamContext, options);
+        },
     );
     ensureCustomApiRegistered.mockImplementation(
       (registry: ApiRegistry, api: Api, streamFn: StreamFn) => {
