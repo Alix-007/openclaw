@@ -662,7 +662,7 @@ extension TalkModeRuntime {
         // cancellable while preserving the previous upper bound for a stuck run.
         let deadline = Date().addingTimeInterval(45)
         while self.isCurrent(generation), Date() < deadline {
-            let request = OpenClawChatGatewayRequests.agentWait(runID: runId, timeoutMs: 5_000)
+            let request = OpenClawChatGatewayRequests.agentWait(runID: runId, timeoutMs: 5000)
             do {
                 let data = try await GatewayConnection.shared.request(
                     method: request.method,
