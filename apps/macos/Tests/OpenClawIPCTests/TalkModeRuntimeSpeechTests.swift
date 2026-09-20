@@ -1326,12 +1326,26 @@ struct TalkModeRuntimeSpeechTests {
     @Test func `history reply selection stays scoped to the accepted run`() {
         let target = OpenClawChatMessage(
             role: "assistant",
-            content: [OpenClawChatMessageContent(type: "text", text: "target reply", content: nil)],
+            content: [
+                OpenClawChatMessageContent(
+                    type: "text",
+                    text: "target reply",
+                    content: nil,
+                    mimeType: nil,
+                    fileName: nil),
+            ],
             timestamp: 10,
             transcriptRunID: "talk-run")
         let laterForeign = OpenClawChatMessage(
             role: "assistant",
-            content: [OpenClawChatMessageContent(type: "text", text: "foreign reply", content: nil)],
+            content: [
+                OpenClawChatMessageContent(
+                    type: "text",
+                    text: "foreign reply",
+                    content: nil,
+                    mimeType: nil,
+                    fileName: nil),
+            ],
             timestamp: 20,
             transcriptRunID: "other-run")
 
