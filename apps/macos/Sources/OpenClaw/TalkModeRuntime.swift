@@ -658,10 +658,9 @@ extension TalkModeRuntime {
                 timeoutSeconds: 12)
         }
 
-        // agent.wait reports the Gateway-owned run deadline. Short polling keeps Talk
-        // cancellable while preserving the previous upper bound for a stuck run.
-        let deadline = Date().addingTimeInterval(45)
-        while self.isCurrent(generation), Date() < deadline {
+        // agent.wait owns the Gateway run deadline. Keep observing until that
+        // contract reaches a terminal state or Talk Mode is stopped.
+        while self.isCurrent(generation) {
             let request = OpenClawChatGatewayRequests.agentWait(runID: runId, timeoutMs: 5000)
             do {
                 let data = try await GatewayConnection.shared.request(
@@ -686,15 +685,25 @@ extension TalkModeRuntime {
                 case .terminal, .unavailable:
                     return nil
                 }
+            } catch let error as GatewayResponseError {
+                self.logger.warning(
+                    "talk agent.wait returned a terminal error runId=\(runId, privacy: .public): "
+                        + "\(error.localizedDescription, privacy: .public)")
+                return nil
+            } catch let error as GatewayDecodingError {
+                self.logger.warning(
+                    "talk agent.wait returned an invalid response runId=\(runId, privacy: .public): "
+                        + "\(error.localizedDescription, privacy: .public)")
+                return nil
             } catch {
                 self.logger.warning(
-                    "talk agent.wait failed runId=\(runId, privacy: .public): " +
+                    "talk agent.wait failed; retrying runId=\(runId, privacy: .public): " +
                         "\(error.localizedDescription, privacy: .public)")
-                return await self.waitForAssistantTextFromHistory(
-                    sessionKey: sessionKey,
-                    runId: runId,
-                    since: since,
-                    timeoutSeconds: 12)
+                do {
+                    try await Task.sleep(nanoseconds: 250_000_000)
+                } catch {
+                    return nil
+                }
             }
         }
         return nil
