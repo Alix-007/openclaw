@@ -683,7 +683,7 @@ extension TalkModeRuntime {
                         runId: runId,
                         since: since,
                         timeoutSeconds: 12)
-                case .terminal(_), .unavailable:
+                case .terminal, .unavailable:
                     return nil
                 }
             } catch {
