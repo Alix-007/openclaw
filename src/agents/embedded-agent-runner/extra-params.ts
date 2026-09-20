@@ -957,6 +957,7 @@ export function applyExtraParamsToAgent(
   options?: {
     preparedExtraParams?: Record<string, unknown>;
     nativeWebSearchPolicyContext?: NativeWebSearchToolPolicyParams;
+    skipProviderWrapper?: boolean;
   },
 ) {
   const providerRuntimeHandle = ensureProviderRuntimePluginHandle({
@@ -1013,20 +1014,21 @@ export function applyExtraParamsToAgent(
         ...options.nativeWebSearchPolicyContext,
       })
     : undefined;
-  const pluginWrappedStreamFn =
-    providerRuntimeHandle.plugin?.wrapStreamFn?.({
-      config: cfg,
-      agentDir,
-      workspaceDir,
-      agentId,
-      nativeWebSearchAllowedByToolPolicy,
-      provider,
-      modelId,
-      extraParams: effectiveExtraParams,
-      thinkingLevel,
-      model,
-      streamFn: providerStreamBase,
-    }) ?? undefined;
+  const pluginWrappedStreamFn = options?.skipProviderWrapper
+    ? undefined
+    : (providerRuntimeHandle.plugin?.wrapStreamFn?.({
+        config: cfg,
+        agentDir,
+        workspaceDir,
+        agentId,
+        nativeWebSearchAllowedByToolPolicy,
+        provider,
+        modelId,
+        extraParams: effectiveExtraParams,
+        thinkingLevel,
+        model,
+        streamFn: providerStreamBase,
+      }) ?? undefined);
   agent.streamFn = pluginWrappedStreamFn ?? providerStreamBase;
   // Apply caller/config extra params outside provider defaults so explicit runtime
   // transport values can override provider-added defaults.

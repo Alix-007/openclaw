@@ -15,6 +15,7 @@ import {
 import { createAnthropicVertexStreamFnForModel } from "./anthropic-vertex-stream.js";
 import { buildCopilotDynamicHeaders, hasCopilotVisionInput } from "./copilot-dynamic-headers.js";
 import { ensureCustomApiRegistered } from "./custom-api-registry.js";
+import { applyExtraParamsToAgent } from "./embedded-agent-runner/extra-params.js";
 import { resolveProviderRequestCapabilities } from "./provider-attribution.js";
 import {
   attachModelProviderLocalService,
@@ -62,8 +63,8 @@ export function configureAiTransportRuntimeHost(): void {
             model: params.context.model as ProviderRuntimeModel | undefined,
           },
         }),
-      wrapSimpleCompletionStream: (params) =>
-        wrapProviderSimpleCompletionStreamFn({
+      wrapSimpleCompletionStream: (params) => {
+        const streamFn = wrapProviderSimpleCompletionStreamFn({
           ...params,
           config: params.config as OpenClawConfig | undefined,
           runtimeHandle: getModelProviderRuntimePluginHandle(params.context.model),
@@ -72,7 +73,24 @@ export function configureAiTransportRuntimeHost(): void {
             config: params.context.config as OpenClawConfig | undefined,
             model: params.context.model as ProviderRuntimeModel,
           },
-        }),
+        });
+        const agent = { streamFn: streamFn ?? params.context.streamFn };
+        applyExtraParamsToAgent(
+          agent,
+          params.config as OpenClawConfig | undefined,
+          params.context.provider,
+          params.context.modelId,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          params.context.model as ProviderRuntimeModel,
+          undefined,
+          undefined,
+          { skipProviderWrapper: true },
+        );
+        return agent.streamFn ?? null;
+      },
       createAnthropicVertexStream: createAnthropicVertexStreamFnForModel,
     },
     buildCopilotDynamicHeaders: (messages) =>
