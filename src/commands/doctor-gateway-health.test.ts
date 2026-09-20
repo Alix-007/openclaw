@@ -174,8 +174,11 @@ describe("checkGatewayHealth", () => {
   });
 
   it("waits for a local Gateway that is still starting before reporting failure", async () => {
+    const startupError = Object.assign(new Error("socket reset while Gateway starts"), {
+      code: "ECONNRESET",
+    });
     callGateway
-      .mockRejectedValueOnce(new Error("connect ECONNREFUSED 127.0.0.1:18789"))
+      .mockRejectedValueOnce(startupError)
       .mockResolvedValueOnce({ ok: true })
       .mockResolvedValue({});
     waitForGatewayHttpReadiness.mockResolvedValueOnce({ healthz: 200, readyz: 200 });

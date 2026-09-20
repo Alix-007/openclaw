@@ -73,6 +73,18 @@ function readLocalInstallationReplacement(
 
 function isTransientGatewayUnreachableError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? (error as { code?: unknown }).code
+      : undefined;
+  if (
+    typeof code === "string" &&
+    ["EAI_AGAIN", "ECONNREFUSED", "ECONNRESET", "EHOSTUNREACH", "ENETUNREACH", "EPIPE", "ETIMEDOUT"].includes(
+      code,
+    )
+  ) {
+    return true;
+  }
   return /\bECONNREFUSED\b|gateway timeout after \d+ms|couldn't connect|connection refused/i.test(
     message,
   );
