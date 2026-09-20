@@ -139,8 +139,11 @@ function applyProviderSimpleCompletionWrapper(
     return model;
   }
 
+  // Registry aliases select dispatch; wrappers evaluate policy against the logical wire API.
+  const logicalStreamFn: StreamFn = (runtimeModel, context, options) =>
+    streamFn(projectModel(runtimeModel, { api: hookSourceApi }), context, options);
   const api = resolveProviderSimpleCompletionApi(model);
-  return registerCustomApi(registry, api, streamFn) ? projectModel(model, { api }) : model;
+  return registerCustomApi(registry, api, logicalStreamFn) ? projectModel(model, { api }) : model;
 }
 
 function prepareCodexSimpleTransportModel<TApi extends Api>(
