@@ -689,7 +689,11 @@ extension TalkModeRuntime {
                 self.logger.warning(
                     "talk agent.wait failed runId=\(runId, privacy: .public): " +
                         "\(error.localizedDescription, privacy: .public)")
-                return nil
+                return await self.waitForAssistantTextFromHistory(
+                    sessionKey: sessionKey,
+                    runId: runId,
+                    since: since,
+                    timeoutSeconds: 12)
             }
         }
         return nil
