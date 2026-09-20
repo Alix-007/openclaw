@@ -1330,9 +1330,9 @@ struct TalkModeRuntimeSpeechTests {
                 OpenClawChatMessageContent(
                     type: "text",
                     text: "target reply",
-                    content: nil,
                     mimeType: nil,
-                    fileName: nil),
+                    fileName: nil,
+                    content: nil),
             ],
             timestamp: 10,
             transcriptRunID: "talk-run")
@@ -1342,9 +1342,9 @@ struct TalkModeRuntimeSpeechTests {
                 OpenClawChatMessageContent(
                     type: "text",
                     text: "foreign reply",
-                    content: nil,
                     mimeType: nil,
-                    fileName: nil),
+                    fileName: nil,
+                    content: nil),
             ],
             timestamp: 20,
             transcriptRunID: "other-run")
