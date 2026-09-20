@@ -552,10 +552,12 @@ describe("checkGatewayHealth", () => {
       const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
 
       try {
-        await expect(checkGatewayHealth({ runtime, cfg, timeoutMs: 3_000 })).resolves.toMatchObject({
-          healthOk: true,
-          authenticated: true,
-        });
+        await expect(checkGatewayHealth({ runtime, cfg, timeoutMs: 3_000 })).resolves.toMatchObject(
+          {
+            healthOk: true,
+            authenticated: true,
+          },
+        );
       } finally {
         now.mockRestore();
       }

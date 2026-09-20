@@ -79,9 +79,15 @@ function isTransientGatewayUnreachableError(error: unknown): boolean {
       : undefined;
   if (
     typeof code === "string" &&
-    ["EAI_AGAIN", "ECONNREFUSED", "ECONNRESET", "EHOSTUNREACH", "ENETUNREACH", "EPIPE", "ETIMEDOUT"].includes(
-      code,
-    )
+    [
+      "EAI_AGAIN",
+      "ECONNREFUSED",
+      "ECONNRESET",
+      "EHOSTUNREACH",
+      "ENETUNREACH",
+      "EPIPE",
+      "ETIMEDOUT",
+    ].includes(code)
   ) {
     return true;
   }
