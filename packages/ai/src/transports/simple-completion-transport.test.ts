@@ -320,7 +320,13 @@ describe("prepareModelForSimpleCompletion", () => {
     };
     resolveProviderStreamFn.mockReturnValueOnce(undefined);
     createTransportAwareStreamFnForModel.mockReturnValueOnce(pluginStreamFn);
-    wrapProviderSimpleCompletionStreamFn.mockImplementationOnce(({ context }) => context.streamFn);
+    let wrappedModelApi: Api | undefined;
+    wrapProviderSimpleCompletionStreamFn.mockImplementationOnce(({ context }) =>
+      (runtimeModel, streamContext, options) => {
+        wrappedModelApi = runtimeModel.api;
+        return context.streamFn(runtimeModel, streamContext, options);
+      },
+    );
     ensureCustomApiRegistered.mockImplementation(
       (registry: ApiRegistry, api: Api, streamFn: StreamFn) => {
         if (registry.getApiProvider(api)) {
@@ -357,6 +363,7 @@ describe("prepareModelForSimpleCompletion", () => {
 
     void finalStreamFn(result, { messages: [] }, {});
 
+    expect(wrappedModelApi).toBe(model.api);
     expect(pluginStreamFn).toHaveBeenCalledWith(
       expect.objectContaining({ api: model.api }),
       { messages: [] },
