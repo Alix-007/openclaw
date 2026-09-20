@@ -548,6 +548,7 @@ describe("applyExtraParamsToAgent", () => {
     extraParamsOverride?: Record<string, unknown>;
     payload?: Record<string, unknown>;
     thinkingLevel?: Parameters<typeof applyExtraParamsToAgent>[5];
+    skipProviderWrapper?: boolean;
   }) {
     // Mutates a caller-owned payload through onPayload, matching how the runtime
     // finalizes provider request bodies.
@@ -564,11 +565,37 @@ describe("applyExtraParamsToAgent", () => {
       params.applyModelId,
       params.extraParamsOverride,
       params.thinkingLevel,
+      undefined,
+      undefined,
+      params.skipProviderWrapper ? params.model : undefined,
+      undefined,
+      undefined,
+      params.skipProviderWrapper ? { skipProviderWrapper: true } : undefined,
     );
     const context: Context = { messages: [] };
     void agent.streamFn?.(params.model, context, params.options ?? {});
     return payload;
   }
+
+  it("applies model payload params when the simple-completion provider wrapper is already applied", () => {
+    const payload = runResponsesPayloadMutationCase({
+      applyProvider: "vllm",
+      applyModelId: "utility-model",
+      cfg: buildModelConfig("vllm/utility-model", {
+        chat_template_kwargs: { enable_thinking: false },
+      }),
+      model: {
+        api: "openai-completions",
+        provider: "vllm",
+        id: "utility-model",
+        baseUrl: "http://127.0.0.1:8000/v1",
+      } as Model<"openai-completions">,
+      payload: { messages: [] },
+      skipProviderWrapper: true,
+    });
+
+    expect(payload.chat_template_kwargs).toEqual({ enable_thinking: false });
+  });
 
   function runResolvedModelIdCase(params: {
     applyProvider: string;

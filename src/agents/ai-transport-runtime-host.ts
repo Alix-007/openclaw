@@ -15,8 +15,7 @@ import {
 import { createAnthropicVertexStreamFnForModel } from "./anthropic-vertex-stream.js";
 import { buildCopilotDynamicHeaders, hasCopilotVisionInput } from "./copilot-dynamic-headers.js";
 import { ensureCustomApiRegistered } from "./custom-api-registry.js";
-import { resolveModelExtraParamSources } from "./model-extra-params.js";
-import { createOpenAICompletionsPayloadPolicyWrapper } from "./openai-completions-payload-policy.js";
+import { applyExtraParamsToAgent } from "./embedded-agent-runner/extra-params.js";
 import { resolveProviderRequestCapabilities } from "./provider-attribution.js";
 import {
   attachModelProviderLocalService,
@@ -65,10 +64,9 @@ export function configureAiTransportRuntimeHost(): void {
           },
         }),
       wrapSimpleCompletionStream: (params) => {
-        const config = params.config as OpenClawConfig | undefined;
-        const providerStreamFn = wrapProviderSimpleCompletionStreamFn({
+        const streamFn = wrapProviderSimpleCompletionStreamFn({
           ...params,
-          config,
+          config: params.config as OpenClawConfig | undefined,
           runtimeHandle: getModelProviderRuntimePluginHandle(params.context.model),
           context: {
             ...params.context,
@@ -76,21 +74,22 @@ export function configureAiTransportRuntimeHost(): void {
             model: params.context.model as ProviderRuntimeModel,
           },
         });
-        if ((params.context.sourceApi ?? params.context.model.api) !== "openai-completions") {
-          return providerStreamFn;
-        }
-        const { defaultParams, modelParams } = resolveModelExtraParamSources({
-          config,
-          provider: params.provider,
-          modelId: params.context.modelId,
-        });
-        if (!defaultParams && !modelParams) {
-          return providerStreamFn;
-        }
-        return createOpenAICompletionsPayloadPolicyWrapper(
-          providerStreamFn ?? params.context.streamFn,
-          [defaultParams, modelParams],
+        const agent = { streamFn: streamFn ?? params.context.streamFn };
+        applyExtraParamsToAgent(
+          agent,
+          params.config as OpenClawConfig | undefined,
+          params.context.provider,
+          params.context.modelId,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          params.context.model as ProviderRuntimeModel,
+          undefined,
+          undefined,
+          { skipProviderWrapper: true },
         );
+        return agent.streamFn ?? null;
       },
       createAnthropicVertexStream: createAnthropicVertexStreamFnForModel,
     },
