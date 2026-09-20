@@ -24,6 +24,7 @@ const probeGatewayStatus = vi.hoisted(() => vi.fn());
 const waitForGatewayHttpReadiness = vi.hoisted(() => vi.fn());
 const readServiceCommand = vi.hoisted(() => vi.fn());
 const buildGatewayConnectionDetails = vi.hoisted(() => vi.fn());
+const isImplicitLocalGatewayTarget = vi.hoisted(() => vi.fn());
 const note = vi.hoisted(() => vi.fn());
 const TEST_GATEWAY_URL = "ws://127.0.0.1:18789";
 const TEST_AUTH_CLOSE_ERROR = "gateway closed (1008):";
@@ -38,6 +39,7 @@ vi.mock("../gateway/call.js", () => ({
   })),
   callGateway,
   isGatewayCredentialsRequiredError,
+  isImplicitLocalGatewayTarget,
 }));
 
 vi.mock("../gateway/credentials.js", () => ({
@@ -81,8 +83,9 @@ describe("checkGatewayHealth", () => {
     isGatewaySecretRefUnavailableError.mockReset();
     isGatewaySecretRefUnavailableError.mockReturnValue(false);
     probeGatewayStatus.mockReset();
-    waitForGatewayHttpReadiness.mockReset().mockResolvedValue({ healthz: 200, readyz: 200 });
+    waitForGatewayHttpReadiness.mockReset().mockResolvedValue({ healthz: 503, readyz: 503 });
     readServiceCommand.mockReset().mockResolvedValue(null);
+    isImplicitLocalGatewayTarget.mockReset().mockResolvedValue(true);
     buildGatewayConnectionDetails.mockReset().mockReturnValue({
       message: `Gateway target: ${TEST_GATEWAY_URL}`,
       url: TEST_GATEWAY_URL,
@@ -175,6 +178,7 @@ describe("checkGatewayHealth", () => {
       .mockRejectedValueOnce(new Error("connect ECONNREFUSED 127.0.0.1:18789"))
       .mockResolvedValueOnce({ ok: true })
       .mockResolvedValue({});
+    waitForGatewayHttpReadiness.mockResolvedValueOnce({ healthz: 200, readyz: 200 });
     const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
 
     await expect(checkGatewayHealth({ runtime, cfg })).resolves.toMatchObject({
@@ -188,6 +192,19 @@ describe("checkGatewayHealth", () => {
     );
     expect(callGateway).toHaveBeenCalledTimes(4);
     expect(runtime.error).not.toHaveBeenCalled();
+  });
+
+  it("does not poll local readiness for an explicit remote target", async () => {
+    isImplicitLocalGatewayTarget.mockResolvedValueOnce(false);
+    callGateway.mockRejectedValueOnce(new Error("connect ECONNREFUSED"));
+    const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
+
+    await expect(checkGatewayHealth({ runtime, cfg })).resolves.toMatchObject({
+      authenticated: false,
+      healthOk: false,
+    });
+
+    expect(waitForGatewayHttpReadiness).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -516,6 +533,37 @@ describe("checkGatewayHealth", () => {
         note.mock.calls.every(([message]) => String(message).includes("host may be slow")),
       ).toBe(true);
       expect(runtime.error).not.toHaveBeenCalled();
+    });
+
+    it("measures the successful status attempt after startup separately", async () => {
+      callGateway
+        .mockRejectedValueOnce(new Error("connect ECONNREFUSED"))
+        .mockResolvedValueOnce({ ok: true })
+        .mockResolvedValue({});
+      waitForGatewayHttpReadiness.mockResolvedValueOnce({ healthz: 200, readyz: 200 });
+      const now = vi
+        .spyOn(performance, "now")
+        .mockReturnValueOnce(0)
+        .mockReturnValueOnce(60_000)
+        .mockReturnValueOnce(61_000);
+      const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
+
+      try {
+        await expect(checkGatewayHealth({ runtime, cfg, timeoutMs: 3_000 })).resolves.toMatchObject({
+          healthOk: true,
+          authenticated: true,
+        });
+      } finally {
+        now.mockRestore();
+      }
+
+      expect(callGateway).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: "channels.status",
+          params: { probe: true, timeoutMs: 5_000 },
+          timeoutMs: 6_000,
+        }),
+      );
     });
 
     it("does not run follow-up channel probes when status never answers", async () => {

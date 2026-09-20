@@ -26,6 +26,7 @@ import {
   buildGatewayProbeConnectionDetails,
   callGateway,
   isGatewayCredentialsRequiredError,
+  isImplicitLocalGatewayTarget,
 } from "../gateway/call.js";
 import { isGatewaySecretRefUnavailableError } from "../gateway/credentials.js";
 import { isLoopbackGatewayUrl } from "../gateway/net.js";
@@ -308,9 +309,9 @@ export async function checkGatewayHealth(params: {
   let status: StatusSummary | undefined;
   let gatewaySnapshot: GatewayHello["snapshot"] | undefined;
   try {
-    const statusStartedAt = performance.now();
-    const callStatus = () =>
-      callGateway<StatusSummary>({
+    const callStatus = async () => {
+      const statusStartedAt = performance.now();
+      const status = await callGateway<StatusSummary>({
         method: "status",
         params: { includeChannelSummary: false },
         timeoutMs,
@@ -320,10 +321,18 @@ export async function checkGatewayHealth(params: {
           noteGatewayStateDirectory(snapshot, "live Gateway");
         },
       });
+      return { status, elapsedMs: performance.now() - statusStartedAt };
+    };
+    let statusElapsedMs: number;
     try {
-      status = await callStatus();
+      const result = await callStatus();
+      status = result.status;
+      statusElapsedMs = result.elapsedMs;
     } catch (error) {
-      if (params.cfg.gateway?.mode === "remote" || !isTransientGatewayUnreachableError(error)) {
+      if (
+        !(await isImplicitLocalGatewayTarget({ config: params.cfg })) ||
+        !isTransientGatewayUnreachableError(error)
+      ) {
         throw error;
       }
       const readiness = await waitForGatewayHttpReadiness({
@@ -336,9 +345,10 @@ export async function checkGatewayHealth(params: {
       if (readiness.readyz !== 200) {
         throw error;
       }
-      status = await callStatus();
+      const result = await callStatus();
+      status = result.status;
+      statusElapsedMs = result.elapsedMs;
     }
-    const statusElapsedMs = performance.now() - statusStartedAt;
     const { diagnosticsTimeoutMs, channelProbeTimeoutMs } = resolveGatewayDiagnosticsTimeouts(
       timeoutMs,
       statusElapsedMs,
