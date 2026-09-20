@@ -8,12 +8,18 @@ export const SILENT_REPLY_TOKEN = "NO_REPLY";
 
 const HARMONY_CHANNEL_MARKER_RE = /^\s*(?:set-thought\s+)?<[\w]*\|[^>]*>\s*$/;
 const BOX_DRAWING_HR_ONLY_RE = /^\s*─{3,}\s*$/;
+const ANTHROPIC_TOOL_CALL_MARKUP_RE =
+  /^\s*(?:<(?:antml:)?function_calls>\s*(?:<(?:antml:)?invoke\b[^>]*>\s*(?:<(?:antml:)?parameter\b[^>]*>[\s\S]*?<\/(?:antml:)?parameter>\s*)*<\/(?:antml:)?invoke>\s*)*<\/(?:antml:)?function_calls>|(?:<(?:antml:)?invoke\b[^>]*>\s*(?:<(?:antml:)?parameter\b[^>]*>[\s\S]*?<\/(?:antml:)?parameter>\s*)*<\/(?:antml:)?invoke>\s*)+)\s*$/i;
 
 export function isInternalFormattingArtifact(text: string | undefined): boolean {
   if (!text) {
     return false;
   }
-  return HARMONY_CHANNEL_MARKER_RE.test(text) || BOX_DRAWING_HR_ONLY_RE.test(text);
+  return (
+    HARMONY_CHANNEL_MARKER_RE.test(text) ||
+    BOX_DRAWING_HR_ONLY_RE.test(text) ||
+    ANTHROPIC_TOOL_CALL_MARKUP_RE.test(text)
+  );
 }
 
 function createTokenRegex(createRegex: (escaped: string) => RegExp) {
