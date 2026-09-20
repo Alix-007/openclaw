@@ -21,6 +21,7 @@ const callGateway = vi.hoisted(() => vi.fn());
 const isGatewayCredentialsRequiredError = vi.hoisted(() => vi.fn(() => false));
 const isGatewaySecretRefUnavailableError = vi.hoisted(() => vi.fn(() => false));
 const probeGatewayStatus = vi.hoisted(() => vi.fn());
+const waitForGatewayHttpReadiness = vi.hoisted(() => vi.fn());
 const readServiceCommand = vi.hoisted(() => vi.fn());
 const buildGatewayConnectionDetails = vi.hoisted(() => vi.fn());
 const note = vi.hoisted(() => vi.fn());
@@ -47,6 +48,15 @@ vi.mock("../cli/daemon-cli/probe.js", () => ({
   probeGatewayStatus,
 }));
 
+vi.mock("../cli/daemon-cli/restart-health-probe.js", () => ({
+  waitForGatewayHttpReadiness,
+}));
+
+vi.mock("../cli/daemon-cli/restart-health.constants.js", () => ({
+  DEFAULT_RESTART_HEALTH_DELAY_MS: 500,
+  DEFAULT_RESTART_HEALTH_TIMEOUT_MS: 60_000,
+}));
+
 vi.mock("../daemon/service.js", () => ({
   resolveGatewayService: () => ({ readCommand: readServiceCommand }),
 }));
@@ -71,6 +81,7 @@ describe("checkGatewayHealth", () => {
     isGatewaySecretRefUnavailableError.mockReset();
     isGatewaySecretRefUnavailableError.mockReturnValue(false);
     probeGatewayStatus.mockReset();
+    waitForGatewayHttpReadiness.mockReset().mockResolvedValue({ healthz: 200, readyz: 200 });
     readServiceCommand.mockReset().mockResolvedValue(null);
     buildGatewayConnectionDetails.mockReset().mockReturnValue({
       message: `Gateway target: ${TEST_GATEWAY_URL}`,
@@ -157,6 +168,26 @@ describe("checkGatewayHealth", () => {
     });
     expect(runtime.error).not.toHaveBeenCalled();
     expect(note.mock.calls.map(([, title]) => title)).not.toContain("OpenClaw version mismatch");
+  });
+
+  it("waits for a local Gateway that is still starting before reporting failure", async () => {
+    callGateway
+      .mockRejectedValueOnce(new Error("connect ECONNREFUSED 127.0.0.1:18789"))
+      .mockResolvedValueOnce({ ok: true })
+      .mockResolvedValue({});
+    const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
+
+    await expect(checkGatewayHealth({ runtime, cfg })).resolves.toMatchObject({
+      authenticated: true,
+      healthOk: true,
+      status: { ok: true },
+    });
+
+    expect(waitForGatewayHttpReadiness).toHaveBeenCalledWith(
+      expect.objectContaining({ port: 18789, delayMs: 500, deadlineAt: expect.any(Number) }),
+    );
+    expect(callGateway).toHaveBeenCalledTimes(4);
+    expect(runtime.error).not.toHaveBeenCalled();
   });
 
   it.each([

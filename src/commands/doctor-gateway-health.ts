@@ -5,13 +5,18 @@ import { note } from "../../packages/terminal-core/src/note.js";
 import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text.js";
 import { formatCliCommand } from "../cli/command-format.js";
 import { probeGatewayStatus } from "../cli/daemon-cli/probe.js";
+import { waitForGatewayHttpReadiness } from "../cli/daemon-cli/restart-health-probe.js";
+import {
+  DEFAULT_RESTART_HEALTH_DELAY_MS,
+  DEFAULT_RESTART_HEALTH_TIMEOUT_MS,
+} from "../cli/daemon-cli/restart-health.constants.js";
 import {
   compareCliGatewayStateDirs,
   GATEWAY_SERVICE_PATHS_UNVERIFIED,
   inspectInstalledGatewayStatePaths,
   type GatewayHello,
 } from "../cli/state-dir-gateway-check.js";
-import { resolveConfigPath, resolveStateDir } from "../config/paths.js";
+import { resolveConfigPath, resolveGatewayPort, resolveStateDir } from "../config/paths.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { scrubDoctorErrorMessage } from "../flows/doctor-error-message.js";
 import { hasActiveGatewayExecCredential } from "../flows/doctor-gateway-exec-credential.js";
@@ -63,6 +68,13 @@ function readLocalInstallationReplacement(
   return replacement
     ? `Previous installation replacement (${new Date(replacement.completedAtMs).toISOString()}): ${formatGatewayHealthDiagnostic(replacement.reason)}`
     : undefined;
+}
+
+function isTransientGatewayUnreachableError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /\bECONNREFUSED\b|gateway timeout after \d+ms|couldn't connect|connection refused/i.test(
+    message,
+  );
 }
 
 export async function collectGatewayHealthFindings(
@@ -297,16 +309,35 @@ export async function checkGatewayHealth(params: {
   let gatewaySnapshot: GatewayHello["snapshot"] | undefined;
   try {
     const statusStartedAt = performance.now();
-    status = await callGateway<StatusSummary>({
-      method: "status",
-      params: { includeChannelSummary: false },
-      timeoutMs,
-      config: params.cfg,
-      onHelloOk: ({ snapshot }: GatewayHello) => {
-        gatewaySnapshot = snapshot;
-        noteGatewayStateDirectory(snapshot, "live Gateway");
-      },
-    });
+    const callStatus = () =>
+      callGateway<StatusSummary>({
+        method: "status",
+        params: { includeChannelSummary: false },
+        timeoutMs,
+        config: params.cfg,
+        onHelloOk: ({ snapshot }: GatewayHello) => {
+          gatewaySnapshot = snapshot;
+          noteGatewayStateDirectory(snapshot, "live Gateway");
+        },
+      });
+    try {
+      status = await callStatus();
+    } catch (error) {
+      if (params.cfg.gateway?.mode === "remote" || !isTransientGatewayUnreachableError(error)) {
+        throw error;
+      }
+      const readiness = await waitForGatewayHttpReadiness({
+        attempts: Math.ceil(DEFAULT_RESTART_HEALTH_TIMEOUT_MS / DEFAULT_RESTART_HEALTH_DELAY_MS),
+        config: params.cfg,
+        deadlineAt: Date.now() + DEFAULT_RESTART_HEALTH_TIMEOUT_MS,
+        delayMs: DEFAULT_RESTART_HEALTH_DELAY_MS,
+        port: resolveGatewayPort(params.cfg),
+      });
+      if (readiness.readyz !== 200) {
+        throw error;
+      }
+      status = await callStatus();
+    }
     const statusElapsedMs = performance.now() - statusStartedAt;
     const { diagnosticsTimeoutMs, channelProbeTimeoutMs } = resolveGatewayDiagnosticsTimeouts(
       timeoutMs,
