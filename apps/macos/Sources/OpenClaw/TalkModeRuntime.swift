@@ -771,23 +771,25 @@ extension TalkModeRuntime {
             else {
                 return nil
             }
-            if assistant.isTruncated,
-               let messageID = assistant.transcriptMessageID?.trimmingCharacters(
-                   in: .whitespacesAndNewlines),
-               !messageID.isEmpty
-            {
+            if assistant.isTruncated {
+                guard let messageID = assistant.transcriptMessageID?.trimmingCharacters(
+                    in: .whitespacesAndNewlines),
+                    !messageID.isEmpty
+                else {
+                    return nil
+                }
                 do {
                     let transport = MacGatewayChatTransport(connection: GatewayConnection.shared)
-                    if let full = try await transport.requestFullMessage(
+                    guard let full = try await transport.requestFullMessage(
                         sessionKey: sessionKey,
-                        messageID: messageID)
-                    {
-                        return Self.assistantText(from: [full])
-                    }
+                        messageID: messageID), !full.isTruncated
+                    else { return nil }
+                    return Self.assistantText(from: [full])
                 } catch {
                     self.logger.warning(
                         "talk full assistant message fetch failed: " +
                             "\(error.localizedDescription, privacy: .public)")
+                    return nil
                 }
             }
             return Self.assistantText(from: [assistant])
