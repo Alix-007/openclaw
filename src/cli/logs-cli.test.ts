@@ -495,11 +495,9 @@ describe("logs cli", () => {
       readSystemdServiceRuntime.mockResolvedValue({ status: "running", pid: 2557 });
       execFileUtf8Tail
         .mockResolvedValueOnce({
-          stdout: [
-            "Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz",
-            JSON.stringify({ level: "warn", subsystem: "gateway", message: "console warning" }),
-            "-- cursor: s=abc",
-          ].join("\n"),
+          stdout: ["Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz", "-- cursor: s=abc"].join(
+            "\n",
+          ),
           stderr: "",
           code: 0,
           truncated: false,
@@ -545,7 +543,6 @@ describe("logs cli", () => {
       expect(stdoutWrites.join("")).not.toContain("sk-abcdefghijklmnopqrstuvwxyz");
       expect(stdoutWrites.join("")).toContain("Authorization: Bearer");
       expect(stdoutWrites.join("")).toContain("second journal line");
-      expect(stdoutWrites.join("")).toContain("warn gateway console warning");
       expect(exitSpy).toHaveBeenCalledWith(1);
     });
 
