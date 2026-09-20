@@ -323,7 +323,11 @@ describe("prepareModelForSimpleCompletion", () => {
     let wrappedModelApi: Api | undefined;
     wrapProviderSimpleCompletionStreamFn.mockImplementationOnce(
       ({ context }) =>
-        (runtimeModel, streamContext, options) => {
+        (
+          runtimeModel: Parameters<StreamFn>[0],
+          streamContext: Parameters<StreamFn>[1],
+          options?: Parameters<StreamFn>[2],
+        ) => {
           wrappedModelApi = runtimeModel.api;
           return context.streamFn(runtimeModel, streamContext, options);
         },
