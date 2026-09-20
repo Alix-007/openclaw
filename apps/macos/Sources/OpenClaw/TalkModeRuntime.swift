@@ -802,7 +802,7 @@ extension TalkModeRuntime {
         runId: String? = nil,
         since: Double? = nil) -> String?
     {
-        guard let assistant = Self.assistantMessage(
+        guard let assistant = assistantMessage(
             from: messages,
             runId: runId,
             since: since)
