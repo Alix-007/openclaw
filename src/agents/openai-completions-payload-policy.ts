@@ -1,5 +1,4 @@
 import { streamWithPayloadPatch } from "../llm/providers/stream-wrappers/stream-payload-utils.js";
-import type { ProviderRuntimeModel } from "../plugins/provider-runtime-model.types.js";
 import { log } from "./embedded-agent-runner/logger.js";
 import {
   resolveAliasedParamValueFromKeys,
@@ -11,14 +10,13 @@ import {
 } from "./provider-request-config.js";
 import type { StreamFn } from "./runtime/index.js";
 
-function shouldStripOpenAICompletionsStore(model: ProviderRuntimeModel): boolean {
+function shouldStripOpenAICompletionsStore(model: Parameters<StreamFn>[0]): boolean {
   if (model.api !== "openai-completions") {
     return false;
   }
   const compat =
     model.compat && typeof model.compat === "object"
-      ? // SAFETY: the runtime compatibility object is narrowed to a record before route resolution.
-        (model.compat as Record<string, unknown>)
+      ? Object.fromEntries(Object.entries(model.compat))
       : undefined;
   const capabilities =
     getModelProviderRequestRouteFacts(model)?.capabilities ??
@@ -35,11 +33,7 @@ function shouldStripOpenAICompletionsStore(model: ProviderRuntimeModel): boolean
 
 function createOpenAICompletionsStoreCompatWrapper(underlying: StreamFn): StreamFn {
   return (model, context, options) => {
-    if (
-      !shouldStripOpenAICompletionsStore(
-        model as ProviderRuntimeModel, // SAFETY: StreamFn models carry the provider runtime fields used by this policy.
-      )
-    ) {
+    if (!shouldStripOpenAICompletionsStore(model)) {
       return underlying(model, context, options);
     }
     return streamWithPayloadPatch(underlying, model, context, options, (payloadObj) => {
@@ -63,9 +57,7 @@ function resolveExtraBodyRecord(
   }
   const record = Object.fromEntries(
     Object.entries(
-      sanitizeExtraParamsRecord(
-        value as Record<string, unknown>, // SAFETY: the preceding object guard excludes null and arrays.
-      ) ?? {},
+      sanitizeExtraParamsRecord(Object.fromEntries(Object.entries(value))) ?? {},
     ).filter(([, entry]) => entry !== undefined),
   );
   return Object.keys(record).length > 0 ? record : undefined;
@@ -83,7 +75,7 @@ function createOpenAICompletionsChatTemplateKwargsWrapper(
       const existing = payloadObj.chat_template_kwargs;
       if (existing && typeof existing === "object" && !Array.isArray(existing)) {
         payloadObj.chat_template_kwargs = {
-          ...(existing as Record<string, unknown>), // SAFETY: the preceding guard narrows existing to a record.
+          ...Object.fromEntries(Object.entries(existing)),
           ...configured,
         };
         return;
