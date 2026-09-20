@@ -659,8 +659,9 @@ extension TalkModeRuntime {
         }
 
         // agent.wait reports the Gateway-owned run deadline. Short polling keeps Talk
-        // cancellable while avoiding a client-side deadline that can drop slow replies.
-        while self.isCurrent(generation) {
+        // cancellable while preserving the previous upper bound for a stuck run.
+        let deadline = Date().addingTimeInterval(45)
+        while self.isCurrent(generation), Date() < deadline {
             let request = OpenClawChatGatewayRequests.agentWait(runID: runId, timeoutMs: 5_000)
             do {
                 let data = try await GatewayConnection.shared.request(
