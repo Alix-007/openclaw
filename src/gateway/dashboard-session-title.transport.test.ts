@@ -234,6 +234,7 @@ describe("generated titles over the real OpenAI-compatible transport", () => {
         ).resolves.toBe(true);
         const persisted = loadSessionEntry(scope);
         expect(requests).toHaveLength(1);
+        expect(Object.hasOwn(requests[0]!.body, "store")).toBe(false);
         expect(persisted?.displayName).toBe("Invoice follow-up");
         expect(deriveSessionTitle(persisted)).toBe("Invoice follow-up");
       },
