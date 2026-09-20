@@ -486,6 +486,7 @@ describe("agent.wait gateway dedupe observations", () => {
       expect(timedOut.respond).toHaveBeenCalledWith(true, {
         runId,
         status: "timeout",
+        ...(activeKind ? {} : { livenessState: "unknown_run" }),
       });
 
       completeRun(dedupe, runId, activeKind);

@@ -1321,6 +1321,9 @@ struct TalkModeRuntimeSpeechTests {
         #expect(OpenClawChatRunObservation.fromWaitResponse(status: "completed") == .terminal(.completed))
         #expect(OpenClawChatRunObservation.fromWaitResponse(status: "timeout", timeoutPhase: "provider") ==
             .terminal(.failed(message: "Run timed out")))
+        #expect(OpenClawChatRunObservation.fromWaitResponse(
+            status: "timeout",
+            livenessState: "unknown_run") == .terminal(.failed(message: "Run timed out")))
     }
 
     @Test func `history reply selection stays scoped to the accepted run`() {

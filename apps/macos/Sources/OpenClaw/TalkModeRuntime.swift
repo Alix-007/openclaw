@@ -695,6 +695,11 @@ extension TalkModeRuntime {
                     "talk agent.wait returned an invalid response runId=\(runId, privacy: .public): "
                         + "\(error.localizedDescription, privacy: .public)")
                 return nil
+            } catch let error as DecodingError {
+                self.logger.warning(
+                    "talk agent.wait payload could not be decoded runId=\(runId, privacy: .public): "
+                        + "\(error.localizedDescription, privacy: .public)")
+                return nil
             } catch {
                 self.logger.warning(
                     "talk agent.wait failed; retrying runId=\(runId, privacy: .public): " +
@@ -759,7 +764,33 @@ extension TalkModeRuntime {
                 guard let data = try? JSONEncoder().encode(item) else { return nil }
                 return try? JSONDecoder().decode(OpenClawChatMessage.self, from: data)
             }
-            return Self.assistantText(from: decoded, runId: runId, since: since)
+            guard let assistant = Self.assistantMessage(
+                from: decoded,
+                runId: runId,
+                since: since)
+            else {
+                return nil
+            }
+            if assistant.isTruncated,
+               let messageID = assistant.transcriptMessageID?.trimmingCharacters(
+                   in: .whitespacesAndNewlines),
+               !messageID.isEmpty
+            {
+                do {
+                    let transport = MacGatewayChatTransport(connection: GatewayConnection.shared)
+                    if let full = try await transport.requestFullMessage(
+                        sessionKey: sessionKey,
+                        messageID: messageID)
+                    {
+                        return Self.assistantText(from: [full])
+                    }
+                } catch {
+                    self.logger.warning(
+                        "talk full assistant message fetch failed: " +
+                            "\(error.localizedDescription, privacy: .public)")
+                }
+            }
+            return Self.assistantText(from: [assistant])
         } catch {
             self.logger.error("talk history fetch failed: \(error.localizedDescription, privacy: .public)")
             return nil
@@ -771,8 +802,25 @@ extension TalkModeRuntime {
         runId: String? = nil,
         since: Double? = nil) -> String?
     {
+        guard let assistant = Self.assistantMessage(
+            from: messages,
+            runId: runId,
+            since: since)
+        else {
+            return nil
+        }
+        let text = assistant.content.compactMap(\.text).joined(separator: "\n")
+        let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
+    nonisolated static func assistantMessage(
+        from messages: [OpenClawChatMessage],
+        runId: String? = nil,
+        since: Double? = nil) -> OpenClawChatMessage?
+    {
         let normalizedRunId = runId?.trimmingCharacters(in: .whitespacesAndNewlines)
-        let assistant = messages.last { message in
+        return messages.last { message in
             guard message.role == "assistant" else { return false }
             if let normalizedRunId, !normalizedRunId.isEmpty {
                 let candidates = [
@@ -790,10 +838,6 @@ extension TalkModeRuntime {
             guard let timestamp = message.timestamp else { return false }
             return TalkHistoryTimestamp.isAfter(timestamp, sinceSeconds: since)
         }
-        guard let assistant else { return nil }
-        let text = assistant.content.compactMap(\.text).joined(separator: "\n")
-        let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : trimmed
     }
 
     private func playAssistant(text: String) async {
