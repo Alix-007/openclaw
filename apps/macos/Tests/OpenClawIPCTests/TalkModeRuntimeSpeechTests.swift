@@ -1322,4 +1322,21 @@ struct TalkModeRuntimeSpeechTests {
         #expect(OpenClawChatRunObservation.fromWaitResponse(status: "timeout", timeoutPhase: "provider") ==
             .terminal(.failed(message: "Run timed out")))
     }
+
+    @Test func `history reply selection stays scoped to the accepted run`() {
+        let target = OpenClawChatMessage(
+            role: "assistant",
+            content: [OpenClawChatMessageContent(type: "text", text: "target reply", content: nil)],
+            timestamp: 10,
+            transcriptRunID: "talk-run")
+        let laterForeign = OpenClawChatMessage(
+            role: "assistant",
+            content: [OpenClawChatMessageContent(type: "text", text: "foreign reply", content: nil)],
+            timestamp: 20,
+            transcriptRunID: "other-run")
+
+        #expect(TalkModeRuntime.assistantText(from: [target, laterForeign], runId: "talk-run", since: 0)
+            == "target reply")
+        #expect(TalkModeRuntime.assistantText(from: [target, laterForeign], runId: "missing", since: 0) == nil)
+    }
 }

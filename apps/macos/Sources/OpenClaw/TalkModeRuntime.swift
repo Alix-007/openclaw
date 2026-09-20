@@ -653,6 +653,7 @@ extension TalkModeRuntime {
                 "talk chat.send terminal ok runId=\(runId, privacy: .public); using history fallback")
             return await self.waitForAssistantTextFromHistory(
                 sessionKey: sessionKey,
+                runId: runId,
                 since: nil,
                 timeoutSeconds: 12)
         }
@@ -670,10 +671,15 @@ extension TalkModeRuntime {
                 let observation = try OpenClawChatGatewayPayloadCodec.decodeAgentWaitObservation(data)
                 switch observation {
                 case .checkAgain:
-                    continue
+                    do {
+                        try await Task.sleep(nanoseconds: 250_000_000)
+                    } catch {
+                        return nil
+                    }
                 case .terminal(.completed):
                     return await self.waitForAssistantTextFromHistory(
                         sessionKey: sessionKey,
+                        runId: runId,
                         since: since,
                         timeoutSeconds: 12)
                 case .terminal(_), .unavailable:
@@ -713,12 +719,13 @@ extension TalkModeRuntime {
 
     private func waitForAssistantTextFromHistory(
         sessionKey: String,
+        runId: String?,
         since: Double?,
         timeoutSeconds: Int) async -> String?
     {
         let deadline = Date().addingTimeInterval(TimeInterval(timeoutSeconds))
         while Date() < deadline {
-            if let text = await latestAssistantText(sessionKey: sessionKey, since: since) {
+            if let text = await latestAssistantText(sessionKey: sessionKey, runId: runId, since: since) {
                 return text
             }
             try? await Task.sleep(nanoseconds: 300_000_000)
@@ -726,7 +733,11 @@ extension TalkModeRuntime {
         return nil
     }
 
-    private func latestAssistantText(sessionKey: String, since: Double? = nil) async -> String? {
+    private func latestAssistantText(
+        sessionKey: String,
+        runId: String? = nil,
+        since: Double? = nil) async -> String?
+    {
         do {
             let history = try await GatewayConnection.shared.chatHistory(sessionKey: sessionKey)
             let messages = history.messages ?? []
@@ -734,20 +745,41 @@ extension TalkModeRuntime {
                 guard let data = try? JSONEncoder().encode(item) else { return nil }
                 return try? JSONDecoder().decode(OpenClawChatMessage.self, from: data)
             }
-            let assistant = decoded.last { message in
-                guard message.role == "assistant" else { return false }
-                guard let since else { return true }
-                guard let timestamp = message.timestamp else { return false }
-                return TalkHistoryTimestamp.isAfter(timestamp, sinceSeconds: since)
-            }
-            guard let assistant else { return nil }
-            let text = assistant.content.compactMap(\.text).joined(separator: "\n")
-            let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-            return trimmed.isEmpty ? nil : trimmed
+            return Self.assistantText(from: decoded, runId: runId, since: since)
         } catch {
             self.logger.error("talk history fetch failed: \(error.localizedDescription, privacy: .public)")
             return nil
         }
+    }
+
+    nonisolated static func assistantText(
+        from messages: [OpenClawChatMessage],
+        runId: String? = nil,
+        since: Double? = nil) -> String?
+    {
+        let normalizedRunId = runId?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let assistant = messages.last { message in
+            guard message.role == "assistant" else { return false }
+            if let normalizedRunId, !normalizedRunId.isEmpty {
+                let candidates = [
+                    message.transcriptRunID,
+                    message.idempotencyKey,
+                    message.streamFallback?.runId,
+                ]
+                guard candidates.contains(where: {
+                    $0?.trimmingCharacters(in: .whitespacesAndNewlines) == normalizedRunId
+                }) else {
+                    return false
+                }
+            }
+            guard let since else { return true }
+            guard let timestamp = message.timestamp else { return false }
+            return TalkHistoryTimestamp.isAfter(timestamp, sinceSeconds: since)
+        }
+        guard let assistant else { return nil }
+        let text = assistant.content.compactMap(\.text).joined(separator: "\n")
+        let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     private func playAssistant(text: String) async {
