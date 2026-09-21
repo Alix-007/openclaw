@@ -830,11 +830,10 @@ extension TalkModeRuntime {
                     message.idempotencyKey,
                     message.streamFallback?.runId,
                 ]
-                guard candidates.contains(where: {
+                // Exact run identity is authoritative across different client and Gateway clocks.
+                return candidates.contains(where: {
                     $0?.trimmingCharacters(in: .whitespacesAndNewlines) == normalizedRunId
-                }) else {
-                    return false
-                }
+                })
             }
             guard let since else { return true }
             guard let timestamp = message.timestamp else { return false }
