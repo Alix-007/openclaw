@@ -28,7 +28,6 @@ async function startBrowserControlServiceUnlocked(): Promise<BrowserServerState 
 
   const cfg = getRuntimeConfig();
   const browserCfg = loadBrowserConfigForRuntimeRefresh();
-  // Plugin activation is runtime-owned; source config still owns fresh browser options.
   if (!resolveBrowserPluginEnableState(cfg).enabled) {
     return null;
   }

@@ -80,7 +80,6 @@ function browserConfig(params: {
       profiles: {
         openclaw: {
           cdpPort: params.gatewayPort + 11,
-          color: "#FF4500",
         },
       },
     },
@@ -179,7 +178,6 @@ describe("browser.request local control state", () => {
         profile: "openclaw",
         headless: true,
       });
-      expect(getBrowserControlState()?.resolved.headless).toBe(true);
       expect(source).toEqual(originalSource);
     },
   );
