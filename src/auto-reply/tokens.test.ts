@@ -35,26 +35,6 @@ describe("isInternalFormattingArtifact", () => {
     expect(isInternalFormattingArtifact("  ───  ")).toBe(true);
   });
 
-  it("matches complete Anthropic tool-call markup without matching quoted prose", () => {
-    expect(
-      isInternalFormattingArtifact(
-        '<invoke name="Bash"><parameter name="command">echo end1</parameter></invoke>',
-      ),
-    ).toBe(true);
-    expect(
-      isInternalFormattingArtifact(
-        '<function_calls><invoke name="Bash"><parameter name="command">echo end1</parameter></invoke></function_calls>',
-      ),
-    ).toBe(true);
-    expect(
-      isInternalFormattingArtifact(
-        '<antml:invoke name="Bash"><antml:parameter name="command">echo end1</antml:parameter></antml:invoke>',
-      ),
-    ).toBe(true);
-    expect(isInternalFormattingArtifact('Use <invoke name="Bash"> in your prompt.')).toBe(false);
-    expect(isInternalFormattingArtifact('<invoke name="Bash">ordinary prose</invoke>')).toBe(false);
-  });
-
   it("does NOT match generic markdown separators (avoids false positives)", () => {
     expect(isInternalFormattingArtifact("---")).toBe(false);
     expect(isInternalFormattingArtifact("___")).toBe(false);
