@@ -6,6 +6,7 @@ import {
   verifyAndRepairCanonicalSqliteIndexes,
 } from "../infra/sqlite-index-schema.js";
 import { assertSqliteIntegrity, assertSqliteTableIntegrity } from "../infra/sqlite-integrity.js";
+import { configureSqliteMaintenanceCache } from "../infra/sqlite-maintenance-cache.js";
 import { assertSqliteSchemaTablesPresent } from "../infra/sqlite-schema-contract.js";
 import { migrateSqliteSchemaToStrictInTransaction } from "../infra/sqlite-strict.js";
 import { runSqliteImmediateTransactionSync } from "../infra/sqlite-transaction.js";
@@ -36,6 +37,7 @@ import {
   ensureFirstUseAdditiveStateColumnsForStrictMigration,
 } from "./openclaw-state-db-schema-additive.js";
 import { tableExists } from "./openclaw-state-db-schema-helpers.js";
+import { assertOpenClawStateSchemaRepairAllowed } from "./openclaw-state-db-schema-policy.js";
 import {
   assertCanonicalStateSchemaShape,
   dropLegacyStateTables,
@@ -67,6 +69,7 @@ export function repairStateSchema(
   changes: string[];
   warnings: string[];
 } {
+  assertOpenClawStateSchemaRepairAllowed(pathname);
   ensureOpenClawStatePermissions(pathname, env);
   // This private handle rebuilds referenced tables and is closed after repair.
   const db = openNodeSqliteDatabase(pathname, { enableForeignKeyConstraints: false });
@@ -210,6 +213,7 @@ export function repairStateSchema(
       },
       () => {
         applied.push(...repairAdmittedSchema());
+        configureSqliteMaintenanceCache(db);
       },
     );
     const quarantineCleared = clearOpenClawDatabaseQuarantine(pathname, { env });

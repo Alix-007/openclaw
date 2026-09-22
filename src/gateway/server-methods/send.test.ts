@@ -157,6 +157,7 @@ vi.mock("../../plugins/loader.js", () => ({
 
 vi.mock("../../infra/outbound/channel-bootstrap.runtime.js", () => ({
   bootstrapOutboundChannelPlugin: vi.fn(),
+  bootstrapOutboundChannelPluginAsync: vi.fn(),
   resetOutboundChannelBootstrapStateForTests: vi.fn(),
 }));
 
@@ -1183,11 +1184,8 @@ describe("gateway send mirroring", () => {
       expect(firstRespondCall(retryRespond)?.[3]?.cached).toBe(true);
       expect(mocks.dispatchChannelMessageAction).toHaveBeenCalledTimes(1);
     } finally {
-      clearInterval(maintenance.tickInterval);
-      clearInterval(maintenance.healthInterval);
-      clearInterval(maintenance.dedupeCleanup);
-      clearInterval(maintenance.worktreeCleanup);
-      await maintenance.stopMediaCleanup();
+      await maintenance.stopPeriodicTasks();
+      await maintenance.skillUsageCleanup();
       vi.useRealTimers();
     }
   });
@@ -1235,11 +1233,8 @@ describe("gateway send mirroring", () => {
       expect(firstRespondCall(retryRespond)?.[0]).toBe(true);
       expect(firstRespondCall(retryRespond)?.[3]?.cached).toBe(true);
     } finally {
-      clearInterval(maintenance.tickInterval);
-      clearInterval(maintenance.healthInterval);
-      clearInterval(maintenance.dedupeCleanup);
-      clearInterval(maintenance.worktreeCleanup);
-      await maintenance.stopMediaCleanup();
+      await maintenance.stopPeriodicTasks();
+      await maintenance.skillUsageCleanup();
       vi.useRealTimers();
     }
   });
@@ -2856,9 +2851,7 @@ describe("gateway send mirroring", () => {
 
   it("recovers cold plugin resolution for threaded sends", async () => {
     mocks.resolveOutboundTarget.mockReturnValue({ ok: true, to: "123" });
-    mocks.deliverOutboundPayloads.mockResolvedValue([
-      { messageId: "m-threaded", channel: "slack" },
-    ]);
+    mockDeliverySuccess("m-threaded");
     const outboundPlugin = {
       id: "slack",
       outbound: { sendPoll: mocks.sendPoll },

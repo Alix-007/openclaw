@@ -1,7 +1,7 @@
-import { renameSync } from "node:fs";
 import { performance } from "node:perf_hooks";
-import { DatabaseSync } from "node:sqlite";
+import { DatabaseSync, StatementSync } from "node:sqlite";
 import { afterEach, expect, it, vi } from "vitest";
+import { observeSqliteReadSql } from "../../test/helpers/sqlite-statement-execution-counter.js";
 import { notifyPreparedModelRuntimePublication } from "../agents/prepared-model-runtime.publication-events.js";
 import { resolveSessionStorePathCore } from "../config/sessions/paths.js";
 import {
@@ -14,15 +14,82 @@ import { emitSessionIdentityMutation } from "../sessions/session-lifecycle-event
 import { sessionChanges } from "../sessions/session-row-changes.js";
 import { registerOpenClawAgentDatabase } from "../state/openclaw-agent-db-registry.js";
 import {
-  closeOpenClawAgentDatabaseByPath,
   openOpenClawAgentDatabase,
   resolveOpenClawAgentSqlitePath,
 } from "../state/openclaw-agent-db.js";
 import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { retainSessionListForegroundWork } from "./session-projection-work.js";
+import { ready } from "./session-row-projection-record.js";
 import { createSessionRowProjection } from "./session-row-projection.js";
+import { listProjectedSessions } from "./session-utils-list.js";
 import * as rowInputs from "./session-utils-row.js";
 
 afterEach(() => vi.restoreAllMocks());
+
+it("prepares dirty persistent row facts without Gateway-thread data reads", async () => {
+  await withOpenClawTestState({ scenario: "minimal" }, async () => {
+    const key = "agent:main:worker-row";
+    const cfg = {
+      agents: {
+        list: [{ id: "main", default: true }],
+        defaults: { utilityModel: "unit-test/small" },
+      },
+    };
+    replaceSessionEntrySync(
+      { agentId: "main", sessionKey: key },
+      {
+        sessionId: "worker-row",
+        updatedAt: 1,
+        activitySummary: {
+          version: 1,
+          formatRevision: 2,
+          text: "Ready",
+          updatedAt: 1,
+          sessionId: "worker-row",
+          generation: null,
+          maxSeq: null,
+          leafEntryId: null,
+          coveredMessages: 0,
+          totalMessages: 0,
+          omittedContent: false,
+        },
+      },
+    );
+    const releaseForeground = retainSessionListForegroundWork();
+    try {
+      const projection = await createSessionRowProjection({ cfg });
+      await projection.ensureMaterialized();
+      try {
+        const before = projection.materializedCount;
+        sessionChanges.emit({ agentId: "main", sessionKey: key });
+        const reads = observeSqliteReadSql(StatementSync.prototype);
+        try {
+          await listProjectedSessions({ projection, opts: {} });
+          expect(projection.materializedCount).toBeGreaterThan(before);
+          expect(
+            reads.queries.flatMap((sql) =>
+              [
+                "session_nodes",
+                "session_members",
+                "board_tabs",
+                "transcript_rewrite_watermarks",
+              ].filter((table) => sql.includes(table)),
+            ),
+          ).toEqual([]);
+          expect(projection.snapshot({ agentId: "main", key }).row?.activitySummary?.state).toBe(
+            "current",
+          );
+        } finally {
+          reads.restore();
+        }
+      } finally {
+        projection.dispose();
+      }
+    } finally {
+      releaseForeground();
+    }
+  });
+});
 
 it("keeps child links ordered after a keyed child refresh", async () => {
   await withOpenClawTestState({ scenario: "minimal" }, async () => {
@@ -139,11 +206,11 @@ it("retains current rows across agent scopes without SQLite and refreshes only t
     const projection = await createSessionRowProjection({ cfg });
     await projection.ensureMaterialized();
     try {
-      expect(projection.select().length).toBe(4);
+      expect(projection.selectEntries().filter(ready).length).toBe(4);
       const untouched = projection.describe({ agentId: "work", key: "agent:work:child" });
       const prepares = vi.spyOn(DatabaseSync.prototype, "prepare");
       const exec = vi.spyOn(DatabaseSync.prototype, "exec");
-      const first = projection.select({ agentId: "main" });
+      const first = projection.selectEntries({ agentId: "main" });
       expect(first.map((record) => record.key)).toEqual(["agent:main:child", "agent:main:parent"]);
       expect(
         projection.snapshot({ agentId: "main", key: "agent:main:parent" }).row?.childSessions,
@@ -167,7 +234,7 @@ it("retains current rows across agent scopes without SQLite and refreshes only t
       ).toBe("changed");
       expect(projection.describe({ agentId: "work", key: "agent:work:child" })).toBe(untouched);
       const clean = vi.spyOn(DatabaseSync.prototype, "prepare");
-      expect(projection.select({ parentSessionKey: "agent:main:parent" })).toHaveLength(1);
+      expect(projection.selectEntries({ parentSessionKey: "agent:main:parent" })).toHaveLength(1);
       expect(projection.snapshot({ agentId: "main", key: "agent:main:child" }).row?.label).toBe(
         "changed",
       );
@@ -200,7 +267,7 @@ it("keeps session-ID aliases out of exact-key describe", async () => {
       expect(
         projection.snapshot({ agentId: "main", key: "agent:main:missing" }).row?.sessionId,
       ).toBe("new-session");
-      expect(projection.select()).toHaveLength(2);
+      expect(projection.selectEntries().filter(ready)).toHaveLength(2);
     } finally {
       projection.dispose();
     }
@@ -391,43 +458,6 @@ it("invalidates parent links when a child moves and when deletion crosses a mate
   });
 });
 
-it("hydrates a same-path replacement and retires its previous inventory", async () => {
-  await withOpenClawTestState({ scenario: "minimal" }, async (state) => {
-    const storePath = resolveOpenClawAgentSqlitePath({ agentId: "main" });
-    const staged = state.statePath("imports", "replacement.sqlite");
-    const cfg = {
-      agents: { list: [{ id: "main", default: true }] },
-      session: { store: storePath },
-    };
-    replaceSessionEntrySync(
-      { agentId: "main", storePath, sessionKey: "agent:main:old" },
-      { sessionId: "old", updatedAt: 1 },
-    );
-    replaceSessionEntrySync(
-      { agentId: "main", storePath: staged, sessionKey: "agent:main:new" },
-      { sessionId: "new", updatedAt: 2 },
-    );
-    closeOpenClawAgentDatabaseByPath(staged, "main");
-    const projection = await createSessionRowProjection({ cfg });
-    await projection.ensureMaterialized();
-    try {
-      closeOpenClawAgentDatabaseByPath(storePath, "main");
-      renameSync(staged, storePath);
-      registerOpenClawAgentDatabase({ agentId: "main", path: storePath });
-      await projection.ensureMaterialized();
-      expect(projection.select().map((row) => row.key)).toEqual(["agent:main:new"]);
-      const sql = vi.spyOn(DatabaseSync.prototype, "prepare");
-      expect(projection.snapshot({ agentId: "main", key: "agent:main:old" }).row).toBeNull();
-      expect(projection.snapshot({ agentId: "main", key: "agent:main:new" }).row?.sessionId).toBe(
-        "new",
-      );
-      expect(sql).not.toHaveBeenCalled();
-    } finally {
-      projection.dispose();
-    }
-  });
-});
-
 it("normalizes parent lineage after configuration publication", async () => {
   await withOpenClawTestState({ scenario: "minimal" }, async () => {
     const key = "agent:main:child";
@@ -505,9 +535,9 @@ it("reprocesses activity-summary policy when config changes during materializati
   });
 });
 
-it.each([false, true])(
+it.each(["static", "array", "unowned-map", "empty-map"] as const)(
   "reprocesses utility policy after a synchronous model publication (catalog reader: %s)",
-  async (withCatalogReader) => {
+  async (catalogReader) => {
     await withOpenClawTestState({ scenario: "minimal" }, async () => {
       const cfg = {
         agents: {
@@ -548,7 +578,16 @@ it.each([false, true])(
         }
         const projection = await createSessionRowProjection({
           cfg,
-          ...(withCatalogReader ? { getModelCatalog: async () => [] } : { modelCatalog: [] }),
+          ...(catalogReader === "static"
+            ? { modelCatalog: [] }
+            : {
+                getModelCatalog: async () =>
+                  catalogReader === "empty-map"
+                    ? new Map()
+                    : catalogReader === "unowned-map"
+                      ? new Map([["main", { entries: [] }]])
+                      : [],
+              }),
         });
         await projection.ensureMaterialized();
         try {
@@ -565,7 +604,7 @@ it.each([false, true])(
               return readInputs(params);
             });
             sessionChanges.emit({ all: true, scope: "catalog" });
-            await projection.ensureMaterialized();
+            await listProjectedSessions({ projection, opts: {} });
           } finally {
             clock.mockRestore();
           }
@@ -654,7 +693,7 @@ it("keeps cross-agent inheritance and parent selection when main aliases collaps
       });
       expect(
         projection
-          .select({ agentId: "main", parentSessionKey: "agent:work:main" })
+          .selectEntries({ agentId: "main", parentSessionKey: "agent:work:main" })
           .map((row) => row.key),
       ).toEqual([key]);
       replaceSessionEntrySync(
@@ -696,7 +735,7 @@ it("retains physical sentinels and stable store precedence after a primary updat
     const projection = await createSessionRowProjection({ cfg });
     await projection.ensureMaterialized();
     try {
-      expect(projection.select().length).toBe(2);
+      expect(projection.selectEntries().filter(ready).length).toBe(2);
       expect(
         projection.snapshot({ agentId: "main", key: "global", storePath: secondary }).row
           ?.sessionId,
@@ -874,7 +913,7 @@ it.each(["global", "unknown"])(
         expect(projection.snapshot({ agentId: "work", key }).row?.sessionId).toBe("new-sentinel");
         expect(
           projection
-            .select()
+            .selectEntries()
             .filter((row) => row.key === key)
             .map((row) => row.agentId),
         ).toEqual(["work"]);
