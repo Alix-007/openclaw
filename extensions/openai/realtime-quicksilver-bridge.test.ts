@@ -621,7 +621,7 @@ describe("OpenAIQuicksilverVoiceBridge", () => {
 
     harness.socket.serverEvent({
       type: "error",
-      error: { message: "invalid live session" },
+      error: { code: "authentication_error", message: "invalid live session" },
     });
 
     await expect(connecting).rejects.toThrow("OpenAI GPT-Live transport failed");
