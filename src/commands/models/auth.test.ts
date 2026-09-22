@@ -1059,6 +1059,60 @@ describe("modelsAuthLoginCommand", () => {
     expect((readMockCallArg(runProviderAuth) as AuthRunCall).signal).toBe(abortController.signal);
   });
 
+  it("allows an explicitly selected provider-owned headless auth method without a TTY", async () => {
+    const restorePiped = withPipedStdin("");
+    try {
+      const provider = createProvider({
+        id: "openai",
+        label: "OpenAI Codex",
+        auth: [
+          {
+            id: "device-code",
+            label: "Device code",
+            kind: "device_code",
+            headless: true,
+            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+          },
+        ],
+        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+      });
+      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
+
+      await modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, createRuntime());
+
+      expect(runProviderAuth).toHaveBeenCalledOnce();
+    } finally {
+      restorePiped();
+    }
+  });
+
+  it("keeps non-headless auth methods gated when stdin is piped", async () => {
+    const restorePiped = withPipedStdin("");
+    try {
+      const provider = createProvider({
+        id: "openai",
+        label: "OpenAI Codex",
+        auth: [
+          {
+            id: "device-code",
+            label: "Device code",
+            kind: "device_code",
+            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+          },
+        ],
+        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+      });
+      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
+
+      await expect(
+        modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, createRuntime()),
+      ).rejects.toThrow("requires an interactive TTY");
+      expect(runProviderAuth).not.toHaveBeenCalled();
+    } finally {
+      restorePiped();
+    }
+  });
+
   it("refreshes saved credentials before presenting provider notes", async () => {
     const note = vi.fn(async (_message: string, title?: string) => {
       if (title === "Provider notes") {

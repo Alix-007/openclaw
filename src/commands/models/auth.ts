@@ -1189,6 +1189,12 @@ async function runModelsAuthLoginFlow(
     );
   }
 
+  if (!process.stdin.isTTY && chosenMethod.headless !== true) {
+    throw new Error(
+      `models auth login requires an interactive TTY for ${chosenMethod.label}. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available, or select a provider-owned headless method.`,
+    );
+  }
+
   const modelAccess = prepareProviderModelAccess({
     config: context.config,
     agentId: context.agentId,
@@ -1318,12 +1324,6 @@ async function runModelsAuthLoginFlow(
 }
 
 export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: RuntimeEnv) {
-  if (!process.stdin.isTTY) {
-    throw new Error(
-      `models auth login requires an interactive TTY. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available.`,
-    );
-  }
-
   await runModelsAuthLoginFlowCore({
     ...opts,
     runtime,
