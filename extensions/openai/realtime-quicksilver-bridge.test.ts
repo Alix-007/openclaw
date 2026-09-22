@@ -478,6 +478,32 @@ describe("OpenAIQuicksilverVoiceBridge", () => {
     expect(harness.onReady).toHaveBeenCalledOnce();
   });
 
+  it("keeps recoverable provider errors non-terminal before session readiness", async () => {
+    const harness = createHarness({ autoStart: false });
+    const connecting = harness.bridge.connect();
+    await vi.waitFor(() => expect(harness.socket.readyState).toBe(1));
+
+    harness.socket.serverEvent({
+      type: "error",
+      error: { code: "missing_scope", message: "temporary provider rejection" },
+    });
+
+    expect(harness.bridge.isConnected()).toBe(false);
+    expect(harness.onError).not.toHaveBeenCalled();
+    expect(harness.onClose).not.toHaveBeenCalled();
+    expect(harness.logger.warn).toHaveBeenCalledWith(
+      "OpenAI GPT-Live provider error before session startup; continuing readiness",
+    );
+
+    harness.socket.serverEvent({
+      type: "session.started",
+      session: { id: "live-1", expires_at: Math.floor(Date.now() / 1000) + 60 },
+    });
+    await connecting;
+    expect(harness.bridge.isConnected()).toBe(true);
+    expect(harness.onReady).toHaveBeenCalledOnce();
+  });
+
   it.each([
     [1000, "completed"],
     [1006, "error"],

@@ -562,18 +562,20 @@ export class OpenAIQuicksilverVoiceBridge implements RealtimeVoiceBridge {
     }
     const message = projectOpenAIQuicksilverErrorMessage("provider");
     const error = new Error(message);
-    if (!this.lifecycle.isReady()) {
-      failStartup(error, "session start failed");
-      return;
-    }
     const reportEvent = () =>
       this.config.onEvent?.({ direction: "server", type: "error", detail: message });
     if (event.fatalAuth) {
       this.fail(connection, error, "authentication failed", reportEvent);
-    } else {
-      reportEvent();
-      this.config.onError?.(error);
+      return;
     }
+    reportEvent();
+    if (!this.lifecycle.isReady()) {
+      (this.config.logger?.warn ?? console.warn)(
+        "OpenAI GPT-Live provider error before session startup; continuing readiness",
+      );
+      return;
+    }
+    this.config.onError?.(error);
   }
 
   private startDelegation(
