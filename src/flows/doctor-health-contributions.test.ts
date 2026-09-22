@@ -3987,7 +3987,6 @@ describe("doctor health contributions", () => {
   it("keeps core-kind repairs out of the extension repair pass", async () => {
     const contribution = requireDoctorContribution("doctor:structured-health-repairs");
     const ctx = createDoctorContext({
-      cfg: {},
       configResult: { cfg: {} },
       cfgForPersistence: {},
       shouldRepair: true,
