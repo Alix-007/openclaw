@@ -3995,7 +3995,6 @@ describe("doctor health contributions", () => {
     });
 
     await contribution.run(ctx);
-
     expect(mocks.runDoctorHealthRepairs).toHaveBeenCalledWith(expect.any(Object), {
       checks: [{ id: "plugin/example/unrelated", kind: "plugin" }],
       progress: true,
