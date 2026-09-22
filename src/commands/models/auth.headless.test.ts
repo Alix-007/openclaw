@@ -106,7 +106,7 @@ function withPipedStdin(input: string) {
     if (previousTTY) {
       Object.defineProperty(stdin, "isTTY", previousTTY);
     } else {
-      delete stdin.isTTY;
+      Reflect.deleteProperty(stdin, "isTTY");
     }
     if (previousIterator) {
       Object.defineProperty(stdin, Symbol.asyncIterator, previousIterator);
@@ -116,11 +116,8 @@ function withPipedStdin(input: string) {
   };
 }
 
-function createProvider(params: {
-  auth: ProviderPlugin["auth"];
-  run: NonNullable<ProviderPlugin["auth"]>[number]["run"];
-}): ProviderPlugin {
-  return { id: "openai", label: "OpenAI", auth: params.auth, run: params.run };
+function createProvider(params: { auth: ProviderPlugin["auth"] }): ProviderPlugin {
+  return { id: "openai", label: "OpenAI", auth: params.auth };
 }
 
 function createAuthResult() {
@@ -163,7 +160,6 @@ describe("headless model auth admission", () => {
       const run = vi.fn().mockResolvedValue(createAuthResult());
       mocks.resolvePluginProvidersCore.mockReturnValue([
         createProvider({
-          run,
           auth: [
             { id: "device-code", label: "Device code", kind: "device_code", headless: true, run },
           ],
@@ -182,7 +178,6 @@ describe("headless model auth admission", () => {
       const run = vi.fn().mockResolvedValue(createAuthResult());
       mocks.resolvePluginProvidersCore.mockReturnValue([
         createProvider({
-          run,
           auth: [{ id: "device-code", label: "Device code", kind: "device_code", run }],
         }),
       ]);
@@ -201,7 +196,6 @@ describe("headless model auth admission", () => {
       const run = vi.fn().mockResolvedValue(createAuthResult());
       mocks.resolvePluginProvidersCore.mockReturnValue([
         createProvider({
-          run,
           auth: [{ id: "oauth", label: "OAuth", kind: "oauth", run }],
         }),
       ]);
