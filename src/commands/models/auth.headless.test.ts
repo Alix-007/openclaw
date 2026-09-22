@@ -11,7 +11,10 @@ const mocks = vi.hoisted(() => ({
   resolveAgentDir: vi.fn(),
   resolveDefaultAgentId: vi.fn(),
   isCliProvider: vi.fn(),
+  normalizeAgentModelRefForConfig: vi.fn(),
   createClackPrompter: vi.fn(),
+  tryImportProviderCredential: vi.fn(),
+  updateConfig: vi.fn(),
   persistProviderAuthProfilesAfterLogin: vi.fn(),
   promoteAuthProfileInOrder: vi.fn(),
   refreshRunningGatewayAuthState: vi.fn(),
@@ -21,7 +24,9 @@ vi.mock("../../plugins/providers.runtime.js", () => ({
   resolvePluginProvidersCore: mocks.resolvePluginProvidersCore,
 }));
 vi.mock("../../config/logging.js", () => ({ logConfigUpdated: vi.fn() }));
-vi.mock("../../config/model-input.js", () => ({ normalizeAgentModelRefForConfig: vi.fn() }));
+vi.mock("../../config/model-input.js", () => ({
+  normalizeAgentModelRefForConfig: mocks.normalizeAgentModelRefForConfig,
+}));
 vi.mock("../../agents/agent-scope.js", () => ({
   resolveAgentWorkspaceDir: mocks.resolveAgentWorkspaceDir,
   resolveDefaultAgentId: mocks.resolveDefaultAgentId,
@@ -56,14 +61,16 @@ vi.mock("../../wizard/clack-prompter.js", () => ({
   createClackPrompter: mocks.createClackPrompter,
 }));
 vi.mock("../auth-token.js", () => ({ validateAnthropicSetupToken: vi.fn() }));
-vi.mock("./auth-credential-import.js", () => ({ tryImportProviderCredential: vi.fn() }));
+vi.mock("./auth-credential-import.js", () => ({
+  tryImportProviderCredential: mocks.tryImportProviderCredential,
+}));
 vi.mock("./shared.js", () => ({
   loadValidConfigSnapshotOrThrow: mocks.loadValidConfigSnapshotOrThrow,
   resolveModelsTargetAgent: vi.fn(() => ({
     agentId: "main",
     agentDir: "/tmp/openclaw/agents/main",
   })),
-  updateConfig: vi.fn(),
+  updateConfig: mocks.updateConfig,
 }));
 vi.mock("./auth-refresh.js", () => ({
   refreshRunningGatewayAuthState: mocks.refreshRunningGatewayAuthState,
@@ -85,7 +92,8 @@ vi.mock("@clack/prompts", async (importOriginal) => ({
   text: vi.fn(),
 }));
 
-const { modelsAuthLoginCommand, runModelsAuthLoginFlowForGateway } = await import("./auth.js");
+const { modelsAuthLoginCommand, runModelsAuthLoginFlowCore, runModelsAuthLoginFlowForGateway } =
+  await import("./auth.js");
 
 function createRuntime(): RuntimeEnv {
   return { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
@@ -145,6 +153,7 @@ describe("headless model auth admission", () => {
     mocks.resolveAgentDir.mockReturnValue("/tmp/openclaw/agents/main");
     mocks.resolveDefaultAgentId.mockReturnValue("main");
     mocks.isCliProvider.mockReturnValue(false);
+    mocks.normalizeAgentModelRefForConfig.mockImplementation((value) => value);
     mocks.loadValidConfigSnapshotOrThrow.mockResolvedValue({ sourceConfig: {}, runtimeConfig: {} });
     mocks.createClackPrompter.mockReturnValue({ note: vi.fn(), select: vi.fn() });
     mocks.promoteAuthProfileInOrder.mockResolvedValue({ ok: true, value: {} });
@@ -152,6 +161,7 @@ describe("headless model auth admission", () => {
       async (params) => params.profiles ?? [],
     );
     mocks.refreshRunningGatewayAuthState.mockResolvedValue({ refreshed: true });
+    mocks.tryImportProviderCredential.mockResolvedValue(undefined);
   });
 
   it("allows an explicitly selected provider-owned headless auth method without a TTY", async () => {
@@ -190,7 +200,114 @@ describe("headless model auth admission", () => {
     }
   });
 
-  it("keeps Gateway-hosted auth available without a TTY", async () => {
+  it("rejects a provider selection before opening a picker without a TTY", async () => {
+    const restore = withPipedStdin("");
+    try {
+      const select = vi.fn();
+      mocks.createClackPrompter.mockReturnValue({ note: vi.fn(), select });
+      mocks.resolvePluginProvidersCore.mockReturnValue([
+        createProvider({
+          auth: [
+            {
+              id: "device-code",
+              label: "Device code",
+              kind: "device_code",
+              headless: true,
+              run: vi.fn(),
+            },
+          ],
+        }),
+      ]);
+      await expect(modelsAuthLoginCommand({}, createRuntime())).rejects.toThrow(
+        "--provider is missing",
+      );
+      expect(select).not.toHaveBeenCalled();
+    } finally {
+      restore();
+    }
+  });
+
+  it("rejects an ambiguous method selection before opening a picker without a TTY", async () => {
+    const restore = withPipedStdin("");
+    try {
+      const select = vi.fn();
+      mocks.createClackPrompter.mockReturnValue({ note: vi.fn(), select });
+      mocks.resolvePluginProvidersCore.mockReturnValue([
+        createProvider({
+          auth: [
+            { id: "first", label: "First", kind: "custom", headless: true, run: vi.fn() },
+            { id: "second", label: "Second", kind: "custom", headless: true, run: vi.fn() },
+          ],
+        }),
+      ]);
+      await expect(modelsAuthLoginCommand({ provider: "openai" }, createRuntime())).rejects.toThrow(
+        "requires --method",
+      );
+      expect(select).not.toHaveBeenCalled();
+    } finally {
+      restore();
+    }
+  });
+
+  it.each(["fresh", "imported"])(
+    "keeps existing model restrictions without prompting after %s credentials",
+    async (credentialSource) => {
+      const restore = withPipedStdin("");
+      try {
+        const select = vi.fn();
+        const runtime = createRuntime();
+        const run = vi.fn().mockResolvedValue(createAuthResult());
+        mocks.createClackPrompter.mockReturnValue({ note: vi.fn(), select });
+        mocks.loadValidConfigSnapshotOrThrow.mockResolvedValue({
+          sourceConfig: {},
+          runtimeConfig: {
+            agents: { defaults: { modelPolicy: { allow: ["other/current"] } } },
+          },
+        });
+        const credentialImport = {
+          migrationProviderId: "codex",
+          itemId: "auth:openai",
+          credentialKind: "oauth" as const,
+        };
+        mocks.resolvePluginProvidersCore.mockReturnValue([
+          createProvider({
+            auth: [
+              {
+                id: "device-code",
+                label: "Device code",
+                kind: "device_code",
+                headless: true,
+                credentialImport,
+                run,
+              },
+            ],
+          }),
+        ]);
+        if (credentialSource === "imported") {
+          mocks.tryImportProviderCredential.mockResolvedValue({
+            profileId: "openai:imported",
+            provider: "openai",
+            mode: "oauth",
+            configUpdated: false,
+          });
+        }
+
+        await modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, runtime);
+
+        expect(select).not.toHaveBeenCalled();
+        expect(mocks.updateConfig).not.toHaveBeenCalled();
+        expect(runtime.log).toHaveBeenCalledWith("Current model restrictions kept.");
+        expect(run).toHaveBeenCalledTimes(credentialSource === "fresh" ? 1 : 0);
+      } finally {
+        restore();
+      }
+    },
+  );
+
+  it.each([
+    ["core", runModelsAuthLoginFlowCore],
+    ["Gateway", runModelsAuthLoginFlowForGateway],
+  ])("keeps %s-hosted auth available without a TTY", async (_name, runHostedFlow) => {
     const restore = withPipedStdin("");
     try {
       const run = vi.fn().mockResolvedValue(createAuthResult());
@@ -199,7 +316,7 @@ describe("headless model auth admission", () => {
           auth: [{ id: "oauth", label: "OAuth", kind: "oauth", run }],
         }),
       ]);
-      await runModelsAuthLoginFlowForGateway({
+      await runHostedFlow({
         provider: "openai",
         method: "oauth",
         config: {},
