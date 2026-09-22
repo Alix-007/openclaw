@@ -1089,18 +1089,21 @@ function maybeLogOpenAICodexNativeSearchTip(runtime: RuntimeEnv, providerId: str
 export async function runModelsAuthLoginFlowCore(
   opts: ModelsAuthLoginFlowOptions,
 ): Promise<ModelsAuthLoginFlowResult> {
-  return runModelsAuthLoginFlow(opts, true);
+  // The shared core is also used by Gateway and browser-auth callers. The
+  // CLI wrapper is the owner of the interactive-terminal admission policy.
+  return runModelsAuthLoginFlow(opts, true, false);
 }
 
 export async function runModelsAuthLoginFlowForGateway(
   opts: ModelsAuthLoginFlowOptions,
 ): Promise<ModelsAuthLoginFlowResult> {
-  return runModelsAuthLoginFlow(opts, false);
+  return runModelsAuthLoginFlow(opts, false, false);
 }
 
 async function runModelsAuthLoginFlow(
   opts: ModelsAuthLoginFlowOptions,
   showScopeNote: boolean,
+  enforceInteractive: boolean,
 ): Promise<ModelsAuthLoginFlowResult> {
   const requestedProviderId = opts.provider
     ? normalizeManualAuthProvider(opts.provider)
@@ -1189,7 +1192,7 @@ async function runModelsAuthLoginFlow(
     );
   }
 
-  if (showScopeNote && !process.stdin.isTTY && chosenMethod.headless !== true) {
+  if (enforceInteractive && !process.stdin.isTTY && chosenMethod.headless !== true) {
     throw new Error(
       `models auth login requires an interactive TTY for ${chosenMethod.label}. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available, or select a provider-owned headless method.`,
     );
@@ -1324,10 +1327,16 @@ async function runModelsAuthLoginFlow(
 }
 
 export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: RuntimeEnv) {
-  await runModelsAuthLoginFlowCore({
-    ...opts,
-    runtime,
-    prompter: createClackPrompter(),
-  });
+  // Only the CLI owns the TTY policy; shared callers may run through a
+  // browser or Gateway without an interactive stdin.
+  await runModelsAuthLoginFlow(
+    {
+      ...opts,
+      runtime,
+      prompter: createClackPrompter(),
+    },
+    true,
+    true,
+  );
 }
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */
