@@ -319,6 +319,7 @@ const {
   modelsAuthPasteTokenCommand,
   modelsAuthSetupTokenCommand,
   runModelsAuthLoginFlowCore,
+  runModelsAuthLoginFlowForGateway,
 } = await import("./auth.js");
 
 function createRuntime(): RuntimeEnv {
@@ -1108,6 +1109,38 @@ describe("modelsAuthLoginCommand", () => {
         modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, createRuntime()),
       ).rejects.toThrow("requires an interactive TTY");
       expect(runProviderAuth).not.toHaveBeenCalled();
+    } finally {
+      restorePiped();
+    }
+  });
+
+  it("keeps Gateway-hosted auth available without a TTY", async () => {
+    const restorePiped = withPipedStdin("");
+    try {
+      const provider = createProvider({
+        id: "openai",
+        label: "OpenAI",
+        auth: [
+          {
+            id: "oauth",
+            label: "OAuth",
+            kind: "oauth",
+            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+          },
+        ],
+        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
+      });
+      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
+
+      await runModelsAuthLoginFlowForGateway({
+        provider: "openai",
+        method: "oauth",
+        config: currentConfig,
+        runtime: createRuntime(),
+        prompter: mocks.createClackPrompter(),
+      });
+
+      expect(runProviderAuth).toHaveBeenCalledOnce();
     } finally {
       restorePiped();
     }

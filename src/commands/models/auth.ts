@@ -1189,7 +1189,7 @@ async function runModelsAuthLoginFlow(
     );
   }
 
-  if (!process.stdin.isTTY && chosenMethod.headless !== true) {
+  if (showScopeNote && !process.stdin.isTTY && chosenMethod.headless !== true) {
     throw new Error(
       `models auth login requires an interactive TTY for ${chosenMethod.label}. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available, or select a provider-owned headless method.`,
     );
