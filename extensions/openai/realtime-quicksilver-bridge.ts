@@ -565,7 +565,11 @@ export class OpenAIQuicksilverVoiceBridge implements RealtimeVoiceBridge {
     const reportEvent = () =>
       this.config.onEvent?.({ direction: "server", type: "error", detail: message });
     if (event.fatalAuth) {
-      this.fail(connection, error, "authentication failed", reportEvent);
+      if (!this.lifecycle.isReady()) {
+        failStartup(error, "session start failed");
+      } else {
+        this.fail(connection, error, "authentication failed", reportEvent);
+      }
       return;
     }
     reportEvent();
