@@ -1091,19 +1091,18 @@ export async function runModelsAuthLoginFlowCore(
 ): Promise<ModelsAuthLoginFlowResult> {
   // The shared core is also used by Gateway and browser-auth callers. The
   // CLI wrapper is the owner of the interactive-terminal admission policy.
-  return runModelsAuthLoginFlow(opts, true, false);
+  return runModelsAuthLoginFlow(opts, "core");
 }
 
 export async function runModelsAuthLoginFlowForGateway(
   opts: ModelsAuthLoginFlowOptions,
 ): Promise<ModelsAuthLoginFlowResult> {
-  return runModelsAuthLoginFlow(opts, false, false);
+  return runModelsAuthLoginFlow(opts, "gateway");
 }
 
 async function runModelsAuthLoginFlow(
   opts: ModelsAuthLoginFlowOptions,
-  showScopeNote: boolean,
-  enforceInteractive: boolean,
+  entrypoint: "core" | "gateway" | "cli",
 ): Promise<ModelsAuthLoginFlowResult> {
   const requestedProviderId = opts.provider
     ? normalizeManualAuthProvider(opts.provider)
@@ -1144,7 +1143,7 @@ async function runModelsAuthLoginFlow(
   } else if (requestedProviderId && !requestedProvider) {
     requestedProvider = resolveRequestedLoginProviderOrThrow(authProviders, requestedProviderId);
   }
-  if (showScopeNote) {
+  if (entrypoint !== "gateway") {
     await prompter.note(
       [
         "Scope: System / agent",
@@ -1192,7 +1191,7 @@ async function runModelsAuthLoginFlow(
     );
   }
 
-  if (enforceInteractive && !process.stdin.isTTY && chosenMethod.headless !== true) {
+  if (entrypoint === "cli" && !process.stdin.isTTY && chosenMethod.headless !== true) {
     throw new Error(
       `models auth login requires an interactive TTY for ${chosenMethod.label}. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available, or select a provider-owned headless method.`,
     );
@@ -1329,14 +1328,7 @@ async function runModelsAuthLoginFlow(
 export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: RuntimeEnv) {
   // Only the CLI owns the TTY policy; shared callers may run through a
   // browser or Gateway without an interactive stdin.
-  await runModelsAuthLoginFlow(
-    {
-      ...opts,
-      runtime,
-      prompter: createClackPrompter(),
-    },
-    true,
-    true,
-  );
+  const cliOpts = { ...opts, runtime, prompter: createClackPrompter() };
+  await runModelsAuthLoginFlow(cliOpts, "cli");
 }
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */
