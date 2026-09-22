@@ -547,6 +547,40 @@ describe("message tool gateway timeout", () => {
     });
   });
 
+  it("keeps mixed-location dry-run receipts delivery-neutral", async () => {
+    const notice =
+      "Content sent; location omitted because locations must be sent separately. Do not retry this send. Send a standalone location only if the user explicitly requested it.";
+    mocks.runMessageAction.mockResolvedValue({
+      kind: "send",
+      action: "send",
+      channel: "webchat",
+      to: "current-run",
+      handledBy: "internal-source",
+      payload: { status: "ok", deliveryStatus: "dry_run" },
+      normalization: { locationOmitted: true, notice },
+      toolResult: {
+        content: [
+          { type: "text", text: "Prepared visible reply to the current source conversation." },
+        ],
+        details: { dryRun: true },
+      },
+      dryRun: true,
+    } satisfies MessageActionResult);
+
+    const { result } = await executeSendWithResult({
+      action: { channel: "webchat", message: "hello", dryRun: true },
+    });
+
+    expect(result).toEqual({
+      content: [
+        { type: "text", text: "Prepared visible reply to the current source conversation." },
+      ],
+      details: { dryRun: true },
+    });
+    expect(JSON.stringify(result)).not.toContain("Content sent");
+    expect(JSON.stringify(result)).not.toContain("Do not retry");
+  });
+
   it("carries core send settlement in private result details", async () => {
     const sendResult = {
       channel: "telegram",
