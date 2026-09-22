@@ -686,6 +686,23 @@ function createDoctorLintFixture(
 }
 
 describe("doctor health contributions", () => {
+  it("reports contribution start, outcome, and duration for human Doctor runs", async () => {
+    const ctx = createDoctorContext();
+    const contribution = createDoctorHealthContribution({
+      id: "doctor:test-progress",
+      label: "Test progress",
+      run: async () => undefined,
+    });
+
+    await runDoctorHealthContributionList(ctx, [contribution]);
+
+    expect(ctx.runtime.log).toHaveBeenNthCalledWith(1, "Doctor: Test progress started");
+    expect(ctx.runtime.log).toHaveBeenNthCalledWith(
+      2,
+      expect.stringMatching(/^Doctor: Test progress completed \(\d+ms\)$/),
+    );
+  });
+
   async function withProcessPlatform<T>(
     platform: NodeJS.Platform,
     run: () => Promise<T>,
