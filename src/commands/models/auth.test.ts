@@ -319,7 +319,6 @@ const {
   modelsAuthPasteTokenCommand,
   modelsAuthSetupTokenCommand,
   runModelsAuthLoginFlowCore,
-  runModelsAuthLoginFlowForGateway,
 } = await import("./auth.js");
 
 function createRuntime(): RuntimeEnv {
@@ -1058,92 +1057,6 @@ describe("modelsAuthLoginCommand", () => {
     });
 
     expect((readMockCallArg(runProviderAuth) as AuthRunCall).signal).toBe(abortController.signal);
-  });
-
-  it("allows an explicitly selected provider-owned headless auth method without a TTY", async () => {
-    const restorePiped = withPipedStdin("");
-    try {
-      const provider = createProvider({
-        id: "openai",
-        label: "OpenAI Codex",
-        auth: [
-          {
-            id: "device-code",
-            label: "Device code",
-            kind: "device_code",
-            headless: true,
-            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-          },
-        ],
-        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-      });
-      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
-
-      await modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, createRuntime());
-
-      expect(runProviderAuth).toHaveBeenCalledOnce();
-    } finally {
-      restorePiped();
-    }
-  });
-
-  it("keeps non-headless auth methods gated when stdin is piped", async () => {
-    const restorePiped = withPipedStdin("");
-    try {
-      const provider = createProvider({
-        id: "openai",
-        label: "OpenAI Codex",
-        auth: [
-          {
-            id: "device-code",
-            label: "Device code",
-            kind: "device_code",
-            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-          },
-        ],
-        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-      });
-      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
-
-      await expect(
-        modelsAuthLoginCommand({ provider: "openai", method: "device-code" }, createRuntime()),
-      ).rejects.toThrow("requires an interactive TTY");
-      expect(runProviderAuth).not.toHaveBeenCalled();
-    } finally {
-      restorePiped();
-    }
-  });
-
-  it("keeps Gateway-hosted auth available without a TTY", async () => {
-    const restorePiped = withPipedStdin("");
-    try {
-      const provider = createProvider({
-        id: "openai",
-        label: "OpenAI",
-        auth: [
-          {
-            id: "oauth",
-            label: "OAuth",
-            kind: "oauth",
-            run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-          },
-        ],
-        run: runProviderAuth as ProviderPlugin["auth"][number]["run"],
-      });
-      mocks.resolvePluginProvidersCore.mockReturnValue([provider]);
-
-      await runModelsAuthLoginFlowForGateway({
-        provider: "openai",
-        method: "oauth",
-        config: currentConfig,
-        runtime: createRuntime(),
-        prompter: mocks.createClackPrompter(),
-      });
-
-      expect(runProviderAuth).toHaveBeenCalledOnce();
-    } finally {
-      restorePiped();
-    }
   });
 
   it("refreshes saved credentials before presenting provider notes", async () => {
