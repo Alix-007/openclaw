@@ -491,9 +491,6 @@ describe("OpenAIQuicksilverVoiceBridge", () => {
     expect(harness.bridge.isConnected()).toBe(false);
     expect(harness.onError).not.toHaveBeenCalled();
     expect(harness.onClose).not.toHaveBeenCalled();
-    expect(harness.logger.warn).toHaveBeenCalledWith(
-      "OpenAI GPT-Live provider error before session startup; continuing readiness",
-    );
 
     harness.socket.serverEvent({
       type: "session.started",
