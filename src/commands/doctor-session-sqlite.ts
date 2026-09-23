@@ -628,7 +628,15 @@ function resolveDoctorSessionSqliteTargets(params: {
   store?: string;
 }): SessionStoreTarget[] {
   if (params.store) {
-    return resolveSessionStoreTargets(params.cfg, { store: params.store }, { env: params.env });
+    return resolveSessionStoreTargets(
+      params.cfg,
+      {
+        store: params.store,
+        ...(params.agent ? { agent: params.agent } : {}),
+        ...(params.allAgents ? { allAgents: true } : {}),
+      },
+      { env: params.env },
+    );
   }
   const discoversHistory =
     params.mode === "dry-run" || params.mode === "import" || params.mode === "validate";
