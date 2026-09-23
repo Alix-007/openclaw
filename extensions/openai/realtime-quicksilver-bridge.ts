@@ -21,6 +21,7 @@ import {
   closeOpenAILiveSocket,
   openAIQuicksilverToolResultText,
 } from "./realtime-quicksilver-protocol.js";
+import { handleOpenAIQuicksilverProviderError } from "./realtime-quicksilver-provider-error.js";
 import { projectOpenAIQuicksilverErrorMessage } from "./realtime-quicksilver-redaction.js";
 import {
   connectOpenAIQuicksilverSideband,
@@ -564,22 +565,15 @@ export class OpenAIQuicksilverVoiceBridge implements RealtimeVoiceBridge {
     const error = new Error(message);
     const reportEvent = () =>
       this.config.onEvent?.({ direction: "server", type: "error", detail: message });
-    if (event.fatalAuth) {
-      if (!this.lifecycle.isReady()) {
-        failStartup(error, "session start failed");
-      } else {
-        this.fail(connection, error, "authentication failed", reportEvent);
-      }
-      return;
-    }
-    reportEvent();
-    if (!this.lifecycle.isReady()) {
-      (this.config.logger?.warn ?? console.warn)(
-        "OpenAI GPT-Live provider error before session startup; continuing readiness",
-      );
-      return;
-    }
-    this.config.onError?.(error);
+    handleOpenAIQuicksilverProviderError({
+      fatalAuth: event.fatalAuth,
+      ready: this.lifecycle.isReady(),
+      failStartup: () => failStartup(error, "session start failed"),
+      failAuthentication: () => this.fail(connection, error, "authentication failed", reportEvent),
+      reportEvent,
+      reportError: () => this.config.onError?.(error),
+      logger: this.config.logger,
+    });
   }
 
   private startDelegation(
