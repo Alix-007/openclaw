@@ -205,6 +205,31 @@ describe("createLmstudioEmbeddingProvider preload context length", () => {
     expect(events).toEqual(["pause", "resume"]);
   });
 
+  it("pauses the memory deadline while preloading a managed local service", async () => {
+    const events: string[] = [];
+    const acquireLocalService = vi.fn(
+      async (target: { onReadinessWait?: (waiting: boolean) => void }) => {
+        target.onReadinessWait?.(true);
+        target.onReadinessWait?.(false);
+        return { release: vi.fn() };
+      },
+    );
+    const control = createMemorySearchDeadlineControl();
+    control.subscribe((action) => events.push(action));
+
+    await createLmstudioEmbeddingProvider({
+      config: buildConfig({ provider: { localService: { command: "/usr/bin/lms" } } }),
+      provider: "lmstudio",
+      model: EMBEDDING_MODEL,
+      fallback: "none",
+      acquireLocalService,
+      [MEMORY_SEARCH_DEADLINE_CONTROL]: control,
+    });
+
+    expect(acquireLocalService).toHaveBeenCalledOnce();
+    expect(events).toEqual(["pause", "resume"]);
+  });
+
   it("keeps each query-batch service lease until its request settles", async () => {
     const firstRelease = vi.fn();
     const secondRelease = vi.fn();

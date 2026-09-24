@@ -14,10 +14,12 @@ import {
   type OpenClawConfig,
   type ResolvedMemorySearchConfig,
 } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import type {
-  MemoryEmbeddingProbeResult,
-  MemorySearchRuntimeDebug,
-  MemorySyncParams,
+import {
+  MEMORY_SEARCH_DEADLINE_CONTROL,
+  type MemoryEmbeddingProbeResult,
+  type MemorySearchDeadlineControl,
+  type MemorySearchRuntimeDebug,
+  type MemorySyncParams,
 } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
 import { normalizeAgentId } from "openclaw/plugin-sdk/routing";
 import { redactSensitiveText } from "openclaw/plugin-sdk/security-runtime";
@@ -183,6 +185,7 @@ export abstract class MemoryProviderLifecycle extends MemoryManagerEmbeddingOps 
   protected async ensureEmbeddingProviderForSearch(
     initialIndexState: MemoryRetrievalIndexState,
     onDebug?: (debug: MemorySearchRuntimeDebug) => void,
+    deadlineControl?: MemorySearchDeadlineControl,
   ): Promise<boolean> {
     let indexState = initialIndexState;
     const failure = this.embeddingBootstrapFailure;
@@ -194,7 +197,7 @@ export abstract class MemoryProviderLifecycle extends MemoryManagerEmbeddingOps 
       }
     }
     try {
-      await this.ensureProviderInitialized();
+      await this.ensureProviderInitialized(deadlineControl);
     } catch (err) {
       if (this.providerRequirement.mode !== "optional") {
         throw err;
@@ -320,7 +323,9 @@ export abstract class MemoryProviderLifecycle extends MemoryManagerEmbeddingOps 
     }
   }
 
-  protected async ensureProviderInitialized(): Promise<void> {
+  protected async ensureProviderInitialized(
+    deadlineControl?: MemorySearchDeadlineControl,
+  ): Promise<void> {
     if (this.providerInitialized) {
       const bootstrapRetryDue =
         this.embeddingBootstrapFailure !== undefined &&
@@ -354,6 +359,7 @@ export abstract class MemoryProviderLifecycle extends MemoryManagerEmbeddingOps 
           config: this.cfg,
           agentDir: resolveAgentDir(this.cfg, this.agentId),
           ...(this.acquireLocalService ? { acquireLocalService: this.acquireLocalService } : {}),
+          ...(deadlineControl ? { [MEMORY_SEARCH_DEADLINE_CONTROL]: deadlineControl } : {}),
           ...resolveMemoryPrimaryProviderRequest({ settings: this.settings }),
         });
         this.applyProviderResult(providerResult);

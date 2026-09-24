@@ -360,20 +360,28 @@ export async function createLmstudioEmbeddingProvider(
 
   // Resolve the canonical embedding/cache identity before returning the provider.
   if (providerConfig?.params?.preload !== false) {
-    await withLocalServiceLease(undefined, async () => await preloadModel(undefined, true));
+    await withLocalServiceLease(
+      undefined,
+      async () => await preloadModel(undefined, true),
+      options[MEMORY_SEARCH_DEADLINE_CONTROL],
+    );
   } else if (model.includes("@")) {
     // Variant aliases are not accepted by LM Studio's inference routes. Resolve
     // only the stable wire/cache identity here; JIT still owns the actual load.
     try {
-      await withLocalServiceLease(undefined, async () => {
-        client.model = await resolveLmstudioEmbeddingModelKey({
-          baseUrl,
-          apiKey,
-          headers: headerOverrides,
-          ssrfPolicy,
-          model,
-        });
-      });
+      await withLocalServiceLease(
+        undefined,
+        async () => {
+          client.model = await resolveLmstudioEmbeddingModelKey({
+            baseUrl,
+            apiKey,
+            headers: headerOverrides,
+            ssrfPolicy,
+            model,
+          });
+        },
+        options[MEMORY_SEARCH_DEADLINE_CONTROL],
+      );
     } catch (error) {
       log.debug("lmstudio embedding variant discovery failed; using requested model", {
         baseUrl,

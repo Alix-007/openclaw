@@ -169,7 +169,7 @@ export abstract class MemorySearchOrchestration extends MemoryKeywordRetrieval {
     const runSearch = async () => {
       opts?.onDebug?.({ backend: "builtin" });
       if (this.providerRequirement.mode === "required") {
-        await this.ensureProviderInitialized();
+        await this.ensureProviderInitialized(opts?.[MEMORY_SEARCH_DEADLINE_CONTROL]);
         this.assertRequiredProviderAvailable("search");
       }
       let indexState = await readIndexState();
@@ -236,6 +236,7 @@ export abstract class MemorySearchOrchestration extends MemoryKeywordRetrieval {
       const embeddingBootstrapKeywordOnly = await this.ensureEmbeddingProviderForSearch(
         indexState,
         opts?.onDebug,
+        opts?.[MEMORY_SEARCH_DEADLINE_CONTROL],
       );
       if (recoveringEmbeddingProvider) {
         indexState = await readIndexState();
@@ -256,7 +257,7 @@ export abstract class MemorySearchOrchestration extends MemoryKeywordRetrieval {
         // Reinitialize it before identity validation; leaving the lifecycle pending
         // makes a valid existing index look mismatched and drops keyword results.
         this.resetProviderInitializationForRetry();
-        await this.ensureProviderInitialized();
+        await this.ensureProviderInitialized(opts?.[MEMORY_SEARCH_DEADLINE_CONTROL]);
       }
       this.assertRequiredProviderAvailable("search");
       if (
