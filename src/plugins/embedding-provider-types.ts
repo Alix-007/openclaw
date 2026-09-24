@@ -77,7 +77,7 @@ export type EmbeddingProviderCreateOptions = {
   };
   dimensions?: number;
   taskType?: string;
-} & MemorySearchDeadlineControlOptions;
+};
 
 /** Result returned by an embedding provider adapter create call. */
 export type EmbeddingProviderCreateResult = {
