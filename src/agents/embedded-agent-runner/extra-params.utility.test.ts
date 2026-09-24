@@ -39,7 +39,6 @@ describe("utility completion extra params", () => {
       model,
       undefined,
       undefined,
-      { skipProviderWrapper: true },
     );
 
     void agent.streamFn?.(model, { messages: [] } satisfies Context, {});
