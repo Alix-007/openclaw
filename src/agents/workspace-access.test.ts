@@ -101,6 +101,55 @@ describe("host-owned workspace access", () => {
     },
   );
 
+  it("preserves remote discovery failure causes across the SDK boundary", async () => {
+    const root = workspace();
+    const cause = new Error("transport disconnected");
+    const release = registerAgentWorkspaceAccess(root, {
+      ...provider(),
+      loadSkills: async () => {
+        throw cause;
+      },
+    });
+    try {
+      // The provider fails before using its request; the binding still owns classification.
+      const loadSkills = getAgentWorkspaceAccess(root)!.loadSkills!;
+      await loadSkills({
+        sourcePlan: {
+          workspaceDir: root,
+          roots: [],
+          pluginSkillsDir: root,
+          pluginSkillRoots: [],
+          managedSkillsDir: root,
+          stateDir: root,
+        },
+        limits: { maxCandidatesPerRoot: 1, maxSkillsLoadedPerSource: 1, maxSkillFileBytes: 1 },
+        additionalBins: [],
+      }).then(
+        () => {
+          throw new Error("expected discovery to fail");
+        },
+        (error: unknown) => {
+          expect(error).toMatchObject({ cause });
+          expect(isWorkspaceAccessUnavailableError(error)).toBe(true);
+          expect(isWorkspaceAccessUnavailableError(new Error("wrapped", { cause: error }))).toBe(
+            true,
+          );
+          // Plugins may load a separate copy of the SDK; identity cannot depend on prototypes.
+          expect(isWorkspaceAccessUnavailableError({ code: "WORKSPACE_ACCESS_UNAVAILABLE" })).toBe(
+            true,
+          );
+        },
+      );
+      expect(isWorkspaceAccessUnavailableError(cause)).toBe(false);
+      release();
+      expect(() => getAgentWorkspaceAccess(root, "loadSkills")).toThrow(
+        WorkspaceAccessUnavailableError,
+      );
+    } finally {
+      release();
+    }
+  });
+
   it("leaves unconfigured workspaces local and declared workspaces unavailable until start", () => {
     const root = workspace();
     expect(getAgentWorkspaceAccess(root)).toBeUndefined();
@@ -109,12 +158,17 @@ describe("host-owned workspace access", () => {
     expect(() => getAgentWorkspaceAccess(root, "memoryFiles")).toThrow(
       WorkspaceAccessUnavailableError,
     );
+    expect(() => getAgentWorkspaceAccess(root, "loadSkills")).toThrow(
+      WorkspaceAccessUnavailableError,
+    );
     const release = registerAgentWorkspaceAccess(root, provider());
     expect(getAgentWorkspaceAccess(root)).toBeDefined();
     expect(getAgentWorkspaceAccess(root, "memoryFiles")).toBeUndefined();
+    expect(getAgentWorkspaceAccess(root, "loadSkills")).toBeUndefined();
     release();
     expect(() => getAgentWorkspaceAccess(root)).toThrow(WorkspaceAccessUnavailableError);
     expect(getAgentWorkspaceAccess(root, "memoryFiles")).toBeUndefined();
+    expect(getAgentWorkspaceAccess(root, "loadSkills")).toBeUndefined();
   });
 
   it("rejects duplicate ownership and revokes retained methods without affecting a replacement", async () => {
@@ -140,6 +194,41 @@ describe("host-owned workspace access", () => {
     } finally {
       releaseReplacement();
     }
+  });
+
+  it("revokes skill installation while Gateway policy is pending", async () => {
+    const root = workspace();
+    const policy = createDeferredCore<undefined>();
+    const policyStarted = createDeferredCore();
+    const mutate = vi.fn();
+    const release = registerAgentWorkspaceAccess(root, {
+      ...provider(),
+      applySkillRoot: async (params) => {
+        await params.beforeInstall?.("install");
+        mutate();
+        return { ok: true, targetDir: "/host/skills/test", mode: "install" };
+      },
+    });
+    const retained = getAgentWorkspaceAccess(root)!.applySkillRoot!;
+    const install = retained({
+      workspaceDir: root,
+      extractedRoot: "/source",
+      slug: "test",
+      mode: "install",
+      beforeInstall: async () => {
+        policyStarted.resolve();
+        return policy.promise;
+      },
+    });
+    const rejected = expect(install).rejects.toThrow("stopped or not ready");
+    await policyStarted.promise;
+    release();
+    policy.resolve(undefined);
+    await rejected;
+    expect(mutate).not.toHaveBeenCalled();
+    await expect(
+      retained({ workspaceDir: root, extractedRoot: "/source", slug: "test", mode: "install" }),
+    ).rejects.toThrow("stopped or not ready");
   });
 
   it("rejects a result returned after ownership is revoked", async () => {
@@ -197,6 +286,81 @@ describe("host-owned workspace access", () => {
 
 describe("workspace attachment preparation", () => {
   const turn = { timeoutMs: 1_000, media: [{ path: "media://inbound/report.pdf" }] };
+
+  it.each(["binding", "replacement", "caller", "abort"])(
+    "fences local attachment preparation when %s changes during an awaited step",
+    async (change) => {
+      const root = workspace();
+      const controller = new AbortController();
+      let active = true;
+      let release: (() => void) | undefined;
+      const pending = prepareAgentWorkspaceAttachments({
+        workspaceDir: root,
+        localExecution: { readAllowed: true, maxChars: 60_000 },
+        turn: { ...turn, abortSignal: controller.signal },
+        assertCurrent: () => {
+          if (!active) {
+            throw new Error("caller closed");
+          }
+        },
+      });
+      if (change === "binding" || change === "replacement") {
+        release = registerAgentWorkspaceAccess(root, provider());
+        if (change === "replacement") {
+          release();
+          release = registerAgentWorkspaceAccess(root, provider());
+        }
+      } else if (change === "caller") {
+        active = false;
+      } else {
+        controller.abort(new Error("attachment cancelled"));
+      }
+      try {
+        await expect(pending).rejects.toThrow(
+          change === "caller"
+            ? "caller closed"
+            : change === "abort"
+              ? "attachment cancelled"
+              : "Workspace access changed",
+        );
+      } finally {
+        release?.();
+      }
+    },
+  );
+
+  it.each(["bridge", "ready", "stopped", "declared"])(
+    "never uses local attachment preparation for a %s remote binding",
+    async (state) => {
+      const root = workspace();
+      const prepare = vi.fn(async () => "remote note");
+      const release =
+        state === "declared"
+          ? undefined
+          : registerAgentWorkspaceAccess(root, {
+              ...provider(),
+              ...(state === "bridge" ? {} : { prepareTurnAttachments: prepare }),
+            });
+      if (state === "declared") {
+        declareAgentWorkspaceAccess(root);
+      } else if (state === "stopped") {
+        release?.();
+      }
+      try {
+        await expect(
+          prepareAgentWorkspaceAttachments({
+            workspaceDir: root,
+            localExecution: { readAllowed: true, maxChars: 60_000 },
+            turn,
+            assertCurrent: () => {},
+          }),
+        ).resolves.toBeUndefined();
+        expect(prepare).not.toHaveBeenCalled();
+      } finally {
+        release?.();
+      }
+    },
+  );
 
   it.each([false, true])("preserves bridge-only input handling after stop: %s", async (stopped) => {
     const root = workspace();

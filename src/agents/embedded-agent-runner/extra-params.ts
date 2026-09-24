@@ -38,7 +38,6 @@ import {
 } from "../../plugins/provider-hook-runtime.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
 import {
-  resolveAliasedParamValueFromKeys,
   resolveModelExtraParamSources,
   sanitizeExtraParamsRecord,
 } from "../model-extra-params.js";
@@ -336,8 +335,7 @@ function createStreamFnWithExtraParams(
   }
   const resolvedResponseFormat = resolveAliasedParamValue(
     [extraParams],
-    "response_format",
-    "responseFormat",
+    ["response_format", "responseFormat"],
   );
   if (
     resolvedResponseFormat &&
@@ -370,11 +368,11 @@ function createStreamFnWithExtraParams(
   // so transport layers can filter by API type (e.g. openai-responses skips penalty params).
   // Resolve aliased params: camelCase (runtime/request) checked first so
   // per-request gateway overrides take priority over configured snake_case values.
-  const resolvedFrequencyPenalty = resolveAliasedParamValueFromKeys(
+  const resolvedFrequencyPenalty = resolveAliasedParamValue(
     [extraParams],
     ["frequencyPenalty", "frequency_penalty"],
   );
-  const resolvedPresencePenalty = resolveAliasedParamValueFromKeys(
+  const resolvedPresencePenalty = resolveAliasedParamValue(
     [extraParams],
     ["presencePenalty", "presence_penalty"],
   );
@@ -438,10 +436,24 @@ function createStreamFnWithExtraParams(
 
 function resolveAliasedParamValue(
   sources: Array<Record<string, unknown> | undefined>,
-  snakeCaseKey: string,
-  camelCaseKey: string,
+  keys: readonly string[],
 ): unknown {
-  return resolveAliasedParamValueFromKeys(sources, [snakeCaseKey, camelCaseKey]);
+  let resolved: unknown = undefined;
+  let seen = false;
+  for (const source of sources) {
+    if (!source) {
+      continue;
+    }
+    for (const key of keys) {
+      if (!Object.hasOwn(source, key)) {
+        continue;
+      }
+      resolved = source[key];
+      seen = true;
+      break;
+    }
+  }
+  return seen ? resolved : undefined;
 }
 
 function canonicalizeExtraParamAlias(
@@ -450,56 +462,38 @@ function canonicalizeExtraParamAlias(
   keys: readonly [string, string],
   canonical = keys[0],
 ): void {
-  const resolved = resolveAliasedParamValueFromKeys(sources, keys);
+  const resolved = resolveAliasedParamValue(sources, keys);
   if (resolved !== undefined) {
     merged[canonical] = resolved;
     delete merged[keys[0] === canonical ? keys[1] : keys[0]];
   }
 }
 
-function applyCanonicalAliasedParamValue(params: {
-  merged: Record<string, unknown>;
-  sources: Array<Record<string, unknown> | undefined>;
-  keys: readonly string[];
-  canonicalKey: string;
-}): void {
-  const resolved = resolveAliasedParamValueFromKeys(params.sources, params.keys);
-  if (resolved === undefined) {
-    return;
-  }
-  for (const key of params.keys) {
-    delete params.merged[key];
-  }
-  params.merged[params.canonicalKey] = resolved;
-}
+const OPENROUTER_RESPONSE_CACHE_PARAM_ALIASES = [
+  ["responseCache", "response_cache"],
+  [
+    "responseCacheTtlSeconds",
+    "response_cache_ttl_seconds",
+    "responseCacheTtl",
+    "response_cache_ttl",
+  ],
+  ["responseCacheClear", "response_cache_clear"],
+] as const;
 
 function canonicalizeOpenRouterResponseCacheParams(
   merged: Record<string, unknown>,
   sources: Array<Record<string, unknown> | undefined>,
 ): void {
-  applyCanonicalAliasedParamValue({
-    merged,
-    sources,
-    keys: ["responseCache", "response_cache"],
-    canonicalKey: "responseCache",
-  });
-  applyCanonicalAliasedParamValue({
-    merged,
-    sources,
-    keys: [
-      "responseCacheTtlSeconds",
-      "response_cache_ttl_seconds",
-      "responseCacheTtl",
-      "response_cache_ttl",
-    ],
-    canonicalKey: "responseCacheTtlSeconds",
-  });
-  applyCanonicalAliasedParamValue({
-    merged,
-    sources,
-    keys: ["responseCacheClear", "response_cache_clear"],
-    canonicalKey: "responseCacheClear",
-  });
+  for (const keys of OPENROUTER_RESPONSE_CACHE_PARAM_ALIASES) {
+    const resolved = resolveAliasedParamValue(sources, keys);
+    if (resolved === undefined) {
+      continue;
+    }
+    for (const key of keys) {
+      delete merged[key];
+    }
+    merged[keys[0]] = resolved;
+  }
 }
 
 function createParallelToolCallsWrapper(
@@ -628,8 +622,7 @@ function applyPostPluginStreamWrappers(
 
   const rawParallelToolCalls = resolveAliasedParamValue(
     [ctx.effectiveExtraParams, ctx.override],
-    "parallel_tool_calls",
-    "parallelToolCalls",
+    ["parallel_tool_calls", "parallelToolCalls"],
   );
   if (rawParallelToolCalls === undefined) {
     return;
@@ -752,7 +745,7 @@ const MIMO_REASONING_OPENAI_COMPATIBLE_MODEL_IDS = new Set([
   "mimo-v2-omni",
   "mimo-v2.5",
   "mimo-v2.5-pro",
-  "mimo-v2.6-pro",
+  ...["flash", "pro", "pro-ultraspeed"].map((variant) => `mimo-v2.6-${variant}`),
 ]);
 const MIMO_REASONING_AS_VISIBLE_TEXT_MODEL_IDS = new Set(["mimo-v2-pro", "mimo-v2-omni"]);
 

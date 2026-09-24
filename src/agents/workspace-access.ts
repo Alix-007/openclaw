@@ -7,7 +7,14 @@ import type { MemoryWorkspaceFiles } from "../../packages/memory-host-sdk/src/ho
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { readPersistedMediaFacts, type MediaFact } from "../media/media-facts.js";
 import type { UserTurnTranscriptRecorder } from "../sessions/user-turn-transcript.types.js";
+import type { WorkspaceSkillLifecycle } from "../skills/lifecycle/workspace-types.js";
+import type {
+  WorkspaceSkillSourceRequest,
+  WorkspaceSkillSources,
+} from "../skills/loading/workspace-skill-sources.types.js";
+import type { SkillResourceSourceReader } from "../skills/types.js";
 import type { SandboxFsBridge } from "./sandbox/fs-bridge.types.js";
+import type { LocalAttachmentExecutionContext } from "./workspace-attachments.local.js";
 
 type WorkspaceAttachmentTurn = {
   abortSignal?: AbortSignal;
@@ -20,6 +27,24 @@ type WorkspaceAttachmentTurn = {
 export type AgentWorkspaceAccess = {
   /** Native Memory file operations; indexing and session state remain on Gateway. */
   memoryFiles?: MemoryWorkspaceFiles;
+  /** Execute a Gateway-approved dependency recipe on the workspace host. */
+  installSkillDependencies?: WorkspaceSkillLifecycle["installSkillDependencies"];
+  /** Read native source tiers and execution-host facts without applying Gateway policy. */
+  loadSkills?: (request: WorkspaceSkillSourceRequest) => Promise<WorkspaceSkillSources>;
+  /** Keep a host subscription alive until aborted; notify without transferring file contents. */
+  watchSkills?: (
+    request: Pick<WorkspaceSkillSourceRequest, "sourcePlan" | "executionWorkspaceDir">,
+    onChange: (event: "change" | "unavailable") => void,
+    signal: AbortSignal,
+  ) => Promise<void>;
+  skillResources?: SkillResourceSourceReader;
+  /** Transfer the source tree and apply it on the host; run beforeInstall on Gateway. */
+  applySkillRoot?: WorkspaceSkillLifecycle["applyExtractedSkillRoot"];
+  recordSkillSourceInstall?: WorkspaceSkillLifecycle["recordSkillSourceInstall"];
+  clawHubSkills?: Omit<
+    WorkspaceSkillLifecycle,
+    "installSkillDependencies" | "applyExtractedSkillRoot" | "recordSkillSourceInstall"
+  >;
   bridge: Pick<
     SandboxFsBridge,
     "readFile" | "readFileWithSource" | "readDirectory" | "writeFile" | "stat"
@@ -250,6 +275,177 @@ export function registerAgentWorkspaceAccess(
       return note;
     };
   }
+  const installSkillDependencies = access.installSkillDependencies?.bind(access);
+  if (installSkillDependencies) {
+    boundAccess.installSkillDependencies = async (params) => {
+      assertCurrent();
+      const result = await installSkillDependencies(params);
+      assertCurrent();
+      return result;
+    };
+  }
+  const loadSkills = access.loadSkills?.bind(access);
+  if (loadSkills) {
+    boundAccess.loadSkills = async (request) => {
+      assertCurrent();
+      let result: WorkspaceSkillSources;
+      try {
+        result = await loadSkills(request);
+      } catch (cause) {
+        throw new WorkspaceAccessUnavailableError("Remote workspace skill discovery failed", {
+          cause,
+        });
+      }
+      assertCurrent();
+      return result;
+    };
+  }
+  const watchSkills = access.watchSkills?.bind(access);
+  if (watchSkills) {
+    boundAccess.watchSkills = async (request, onChange, signal) => {
+      assertCurrent();
+      const active = AbortSignal.any([signal, lifetime.signal]);
+      active.throwIfAborted();
+      await watchSkills(
+        request,
+        (event) => {
+          if (!active.aborted && binding.active && bindings.get(key) === binding) {
+            onChange(event);
+          }
+        },
+        active,
+      );
+    };
+  }
+  const skillResources = access.skillResources;
+  if (skillResources) {
+    boundAccess.skillResources = Object.freeze({
+      async readInstructions(filePath, options) {
+        assertCurrent();
+        options.signal?.throwIfAborted();
+        const result = await skillResources.readInstructions(filePath, options);
+        assertCurrent();
+        options.signal?.throwIfAborted();
+        return result;
+      },
+      async resolveExplicitSkill(selection) {
+        assertCurrent();
+        const result = await skillResources.resolveExplicitSkill(selection);
+        assertCurrent();
+        return result;
+      },
+      async readSkillFiles(skill, options) {
+        assertCurrent();
+        const result = await skillResources.readSkillFiles(skill, options);
+        assertCurrent();
+        return result;
+      },
+    });
+  }
+  const applySkillRoot = access.applySkillRoot?.bind(access);
+  if (applySkillRoot) {
+    boundAccess.applySkillRoot = async (params) => {
+      assertCurrent();
+      const result = await applySkillRoot({
+        ...params,
+        beforeInstall: async (mode) => {
+          assertCurrent();
+          const decision = await params.beforeInstall?.(mode);
+          assertCurrent();
+          return decision;
+        },
+      });
+      assertCurrent();
+      return result;
+    };
+  }
+  const recordSkillSourceInstall = access.recordSkillSourceInstall?.bind(access);
+  if (recordSkillSourceInstall) {
+    boundAccess.recordSkillSourceInstall = async (params) => {
+      assertCurrent();
+      await recordSkillSourceInstall(params);
+      assertCurrent();
+    };
+  }
+  const clawHubSkills = access.clawHubSkills;
+  if (clawHubSkills) {
+    boundAccess.clawHubSkills = Object.freeze({
+      async planClawHubSkillUninstall(params) {
+        assertCurrent();
+        const result = await clawHubSkills.planClawHubSkillUninstall(params);
+        assertCurrent();
+        return result;
+      },
+      async applyClawHubSkillUninstall(plan, options) {
+        assertCurrent();
+        const result = await clawHubSkills.applyClawHubSkillUninstall(plan, {
+          ...options,
+          beforePersistentApply() {
+            assertCurrent();
+            options.beforePersistentApply?.();
+          },
+          beforeRollback() {
+            assertCurrent();
+            options.beforeRollback?.();
+          },
+        });
+        assertCurrent();
+        return result;
+      },
+      async resolveClawHubSkillVerificationTarget(params) {
+        assertCurrent();
+        const result = await clawHubSkills.resolveClawHubSkillVerificationTarget(params);
+        assertCurrent();
+        return result;
+      },
+      async readClawHubSkillsLockfile(params) {
+        assertCurrent();
+        const result = await clawHubSkills.readClawHubSkillsLockfile(params);
+        assertCurrent();
+        return result;
+      },
+      async resolveRequestedUpdateSlug(params) {
+        assertCurrent();
+        const result = await clawHubSkills.resolveRequestedUpdateSlug(params);
+        assertCurrent();
+        return result;
+      },
+      async resolveTrackedUpdateTarget(params) {
+        assertCurrent();
+        const result = await clawHubSkills.resolveTrackedUpdateTarget(params);
+        assertCurrent();
+        return result;
+      },
+      async guardTrackedSkillLocalState(params) {
+        assertCurrent();
+        const result = await clawHubSkills.guardTrackedSkillLocalState(params);
+        assertCurrent();
+        return result;
+      },
+      async preflightSkillOwnerState(params) {
+        assertCurrent();
+        const result = await clawHubSkills.preflightSkillOwnerState(params);
+        assertCurrent();
+        return result;
+      },
+      async assertClawHubSkillInstallState(params) {
+        assertCurrent();
+        await clawHubSkills.assertClawHubSkillInstallState(params);
+        assertCurrent();
+      },
+      async readInstalledClawHubSkillFiles(params) {
+        assertCurrent();
+        const result = await clawHubSkills.readInstalledClawHubSkillFiles(params);
+        assertCurrent();
+        return result;
+      },
+      async recordClawHubSkillInstall(params) {
+        assertCurrent();
+        await clawHubSkills.recordClawHubSkillInstall(params);
+        assertCurrent();
+      },
+    });
+  }
   binding.access = Object.freeze(boundAccess);
   bindings.set(key, binding);
   return () => {
@@ -307,12 +503,18 @@ export async function prepareAgentWorkspaceAttachments(params: {
   workspaceDir: string;
   turn: WorkspaceAttachmentTurn & { userTurnTranscriptRecorder?: UserTurnTranscriptRecorder };
   assertCurrent: () => void;
+  /** Final attempt policy; omission retains the remote-adapter-only SDK contract. */
+  localExecution?: LocalAttachmentExecutionContext;
 }): Promise<string | undefined> {
   if (!params.turn.media?.length && !params.turn.userTurnTranscriptRecorder) {
     return undefined;
   }
+  // Local preparation never substitutes for any registered remote workspace owner.
+  if (params.localExecution && bindings.has(path.resolve(params.workspaceDir))) {
+    return undefined;
+  }
   const access = getAgentWorkspaceAccess(params.workspaceDir, "prepareTurnAttachments");
-  if (!access?.prepareTurnAttachments) {
+  if (!access?.prepareTurnAttachments && !params.localExecution) {
     return undefined;
   }
   const assertCurrent = () => {
@@ -331,15 +533,26 @@ export async function prepareAgentWorkspaceAttachments(params: {
   if (!facts.some((fact) => fact.path?.trim() || fact.url?.trim())) {
     return undefined;
   }
-  const note = await access.prepareTurnAttachments(
-    {
-      config: params.turn.config,
+  let note: string | undefined;
+  if (access?.prepareTurnAttachments) {
+    note = await access.prepareTurnAttachments(
+      {
+        config: params.turn.config,
+        media: facts,
+        timeoutMs: params.turn.timeoutMs,
+        abortSignal: params.turn.abortSignal,
+      },
+      assertCurrent,
+    );
+  } else if (params.localExecution) {
+    const { prepareLocalWorkspaceAttachments } = await import("./workspace-attachments.local.js");
+    assertCurrent();
+    note = await prepareLocalWorkspaceAttachments({
       media: facts,
-      timeoutMs: params.turn.timeoutMs,
-      abortSignal: params.turn.abortSignal,
-    },
-    assertCurrent,
-  );
+      execution: params.localExecution,
+      assertCurrent,
+    });
+  }
   assertCurrent();
   return note;
 }

@@ -1,6 +1,8 @@
 // The handle lease outlives transactions and maintenance, including close-time WAL work.
 import type { DatabaseSync } from "node:sqlite";
 import { openNodeSqliteDatabase, resolveExistingSqliteFileUri } from "../infra/node-sqlite.js";
+import { withSqliteNativeOpen } from "../infra/sqlite-error-diagnostics.js";
+import { assertExistingDatabaseIdentity } from "../infra/sqlite-worker-identity.js";
 import { acquireStateDatabaseHandleLease } from "../infra/state-database-coordinator.js";
 import { resolveGlobalSingleton } from "../shared/global-singleton.js";
 
@@ -11,6 +13,7 @@ const handleLeases = resolveGlobalSingleton(
 
 type StateDatabaseOpenOptions = {
   existingOnly?: boolean;
+  expectedIdentity?: string;
   readOnly?: boolean;
   timeout?: number;
   enableForeignKeyConstraints?: false;
@@ -34,12 +37,17 @@ export function openTrackedStateDatabaseResult(
 ): { status: "available"; database: DatabaseSync } | { status: "unavailable"; error: unknown } {
   const lease = acquireStateDatabaseHandleLease({ databasePath: pathname, busyTimeoutMs: 0 });
   try {
-    const location = options?.existingOnly ? resolveExistingSqliteFileUri(pathname) : pathname;
-    const database = options?.readOnly
-      ? openNodeSqliteDatabase(location, { readOnly: true, timeout: options.timeout })
-      : openNodeSqliteDatabase(location, {
-          enableForeignKeyConstraints: options?.enableForeignKeyConstraints,
-        });
+    if (options?.expectedIdentity !== undefined) {
+      assertExistingDatabaseIdentity(pathname, options.expectedIdentity);
+    }
+    const location =
+      options?.existingOnly || options?.expectedIdentity !== undefined
+        ? resolveExistingSqliteFileUri(pathname)
+        : pathname;
+    const nativeOptions = options?.readOnly
+      ? { readOnly: true, timeout: options.timeout }
+      : { enableForeignKeyConstraints: options?.enableForeignKeyConstraints };
+    const database = withSqliteNativeOpen(() => openNodeSqliteDatabase(location, nativeOptions));
     handleLeases.set(database, lease);
     return { status: "available", database };
   } catch (error) {
