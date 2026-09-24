@@ -11,6 +11,7 @@ import {
 } from "../../app/notifications-auto-prompt.ts";
 import { loadLocalUserIdentity, loadSettings, patchSettings } from "../../app/settings.ts";
 import { parseSlashCommand } from "../../lib/chat/commands.ts";
+import { hasUnrestrictedModelCatalogSnapshot } from "../../lib/model-catalog-cache.ts";
 import { resolveSafeExternalUrl } from "../../lib/open-external-url.ts";
 import {
   canonicalUiSessionKeyForPersistence,
@@ -74,6 +75,7 @@ import type { RunOutputUsage } from "./tool-stream-contract.ts";
 import { resetToolStream } from "./tool-stream-state.ts";
 
 type ChatPageElement = {
+  sessionKey?: string;
   dispatchEvent: (event: Event) => boolean;
   getBoundingClientRect?: () => DOMRect;
   querySelector: (selectors: string) => Element | null;
@@ -144,9 +146,10 @@ export function createPageState(
   chatMessagesBySession: ChatMessageCache = new Map(),
 ): ChatPageHost {
   const settings = loadSettings();
+  const initialSessionKey = page.sessionKey?.trim() || settings.sessionKey;
   const sidebarSessionKey = canonicalUiSessionKeyForPersistence(
     { agentsList: context.agents.state.agentsList, hello: context.gateway?.snapshot.hello },
-    settings.sessionKey,
+    initialSessionKey,
   );
   const identity = loadLocalUserIdentity();
   const appConfig = context.config.current;
@@ -179,7 +182,7 @@ export function createPageState(
     terminalAvailable: false,
     browserPanelAvailable: false,
     assistantAgentId: context.agentSelection.state.selectedId,
-    sessionKey: settings.sessionKey,
+    sessionKey: initialSessionKey,
     chatLoading: false,
     chatHistoryPagination: { hasMore: false },
     chatSending: false,
@@ -222,6 +225,11 @@ export function createPageState(
     chatModelPickerOpenSessionKey: null,
     chatModelsLoading: false,
     chatModelCatalog: [],
+    chatModelCatalogInitialized: hasUnrestrictedModelCatalogSnapshot(
+      context.gateway.snapshot.client,
+    ),
+    chatModelSelectionPolicy: undefined,
+    chatModelCatalogRetired: false,
     chatModelCatalogError: null,
     chatAccountSelection: null,
     modelAuthStatusRequestVersion: 0,
