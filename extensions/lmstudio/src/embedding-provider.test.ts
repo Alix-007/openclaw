@@ -1,3 +1,7 @@
+import {
+  createMemorySearchDeadlineControl,
+  MEMORY_SEARCH_DEADLINE_CONTROL,
+} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
 // LM Studio embedding provider tests cover preload context-length precedence.
 import type { OpenClawConfig } from "openclaw/plugin-sdk/plugin-entry";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -173,6 +177,33 @@ describe("createLmstudioEmbeddingProvider preload context length", () => {
       expect(release).toHaveBeenCalledOnce();
     },
   );
+
+  it("pauses the memory deadline while acquiring a local service", async () => {
+    const events: string[] = [];
+    const acquireLocalService = vi.fn(
+      async (target: { onReadinessWait?: (waiting: boolean) => void }) => {
+        target.onReadinessWait?.(true);
+        target.onReadinessWait?.(false);
+        return { release: vi.fn() };
+      },
+    );
+    const { provider } = await createLmstudioEmbeddingProvider({
+      config: buildConfig({
+        provider: { params: { preload: false }, localService: { command: "/usr/bin/lms" } },
+      }),
+      provider: "lmstudio",
+      model: EMBEDDING_MODEL,
+      fallback: "none",
+      acquireLocalService,
+    });
+    const control = createMemorySearchDeadlineControl();
+    control.subscribe((action) => events.push(action));
+
+    await expect(
+      provider.embed("hello", { [MEMORY_SEARCH_DEADLINE_CONTROL]: control }),
+    ).resolves.toEqual([1, 0]);
+    expect(events).toEqual(["pause", "resume"]);
+  });
 
   it("keeps each query-batch service lease until its request settles", async () => {
     const firstRelease = vi.fn();

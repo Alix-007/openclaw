@@ -1,4 +1,8 @@
 import { coerceErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import {
+  createMemorySearchDeadlineControl,
+  MEMORY_SEARCH_DEADLINE_CONTROL,
+} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
 // Ollama tests cover embedding provider plugin behavior.
 import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -607,6 +611,41 @@ describe("ollama embedding provider", () => {
       undefined,
     );
     expect(release).toHaveBeenCalledOnce();
+  });
+
+  it("pauses the memory deadline while acquiring a local service", async () => {
+    mockEmbeddingFetch([1, 0]);
+    const events: string[] = [];
+    const acquireLocalService = vi.fn(
+      async (target: { onReadinessWait?: (waiting: boolean) => void }) => {
+        target.onReadinessWait?.(true);
+        target.onReadinessWait?.(false);
+        return { release: vi.fn() };
+      },
+    );
+    const { provider } = await createEmbeddingProvider({
+      config: createProviderConfig(
+        {
+          baseUrl: "http://spark.local:11434/v1",
+          localService: { command: "/usr/bin/ollama" },
+          models: [],
+        },
+        "ollama-spark",
+      ),
+      provider: "ollama-spark",
+      model: "ollama-spark/nomic-embed-text",
+      acquireLocalService,
+    });
+    const control = createMemorySearchDeadlineControl();
+    control.subscribe((action) => events.push(action));
+
+    await expect(
+      provider.embed("hello", {
+        inputType: "query",
+        [MEMORY_SEARCH_DEADLINE_CONTROL]: control,
+      }),
+    ).resolves.toEqual([1, 0]);
+    expect(events).toEqual(["pause", "resume"]);
   });
 
   it("does not lease a configured local service for a remote endpoint override", async () => {
