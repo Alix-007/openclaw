@@ -37,10 +37,7 @@ import {
   type ProviderRuntimePluginHandle,
 } from "../../plugins/provider-hook-runtime.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
-import {
-  resolveModelExtraParamSources,
-  sanitizeExtraParamsRecord,
-} from "../model-extra-params.js";
+import { resolveModelExtraParamSources, sanitizeExtraParamsRecord } from "../model-extra-params.js";
 import { createOpenAICompletionsPayloadPolicyWrapper } from "../openai-completions-payload-policy.js";
 import type { AgentRuntimeTransport } from "../runtime-plan/types.js";
 import type { StreamFn } from "../runtime/index.js";
