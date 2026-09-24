@@ -1,0 +1,161 @@
+name: Alix exact-head Doctor upgrade proof
+
+on:
+  push:
+    branches:
+      - alix/proof-doctor-upgrades-20260925-r1
+    paths:
+      - .github/workflows/alix-doctor-upgrade-proof.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alix-doctor-upgrade-proof-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  published-upgrade:
+    if: github.repository == 'Alix-007/openclaw'
+    name: PR ${{ matrix.pr }} published driver to exact candidate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - pr: "155543"
+            sha: aa425fd5a57ba1fb94cfeea09ef849296e8b3627
+          - pr: "156907"
+            sha: c3385bac092516e2d2c14dd70daa111e815af0b2
+    steps:
+      - name: Checkout exact candidate without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Alix-007/openclaw
+          ref: ${{ matrix.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind evidence to the unchanged candidate
+        env:
+          EXPECTED_SHA: ${{ matrix.sha }}
+          PR_NUMBER: ${{ matrix.pr }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test -z "$(git status --porcelain)"
+          mkdir -p "$RUNNER_TEMP/alix-doctor-proof"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          record = {
+              "pr": os.environ["PR_NUMBER"],
+              "candidate_sha": os.environ["EXPECTED_SHA"],
+              "workflow_sha": os.environ["GITHUB_SHA"],
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "baseline_spec": "openclaw@2026.9.4",
+              "scenario": "legacy-operator-state",
+              "command": "pnpm test:docker:published-upgrade-survivor",
+              "result": "not_executed",
+              "scope": "Published Linux updater and preserved synthetic operator state; not live provider or Telegram acceptance."
+          }
+          Path(os.environ["RUNNER_TEMP"], "alix-doctor-proof", "invocation.json").write_text(json.dumps(record, indent=2) + "\n")
+          PY
+          docker version
+          df -h .
+
+      - name: Install repository-owned Node and frozen pnpm dependencies
+        uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.19.0"
+          install-bun: "false"
+          frozen-lockfile: "true"
+          cache-mode: "off"
+
+      - name: Build the unchanged candidate
+        run: pnpm build
+
+      - name: Validate the installable package
+        run: pnpm release:check
+
+      - name: Run original published-driver upgrade cell once
+        env:
+          OPENCLAW_UPGRADE_SURVIVOR_BASELINE_SPEC: openclaw@2026.9.4
+          OPENCLAW_UPGRADE_SURVIVOR_SCENARIO: legacy-operator-state
+        run: |
+          set -uo pipefail
+          set +e
+          start=$(date +%s)
+          pnpm test:docker:published-upgrade-survivor
+          rc=$?
+          set -e
+          end=$(date +%s)
+          export PROOF_EXIT_CODE="$rc" PROOF_WALL_SECONDS="$((end-start))"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          target = Path(os.environ["RUNNER_TEMP"], "alix-doctor-proof", "invocation.json")
+          record = json.loads(target.read_text())
+          record.update(exit_code=int(os.environ["PROOF_EXIT_CODE"]), wall_seconds=int(os.environ["PROOF_WALL_SECONDS"]), result="passed" if os.environ["PROOF_EXIT_CODE"] == "0" else "failed")
+          target.write_text(json.dumps(record, indent=2) + "\n")
+          PY
+          exit "$rc"
+
+      - name: Collect bounded sanitized summaries and source integrity
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/alix-doctor-proof"
+          set +e
+          git diff --exit-code HEAD -- . ':!.artifacts' > "$RUNNER_TEMP/alix-doctor-proof/source-integrity.diff"
+          integrity_rc=$?
+          set -e
+          export SOURCE_INTEGRITY_EXIT_CODE="$integrity_rc"
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          root = Path.cwd()
+          output = Path(os.environ["RUNNER_TEMP"], "alix-doctor-proof")
+          sensitive = re.compile(r"token|password|secret|api.?key|authorization|cookie", re.I)
+          def scrub(value):
+              if isinstance(value, dict):
+                  return {k: "[redacted]" if sensitive.search(k) else scrub(v) for k, v in value.items()}
+              if isinstance(value, list):
+                  return [scrub(v) for v in value]
+              if isinstance(value, str):
+                  value = value.replace(str(root), "<checkout>").replace(os.environ["RUNNER_TEMP"], "<runner-temp>")
+                  value = re.sub(r"(?i)(bearer\s+)[^\s\"']+", r"\1[redacted]", value)
+                  value = re.sub(r"(?i)((?:token|api[_-]?key|password|secret)=)[^\s&\"']+", r"\1[redacted]", value)
+                  return value
+              return value
+          (output / "source-integrity.json").write_text(json.dumps({"exit_code": int(os.environ["SOURCE_INTEGRITY_EXIT_CODE"]), "comparison": "tracked candidate checkout versus pinned HEAD after validation"}, indent=2) + "\n")
+          copied = []
+          for relative in (".artifacts/docker-tests", ".artifacts/upgrade-survivor"):
+              directory = root / relative
+              if not directory.exists():
+                  continue
+              for source in sorted(directory.rglob("summary.json"))[:50]:
+                  if source.is_symlink() or source.stat().st_size > 5_000_000:
+                      continue
+                  data = json.loads(source.read_text())
+                  target = output / (str(source.relative_to(root)).replace("/", "__") + ".sanitized.json")
+                  target.write_text(json.dumps(scrub(data), indent=2) + "\n")
+                  copied.append(str(source.relative_to(root)))
+          (output / "collection.json").write_text(json.dumps({"summaries": copied, "redaction": "Sensitive field values and credential-shaped strings removed; no state databases or auth profiles uploaded."}, indent=2) + "\n")
+          PY
+          exit "$integrity_rc"
+
+      - name: Upload observed evidence even when the cell fails
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: alix-doctor-${{ matrix.pr }}-${{ matrix.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/alix-doctor-proof/
+          if-no-files-found: error
+          retention-days: 14
