@@ -31,7 +31,7 @@ describe("resolveConfigValue", () => {
     (resolve) => {
       vi.stubEnv(TEST_ENV_KEY, undefined);
 
-      expect(resolve("literal-config-value")).toBe("literal-config-value");
+      expect(resolve(TEST_ENV_KEY)).toBe(TEST_ENV_KEY);
     },
   );
 });

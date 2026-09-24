@@ -2,14 +2,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { runDoctorSessionSqlite } from "./doctor-session-sqlite.js";
+import { resolveDoctorSessionSqliteTargets } from "./doctor-session-sqlite-targets.js";
 
 describe("doctor session sqlite explicit store owner", () => {
   it("uses the requested agent when an explicit store path is supplied", async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-doctor-agent-"));
     try {
       const store = path.join(root, "sessions.json");
-      const report = await runDoctorSessionSqlite({
+      const report = resolveDoctorSessionSqliteTargets({
         mode: "inspect",
         store,
         agent: "other",
