@@ -78,7 +78,7 @@ export function configureAiTransportRuntimeHost(): void {
         });
         const baseStreamFn = providerStreamFn ?? params.context.streamFn;
         if ((params.context.sourceApi ?? params.context.model.api) !== "openai-completions") {
-          return baseStreamFn;
+          return providerStreamFn;
         }
         const { defaultParams, modelParams } = resolveModelExtraParamSources({
           config,
