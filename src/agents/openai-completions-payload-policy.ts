@@ -1,9 +1,6 @@
 import { streamWithPayloadPatch } from "../llm/providers/stream-wrappers/stream-payload-utils.js";
 import { log } from "./embedded-agent-runner/logger.js";
-import {
-  resolveAliasedParamValueFromKeys,
-  sanitizeExtraParamsRecord,
-} from "./model-extra-params.js";
+import { resolveAliasedParamValue, sanitizeExtraParamsRecord } from "./model-extra-params.js";
 import {
   getModelProviderRequestRouteFacts,
   resolveProviderRequestPolicyConfig,
@@ -56,9 +53,9 @@ function resolveExtraBodyRecord(
     return undefined;
   }
   const record = Object.fromEntries(
-    Object.entries(
-      sanitizeExtraParamsRecord(Object.fromEntries(Object.entries(value))) ?? {},
-    ).filter(([, entry]) => entry !== undefined),
+    Object.entries(sanitizeExtraParamsRecord(value) ?? {}).filter(
+      ([, entry]) => entry !== undefined,
+    ),
   );
   return Object.keys(record).length > 0 ? record : undefined;
 }
@@ -75,7 +72,7 @@ function createOpenAICompletionsChatTemplateKwargsWrapper(
       const existing = payloadObj.chat_template_kwargs;
       if (existing && typeof existing === "object" && !Array.isArray(existing)) {
         payloadObj.chat_template_kwargs = {
-          ...Object.fromEntries(Object.entries(existing)),
+          ...existing,
           ...configured,
         };
         return;
@@ -116,7 +113,7 @@ export function createOpenAICompletionsPayloadPolicyWrapper(
 ): StreamFn {
   let wrappedStreamFn = streamFn;
   const configuredChatTemplateKwargs = resolveExtraBodyRecord(
-    resolveAliasedParamValueFromKeys(sources, ["chat_template_kwargs", "chatTemplateKwargs"]),
+    resolveAliasedParamValue(sources, ["chat_template_kwargs", "chatTemplateKwargs"]),
     "chat_template_kwargs",
   );
   if (configuredChatTemplateKwargs) {
@@ -126,7 +123,7 @@ export function createOpenAICompletionsPayloadPolicyWrapper(
     );
   }
   const extraBody = resolveExtraBodyRecord(
-    resolveAliasedParamValueFromKeys(sources, ["extra_body", "extraBody"]),
+    resolveAliasedParamValue(sources, ["extra_body", "extraBody"]),
     "extra_body",
   );
   if (extraBody) {

@@ -88,7 +88,7 @@ export function hasAuthoredProviderRequestParams(
 }
 
 export function sanitizeExtraParamsRecord(
-  value: Record<string, unknown> | undefined,
+  value: object | undefined,
 ): Record<string, unknown> | undefined {
   if (!value) {
     return undefined;
@@ -101,12 +101,11 @@ export function sanitizeExtraParamsRecord(
 }
 
 /** Later sources win; each source's first own alias wins, including null and undefined. */
-export function resolveAliasedParamValueFromKeys(
+export function resolveAliasedParamValue(
   sources: ReadonlyArray<Record<string, unknown> | undefined>,
   keys: readonly string[],
 ): unknown {
   let resolved: unknown = undefined;
-  let seen = false;
   for (const source of sources) {
     if (!source) {
       continue;
@@ -116,9 +115,8 @@ export function resolveAliasedParamValueFromKeys(
         continue;
       }
       resolved = source[key];
-      seen = true;
       break;
     }
   }
-  return seen ? resolved : undefined;
+  return resolved;
 }

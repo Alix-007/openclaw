@@ -38,7 +38,11 @@ import {
 } from "../../plugins/provider-hook-runtime.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
 import type { ProviderPrepareExtraParamsContext } from "../../plugins/provider-runtime.types.js";
-import { resolveModelExtraParamSources, sanitizeExtraParamsRecord } from "../model-extra-params.js";
+import {
+  resolveAliasedParamValue,
+  resolveModelExtraParamSources,
+  sanitizeExtraParamsRecord,
+} from "../model-extra-params.js";
 import { createOpenAICompletionsPayloadPolicyWrapper } from "../openai-completions-payload-policy.js";
 import type { AgentRuntimeTransport } from "../runtime-plan/types.js";
 import type { StreamFn } from "../runtime/index.js";
@@ -432,28 +436,6 @@ function createStreamFnWithExtraParams(
   };
 
   return wrappedStreamFn;
-}
-
-function resolveAliasedParamValue(
-  sources: Array<Record<string, unknown> | undefined>,
-  keys: readonly string[],
-): unknown {
-  let resolved: unknown = undefined;
-  let seen = false;
-  for (const source of sources) {
-    if (!source) {
-      continue;
-    }
-    for (const key of keys) {
-      if (!Object.hasOwn(source, key)) {
-        continue;
-      }
-      resolved = source[key];
-      seen = true;
-      break;
-    }
-  }
-  return seen ? resolved : undefined;
 }
 
 function canonicalizeExtraParamAlias(
