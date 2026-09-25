@@ -21,6 +21,8 @@ const toolingClosure = [
   "scripts/lib/upgrade-survivor-scenarios.json",
   "scripts/lib/release-version.mjs",
   "scripts/lib/frozen-target-compat.sh",
+  "scripts/lib/trusted-native-typescript.mjs",
+  "scripts/lib/native-typescript.mts",
   "scripts/resolve-frozen-codex-live-suite.mjs",
   "scripts/resolve-fs-safe-native-contract.mjs",
   "scripts/e2e/lib/upgrade-survivor/config-recipe.mts",
@@ -620,6 +622,7 @@ async function planWorkflowAdmission(input) {
   const fsSafeNative = selections.some((selection) => selection.fsSafeNative);
   if (fsSafeNative && allow) {
     sourcePaths.add("package.json");
+    // Older frozen contracts still inspect this retired shim; absent paths need no hydration.
     sourcePaths.add("src/infra/fs-safe-defaults.ts");
   }
   // The recorded inventory stays optional: targets predating it keep the postbuild check.

@@ -7,6 +7,7 @@ import { expectDefined } from "@openclaw/normalization-core";
 import { globSync } from "tinyglobby";
 import { beforeAll, describe, expect, it } from "vitest";
 import { collectModuleReferencesFromSource } from "../../scripts/lib/guard-inventory-utils.mjs";
+import { createNativeTypeScriptParser } from "../../scripts/lib/native-typescript.mts";
 import {
   listVitestRuntimeConsumerFiles,
   resolveVitestCliEntry,
@@ -216,6 +217,11 @@ describe("test-projects args", () => {
       title: "test-projects routes the bundled native Gateway test to its Gateway owner",
       target: "test/plugins/codex-model-catalog.gateway.test.ts",
       config: "test/vitest/vitest.gateway-database-workers.config.ts",
+    },
+    {
+      title: "routes the Gateway loopback and LAN producer to its worker owner",
+      target: "test/e2e/qa-lab/runtime/gateway-loopback-lan-access.test.ts",
+      config: "test/vitest/vitest.infra.config.ts",
     },
     {
       title: "routes the Gateway TLS producer to its worker owner",
@@ -584,14 +590,14 @@ describe("test-projects args", () => {
       { encoding: "utf8" },
     );
     expect(grep.status).toBe(0);
+    using parser = createNativeTypeScriptParser();
     const directImporterTests = grep.stdout
       .split("\n")
       .map((line) => line.trim())
       .filter((file) => file.endsWith(".test.ts") && !file.endsWith(".live.test.ts"))
       .filter((file) => {
         const source = fs.readFileSync(file, "utf8");
-        return collectModuleReferencesFromSource(source, {
-          fileName: file,
+        return collectModuleReferencesFromSource(parser.parseSourceFile(file, source), {
           acceptSpecifier: (specifier) => {
             if (!specifier.startsWith(".")) {
               return false;
