@@ -1,0 +1,164 @@
+name: Alix exact-head managed Ollama memory-search proof
+
+on:
+  push:
+    branches:
+      - alix/proof-embedding-readiness-20260925-r1
+    paths:
+      - .github/workflows/alix-embedding-readiness-proof.yml
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  managed-ollama-memory-search:
+    if: github.repository == 'Alix-007/openclaw'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Alix-007/openclaw
+          ref: abbec3271ab950493c073d5020e5b05736109758
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind proof to reviewed head
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "abbec3271ab950493c073d5020e5b05736109758"
+          test -z "$(git status --porcelain)"
+
+      - uses: ./.github/actions/setup-node-env
+        with:
+          node-version: "24.19.0"
+          install-bun: "false"
+          frozen-lockfile: "true"
+          cache-mode: "off"
+
+      - name: Build exact candidate
+        run: pnpm build
+
+      - name: Install Ollama
+        run: |
+          set -euo pipefail
+          curl -fsSL https://ollama.com/install.sh -o "$RUNNER_TEMP/install-ollama.sh"
+          sh "$RUNNER_TEMP/install-ollama.sh"
+          command -v ollama
+          ollama --version
+
+      - name: Seed isolated state and memory corpus
+        run: |
+          set -euo pipefail
+          export OPENCLAW_STATE_DIR="$RUNNER_TEMP/openclaw-state"
+          export OPENCLAW_CONFIG_PATH="$OPENCLAW_STATE_DIR/openclaw.json"
+          export WORKSPACE="$RUNNER_TEMP/openclaw-workspace"
+          mkdir -p "$OPENCLAW_STATE_DIR" "$WORKSPACE/memory"
+          cat > "$WORKSPACE/MEMORY.md" <<'EOF'
+          # Acceptance memory
+
+          The managed readiness acceptance marker is glacier-lobster-927.
+          EOF
+          OLLAMA_BIN="$(command -v ollama)"
+          cat > "$OPENCLAW_CONFIG_PATH" <<EOF
+          {
+            "agents": {
+              "defaults": {
+                "workspace": "$WORKSPACE",
+                "memory": {
+                  "search": {
+                    "enabled": true,
+                    "provider": "ollama",
+                    "model": "nomic-embed-text",
+                    "fallback": "none",
+                    "query": { "maxResults": 5, "minScore": 0 }
+                  }
+                }
+              }
+            },
+            "models": {
+              "mode": "merge",
+              "providers": {
+                "ollama": {
+                  "baseUrl": "http://127.0.0.1:11434",
+                  "apiKey": "ollama-local",
+                  "localService": {
+                    "command": "$OLLAMA_BIN",
+                    "args": ["serve"],
+                    "healthUrl": "http://127.0.0.1:11434/api/tags",
+                    "readyTimeoutMs": 120000,
+                    "idleStopMs": 0
+                  }
+                }
+              }
+            }
+          }
+          EOF
+          printf 'OPENCLAW_STATE_DIR=%s\nOPENCLAW_CONFIG_PATH=%s\nWORKSPACE=%s\n' "$OPENCLAW_STATE_DIR" "$OPENCLAW_CONFIG_PATH" "$WORKSPACE" >> "$GITHUB_ENV"
+
+      - name: Pull embedding model then stop service for a real managed cold start
+        run: |
+          set -euo pipefail
+          ollama serve >"$RUNNER_TEMP/ollama-seed.log" 2>&1 &
+          seed_pid=$!
+          trap 'kill "$seed_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 90); do
+            curl -fsS http://127.0.0.1:11434/api/tags >/dev/null && break
+            sleep 1
+          done
+          ollama pull nomic-embed-text
+          kill "$seed_pid"
+          wait "$seed_pid" || true
+          trap - EXIT
+          for i in $(seq 1 30); do
+            if ! curl -fsS http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then exit 0; fi
+            sleep 1
+          done
+          echo "seed Ollama did not stop" >&2
+          exit 1
+
+      - name: Index through managed service from stopped state
+        run: |
+          set -euo pipefail
+          test ! -f "$RUNNER_TEMP/ollama-manual.pid"
+          start=$(date +%s)
+          node openclaw.mjs memory index --force --verbose 2>&1 | tee "$RUNNER_TEMP/index.log"
+          rc=${PIPESTATUS[0]}
+          end=$(date +%s)
+          echo "index_exit=$rc index_wall_seconds=$((end-start))"
+          exit "$rc"
+
+      - name: Stop managed Ollama and prove search cold-start result readback
+        run: |
+          set -euo pipefail
+          pkill -x ollama || true
+          for i in $(seq 1 30); do
+            if ! curl -fsS http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          start=$(date +%s)
+          node openclaw.mjs memory search "glacier-lobster-927" --json >"$RUNNER_TEMP/search.json" 2>"$RUNNER_TEMP/search.stderr"
+          rc=$?
+          end=$(date +%s)
+          cat "$RUNNER_TEMP/search.stderr" >&2
+          cat "$RUNNER_TEMP/search.json"
+          echo "search_exit=$rc search_wall_seconds=$((end-start))"
+          test "$rc" -eq 0
+          node - <<'NODE'
+          const fs = require("fs");
+          const data = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + "/search.json", "utf8"));
+          if (!Array.isArray(data.results) || data.results.length === 0) throw new Error("expected memory_search result");
+          const text = JSON.stringify(data.results);
+          if (!text.includes("glacier-lobster-927")) throw new Error("expected marker in result readback");
+          console.log("managed_cold_start_memory_search=PASS results=" + data.results.length);
+          NODE
+
+      - name: Record source integrity
+        if: always()
+        run: |
+          set -euo pipefail
+          git diff --exit-code HEAD -- .
+          test "$(git rev-parse HEAD)" = "abbec3271ab950493c073d5020e5b05736109758"
