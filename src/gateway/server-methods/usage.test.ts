@@ -181,6 +181,23 @@ describe("gateway usage helpers", () => {
     expect(vi.mocked(loadCostUsageSummaryFromCache)).not.toHaveBeenCalled();
   });
 
+  it("preserves the blank agent selector for the all-agent scope", async () => {
+    const respond = vi.fn();
+    await expectDefined(
+      usageHandlers["usage.cost"],
+      'usageHandlers["usage.cost"] test invariant',
+    )({
+      respond,
+      params: { agentId: "  ", agentScope: "all" },
+      context: { getRuntimeConfig: vi.fn(() => ({})) },
+    } as unknown as Parameters<(typeof usageHandlers)["usage.cost"]>[0]);
+
+    expect(respond).toHaveBeenCalledWith(true, expect.any(Object), undefined);
+    expect(vi.mocked(loadCostUsageSummaryFromCache)).toHaveBeenCalledWith(
+      expect.objectContaining({ agentId: undefined, agentScope: "all" }),
+    );
+  });
+
   it.each(["usage.cost", "sessions.usage"] as const)(
     "%s rejects an invalid IANA timezone with INVALID_REQUEST",
     async (method) => {

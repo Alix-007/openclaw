@@ -197,9 +197,15 @@ export const usageHandlers: GatewayRequestHandlers = {
     }
     const { startMs, endMs } = range;
     const requestedAgentId = params?.agentId;
+    const requestedAgentScope = params?.agentScope;
+    const blankAgentIdForAllScope =
+      requestedAgentScope === "all" &&
+      typeof requestedAgentId === "string" &&
+      !requestedAgentId.trim();
     if (
       requestedAgentId !== undefined &&
-      (typeof requestedAgentId !== "string" || !requestedAgentId.trim())
+      (typeof requestedAgentId !== "string" ||
+        (!requestedAgentId.trim() && !blankAgentIdForAllScope))
     ) {
       respond(
         false,
@@ -208,7 +214,6 @@ export const usageHandlers: GatewayRequestHandlers = {
       );
       return;
     }
-    const requestedAgentScope = params?.agentScope;
     if (requestedAgentScope !== undefined && requestedAgentScope !== "all") {
       respond(
         false,
