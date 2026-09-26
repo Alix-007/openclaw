@@ -49,6 +49,11 @@ export function parseLineQuestionPostbackData(data: string): LineQuestionPostbac
   return { questionId, optionIndex };
 }
 
+/** Returns whether a postback claims to be a question callback, even if malformed. */
+export function isLineQuestionPostbackData(data: string): boolean {
+  return new URLSearchParams(data).has(QUESTION_ID_PARAM);
+}
+
 /**
  * Submit an ask_user choice a LINE tap carried, and report only what the user needs.
  *
