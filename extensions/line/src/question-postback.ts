@@ -42,7 +42,11 @@ export function parseLineQuestionPostbackData(data: string): LineQuestionPostbac
   if (!rawIndex || !/^\d+$/.test(rawIndex)) {
     return undefined;
   }
-  return { questionId, optionIndex: Number(rawIndex) };
+  const optionIndex = Number(rawIndex);
+  if (!Number.isSafeInteger(optionIndex)) {
+    return undefined;
+  }
+  return { questionId, optionIndex };
 }
 
 /**
