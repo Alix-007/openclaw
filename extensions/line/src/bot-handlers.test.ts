@@ -1010,6 +1010,7 @@ describe("handleLineWebhookEvents", () => {
   });
 
   it("consumes malformed question callbacks without starting an agent turn", async () => {
+    resolveLineQuestionPostbackMock.mockClear();
     const processMessage = vi.fn();
     const context = createLineWebhookTestContext({ processMessage, dmPolicy: "open" });
 
