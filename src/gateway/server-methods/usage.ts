@@ -198,14 +198,10 @@ export const usageHandlers: GatewayRequestHandlers = {
     const { startMs, endMs } = range;
     const requestedAgentId = params?.agentId;
     const requestedAgentScope = params?.agentScope;
-    const blankAgentIdForAllScope =
-      requestedAgentScope === "all" &&
-      typeof requestedAgentId === "string" &&
-      !requestedAgentId.trim();
     if (
       requestedAgentId !== undefined &&
       (typeof requestedAgentId !== "string" ||
-        (!requestedAgentId.trim() && !blankAgentIdForAllScope))
+        (!requestedAgentId.trim() && requestedAgentScope !== "all"))
     ) {
       respond(
         false,
