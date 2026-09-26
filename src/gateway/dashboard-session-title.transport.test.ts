@@ -159,6 +159,57 @@ describe("generated titles over the real OpenAI-compatible transport", () => {
     },
   );
 
+  it("keeps agent-specific utility payloads separate for a shared model", async () => {
+    await withTitleProvider(
+      "Agent payload verified",
+      async ({ cfg, requests }) => {
+        cfg.agents!.entries = {
+          alpha: {
+            models: {
+              [modelRef]: {
+                params: {
+                  chatTemplateKwargs: { enable_thinking: true },
+                  extraBody: { min_p: 0.3 },
+                },
+              },
+            },
+            params: { chat_template_kwargs: { enable_thinking: false } },
+          },
+          beta: {
+            models: {
+              [modelRef]: {
+                params: {
+                  chatTemplateKwargs: { enable_thinking: true },
+                  extraBody: { min_p: 0.7 },
+                },
+              },
+            },
+          },
+        };
+        for (const agentId of ["alpha", "beta", "alpha"]) {
+          await expect(
+            prepareDashboardSessionTitle({
+              cfg,
+              agentId,
+              userMessage: "Compare agent-specific utility parameters.",
+            }),
+          ).resolves.toBe("Agent payload verified");
+        }
+        expect(
+          requests.map(({ body }) => ({
+            template: body.chat_template_kwargs,
+            minP: body.min_p,
+          })),
+        ).toEqual([
+          { template: { enable_thinking: false }, minP: 0.3 },
+          { template: { enable_thinking: true }, minP: 0.7 },
+          { template: { enable_thinking: false }, minP: 0.3 },
+        ]);
+      },
+      { chat_template_kwargs: { enable_thinking: false }, extra_body: { min_p: 0.1 } },
+    );
+  });
+
   it.each([
     [
       "closed reasoning",

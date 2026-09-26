@@ -80,14 +80,18 @@ export function configureAiTransportRuntimeHost(): void {
         if ((params.context.sourceApi ?? params.context.model.api) !== "openai-completions") {
           return providerStreamFn;
         }
-        const { defaultParams, modelParams } = resolveModelExtraParamSources({
-          config,
-          provider: params.provider,
-          modelId: params.context.modelId,
-        });
+        const { defaultParams, modelParams, agentModelParams, agentParams } =
+          resolveModelExtraParamSources({
+            config,
+            provider: params.provider,
+            modelId: params.context.modelId,
+            agentId: params.context.agentId,
+          });
         return createOpenAICompletionsPayloadPolicyWrapper(baseStreamFn, [
           defaultParams,
           modelParams,
+          agentModelParams,
+          agentParams,
         ]);
       },
       createAnthropicVertexStream: createAnthropicVertexStreamFnForModel,

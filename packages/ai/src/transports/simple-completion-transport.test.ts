@@ -182,7 +182,7 @@ describe("prepareModelForSimpleCompletion", () => {
     expect(capturedApi).toBe(sourceApi);
   });
 
-  it("keeps each selected auth policy when completions share a model registry", () => {
+  it("keeps each selected auth and agent policy when completions share a model registry", () => {
     ensureCustomApiRegistered.mockImplementation(
       (registry: ApiRegistry, api: Api, streamFn: StreamFn) => {
         if (registry.getApiProvider(api)) {
@@ -201,6 +201,7 @@ describe("prepareModelForSimpleCompletion", () => {
             ...options,
             headers: {
               "x-test-auth-policy": `${context.auth.mode}:${context.auth.authFlow ?? ""}`,
+              "x-test-agent-policy": context.agentId ?? "unscoped",
             },
           }),
     );
@@ -217,10 +218,12 @@ describe("prepareModelForSimpleCompletion", () => {
       maxTokens: 4096,
     };
     const prepared = [
-      { mode: "oauth", authFlow: "test-subscription" },
-      { mode: "oauth", authFlow: "test-identity" },
-      { mode: "api-key" },
-    ].map((auth) => prepareModelForSimpleCompletion({ model, auth }));
+      { auth: { mode: "oauth", authFlow: "test-subscription" } },
+      { auth: { mode: "oauth", authFlow: "test-identity" } },
+      { auth: { mode: "api-key" } },
+      { auth: { mode: "api-key" }, agentId: "alpha" },
+      { auth: { mode: "api-key" }, agentId: "beta" },
+    ].map((selection) => prepareModelForSimpleCompletion({ model, ...selection }));
 
     const first = prepared[0];
     if (!first) {
@@ -235,12 +238,17 @@ describe("prepareModelForSimpleCompletion", () => {
     }
 
     expect(
-      pluginStreamFn.mock.calls.map((call) => call[2]?.headers?.["x-test-auth-policy"]),
+      pluginStreamFn.mock.calls.map((call) => [
+        call[2]?.headers?.["x-test-auth-policy"],
+        call[2]?.headers?.["x-test-agent-policy"],
+      ]),
     ).toEqual([
-      "oauth:test-subscription",
-      "oauth:test-identity",
-      "api-key:",
-      "oauth:test-subscription",
+      ["oauth:test-subscription", "unscoped"],
+      ["oauth:test-identity", "unscoped"],
+      ["api-key:", "unscoped"],
+      ["api-key:", "alpha"],
+      ["api-key:", "beta"],
+      ["oauth:test-subscription", "unscoped"],
     ]);
   });
 
