@@ -196,8 +196,29 @@ export const usageHandlers: GatewayRequestHandlers = {
       return;
     }
     const { startMs, endMs } = range;
-    const agentId = normalizeOptionalString(params?.agentId);
-    if (params?.agentScope === "all" && agentId) {
+    const requestedAgentId = params?.agentId;
+    if (
+      requestedAgentId !== undefined &&
+      (typeof requestedAgentId !== "string" || !requestedAgentId.trim())
+    ) {
+      respond(
+        false,
+        undefined,
+        errorShape(ErrorCodes.INVALID_REQUEST, "agentId must be a non-empty string"),
+      );
+      return;
+    }
+    const requestedAgentScope = params?.agentScope;
+    if (requestedAgentScope !== undefined && requestedAgentScope !== "all") {
+      respond(
+        false,
+        undefined,
+        errorShape(ErrorCodes.INVALID_REQUEST, "agentScope must be 'all' when provided"),
+      );
+      return;
+    }
+    const agentId = normalizeOptionalString(requestedAgentId);
+    if (requestedAgentScope === "all" && agentId) {
       respond(
         false,
         undefined,
@@ -205,7 +226,7 @@ export const usageHandlers: GatewayRequestHandlers = {
       );
       return;
     }
-    const agentScope = params?.agentScope === "all" ? "all" : undefined;
+    const agentScope = requestedAgentScope === "all" ? "all" : undefined;
     let effectiveAgentId = agentId;
     if (!agentScope && !effectiveAgentId) {
       const requestedAgent = resolveRequestedSessionAgentId(config, "main");

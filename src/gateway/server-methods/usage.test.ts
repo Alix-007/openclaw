@@ -158,6 +158,29 @@ describe("gateway usage helpers", () => {
     expect(vi.mocked(loadCostUsageSummaryFromCache)).not.toHaveBeenCalled();
   });
 
+  it.each([
+    [{ agentId: 42 }, "agentId must be a non-empty string"],
+    [{ agentId: "   " }, "agentId must be a non-empty string"],
+    [{ agentScope: "unexpected" }, "agentScope must be 'all' when provided"],
+  ] as const)("usage.cost rejects malformed agent scope %j", async (agentParams, error) => {
+    const respond = vi.fn();
+    await expectDefined(
+      usageHandlers["usage.cost"],
+      'usageHandlers["usage.cost"] test invariant',
+    )({
+      respond,
+      params: { ...agentParams },
+      context: { getRuntimeConfig: vi.fn(() => ({})) },
+    } as unknown as Parameters<(typeof usageHandlers)["usage.cost"]>[0]);
+
+    expect(respond).toHaveBeenCalledWith(
+      false,
+      undefined,
+      errorShape(ErrorCodes.INVALID_REQUEST, error),
+    );
+    expect(vi.mocked(loadCostUsageSummaryFromCache)).not.toHaveBeenCalled();
+  });
+
   it.each(["usage.cost", "sessions.usage"] as const)(
     "%s rejects an invalid IANA timezone with INVALID_REQUEST",
     async (method) => {
