@@ -3142,6 +3142,35 @@ describe("doctor health contributions", () => {
     expect(calls).toEqual(["repair", "note"]);
   });
 
+  it("runs structured repairs before legacy skill repairs and config writes", () => {
+    const ids = resolveDoctorHealthContributions().map((entry) => entry.id);
+
+    expect(ids.indexOf("doctor:structured-health-repairs")).toBeGreaterThan(-1);
+    expect(ids.indexOf("doctor:structured-health-repairs")).toBeLessThan(
+      ids.indexOf("doctor:skills"),
+    );
+    expect(ids.indexOf("doctor:structured-health-repairs")).toBeLessThan(
+      ids.indexOf("doctor:write-config"),
+    );
+  });
+
+  it("keeps core-kind repairs out of the extension repair pass", async () => {
+    const contribution = requireDoctorContribution("doctor:structured-health-repairs");
+    const ctx = createDoctorContext({
+      configResult: { cfg: {} },
+      cfgForPersistence: {},
+      shouldRepair: true,
+      env: {},
+    });
+
+    await contribution.run(ctx);
+
+    expect(mocks.runDoctorHealthRepairs).toHaveBeenCalledWith(expect.any(Object), {
+      checks: [getHealthCheck("plugin/example/unrelated")],
+      progress: true,
+    });
+  });
+
   it("skips opt-in extension checks during routine repair", async () => {
     setRegisteredHealthChecks([
       { id: "core/example/internal", kind: "core" },
@@ -3161,7 +3190,7 @@ describe("doctor health contributions", () => {
 
     expect(mocks.runDoctorHealthRepairs).toHaveBeenCalledWith(
       expect.objectContaining({ env: { OPENCLAW_UPDATE_POST_CORE: "1" } }),
-      { checks: [getHealthCheck("plugin/example/regular")] },
+      { checks: [getHealthCheck("plugin/example/regular")], progress: true },
     );
   });
 
