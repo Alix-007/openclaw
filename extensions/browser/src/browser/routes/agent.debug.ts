@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { formatErrorMessage } from "openclaw/plugin-sdk/security-runtime";
 import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
-import { evaluateChromeMcpScript } from "../chrome-mcp.js";
+import { evaluateChromeMcpScript, withChromeMcpDocument } from "../chrome-mcp.js";
 import { DEFAULT_AI_SNAPSHOT_MAX_CHARS } from "../constants.js";
 import { DEFAULT_TRACE_DIR } from "../paths.js";
 import { getBrowserProfileCapabilities } from "../profile-capabilities.js";
@@ -153,19 +153,24 @@ export function registerBrowserAgentDebugRoutes(
         readRoutePositiveInteger(input.maxChars, "maxChars") ?? DEFAULT_AI_SNAPSHOT_MAX_CHARS,
         DEFAULT_AI_SNAPSHOT_MAX_CHARS,
       );
-      const result = await evaluateChromeMcpScript({
-        profileName,
-        profile,
-        targetId,
-        signal,
-        fn: `() => {
-          const root = ${selector ? `document.querySelector(${JSON.stringify(selector)})` : 'document.querySelector("article") ?? document.querySelector("main") ?? document.body'};
-          if (!root) throw new Error("No page text target matched");
-          const text = String(root.innerText || "");
+      const result = await withChromeMcpDocument(
+        {
+          profileName,
+          profile,
+          targetId,
+          signal,
+        },
+        (document) =>
+          document.evaluate(`(root) => {
+          const boundDocument = root?.nodeType === 9 ? root : root?.ownerDocument;
+          if (boundDocument !== document) throw new Error("Chrome MCP document changed during page text read");
+          const target = ${selector ? `document.querySelector(${JSON.stringify(selector)})` : 'document.querySelector("article") ?? document.querySelector("main") ?? document.body'};
+          if (!target) throw new Error("No page text target matched");
+          const text = String(target.innerText || "");
           const maxChars = ${maxChars};
           return { text: text.slice(0, maxChars), truncated: text.length > maxChars };
-        }`,
-      });
+        }`),
+      );
       if (!result || typeof result !== "object") {
         throw new Error("Chrome MCP page text returned an invalid result");
       }
