@@ -78,7 +78,9 @@ export function registerBrowserAgentDebugRoutes(
               targetId: tab.targetId,
               signal,
             });
-            if (result === null) return;
+            if (result === null) {
+              return;
+            }
             const url = await resolveTabUrl(tab.url);
             res.json({ ok: true, targetId: tab.targetId, ...(url ? { url } : {}), ...result });
           },
@@ -174,7 +176,8 @@ export function registerBrowserAgentDebugRoutes(
       if (!result || typeof result !== "object") {
         throw new Error("Chrome MCP page text returned an invalid result");
       }
-      const text = truncateUtf16Safe(String((result as { text?: unknown }).text ?? ""), maxChars);
+      const rawText = (result as { text?: unknown }).text;
+      const text = truncateUtf16Safe(typeof rawText === "string" ? rawText : "", maxChars);
       return { text, truncated: Boolean((result as { truncated?: unknown }).truncated) };
     },
   );
