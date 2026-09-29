@@ -41,6 +41,7 @@ export function registerBrowserAgentDebugRoutes(
       profile: Parameters<typeof evaluateChromeMcpScript>[0]["profile"];
       targetId: string;
       signal: AbortSignal;
+      resolveTabUrl: (fallbackUrl?: string) => Promise<string | undefined>;
     }) => Promise<object | null>,
   ) => {
     app[method](path, async (req, res) => {
@@ -77,11 +78,17 @@ export function registerBrowserAgentDebugRoutes(
               profile: profileCtx.profile,
               targetId: tab.targetId,
               signal,
+              resolveTabUrl,
             });
             if (result === null) {
               return;
             }
-            const url = await resolveTabUrl(tab.url);
+            const resultUrl =
+              typeof result.url === "string" && result.url.trim() ? result.url : tab.url;
+            const url = await resolveTabUrl(resultUrl);
+            if (!url) {
+              throw new Error("browser navigation blocked by policy");
+            }
             res.json({ ok: true, targetId: tab.targetId, ...(url ? { url } : {}), ...result });
           },
         });
@@ -149,7 +156,7 @@ export function registerBrowserAgentDebugRoutes(
       return (pw, target) => pw.getPageTextViaPlaywright({ ...target, selector, maxChars });
     },
     EXISTING_SESSION_LIMITS.text,
-    async ({ input, profileName, profile, targetId, signal }) => {
+    async ({ input, profileName, profile, targetId, signal, resolveTabUrl }) => {
       const selector = normalizeOptionalString(input.selector);
       const maxChars = Math.min(
         readRoutePositiveInteger(input.maxChars, "maxChars") ?? DEFAULT_AI_SNAPSHOT_MAX_CHARS,
@@ -170,15 +177,23 @@ export function registerBrowserAgentDebugRoutes(
           if (!target) throw new Error("No page text target matched");
           const text = String(target.innerText || "");
           const maxChars = ${maxChars};
-          return { text: text.slice(0, maxChars), truncated: text.length > maxChars };
+          return { url: location.href, text: text.slice(0, maxChars), truncated: text.length > maxChars };
         }`),
       );
       if (!result || typeof result !== "object") {
         throw new Error("Chrome MCP page text returned an invalid result");
       }
+      const resultUrl = (result as { url?: unknown }).url;
+      if (typeof resultUrl !== "string" || !resultUrl.trim()) {
+        throw new Error("Chrome MCP page text returned no document URL");
+      }
+      const url = await resolveTabUrl(resultUrl);
+      if (!url) {
+        throw new Error("browser navigation blocked by policy");
+      }
       const rawText = (result as { text?: unknown }).text;
       const text = truncateUtf16Safe(typeof rawText === "string" ? rawText : "", maxChars);
-      return { text, truncated: Boolean((result as { truncated?: unknown }).truncated) };
+      return { url, text, truncated: Boolean((result as { truncated?: unknown }).truncated) };
     },
   );
 

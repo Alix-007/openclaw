@@ -425,6 +425,9 @@ const chromeMcpMocks = vi.hoisted(() => ({
   dragChromeMcpElement: vi.fn(async () => {}),
   ensureChromeMcpAvailable: vi.fn(async () => {}),
   evaluateChromeMcpScript: vi.fn(async () => true),
+  withChromeMcpDocument: vi.fn(async (_params: unknown, task: (document: unknown) => unknown) =>
+    task({ evaluate: chromeMcpMocks.evaluateChromeMcpScript }),
+  ),
   fillChromeMcpElement: vi.fn(async () => {}),
   fillChromeMcpForm: vi.fn(async () => {}),
   focusChromeMcpTab: vi.fn(async () => {}),

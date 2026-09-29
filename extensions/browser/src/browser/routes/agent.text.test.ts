@@ -74,8 +74,13 @@ describe("browser page text route", () => {
       { user: { driver: "existing-session", color: "#FF4500" } },
       "user",
     );
+    const document = expectDefined(chromeMcpMocks.withChromeMcpDocument, "Chrome MCP document");
     const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
-    evaluate.mockResolvedValueOnce({ text: "Existing session text", truncated: false });
+    evaluate.mockResolvedValueOnce({
+      url: "https://example.com",
+      text: "Existing session text",
+      truncated: false,
+    });
     const base = await startServerAndBase();
     const response = await getBrowserTestFetch()(
       `${base}/text?profile=user&selector=article&maxChars=21`,
@@ -88,8 +93,10 @@ describe("browser page text route", () => {
       text: "Existing session text",
       truncated: false,
     });
-    expect(evaluate).toHaveBeenCalledWith(
+    expect(document).toHaveBeenCalledWith(
       expect.objectContaining({ profileName: "user", targetId: "7" }),
+      expect.any(Function),
     );
+    expect(evaluate).toHaveBeenCalledWith(expect.stringContaining("boundDocument"));
   });
 });
