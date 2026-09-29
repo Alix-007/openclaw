@@ -452,6 +452,11 @@ const chromeMcpMocks = vi.hoisted(() => ({
   uploadChromeMcpFile: vi.fn(async () => {}),
 }));
 
+/** Returns mocked Chrome MCP operations for route-level contract tests. */
+export function getChromeMcpMocks(): Record<string, MockFn> {
+  return chromeMcpMocks as unknown as Record<string, MockFn>;
+}
+
 const chromeUserDataDir = vi.hoisted(() => ({ dir: "/tmp/openclaw" }));
 installChromeUserDataDirHooks(chromeUserDataDir);
 

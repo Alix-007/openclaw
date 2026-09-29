@@ -1,11 +1,18 @@
 import crypto from "node:crypto";
 import { formatErrorMessage } from "openclaw/plugin-sdk/security-runtime";
 import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
 import { DEFAULT_TRACE_DIR } from "../paths.js";
+import { evaluateChromeMcpScript } from "../chrome-mcp.js";
 import { getBrowserProfileCapabilities } from "../profile-capabilities.js";
 import type { PwAiModule } from "../pw-ai-module.js";
 import type { BrowserRouteContext } from "../server-context.js";
-import { readBody, resolveProfileContext, withPlaywrightRouteContext } from "./agent.shared.js";
+import {
+  readBody,
+  resolveProfileContext,
+  withPlaywrightRouteContext,
+  withRouteTabContext,
+} from "./agent.shared.js";
 import { EXISTING_SESSION_LIMITS } from "./existing-session-limits.js";
 import { resolveWritableOutputPathOrRespond } from "./output-paths.js";
 import { readRoutePositiveInteger } from "./route-numeric.js";
@@ -27,6 +34,13 @@ export function registerBrowserAgentDebugRoutes(
     feature: string,
     prepare: (input: Record<string, unknown>, res: BrowserResponse) => DebugCollector,
     existingSessionUnsupported?: string,
+    collectExistingSession?: (params: {
+      input: Record<string, unknown>;
+      profileName: string;
+      profile: Parameters<typeof evaluateChromeMcpScript>[0]["profile"];
+      targetId: string;
+      signal: AbortSignal;
+    }) => Promise<object | null>,
   ) => {
     app[method](path, async (req, res) => {
       const input = method === "get" ? req.query : readBody(req);
@@ -45,7 +59,30 @@ export function registerBrowserAgentDebugRoutes(
         existingSessionUnsupported &&
         getBrowserProfileCapabilities(profileCtx.profile).usesChromeMcp
       ) {
-        return jsonError(res, 501, existingSessionUnsupported);
+        if (!collectExistingSession) {
+          return jsonError(res, 501, existingSessionUnsupported);
+        }
+        await withRouteTabContext({
+          req,
+          res,
+          ctx,
+          profileCtx,
+          targetId,
+          enforceCurrentUrlAllowed: true,
+          run: async ({ tab, signal, resolveTabUrl }) => {
+            const result = await collectExistingSession({
+              input,
+              profileName: profileCtx.profile.name,
+              profile: profileCtx.profile,
+              targetId: tab.targetId,
+              signal,
+            });
+            if (result === null) return;
+            const url = await resolveTabUrl(tab.url);
+            res.json({ ok: true, targetId: tab.targetId, ...(url ? { url } : {}), ...result });
+          },
+        });
+        return;
       }
       await withPlaywrightRouteContext({
         req,
@@ -109,6 +146,28 @@ export function registerBrowserAgentDebugRoutes(
       return (pw, target) => pw.getPageTextViaPlaywright({ ...target, selector, maxChars });
     },
     EXISTING_SESSION_LIMITS.text,
+    async ({ input, profileName, profile, targetId, signal }) => {
+      const selector = normalizeOptionalString(input.selector);
+      const maxChars = readRoutePositiveInteger(input.maxChars, "maxChars") ?? 10_000;
+      const result = await evaluateChromeMcpScript({
+        profileName,
+        profile,
+        targetId,
+        signal,
+        fn: `() => {
+          const root = ${selector ? `document.querySelector(${JSON.stringify(selector)})` : 'document.querySelector("article, main, body")'};
+          if (!root) throw new Error("No page text target matched");
+          const text = String(root.innerText || root.textContent || "");
+          const maxChars = ${maxChars};
+          return { text: text.slice(0, maxChars), truncated: text.length > maxChars };
+        }`,
+      });
+      if (!result || typeof result !== "object") {
+        throw new Error("Chrome MCP page text returned an invalid result");
+      }
+      const text = truncateUtf16Safe(String((result as { text?: unknown }).text ?? ""), maxChars);
+      return { text, truncated: Boolean((result as { truncated?: unknown }).truncated) };
+    },
   );
 
   register("get", "/dialogs", "dialog state", () => async (pw, { cdpUrl, targetId }) => ({

@@ -6,6 +6,7 @@ import {
   startServerAndBase,
 } from "../server.agent-contract.test-harness.js";
 import {
+  getChromeMcpMocks,
   getPwMocks,
   setBrowserControlServerProfiles,
   setBrowserControlServerSsrFPolicy,
@@ -19,9 +20,9 @@ beforeAll(async () => {
 
 describe("browser page text route", () => {
   installAgentContractHooks();
+  const chromeMcpMocks = getChromeMcpMocks();
   const pwMocks = getPwMocks();
   const pageText = expectDefined(pwMocks.getPageTextViaPlaywright, "page text mock");
-  const networkRequests = expectDefined(pwMocks.getNetworkRequestsViaPlaywright, "requests mock");
 
   it("returns page text, truncation, and the resolved tab through the control service", async () => {
     pageText.mockResolvedValueOnce({ text: "Selected text", truncated: true });
@@ -68,17 +69,28 @@ describe("browser page text route", () => {
     expect(pageText).not.toHaveBeenCalled();
   });
 
-  it("rejects existing-session text with a supported alternative", async () => {
+  it("extracts page text through Chrome MCP for existing-session profiles", async () => {
     setBrowserControlServerProfiles(
       { user: { driver: "existing-session", color: "#FF4500" } },
       "user",
     );
+    const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
+    evaluate.mockResolvedValueOnce({ text: "Existing session text", truncated: false });
     const base = await startServerAndBase();
-    const response = await getBrowserTestFetch()(`${base}/text?profile=user`);
-    expect(response.status).toBe(501);
-    expect(await response.json()).toMatchObject({ error: expect.stringContaining("snapshot") });
-    expect(pageText).not.toHaveBeenCalled();
-    expect(networkRequests).not.toHaveBeenCalled();
-    expect(pwMocks.getPageErrorsViaPlaywright).not.toHaveBeenCalled();
+    const response = await getBrowserTestFetch()(
+      `${base}/text?profile=user&selector=article&maxChars=21`,
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      ok: true,
+      targetId: "7",
+      url: "https://example.com",
+      text: "Existing session text",
+      truncated: false,
+    });
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.objectContaining({ profileName: "user", targetId: "7" }),
+    );
   });
+
 });
