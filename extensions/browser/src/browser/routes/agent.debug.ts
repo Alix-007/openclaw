@@ -3,6 +3,7 @@ import { formatErrorMessage } from "openclaw/plugin-sdk/security-runtime";
 import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
 import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
 import { evaluateChromeMcpScript } from "../chrome-mcp.js";
+import { DEFAULT_AI_SNAPSHOT_MAX_CHARS } from "../constants.js";
 import { DEFAULT_TRACE_DIR } from "../paths.js";
 import { getBrowserProfileCapabilities } from "../profile-capabilities.js";
 import type { PwAiModule } from "../pw-ai-module.js";
@@ -148,16 +149,19 @@ export function registerBrowserAgentDebugRoutes(
     EXISTING_SESSION_LIMITS.text,
     async ({ input, profileName, profile, targetId, signal }) => {
       const selector = normalizeOptionalString(input.selector);
-      const maxChars = readRoutePositiveInteger(input.maxChars, "maxChars") ?? 10_000;
+      const maxChars = Math.min(
+        readRoutePositiveInteger(input.maxChars, "maxChars") ?? DEFAULT_AI_SNAPSHOT_MAX_CHARS,
+        DEFAULT_AI_SNAPSHOT_MAX_CHARS,
+      );
       const result = await evaluateChromeMcpScript({
         profileName,
         profile,
         targetId,
         signal,
         fn: `() => {
-          const root = ${selector ? `document.querySelector(${JSON.stringify(selector)})` : 'document.querySelector("article, main, body")'};
+          const root = ${selector ? `document.querySelector(${JSON.stringify(selector)})` : 'document.querySelector("article") ?? document.querySelector("main") ?? document.body'};
           if (!root) throw new Error("No page text target matched");
-          const text = String(root.innerText || root.textContent || "");
+          const text = String(root.innerText || "");
           const maxChars = ${maxChars};
           return { text: text.slice(0, maxChars), truncated: text.length > maxChars };
         }`,

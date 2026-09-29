@@ -104,7 +104,7 @@ function describeBrowserTool(opts: {
     "Use snapshot+act for UI automation. Avoid act:wait by default; use only in exceptional cases when no reliable UI state exists.",
     actions.has("text")
       ? "For page prose, use action=text with optional selector and maxChars; it reads the first selector match, else article, main, or body. Use efficient snapshots for controls; they omit most prose."
-      : `For page text, use snapshot${evaluateEnabled ? " or a bounded act:evaluate" : ""}; efficient snapshots omit most prose.`,
+      : `For page text, use action=text with optional selector and maxChars; it reads visible text from the first selector match, else article, main, or body. Use efficient snapshots for controls; they omit most prose.`,
     "Use snapshot query to keep lines matching all whitespace-separated tokens, case-insensitively; matching lines retain element refs.",
     ...(actions.has("requests")
       ? [
