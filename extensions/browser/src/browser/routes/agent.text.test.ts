@@ -92,5 +92,4 @@ describe("browser page text route", () => {
       expect.objectContaining({ profileName: "user", targetId: "7" }),
     );
   });
-
 });
