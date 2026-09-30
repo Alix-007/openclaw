@@ -83,8 +83,11 @@ export function registerBrowserAgentDebugRoutes(
             if (result === null) {
               return;
             }
+            const resultRecord = Object.fromEntries(Object.entries(result));
             const resultUrl =
-              typeof result.url === "string" && result.url.trim() ? result.url : tab.url;
+              typeof resultRecord.url === "string" && resultRecord.url.trim()
+                ? resultRecord.url
+                : tab.url;
             const url = await resolveTabUrl(resultUrl);
             if (!url) {
               throw new Error("browser navigation blocked by policy");
@@ -183,7 +186,8 @@ export function registerBrowserAgentDebugRoutes(
       if (!result || typeof result !== "object") {
         throw new Error("Chrome MCP page text returned an invalid result");
       }
-      const resultUrl = (result as { url?: unknown }).url;
+      const resultRecord = Object.fromEntries(Object.entries(result));
+      const resultUrl = resultRecord.url;
       if (typeof resultUrl !== "string" || !resultUrl.trim()) {
         throw new Error("Chrome MCP page text returned no document URL");
       }
@@ -191,9 +195,9 @@ export function registerBrowserAgentDebugRoutes(
       if (!url) {
         throw new Error("browser navigation blocked by policy");
       }
-      const rawText = (result as { text?: unknown }).text;
+      const rawText = resultRecord.text;
       const text = truncateUtf16Safe(typeof rawText === "string" ? rawText : "", maxChars);
-      return { url, text, truncated: Boolean((result as { truncated?: unknown }).truncated) };
+      return { url, text, truncated: Boolean(resultRecord.truncated) };
     },
   );
 
