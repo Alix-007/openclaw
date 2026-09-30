@@ -117,7 +117,8 @@ describe("browser page text route", () => {
     const response = await getBrowserTestFetch()(`${base}/text?profile=user`);
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({
-      error: "browser navigation blocked by policy",
+      error:
+        "Navigation blocked: strict browser SSRF policy requires an IP-literal URL because browser DNS rebinding protections are unavailable for hostname-based navigation",
       reason: "navigation_blocked",
     });
   });
