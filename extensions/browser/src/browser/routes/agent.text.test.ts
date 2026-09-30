@@ -105,7 +105,10 @@ describe("browser page text route", () => {
       { user: { driver: "existing-session", color: "#FF4500" } },
       "user",
     );
-    setBrowserControlServerSsrFPolicy({ allowPrivateNetwork: false });
+    setBrowserControlServerSsrFPolicy({
+      dangerouslyAllowPrivateNetwork: false,
+      allowedHostnames: ["example.com"],
+    });
     setBrowserControlServerTabUrl("https://example.com");
     const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
     evaluate.mockResolvedValueOnce({
@@ -117,9 +120,9 @@ describe("browser page text route", () => {
     const response = await getBrowserTestFetch()(`${base}/text?profile=user`);
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({
-      error:
-        "Navigation blocked: strict browser SSRF policy requires an IP-literal URL because browser DNS rebinding protections are unavailable for hostname-based navigation",
+      error: "browser navigation blocked by policy",
       reason: "navigation_blocked",
     });
+    expect(evaluate).toHaveBeenCalledWith(expect.stringContaining("boundDocument"));
   });
 });
