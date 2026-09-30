@@ -545,6 +545,7 @@ async function runDoctorHealthContributionList(
       ]
     : contributions;
   const reportProgress = ctx.options.json !== true;
+  ctx.doctorWarningsRecorded ??= ctx.updateWarnings?.length ?? 0;
   try {
     for (const contribution of ordered) {
       // Skip before opening a plugin snapshot; these diagnostics cannot establish
@@ -573,7 +574,7 @@ async function runDoctorHealthContributionList(
         ctx.runtime.log(`Doctor: ${contribution.option.label} started`);
       }
       let outcome: "completed" | "warning" = "completed";
-      const warningCountBefore = ctx.updateWarnings?.length ?? 0;
+      const warningCountBefore = ctx.doctorWarningsRecorded;
       try {
         const run = async () => {
           try {
@@ -599,7 +600,7 @@ async function runDoctorHealthContributionList(
           outcome = "warning";
           return;
         }
-        if ((ctx.updateWarnings?.length ?? 0) > warningCountBefore) {
+        if ((ctx.doctorWarningsRecorded ?? 0) > warningCountBefore) {
           outcome = "warning";
         }
       } catch (error) {

@@ -92,6 +92,8 @@ export type DoctorHealthFlowContext = {
   gatewayMemoryProbe?: Awaited<ReturnType<typeof probeGatewayMemoryStatus>>;
   postInstallDoctorResult?: UpdatePostInstallDoctorResult;
   updateWarnings?: string[];
+  /** Monotonic warning count used for progress outcomes after the bounded digest fills. */
+  doctorWarningsRecorded?: number;
   runWithPluginMetadataSnapshot?: PluginMetadataSnapshotScopeRunner;
   invalidatePluginMetadataSnapshot?: () => void;
 };
