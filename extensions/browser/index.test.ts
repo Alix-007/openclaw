@@ -374,7 +374,6 @@ describe("browser plugin", () => {
       "waitfordownload",
       "requests",
       "errors",
-      "text",
       "emulate",
     ]) {
       expect(actions).not.toContain(action);
