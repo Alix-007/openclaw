@@ -4,12 +4,14 @@ import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runti
 import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
 import { evaluateChromeMcpScript, withChromeMcpDocument } from "../chrome-mcp.js";
 import { DEFAULT_AI_SNAPSHOT_MAX_CHARS } from "../constants.js";
+import { assertBrowserNavigationResultAllowed } from "../navigation-guard.js";
 import { DEFAULT_TRACE_DIR } from "../paths.js";
 import { getBrowserProfileCapabilities } from "../profile-capabilities.js";
 import type { PwAiModule } from "../pw-ai-module.js";
 import type { BrowserRouteContext } from "../server-context.js";
 import {
   readBody,
+  browserNavigationPolicyForProfile,
   resolveProfileContext,
   withPlaywrightRouteContext,
   withRouteTabContext,
@@ -88,11 +90,12 @@ export function registerBrowserAgentDebugRoutes(
               typeof resultRecord.url === "string" && resultRecord.url.trim()
                 ? resultRecord.url
                 : tab.url;
-            const url = await resolveTabUrl(resultUrl);
-            if (!url) {
-              throw new Error("browser navigation blocked by policy");
-            }
-            res.json({ ok: true, targetId: tab.targetId, ...(url ? { url } : {}), ...result });
+            await assertBrowserNavigationResultAllowed({
+              url: resultUrl,
+              signal,
+              ...browserNavigationPolicyForProfile(ctx, profileCtx),
+            });
+            res.json({ ok: true, targetId: tab.targetId, url: resultUrl, ...result });
           },
         });
         return;
@@ -159,7 +162,7 @@ export function registerBrowserAgentDebugRoutes(
       return (pw, target) => pw.getPageTextViaPlaywright({ ...target, selector, maxChars });
     },
     EXISTING_SESSION_LIMITS.text,
-    async ({ input, profileName, profile, targetId, signal, resolveTabUrl }) => {
+    async ({ input, profileName, profile, targetId, signal }) => {
       const selector = normalizeOptionalString(input.selector);
       const maxChars = Math.min(
         readRoutePositiveInteger(input.maxChars, "maxChars") ?? DEFAULT_AI_SNAPSHOT_MAX_CHARS,
@@ -191,13 +194,9 @@ export function registerBrowserAgentDebugRoutes(
       if (typeof resultUrl !== "string" || !resultUrl.trim()) {
         throw new Error("Chrome MCP page text returned no document URL");
       }
-      const url = await resolveTabUrl(resultUrl);
-      if (!url) {
-        throw new Error("browser navigation blocked by policy");
-      }
       const rawText = resultRecord.text;
       const text = truncateUtf16Safe(typeof rawText === "string" ? rawText : "", maxChars);
-      return { url, text, truncated: Boolean(resultRecord.truncated) };
+      return { url: resultUrl, text, truncated: Boolean(resultRecord.truncated) };
     },
   );
 

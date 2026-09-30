@@ -99,4 +99,26 @@ describe("browser page text route", () => {
     );
     expect(evaluate).toHaveBeenCalledWith(expect.stringContaining("boundDocument"));
   });
+
+  it("rejects text from a forbidden evaluated document when the tab listing is stale", async () => {
+    setBrowserControlServerProfiles(
+      { user: { driver: "existing-session", color: "#FF4500" } },
+      "user",
+    );
+    setBrowserControlServerSsrFPolicy({ allowPrivateNetwork: false });
+    setBrowserControlServerTabUrl("https://example.com");
+    const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
+    evaluate.mockResolvedValueOnce({
+      url: "http://127.0.0.1:8080/forbidden",
+      text: "must not be returned",
+      truncated: false,
+    });
+    const base = await startServerAndBase();
+    const response = await getBrowserTestFetch()(`${base}/text?profile=user`);
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "browser navigation blocked by policy",
+      reason: "navigation_blocked",
+    });
+  });
 });
