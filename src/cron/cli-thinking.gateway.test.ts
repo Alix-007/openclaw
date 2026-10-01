@@ -9,6 +9,7 @@ import { cronHandlers } from "../gateway/server-methods/cron.js";
 import type { GatewayRequestContext, RespondFn } from "../gateway/server-methods/types.js";
 import { getPluginRuntimeGatewayRequestScope } from "../plugins/runtime/gateway-request-scope.js";
 import { defaultRuntime, ExitError } from "../runtime.js";
+import { createTestGatewayScheduler } from "../test-utils/gateway-scheduler-clock.js";
 import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
 import { CronService } from "./service.js";
 import { createNoopLogger } from "./service.test-harness.js";
@@ -90,6 +91,7 @@ async function withCronGateway(
       throw new Error("A disabled thinking-validation job must not execute");
     });
     const cron = new CronService({
+      scheduler: createTestGatewayScheduler(),
       storePath,
       defaultAgentId: "main",
       cronEnabled: false,
