@@ -10,7 +10,7 @@ import {
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
 
 async function createProject() {
-  const root = await tempDirs.make("openclaw-plugin-authoring-utf8-");
+  const root = tempDirs.make("openclaw-plugin-authoring-utf8-");
   fs.writeFileSync(
     path.join(root, "package.json"),
     JSON.stringify({
