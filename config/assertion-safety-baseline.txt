@@ -1752,7 +1752,6 @@ src/cli/update-cli/update-command-plugins.ts	1
 src/cli/users-cli.ts	1
 src/commands/agent-exec.ts	1
 src/commands/agent-via-gateway.ts	4
-src/commands/agents.commands.bind.ts	2
 src/commands/agents.commands.identity.ts	1
 src/commands/agents.config.ts	1
 src/commands/agents.providers.ts	4
@@ -1761,7 +1760,7 @@ src/commands/backup-restore.ts	1
 src/commands/backup-schedule.ts	1
 src/commands/backup-verify.ts	2
 src/commands/channel-setup/config-compatibility.ts	2
-src/commands/channel-setup/discovery.ts	8
+src/commands/channel-setup/discovery.ts	6
 src/commands/channel-test-registry.ts	2
 src/commands/channels/add-wizard.ts	1
 src/commands/channels/add.ts	2
@@ -1800,7 +1799,6 @@ src/commands/doctor-state-integrity.ts	1
 src/commands/doctor-telegram-general-topic-conversations.ts	2
 src/commands/doctor-tools-md-migration.ts	5
 src/commands/doctor-workspace.ts	4
-src/commands/doctor/cron/index.ts	3
 src/commands/doctor/cron/legacy-quarantine-migration.ts	1
 src/commands/doctor/cron/legacy-repair.ts	4
 src/commands/doctor/cron/store-migration.ts	2
@@ -1821,7 +1819,7 @@ src/commands/doctor/shared/legacy-config-migrations.runtime.models.codex.ts	4
 src/commands/doctor/shared/legacy-config-migrations.runtime.models.refs.ts	1
 src/commands/doctor/shared/legacy-config-state-migration-input.ts	2
 src/commands/doctor/shared/legacy-talk-config-normalizer.ts	1
-src/commands/doctor/shared/open-policy-allowfrom.ts	2
+src/commands/doctor/shared/open-policy-allowfrom.ts	1
 src/commands/doctor/shared/plugin-tool-allowlist-warnings.ts	1
 src/commands/doctor/shared/stale-agent-model-ref-repair.ts	2
 src/commands/doctor/shared/stale-auth-order-store.ts	2
@@ -2211,7 +2209,6 @@ src/infra/outbound/agent-delivery.ts	2
 src/infra/outbound/deliver-channel.ts	3
 src/infra/outbound/deliver-payload.ts	1
 src/infra/outbound/deliver-prepare.ts	1
-src/infra/outbound/delivery-queue-media-spool.ts	2
 src/infra/outbound/delivery-queue-storage.ts	3
 src/infra/outbound/format.ts	1
 src/infra/outbound/message-account-selection.ts	1
@@ -2797,8 +2794,8 @@ ui/src/lib/chat/outbox-store-codec.ts	1
 ui/src/lib/chat/outbox-store.ts	1
 ui/src/lib/chat/tool-call-patch.ts	1
 ui/src/lib/chat/tool-cards.ts	2
-ui/src/lib/config-form-utils.ts	3
-ui/src/lib/config/config-draft-model.ts	3
+ui/src/lib/config-form-utils.ts	1
+ui/src/lib/config/config-draft-model.ts	2
 ui/src/lib/keyboard-shortcuts.ts	1
 ui/src/lib/nodes/index.ts	2
 ui/src/lib/nodes/inventory.ts	1
