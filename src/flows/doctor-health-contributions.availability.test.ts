@@ -16,7 +16,10 @@ const { registerBundledHealthChecks, runDoctorHealthRepairs } = vi.hoisted(() =>
   runDoctorHealthRepairs: vi.fn(),
 }));
 vi.mock("./bundled-health-checks.js", () => ({ registerBundledHealthChecks }));
-vi.mock("./doctor-repair-flow.js", () => ({ runDoctorHealthRepairs }));
+vi.mock("./doctor-repair-flow.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./doctor-repair-flow.js")>();
+  return { ...actual, runDoctorHealthRepairs };
+});
 
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
 beforeEach(clearHealthChecksForTest);
