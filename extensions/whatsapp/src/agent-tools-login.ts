@@ -4,7 +4,8 @@ import {
 } from "openclaw/plugin-sdk/channel-actions";
 import type { ChannelAgentTool } from "openclaw/plugin-sdk/channel-contract";
 import type { OpenClawPluginApi, OpenClawPluginToolContext } from "openclaw/plugin-sdk/core";
-import { hasNonEmptyString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { readNonBlankString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { textResult } from "openclaw/plugin-sdk/tool-results";
 import { Type } from "typebox";
 import { startWebLoginWithQr, waitForWebLogin } from "../login-qr-api.js";
 
@@ -17,10 +18,6 @@ class WhatsAppToolInputError extends Error {
     super(message);
     this.name = "ToolInputError";
   }
-}
-
-function readLoginStringPreservingWhitespace(value: unknown): string | undefined {
-  return hasNonEmptyString(value) ? value : undefined;
 }
 
 export function createWhatsAppLoginTool(
@@ -66,13 +63,10 @@ export function createWhatsAppLoginTool(
           "",
           `![whatsapp-qr](${params.qrDataUrl})`,
         ].join("\n");
-        return {
-          content: [{ type: "text" as const, text }],
-          details: {
-            connected: params.connected ?? false,
-            qr: true,
-          },
-        };
+        return textResult(text, {
+          connected: params.connected ?? false,
+          qr: true,
+        });
       };
 
       const rawAction = (args as { action?: unknown })?.action;
@@ -82,15 +76,13 @@ export function createWhatsAppLoginTool(
           typeof action === "string" ? action : (JSON.stringify(action) ?? "unknown");
         throw new WhatsAppToolInputError(`Unknown WhatsApp login action: ${printableAction}`);
       }
-      const accountId = readLoginStringPreservingWhitespace(
-        (args as { accountId?: unknown }).accountId,
-      );
+      const accountId = readNonBlankString((args as { accountId?: unknown }).accountId);
       const timeoutMs = readPositiveIntegerParam(args as Record<string, unknown>, "timeoutMs");
       if (action === "wait") {
         const result = await waitForWebLogin({
           accountId,
           timeoutMs,
-          currentQrDataUrl: readLoginStringPreservingWhitespace(
+          currentQrDataUrl: readNonBlankString(
             (args as { currentQrDataUrl?: unknown }).currentQrDataUrl,
           ),
         });
@@ -101,10 +93,7 @@ export function createWhatsAppLoginTool(
             connected: result.connected,
           });
         }
-        return {
-          content: [{ type: "text", text: result.message }],
-          details: { connected: result.connected },
-        };
+        return textResult(result.message, { connected: result.connected });
       }
 
       await beforeCredentialPersistence();
@@ -119,15 +108,7 @@ export function createWhatsAppLoginTool(
       });
 
       if (!result.qrDataUrl) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: result.message,
-            },
-          ],
-          details: { qr: false },
-        };
+        return textResult(result.message, { qr: false });
       }
 
       return renderQrReply({

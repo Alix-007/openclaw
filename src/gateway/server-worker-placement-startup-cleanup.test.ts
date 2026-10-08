@@ -1,6 +1,6 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { collectSessionMaintenancePreserveKeys } from "../config/sessions/store-maintenance-preserve.js";
+import { prepareSessionMaintenancePreservation } from "../config/sessions/store-maintenance-preserve.js";
 import { createDeferredCore } from "../shared/deferred.js";
 import { createTestGatewayScheduler } from "../test-utils/gateway-scheduler-clock.js";
 
@@ -32,6 +32,15 @@ import * as workerEnvironmentSupport from "./worker-environments/service.test-su
 import { createWorkerWorkspaceOperationCoordinator } from "./worker-environments/workspace-operation-coordinator.js";
 import { createWorkerWorkspaceRecoveryFixture } from "./worker-environments/workspace-recovery.test-support.js";
 
+async function preservedSessionKeys() {
+  const prepared = await prepareSessionMaintenancePreservation("unused-store");
+  try {
+    return new Set(prepared.capture().providerKeys);
+  } finally {
+    prepared.dispose();
+  }
+}
+
 describe("worker placement startup cleanup ownership", () => {
   workerEnvironmentSupport.setupWorkerEnvironmentServiceSuite();
 
@@ -41,20 +50,20 @@ describe("worker placement startup cleanup ownership", () => {
       now: () => workerEnvironmentSupport.testState.nowMs,
     });
     for (let index = 0; index < 50; index += 1) {
-      const requested = placements.startDispatch({
+      const requested = await placements.startDispatch({
         sessionId: `session-debris-${index}`,
         sessionKey: `agent:main:debris-${index}`,
         agentId: "main",
         executionMode: "worker-turn",
       });
-      const provisioning = placements.transition({
+      const provisioning = await placements.transition({
         sessionId: requested.sessionId,
         from: "requested",
         to: "provisioning",
         expectedGeneration: requested.generation,
         patch: { environmentId: `worker-debris-${index}` },
       });
-      placements.fail({
+      await placements.fail({
         sessionId: requested.sessionId,
         expectedGeneration: provisioning.generation,
         recoveryError: "worker admission deadline exceeded",
@@ -159,8 +168,11 @@ describe("worker placement startup cleanup ownership", () => {
           claimId: "startup-fenced-local-claim",
           runId: "startup-fenced-local-run",
         });
-        const requested = placements.startDispatch({ ...identity, executionMode: "remote-exec" });
-        failed = placements.fail({
+        const requested = await placements.startDispatch({
+          ...identity,
+          executionMode: "remote-exec",
+        });
+        failed = await placements.fail({
           sessionId: requested.sessionId,
           expectedGeneration: requested.generation,
           recoveryError: "startup worker placement failed before its local claim was released",
@@ -172,8 +184,8 @@ describe("worker placement startup cleanup ownership", () => {
           .run(environmentId, failed.sessionId);
         failed = placements.get(failed.sessionId);
       } else {
-        const starting = seedStartingPlacement(placements, environmentId, "remote-exec");
-        failed = placements.fail({
+        const starting = await seedStartingPlacement(placements, environmentId, "remote-exec");
+        failed = await placements.fail({
           sessionId: starting.sessionId,
           expectedGeneration: starting.generation,
           recoveryError: "startup worker placement failed before its owner epoch was released",
@@ -219,7 +231,7 @@ describe("worker placement startup cleanup ownership", () => {
       });
       try {
         expect(sidecar).not.toBeNull();
-        expect(collectSessionMaintenancePreserveKeys()?.has(failedSessionKey)).toBe(true);
+        expect((await preservedSessionKeys()).has(failedSessionKey)).toBe(true);
         await environments.reconcileOnce();
         expect(provision).not.toHaveBeenCalled();
         expect(inspect).not.toHaveBeenCalled();
@@ -234,11 +246,11 @@ describe("worker placement startup cleanup ownership", () => {
           from: "provisioning",
           to: "failed",
         });
-        expect(collectSessionMaintenancePreserveKeys()?.has(failedSessionKey)).not.toBe(true);
+        expect((await preservedSessionKeys()).has(failedSessionKey)).not.toBe(true);
       } finally {
         await sidecar?.stop();
       }
-      expect(collectSessionMaintenancePreserveKeys()?.has(failedSessionKey)).not.toBe(true);
+      expect((await preservedSessionKeys()).has(failedSessionKey)).not.toBe(true);
     },
   );
 
@@ -277,20 +289,20 @@ describe("worker placement startup cleanup ownership", () => {
       database: workerEnvironmentSupport.testState.stateDb,
       now: () => workerEnvironmentSupport.testState.nowMs,
     });
-    const requested = placements.startDispatch({
+    const requested = await placements.startDispatch({
       sessionId: "session-startup-indeterminate",
       sessionKey: "agent:main:startup-indeterminate",
       agentId: "main",
       executionMode: "remote-exec",
     });
-    const provisioning = placements.transition({
+    const provisioning = await placements.transition({
       sessionId: requested.sessionId,
       from: "requested",
       to: "provisioning",
       expectedGeneration: requested.generation,
       patch: { environmentId },
     });
-    const failed = placements.fail({
+    const failed = await placements.fail({
       sessionId: provisioning.sessionId,
       expectedGeneration: provisioning.generation,
       recoveryError: "startup worker placement failed",

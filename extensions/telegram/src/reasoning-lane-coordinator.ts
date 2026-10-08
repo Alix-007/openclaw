@@ -5,7 +5,6 @@ import {
   isInsideCode,
   stripReasoningTagsFromText,
 } from "openclaw/plugin-sdk/text-chunking";
-import type { TelegramReasoningStepState } from "./bot-message-dispatch.types.js";
 
 // A durable reasoning message already marked channel-side: 🧠 + italic body
 // (see markReasoningMessage). Detect it so a re-split passes it through
@@ -24,19 +23,13 @@ function markReasoningMessage(formatted: string): string {
   return withoutHeader.replace(/^_/u, "🧠 _");
 }
 const REASONING_TAG_PREFIXES = [
-  "<think",
-  "<thinking",
-  "<thought",
-  "<internal",
-  "<antthinking",
-  "<mm:think",
-  "</think",
-  "</thinking",
-  "</thought",
-  "</internal",
-  "</antthinking",
-  "</mm:think",
-];
+  "think",
+  "thinking",
+  "thought",
+  "internal",
+  "antthinking",
+  "mm:think",
+].flatMap((name) => [`<${name}`, `</${name}`]);
 const THINKING_TAG_RE =
   /<\s*(\/?)\s*(?:(?:antml:|mm:)?(?:think(?:ing)?|thought)|antthinking)\b[^<>]*>/gi;
 
@@ -68,14 +61,14 @@ function extractThinkingFromTaggedStreamOutsideCode(text: string): string {
 }
 
 function isPartialReasoningTagPrefix(text: string): boolean {
-  const trimmed = text.trim().replace(/^<\s*(\/?)\s+/u, "<$1");
-  if (!trimmed.startsWith("<")) {
+  const trimmed = text
+    .trim()
+    .replace(/^<\s*(\/?)\s+/u, "<$1")
+    .toLowerCase();
+  if (!trimmed.startsWith("<") || trimmed.includes(">")) {
     return false;
   }
-  if (trimmed.includes(">")) {
-    return false;
-  }
-  return REASONING_TAG_PREFIXES.some((prefix) => prefix.startsWith(trimmed.toLowerCase()));
+  return REASONING_TAG_PREFIXES.some((prefix) => prefix.startsWith(trimmed));
 }
 
 type TelegramReasoningSplit = {
@@ -119,7 +112,7 @@ export function splitTelegramReasoningText(
   };
 }
 
-export function createTelegramReasoningStepState(): TelegramReasoningStepState {
+export function createTelegramReasoningStepState() {
   let reasoningStatus: "none" | "hinted" | "delivered" = "none";
   let bufferedFinalAnswer: ReplyPayload | undefined;
 
@@ -133,7 +126,7 @@ export function createTelegramReasoningStepState(): TelegramReasoningStepState {
       reasoningStatus = "delivered";
     },
     shouldBufferFinalAnswer: () => reasoningStatus === "hinted" && !bufferedFinalAnswer,
-    bufferFinalAnswer(value) {
+    bufferFinalAnswer(value: ReplyPayload) {
       bufferedFinalAnswer = value;
     },
     takeBufferedFinalAnswer() {

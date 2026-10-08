@@ -11,6 +11,7 @@ import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
 } from "../../../packages/gateway-protocol/src/client-info.js";
+import { collectTextContentBlocks } from "../../agents/content-blocks.js";
 import { DEFAULT_PROVIDER } from "../../agents/defaults.js";
 import {
   normalizeThinkLevel,
@@ -25,8 +26,8 @@ import { createDeferredCore } from "../../shared/deferred.js";
 import { runCommandWithRuntime } from "../cli-utils.js";
 import { collectOption } from "../program/helpers.js";
 import type { CapabilityEnvelope, CapabilityTransport } from "./metadata.js";
-import { emitJsonOrText, formatEnvelopeForText, providerSummaryText } from "./output.js";
-import { registerLocalProvidersCommand } from "./providers-command.js";
+import { formatEnvelopeForText, providerSummaryText } from "./output.js";
+import { registerLocalProvidersCommand, runCapabilityCommand } from "./providers-command.js";
 
 const LOCAL_MODEL_RUN_SYSTEM_PROMPT = "You are a personal assistant running inside OpenClaw.";
 const HEIC_MODEL_RUN_MIMES = new Set([
@@ -47,28 +48,7 @@ async function loadModelCatalogForInspection(cfg: OpenClawConfig, rawAgentId?: s
   );
 }
 
-function collectModelRunText(content: Array<{ type: string; text?: string }>): string {
-  return content
-    .map((block) => (block.type === "text" && typeof block.text === "string" ? block.text : ""))
-    .join("")
-    .trim();
-}
-
-function requireModelRunPrompt(value: unknown): string {
-  if (typeof value !== "string" || normalizeOptionalString(value) === undefined) {
-    throw new Error("--prompt cannot be empty or whitespace-only.");
-  }
-  return value;
-}
-
-type ModelRunImageFile = {
-  path: string;
-  fileName: string;
-  mimeType: string;
-  data: string;
-};
-
-async function readModelRunImageFiles(files: string[] | undefined): Promise<ModelRunImageFile[]> {
+async function readModelRunImageFiles(files: string[] | undefined) {
   if (!files || files.length === 0) {
     return [];
   }
@@ -99,20 +79,6 @@ async function readModelRunImageFiles(files: string[] | undefined): Promise<Mode
       };
     }),
   );
-}
-
-function normalizeModelRunThinking(value: unknown): ThinkLevel | undefined {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (typeof value !== "string") {
-    throw new Error("--thinking must be a string.");
-  }
-  const normalized = normalizeThinkLevel(value);
-  if (!normalized) {
-    throw new Error(`Invalid thinking level. Use one of: ${THINKING_LEVELS_HELP}.`);
-  }
-  return normalized;
 }
 
 async function runModelRun(params: {
@@ -217,7 +183,7 @@ async function runModelRun(params: {
                 ...(params.thinking ? { reasoning: params.thinking } : {}),
               },
             });
-            const text = collectModelRunText(result.content);
+            const text = collectTextContentBlocks(result.content).join("").trim();
             if (!text) {
               const providerErrorMessage = (result as { errorMessage?: unknown }).errorMessage;
               const detail =
@@ -335,14 +301,14 @@ async function runModelRun(params: {
 }
 
 async function buildModelProviders(cfg: OpenClawConfig, agentId: string) {
-  const { providerHasGenericConfig, resolveSelectedProviderFromModelRef } =
-    await import("./shared.js");
+  const { providerHasGenericConfig } = await import("./shared.js");
+  const { resolveModelRefOverride } = await import("../../shared/model-ref-override.js");
   const { resolveAgentEffectiveModelPrimary } = await import("../../agents/agent-scope.js");
   const { getProviderEnvVarsCore } = await import("../../secrets/provider-env-vars.js");
   const catalog = await loadModelCatalogForInspection(cfg, agentId);
-  const selectedProvider = resolveSelectedProviderFromModelRef(
+  const selectedProvider = resolveModelRefOverride(
     resolveAgentEffectiveModelPrimary(cfg, agentId),
-  );
+  ).provider;
   const grouped = new Map<
     string,
     {
@@ -461,18 +427,29 @@ export function registerModelCapabilityCommands(capability: Command): void {
       "Agent whose model and credentials own the run (default: agents.defaults.systemAgent.agentId, then the sole agent)",
     )
     .option("--json", "Output JSON", false)
-    .action(async (opts, command) => {
-      await runCommandWithRuntime(defaultRuntime, async () => {
+    .action((opts, command) =>
+      runCapabilityCommand(opts.json, formatEnvelopeForText, async () => {
         const { resolveCapabilityAgentOption, resolveTransport } = await import("./shared.js");
-        const prompt = requireModelRunPrompt(opts.prompt);
-        const thinking = normalizeModelRunThinking(opts.thinking);
+        const prompt = opts.prompt;
+        if (typeof prompt !== "string" || normalizeOptionalString(prompt) === undefined) {
+          throw new Error("--prompt cannot be empty or whitespace-only.");
+        }
+        let thinking: ThinkLevel | undefined;
+        if (opts.thinking !== undefined) {
+          if (typeof opts.thinking !== "string") {
+            throw new Error("--thinking must be a string.");
+          }
+          thinking = normalizeThinkLevel(opts.thinking);
+          if (!thinking) {
+            throw new Error(`Invalid thinking level. Use one of: ${THINKING_LEVELS_HELP}.`);
+          }
+        }
         const transport = resolveTransport({
           local: Boolean(opts.local),
           gateway: Boolean(opts.gateway),
-          supported: ["local", "gateway"],
           defaultTransport: "local",
         });
-        const result = await runModelRun({
+        return runModelRun({
           prompt,
           agent: resolveCapabilityAgentOption(command, opts.agent),
           files: opts.file as string[] | undefined,
@@ -480,33 +457,31 @@ export function registerModelCapabilityCommands(capability: Command): void {
           thinking,
           transport,
         });
-        emitJsonOrText(defaultRuntime, Boolean(opts.json), result, formatEnvelopeForText);
-      });
-    });
+      }),
+    );
 
   model
     .command("list")
     .description("List known models")
     .option("--json", "Output JSON", false)
-    .action(async (opts, command) => {
-      await runCommandWithRuntime(defaultRuntime, async () => {
+    .action((opts, command) =>
+      runCapabilityCommand(opts.json, providerSummaryText, async () => {
         const { resolveCapabilityAgentOption } = await import("./shared.js");
         const { getRuntimeConfig } = await import("../../config/config.js");
-        const result = await loadModelCatalogForInspection(
+        return loadModelCatalogForInspection(
           getRuntimeConfig(),
           resolveCapabilityAgentOption(command, opts.agent),
         );
-        emitJsonOrText(defaultRuntime, Boolean(opts.json), result, providerSummaryText);
-      });
-    });
+      }),
+    );
 
   model
     .command("inspect")
     .description("Inspect one model catalog entry")
     .requiredOption("--model <provider/model>", "Model id")
     .option("--json", "Output JSON", false)
-    .action(async (opts, command) => {
-      await runCommandWithRuntime(defaultRuntime, async () => {
+    .action((opts, command) =>
+      runCapabilityCommand(opts.json, undefined, async () => {
         const { resolveCapabilityAgentOption } = await import("./shared.js");
         const { getRuntimeConfig } = await import("../../config/config.js");
         const target = normalizeStringifiedOptionalString(opts.model) ?? "";
@@ -520,11 +495,9 @@ export function registerModelCapabilityCommands(capability: Command): void {
         if (!entry) {
           throw new Error(`Model not found: ${target}`);
         }
-        emitJsonOrText(defaultRuntime, Boolean(opts.json), entry, (value) =>
-          JSON.stringify(value, null, 2),
-        );
-      });
-    });
+        return entry;
+      }),
+    );
 
   registerLocalProvidersCommand(
     model,
@@ -579,31 +552,25 @@ export function registerModelCapabilityCommands(capability: Command): void {
       "Agent id (default: agents.defaults.systemAgent.agentId, then the sole agent)",
     )
     .option("--json", "Output JSON", false)
-    .action(async (opts, command) => {
-      await runCommandWithRuntime(defaultRuntime, async () => {
-        const result = await runModelAuthLogout(
+    .action((opts, command) =>
+      runCapabilityCommand(opts.json, undefined, async () => {
+        return runModelAuthLogout(
           String(opts.provider),
           await resolveModelAuthAgent(command, opts.agent, "infer model auth logout"),
         );
-        emitJsonOrText(defaultRuntime, Boolean(opts.json), result, (value) =>
-          JSON.stringify(value, null, 2),
-        );
-      });
-    });
+      }),
+    );
 
   modelAuth
     .command("status")
     .description("Show configured auth state")
     .option("--agent <id>", "Agent id (default: configured default agent)")
     .option("--json", "Output JSON", false)
-    .action(async (opts, command) => {
-      await runCommandWithRuntime(defaultRuntime, async () => {
-        const result = await runModelAuthStatus(
+    .action((opts, command) =>
+      runCapabilityCommand(opts.json, undefined, async () => {
+        return runModelAuthStatus(
           await resolveModelAuthAgent(command, opts.agent, "infer model auth status"),
         );
-        emitJsonOrText(defaultRuntime, Boolean(opts.json), result, (value) =>
-          JSON.stringify(value, null, 2),
-        );
-      });
-    });
+      }),
+    );
 }
