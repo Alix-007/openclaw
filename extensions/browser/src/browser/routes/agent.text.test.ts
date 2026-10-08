@@ -107,7 +107,10 @@ describe("browser page text route", () => {
       "user",
     );
     const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
-    evaluate.mockImplementationOnce(async (script: string) => {
+    evaluate.mockImplementationOnce(async (script: unknown) => {
+      if (typeof script !== "string") {
+        throw new Error("Expected a serialized Chrome MCP page function");
+      }
       const document = { nodeType: 9, querySelector: () => ({ innerText: "A😀B" }) };
       // Run the owner's page function rather than supplying a pre-truncated mock result.
       const extract = runInNewContext(script, {
