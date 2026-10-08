@@ -216,6 +216,19 @@ jobs:
           node scripts/prepare-apple-mermaid.mjs
           test -f apps/shared/OpenClawKit/Sources/OpenClawChatUI/Resources/Mermaid/index.html
 
+      - name: Install pinned Watch Rust toolchain
+        if: hashFiles('product/apps/shared/OpenClawWatchRTC/rust-toolchain.toml') != ''
+        shell: bash
+        working-directory: product
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.cargo/bin:$PATH"
+          watch_toolchain="$(awk -F '"' '/^channel =/ { print $2; exit }' apps/shared/OpenClawWatchRTC/rust-toolchain.toml)"
+          test -n "$watch_toolchain"
+          rustup toolchain install "$watch_toolchain" --profile minimal --component rust-src
+          rustup run "$watch_toolchain" rustc --version | tee -a evidence/proof-metadata.txt
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
       - name: Generate exact-head iOS project
         shell: bash
         working-directory: product
