@@ -70,6 +70,8 @@ final class AppleActiveSessionArchiveProofUITests: XCTestCase {
         active.press(forDuration: 1)
 
         let archive = app.buttons["Archive"]
+        self.attachScreenshot(named: "active-non-main-session-menu-observed")
+        self.attachHierarchy(named: "active-non-main-session-menu-before-assertion", app: app)
         XCTAssertTrue(
             archive.waitForExistence(timeout: 5),
             "A running non-main session with a durable ID must expose Archive")
