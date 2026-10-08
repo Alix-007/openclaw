@@ -1,3 +1,4 @@
+import { isUtf8 } from "node:buffer";
 import fs from "node:fs";
 import path from "node:path";
 import { replaceFileAtomic } from "@openclaw/fs-safe/atomic";
@@ -55,7 +56,11 @@ const CLAWHUB_PACKAGE_PUBLISH_WORKFLOW_REF = "9d49df109d4ad3dc8a6ecf05d26b39f46d
 const TOOL_PLUGIN_API_RANGE = ">=2026.5.17";
 
 function readJsonFile(filePath: string): JsonObject {
-  const raw = fs.readFileSync(filePath, "utf8");
+  const bytes = fs.readFileSync(filePath);
+  if (!isUtf8(bytes)) {
+    throw new Error(`JSON file must be valid UTF-8: ${filePath}`);
+  }
+  const raw = bytes.toString("utf8");
   try {
     return JSON.parse(raw) as JsonObject;
   } catch (err) {
