@@ -109,6 +109,7 @@ describe("secrets store CLI", () => {
         source === "stdin"
           ? vi.spyOn(process.stdin, Symbol.asyncIterator).mockImplementation(async function* () {
               yield bytes;
+              return undefined;
             })
           : undefined;
       try {
@@ -147,6 +148,7 @@ describe("secrets store CLI", () => {
               const split = bytes.indexOf(Buffer.from("合")) + 1;
               yield bytes.subarray(0, split);
               yield bytes.subarray(split);
+              return undefined;
             })
           : undefined;
       try {
