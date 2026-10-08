@@ -183,7 +183,11 @@ export function registerBrowserAgentDebugRoutes(
           if (!target) throw new Error("No page text target matched");
           const text = String(target.innerText || "");
           const maxChars = ${maxChars};
-          return { url: location.href, text: text.slice(0, maxChars), truncated: text.length > maxChars };
+          let end = maxChars;
+          const last = text.charCodeAt(end - 1);
+          const next = text.charCodeAt(end);
+          if (last >= 0xd800 && last <= 0xdbff && next >= 0xdc00 && next <= 0xdfff) end -= 1;
+          return { url: location.href, text: text.slice(0, end), truncated: text.length > end };
         }`),
       );
       if (!result || typeof result !== "object") {

@@ -1,3 +1,4 @@
+import { runInNewContext } from "node:vm";
 import { expectDefined } from "@openclaw/normalization-core";
 import { describe, expect, it } from "vitest";
 import "../../test-support/browser-security.mock.js";
@@ -94,6 +95,39 @@ describe("browser page text route", () => {
       expect.any(Function),
     );
     expect(evaluate).toHaveBeenCalledWith(expect.stringContaining("boundDocument"));
+  });
+
+  it.each([
+    { maxChars: 2, text: "A", truncated: true },
+    { maxChars: 3, text: "A😀", truncated: true },
+    { maxChars: 4, text: "A😀B", truncated: false },
+  ])("preserves whole characters at an existing-session bound of $maxChars", async (expected) => {
+    setBrowserControlServerProfiles(
+      { user: { driver: "existing-session", color: "#FF4500" } },
+      "user",
+    );
+    const evaluate = expectDefined(chromeMcpMocks.evaluateChromeMcpScript, "Chrome MCP evaluate");
+    evaluate.mockImplementationOnce(async (script: string) => {
+      const document = { nodeType: 9, querySelector: () => ({ innerText: "A😀B" }) };
+      // Run the owner's page function rather than supplying a pre-truncated mock result.
+      const extract = runInNewContext(script, {
+        document,
+        location: { href: "https://example.com" },
+      }) as (root: typeof document) => unknown;
+      return extract(document);
+    });
+    const base = await startServerAndBase();
+    const response = await getBrowserTestFetch()(
+      `${base}/text?profile=user&maxChars=${expected.maxChars}`,
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      ok: true,
+      targetId: "7",
+      url: "https://example.com",
+      text: expected.text,
+      truncated: expected.truncated,
+    });
   });
 
   it("rejects text from a forbidden evaluated document when the tab listing is stale", async () => {
