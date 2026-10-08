@@ -63,13 +63,13 @@ it("reports a warning after the bounded warning digest is full", async () => {
     updateWarnings: Array.from({ length: 32 }, (_, index) => `prior warning ${index}`),
   });
   await runDoctorHealthContributionList(ctx, [
-    createDoctorHealthContribution({
-      id: "doctor:bounded-warning",
-      label: "Bounded warning",
-      run: async (innerCtx) => {
+    createDoctorHealthContribution(
+      "doctor:bounded-warning",
+      "Bounded warning",
+      async (innerCtx) => {
         recordDoctorHealthWarnings(innerCtx, [], ["new warning"]);
       },
-    }),
+    ),
   ]);
 
   expect(ctx.runtime.log).toHaveBeenCalledWith(
