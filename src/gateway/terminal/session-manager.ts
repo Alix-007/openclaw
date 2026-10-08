@@ -10,7 +10,6 @@ import { spawnTerminalPty } from "../../process/terminal-pty.js";
 import {
   agentTerminalOwnerMatches,
   AgentTerminalSessionDrainTracker,
-  terminalTaskOwnerMatches,
 } from "./agent-session-drain.js";
 import type { TerminalBackend } from "./backend.js";
 import { TERMINAL_EVENT_DATA, TERMINAL_EVENT_EXIT } from "./gateway-transport.js";
@@ -45,6 +44,14 @@ import type { TerminalAttachSummary, TerminalSessionSummary } from "./session-ty
 export { DEFAULT_TERMINAL_DETACH_SECONDS } from "./session-limits.js";
 
 const log = createSubsystemLogger("gateway/terminal");
+
+function killTerminalBackend(backend: TerminalBackend): void {
+  try {
+    backend.kill();
+  } catch {
+    // Teardown is best effort; callers retain any required exit observation.
+  }
+}
 
 /** Owns PTYs and indexes their connections for bounded disconnect cleanup. */
 export class TerminalSessionManager {
@@ -175,12 +182,8 @@ export class TerminalSessionManager {
       // A cancelled spawn cannot register an orphaned PTY.
       releaseEvictionClaim();
       backend.onExit(() => this.untrackPendingOpen(request.owner, pending, request.viewerConnId));
-      try {
-        backend.kill();
-      } catch {
-        // Keep the open tracked: archive must time out instead of committing
-        // before an unobserved backend exit.
-      }
+      // Keep tracking until exit even if kill fails; archive must not commit early.
+      killTerminalBackend(backend);
       return { ok: false, code: "closed", message: pending.abortMessage };
     }
     this.untrackPendingOpen(request.owner, pending, request.viewerConnId);
@@ -197,11 +200,7 @@ export class TerminalSessionManager {
         // rejoins the pool and may still be selected.
         const victim = this.claimLongestIdleAgentSession();
         if (!victim) {
-          try {
-            backend.kill();
-          } catch {
-            // Best-effort; the process may already be gone.
-          }
+          killTerminalBackend(backend);
           return {
             ok: false,
             code: "limit",
@@ -418,22 +417,6 @@ export class TerminalSessionManager {
     }
     this.finalize(session, "closed", {});
     return { ok: true };
-  }
-
-  /** Closes every live or spawning PTY bound to one exact terminal task. */
-  closeTaskSessions(taskId: string): number {
-    for (const [pending, owner] of this.pendingOpens) {
-      if (terminalTaskOwnerMatches(owner, taskId)) {
-        pending.abort("terminal closed because its task ended");
-      }
-    }
-    const owned = [...this.sessions.values()].filter(
-      (session) => !session.closed && terminalTaskOwnerMatches(session.owner, taskId),
-    );
-    for (const session of owned) {
-      this.finalize(session, "closed", {});
-    }
-    return owned.length;
   }
 
   /** Fences and closes one durable agent-session incarnation through archive commit. */
@@ -781,11 +764,7 @@ export class TerminalSessionManager {
     if (!opts?.backendExited && session.owner?.kind === "agent") {
       this.agentSessionDrain.trackExit(session);
     }
-    try {
-      session.backend.kill();
-    } catch {
-      // Process may already be gone; the kill is best-effort teardown.
-    }
+    killTerminalBackend(session.backend);
     this.sessions.delete(session.id);
     if (session.owner?.kind === "conn") {
       this.connections.removeSession(session.owner.connId, session.id);
