@@ -45,6 +45,7 @@ export async function runDoctorHealthRepairs(
   for (const check of checks) {
     const startedAt = performance.now();
     const warningsBefore = result.warnings.length;
+    const remainingBefore = result.remainingFindings.length;
     if (opts.progress === true) {
       ctx.runtime.log(`Doctor: ${check.id} started`);
     }
@@ -53,7 +54,11 @@ export async function runDoctorHealthRepairs(
     } finally {
       if (opts.progress === true) {
         const durationMs = Math.max(0, Math.round(performance.now() - startedAt));
-        const outcome = result.warnings.length > warningsBefore ? "warning" : "completed";
+        const hasUnresolvedWarning = result.remainingFindings
+          .slice(remainingBefore)
+          .some((finding) => finding.severity === "warning" || finding.severity === "error");
+        const outcome =
+          result.warnings.length > warningsBefore || hasUnresolvedWarning ? "warning" : "completed";
         ctx.runtime.log(`Doctor: ${check.id} ${outcome} (${durationMs}ms)`);
       }
     }

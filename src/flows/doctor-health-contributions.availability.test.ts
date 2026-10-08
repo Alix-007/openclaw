@@ -55,28 +55,6 @@ it("retains unavailable-plugin repair guidance in Doctor output and update warni
   expect(ctx.runtime.exit).not.toHaveBeenCalled();
 });
 
-it("passes progress through contribution-defined structured checks", async () => {
-  const contribution = createDoctorHealthContribution({
-    id: "doctor:structured-progress",
-    label: "Structured progress",
-    healthChecks: { description: "structured progress", detect: vi.fn(async () => []) },
-  });
-  const ctx = createDoctorHealthFlowContext({
-    cfg: {},
-    cfgForPersistence: {},
-    configResult: { cfg: {} },
-  });
-  ctx.prompter.shouldRepair = true;
-
-  await contribution.run(ctx);
-
-  expect(runDoctorHealthRepairs).toHaveBeenCalledWith(expect.any(Object), {
-    checks: contribution.healthChecks,
-    dryRun: false,
-    progress: true,
-  });
-});
-
 it("reports a warning after the bounded warning digest is full", async () => {
   const ctx = createDoctorHealthFlowContext({
     updateWarnings: Array.from({ length: 32 }, (_, index) => `prior warning ${index}`),

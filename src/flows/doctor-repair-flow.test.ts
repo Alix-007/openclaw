@@ -47,13 +47,28 @@ function successfullyRepairedCheck(): DoctorHealthCheck {
 }
 
 describe("runDoctorHealthRepairs", () => {
-  it("reports per-check lifecycle and duration when Doctor progress is enabled", async () => {
+  it.each([
+    { severity: undefined, outcome: "completed" },
+    { severity: "info" as const, outcome: "completed" },
+    { severity: "warning" as const, outcome: "warning" },
+    { severity: "error" as const, outcome: "warning" },
+  ])("reports the per-check outcome for $severity findings", async ({ severity, outcome }) => {
     const log = vi.fn();
     const checks: DoctorHealthCheck[] = [
       normalizeHealthCheck({
         id: "test/progress",
         kind: "core",
         description: "progress",
+        async detect() {
+          return severity
+            ? [{ checkId: "test/progress", severity, message: "unresolved observation" }]
+            : [];
+        },
+      }),
+      normalizeHealthCheck({
+        id: "test/healthy-sibling",
+        kind: "core",
+        description: "healthy sibling after any unresolved check",
         async detect() {
           return [];
         },
@@ -71,7 +86,12 @@ describe("runDoctorHealthRepairs", () => {
     expect(log).toHaveBeenNthCalledWith(1, "Doctor: test/progress started");
     expect(log).toHaveBeenNthCalledWith(
       2,
-      expect.stringMatching(/^Doctor: test\/progress completed \(\d+ms\)$/),
+      expect.stringMatching(new RegExp(`^Doctor: test/progress ${outcome} \\(\\d+ms\\)$`)),
+    );
+    expect(log).toHaveBeenNthCalledWith(3, "Doctor: test/healthy-sibling started");
+    expect(log).toHaveBeenNthCalledWith(
+      4,
+      expect.stringMatching(/^Doctor: test\/healthy-sibling completed \(\d+ms\)$/),
     );
   });
 
@@ -104,6 +124,7 @@ describe("runDoctorHealthRepairs", () => {
   });
 
   it("repairs modern checks and threads updated config", async () => {
+    const log = vi.fn();
     const scopes: unknown[] = [];
     const checks: DoctorHealthCheck[] = [
       normalizeHealthCheck({
@@ -134,7 +155,10 @@ describe("runDoctorHealthRepairs", () => {
       }),
     ];
 
-    const result = await runDoctorHealthRepairs(ctx({}), { checks });
+    const result = await runDoctorHealthRepairs(
+      { ...ctx({}), runtime: { log, error() {}, exit() {} } },
+      { checks, progress: true },
+    );
 
     expect(result.config.gateway?.mode).toBe("local");
     expect(result.changes).toEqual(["Set gateway.mode to local."]);
@@ -142,6 +166,9 @@ describe("runDoctorHealthRepairs", () => {
     expect(result.checksValidated).toBe(1);
     expect(result.remainingFindings).toEqual([]);
     expect(scopes).toMatchObject([{ paths: ["gateway.mode"] }]);
+    expect(log).toHaveBeenLastCalledWith(
+      expect.stringMatching(/^Doctor: test\/repairable completed \(\d+ms\)$/),
+    );
   });
 
   it("keeps repairable out of split repair result types", () => {
