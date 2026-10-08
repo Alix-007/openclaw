@@ -8,7 +8,7 @@ import { verifyBackupArchive } from "./backup-verify.js";
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
 
 async function createArchive(runtimeVersion: Buffer) {
-  const root = await tempDirs.make("openclaw-backup-manifest-utf8-");
+  const root = tempDirs.make("openclaw-backup-manifest-utf8-");
   const archiveRoot = "2026-10-09T00-00-00.000Z-openclaw-backup";
   const payload = `${archiveRoot}/payload/posix/tmp/.openclaw/payload.txt`;
   await fs.mkdir(path.join(root, path.dirname(payload)), { recursive: true });
