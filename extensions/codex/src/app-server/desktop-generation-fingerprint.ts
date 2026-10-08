@@ -3,6 +3,7 @@ import { constants as fsConstants } from "node:fs";
 import type { BigIntStats } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { extractErrorCode } from "openclaw/plugin-sdk/error-runtime";
 import { sha256File } from "openclaw/plugin-sdk/file-access-runtime";
 import {
   resolveMacOSDesktopCodexAppPathCandidates,
@@ -86,11 +87,7 @@ export function resolveMacOSDesktopGenerationWatchPaths(
     "darwin",
   ),
 ): string[] {
-  const watched = new Set<string>(["/Applications"]);
-  for (const candidate of candidates) {
-    watched.add(candidate.appBundlePath);
-  }
-  return [...watched];
+  return [...new Set(["/Applications", ...candidates.map((candidate) => candidate.appBundlePath)])];
 }
 
 export async function readCodexDesktopArtifactTreeFingerprint(root: string): Promise<string> {
@@ -98,10 +95,7 @@ export async function readCodexDesktopArtifactTreeFingerprint(root: string): Pro
   try {
     rootStat = await fs.lstat(root, { bigint: true });
   } catch (error) {
-    if (isNodeError(error, "ENOENT") || isNodeError(error, "ENOTDIR")) {
-      return "missing";
-    }
-    throw error;
+    return missingFingerprint(error);
   }
   if (!rootStat.isDirectory()) {
     return statFingerprint(root);
@@ -161,10 +155,7 @@ async function statFingerprint(filePath: string): Promise<string> {
     const content = target.isFile() ? await readFileFingerprint(filePath, target, true) : "";
     return `${type}:${own}:${link}:${realPath}:${statTuple(target)}:${content}`;
   } catch (error) {
-    if (isNodeError(error, "ENOENT") || isNodeError(error, "ENOTDIR")) {
-      return "missing";
-    }
-    throw error;
+    return missingFingerprint(error);
   }
 }
 
@@ -201,6 +192,10 @@ function statTuple(stat: BigIntStats): string {
   return [stat.dev, stat.ino, stat.mode, stat.size, stat.mtimeNs, stat.ctimeNs].join(":");
 }
 
-function isNodeError(error: unknown, code: string): error is NodeJS.ErrnoException {
-  return Boolean(error && typeof error === "object" && "code" in error && error.code === code);
+function missingFingerprint(error: unknown): "missing" {
+  const code = extractErrorCode(error);
+  if (code === "ENOENT" || code === "ENOTDIR") {
+    return "missing";
+  }
+  throw error;
 }
