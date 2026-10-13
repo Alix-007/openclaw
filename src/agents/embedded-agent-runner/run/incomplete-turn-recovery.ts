@@ -311,6 +311,7 @@ export function resolveSettledToolTerminalContinuationInstruction(
   const {
     assistant: toolBatchAssistant,
     allToolsProvenSettled,
+    parkedCodeModeRun,
     failedToolNames,
     hasUnsettledToolError,
     intentionalTermination,
@@ -347,19 +348,17 @@ export function resolveSettledToolTerminalContinuationInstruction(
       ? !allToolsProvenSettled
       : !emptyStopAfterSettledTools) ||
     intentionalTermination ||
+    parkedCodeModeRun ||
     hasUnsettledToolError ||
     hasAsyncActivity(attempt.toolMetas) ||
     hasAcceptedSessionSpawn(attempt.acceptedSessionSpawns) ||
     attempt.clientToolCalls ||
     attempt.yieldDetected ||
-    attempt.didSendDeterministicApprovalPrompt
+    attempt.didSendDeterministicApprovalPrompt ||
+    attempt.hasToolMediaBlockReply ||
+    resolveSourceReplyDelivery(attempt) !== "missing" ||
+    !shouldApplyNonVisibleTurnRetryGuard(params)
   ) {
-    return null;
-  }
-  if (attempt.hasToolMediaBlockReply || resolveSourceReplyDelivery(attempt) !== "missing") {
-    return null;
-  }
-  if (!shouldApplyNonVisibleTurnRetryGuard(params)) {
     return null;
   }
   return allToolsProvenSettled && failedToolNames.size > 0
