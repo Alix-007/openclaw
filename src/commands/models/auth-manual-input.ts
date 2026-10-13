@@ -6,8 +6,10 @@ import { formatCliCommand } from "../../cli/command-format.js";
 
 const MODELS_AUTH_STDIN_MAX_BYTES = 1024 * 1024;
 
-export async function readPipedStdin(): Promise<string> {
-  const bytes = await readByteStreamWithLimit(process.stdin, {
+export async function readPipedStdin(
+  stream: AsyncIterable<unknown> = process.stdin,
+): Promise<string> {
+  const bytes = await readByteStreamWithLimit(stream, {
     maxBytes: MODELS_AUTH_STDIN_MAX_BYTES,
     onOverflow: ({ maxBytes }) => new Error(`Piped auth input exceeds ${maxBytes} bytes.`),
   });
