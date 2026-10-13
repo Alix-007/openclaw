@@ -39,24 +39,22 @@ const codexHistoryWorkerEntrypoint = {
   },
 } as const;
 
-function resolveCodexHistoryWorkerUrl(): URL {
-  const sourceUrl = resolveRuntimeWorkerUrl(codexHistoryWorkerEntrypoint);
-  const sourceNeedsBuiltFallback =
-    /\.[cm]?ts$/u.test(sourceUrl.pathname) &&
-    (typeof process.versions.bun === "string" || resolveRuntimeWorkerArgv(sourceUrl).length === 1);
-  if (!sourceNeedsBuiltFallback) {
-    return sourceUrl;
-  }
-  // oxlint-disable-next-line no-warning-comments -- removal awaits Bun Worker preload resolver support.
-  // TODO: Remove this fallback once Bun Workers apply resolver hooks from execArgv --import preloads.
-  return resolveRuntimeWorkerUrl({
-    ...codexHistoryWorkerEntrypoint,
-    root: fileURLToPath(new URL("../..", import.meta.url)),
-  });
-}
-
+const sourceWorkerUrl = resolveRuntimeWorkerUrl(codexHistoryWorkerEntrypoint);
+const sourceNeedsBuiltFallback =
+  /\.[cm]?ts$/u.test(sourceWorkerUrl.pathname) &&
+  (typeof process.versions.bun === "string" ||
+    resolveRuntimeWorkerArgv(sourceWorkerUrl).length === 1);
+// oxlint-disable-next-line no-warning-comments -- removal awaits Bun Worker preload resolver support.
+// TODO: Remove this fallback once Bun Workers apply resolver hooks from execArgv --import preloads.
 const historyReads = new WorkerTaskPool<CodexHistoryWorkerInput, CodexHistoryWorkerResult>({
-  workerUrl: resolveCodexHistoryWorkerUrl(),
+  workerUrl: sourceNeedsBuiltFallback
+    ? resolveRuntimeWorkerUrl({
+        ...codexHistoryWorkerEntrypoint,
+        root: fileURLToPath(new URL("../..", import.meta.url)),
+      })
+    : sourceWorkerUrl,
+  workerClass: "reader",
+  // Published plugin supports older hosts that only understand numeric sizing.
   maxWorkers: 1,
 });
 
@@ -66,13 +64,10 @@ export async function projectCodexSettledHistoryInWorker(
   contextReader?: CodexSessionContextReader,
 ): Promise<CodexHistoryReadResult<JsonValue[]>> {
   signal?.throwIfAborted();
-  if (contextReader && !target.sessionTarget) {
-    throw new Error("Actor history requires a captured sessionTarget");
-  }
-  const resolved = resolveCodexHistoryTarget(target);
+  const resolved = await resolveCodexHistoryTarget(target);
   const reader =
     contextReader ??
-    (target.sessionTarget && resolved.kind === "sqlite"
+    (resolved.kind === "sqlite"
       ? captureCodexSessionContextReader({ ...target.sessionTarget, ...resolved.target }, signal)
       : undefined);
   if (reader) {
