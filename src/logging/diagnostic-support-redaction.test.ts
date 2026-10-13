@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   redactPublicSupportDiagnosticLine,
+  redactSupportDiagnosticLine,
   redactSupportString,
   redactTextForSupport,
   sanitizeSupportConfigValue,
@@ -43,6 +44,76 @@ function fakeRepeatedToken(chars: readonly string[], length = 40): string {
 
 describe("diagnostic support redaction", () => {
   const tempDir = path.join(os.tmpdir(), "openclaw-support-redaction-test");
+
+  it.each([
+    `'/synthetic/private owner/state.sqlite' private suffix`,
+    `'/synthetic/o'brien/customer.sqlite' private suffix`,
+    `"/synthetic/private "quoted" owner/state.sqlite" private suffix`,
+    String.raw`"C:\Users\Private Owner\state.sqlite" private suffix`,
+    String.raw`'\\private-server\private share\state.sqlite' private suffix`,
+    `"file:///synthetic/private owner/state.sqlite" private suffix`,
+  ])("hides the complete quoted path suffix in %s", (source) => {
+    expect(
+      redactSupportDiagnosticLine(`EACCES: permission denied, open ${source}`, {
+        env: {},
+        stateDir: tempDir,
+      }),
+    ).toBe("EACCES: permission denied, open [redacted-path]");
+  });
+
+  it.each([
+    ['"dist/index.js": fields=size,mtimeNs,ctimeNs,sha256', true],
+    ['"node_modules/.package-lock.json": fields=added', true],
+    ['"node_modules/@openclaw/fs-safe/index.js": fields=sha256', true],
+    ['".": fields=dev:ino,mode', true],
+    ['"/private/state.js": fields=sha256', false],
+    ['"../private/state.js": fields=sha256', false],
+    ['"node_modules/@private_team/module/index.js": fields=sha256', false],
+    ['"node_modules/@org/module/index.js": fields=sha256', false],
+    ['"dist/index.js": fields=sha256,private-value', false],
+    ['"dist/index.js": fields=sha256; private-text', false],
+  ])("bounds public package drift diagnostics: %s", (detail, allowed) => {
+    const line = `Package rollback entry ${detail}`;
+    expect(redactPublicSupportDiagnosticLine(line, { env: {}, stateDir: tempDir })).toBe(
+      allowed ? line : "[redacted-diagnostic]",
+    );
+  });
+
+  it.each([
+    [
+      'journal "operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1.',
+      true,
+    ],
+    [
+      'journal "operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1. Run openclaw doctor --fix.',
+      true,
+    ],
+    [
+      'journal "operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1. Run openclaw doctor --fix. private-text',
+      false,
+    ],
+    [
+      'helper "recovery.mjs" unsafe: mode=0644 nlink=1 uid=1000; expected owner-only mode nlink=1.',
+      true,
+    ],
+    [
+      'journal "operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1. private-text',
+      false,
+    ],
+    [
+      'journal "/private/operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1.',
+      false,
+    ],
+    [
+      'unknown "operation.sqlite" unsafe: mode=0600 nlink=2 uid=1000; expected owner-only mode nlink=1.',
+      false,
+    ],
+  ])("bounds public package recovery diagnostics: %s", (detail, allowed) => {
+    const line = `Package recovery ${detail}`;
+    expect(redactPublicSupportDiagnosticLine(line, { env: {}, stateDir: tempDir })).toBe(
+      allowed ? line : "[redacted-diagnostic]",
+    );
+  });
 
   it.each([
     "EACCES",
@@ -179,7 +250,17 @@ describe("diagnostic support redaction", () => {
       { length: 40 },
       (_entry, index) => (["A", "b", "9", "+"] as const)[index % 4] ?? "A",
     ).join("")}`;
+    const vendorToken = `gAAAA${"b".repeat(24)}`;
+    const vendorShapedDataUrl = `data:application/octet-stream;base64,${vendorToken}`;
     const cases = [
+      [
+        "project top-level /synthetic/skills/example/SKILL.md",
+        "project top-level /synthetic/skills/example/SKILL.md",
+      ],
+      ["vendor ghp_abcdefghij", "vendor ***"],
+      [`vendor ${vendorToken}`, "vendor gAAAAb…bbbb"],
+      [vendorShapedDataUrl, vendorShapedDataUrl],
+      ["é123456:fixtureonlyabcdefghij", "é123456…ghij"],
       [
         "connect wss://support-user:support-password@gateway.example/ws?token=short-token&ok=1",
         "connect wss://<redacted>:<redacted>@gateway.example/ws?token=<redacted>&ok=1",

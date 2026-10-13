@@ -25,8 +25,7 @@ describe("gateway usage request validation", () => {
       });
 
       for (const [params, message] of [
-        [{ agentId: 42 }, "agentId must be a non-empty string"],
-        [{ agentId: "   " }, "agentId must be a non-empty string"],
+        [{ agentId: 42 }, "agentId must be a string"],
         [{ agentScope: "unexpected" }, "agentScope must be 'all' when provided"],
       ] as const) {
         expect(
@@ -39,6 +38,8 @@ describe("gateway usage request validation", () => {
       }
 
       for (const params of [
+        {},
+        { agentId: "  " },
         { agentId: "main" },
         { agentScope: "all" },
         { agentId: "  ", agentScope: "all" },

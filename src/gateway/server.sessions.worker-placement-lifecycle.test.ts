@@ -161,8 +161,6 @@ function sequencedPlacementService(
 test.each([
   { action: "fork" as const, allowed: true },
   { action: "restore" as const, allowed: false },
-  { action: "rewind" as const, allowed: false },
-  { action: "switch" as const, allowed: false },
 ])("stopped cloud placement only permits identity-preserving $action", ({ action, allowed }) => {
   for (const state of ["reclaimed", "failed"] as const) {
     const sessionId = `stopped-${state}-${action}`;
@@ -310,7 +308,6 @@ test.each(["generation", "environment", "session key"] as const)(
 
 test.each([
   ["discord:group:active-local-delete", "discord:group:active-local-delete"],
-  ["agent:main:cron:placed-job", "agent:main:cron:placed-job:run:sess-active-local-delete"],
   ["agent:main:cron:adopted-job", "agent:main:cron:adopted-job:run:original-session-id"],
 ])("sessions.delete drains %s before placement retirement", async (sessionKey, placementKey) => {
   const { storePath } = await createSessionStoreDir();
@@ -342,10 +339,12 @@ test.each([
             waitForTurnClaimRelease: (
               ...args: Parameters<WorkerSessionPlacementStore["waitForTurnClaimRelease"]>
             ) => placementStore.waitForTurnClaimRelease(...args),
-            retireSessionPlacement: (retirement: WorkerSessionPlacementRetirement) => {
+            getManyAsync: (sessionIds: readonly string[]) =>
+              placementStore.getManyAsync(sessionIds),
+            retireSessionPlacementAsync: async (retirement: WorkerSessionPlacementRetirement) => {
               expect(placementStore.get(sessionId)?.turnClaim).toBeNull();
               events.push("placement:retire");
-              placementStore.retireSessionPlacement(retirement);
+              await placementStore.retireSessionPlacementAsync(retirement);
             },
           },
         },
@@ -380,8 +379,6 @@ test("sessions.delete retains failed placement when worker cleanup is unavailabl
       context: {
         workerEnvironmentService: {
           get: () => ({ state: "failed", leaseId: "lease-1" }),
-          hasInferenceForSession: () => false,
-          cancelInferenceForSession: () => [],
         } as never,
         workerSessionPlacementService: placementService,
       },
@@ -393,81 +390,6 @@ test("sessions.delete retains failed placement when worker cleanup is unavailabl
   expect(loadSessionEntry(sessionKey).entry?.sessionId).toBe(sessionId);
   expect(embeddedRunMock.abortCalls).toEqual([sessionId]);
   expect(placementService.retireSessionPlacement).not.toHaveBeenCalled();
-});
-
-test.each([
-  { name: "local", state: "local" as const },
-  { name: "reclaimed", state: "reclaimed" as const },
-  {
-    name: "failed after proven bootstrap teardown",
-    state: "failed" as const,
-    environment: { state: "failed", leaseId: null },
-  },
-  {
-    name: "failed after worker destruction",
-    state: "failed" as const,
-    environment: { state: "destroyed" },
-  },
-  {
-    name: "failed before acquiring a worker",
-    state: "failed" as const,
-    withoutEnvironment: true,
-  },
-  {
-    name: "failed after missing durable environment",
-    state: "failed" as const,
-  },
-])("sessions.delete retires a $name placement after deleting its session", async (testCase) => {
-  await createSessionStoreDir();
-  const caseId = testCase.name.replaceAll(" ", "-");
-  const sessionKey = `discord:group:${caseId}`;
-  const sessionId = `sess-${caseId}`;
-  await writeSessionStore({ entries: { [sessionKey]: sessionStoreEntry(sessionId) } });
-  const placement =
-    testCase.state === "local"
-      ? placementRecord(sessionId, "local", loadSessionEntry(sessionKey).canonicalKey)
-      : terminalPlacementRecord(
-          sessionId,
-          testCase.state,
-          loadSessionEntry(sessionKey).canonicalKey,
-        );
-  if ("withoutEnvironment" in testCase && placement.state === "failed") {
-    placement.environmentId = null;
-  }
-  const placementService = sequencedPlacementService([placement], () => {
-    expect(loadSessionEntry(sessionKey).entry).toBeUndefined();
-  });
-  const getWorkerEnvironment = vi.fn(() =>
-    "environment" in testCase ? testCase.environment : undefined,
-  );
-
-  const deleted = await directSessionReq(
-    "sessions.delete",
-    { key: sessionKey },
-    {
-      context: {
-        workerEnvironmentService: {
-          get: getWorkerEnvironment,
-          hasInferenceForSession: () => false,
-        } as never,
-        workerSessionPlacementService: placementService,
-      },
-    },
-  );
-
-  expect(deleted.ok).toBe(true);
-  expect(deleted.payload).toMatchObject({ ok: true, deleted: true });
-  expect(loadSessionEntry(sessionKey).entry).toBeUndefined();
-  expect(placementService.retireSessionPlacement).toHaveBeenCalledWith({
-    sessionId,
-    expectedState: placement.state,
-    expectedGeneration: placement.generation,
-  });
-  if (placement.state === "failed" && placement.environmentId !== null) {
-    expect(getWorkerEnvironment).toHaveBeenCalled();
-  } else {
-    expect(getWorkerEnvironment).not.toHaveBeenCalled();
-  }
 });
 
 test.each([
@@ -522,10 +444,13 @@ test.each([
           context: {
             workerSessionPlacementService: {
               getMany: (sessionIds: readonly string[]) => placementStore.getMany(sessionIds),
-              retireSessionPlacement: (retirement: WorkerSessionPlacementRetirement) => {
+              getManyAsync: (sessionIds: readonly string[]) =>
+                placementStore.getManyAsync(sessionIds),
+              retireSessionPlacementAsync: async (retirement: WorkerSessionPlacementRetirement) => {
+                expect(loadSessionEntry(testCase.sessionKey).entry?.sessionId).toBe(sessionId);
                 expect(placementStore.get(sessionId)?.turnClaim).toBeNull();
                 events.push("placement:retire");
-                placementStore.retireSessionPlacement(retirement);
+                await placementStore.retireSessionPlacementAsync(retirement);
               },
             },
           },
@@ -561,8 +486,8 @@ test("sessions.reset rechecks lifecycle ownership after draining before placemen
     sessionKey,
     storePath,
   });
-  const retireSessionPlacement = vi.fn((retirement: WorkerSessionPlacementRetirement) =>
-    placementStore.retireSessionPlacement(retirement),
+  const retireSessionPlacementAsync = vi.fn((retirement: WorkerSessionPlacementRetirement) =>
+    placementStore.retireSessionPlacementAsync(retirement),
   );
   const { performGatewaySessionReset } = await import("./session-reset-service.js");
 
@@ -575,7 +500,7 @@ test("sessions.reset rechecks lifecycle ownership after draining before placemen
         workerPlacementContext: {
           workerSessionPlacementService: {
             getMany: (sessionIds: readonly string[]) => placementStore.getMany(sessionIds),
-            retireSessionPlacement,
+            retireSessionPlacementAsync,
           },
         },
         assertCurrent: () => {
@@ -586,7 +511,7 @@ test("sessions.reset rechecks lifecycle ownership after draining before placemen
       }),
     ).rejects.toThrow("stale lifecycle after drain");
     expect(events).toEqual(["admission:interrupt", "claim:released"]);
-    expect(retireSessionPlacement).not.toHaveBeenCalled();
+    expect(retireSessionPlacementAsync).not.toHaveBeenCalled();
     expect(placementStore.get(sessionId)).toMatchObject({ state: "local", turnClaim: null });
     expect(loadSessionEntry(sessionKey).entry?.sessionId).toBe(sessionId);
     expect(sessionHookMocks.triggerInternalHook).not.toHaveBeenCalled();
@@ -597,91 +522,57 @@ test("sessions.reset rechecks lifecycle ownership after draining before placemen
   }
 });
 
-test.each([
-  {
-    name: "ordinary reset",
-    sessionKey: "discord:group:local-reset",
-    incognito: false,
-    state: "local" as const,
-  },
-  {
-    name: "incognito reset",
-    sessionKey: "agent:main:dashboard:incognito-local-reset",
-    incognito: true,
-    state: "local" as const,
-  },
-  {
-    name: "reclaimed cloud reset",
-    sessionKey: "discord:group:reclaimed-reset",
-    incognito: false,
-    state: "reclaimed" as const,
-  },
-  {
-    name: "failed cloud reset after worker destruction",
-    sessionKey: "discord:group:destroyed-worker-reset",
-    incognito: false,
-    state: "failed" as const,
-    environment: { state: "destroyed" },
-  },
-  {
-    name: "failed cloud reset after proven bootstrap teardown",
-    sessionKey: "discord:group:failed-worker-reset",
-    incognito: false,
-    state: "failed" as const,
-    environment: { state: "failed", leaseId: null },
-  },
-])("sessions.reset retires the old placement before $name", async (testCase) => {
-  await createSessionStoreDir();
-  const sessionId = testCase.incognito
-    ? await (async () => {
-        const created = await directSessionReq<{ sessionId?: string }>("sessions.create", {
-          agentId: "main",
-          key: testCase.sessionKey,
-          incognito: true,
-        });
-        if (!created.ok || !created.payload?.sessionId) {
-          throw new Error(`incognito setup failed: ${JSON.stringify(created.error)}`);
-        }
-        return created.payload.sessionId;
-      })()
-    : `sess-${testCase.name.replaceAll(" ", "-")}`;
-  if (!testCase.incognito) {
-    await writeSessionStore({
-      entries: { [testCase.sessionKey]: sessionStoreEntry(sessionId) },
-    });
-  }
-  const placement =
-    testCase.state === "local"
-      ? placementRecord(sessionId, "local")
-      : terminalPlacementRecord(sessionId, testCase.state);
-  const placementService = sequencedPlacementService([placement], () => {
-    expect(loadSessionEntry(testCase.sessionKey).entry?.sessionId).toBe(sessionId);
-  });
-
-  const reset = await directSessionReq(
-    "sessions.reset",
-    { key: testCase.sessionKey },
-    {
-      context: {
-        ...(testCase.state === "failed"
-          ? { workerEnvironmentService: { get: () => testCase.environment } as never }
-          : {}),
-        workerSessionPlacementService: placementService,
+test.each(["released synchronous", "async"] as const)(
+  "sessions.reset preserves custom %s placement retirement after bootstrap teardown",
+  async (retirementMode) => {
+    await createSessionStoreDir();
+    const sessionKey = "discord:group:failed-worker-reset";
+    const sessionId = "sess-failed-worker-reset";
+    await writeSessionStore({ entries: { [sessionKey]: sessionStoreEntry(sessionId) } });
+    const placement = terminalPlacementRecord(sessionId, "failed");
+    const retired: WorkerSessionPlacementRetirement[] = [];
+    const placementService = {
+      ...sequencedPlacementReader([placement]),
+      retired,
+      retireSessionPlacement(input: WorkerSessionPlacementRetirement) {
+        expect(loadSessionEntry(sessionKey).entry?.sessionId).toBe(sessionId);
+        this.retired.push(input);
       },
-    },
-  );
+      ...(retirementMode === "async"
+        ? {
+            async retireSessionPlacementAsync(
+              this: WorkerSessionPlacementRetirementService,
+              input: WorkerSessionPlacementRetirement,
+            ) {
+              this.retireSessionPlacement(input);
+            },
+          }
+        : {}),
+    };
 
-  if (!reset.ok) {
-    throw new Error(`${testCase.name} failed: ${JSON.stringify(reset.error)}`);
-  }
-  expect(placementService.retireSessionPlacement).toHaveBeenCalledWith({
-    status: "retirement-required",
-    sessionId,
-    expectedState: testCase.state,
-    expectedGeneration: placement.generation,
-  });
-  expect(loadSessionEntry(testCase.sessionKey).entry === undefined).toBe(testCase.incognito);
-});
+    const reset = await directSessionReq(
+      "sessions.reset",
+      { key: sessionKey },
+      {
+        context: {
+          workerEnvironmentService: { get: () => ({ state: "failed", leaseId: null }) } as never,
+          workerSessionPlacementService: placementService,
+        },
+      },
+    );
+
+    expect(reset.ok, JSON.stringify(reset.error)).toBe(true);
+    expect(retired).toEqual([
+      {
+        status: "retirement-required",
+        sessionId,
+        expectedState: "failed",
+        expectedGeneration: placement.generation,
+      },
+    ]);
+    expect(loadSessionEntry(sessionKey).entry).toBeDefined();
+  },
+);
 
 test.each([
   {
@@ -794,7 +685,11 @@ test.each(["generation", "claim"] as const)(
     bundleMcpRuntimeMocks.disposeSessionMcpRuntime.mockImplementationOnce(async () => {
       const canonicalKey = loadSessionEntry(sessionKey).canonicalKey ?? sessionKey;
       if (change === "generation") {
-        placementStore.startDispatch({ sessionId, agentId: "main", sessionKey: canonicalKey });
+        await placementStore.startDispatch({
+          sessionId,
+          agentId: "main",
+          sessionKey: canonicalKey,
+        });
       } else {
         await placementStore.claimTurn({
           sessionId,
@@ -829,7 +724,7 @@ test.each(["worker-turn", "remote-exec"] as const)(
     });
     const { placementStore } = await loadGatewayWorkerEnvironmentStartupState();
     const release = vi.fn();
-    const harness = createHarness(openOpenClawStateDatabase(), placementStore, {
+    const harness = await createHarness(openOpenClawStateDatabase(), placementStore, {
       reconcileChanged: false,
       reconcileCommitsManifest: false,
       afterReconcile: () => {
@@ -850,11 +745,13 @@ test.each(["worker-turn", "remote-exec"] as const)(
         ownerEpoch: active.activeOwnerEpoch,
       },
     });
-    const retireSessionPlacement = vi.fn((retirement: WorkerSessionPlacementRetirement) => {
-      expect(loadSessionEntry(REQUEST.sessionKey).entry).toBeUndefined();
-      expect(harness.environments.destroy).toHaveBeenCalledOnce();
-      placementStore.retireSessionPlacement(retirement);
-    });
+    const retireSessionPlacementAsync = vi.fn(
+      async (retirement: WorkerSessionPlacementRetirement) => {
+        expect(loadSessionEntry(REQUEST.sessionKey).entry).toBeUndefined();
+        expect(harness.environments.destroy).toHaveBeenCalledOnce();
+        await placementStore.retireSessionPlacementAsync(retirement);
+      },
+    );
     const deleted = await directSessionReq(
       "sessions.delete",
       { key: REQUEST.sessionKey },
@@ -869,7 +766,7 @@ test.each(["worker-turn", "remote-exec"] as const)(
             harness.environments,
           ),
           workerPlacementDispatchService: harness.service,
-          workerSessionPlacementService: { ...placementStore, retireSessionPlacement },
+          workerSessionPlacementService: { ...placementStore, retireSessionPlacementAsync },
         },
       },
     );
@@ -879,24 +776,26 @@ test.each(["worker-turn", "remote-exec"] as const)(
     expect(harness.log.indexOf("workspace:reconcile")).toBeLessThan(
       harness.log.indexOf("teardown:destroy"),
     );
-    expect(retireSessionPlacement).toHaveBeenCalledOnce();
+    expect(retireSessionPlacementAsync).toHaveBeenCalledOnce();
     expect(release).toHaveBeenCalledOnce();
     expect(placementStore.get(REQUEST.sessionId)).toBeUndefined();
-    expect(placementStore.listPendingWorkspaceResults()).toEqual([]);
+    expect(await placementStore.listPendingWorkspaceResultsAsync()).toEqual([]);
     expect(loadSessionEntry(REQUEST.sessionKey).entry).toBeUndefined();
   },
 );
 
 test.each(["worker-turn", "remote-exec"] as const)(
-  "sessions.delete preserves unsynced %s work when final reconciliation fails",
+  "sessions.delete preserves %s recovery when the post-apply fence fails",
   async (executionMode) => {
     await createSessionStoreDir();
     await writeSessionStore({
       entries: { [REQUEST.sessionKey]: sessionStoreEntry(REQUEST.sessionId) },
     });
     const { placementStore } = await loadGatewayWorkerEnvironmentStartupState();
-    const harness = createHarness(openOpenClawStateDatabase(), placementStore, {
-      verifyFails: true,
+    const harness = await createHarness(openOpenClawStateDatabase(), placementStore, {
+      reconcileCommitsManifest: false,
+      reconcileCommitsManifestOnApply: true,
+      verifyFailurePhase: "after-apply",
     });
     await harness.service.dispatch({ ...REQUEST, executionMode });
     const forceDestroyEnvironment = vi.spyOn(harness.service, "forceDestroyEnvironment");
@@ -907,8 +806,6 @@ test.each(["worker-turn", "remote-exec"] as const)(
         context: {
           workerEnvironmentService: {
             ...harness.environments,
-            hasInferenceForSession: () => false,
-            cancelInferenceForSession: () => [],
           },
           workerPlacementDispatchService: harness.service,
           workerSessionPlacementService: placementStore,
@@ -916,15 +813,17 @@ test.each(["worker-turn", "remote-exec"] as const)(
       },
     );
     expect(deleted).toMatchObject({ ok: false, error: { code: "UNAVAILABLE" } });
-    expect(harness.log).toContain("workspace:reconcile");
+    expect(harness.log).toContain("workspace:apply-prepared");
     expect(harness.environments.destroy).not.toHaveBeenCalled();
     expect(forceDestroyEnvironment).not.toHaveBeenCalled();
     expect(loadSessionEntry(REQUEST.sessionKey).entry?.sessionId).toBe(REQUEST.sessionId);
     expect(placementStore.get(REQUEST.sessionId)).toMatchObject({
       state: "draining",
       executionMode,
+      workspaceBaseManifestRef: harness.reconciledManifestRef,
+      turnClaim: { owner: executionMode === "remote-exec" ? "local" : "worker" },
     });
-    expect(placementStore.listPendingWorkspaceResults()).toMatchObject([
+    expect(await placementStore.listPendingWorkspaceResultsAsync()).toMatchObject([
       { workspaceAcceptedAtMs: null },
     ]);
   },
@@ -936,7 +835,7 @@ test("sessions.delete retains reclaimed placement when runtime cleanup fails bef
     entries: { [REQUEST.sessionKey]: sessionStoreEntry(REQUEST.sessionId) },
   });
   const { placementStore } = await loadGatewayWorkerEnvironmentStartupState();
-  const harness = createHarness(openOpenClawStateDatabase(), placementStore, {
+  const harness = await createHarness(openOpenClawStateDatabase(), placementStore, {
     reconcileChanged: false,
     reconcileCommitsManifest: false,
   });

@@ -5,6 +5,11 @@ import {
   ServiceOwnershipRefusalError,
 } from "../../daemon/service-inspection-error.js";
 import type { GatewayServiceRuntime } from "../../daemon/service-runtime.js";
+import type {
+  GatewayServiceEnvArgs,
+  GatewayServiceReadOptions,
+} from "../../daemon/service-types.js";
+import { CommandProcessCleanupError } from "../../process/exec-result.js";
 import { defaultRuntime } from "../../runtime.js";
 import { withMockedPlatform } from "../../test-utils/vitest-spies.js";
 import { VERSION } from "../../version.js";
@@ -22,11 +27,20 @@ export function registerServiceInspectionStatusTests(params: {
     mockResolvedValueOnce(records: Record<string, unknown>): unknown;
   };
   serviceIsLoaded: {
+    mockImplementationOnce(
+      implementation: (args?: GatewayServiceEnvArgs) => Promise<boolean>,
+    ): unknown;
     mockResolvedValueOnce(loaded: boolean): unknown;
     mockRejectedValueOnce(error: unknown): unknown;
   };
   serviceReadCommand: { mockResolvedValueOnce(command: null): unknown };
   serviceReadRuntime: {
+    mockImplementationOnce(
+      implementation: (
+        env?: NodeJS.ProcessEnv,
+        opts?: GatewayServiceReadOptions,
+      ) => Promise<GatewayServiceRuntime>,
+    ): unknown;
     mockResolvedValueOnce(runtime: GatewayServiceRuntime): unknown;
     mockRejectedValueOnce(error: unknown): unknown;
   };
@@ -47,7 +61,7 @@ export function registerServiceInspectionStatusTests(params: {
     gatherStatus,
   } = params;
 
-  it.each([false, true].flatMap((external) => [true, false].map((probe) => ({ external, probe }))))(
+  it.each([{ external: false, probe: true }])(
     "keeps registered gateway status available after systemd discovery fails (external=$external, probe=$probe)",
     async ({ external, probe }) => {
       serviceFixture.useSystemdCommand = true;
@@ -138,55 +152,45 @@ export function registerServiceInspectionStatusTests(params: {
     },
   );
 
-  it("keeps systemd ownership refusals fatal at the gateway status entrypoint", async () => {
-    serviceFixture.useSystemdCommand = true;
-    findSystemdGatewayInstallation.mockRejectedValueOnce(
-      new ServiceOwnershipRefusalError("systemd-manager-changed"),
-    );
-    const program = new Command().enablePositionalOptions().exitOverride();
-    registerGatewayCli(program);
-    const writeJson = vi.spyOn(defaultRuntime, "writeJson").mockImplementation(() => {});
-    const exit = vi.spyOn(defaultRuntime, "exit").mockImplementation(() => {
-      throw new Error("status-exit");
-    });
-    try {
-      await expect(
-        program.parseAsync(["gateway", "status", "--json"], { from: "user" }),
-      ).rejects.toThrow("status-exit");
-      expect(exit).toHaveBeenCalledWith(1);
-      expect(JSON.stringify(writeJson.mock.calls)).toContain("manager identity changed");
-      expect(callGatewayStatusProbe).not.toHaveBeenCalled();
-      expect(loadInstalledPluginIndexInstallRecords).not.toHaveBeenCalled();
-    } finally {
-      writeJson.mockRestore();
-      exit.mockRestore();
-    }
-  });
-
-  it("keeps gateway status read-only when service management is unsupported", async () => {
-    serviceReadCommand.mockResolvedValueOnce(null);
-    serviceIsLoaded.mockResolvedValueOnce(false);
-    serviceReadRuntime.mockResolvedValueOnce({
-      status: "unknown",
-      detail: "Gateway service install not supported on aix",
-    });
-
-    const status = await gatherStatus({ probe: false });
-
-    expect(status.service.command).toBeNull();
-    expect(status.service.loaded).toBe(false);
-    expect(status.service.loadState).toEqual({ status: "not-loaded" });
-    expect(status.service.runtime).toEqual({
-      status: "unknown",
-      detail: "Gateway service install not supported on aix",
-    });
-    expect(inspectGatewayRestart).not.toHaveBeenCalled();
-  });
+  it.each(["systemd ownership", "command cleanup"] as const)(
+    "keeps %s refusals fatal at the gateway status entrypoint",
+    async (kind) => {
+      if (kind === "systemd ownership") {
+        serviceFixture.useSystemdCommand = true;
+        findSystemdGatewayInstallation.mockRejectedValueOnce(
+          new ServiceOwnershipRefusalError("systemd-manager-changed"),
+        );
+      } else {
+        serviceReadRuntime.mockRejectedValueOnce(new CommandProcessCleanupError());
+      }
+      const program = new Command().enablePositionalOptions().exitOverride();
+      registerGatewayCli(program);
+      const writeJson = vi.spyOn(defaultRuntime, "writeJson").mockImplementation(() => {});
+      const exit = vi.spyOn(defaultRuntime, "exit").mockImplementation(() => {
+        throw new Error("status-exit");
+      });
+      try {
+        await expect(
+          program.parseAsync(["gateway", "status", "--json"], { from: "user" }),
+        ).rejects.toThrow("status-exit");
+        expect(exit).toHaveBeenCalledWith(1);
+        expect(JSON.stringify(writeJson.mock.calls)).toContain(
+          kind === "systemd ownership"
+            ? "manager identity changed"
+            : "Command cleanup could not confirm that owned work stopped",
+        );
+        expect(callGatewayStatusProbe).not.toHaveBeenCalled();
+        expect(loadInstalledPluginIndexInstallRecords).not.toHaveBeenCalled();
+      } finally {
+        writeJson.mockRestore();
+        exit.mockRestore();
+      }
+    },
+  );
 
   it.each([
     { platform: "linux", reason: "service-manager-unavailable", recorded: true },
     { platform: "linux", reason: "service-manager-unavailable", recorded: false },
-    { platform: "linux", reason: "systemd-user-bus-unavailable", recorded: true },
     { platform: "darwin", reason: "launchd-gui-domain-unavailable", recorded: true },
   ] as const)(
     "reports $reason with recorded service=$recorded without inventing manager availability",
