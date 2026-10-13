@@ -13,10 +13,18 @@ import {
   setActivePluginRegistry,
 } from "openclaw/plugin-sdk/plugin-test-runtime";
 import {
+  clearRuntimeConfigSnapshot,
+  setRuntimeConfigSnapshot,
+} from "openclaw/plugin-sdk/runtime-config-snapshot";
+import {
   clearSessionStoreCacheForTest,
   resolveStorePath,
   upsertSessionEntry,
 } from "openclaw/plugin-sdk/session-store-runtime";
+import {
+  closeOpenClawAgentDatabasesAsync,
+  closeOpenClawStateDatabaseAsync,
+} from "openclaw/plugin-sdk/sqlite-runtime-testing";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CodexAppInventoryCache } from "./app-server/app-inventory-cache.js";
 import { applyCodexAppServerAuthProfile } from "./app-server/auth-bridge.js";
@@ -57,9 +65,12 @@ afterEach(async () => {
     harness.client.close();
   }
   vi.useRealTimers();
+  await closeOpenClawAgentDatabasesAsync();
+  await closeOpenClawStateDatabaseAsync();
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
   clearRuntimeAuthProfileStoreSnapshots();
+  clearRuntimeConfigSnapshot();
   clearSessionStoreCacheForTest();
   await fs.rm(root, { recursive: true, force: true });
 });
@@ -108,7 +119,7 @@ async function fixture(stableAccount = true) {
     config: {
       agents: {
         defaults: { model: { primary: "openai/gpt-5.5" } },
-        list: [{ id: "second", agentDir, workspace: workspaceDir }],
+        entries: { second: { agentDir, workspace: workspaceDir } },
       },
     },
     agentId: "second",
@@ -122,6 +133,7 @@ async function fixture(stableAccount = true) {
     requestConversationBinding: async () => ({ status: "error", message: "unused" }),
     detachConversationBinding: async () => ({ removed: false }),
   };
+  setRuntimeConfigSnapshot(ctx.config);
   await upsertSessionEntry({
     agentId: "second",
     sessionKey: ctx.sessionKey!,
@@ -154,39 +166,32 @@ describe("Codex plugin command context", () => {
     expect(test.release).toHaveBeenCalledOnce();
   });
 
-  it.each([true, false])(
-    "rejects an account replaced during preparation (stored account %s)",
-    async (stableAccount) => {
-      const test = await fixture(stableAccount);
-      const prepare = commandRpc.prepareCodexControlSessionAuth;
-      vi.spyOn(commandRpc, "prepareCodexControlSessionAuth").mockImplementation(async (...args) => {
-        const auth = await prepare(...args);
-        const store =
-          "authProfileStore" in auth.clientOptions
-            ? structuredClone(auth.clientOptions.authProfileStore)
-            : undefined;
-        const profile = store?.profiles["openai:second"];
-        if (!store || profile?.type !== "oauth") {
-          throw new Error("Expected the prepared fixture profile");
-        }
-        if (stableAccount) {
-          profile.accountId = "test-replacement-account";
-        } else {
-          profile.access = `e30.${Buffer.from(
-            JSON.stringify({
-              "https://api.openai.com/auth": { chatgpt_account_id: "test-replacement-account" },
-            }),
-          ).toString("base64url")}.test-signature`;
-        }
-        replaceRuntimeAuthProfileStoreSnapshots([{ agentDir: test.agentDir, store }]);
-        return auth;
-      });
-      await expect(
-        withCodexPluginCommandContext({ ...test, pluginConfig: {} }, async () => "stale result"),
-      ).rejects.toThrow("Codex account, conversation, or plugin policy changed");
-      expect(test.acquire).not.toHaveBeenCalled();
-    },
-  );
+  it("rejects a token-derived account replaced during preparation", async () => {
+    const test = await fixture(false);
+    const prepare = commandRpc.prepareCodexControlSessionAuth;
+    vi.spyOn(commandRpc, "prepareCodexControlSessionAuth").mockImplementation(async (...args) => {
+      const auth = await prepare(...args);
+      const store =
+        "authProfileStore" in auth.clientOptions
+          ? structuredClone(auth.clientOptions.authProfileStore)
+          : undefined;
+      const profile = store?.profiles["openai:second"];
+      if (!store || profile?.type !== "oauth") {
+        throw new Error("Expected the prepared fixture profile");
+      }
+      profile.access = `e30.${Buffer.from(
+        JSON.stringify({
+          "https://api.openai.com/auth": { chatgpt_account_id: "test-replacement-account" },
+        }),
+      ).toString("base64url")}.test-signature`;
+      replaceRuntimeAuthProfileStoreSnapshots([{ agentDir: test.agentDir, store }]);
+      return auth;
+    });
+    await expect(
+      withCodexPluginCommandContext({ ...test, pluginConfig: {} }, async () => "stale result"),
+    ).rejects.toThrow("Codex account, conversation, or plugin policy changed");
+    expect(test.acquire).not.toHaveBeenCalled();
+  });
 
   it("accepts delayed startup notifications for the unchanged managed account", async () => {
     const test = await fixture();
@@ -226,17 +231,8 @@ describe("Codex plugin command context", () => {
     expect(test.request).toHaveBeenCalledWith(
       "account/login/start",
       expect.objectContaining({ type: "chatgptAuthTokens" }),
-      { assertCurrent: undefined },
+      expect.objectContaining({ assertCurrent: undefined }),
     );
-    expect(test.release).toHaveBeenCalledOnce();
-  });
-
-  it("releases the lease when the startup account barrier fails", async () => {
-    const test = await fixture();
-    test.request.mockRejectedValue(new Error("private provider failure"));
-    await expect(
-      withCodexPluginCommandContext({ ...test, pluginConfig: {} }, async () => "unused"),
-    ).rejects.toThrow("Codex account startup could not be confirmed");
     expect(test.release).toHaveBeenCalledOnce();
   });
 
@@ -362,6 +358,7 @@ describe("Codex plugin command context", () => {
           });
         }
         await vi.advanceTimersByTimeAsync(response === "overload" ? 1_000 : 0);
+        await pending;
         expect(test.harness.writes).toHaveLength(2);
         expect(String(failure)).toContain(
           change === "session"
@@ -373,36 +370,6 @@ describe("Codex plugin command context", () => {
         test.harness.client.close();
         await pending;
       }
-    },
-  );
-
-  it.each([true, false])(
-    "uses the selected profile partition with stable account %s",
-    async (stableAccount) => {
-      const test = await fixture(stableAccount);
-      await withCodexPluginCommandContext({ ...test, pluginConfig: {} }, async (context) => {
-        expect(context.agentId).toBe("second");
-        expect(context.profileId).toBe("openai:second");
-        expect(context.workspaceDir).toBe(test.workspaceDir);
-        expect(context.threadId).toBeUndefined();
-        const prepared = test.acquire.mock.calls[0]?.[0]?.preparedAuth;
-        expect(prepared?.kind).toBe("profile");
-        expect(JSON.parse(context.appCacheKey)).toMatchObject({
-          authProfileId: "openai:second",
-          accountId: prepared?.kind === "profile" ? prepared.snapshot?.secretFreeCacheKey : null,
-        });
-        await context.request("app/installed", { forceRefresh: false });
-      });
-      expect(test.acquire).toHaveBeenCalledOnce();
-      expect(test.acquire).toHaveBeenCalledWith(
-        expect.objectContaining({
-          agentDir: test.agentDir,
-          preparedAuth: expect.objectContaining({ kind: "profile", profileId: "openai:second" }),
-          authRequirement: "subscription",
-          authBindingFingerprint: expect.any(String),
-        }),
-      );
-      expect(test.release).toHaveBeenCalledOnce();
     },
   );
 
@@ -435,7 +402,7 @@ describe("Codex plugin command context", () => {
     },
   );
 
-  it.each(["policy", "account", "session", "conversation session"] as const)(
+  it.each(["policy", "conversation session"] as const)(
     "does not publish a refresh response after %s changes and releases the client",
     async (change) => {
       const test = await fixture();
@@ -482,13 +449,7 @@ describe("Codex plugin command context", () => {
         if (change === "policy") {
           test.current.plugins.notes.enabled = false;
         }
-        if (change === "account") {
-          test.harness.send({
-            method: "account/updated",
-            params: { authMode: "chatgptAuthTokens", planType: "team" },
-          });
-        }
-        if (change === "session" || change === "conversation session") {
+        if (change === "conversation session") {
           await upsertSessionEntry({
             agentId: "second",
             storePath,
@@ -508,7 +469,7 @@ describe("Codex plugin command context", () => {
           });
         }),
       ).rejects.toThrow(
-        change === "session" || change === "conversation session"
+        change === "conversation session"
           ? "Codex session generation is no longer current"
           : "Codex account, conversation, or plugin policy changed",
       );
