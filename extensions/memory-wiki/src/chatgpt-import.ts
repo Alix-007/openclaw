@@ -1,3 +1,4 @@
+import { isUtf8 } from "node:buffer";
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -111,8 +112,11 @@ async function loadConversations(exportInputPath: string): Promise<{
   const conversationsPath = exportPath.endsWith(".json")
     ? exportPath
     : path.join(exportPath, "conversations.json");
-  const raw = await fs.readFile(conversationsPath, "utf8");
-  const parsed = JSON.parse(raw) as unknown;
+  const raw = await fs.readFile(conversationsPath);
+  if (!isUtf8(raw)) {
+    throw new Error(`ChatGPT conversations export must be valid UTF-8: ${conversationsPath}`);
+  }
+  const parsed = JSON.parse(raw.toString("utf8")) as unknown;
   const conversations = Array.isArray(parsed)
     ? parsed
     : Object.values(asNullableRecord(parsed) ?? {}).find(Array.isArray);

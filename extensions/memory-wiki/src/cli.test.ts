@@ -663,6 +663,34 @@ cli note
     expect(callGatewayFromCliMock).not.toHaveBeenCalled();
   });
 
+  it.each([false, true])(
+    "rejects malformed UTF-8 ChatGPT exports (envelope: %s)",
+    async (envelope) => {
+      const { rootDir, config } = await createCliVault({ initialize: true });
+      const exportDir = await createChatGptExport(rootDir);
+      const exportPath = path.join(exportDir, "conversations.json");
+      const conversations = JSON.parse(await fs.readFile(exportPath, "utf8")) as Array<{
+        title: string;
+      }>;
+      expectDefined(conversations[0], "export conversation").title = "Café 🤖 �";
+      await fs.writeFile(exportPath, JSON.stringify(envelope ? { conversations } : conversations));
+      const args = ["chatgpt", "import", "--export", exportDir, "--json"];
+      const seed = JSON.parse(await runRegisteredWikiCommand(config, args)) as {
+        createdCount: number;
+      };
+      expect(seed.createdCount).toBe(1);
+      const sourcePath = path.join(rootDir, "sources", await findImportedSourceFile(rootDir));
+      const before = await fs.readFile(sourcePath, "utf8");
+      expect(before).toContain("Café 🤖 �");
+      const raw = Buffer.from(JSON.stringify(envelope ? { conversations } : conversations));
+      raw[raw.indexOf(Buffer.from("Café"))] = 0xff;
+      await fs.writeFile(exportPath, raw);
+      await expect(runRegisteredWikiCommand(config, args)).rejects.toThrow("must be valid UTF-8");
+      expect(await fs.readFile(sourcePath, "utf8")).toBe(before);
+      expect(await fs.readFile(exportPath)).toEqual(raw);
+    },
+  );
+
   it("imports ChatGPT exports with dry-run, apply, and rollback", async () => {
     const { rootDir, config } = await createCliVault({ initialize: true });
     const exportDir = await createChatGptExport(rootDir);
