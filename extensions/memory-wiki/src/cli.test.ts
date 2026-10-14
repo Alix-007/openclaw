@@ -685,7 +685,9 @@ cli note
       const raw = Buffer.from(JSON.stringify(envelope ? { conversations } : conversations));
       raw[raw.indexOf(Buffer.from("Café"))] = 0xff;
       await fs.writeFile(exportPath, raw);
-      await expect(runRegisteredWikiCommand(config, args)).rejects.toThrow("must be valid UTF-8");
+      await expect(runRegisteredWikiCommand(config, args)).rejects.toThrow(
+        `ChatGPT conversations export must be valid UTF-8: ${exportPath}. Download a fresh ChatGPT export and retry the import.`,
+      );
       expect(await fs.readFile(sourcePath, "utf8")).toBe(before);
       expect(await fs.readFile(exportPath)).toEqual(raw);
     },

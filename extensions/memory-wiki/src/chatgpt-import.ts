@@ -114,7 +114,9 @@ async function loadConversations(exportInputPath: string): Promise<{
     : path.join(exportPath, "conversations.json");
   const raw = await fs.readFile(conversationsPath);
   if (!isUtf8(raw)) {
-    throw new Error(`ChatGPT conversations export must be valid UTF-8: ${conversationsPath}`);
+    throw new Error(
+      `ChatGPT conversations export must be valid UTF-8: ${conversationsPath}. Download a fresh ChatGPT export and retry the import.`,
+    );
   }
   const parsed = JSON.parse(raw.toString("utf8")) as unknown;
   const conversations = Array.isArray(parsed)
