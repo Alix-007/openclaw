@@ -572,10 +572,10 @@ export async function importChatGptConversations(params: {
   nowMs?: number;
 }) {
   return await withMemoryWikiVaultMutation(params.config.vault.path, async () => {
-    await initializeMemoryWikiVault(params.config, { nowMs: params.nowMs });
     const { exportPath, conversationsPath, conversations } = await loadConversations(
       params.exportPath,
     );
+    await initializeMemoryWikiVault(params.config, { nowMs: params.nowMs });
     const records = conversations
       .map((conversation) => toConversationRecord(conversation, conversationsPath))
       .filter((entry): entry is ChatGptConversationRecord => entry !== null)
