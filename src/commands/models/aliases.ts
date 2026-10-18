@@ -90,10 +90,10 @@ export async function modelsAliasesAddCommand(
   );
 
   if (warning) {
-    runtime.error?.(sanitizeTerminalText(warning));
+    runtime.error?.(warning);
   }
   logConfigUpdated(runtime);
-  runtime.log(`Alias ${sanitizeTerminalText(alias)} -> ${sanitizeTerminalText(target)}`);
+  runtime.log(`Alias ${alias} -> ${target}`);
 }
 
 export async function modelsAliasesRemoveCommand(aliasRaw: string, runtime: RuntimeEnv) {

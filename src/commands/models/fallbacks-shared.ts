@@ -137,12 +137,10 @@ export async function changeFallbacksCommand(
   );
 
   if (warning) {
-    runtime.error?.(sanitizeTerminalText(warning));
+    runtime.error?.(warning);
   }
   logConfigUpdated(runtime);
-  runtime.log(
-    `${params.label}: ${getFallbacks(updated, params.key).map(sanitizeTerminalText).join(", ")}`,
-  );
+  runtime.log(`${params.label}: ${getFallbacks(updated, params.key).join(", ")}`);
 }
 
 export async function clearFallbacksCommand(
