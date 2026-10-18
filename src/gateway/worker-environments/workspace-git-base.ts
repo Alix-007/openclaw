@@ -1,6 +1,6 @@
-import { createHash } from "node:crypto";
 import fsp from "node:fs/promises";
 import path from "node:path";
+import { sha256Hex } from "@openclaw/normalization-core/node-crypto";
 import {
   commandError,
   gitEnvironment,
@@ -31,13 +31,11 @@ export type WorkerLocalProjectSnapshot = {
 export type WorkerProjectSnapshot = WorkerLocalProjectSnapshot | RepositoryWorkerProjectSnapshot;
 
 export function workerProjectSeedKey(project: Pick<WorkerProjectSnapshot, "key" | "baseCommit">) {
-  return createHash("sha256").update(`${project.key}\0${project.baseCommit}`).digest("hex");
+  return sha256Hex(`${project.key}\0${project.baseCommit}`);
 }
 
 export function workerLocalProjectKey(namespace: string, commonDir: string): string {
-  return createHash("sha256")
-    .update(JSON.stringify([namespace, commonDir]))
-    .digest("hex");
+  return sha256Hex(JSON.stringify([namespace, commonDir]));
 }
 
 export async function prepareWorkerProjectSnapshot(params: {
@@ -104,9 +102,10 @@ export async function prepareWorkerProjectSnapshot(params: {
     return null;
   }
   const { canonicalRoot, commonDir } = await resolveGitRepositoryPaths(root, options);
-  const origin = await runGit(root, ["remote", "get-url", "origin"], options);
+  const origin = await runGit(canonicalRoot, ["remote", "get-url", "origin"], options);
   const label =
-    (origin.code === 0 ? normalizeCloudRepo(origin.stdout) : undefined) ?? path.basename(root);
+    (origin.code === 0 ? normalizeCloudRepo(origin.stdout) : undefined) ??
+    path.basename(canonicalRoot);
   params.signal?.throwIfAborted();
   // Linked session worktrees share the repository cache; their pinned commits and
   // mutable overlays must not create a new project identity.
