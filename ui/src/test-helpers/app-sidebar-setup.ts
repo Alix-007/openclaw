@@ -6,7 +6,6 @@ import type { ApplicationGateway } from "../app/context.ts";
 import { storeSidebarSessionOwnerFilter } from "../components/app-sidebar-session-types.ts";
 import type { AppSidebarElement } from "../components/app-sidebar.tsx";
 import { disposeSidebarContextLifecycles } from "./app-sidebar-context-lifecycle.ts";
-import { settleLitElements } from "./lit-settle.ts";
 import { createStorageMock } from "./storage.ts";
 
 export function setupSidebarTest() {
@@ -28,6 +27,8 @@ export function setupSidebarTest() {
       // Fake clocks must leave this fixture's frame scheduler in place.
       vi.setConfig({
         fakeTimers: {
+          // jsdom can retire its native frame timer after the fake clock is installed.
+          shouldClearNativeTimers: true,
           toFake: [
             "setTimeout",
             "clearTimeout",
@@ -79,25 +80,6 @@ export function setupSidebarTest() {
         value: (id: number) => frames.delete(id),
       });
     }
-    // JSDOM has no media queries or layout observation. Real browser tests keep
-    // their native implementations and own the layout and motion assertions.
-    if (typeof matchMedia === "undefined") {
-      Object.defineProperty(globalThis, "matchMedia", {
-        configurable: true,
-        writable: true,
-        value: (media: string) => ({
-          media,
-          matches: false,
-          onchange: null,
-          addListener() {},
-          removeListener() {},
-          addEventListener() {},
-          removeEventListener() {},
-          dispatchEvent: () => true,
-        }),
-      });
-    }
-
     for (const name of ["ResizeObserver", "IntersectionObserver"] as const) {
       if (globalThis[name] !== undefined) {
         continue;
@@ -146,8 +128,8 @@ export function setupSidebarTest() {
     await Promise.resolve();
     flush();
     disposeSidebarContextLifecycles();
-    // Disconnection queues Lit updates; finish them before retiring the DOM globals.
-    await settleLitElements(sidebars);
+    // A disconnected Solid sidebar resolves abandoned rendering as false, not another update.
+    await Promise.all(Array.from(sidebars, (sidebar) => sidebar.updateComplete));
     frameChannel?.port1.close();
     frameChannel?.port2.close();
     frameChannel = undefined;
