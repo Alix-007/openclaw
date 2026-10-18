@@ -335,10 +335,13 @@ describe("event Web Push classification", () => {
       const query = { agentId: "main", key: "agent:main:completion-label" };
       const entry = { sessionId: "completion-label", updatedAt: 1, label: "Deployment review" };
       seedRow(query, entry);
-      using _foreground = holdForeground();
+      using releaseForeground = holdForeground();
       using projection = await createTestProjection({
         cfg: { agents: { entries: { main: {} } } },
         modelCatalog: [],
+      }).catch((error: unknown) => {
+        releaseForeground();
+        throw error;
       });
       await projection.ensureMaterialized();
       const captured = projection.capture(query);
