@@ -18,7 +18,6 @@ const mocks = vi.hoisted(() => ({
   ensureWorkspaceAndSessions: vi.fn(),
   inferAuthChoice: vi.fn(),
   logConfigUpdated: vi.fn(),
-  logJson: vi.fn(),
 }));
 
 vi.mock("../../config/logging.js", () => ({
@@ -51,11 +50,6 @@ vi.mock("./local/auth-choice-inference.js", () => ({
 
 vi.mock("./local/gateway-config.js", () => ({
   applyNonInteractiveGatewayConfig: mocks.applyGatewayConfig,
-}));
-
-vi.mock("./local/output.js", () => ({
-  logNonInteractiveOnboardingFailure: vi.fn(),
-  logNonInteractiveOnboardingJson: mocks.logJson,
 }));
 
 vi.mock("./local/skills-config.js", () => ({
@@ -100,9 +94,10 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
         tailscaleMode: "off",
       }),
     );
-    mocks.commitConfig.mockImplementation(
-      async ({ nextConfig }: { nextConfig: OpenClawConfig }) => nextConfig,
-    );
+    // An early config conflict can leave the one-shot real writer unused.
+    mocks.commitConfig
+      .mockReset()
+      .mockImplementation(async ({ nextConfig }: { nextConfig: OpenClawConfig }) => nextConfig);
     mocks.ensureOnboardingAgent.mockImplementation(
       async ({ config }: { config: OpenClawConfig }) => ({
         config,
@@ -148,6 +143,14 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
           JSON.stringify(
             {
               ok: false,
+              error: {
+                type: "cli_error",
+                message: [
+                  "Multiple API key flags were provided for non-interactive setup.",
+                  "Use a single provider flag or pass --auth-choice explicitly.",
+                  "Flags: --openai-api-key, --anthropic-api-key",
+                ].join("\n"),
+              },
               phase: "options",
               message: [
                 "Multiple API key flags were provided for non-interactive setup.",
@@ -180,7 +183,6 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
       legacyState: false,
       agentName: "robby",
     },
-    { label: "empty legacy roster", agents: { list: [] }, legacyState: false, agentName: "robby" },
     { label: "legacy workspace state", agents: {}, legacyState: true, agentName: "robby" },
   ])(
     "keeps auth and provisioning on the requested owner with $label config",
@@ -224,7 +226,7 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
                 ...config.agents,
                 entries: {
                   [agentId]: {
-                    ...(agentName ? { name: agentName } : { default: true }),
+                    ...(agentName ? { name: agentName } : {}),
                     workspace: expectedWorkspace,
                   },
                 },
@@ -239,7 +241,8 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
         await runNonInteractiveSetup(
           {
             ...localOptions,
-            ...(agentName ? { agentName, json: true } : {}),
+            ...(agentName ? { agentName } : {}),
+            json: true,
             workspace,
             authChoice: "demo-api-key",
           },
@@ -281,9 +284,10 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
         expect(mocks.ensureWorkspaceAndSessions.mock.calls.map(([dir]) => dir)).not.toContain(
           `${workspace}/main`,
         );
-        expect(mocks.logJson).toHaveBeenCalledWith(
-          expect.objectContaining({ workspaceDir: expectedWorkspace }),
-        );
+        expect(JSON.parse(String(vi.mocked(runtime.log).mock.calls.at(-1)?.[0]))).toMatchObject({
+          ok: true,
+          workspace: expectedWorkspace,
+        });
         if (legacyState) {
           expect(runtime.error).toHaveBeenCalledWith(
             expect.stringContaining("existing agents keep their current workspace"),
@@ -420,7 +424,7 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
       opts: {
         ...localOptions,
         authChoice: "demo-api-key",
-        gatewayPort: 70_000,
+        gatewayBind: "custom",
       },
       runtime,
       baseConfig: {},
@@ -444,8 +448,8 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
           authChoice: "skip",
         },
         runtime,
-        baseConfig: { agents: { entries: { ops: { default: true } } } },
-        sourceConfigBeforeMigrations: { agents: { entries: { ops: { default: true } } } },
+        baseConfig: { agents: { entries: { ops: {} } } },
+        sourceConfigBeforeMigrations: { agents: { entries: { ops: {} } } },
       }),
     ).rejects.toThrow("workspace is unwritable");
 
@@ -532,7 +536,10 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
           runtime,
           expect.objectContaining({ agentId }),
         );
-        expect(mocks.logJson).toHaveBeenCalledWith(expect.objectContaining({ workspaceDir }));
+        expect(JSON.parse(String(vi.mocked(runtime.log).mock.calls.at(-1)?.[0]))).toMatchObject({
+          ok: true,
+          workspace: workspaceDir,
+        });
         if (include) {
           expect(
             JSON.parse(await fs.readFile(path.join(configDir, "roster.json"), "utf8")),
@@ -573,11 +580,10 @@ describe("runNonInteractiveLocalSetup default-agent ownership", () => {
       await expect(
         fs.stat(path.join(workspace, "coordinator", "BOOTSTRAP.md")),
       ).rejects.toMatchObject({ code: "ENOENT" });
-      expect(mocks.logJson).toHaveBeenCalledWith(
-        expect.objectContaining({
-          workspaceDir: path.join(workspace, "coordinator"),
-        }),
-      );
+      expect(JSON.parse(String(vi.mocked(runtime.log).mock.calls.at(-1)?.[0]))).toMatchObject({
+        ok: true,
+        workspace: path.join(workspace, "coordinator"),
+      });
     });
   });
 });

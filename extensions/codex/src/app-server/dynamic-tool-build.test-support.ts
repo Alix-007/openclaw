@@ -1,8 +1,22 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import type { EmbeddedRunAttemptParamsV2 as EmbeddedRunAttemptParams } from "openclaw/plugin-sdk/agent-harness-runtime";
+import {
+  clearRuntimeConfigSnapshot,
+  setRuntimeConfigSnapshot,
+} from "openclaw/plugin-sdk/runtime-config-snapshot";
+import {
+  closeOpenClawAgentDatabasesAsync,
+  closeOpenClawStateDatabaseAsync,
+} from "openclaw/plugin-sdk/sqlite-runtime-testing";
 import { vi } from "vitest";
 import { buildDynamicTools } from "./dynamic-tool-build.js";
+import type { createCodexDynamicToolBridge } from "./dynamic-tools.js";
 import { createCodexTestHostCapabilities } from "./host-capability.test-support.js";
 import { createCodexTestModel } from "./test-support.js";
+
+export { createCodexRuntimePlanFixture } from "./test-support.js";
 
 const hoisted = vi.hoisted(() => ({
   normalizeAgentRuntimeTools: vi.fn(),
@@ -70,27 +84,6 @@ export function createParams(sessionFile: string, workspaceDir: string): Embedde
   } as EmbeddedRunAttemptParams;
 }
 
-export function createCodexRuntimePlanFixture(): NonNullable<
-  EmbeddedRunAttemptParams["runtimePlan"]
-> {
-  return {
-    auth: {},
-    observability: {
-      resolvedRef: "codex/gpt-5.4-codex",
-      provider: "codex",
-      modelId: "gpt-5.4-codex",
-      harnessId: "codex",
-    },
-    prompt: {
-      resolveSystemPromptContribution: () => undefined,
-    },
-    tools: {
-      normalize: (tools: unknown[]) => tools,
-      logDiagnostics: () => undefined,
-    },
-  } as unknown as NonNullable<EmbeddedRunAttemptParams["runtimePlan"]>;
-}
-
 export async function buildDynamicToolsForTest(
   params: EmbeddedRunAttemptParams,
   workspaceDir: string,
@@ -100,6 +93,8 @@ export async function buildDynamicToolsForTest(
   if (!sandboxSessionKey) {
     throw new Error("createParams must provide a sessionKey for Codex dynamic tool tests.");
   }
+  const config = params.config ?? {};
+  setRuntimeConfigSnapshot(config, config);
   return buildDynamicTools({
     params,
     resolvedWorkspace: workspaceDir,
@@ -130,4 +125,67 @@ export async function buildDynamicToolsForTest(
     onYieldDetected: () => undefined,
     ...options,
   });
+}
+
+export async function bindProductionCodexHostCapabilities(
+  params: EmbeddedRunAttemptParams,
+  hostCapabilityClosers: Array<() => void>,
+): Promise<void> {
+  const { createAgentHarnessHostCapabilitiesForTest } =
+    await import("openclaw/plugin-sdk/plugin-test-runtime");
+  const { hostCapabilities: _hostCapabilities, ...attempt } = params;
+  const host = await createAgentHarnessHostCapabilitiesForTest({ attempt, pluginId: "codex" });
+  params.hostCapabilities = host.capabilities;
+  hostCapabilityClosers.push(host.close);
+}
+
+export type RuntimeDynamicToolForTest = Parameters<
+  typeof createCodexDynamicToolBridge
+>[0]["tools"][number];
+
+export function createRuntimeDynamicTool(name: string): RuntimeDynamicToolForTest {
+  return {
+    name,
+    label: name,
+    description: `${name} test tool`,
+    parameters: {
+      type: "object",
+      properties: {},
+      additionalProperties: true,
+    },
+    execute: vi.fn(async () => ({
+      content: [{ type: "text" as const, text: `${name} done` }],
+      details: {},
+    })),
+  };
+}
+
+export async function setupDynamicToolBuildFixture(): Promise<string> {
+  hoisted.loadNodeExecAvailability.mockResolvedValue({
+    cacheKey: "eligible",
+    isAvailable: () => true,
+  });
+  hoisted.normalizeAgentRuntimeTools.mockClear();
+  hoisted.resolveWebSearchToolPolicy.mockClear();
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-tools-"));
+  setRuntimeConfigSnapshot({});
+  return tempDir;
+}
+
+export async function cleanupDynamicToolBuildFixture(
+  tempDir: string,
+  hostCapabilityClosers: Array<() => void>,
+): Promise<void> {
+  try {
+    for (const close of hostCapabilityClosers.splice(0)) {
+      close();
+    }
+    vi.restoreAllMocks();
+    await closeOpenClawAgentDatabasesAsync();
+    await closeOpenClawStateDatabaseAsync();
+    vi.unstubAllEnvs();
+    await fs.rm(tempDir, { recursive: true, force: true });
+  } finally {
+    clearRuntimeConfigSnapshot();
+  }
 }
