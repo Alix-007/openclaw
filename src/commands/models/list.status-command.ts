@@ -5,6 +5,7 @@ import {
   parseStrictPositiveInteger,
 } from "@openclaw/normalization-core/number-coercion";
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { sanitizeTerminalText } from "../../../packages/terminal-core/src/safe-text.js";
 import { colorize, theme } from "../../../packages/terminal-core/src/theme.js";
 import {
   resolveAgentNativeModelPrimary,
@@ -225,7 +226,7 @@ export async function modelsStatusCommand(
     skipPluginValidation: opts.probe !== true,
   });
   for (const warning of await readModelCatalogWarnings(cfg, opts.agent?.trim())) {
-    runtime.error(`${warning.message} ${warning.fixHint}`);
+    runtime.error(sanitizeTerminalText(`${warning.message} ${warning.fixHint}`));
   }
   const explicitAgentId = opts.agent?.trim();
   const envAgentDir =
@@ -1134,7 +1135,7 @@ export async function modelsStatusCommand(
       }
 
       if (opts.plain) {
-        writeRuntimeStdout(runtime, resolvedLabel);
+        writeRuntimeStdout(runtime, sanitizeTerminalText(resolvedLabel));
         finishModelsStatusOutput(runtime, opts.check, checkStatus);
         return;
       }
@@ -1149,7 +1150,7 @@ export async function modelsStatusCommand(
         source?: ModelConfigSource,
       ) =>
         runtime.log(
-          `${label(source ? `${name} (${source})` : name)}${colorize(rich, theme.muted, ":")} ${colorize(rich, style, value)}`,
+          `${label(source ? `${name} (${source})` : name)}${colorize(rich, theme.muted, ":")} ${colorize(rich, style, sanitizeTerminalText(value))}`,
         );
       const logList = (
         name: string,
@@ -1209,14 +1210,9 @@ export async function modelsStatusCommand(
         theme.accentBright,
         agentId ? "defaults" : undefined,
       );
-      const aliasEntries = Object.entries(aliases);
       logList(
         "Aliases",
-        aliasEntries.map(([alias, target]) =>
-          rich
-            ? `${theme.accentDim(alias)} ${theme.muted("->")} ${theme.info(target)}`
-            : `${alias} -> ${target}`,
-        ),
+        Object.entries(aliases).map(([alias, target]) => `${alias} -> ${target}`),
         theme.accent,
       );
       logList("Allowed models", allowed, theme.info, undefined, "all");
@@ -1300,7 +1296,9 @@ export async function modelsStatusCommand(
             issue.kind === "missing-auth"
               ? `requires ${issue.authRequirement} auth:`
               : `[${issue.kind === "incompatible" ? issue.code : "indeterminate"}]`;
-          runtime.log(`- ${theme.heading(modelRef)} ${requirement} ${issue.message}`);
+          runtime.log(
+            `- ${theme.heading(sanitizeTerminalText(modelRef))} ${requirement} ${sanitizeTerminalText(issue.message)}`,
+          );
         }
       }
 
@@ -1320,7 +1318,9 @@ export async function modelsStatusCommand(
             config: cfg,
             includeEnvVar: !requiresSubscription,
           });
-          runtime.log(`- ${theme.heading(provider)} ${hint}`);
+          runtime.log(
+            `- ${theme.heading(sanitizeTerminalText(provider))} ${sanitizeTerminalText(hint)}`,
+          );
         }
       }
 
