@@ -406,18 +406,6 @@ export function registerLogsCli(program: Command) {
       }
       return undefined;
     };
-    const clearConsumedGatewayRecovery = (
-      promise: Promise<GatewayRecoveryResult>,
-      result: GatewayRecoveryResult,
-    ) => {
-      const isMatchingProbe =
-        gatewayRecovery.kind === "probing" && gatewayRecovery.promise === promise;
-      const isMatchingResult =
-        gatewayRecovery.kind === "settled" && gatewayRecovery.result === result;
-      if (isMatchingProbe || isMatchingResult) {
-        gatewayRecovery = { kind: "idle" };
-      }
-    };
     const { logLine, errorLine, emitJsonLine } = createLogWriters(() => {
       void abortGatewayRecoveryProbe();
     });
@@ -429,6 +417,7 @@ export function registerLogsCli(program: Command) {
     const maxBytes = parseLogsPositiveInt(opts.maxBytes, 250_000, "--max-bytes");
     const minimumLevelId = opts.level ? levelToMinLevel(opts.level) : undefined;
     let gatewayCursor: number | undefined;
+    let gatewayFile: string | undefined;
     let journalCursor: string | undefined;
     let journalSince: string | undefined;
     let preferJournal = false;
@@ -467,9 +456,7 @@ export function registerLogsCli(program: Command) {
       );
       gatewayRecovery = { kind: "probing", promise, abortController };
       void promise.then((result) => {
-        if (gatewayRecovery.kind === "probing" && gatewayRecovery.promise === promise) {
-          gatewayRecovery = { kind: "settled", result };
-        }
+        gatewayRecovery = { kind: "settled", result };
       });
     };
 
@@ -500,7 +487,7 @@ export function registerLogsCli(program: Command) {
       }
       if (activeProbe) {
         const result = await activeProbe;
-        clearConsumedGatewayRecovery(activeProbe, result);
+        gatewayRecovery = { kind: "idle" };
         if (result.ok) {
           return { payload: result.payload, gatewayPollStartedAt: result.startedAt };
         }
@@ -564,6 +551,28 @@ export function registerLogsCli(program: Command) {
                 };
               }
             }
+          }
+          if (
+            gatewayCursor !== undefined &&
+            gatewayFile !== undefined &&
+            payload.file !== undefined &&
+            payload.file !== gatewayFile
+          ) {
+            // Byte cursors belong to one file, including across journal recovery.
+            // Discard the stale cursor before retrying so a failed reread stays cursorless.
+            gatewayCursor = undefined;
+            gatewayPollStartedAt = new Date().toISOString();
+            payload = opts.localConfigUnavailable
+              ? {
+                  ...(await readConfiguredLogTail({ limit, maxBytes })),
+                  sourceKind: "file",
+                  localFallback: true,
+                }
+              : await fetchGatewayLogs(opts, gatewayCursor, false, {
+                  limit,
+                  maxBytes,
+                  signal,
+                });
           }
         } catch (err) {
           signal?.throwIfAborted();
@@ -708,6 +717,7 @@ export function registerLogsCli(program: Command) {
           gatewayRecovery = { kind: "idle" };
           if (typeof payload.cursor === "number" && Number.isFinite(payload.cursor)) {
             gatewayCursor = payload.cursor;
+            gatewayFile = payload.file;
             if (opts.follow) {
               // A recovered Gateway cursor supersedes the prior journal bridge.
               // A later fallback must start from this poll, not replay the old outage.
