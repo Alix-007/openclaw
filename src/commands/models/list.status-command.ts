@@ -1143,15 +1143,16 @@ export async function modelsStatusCommand(
       const rich = isRich(opts);
       type ModelConfigSource = "agent" | "defaults";
       const label = (value: string) => colorize(rich, theme.accent, value.padEnd(14));
+      const logRow = (name: string, value: string, source?: ModelConfigSource) =>
+        runtime.log(
+          `${label(source ? `${name} (${source})` : name)}${colorize(rich, theme.muted, ":")} ${value}`,
+        );
       const logField = (
         name: string,
         value: string,
         style: (value: string) => string,
         source?: ModelConfigSource,
-      ) =>
-        runtime.log(
-          `${label(source ? `${name} (${source})` : name)}${colorize(rich, theme.muted, ":")} ${colorize(rich, style, sanitizeTerminalText(value))}`,
-        );
+      ) => logRow(name, colorize(rich, style, sanitizeTerminalText(value)), source);
       const logList = (
         name: string,
         values: string[],
@@ -1210,10 +1211,18 @@ export async function modelsStatusCommand(
         theme.accentBright,
         agentId ? "defaults" : undefined,
       );
-      logList(
-        "Aliases",
-        Object.entries(aliases).map(([alias, target]) => `${alias} -> ${target}`),
-        theme.accent,
+      // Sanitize each part before styling; logField would strip the per-part colors.
+      const aliasEntries = Object.entries(aliases).map(([alias, target]) => {
+        const [safeAlias, safeTarget] = [alias, target].map(sanitizeTerminalText);
+        return rich
+          ? `${theme.accentDim(safeAlias)} ${theme.muted("->")} ${theme.info(safeTarget)}`
+          : `${safeAlias} -> ${safeTarget}`;
+      });
+      logRow(
+        `Aliases (${aliasEntries.length})`,
+        aliasEntries.length
+          ? colorize(rich, theme.accent, aliasEntries.join(", "))
+          : colorize(rich, theme.muted, "-"),
       );
       logList("Allowed models", allowed, theme.info, undefined, "all");
 
