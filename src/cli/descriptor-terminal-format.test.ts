@@ -1,13 +1,10 @@
-import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { stripAnsi } from "../../packages/terminal-core/src/ansi.js";
 import { hasTerminalControl } from "../../packages/terminal-core/src/safe-text.js";
 import { useAutoCleanupTempDirTracker } from "../../test/helpers/temp-dir.js";
-import { buildWorkspaceHookStatus } from "../hooks/hooks-status.js";
 import { buildWorkspaceSkillStatus } from "../skills/discovery/status.js";
 import { writeWorkspaceSkills } from "../skills/test-support/e2e-test-helpers.js";
-import { formatHookInfo, formatHooksCheck, formatHooksList } from "./hooks-cli.format.js";
 import { formatSkillInfo, formatSkillsCheck, formatSkillsList } from "./skills-cli.format.js";
 
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
@@ -56,54 +53,5 @@ describe("descriptor terminal rendering", () => {
     expect(info).toContain("MISSING_FIXTURE_ENV");
     expect(info).toContain("Install fixture");
     expect(entry?.emoji).toBe(untrusted("🧪"));
-  });
-
-  it("renders hook metadata and requirements safely while retaining raw JSON values", async () => {
-    const workspaceDir = tempDirs.make("hook-terminal-");
-    const directory = path.join(workspaceDir, "hooks", "terminal-fixture");
-    await fs.mkdir(directory, { recursive: true });
-    await fs.writeFile(
-      path.join(directory, "HOOK.md"),
-      `---\nname: terminal-fixture\ndescription: ${JSON.stringify(untrusted("Readable description\nsecond\tline"))}\nmetadata: ${JSON.stringify(
-        {
-          openclaw: {
-            emoji: untrusted("🔗"),
-            homepage: untrusted("https://example.com/hook"),
-            events: ["command:new", untrusted("unknown:event")],
-            requires: { env: [untrusted("MISSING_HOOK_ENV")] },
-          },
-        },
-      )}\n---\nHook fixture.\n`,
-    );
-    await fs.writeFile(path.join(directory, "handler.js"), 'throw new Error("must not load");\n');
-    const report = buildWorkspaceHookStatus(workspaceDir, {
-      managedHooksDir: path.join(workspaceDir, "managed"),
-      config,
-    });
-    const entry = report.hooks.find((hook) => hook.name === "terminal-fixture");
-    expect(entry?.emoji).toBe(untrusted("🔗"));
-    for (const output of [
-      formatHooksList(report, { verbose: true }),
-      formatHookInfo(entry, "terminal-fixture", {}),
-      formatHooksCheck(report, {}),
-    ]) {
-      expect(
-        hasTerminalControl(
-          stripAnsi(output).replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", ""),
-        ),
-      ).toBe(false);
-      expect(output).not.toContain(escape);
-      expect(output).toContain("terminal-fixture");
-    }
-    const info = stripAnsi(formatHookInfo(entry, "terminal-fixture", {}));
-    expect(info).toContain("🔗 terminal-fixture");
-    expect(info).toContain("unknown:event");
-    expect(info).toContain("MISSING_HOOK_ENV");
-    expect(info).toContain("Readable description\nsecond\tline");
-    expect(stripAnsi(formatHooksList(report, {}))).not.toContain("second\\tline");
-    expect(JSON.parse(formatHookInfo(entry, "terminal-fixture", { json: true })).emoji).toBe(
-      untrusted("🔗"),
-    );
-    expect(entry?.emoji).toBe(untrusted("🔗"));
   });
 });

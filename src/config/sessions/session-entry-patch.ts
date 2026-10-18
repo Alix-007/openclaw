@@ -154,7 +154,6 @@ export async function patchSessionEntryInWorker(params: {
             params.guard?.assertCurrent?.();
           },
           beforeWrite() {},
-          async release() {},
         }),
     async run(worker, commit) {
       const prepared = input;
@@ -177,18 +176,23 @@ export async function patchSessionEntryInWorker(params: {
             databaseIdentity: fileIdentity.physicalIdentity,
             databaseBirthtime: fileIdentity.birthtime,
           },
-          structuredClone(committed.entry),
+          committed.entry,
         );
       }
     },
     async onCommitted(committed, published, identity) {
       try {
         if (committed.applied && committed.entry) {
-          const entry = structuredClone(committed.entry);
-          if (committed.transcriptPredicate) {
-            params.onCommitted?.(entry, committed.transcriptPredicate);
+          if (committed.lifecycleEffects) {
+            params.onCommitted?.(
+              committed.entry,
+              committed.transcriptPredicate,
+              committed.lifecycleEffects,
+            );
+          } else if (committed.transcriptPredicate) {
+            params.onCommitted?.(committed.entry, committed.transcriptPredicate);
           } else {
-            params.onCommitted?.(entry);
+            params.onCommitted?.(committed.entry);
           }
         }
       } finally {
