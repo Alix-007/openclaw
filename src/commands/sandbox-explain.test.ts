@@ -43,10 +43,10 @@ async function explain(opts: Omit<Parameters<typeof sandboxExplainCommand>[0], "
 describe("sandbox explain command", () => {
   it("escapes configured paths in text without changing JSON paths", async () => {
     await withOpenClawTestState({ label: "sandbox-explain-terminal" }, async (state) => {
-      const workspace = path.join(state.workspaceDir, "café\x1b[2J\x07\nFORGED");
+      const configuredWorkspace = path.join(state.workspaceDir, "café\x1b[2J\x07\nFORGED");
       mockCfg = config(
         { mode: "off" },
-        { main: { workspace } },
+        { main: { workspace: configuredWorkspace } },
         { session: { store: state.statePath("missing-agent.sqlite") } },
       );
       const logs: string[] = [];
@@ -55,14 +55,15 @@ describe("sandbox explain command", () => {
         { log: (message) => logs.push(String(message)), error: vi.fn(), exit: vi.fn() },
       );
       const text = logs.join("");
-      expect(text).not.toMatch(/[\x1b\x07]/);
+      expect(text).not.toContain("\x1b");
+      expect(text).not.toContain("\x07");
       expect(text).not.toContain("\nFORGED");
       expect(text).toContain("café\\nFORGED");
 
       const result = await explain({ agent: "main" });
       expect(result.sandbox).toMatchObject({
-        effectiveHostWorkspaceRoot: workspace,
-        runtimeWorkdir: workspace,
+        effectiveHostWorkspaceRoot: configuredWorkspace,
+        runtimeWorkdir: configuredWorkspace,
         sessionIsSandboxed: false,
       });
     });
