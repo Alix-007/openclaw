@@ -19,9 +19,9 @@ import { upsertSessionEntryCore } from "../config/sessions/session-accessor.js";
 import { applySessionModelSelectionInternal as applySessionModelSelection } from "../model-picker/apply-session-model-selection.js";
 import { onSessionLifecycleEvent } from "../sessions/session-lifecycle-events.js";
 import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
-import { createLifecycleEventBroadcastHandler } from "./server-session-events.js";
+import { createLifecycleEventBroadcastHandler } from "./server-session-lifecycle-events.js";
 import { createSessionRowProjection } from "./session-row-projection.js";
-import { loadGatewaySessionEntryReadOnly } from "./session-utils.js";
+import { loadGatewaySessionEntryReadOnlyAsync } from "./session-utils.js";
 
 it("refreshes a retained pane from a persisted profile-only selection through the Gateway lifecycle broadcaster", async () => {
   await withOpenClawTestState({ scenario: "minimal" }, async () => {
@@ -53,9 +53,11 @@ it("refreshes a retained pane from a persisted profile-only selection through th
     const request = makeRequestMock({
       "chat.metadata": async () => ({ commands: [] }),
       "models.list": async (params: unknown) => {
-        const selected = loadGatewaySessionEntryReadOnly(
-          (params as { sessionKey: string }).sessionKey,
-          { agentId: "main" },
+        const selected = (
+          await loadGatewaySessionEntryReadOnlyAsync(
+            (params as { sessionKey: string }).sessionKey,
+            { agentId: "main" },
+          )
         ).entry;
         const available = selected?.authProfileOverride === "anthropic:restored";
         return {
@@ -88,7 +90,7 @@ it("refreshes a retained pane from a persisted profile-only selection through th
       observeDeletedSessions() {},
       recoverDeletedActiveSession() {},
       selectChatSession() {},
-      requestUpdate() {},
+      invalidate() {},
     });
     await refreshChatMetadata(retained);
     await refreshChatMetadata(sibling);
@@ -99,7 +101,6 @@ it("refreshes a retained pane from a persisted profile-only selection through th
     const publishLifecycle = createLifecycleEventBroadcastHandler({
       getSessionRowProjection: () => rowProjection,
       sessionEventSubscribers: { getAll: () => new Set(["reader"]) },
-      chatAbortControllers: new Map(),
       broadcastToConnIds: (event, payload) => {
         shell.handleGatewayEvent({ type: "event", event, payload });
         handlePageGatewayEvent(retained, { type: "event", event, payload });
