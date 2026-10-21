@@ -30,48 +30,34 @@ it.each([
   });
 });
 
-it.each([
-  { name: "invalid byte", bytes: Buffer.from([0xff]) },
-  { name: "incomplete sequence", bytes: Buffer.from([0xe2, 0x82]) },
-])("rejects $name before producing Gateway API-key parameters", async ({ bytes }) => {
-  const input = Buffer.concat([Buffer.from("sk-synthetic-before-"), bytes, Buffer.from("-after")]);
-  await withStdin(Readable.from([input]), async () => {
-    await expect(
-      readGatewayApiKeyParams({ provider: "openai" }, new AbortController().signal),
-    ).rejects.toThrow("Piped auth input must be valid UTF-8.");
-  });
-});
+it.each([Buffer.from([0xff]), Buffer.from([0xe2, 0x82])])(
+  "rejects malformed UTF-8 before producing Gateway API-key parameters (%j)",
+  async (bytes) => {
+    await withStdin(Readable.from([Buffer.from("sk-synthetic-"), bytes]), async () => {
+      await expect(
+        readGatewayApiKeyParams({ provider: "openai" }, new AbortController().signal),
+      ).rejects.toThrow("Piped auth input must be valid UTF-8.");
+    });
+  },
+);
 
-it("retains BOM/CRLF normalization and the requested provider and agent", async () => {
+it("normalizes valid BOM/CRLF input with UTF-8 split across chunks", async () => {
   await withStdin(
-    Readable.from([Buffer.from("\uFEFFsk-synthetic-control-12345678\r\n")]),
+    Readable.from([
+      Buffer.from("\uFEFFsynthetic-"),
+      Buffer.from([0xc3]),
+      Buffer.from([0xa9]),
+      Buffer.from("\r\n"),
+    ]),
     async () => {
       await expect(
         readGatewayApiKeyParams(
-          { provider: "openai", agent: "proof" },
+          { provider: "sample", agent: "proof" },
           new AbortController().signal,
         ),
-      ).resolves.toEqual({
-        provider: "openai",
-        apiKey: "sk-synthetic-control-12345678",
-        agentId: "proof",
-      });
+      ).resolves.toEqual({ provider: "sample", apiKey: "synthetic-é", agentId: "proof" });
     },
   );
-});
-
-it("accepts a valid UTF-8 character split across stdin chunks", async () => {
-  const chunks = [
-    Buffer.from("synthetic-"),
-    Buffer.from([0xc3]),
-    Buffer.from([0xa9]),
-    Buffer.from("-key"),
-  ];
-  await withStdin(Readable.from(chunks), async () => {
-    await expect(
-      readGatewayApiKeyParams({ provider: "synthetic" }, new AbortController().signal),
-    ).resolves.toMatchObject({ apiKey: "synthetic-é-key" });
-  });
 });
 
 it("still aborts an unfinished piped credential read", async () => {

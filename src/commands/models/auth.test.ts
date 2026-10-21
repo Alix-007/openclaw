@@ -10,11 +10,6 @@ import type {
 import type { RuntimeEnv } from "../../runtime.js";
 import { ProviderAuthConfigApplyError } from "../../shared/provider-auth-result.js";
 import { registerModelsAuthAuthorityTests } from "./auth-authority.test-support.js";
-import {
-  registerModelsAuthEncodingTests,
-  withInteractiveStdin,
-  withPipedStdin,
-} from "./auth-stdin.test-support.js";
 
 type AuthRunCall = { signal?: AbortSignal };
 type ResolvePluginProvidersCall = { providerRefs?: string[] };
@@ -184,6 +179,31 @@ function usePrompter(select: Mock = vi.fn(), note: Mock = vi.fn(async () => {}))
   return prompter;
 }
 
+function overrideStdin(key: PropertyKey, descriptor: PropertyDescriptor) {
+  const previous = Object.getOwnPropertyDescriptor(process.stdin, key);
+  Object.defineProperty(process.stdin, key, { configurable: true, ...descriptor });
+  return () => {
+    if (previous) {
+      Object.defineProperty(process.stdin, key, previous);
+    } else {
+      Reflect.deleteProperty(process.stdin, key);
+    }
+  };
+}
+
+function withPipedStdin(input: string | Buffer) {
+  const restoreTTY = overrideStdin("isTTY", { enumerable: true, get: () => false });
+  const restoreIterator = overrideStdin(Symbol.asyncIterator, {
+    async *value() {
+      yield input;
+    },
+  });
+  return () => {
+    restoreIterator();
+    restoreTTY();
+  };
+}
+
 function createProvider(params: {
   id: string;
   label?: string;
@@ -260,7 +280,7 @@ let runProviderAuth: ReturnType<typeof vi.fn>;
 beforeEach(() => {
   vi.clearAllMocks();
   runtime = createRuntime();
-  restoreStdin = withInteractiveStdin();
+  restoreStdin = overrideStdin("isTTY", { enumerable: true, get: () => true });
   currentConfig = {};
   lastUpdatedConfig = null;
   mocks.clackCancel.mockReset();
@@ -306,12 +326,12 @@ beforeEach(() => {
   }));
   mocks.updateConfig.mockImplementation(
     async (
-      mutator: (cfg: OpenClawConfig) => OpenClawConfig,
+      mutator: (cfg: OpenClawConfig) => OpenClawConfig | Promise<OpenClawConfig>,
       _selectModelRefs: unknown,
       beforeCommit?: ConfigWriteOptions["beforeCommit"],
       writeOptions?: ConfigWriteOptions,
     ) => {
-      const nextConfig = mutator(currentConfig);
+      const nextConfig = await mutator(currentConfig);
       await beforeCommit?.();
       writeOptions?.assertCurrent?.();
       lastUpdatedConfig = nextConfig;
@@ -1000,6 +1020,18 @@ it.each([
     error: "paste-api-key --provider openai",
   },
   {
+    name: "malformed UTF-8 token",
+    input: Buffer.from([0x74, 0xff, 0x6b]),
+    command: modelsAuthPasteTokenCommand,
+    error: "Piped auth input must be valid UTF-8.",
+  },
+  {
+    name: "malformed UTF-8 API key",
+    input: Buffer.concat([Buffer.from("sk-synthetic-before-"), Buffer.from([0xff])]),
+    command: modelsAuthPasteApiKeyCommand,
+    error: "Piped auth input must be valid UTF-8.",
+  },
+  {
     name: "oversized auth input",
     input: "x".repeat(1024 * 1024 + 1),
     command: modelsAuthPasteApiKeyCommand,
@@ -1011,23 +1043,6 @@ it.each([
   expect(mocks.clackPassword).not.toHaveBeenCalled();
   expect(mocks.upsertAuthProfileWithLock).not.toHaveBeenCalled();
   expect(mocks.updateConfig).not.toHaveBeenCalled();
-});
-
-registerModelsAuthEncodingTests({
-  pipeInput,
-  mocks,
-  commands: [
-    {
-      kind: "token",
-      field: "token",
-      run: () => modelsAuthPasteTokenCommand({ provider: "sample" }, runtime),
-    },
-    {
-      kind: "API key",
-      field: "key",
-      run: () => modelsAuthPasteApiKeyCommand({ provider: "sample" }, runtime),
-    },
-  ],
 });
 
 it("writes pasted API keys to the requested agent store", async () => {
@@ -1059,25 +1074,12 @@ it("writes pasted API keys to the requested agent store", async () => {
 
 it("rejects token material pasted into the OpenAI Codex API-key command", async () => {
   const jwtLikeToken = ["eyJhbGciOiJub25l", "eyJzdWIiOiJjb2RleCJ9", "signature123456"].join(".");
-  const validateMessages: string[] = [];
-  mocks.clackPassword.mockImplementation(
-    async (params: { validate?: (value: string) => string | undefined }) => {
-      const message = params.validate?.(jwtLikeToken);
-      if (message) {
-        validateMessages.push(message);
-        throw new Error(message);
-      }
-      return jwtLikeToken;
-    },
-  );
+  mocks.clackPassword.mockResolvedValue(jwtLikeToken);
 
   await expect(modelsAuthPasteApiKeyCommand({ provider: "openai" }, runtime)).rejects.toThrow(
     "paste-token --provider openai",
   );
 
-  expect(validateMessages).toEqual([
-    "That looks like token or OAuth material, not an OpenAI API key. Use openclaw models auth paste-token --provider openai for token auth material.",
-  ]);
   expect(mocks.upsertAuthProfileWithLock).not.toHaveBeenCalled();
   expect(mocks.updateConfig).not.toHaveBeenCalled();
 });

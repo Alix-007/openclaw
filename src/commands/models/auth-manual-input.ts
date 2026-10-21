@@ -1,8 +1,8 @@
 /** Input contracts shared by manual token/API-key commands and the API-key writer. */
-import { isUtf8 } from "node:buffer";
 import { readByteStreamWithLimit } from "@openclaw/media-core/read-byte-stream-with-limit";
 import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
 import { formatCliCommand } from "../../cli/command-format.js";
+import { decodeUtf8Input } from "../../infra/utf8-input.js";
 
 const MODELS_AUTH_STDIN_MAX_BYTES = 1024 * 1024;
 
@@ -13,10 +13,7 @@ export async function readPipedStdin(
     maxBytes: MODELS_AUTH_STDIN_MAX_BYTES,
     onOverflow: ({ maxBytes }) => new Error(`Piped auth input exceeds ${maxBytes} bytes.`),
   });
-  if (!isUtf8(bytes)) {
-    throw new Error("Piped auth input must be valid UTF-8.");
-  }
-  return bytes.toString("utf8");
+  return decodeUtf8Input(bytes, "Piped auth input");
 }
 
 export function resolveDefaultTokenProfileId(provider: string): string {

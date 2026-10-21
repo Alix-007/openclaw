@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createDeferred } from "../../../test/helpers/promise.js";
-import * as sandboxRuntime from "../../agents/sandbox.js";
+import * as sandboxRuntime from "../../agents/sandbox/runtime-status.js";
 import { MODEL_SELECTION_LOCKED_MESSAGE } from "../../sessions/model-overrides.js";
 import type { ReplyPayload } from "../types.js";
 import { applyMixedDirectives } from "./directive-handling.mixed-inline.test-helpers.js";
@@ -287,7 +287,7 @@ describe("applyInlineDirectiveOverrides", () => {
         await expect(pending).rejects.toMatchObject({
           name: "AgentSelectionRequiredError",
           code: "AGENT_SELECTION_REQUIRED",
-          surface: "session agent resolution",
+          message: expect.stringContaining("session agent resolution"),
           hint: 'The agent-scoped session key belongs to "main", not "target".',
         });
       } else {
