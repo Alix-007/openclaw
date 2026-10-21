@@ -1,4 +1,4 @@
-// CLI for reading and mutating exec approval allowlists locally, via gateway, or via node.
+import fs from "node:fs/promises";
 import { expectDefined } from "@openclaw/normalization-core";
 import { parseStrictPositiveInteger } from "@openclaw/normalization-core/number-coercion";
 import { isRecord } from "@openclaw/normalization-core/record-coerce";
@@ -20,7 +20,6 @@ import type {
   ExecApprovalStandingGrant,
   ExecApprovalsNodeSetParams,
 } from "../../packages/gateway-protocol/src/schema/exec-approvals.js";
-import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import {
   getTerminalTableWidth,
   renderTerminalSafeTable,
@@ -29,6 +28,7 @@ import { isRich, theme } from "../../packages/terminal-core/src/theme.js";
 import { resolveConfiguredAgentId } from "../agents/agent-scope-config.js";
 import { readBestEffortConfig, type OpenClawConfig } from "../config/config.js";
 import { ADMIN_SCOPE, APPROVALS_SCOPE, type OperatorScope } from "../gateway/method-scopes.js";
+import { readFileDescriptorBounded } from "../infra/boundary-file-read.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
   collectExecPolicyScopeSnapshots,
@@ -42,10 +42,16 @@ import {
 } from "../infra/exec-approvals.js";
 import { classifyExecAllowlistScope } from "../infra/exec-command-resolution.js";
 import { formatTimeAgo } from "../infra/format-time/format-relative.ts";
+import { decodeUtf8Input } from "../infra/utf8-input.js";
 import { defaultRuntime } from "../runtime.js";
-import { readApprovalsFile, readStdin } from "./exec-approvals-input.js";
+import {
+  EXEC_APPROVALS_STDIN_MAX_BYTES,
+  formatCliError,
+  readStdin,
+  runApprovalsAction,
+} from "./exec-approvals-cli.shared.js";
 import { loadSnapshotLocal, saveSnapshotLocal } from "./exec-approvals-local.js";
-import { rethrowExpectedCliError } from "./failure-output.js";
+import { registerNativeExecApprovalsCli } from "./exec-approvals-native-cli.js";
 import { callGatewayFromCli } from "./gateway-rpc.js";
 import { formatDocsHelp, formatHelpExamples } from "./help-format.js";
 import { nodesCallOpts, resolveCliNodeId } from "./nodes-cli/rpc.js";
@@ -97,15 +103,32 @@ const APPROVAL_ID_TOKEN_PREFIX = "id64_";
 const APPROVAL_TERMINAL_UNSAFE_CHAR =
   /^[\p{Cc}\p{Cf}\p{Cs}\p{Zl}\p{Zp}\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\u115F\u1160\u3164\uFFA0]$/u;
 
+async function readApprovalsFile(filePath: string): Promise<string> {
+  // Explicit CLI file inputs have historically followed symlinks and readable
+  // special files. Pin that opened target while bounding the bytes consumed.
+  const handle = await fs.open(filePath, "r");
+  try {
+    const bytes = await readFileDescriptorBounded(handle.fd, EXEC_APPROVALS_STDIN_MAX_BYTES);
+    return decodeUtf8Input(bytes, "Exec approvals file");
+  } finally {
+    await handle.close();
+  }
+}
+
 async function resolveTargetNodeId(opts: ExecApprovalsCliOpts): Promise<string | null> {
+  const nodeTarget = normalizeOptionalString(opts.node) ?? "";
+  if (opts.gateway && nodeTarget) {
+    // Reject the ambiguous pair so a targeted --node write cannot silently
+    // fall back to the gateway approvals policy.
+    throw new Error("Pass only one of --gateway or --node.");
+  }
   if (opts.gateway) {
     return null;
   }
-  const raw = normalizeOptionalString(opts.node) ?? "";
-  if (!raw) {
+  if (!nodeTarget) {
     return null;
   }
-  return await resolveCliNodeId(opts, raw);
+  return await resolveCliNodeId(opts, nodeTarget);
 }
 
 async function loadSnapshot(
@@ -292,34 +315,6 @@ async function saveSnapshotTargeted(params: SaveSnapshotTargetedParams): Promise
   }
   defaultRuntime.log(theme.muted(`Target: ${params.targetLabel}`));
   renderApprovalsSnapshot(next, params.targetLabel);
-}
-
-function formatCliError(err: unknown): string {
-  const msg = formatErrorMessage(err);
-  const firstLine = msg.includes("\n") ? msg.split("\n")[0] : msg;
-  const safe = sanitizeForLog(expectDefined(firstLine, "exec approvals cli first line"));
-  return safe.length > 300 ? `${truncateUtf16Safe(safe, 300)}...` : safe;
-}
-
-function failApprovalsCommand(err: unknown, opts: ExecApprovalsCliOpts): void {
-  rethrowExpectedCliError(err);
-  const message = formatCliError(err);
-  if (opts.json) {
-    throw new Error(message);
-  }
-  defaultRuntime.error(message);
-  defaultRuntime.exit(1);
-}
-
-async function runApprovalsAction(
-  opts: ExecApprovalsCliOpts,
-  action: () => Promise<void>,
-): Promise<void> {
-  try {
-    await action();
-  } catch (err) {
-    failApprovalsCommand(err, opts);
-  }
 }
 
 function isApprovalDecision(value: string): value is ApprovalDecision {
@@ -1024,7 +1019,7 @@ async function loadWritableAllowlistAgent(opts: ExecApprovalsCliOpts) {
 type WritableAllowlistAgentContext = Awaited<ReturnType<typeof loadWritableAllowlistAgent>> & {
   trimmedPattern: string;
 };
-type AllowlistMutation = (context: WritableAllowlistAgentContext) => boolean | Promise<boolean>;
+type AllowlistMutation = (context: WritableAllowlistAgentContext) => boolean;
 
 function registerAllowlistMutationCommand(params: {
   allowlist: Command;
@@ -1042,7 +1037,7 @@ function registerAllowlistMutationCommand(params: {
       await runApprovalsAction(opts, async () => {
         const trimmedPattern = requireTrimmedNonEmpty(pattern, "Pattern required.");
         const context = await loadWritableAllowlistAgent(opts);
-        const shouldSave = await params.mutate({ ...context, trimmedPattern });
+        const shouldSave = params.mutate({ ...context, trimmedPattern });
         if (!shouldSave) {
           if (opts.json) {
             defaultRuntime.writeJson(redactExecApprovals(context.snapshot), 0);
@@ -1061,6 +1056,8 @@ export function registerExecApprovalsCli(program: Command) {
     .alias("exec-approvals")
     .description("Manage approval policy and pending requests")
     .addHelpText("after", () => formatDocsHelp("/cli/approvals"));
+
+  registerNativeExecApprovalsCli(approvals);
 
   const pendingCmd = approvals
     .command("pending")
@@ -1308,8 +1305,4 @@ export function registerExecApprovalsCli(program: Command) {
   applyParentDefaultHelpAction(approvals);
 }
 
-export const testing = {
-  formatCliError,
-  readStdin,
-};
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */
