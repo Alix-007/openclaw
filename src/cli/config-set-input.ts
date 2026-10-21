@@ -8,9 +8,7 @@ import JSON5 from "json5";
 import { rejectConfigNonFiniteNumbers } from "../config/value-tree.js";
 import { readFileDescriptorBoundedSync } from "../infra/boundary-file-read.js";
 import { hasErrnoCode } from "../infra/errors.js";
-import { decodeUtf8Input as decodeConfigMutationInput } from "../infra/utf8-input.js";
-
-export { decodeConfigMutationInput };
+import { decodeUtf8Input } from "../infra/utf8-input.js";
 
 export type ConfigSetOptions = {
   strictJson?: boolean;
@@ -81,7 +79,7 @@ export function readConfigMutationFileSync(
       );
     }
     try {
-      return decodeConfigMutationInput(
+      return decodeUtf8Input(
         readFileDescriptorBoundedSync(fd, CONFIG_MUTATION_FILE_MAX_BYTES),
         sourceLabel,
       );
