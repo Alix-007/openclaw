@@ -151,13 +151,17 @@ export function formatSkillsList(report: SkillStatusReport, opts: SkillsListOpti
       nameColumn: { key: "Skill", header: "Skill", minWidth: 22 },
       sourceColumn: { key: "Source", header: "Source", minWidth: 10 },
       verbose: opts.verbose,
-      rows: skills.map((skill) => ({
-        Status: formatSkillStatus(skill),
-        Skill: formatSkillName(skill),
-        Description: theme.muted(sanitizeCliDescriptorText(skill.description)),
-        Source: skill.source,
-        Missing: opts.verbose ? theme.warn(formatSkillMissingSummary(skill)) : "",
-      })),
+      rows: skills.map((skill) => {
+        const emoji = normalizeSkillEmoji(skill.emoji);
+        const name = theme.command(sanitizeForLog(skill.name));
+        return {
+          Status: formatSkillStatus(skill),
+          Skill: emoji ? `${emoji} ${name}` : name,
+          Description: theme.muted(sanitizeCliDescriptorText(skill.description)),
+          Source: skill.source,
+          Missing: opts.verbose ? theme.warn(formatSkillMissingSummary(skill)) : "",
+        };
+      }),
     }),
   );
 }
@@ -177,7 +181,7 @@ export function formatSkillInfo(
         skill: requestedName,
       });
     }
-    const safeRequestedName = sanitizeCliDescriptorText(sanitizeForLog(requestedName));
+    const safeRequestedName = sanitizeForLog(requestedName);
     return appendClawHubHint(
       `Skill "${safeRequestedName}" not found. Run \`${formatCliCommand("openclaw skills list")}\` to see available skills.`,
     );

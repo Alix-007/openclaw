@@ -91,8 +91,8 @@ const HOOK_REQUIREMENT_GROUPS = [
 function formatHookMissingRequirements(hook: HookStatusEntry, itemLimit?: number): string[] {
   const formatEntries = (entries: string[]) =>
     itemLimit === undefined
-      ? entries.map(sanitizeTerminalText).join(", ")
-      : summarizeStringEntries({ entries: entries.map(sanitizeTerminalText), limit: itemLimit });
+      ? entries.join(", ")
+      : summarizeStringEntries({ entries, limit: itemLimit });
   return HOOK_REQUIREMENT_GROUPS.filter(([key]) => hook.missing[key].length > 0).map(
     ([key]) => `${key}: ${formatEntries(hook.missing[key])}`,
   );
@@ -101,7 +101,7 @@ function formatHookMissingRequirements(hook: HookStatusEntry, itemLimit?: number
 function formatHookMissingSummary(hook: HookStatusEntry, itemLimit?: number): string {
   const missing = formatHookMissingRequirements(hook, itemLimit);
   if (hook.enabledByConfig && hook.blockedReason && hook.blockedReason !== "missing requirements") {
-    missing.unshift(sanitizeTerminalText(hook.blockedReason));
+    missing.unshift(hook.blockedReason);
   }
   return missing.join("; ");
 }
@@ -157,7 +157,9 @@ function formatHooksList(report: HookStatusReport, opts: HooksListOptions): stri
         Source: sanitizeTerminalText(
           hook.managedByPlugin ? `plugin:${hook.pluginId ?? "unknown"}` : hook.source,
         ),
-        Missing: opts.verbose ? theme.warn(formatHookMissingSummary(hook)) : "",
+        Missing: opts.verbose
+          ? theme.warn(sanitizeTerminalText(formatHookMissingSummary(hook)))
+          : "",
       };
     }),
   });
@@ -203,12 +205,12 @@ function formatHookInfo(
     lines.push(`${theme.muted("  Homepage:")} ${sanitizeTerminalText(hook.homepage)}`);
   }
   if (hook.events.length > 0) {
-    lines.push(`${theme.muted("  Events:")} ${hook.events.map(sanitizeTerminalText).join(", ")}`);
+    lines.push(`${theme.muted("  Events:")} ${sanitizeTerminalText(hook.events.join(", "))}`);
   }
   if (hook.unknownEvents.length > 0) {
     lines.push(
       theme.warn(
-        `  ⚠ Event${hook.unknownEvents.length === 1 ? "" : "s"} not emitted by core (likely typo): ${hook.unknownEvents.map(sanitizeTerminalText).join(", ")}`,
+        `  ⚠ Event${hook.unknownEvents.length === 1 ? "" : "s"} not emitted by core (likely typo): ${sanitizeTerminalText(hook.unknownEvents.join(", "))}`,
       ),
     );
   }
@@ -261,11 +263,11 @@ function formatHooksCheck(report: HookStatusReport, opts: HooksReportOptions): s
     for (const hook of notEligible) {
       const reasons = formatHookMissingRequirements(hook);
       if (hook.blockedReason && hook.blockedReason !== "missing requirements") {
-        reasons.unshift(sanitizeTerminalText(hook.blockedReason));
+        reasons.unshift(hook.blockedReason);
       }
-      const emoji = sanitizeTerminalText(hook.emoji ?? decorativeEmoji("🔗"));
+      const emoji = hook.emoji ?? decorativeEmoji("🔗");
       lines.push(
-        `  ${emoji ? `${emoji} ` : ""}${sanitizeTerminalText(hook.name)} - ${reasons.join("; ")}`,
+        sanitizeTerminalText(`  ${emoji ? `${emoji} ` : ""}${hook.name} - ${reasons.join("; ")}`),
       );
     }
   }
