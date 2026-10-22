@@ -106,7 +106,6 @@ it("renders hook metadata and requirements safely while retaining raw JSON value
   );
   await fs.writeFile(path.join(directory, "handler.js"), 'throw new Error("must not load");\n');
   const report = buildWorkspaceHookStatus(workspaceDir, {
-    managedHooksDir: path.join(workspaceDir, "managed"),
     config: descriptorConfig,
   });
   const entry = report.hooks.find((candidate) => candidate.name === "terminal-fixture");
