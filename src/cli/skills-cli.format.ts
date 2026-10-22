@@ -33,10 +33,6 @@ type SkillsListOptions = {
   verbose?: boolean;
 };
 
-type SkillInfoOptions = {
-  json?: boolean;
-};
-
 type SkillsCheckOptions = {
   json?: boolean;
   agent?: string;
@@ -80,12 +76,6 @@ function formatSkillsJson(value: unknown): string {
     2,
   );
 }
-function formatSkillName(skill: SkillStatusEntry): string {
-  const emoji = normalizeSkillEmoji(skill.emoji);
-  const name = theme.command(sanitizeForLog(skill.name));
-  return emoji ? `${emoji} ${name}` : name;
-}
-
 const SKILL_REQUIREMENT_GROUPS = [
   ["bins", "Binaries"],
   ["anyBins", "Any binaries"],
@@ -175,7 +165,7 @@ export function formatSkillsList(report: SkillStatusReport, opts: SkillsListOpti
 export function formatSkillInfo(
   report: SkillStatusReport,
   skillName: string,
-  opts: SkillInfoOptions,
+  opts: { json?: boolean },
 ): string {
   const requestedName = skillName.trim();
   const skill = resolveSkillStatusEntry(report.skills, requestedName);
