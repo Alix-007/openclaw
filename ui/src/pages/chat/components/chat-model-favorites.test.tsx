@@ -1,7 +1,8 @@
 /* @vitest-environment jsdom */
-import { expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createDeferred } from "../../../../../test/helpers/promise.ts";
 import { createApplicationGateway } from "../../../test-helpers/application-context-fixtures.ts";
+import { installModelPickerLayout } from "../../../test-helpers/model-picker-layout.ts";
 import { createSolidApplicationContextProvider } from "../../../test-helpers/solid-application-context.tsx";
 import { flush, waitForSolid } from "../../../test-helpers/solid-settle.ts";
 import { createContext } from "../../skill-workshop/skill-workshop-page.test-support.ts";
@@ -13,6 +14,9 @@ import {
 
 const key = "ui.modelFavorites:research";
 const model = JSON.stringify(["openai/small", null]);
+
+beforeEach(installModelPickerLayout);
+afterEach(() => vi.restoreAllMocks());
 
 async function mount(
   entries: Record<string, unknown> = {},
@@ -62,6 +66,18 @@ async function mount(
   return { ...view, checkbox, request, gateway, params, entries };
 }
 
+async function expandFavorites(container: HTMLElement) {
+  const toggle = () =>
+    container.querySelector<HTMLButtonElement>(
+      '[data-chat-model-provider-group="$favorites"] [data-chat-model-provider-toggle]',
+    );
+  await waitForSolid(() => expect(toggle()).not.toBeNull());
+  if (toggle()!.getAttribute("aria-expanded") !== "true") {
+    toggle()!.click();
+  }
+  await waitForSolid(() => expect(toggle()?.getAttribute("aria-expanded")).toBe("true"));
+}
+
 it("saves and removes a favorite without selecting its model, then restores it on reopen", async () => {
   const view = await mount();
   await waitForSolid(() => expect(view.checkbox().disabled).toBe(false));
@@ -69,6 +85,7 @@ it("saves and removes a favorite without selecting its model, then restores it o
   await waitForSolid(() => expect(view.checkbox().checked).toBe(true));
   await waitForSolid(() => expect(view.entries[key]).toEqual([model]));
   expect(view.params.onModelSelect).not.toHaveBeenCalled();
+  await expandFavorites(view.container);
   await waitForSolid(() =>
     expect(
       view.container.querySelector('[data-chat-model-provider-group="$favorites"]')?.textContent,
@@ -132,12 +149,28 @@ it("keeps provider authentication and settings after favoriting its only model",
   await waitForSolid(() => expect(view.checkbox().disabled).toBe(false));
   view.checkbox().click();
   await waitForSolid(() => expect(view.checkbox()?.checked, view.container.textContent).toBe(true));
-  const heading = view.container.querySelector('[data-chat-model-provider="anthropic"]');
-  expect(heading?.textContent).toContain("API key");
-  const settings = heading?.querySelector<HTMLButtonElement>("[data-chat-model-provider-settings]");
+  await expandFavorites(view.container);
+  const heading = () => view.container.querySelector('[data-chat-model-provider="anthropic"]');
+  await waitForSolid(() => expect(heading()?.textContent).toContain("API key"));
+  const settings = heading()?.querySelector<HTMLButtonElement>(
+    "[data-chat-model-provider-settings]",
+  );
   expect(settings).not.toBeNull();
   settings!.click();
   expect(onProviderSettings).toHaveBeenCalledWith("anthropic");
+  expect(heading()?.closest(".chat-controls__model-virtual-row")).not.toBeNull();
+  const writes = view.request.mock.calls.filter(([method]) => method === "users.prefs.set");
+  view.container
+    .querySelector<HTMLButtonElement>(
+      '[data-chat-model-provider-group="$favorites"] [data-chat-model-provider-toggle]',
+    )!
+    .click();
+  await waitForSolid(() => expect(heading()).toBeNull());
+  await expandFavorites(view.container);
+  await waitForSolid(() => expect(heading()?.textContent).toContain("API key"));
+  expect(view.request.mock.calls.filter(([method]) => method === "users.prefs.set")).toEqual(
+    writes,
+  );
   expect(view.checkbox().checked).toBe(true);
   expect(view.params.onModelSelect).not.toHaveBeenCalled();
 });
@@ -266,6 +299,14 @@ it("switches agent favorites without changing catalog availability or runtime id
     const inputs = view.container.querySelectorAll<HTMLInputElement>("[data-chat-model-favorite]");
     expect([inputs[1]?.checked, inputs[2]?.checked]).toEqual([false, true]);
   });
+  await expandFavorites(view.container);
+  await waitForSolid(() =>
+    expect(
+      view.container.querySelector(
+        '[data-chat-model-provider-group="$favorites"] [data-chat-model-option]',
+      ),
+    ).not.toBeNull(),
+  );
   const favorite = view.container.querySelector<HTMLButtonElement>(
     '[data-chat-model-provider-group="$favorites"] [data-chat-model-option]',
   );
