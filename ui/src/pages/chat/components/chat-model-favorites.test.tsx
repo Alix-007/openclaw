@@ -14,7 +14,11 @@ import {
 const key = "ui.modelFavorites:research";
 const model = JSON.stringify(["openai/small", null]);
 
-async function mount(entries: Record<string, unknown> = {}, scopes = ["operator.write"]) {
+async function mount(
+  entries: Record<string, unknown> = {},
+  scopes = ["operator.write"],
+  overrides: Partial<ReturnType<typeof modelPickerProps>> = {},
+) {
   const request = vi.fn(async (method: string, params: unknown): Promise<unknown> => {
     if (method === "users.prefs.get") {
       return { status: "ok", entries: { ...entries } };
@@ -40,13 +44,13 @@ async function mount(entries: Record<string, unknown> = {}, scopes = ["operator.
     ...context.gateway.snapshot,
     selfUser: { id: "operator" },
   });
-  context.gateway = gateway.gateway;
-  const provider = createSolidApplicationContextProvider(context);
+  const provider = createSolidApplicationContextProvider({ ...context, gateway: gateway.gateway });
   const params = modelPickerProps({
     open: true,
     sessionKey: "agent:research:main",
     modelOptions: [modelOption("openai", "large"), modelOption("openai", "small")],
     selectedModelValue: "openai/large",
+    ...overrides,
   });
   const view = mountModelPicker(params, { wrapper: provider.wrapper });
   const checkbox = () =>
@@ -85,6 +89,57 @@ it("saves and removes a favorite without selecting its model, then restores it o
       reopened.container.querySelector('[data-chat-model-provider-group="$favorites"]'),
     ).toBeNull(),
   );
+});
+
+it("identifies same-model favorites by their execution runtime", async () => {
+  const view = await mount({}, undefined, {
+    modelOptions: [
+      modelOption("anthropic", "sonnet", {
+        label: "Claude Sonnet",
+        agentRuntimeId: "openclaw",
+        agentRuntime: "openclaw",
+      }),
+      modelOption("anthropic", "sonnet", {
+        label: "Claude Sonnet",
+        agentRuntimeId: "claude-cli",
+        agentRuntime: "claude-cli",
+        runtimeOverride: "claude-cli",
+      }),
+    ],
+  });
+  const api = () => view.getByRole<HTMLInputElement>("checkbox", { name: /Claude Sonnet.*API/ });
+  const cli = () =>
+    view.getByRole<HTMLInputElement>("checkbox", { name: /Claude Sonnet.*Claude CLI/ });
+  await waitForSolid(() => expect(cli().disabled).toBe(false));
+  cli().click();
+  await waitForSolid(() => expect(cli().checked).toBe(true));
+  expect(api().checked).toBe(false);
+  expect(view.entries[key]).toEqual([JSON.stringify(["anthropic/sonnet", "claude-cli"])]);
+  expect(view.params.onModelSelect).not.toHaveBeenCalled();
+});
+
+it("keeps provider authentication and settings after favoriting its only model", async () => {
+  const onProviderSettings = vi.fn();
+  const view = await mount({}, undefined, {
+    modelOptions: [
+      modelOption("openai", "inherited", { isDefault: true }),
+      modelOption("openai", "large"),
+      modelOption("anthropic", "sonnet"),
+    ],
+    providerAuth: new Map([["anthropic", { kind: "api", label: "API key", detail: "Configured" }]]),
+    onProviderSettings,
+  });
+  await waitForSolid(() => expect(view.checkbox().disabled).toBe(false));
+  view.checkbox().click();
+  await waitForSolid(() => expect(view.checkbox()?.checked, view.container.textContent).toBe(true));
+  const heading = view.container.querySelector('[data-chat-model-provider="anthropic"]');
+  expect(heading?.textContent).toContain("API key");
+  const settings = heading?.querySelector<HTMLButtonElement>("[data-chat-model-provider-settings]");
+  expect(settings).not.toBeNull();
+  settings!.click();
+  expect(onProviderSettings).toHaveBeenCalledWith("anthropic");
+  expect(view.checkbox().checked).toBe(true);
+  expect(view.params.onModelSelect).not.toHaveBeenCalled();
 });
 
 it("shows a conflicting write and reconciles the authoritative favorites", async () => {

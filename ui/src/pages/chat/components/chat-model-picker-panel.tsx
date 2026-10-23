@@ -4,6 +4,7 @@ import { resolveModelRuntimeRoute } from "../../../../../src/shared/model-runtim
 import { providerDisplayLabel } from "../../../components/provider-icon.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
 import { canonicalModelAuthProviderId } from "../../../lib/model-auth.ts";
+import { formatModelRuntimeLabel } from "../../../lib/model-runtime-label.ts";
 import { t } from "../../../lib/reactive/i18n.ts";
 import { ChatContextWindowControl } from "./chat-context-window-control.tsx";
 import { ChatModelAccountSectionView } from "./chat-model-account-control.tsx";
@@ -31,18 +32,18 @@ import type { ChatModelPickerParams } from "./chat-model-picker.tsx";
 
 const FAVORITES_GROUP = "$favorites";
 
+// A model pinned to Claude CLI belongs to its runtime's provider group.
+const groupProvider = (option: ModelPickerOption) =>
+  resolveModelRuntimeRoute(option.provider, option.agentRuntimeId) === "claudeCli"
+    ? "claude-cli"
+    : option.provider;
+
 function prepareChatModelPickerPanel(params: ChatModelPickerParams, favorites: readonly string[]) {
   const defaultModelOption = params.modelOptions.find((option) => option.isDefault);
   const activeModelOption = params.modelOptions.find((option) =>
     isModelPickerOptionSelected(option, params.selectedModelValue, params.selectedAgentRuntime),
   );
   const leadingModelOption = activeModelOption ?? defaultModelOption;
-  // A model reachable only through Claude CLI (an Anthropic ref pinned to that runtime)
-  // belongs to the Claude CLI group, not to an Anthropic API group the user may not have.
-  const groupProvider = (option: ModelPickerOption) =>
-    resolveModelRuntimeRoute(option.provider, option.agentRuntimeId) === "claudeCli"
-      ? "claude-cli"
-      : option.provider;
   // Default restores inheritance; it stays ahead of ranked model choices. When a
   // provider recommends models, they follow, and the rest collapse under "All models".
   const recommendingProviders = new Set(
@@ -295,10 +296,11 @@ export function ChatModelPickerPanel(panel: PanelProps) {
       />
     );
   }
-  function ProviderGroup(props: {
+  function ProviderHeading(props: {
     provider: string;
-    lead: ModelPickerOption[];
-    more: ModelPickerOption[];
+    options: ModelPickerOption[];
+    toggle?: boolean;
+    more?: boolean;
   }) {
     const isFavorites = () => props.provider === FAVORITES_GROUP;
     const providerLabel = () =>
@@ -307,7 +309,6 @@ export function ChatModelPickerPanel(panel: PanelProps) {
       isFavorites()
         ? providerLabel()
         : t("chat.modelControls.providerModels", { provider: providerLabel() });
-    const options = () => [...props.lead, ...props.more];
     const auth = () => panel.params.providerAuth?.get(canonicalModelAuthProviderId(props.provider));
     const authKind = () => auth()?.kind;
     const showAuth = createMemo(
@@ -315,7 +316,7 @@ export function ChatModelPickerPanel(panel: PanelProps) {
         Boolean(auth()) &&
         !(
           auth()?.kind === "missing" &&
-          options().some(
+          props.options.some(
             (option) =>
               option.disabled &&
               (option.unavailableReason === "missing-auth" ||
@@ -330,15 +331,19 @@ export function ChatModelPickerPanel(panel: PanelProps) {
       return route ? t(`chat.modelControls.routes.${route}.detail`) : undefined;
     };
     return (
-      <section
-        class="chat-controls__provider-model-group"
-        data-chat-model-provider-group={props.provider}
-        aria-label={groupLabel()}
+      <div
+        class="chat-controls__provider-heading"
+        data-chat-model-provider={props.provider}
+        title={[routeDetail(), authLabel()].filter(Boolean).join(" · ") || undefined}
       >
-        <div
-          class="chat-controls__provider-heading"
-          data-chat-model-provider={props.provider}
-          title={[routeDetail(), authLabel()].filter(Boolean).join(" · ") || undefined}
+        <Show
+          when={props.toggle}
+          fallback={
+            <>
+              <ChatModelProviderIcon provider={props.provider} />
+              <span class="chat-controls__provider-label">{providerLabel()}</span>
+            </>
+          }
         >
           <button
             class="chat-controls__provider-toggle"
@@ -348,9 +353,9 @@ export function ChatModelPickerPanel(panel: PanelProps) {
             aria-expanded={searchView?.providerOpen(props.provider) ? "true" : "false"}
             aria-controls={[
               search?.listId(props.provider),
-              ...(props.more.length ? [search?.listId(`${props.provider}:more`)] : []),
+              ...(props.more ? [search?.listId(`${props.provider}:more`)] : []),
             ].join(" ")}
-            aria-label={`${groupLabel()} (${options().length})`}
+            aria-label={`${groupLabel()} (${props.options.length})`}
             aria-description={routeDetail()}
             disabled={panel.params.disabled}
             onClick={(event) => {
@@ -365,42 +370,84 @@ export function ChatModelPickerPanel(panel: PanelProps) {
               <Icon name="star" class="chat-controls__provider-icon" />
             </Show>
             <span class="chat-controls__provider-label">{providerLabel()}</span>
-            <span>{options().length}</span>
+            <span>{props.options.length}</span>
             <span class="chat-controls__inline-select-chevron" aria-hidden="true">
               <Icon name="chevronDown" />
             </span>
           </button>
-          {showAuth() ? (
-            <span class="chat-controls__auth-meta" data-auth-kind={authKind()}>
-              <span aria-hidden="true">
-                <Icon
-                  name={
-                    authKind() === "subscription"
-                      ? "circleUser"
-                      : authKind() === "api"
-                        ? "key"
-                        : "alertTriangle"
-                  }
-                />
-              </span>
-              <span class="chat-controls__auth-meta-label">{authLabel()}</span>
+        </Show>
+        {showAuth() ? (
+          <span class="chat-controls__auth-meta" data-auth-kind={authKind()}>
+            <span aria-hidden="true">
+              <Icon
+                name={
+                  authKind() === "subscription"
+                    ? "circleUser"
+                    : authKind() === "api"
+                      ? "key"
+                      : "alertTriangle"
+                }
+              />
             </span>
-          ) : undefined}
-          {panel.params.onProviderSettings && !isFavorites() ? (
-            <button
-              class="chat-controls__provider-settings"
-              data-chat-model-provider-settings
-              type="button"
-              aria-label={t("chat.modelControls.configureModels")}
-              onClick={(event: MouseEvent) => {
-                event.stopPropagation();
-                panel.params.onProviderSettings?.(props.provider);
-              }}
-            >
-              <Icon name="settings" />
-            </button>
-          ) : undefined}
-        </div>
+            <span class="chat-controls__auth-meta-label">{authLabel()}</span>
+          </span>
+        ) : undefined}
+        {panel.params.onProviderSettings && !isFavorites() ? (
+          <button
+            class="chat-controls__provider-settings"
+            data-chat-model-provider-settings
+            type="button"
+            aria-label={t("chat.modelControls.configureModels")}
+            onClick={(event: MouseEvent) => {
+              event.stopPropagation();
+              panel.params.onProviderSettings?.(props.provider);
+            }}
+          >
+            <Icon name="settings" />
+          </button>
+        ) : undefined}
+      </div>
+    );
+  }
+  function ProviderGroup(props: {
+    provider: string;
+    lead: ModelPickerOption[];
+    more: ModelPickerOption[];
+  }) {
+    const groupLabel = () =>
+      props.provider === FAVORITES_GROUP
+        ? t("chat.modelControls.favorites")
+        : t("chat.modelControls.providerModels", {
+            provider: providerDisplayLabel(props.provider),
+          });
+    // When every model moves to Favorites, retain its provider's auth/settings owner.
+    const favoriteProviders = createMemo(() =>
+      props.provider === FAVORITES_GROUP
+        ? [...new Set(props.lead.map(groupProvider))].filter(
+            (provider) => !state().orderedProviderGroups.some(([group]) => group === provider),
+          )
+        : [],
+    );
+    return (
+      <section
+        class="chat-controls__provider-model-group"
+        data-chat-model-provider-group={props.provider}
+        aria-label={groupLabel()}
+      >
+        <ProviderHeading
+          provider={props.provider}
+          options={[...props.lead, ...props.more]}
+          toggle
+          more={props.more.length > 0}
+        />
+        <For each={favoriteProviders()}>
+          {(provider) => (
+            <ProviderHeading
+              provider={provider}
+              options={props.lead.filter((option) => groupProvider(option) === provider)}
+            />
+          )}
+        </For>
         <ModelList label={groupLabel()} id={props.provider}>
           <For each={props.lead} keyed={modelPickerOptionKey}>
             {(entry) => <ModelOption entry={entry()} />}
@@ -506,7 +553,14 @@ export function ChatModelPickerPanel(panel: PanelProps) {
                           favorites.toggle(modelPickerOptionKey(entry()));
                         }}
                       />
-                      <span>{entry().label}</span>
+                      <span>
+                        {[
+                          entry().label,
+                          formatModelRuntimeLabel(entry().provider, entry().agentRuntimeId)?.label,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
                     </label>
                   )}
                 </For>
