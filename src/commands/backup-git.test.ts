@@ -39,7 +39,8 @@ vi.mock("../config/config.js", async (importOriginal) => {
   };
 });
 
-vi.mock("../snapshot/git-backup.js", () => ({
+vi.mock("../snapshot/git-backup.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../snapshot/git-backup.js")>()),
   createGitBackup: mocks.createGitBackup,
   initializeGitBackupRepository: mocks.initializeGitBackupRepository,
   readGitBackupLog: mocks.readGitBackupLog,
@@ -70,7 +71,7 @@ function create(
 
 function restore(
   options: Parameters<typeof backupGitRestoreCommand>[1],
-  runtime = createTestRuntime(),
+  runtime: Parameters<typeof backupGitRestoreCommand>[0] = createTestRuntime(),
 ) {
   return backupGitRestoreCommand(runtime, { repository: "/tmp/repository", ...options });
 }
