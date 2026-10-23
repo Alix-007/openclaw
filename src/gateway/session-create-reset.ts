@@ -35,10 +35,12 @@ export function tryResetGatewaySessionForCreation(
     params.emitCommandHooks === true &&
     !requestedKey &&
     params.resetMainWhenUnspecified === true &&
+    !params.deviceFolder &&
     !requestedToolOverrides &&
     !parentIncognito &&
-    // Catalog targets need a fresh locked row; resetting main would return before
-    // the catalog-owned model/runtime pair is persisted.
+    // Creation-only content needs a fresh row; resetting main would return before
+    // the prepared transcript or catalog-owned model/runtime pair is persisted.
+    !params.initialAssistantMessage &&
     !params.catalogTarget &&
     params.cfg.session?.dmScope === "main"
   ) {

@@ -336,6 +336,21 @@ export function buildUsageOverview(params: {
     options,
     calendar,
   );
+  const selectedSources = new Map(
+    sessions
+      .filter((session) => selected.has(session.key))
+      .map((session) => [session.key, session]),
+  );
+  const selectedUsageComplete = selected.size
+    ? selectedSources.size === selected.size &&
+      [...selectedSources.values()].every(
+        (session) =>
+          session.usage &&
+          !session.computing &&
+          session.usage.staleSince === undefined &&
+          !session.usage.refreshing,
+      )
+    : undefined;
   const selectedRows = new Map(
     selected.size ? scoped.map((session) => [session.key, session]) : [],
   );
@@ -347,6 +362,7 @@ export function buildUsageOverview(params: {
     unfilteredSessionCount: sessions.length,
     selectedSessionCount: 0,
     selectedRowCount: scoped.length,
+    selectedUsageComplete,
     selectedRows: [...selected].flatMap((key) => {
       const session = selectedRows.get(key);
       return session ? [toRow(session)] : [];
@@ -431,32 +447,21 @@ export function buildUsageOverview(params: {
       }
     }
   }
+  const totals = days.size ? accumulator.totalsForDays(days) : accumulator.totals;
+  if (days.size) {
+    // Only the calendar ignores its own day selection. Already accumulated rows
+    // retain their totals and provider attribution without being processed twice.
+    const accumulated = new Set(scoped);
+    for (const session of queried.sessions) {
+      if (!accumulated.has(session) && (!selected.size || selected.has(session.key))) {
+        accumulator.addCalendar(session.usage);
+      }
+    }
+  }
   overview.usageReport = accumulator.totals.usageReport;
   const aggregates = accumulator.finish();
   overview.selectedSessionCount = aggregates.sessionCount ?? 0;
-  let totals = accumulator.totals;
   if (days.size) {
-    totals = createEmptyCostUsageTotals();
-    for (const day of aggregates.costDaily ?? []) {
-      if (days.has(day.date)) {
-        addCostUsageTotals(totals, day);
-      }
-    }
-    // Keep the calendar facet before its own selection, so another day remains selectable.
-    const calendarDaily = new Map<string, CostUsageTotals>();
-    for (const session of queried.sessions) {
-      if (selected.size && !selected.has(session.key)) {
-        continue;
-      }
-      for (const day of session.usage?.dailyBreakdown ?? []) {
-        const dayTotals = calendarDaily.get(day.date) ?? createEmptyCostUsageTotals();
-        addCostUsageTotals(dayTotals, day);
-        calendarDaily.set(day.date, dayTotals);
-      }
-    }
-    aggregates.costDaily = [...calendarDaily]
-      .map(([date, dayTotals]) => Object.assign({ date }, dayTotals))
-      .toSorted((a, b) => a.date.localeCompare(b.date));
     for (const creator of aggregates.byCreator ?? []) {
       creator.daily = creator.daily.filter((day) => days.has(day.date));
       creator.totals = createEmptyCostUsageTotals();
