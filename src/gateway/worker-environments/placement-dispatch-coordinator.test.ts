@@ -1,9 +1,9 @@
 import { setImmediate as setImmediatePromise } from "node:timers/promises";
 import { describe, expect, it, vi } from "vitest";
 import {
-  beginSessionWorkAdmission,
-  closeSessionWorkAdmissions,
-} from "../../sessions/session-lifecycle-admission.js";
+  beginSessionEffect,
+  closeSessionControllerAdmission,
+} from "../../sessions/session-controller.lifecycle.js";
 import { createDeferredCore } from "../../shared/deferred.js";
 import { coordinateWorkerPlacementDispatch } from "./placement-dispatch-coordinator.js";
 import {
@@ -145,7 +145,7 @@ describe("worker placement dispatch coordinator", () => {
       reclaim: async (
         ...[_request, _authorize, _beforeDrain, serialize]: Parameters<DispatchService["reclaim"]>
       ) => {
-        const release = closeSessionWorkAdmissions({
+        const release = closeSessionControllerAdmission({
           scope,
           identities,
           reason: new Error("older Stop"),
@@ -161,7 +161,7 @@ describe("worker placement dispatch coordinator", () => {
     } as unknown as DispatchService;
     const coordinated = coordinateWorkerPlacementDispatch(service, async (_request, run) => {
       const controller = new AbortController();
-      const admission = await beginSessionWorkAdmission({
+      const admission = await beginSessionEffect({
         scope,
         identities,
         assertAllowed: () => {},
@@ -299,6 +299,7 @@ describe("worker placement dispatch coordinator", () => {
   it("forwards in-process transition and authorization hooks outside request equality", async () => {
     const observer = vi.fn();
     const authorize = vi.fn();
+    const sessionCurrent = vi.fn();
     const placement = { state: "active" };
     const dispatch = vi.fn(async (_request, report, assertCurrent) => {
       assertCurrent?.();
@@ -313,13 +314,18 @@ describe("worker placement dispatch coordinator", () => {
       reconcileActive: vi.fn(async () => {}),
     } as unknown as DispatchService;
 
-    await coordinateWorkerPlacementDispatch(service, (_request, run) => run()).dispatch(
-      REQUEST,
-      observer,
-      authorize,
-    );
+    await coordinateWorkerPlacementDispatch(service, (_request, run) =>
+      run(undefined, sessionCurrent),
+    ).dispatch(REQUEST, observer, authorize);
 
-    expect(dispatch).toHaveBeenCalledWith(REQUEST, expect.any(Function), authorize, undefined);
+    expect(dispatch).toHaveBeenCalledWith(
+      REQUEST,
+      expect.any(Function),
+      expect.any(Function),
+      undefined,
+      undefined,
+    );
+    expect(sessionCurrent).toHaveBeenCalledOnce();
     expect(authorize).toHaveBeenCalledOnce();
     expect(observer).toHaveBeenCalledExactlyOnceWith(placement);
   });

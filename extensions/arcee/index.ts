@@ -1,7 +1,3 @@
-/**
- * Arcee AI provider plugin entry. It supports direct Arcee auth and OpenRouter
- * routing while normalizing OpenRouter model ids and base URLs.
- */
 import { buildOpenAICompatibleLiveProviderCatalog } from "openclaw/plugin-sdk/provider-catalog-live-runtime";
 import {
   readConfiguredProviderCatalogEntries,
@@ -29,6 +25,11 @@ const ARCEE_WIZARD_GROUP = {
   groupLabel: "Arcee AI",
   groupHint: "Direct API or OpenRouter",
 } as const;
+
+function normalizeArceeBaseUrl<T extends { baseUrl?: string }>(value: T) {
+  const baseUrl = normalizeArceeOpenRouterBaseUrl(value.baseUrl);
+  return baseUrl && baseUrl !== value.baseUrl ? { ...value, baseUrl } : undefined;
+}
 
 async function resolveArceeCatalog(ctx: ProviderCatalogContext) {
   const configuredBaseUrl = resolveMergedModelProviderConfig(ctx.config, PROVIDER_ID)?.baseUrl;
@@ -72,7 +73,6 @@ function normalizeArceeResolvedModel<T extends { baseUrl?: string; id: string }>
   };
 }
 
-/** Provider entry for Arcee direct and OpenRouter-backed models. */
 export default defineSingleProviderPluginEntry({
   id: PROVIDER_ID,
   name: "Arcee AI Provider",
@@ -128,22 +128,9 @@ export default defineSingleProviderPluginEntry({
         config,
         providerId: PROVIDER_ID,
       }),
-    normalizeConfig: ({ providerConfig }) => {
-      const normalizedBaseUrl = normalizeArceeOpenRouterBaseUrl(providerConfig.baseUrl);
-      return normalizedBaseUrl && normalizedBaseUrl !== providerConfig.baseUrl
-        ? { ...providerConfig, baseUrl: normalizedBaseUrl }
-        : undefined;
-    },
+    normalizeConfig: ({ providerConfig }) => normalizeArceeBaseUrl(providerConfig),
     normalizeResolvedModel: ({ model }) => normalizeArceeResolvedModel(model),
-    normalizeTransport: ({ api: apiLocal, baseUrl }) => {
-      const normalizedBaseUrl = normalizeArceeOpenRouterBaseUrl(baseUrl);
-      return normalizedBaseUrl && normalizedBaseUrl !== baseUrl
-        ? {
-            api: apiLocal,
-            baseUrl: normalizedBaseUrl,
-          }
-        : undefined;
-    },
+    normalizeTransport: ({ api, baseUrl }) => normalizeArceeBaseUrl({ api, baseUrl }),
     ...buildProviderReplayFamilyHooks({ family: "openai-compatible" }),
   },
 });

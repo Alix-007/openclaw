@@ -1,26 +1,34 @@
-import {
-  createMeetingBrowserAudioCaptureSource,
-  type MeetingBrowserAudioCaptureRequest,
-  createMeetingLeaveSource,
-  createMeetingTranscriptSource,
-} from "openclaw/plugin-sdk/meeting-page-script-runtime";
+import { MeetingPlatformAdapter } from "openclaw/plugin-sdk/meeting-runtime";
 import { SLACK_HUDDLE_SELECTORS } from "./slack-huddles-selectors.js";
-import { slackHuddleStatusCallSource } from "./slack-huddles-status-call-source.js";
+import { slackHuddleStatusCall } from "./slack-huddles-status-call-source.js";
 import {
   SLACK_HUDDLE_JOIN_SETTLE_MS,
-  slackHuddleStatusPreludeSource,
+  slackHuddleStatusPrelude,
 } from "./slack-huddles-status-prejoin-source.js";
 import { normalizeSlackHuddleUrlForReuse } from "./slack-huddles-urls.js";
 
-function pageIdentityFunctionSource(expectedIdentity: string | undefined): string {
-  // Team-scoped requests need the page's team to match; a page URL without one fails closed.
-  const teamScoped = /^slack-huddle:[TE][A-Z0-9]+:/.test(expectedIdentity ?? "");
-  const ownershipHooks = JSON.stringify({
-    inHuddle: SLACK_HUDDLE_SELECTORS.channelHeaderInHuddle,
-    inCall: SLACK_HUDDLE_SELECTORS.inCall,
-  });
-  // Status, audio capture, captions, and leave all resolve ownership through this identity.
-  return `const meetingIdentity = (rawUrl) => {
+export const slackHuddlePageScripts = MeetingPlatformAdapter.createPageScripts({
+  platform: {
+    audioOutputElementIdPrefix: "openclaw-slack-huddle-audio-output-",
+    manualActionReasonPrefix: "slack",
+    displayName: "Slack huddle",
+    globals: {
+      audioOutputs: "__openclawSlackHuddleAudioOutputs",
+      captionArchive: "__openclawSlackHuddleCaptionArchive",
+      captions: "__openclawSlackHuddleCaptions",
+      meeting: "__openclawSlackHuddle",
+    },
+  },
+  normalizeUrl: normalizeSlackHuddleUrlForReuse,
+  pageIdentitySource: (expectedIdentity) => {
+    // Team-scoped requests need the page's team to match; a page URL without one fails closed.
+    const teamScoped = /^slack-huddle:[TE][A-Z0-9]+:/.test(expectedIdentity ?? "");
+    const ownershipHooks = JSON.stringify({
+      inHuddle: SLACK_HUDDLE_SELECTORS.channelHeaderInHuddle,
+      inCall: SLACK_HUDDLE_SELECTORS.inCall,
+    });
+    // Status, audio capture, captions, and leave all resolve ownership through this identity.
+    return `const meetingIdentity = (rawUrl) => {
     try {
       const url = new URL(rawUrl);
       if (url.protocol !== "https:" || url.port || url.username || url.password ||
@@ -49,15 +57,20 @@ function pageIdentityFunctionSource(expectedIdentity: string | undefined): strin
         : identity;
     } catch { return undefined; }
   };`;
-}
-
-export function slackHuddleAudioCaptureScript(params: MeetingBrowserAudioCaptureRequest): string {
-  return createMeetingBrowserAudioCaptureSource({
-    ...params,
-    audioOutputsGlobal: "__openclawSlackHuddleAudioOutputs",
-    ownershipSource: `
-      ${pageIdentityFunctionSource(normalizeSlackHuddleUrlForReuse(params.meetingUrl))}
-      const expectedIdentity = ${JSON.stringify(normalizeSlackHuddleUrlForReuse(params.meetingUrl))};
+  },
+  selectors: SLACK_HUDDLE_SELECTORS,
+  toggleStateFunction: () => `(input) => {
+      if (input?.ariaChecked === "true") return "on";
+      if (input?.ariaChecked === "false") return "off";
+      if (/^unmute microphone(?: unmute microphone)?$/i.test(input?.label || "")) return "off";
+      if (/^mute microphone(?: mute microphone)?$/i.test(input?.label || "")) return "on";
+      return undefined;
+    }`,
+  statusPrelude: slackHuddleStatusPrelude,
+  statusCall: slackHuddleStatusCall,
+  audioOwnershipSource: ({ expectedIdentity, pageIdentitySource }) => `
+      ${pageIdentitySource}
+      const expectedIdentity = ${JSON.stringify(expectedIdentity)};
       const state = window.__openclawSlackHuddle;
       // Audio never rides on the join-settle exception: Slack's header must show membership, and a
       // channel-only session must already be bound to its workspace.
@@ -69,64 +82,7 @@ export function slackHuddleAudioCaptureScript(params: MeetingBrowserAudioCapture
         state.identity === expectedIdentity && !state.leavePending &&
         meetingIdentity(location.href) === expectedIdentity && member && workspaceBound);
     `,
-  });
-}
-
-export function slackHuddleStatusScript(params: {
-  allowMicrophone: boolean;
-  allowSessionAdoption: boolean;
-  autoJoin: boolean;
-  captureCaptions: boolean;
-  guestName: string;
-  meetingSessionId?: string;
-  meetingUrl: string;
-  readOnly?: boolean;
-  waitForInCallMs: number;
-}) {
-  return (
-    slackHuddleStatusPreludeSource({
-      ...params,
-      expectedIdentity: normalizeSlackHuddleUrlForReuse(params.meetingUrl),
-      pageIdentitySource: pageIdentityFunctionSource(
-        normalizeSlackHuddleUrlForReuse(params.meetingUrl),
-      ),
-      selectors: JSON.stringify(SLACK_HUDDLE_SELECTORS),
-      toggleStateFunction: `(input) => {
-      if (input?.ariaChecked === "true") return "on";
-      if (input?.ariaChecked === "false") return "off";
-      if (/^unmute microphone(?: unmute microphone)?$/i.test(input?.label || "")) return "off";
-      if (/^mute microphone(?: mute microphone)?$/i.test(input?.label || "")) return "on";
-      return undefined;
-    }`,
-    }) + slackHuddleStatusCallSource()
-  );
-}
-
-export function slackHuddleTranscriptScript(
-  meetingUrl: string,
-  meetingSessionId: string,
-  finalize: boolean,
-) {
-  return createMeetingTranscriptSource({
-    expectedIdentity: normalizeSlackHuddleUrlForReuse(meetingUrl),
-    finalize,
-    globals: {
-      captionArchive: "__openclawSlackHuddleCaptionArchive",
-      captions: "__openclawSlackHuddleCaptions",
-      meeting: "__openclawSlackHuddle",
-    },
-    meetingSessionId,
-    pageIdentitySource: pageIdentityFunctionSource(normalizeSlackHuddleUrlForReuse(meetingUrl)),
-    platformDisplayName: "Slack huddle",
-  });
-}
-
-export function slackHuddleLeaveScript(params: {
-  leaveInitiated: boolean;
-  meetingSessionId: string;
-  meetingUrl: string;
-}) {
-  return createMeetingLeaveSource({
+  leave: {
     // Leave buttons are global: only Slack's membership header for the requested channel authorizes
     // them, and departure needs proof too, so a view without that header keeps the session in the call.
     controlSource: `const firstMatch = (list) => list.map((selector) => document.querySelector(selector)).find(Boolean);
@@ -146,23 +102,9 @@ export function slackHuddleLeaveScript(params: {
   const provenDeparted = Boolean(firstMatch(selectors.channelHeader)) && !headerInHuddle && !joinSettling;
   const currentUrlMatches = Boolean(expectedIdentity && currentIdentity === expectedIdentity);`,
     departedMarkerSource: "provenDeparted",
-    expectedIdentity: normalizeSlackHuddleUrlForReuse(params.meetingUrl),
-    leaveInitiated: params.leaveInitiated,
-    meetingSessionId: params.meetingSessionId,
     meetingStateSource: "sessionId: expectedSessionId || state?.sessionId,",
-    pageIdentitySource: pageIdentityFunctionSource(
-      normalizeSlackHuddleUrlForReuse(params.meetingUrl),
-    ),
-    platform: {
-      displayName: "Slack huddle",
-      globals: {
-        audioOutputs: "__openclawSlackHuddleAudioOutputs",
-        meeting: "__openclawSlackHuddle",
-      },
-    },
-    selectors: JSON.stringify(SLACK_HUDDLE_SELECTORS),
     sessionMatchSource: `const sessionMatched = !enforceSessionOwnership ||
       state?.sessionId === expectedSessionId ||
       (!state?.sessionId && currentIdentity === expectedIdentity && (!state?.identity || state.identity === expectedIdentity));`,
-  });
-}
+  },
+});

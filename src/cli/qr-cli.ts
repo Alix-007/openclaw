@@ -1,11 +1,10 @@
-// QR/setup-code CLI for mobile/device pairing with local or remote Gateway credentials.
 import type { Command } from "commander";
 import { theme } from "../../packages/terminal-core/src/theme.js";
-import { getRuntimeConfig } from "../config/config.js";
+import { captureRuntimeConfigAsyncReader } from "../config/config.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { hasConfiguredSecretInput } from "../config/types.secrets.js";
 import { trimToUndefined } from "../gateway/credentials.js";
-import { resolveRequiredConfiguredSecretRefInputString } from "../gateway/resolve-configured-secret-input-string.js";
+import { resolveCanonicalRequiredConfiguredSecretRefInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { inspectGatewayTlsCertificate } from "../infra/tls/gateway.js";
 import { renderQrTerminal } from "../media/qr-terminal.ts";
 import { resolvePairingSetupFromConfig, encodePairingSetupCode } from "../pairing/setup-code.js";
@@ -59,34 +58,6 @@ function shouldResolveLocalGatewayPasswordSecret(
   return !envToken && !configTokenConfigured;
 }
 
-async function resolveLocalGatewayPasswordSecretIfNeeded(cfg: OpenClawConfig): Promise<void> {
-  const resolvedPassword = await resolveRequiredConfiguredSecretRefInputString({
-    config: cfg,
-    env: process.env,
-    value: cfg.gateway?.auth?.password,
-    path: "gateway.auth.password",
-  });
-  if (!resolvedPassword) {
-    return;
-  }
-  if (!cfg.gateway?.auth) {
-    return;
-  }
-  cfg.gateway.auth.password = resolvedPassword;
-}
-
-function emitQrSecretResolveDiagnostics(diagnostics: string[], opts: QrCliOptions): void {
-  const toStderr = opts.json === true || opts.setupCodeOnly === true;
-  for (const entry of diagnostics) {
-    const message = theme.warn(`[secrets] ${entry}`);
-    if (toStderr) {
-      defaultRuntime.error(message);
-    } else {
-      defaultRuntime.log(message);
-    }
-  }
-}
-
 export function registerQrCli(program: Command) {
   program
     .command("qr")
@@ -119,7 +90,7 @@ export function registerQrCli(program: Command) {
         const password = trimToUndefined(opts.password) ?? "";
         const wantsRemote = opts.remote === true;
 
-        const loadedRaw = getRuntimeConfig();
+        const loadedRaw = await captureRuntimeConfigAsyncReader()();
         if (wantsRemote && !opts.url && !opts.publicUrl) {
           const tailscaleMode = loadedRaw.gateway?.tailscale?.mode ?? "off";
           const remoteUrl = loadedRaw.gateway?.remote?.url;
@@ -151,7 +122,15 @@ export function registerQrCli(program: Command) {
             },
           },
         };
-        emitQrSecretResolveDiagnostics(remoteDiagnostics, opts);
+        const toStderr = opts.json === true || opts.setupCodeOnly === true;
+        for (const entry of remoteDiagnostics) {
+          const message = theme.warn(`[secrets] ${entry}`);
+          if (toStderr) {
+            defaultRuntime.error(message);
+          } else {
+            defaultRuntime.log(message);
+          }
+        }
 
         const authToken =
           token || (wantsRemote && !password ? trimToUndefined(cfg.gateway.remote?.token) : "");
@@ -172,18 +151,20 @@ export function registerQrCli(program: Command) {
           !token &&
           shouldResolveLocalGatewayPasswordSecret(cfg, process.env)
         ) {
-          await resolveLocalGatewayPasswordSecretIfNeeded(cfg);
+          const resolvedPassword = await resolveCanonicalRequiredConfiguredSecretRefInputString({
+            config: cfg,
+            env: process.env,
+            value: cfg.gateway.auth.password,
+            path: "gateway.auth.password",
+          });
+          if (resolvedPassword) {
+            cfg.gateway.auth.password = resolvedPassword;
+          }
         }
 
         const explicitUrl = trimToUndefined(opts.url) ?? trimToUndefined(opts.publicUrl);
-        const publicUrl =
-          explicitUrl ??
-          (wantsRemote
-            ? undefined
-            : trimToUndefined(cfg.plugins?.entries?.["device-pair"]?.config?.["publicUrl"]));
-
         const resolved = await resolvePairingSetupFromConfig(cfg, {
-          publicUrl,
+          publicUrl: explicitUrl,
           preferRemoteUrl: wantsRemote,
           ...(opts.voiceNode
             ? { bootstrapProfile: VOICE_NODE_PAIRING_SETUP_BOOTSTRAP_PROFILE }

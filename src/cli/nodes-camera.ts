@@ -1,4 +1,3 @@
-// Camera payload validation and artifact writers for node media commands.
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { canonicalizeBase64, estimateBase64DecodedBytes } from "@openclaw/media-core/base64";
@@ -59,27 +58,8 @@ export function resolveCameraClipTarget(params: {
     : { requestFacing: params.facing, artifactFacing: params.facing };
 }
 
-type CameraSnapPayload = {
-  format: string;
-  base64?: string;
-  url?: string;
-  width: number;
-  height: number;
-};
-
-type CameraClipPayload = {
-  format: string;
-  base64?: string;
-  url?: string;
-  durationMs: number;
-  hasAudio: boolean;
-};
-
 /** Validate a complete still-image payload before any capture can be published. */
-export function parseCameraSnapPayload(
-  value: unknown,
-  opts: { expectedHost?: string } = {},
-): CameraSnapPayload {
+export function parseCameraSnapPayload(value: unknown, opts: { expectedHost?: string } = {}) {
   const obj = asRecord(value);
   const format = readStringValue(obj.format);
   const base64 = readStringValue(obj.base64);
@@ -98,7 +78,7 @@ export function parseCameraSnapPayload(
   return { format, ...(base64 ? { base64 } : {}), ...(url ? { url } : {}), width, height };
 }
 
-export function parseCameraClipPayload(value: unknown): CameraClipPayload {
+export function parseCameraClipPayload(value: unknown) {
   const obj = asRecord(value);
   const format = readStringValue(obj.format);
   const base64 = readStringValue(obj.base64);
@@ -121,6 +101,34 @@ export function cameraTempPath(opts: {
   const { tmpDir, id, ext } = resolveTempPathParts(opts);
   const facingPart = opts.facing ? `-${opts.facing}` : "";
   return path.join(tmpDir, `${CLI_NAME}-camera-${opts.kind}${facingPart}-${id}${ext}`);
+}
+
+/**
+ * Own generated batch paths until the complete result is published.
+ *
+ * A fresh directory proves these destinations were not preexisting files.
+ * Rollback names only the batch's paths; never sweep other directory entries.
+ */
+export async function withCameraArtifactBatch<T>(
+  generatedPaths: string[],
+  publish: (ownedPaths: string[]) => Promise<T>,
+): Promise<T> {
+  const firstPath = generatedPaths[0];
+  if (firstPath === undefined) {
+    return await publish([]);
+  }
+  const directory = await fs.mkdtemp(path.join(path.dirname(firstPath), ".openclaw-camera-batch-"));
+  const ownedPaths = generatedPaths.map((filePath) =>
+    path.join(directory, path.basename(filePath)),
+  );
+  try {
+    return await publish(ownedPaths);
+  } catch (error) {
+    await Promise.allSettled(ownedPaths.map((filePath) => fs.rm(filePath, { force: true })));
+    // A foreign entry or a failed unlink keeps the directory; the primary error wins.
+    await fs.rmdir(directory).catch(() => {});
+    throw error;
+  }
 }
 
 function validateCameraPayloadUrl(url: string, expectedNodeHost: string): string {
@@ -230,8 +238,6 @@ async function writeUrlToFile(filePath: string, url: string, opts: { expectedHos
   } finally {
     await release();
   }
-
-  return { path: filePath, bytes };
 }
 
 function validateCameraPayloadBase64(base64: string, maxBytes: number): string {
@@ -264,7 +270,7 @@ export async function writeBase64ToFile(
       await fs.writeFile(tempPath, buf, { flag: "wx" });
     },
   });
-  return { path: filePath, bytes: buf.length };
+  return { path: filePath };
 }
 
 function requireNodeRemoteIp(remoteIp?: string): string {
@@ -295,18 +301,14 @@ export async function writeCameraPayloadToFile(params: {
 }
 
 export async function writeCameraClipPayloadToFile(params: {
-  payload: CameraClipPayload;
+  payload: ReturnType<typeof parseCameraClipPayload>;
   facing: CameraArtifactFacing;
-  tmpDir?: string;
-  id?: string;
   expectedHost?: string;
 }): Promise<string> {
   const filePath = cameraTempPath({
     kind: "clip",
     facing: params.facing,
     ext: params.payload.format,
-    tmpDir: params.tmpDir,
-    id: params.id,
   });
   await writeCameraPayloadToFile({
     filePath,
