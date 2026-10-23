@@ -21,7 +21,7 @@ import {
   prepareWebPushNotificationSender,
   type BoundWebPushSubscription,
 } from "../infra/push-web.js";
-import { createSubsystemLogger, type SubsystemLogger } from "../logging/subsystem.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 import { isTranscriptOnlyOpenClawAssistantMessage } from "../shared/transcript-only-openclaw-assistant.js";
 import { resolveControlUiWebPushUrl } from "./control-ui-shared.js";
 import { QUESTIONS_SCOPE } from "./method-scopes.js";
@@ -38,7 +38,7 @@ import {
 import { currentWebPushAgentIcon, prepareWebPushAgentIcon } from "./web-push-avatar.js";
 
 const EVENT_PUSH_TTL_SECONDS = 5 * 60;
-const defaultLog = createSubsystemLogger("gateway/web-push");
+const log = createSubsystemLogger("gateway/web-push");
 
 type EventNotification = {
   category: WebPushNotificationCategory;
@@ -128,10 +128,8 @@ function resolveEventWebPushNotification(
 export function createEventWebPushDelivery(params: {
   getRuntimeConfig: () => OpenClawConfig;
   getSessionRowProjection?: () => Pick<SessionRowProjection, "readCapabilityEntry"> | undefined;
-  log?: Pick<SubsystemLogger, "warn">;
   stateDir?: string;
 }) {
-  const log = params.log ?? defaultLog;
   const deliver = (
     notification: EventNotification,
     event: string,
