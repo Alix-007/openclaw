@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { useAutoCleanupTempDirTracker } from "../../test/helpers/temp-dir.js";
 import { buildExecRunConfig, resolveAgentExecPrompt } from "./agent-exec-input.js";
 
@@ -27,12 +27,16 @@ describe("agent exec prompt sources", () => {
         await fs.writeFile(messageFile.trim(), "wrong neighboring prompt", "utf8");
       }
     }
+    if (source === "stdin") {
+      const stdin = vi
+        .spyOn(process.stdin, Symbol.asyncIterator)
+        .mockImplementation(() =>
+          Readable.from([Buffer.from(text, "utf8")])[Symbol.asyncIterator](),
+        );
+      onTestFinished(() => stdin.mockRestore());
+    }
     await expect(
-      resolveAgentExecPrompt(
-        source === "positional" ? text : undefined,
-        messageFile,
-        source === "stdin" ? Readable.from([Buffer.from(text, "utf8")]) : undefined,
-      ),
+      resolveAgentExecPrompt(source === "positional" ? text : undefined, messageFile),
     ).resolves.toBe(expected);
   });
 });
