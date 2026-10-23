@@ -1,4 +1,5 @@
 import { timestampMsToIsoString } from "@openclaw/normalization-core/number-coercion";
+import { sanitizeTerminalText } from "../../../packages/terminal-core/src/safe-text.js";
 import {
   ensureAuthProfileStoreAsync,
   externalCliDiscoveryForProviderAuth,
@@ -101,10 +102,12 @@ export async function modelsAuthListCommand(
     return;
   }
 
-  runtime.log(`Agent: ${agentId}`);
-  runtime.log(`Auth state store: ${shortenHomePath(resolveAuthStatePathForDisplay(agentDir))}`);
+  runtime.log(`Agent: ${sanitizeTerminalText(agentId)}`);
+  runtime.log(
+    `Auth state store: ${sanitizeTerminalText(shortenHomePath(resolveAuthStatePathForDisplay(agentDir)))}`,
+  );
   if (provider) {
-    runtime.log(`Provider: ${provider}`);
+    runtime.log(`Provider: ${sanitizeTerminalText(provider)}`);
   }
   if (profiles.length === 0) {
     runtime.log("Profiles: (none)");
@@ -135,7 +138,9 @@ export async function modelsAuthListCommand(
       );
     }
     runtime.log(
-      `- ${profile.label} [${details.join("; ")}]${profile.recoveryHint ? ` — ${profile.recoveryHint}` : ""}`,
+      sanitizeTerminalText(
+        `- ${profile.label} [${details.join("; ")}]${profile.recoveryHint ? ` — ${profile.recoveryHint}` : ""}`,
+      ),
     );
   }
 }
