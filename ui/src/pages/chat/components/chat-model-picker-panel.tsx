@@ -1,5 +1,5 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, Errored, For, Loading, Show, useContext } from "solid-js";
+import { createMemo, createSignal, Errored, For, Loading, Show, useContext } from "solid-js";
 import { resolveModelRuntimeRoute } from "../../../../../src/shared/model-runtime-route.js";
 import { providerDisplayLabel } from "../../../components/provider-icon-data.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
@@ -143,6 +143,7 @@ export function ChatModelPickerPanel(panel: PanelProps) {
   const owner = createChatModelFavoritesScope(() => panel.params.sessionKey);
   const search = useContext(ChatModelSearchContext);
   const favorites = createChatModelFavorites(owner);
+  const [managingFavorites, setManagingFavorites] = createSignal(false);
   const state = createMemo(() =>
     prepareChatModelPickerPanel(panel.params, favorites.snapshot().keys),
   );
@@ -522,37 +523,44 @@ export function ChatModelPickerPanel(panel: PanelProps) {
             </div>
           ) : undefined}
           <Show when={favorites.available()}>
-            <details class="chat-controls__favorites-editor">
+            <details
+              class="chat-controls__favorites-editor"
+              open={managingFavorites()}
+              onToggle={(event) => setManagingFavorites(event.currentTarget.open)}
+            >
               <summary>{t("chat.modelControls.manageFavorites")}</summary>
-              <div role="group" aria-label={t("chat.modelControls.manageFavorites")}>
-                <For
-                  each={panel.params.modelOptions.filter((option) => !option.isDefault)}
-                  keyed={modelPickerOptionKey}
-                >
-                  {(entry) => (
-                    <label class="chat-controls__favorite-choice">
-                      <input
-                        type="checkbox"
-                        data-chat-model-favorite={modelPickerOptionKey(entry())}
-                        checked={favorites.keys().includes(modelPickerOptionKey(entry()))}
-                        disabled={favorites.disabled()}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          favorites.toggle(modelPickerOptionKey(entry()));
-                        }}
-                      />
-                      <span>
-                        {[
-                          entry().label,
-                          formatModelRuntimeLabel(entry().provider, entry().agentRuntimeId)?.label,
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                    </label>
-                  )}
-                </For>
-              </div>
+              <Show when={managingFavorites()}>
+                <div role="group" aria-label={t("chat.modelControls.manageFavorites")}>
+                  <For
+                    each={mounted(panel.params.modelOptions.filter((option) => !option.isDefault))}
+                    keyed={modelPickerOptionKey}
+                  >
+                    {(entry) => (
+                      <label class="chat-controls__favorite-choice">
+                        <input
+                          type="checkbox"
+                          data-chat-model-favorite={modelPickerOptionKey(entry())}
+                          checked={favorites.keys().includes(modelPickerOptionKey(entry()))}
+                          disabled={favorites.disabled()}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            favorites.toggle(modelPickerOptionKey(entry()));
+                          }}
+                        />
+                        <span>
+                          {[
+                            entry().label,
+                            formatModelRuntimeLabel(entry().provider, entry().agentRuntimeId)
+                              ?.label,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      </label>
+                    )}
+                  </For>
+                </div>
+              </Show>
             </details>
             <Show when={favorites.snapshot().error}>
               <div role="alert">

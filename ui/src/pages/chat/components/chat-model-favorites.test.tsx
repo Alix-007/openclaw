@@ -22,6 +22,7 @@ async function mount(
   entries: Record<string, unknown> = {},
   scopes = ["operator.write"],
   overrides: Partial<ReturnType<typeof modelPickerProps>> = {},
+  manage = true,
 ) {
   const request = vi.fn(async (method: string, params: unknown): Promise<unknown> => {
     if (method === "users.prefs.get") {
@@ -59,11 +60,30 @@ async function mount(
   const view = mountModelPicker(params, { wrapper: provider.wrapper });
   const checkbox = () =>
     view.container.querySelectorAll<HTMLInputElement>("[data-chat-model-favorite]")[1]!;
-  await waitForSolid(() => expect(checkbox()).toBeDefined());
   await waitForSolid(() =>
     expect(request).toHaveBeenCalledWith("users.prefs.get", { keys: [key] }),
   );
+  if (manage) {
+    await waitForSolid(() => expect(view.getByText("Manage favorites")).toBeDefined());
+    view.getByText("Manage favorites").click();
+    await expandProviders(view.container);
+    await waitForSolid(() => expect(checkbox()).toBeDefined());
+  }
   return { ...view, checkbox, request, gateway, params, entries };
+}
+
+async function expandProviders(container: HTMLElement) {
+  await waitForSolid(() =>
+    expect(container.querySelector("[data-chat-model-provider-toggle]")).not.toBeNull(),
+  );
+  for (const toggle of container.querySelectorAll<HTMLButtonElement>(
+    "[data-chat-model-provider-toggle]",
+  )) {
+    if (toggle.getAttribute("aria-expanded") !== "true") {
+      toggle.click();
+    }
+  }
+  flush();
 }
 
 async function expandFavorites(container: HTMLElement) {
@@ -82,6 +102,7 @@ it("saves and removes a favorite without selecting its model, then restores it o
   const view = await mount();
   await waitForSolid(() => expect(view.checkbox().disabled).toBe(false));
   view.checkbox().click();
+  await expandFavorites(view.container);
   await waitForSolid(() => expect(view.checkbox().checked).toBe(true));
   await waitForSolid(() => expect(view.entries[key]).toEqual([model]));
   expect(view.params.onModelSelect).not.toHaveBeenCalled();
@@ -129,6 +150,7 @@ it("identifies same-model favorites by their execution runtime", async () => {
     view.getByRole<HTMLInputElement>("checkbox", { name: /Claude Sonnet.*Claude CLI/ });
   await waitForSolid(() => expect(cli().disabled).toBe(false));
   cli().click();
+  await expandFavorites(view.container);
   await waitForSolid(() => expect(cli().checked).toBe(true));
   expect(api().checked).toBe(false);
   expect(view.entries[key]).toEqual([JSON.stringify(["anthropic/sonnet", "claude-cli"])]);
@@ -148,8 +170,8 @@ it("keeps provider authentication and settings after favoriting its only model",
   });
   await waitForSolid(() => expect(view.checkbox().disabled).toBe(false));
   view.checkbox().click();
-  await waitForSolid(() => expect(view.checkbox()?.checked, view.container.textContent).toBe(true));
   await expandFavorites(view.container);
+  await waitForSolid(() => expect(view.checkbox()?.checked, view.container.textContent).toBe(true));
   const heading = () => view.container.querySelector('[data-chat-model-provider="anthropic"]');
   await waitForSolid(() => expect(heading()?.textContent).toContain("API key"));
   const settings = heading()?.querySelector<HTMLButtonElement>(
@@ -190,6 +212,7 @@ it("shows a conflicting write and reconciles the authoritative favorites", async
       "Favorites changed",
     ),
   );
+  await expandProviders(view.container);
   await waitForSolid(() => expect(view.checkbox().checked).toBe(false));
   expect(
     view.container.querySelector('[data-chat-model-provider-group="$favorites"]')?.textContent,
@@ -278,6 +301,7 @@ it("refreshes an alias viewer when its canonical profile preferences change", as
     event: "users.prefs.changed",
     payload: { profileId: "canonical-operator", keys: [key] },
   });
+  await expandFavorites(view.container);
   await waitForSolid(() => expect(view.checkbox().checked).toBe(true));
   expect(view.params.onModelSelect).not.toHaveBeenCalled();
 });
@@ -315,3 +339,72 @@ it("switches agent favorites without changing catalog availability or runtime id
   expect(view.params.onModelSelect).not.toHaveBeenCalled();
   expect(view.request.mock.calls.some(([method]) => method === "users.prefs.set")).toBe(false);
 });
+
+it("keeps authenticated favorite controls bounded and searchable for a thousand models", async () => {
+  const view = await mount(
+    {},
+    undefined,
+    {
+      modelOptions: Array.from({ length: 1000 }, (_, index) =>
+        modelOption("openai", `model-${index}`, {
+          label: `Model ${String(index).padStart(4, "0")}`,
+        }),
+      ),
+      selectedModelValue: "openai/model-0",
+    },
+    false,
+  );
+  const controls = () =>
+    view.container.querySelectorAll<HTMLInputElement>("[data-chat-model-favorite]");
+  expect(controls()).toHaveLength(0);
+  view.getByText("Manage favorites").click();
+  await waitForSolid(() => expect(controls().length).toBeGreaterThan(0));
+  expect(controls().length).toBeLessThan(40);
+  view.container.querySelector<HTMLButtonElement>("[data-chat-model-more-toggle]")!.click();
+  const search = view.container.querySelector<HTMLInputElement>("[data-chat-model-search]")!;
+  search.value = "Model 0999";
+  search.dispatchEvent(new InputEvent("input", { bubbles: true }));
+  await waitForSolid(() => expect(controls()).toHaveLength(1));
+  expect(controls()[0]!.getAttribute("data-chat-model-favorite")).toBe(
+    JSON.stringify(["openai/model-999", null]),
+  );
+  controls()[0]!.click();
+  await waitForSolid(() =>
+    expect(view.entries[key]).toEqual([JSON.stringify(["openai/model-999", null])]),
+  );
+  expect(view.params.onModelSelect).not.toHaveBeenCalled();
+  view.getByText("Manage favorites").click();
+  await waitForSolid(() => expect(controls()).toHaveLength(0));
+});
+
+it.each(["identity", "model lock"])(
+  "keeps favorite disclosure and mounted controls consistent after a temporary %s change",
+  async (boundary) => {
+    const view = await mount();
+    const editor = () =>
+      view.container.querySelector<HTMLDetailsElement>(".chat-controls__favorites-editor");
+    expect(editor()?.open).toBe(true);
+    const connected = view.gateway.gateway.snapshot;
+    if (boundary === "identity") {
+      view.gateway.publish({ ...connected, selfUser: undefined });
+    } else {
+      view.update({ ...view.params, modelSelectionLocked: true });
+    }
+    await waitForSolid(() => expect(editor()).toBeNull());
+    if (boundary === "identity") {
+      view.gateway.publish(connected);
+    } else {
+      view.update(view.params);
+    }
+    await waitForSolid(() => expect(editor()?.open).toBe(true));
+    await waitForSolid(() =>
+      expect(view.container.querySelectorAll("[data-chat-model-favorite]").length).toBeGreaterThan(
+        0,
+      ),
+    );
+    view.getByText("Manage favorites").click();
+    await waitForSolid(() =>
+      expect(view.container.querySelectorAll("[data-chat-model-favorite]")).toHaveLength(0),
+    );
+  },
+);
