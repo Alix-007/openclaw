@@ -1,18 +1,27 @@
 /** @jsxImportSource @solidjs/web */
-import type { JSX } from "@solidjs/web";
-import { createMemo, createSignal, createEffect, onCleanup, For, untrack } from "solid-js";
+import { dynamic, type JSX } from "@solidjs/web";
+import {
+  action,
+  createMemo,
+  createOptimistic,
+  createSignal,
+  createEffect,
+  onCleanup,
+  For,
+  untrack,
+} from "solid-js";
 import { AgentPicker } from "../../components/host-components.tsx";
 import { icons } from "../../components/icons.tsx";
 import { t } from "../../i18n/index.ts";
 import { normalizeDraftLabels } from "../../lib/workboard/card-state.ts";
+import { updateWorkboardCardProperties } from "../../lib/workboard/mutations.ts";
+import { getWorkboardState } from "../../lib/workboard/runtime.ts";
 import {
-  getWorkboardState,
   WORKBOARD_PRIORITIES,
   type WorkboardCard,
   type WorkboardPriority,
   type WorkboardStatus,
-} from "../../lib/workboard/index.ts";
-import { updateWorkboardCardProperties } from "../../lib/workboard/mutations.ts";
+} from "../../lib/workboard/types.ts";
 import { buildAssignableAgentPickerOptions } from "./agent-filter.ts";
 import { moveCardToStatus } from "./view-card-actions.tsx";
 import {
@@ -20,6 +29,7 @@ import {
   formatStatusLabel,
   PriorityIcon,
   workboardMutationContext,
+  workboardViewState,
   type WorkboardProps,
 } from "./view-helpers.tsx";
 import { liveInputValue } from "./view-input-value.ts";
@@ -188,10 +198,7 @@ export function InlineStatus(input: {
   card: WorkboardCard;
   disabled: boolean;
 }) {
-  const state = () => {
-    void input.workboard.revision;
-    return getWorkboardState(input.workboard.host);
-  };
+  const state = workboardViewState(() => input.workboard);
   const statuses = createMemo(() =>
     state().statuses.includes(input.card.status)
       ? state().statuses
@@ -272,7 +279,14 @@ export function InlineText(props: InlineTextProps) {
   let base: WorkboardCard | undefined;
   let editing = false;
   let value = "";
-  let saving = false;
+  let busy = false;
+  const [saving, setSaving] = createOptimistic(false);
+  const presentSaving = action(function* (
+    pending: Promise<boolean>,
+  ): Generator<Promise<boolean>, boolean, boolean> {
+    setSaving(true);
+    return yield pending;
+  });
   let disposed = false;
   let disposeSaveFocus: (() => void) | undefined;
   const [revision, setRevision] = createSignal(0);
@@ -280,10 +294,6 @@ export function InlineText(props: InlineTextProps) {
   const isEditing = () => {
     revision();
     return editing;
-  };
-  const isSaving = () => {
-    revision();
-    return saving;
   };
   const draftValue = () => {
     revision();
@@ -318,7 +328,7 @@ export function InlineText(props: InlineTextProps) {
     });
   };
   const save = async () => {
-    if (saving || disabled() || !base || (props.field === "title" && !value.trim())) {
+    if (busy || disabled() || !base || (props.field === "title" && !value.trim())) {
       return;
     }
     const doc = host.ownerDocument;
@@ -343,8 +353,7 @@ export function InlineText(props: InlineTextProps) {
       doc.removeEventListener("focusin", trackFocus);
       doc.removeEventListener("pointerdown", trackPointer);
     };
-    saving = true;
-    publish();
+    busy = true;
     const owner = props.owner;
     const field = props.field;
     const observed = base;
@@ -358,15 +367,18 @@ export function InlineText(props: InlineTextProps) {
           };
     let saved = false;
     try {
-      saved = await updateWorkboardCardProperties({
+      const pending = updateWorkboardCardProperties({
         ...workboardMutationContext(owner),
         card: observed,
         patch,
       });
+      // Publish the owner's busy state before joining the saving transition.
+      await Promise.resolve();
+      saved = await presentSaving(pending);
     } finally {
       disposeSaveFocus?.();
       disposeSaveFocus = undefined;
-      saving = false;
+      busy = false;
       if (!disposed) {
         publish();
       }
@@ -424,8 +436,7 @@ export function InlineText(props: InlineTextProps) {
           : "workboard.fieldLabels",
     );
   const labelsPopoverId = () => `workboard-detail-labels-${props.card.id}`;
-  const triggerDisabled = () =>
-    disabled() && !(props.field === "labels" && changed() && !isSaving());
+  const triggerDisabled = () => disabled() && !(props.field === "labels" && changed() && !saving());
   const TriggerContent = () => (
     <span class="workboard-detail__text-value">
       {props.field === "labels" ? (
@@ -505,6 +516,7 @@ export function InlineText(props: InlineTextProps) {
   };
   const Editor = () => {
     const bindValue = liveInputValue(draftValue);
+    const Input = dynamic(() => (props.field === "notes" ? "textarea" : "input"));
     return (
       <span
         class={["workboard-detail__text-editor", `workboard-detail__text-editor--${props.field}`]}
@@ -518,7 +530,7 @@ export function InlineText(props: InlineTextProps) {
           if (event.key === "Escape") {
             event.preventDefault();
             event.stopPropagation();
-            if (!saving) {
+            if (!busy) {
               finish();
             }
           } else if (
@@ -533,36 +545,25 @@ export function InlineText(props: InlineTextProps) {
           }
         }}
       >
-        {props.field === "notes" ? (
-          <textarea
-            class="settings-input"
-            aria-label={fieldLabel()}
-            rows={12}
-            ref={bindValue}
-            disabled={isSaving() || (disabled() && !props.readOnly)}
-            readonly={props.readOnly}
-            onInput={input}
-          />
-        ) : (
-          <input
-            class="settings-input"
-            aria-label={fieldLabel()}
-            ref={bindValue}
-            disabled={isSaving() || (disabled() && !props.readOnly)}
-            readonly={props.readOnly}
-            onInput={input}
-          />
-        )}
+        <Input
+          class="settings-input"
+          aria-label={fieldLabel()}
+          rows={props.field === "notes" ? 12 : undefined}
+          ref={bindValue}
+          disabled={saving() || (disabled() && !props.readOnly)}
+          readonly={props.readOnly}
+          onInput={input}
+        />
         <span class="workboard-detail__text-actions">
           <button
             type="button"
             class="btn"
-            disabled={disabled() || isSaving() || (props.field === "title" && !draftValue().trim())}
+            disabled={saving() || disabled() || (props.field === "title" && !draftValue().trim())}
             onClick={() => void save()}
           >
             {t("common.save")}
           </button>
-          <button type="button" class="btn" disabled={isSaving()} onClick={() => finish()}>
+          <button type="button" class="btn" disabled={saving()} onClick={() => finish()}>
             {t("common.cancel")}
           </button>
         </span>
@@ -584,7 +585,7 @@ export function InlineText(props: InlineTextProps) {
           },
           pendingSave: {
             configurable: true,
-            get: () => saving,
+            get: () => busy,
           },
           hasUnsavedChanges: {
             configurable: true,

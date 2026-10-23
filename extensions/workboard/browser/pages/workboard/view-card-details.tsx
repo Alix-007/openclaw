@@ -9,14 +9,11 @@ import {
   WORKBOARD_ALL_BOARDS_FILTER,
 } from "../../lib/workboard/board-filter.ts";
 import { workboardBoardName } from "../../lib/workboard/board-presentation.ts";
-import {
-  addWorkboardCardComment,
-  getWorkboardDependencyState,
-  getWorkboardLifecycle,
-  getWorkboardState,
-  type WorkboardCard,
-  type WorkboardUiState,
-} from "../../lib/workboard/index.ts";
+import { getWorkboardDependencyState } from "../../lib/workboard/card-state.ts";
+import { getWorkboardLifecycle } from "../../lib/workboard/lifecycle.ts";
+import { addWorkboardCardComment } from "../../lib/workboard/mutations.ts";
+import { getWorkboardState } from "../../lib/workboard/runtime.ts";
+import type { WorkboardCard, WorkboardUiState } from "../../lib/workboard/types.ts";
 import { cardAgentLabel } from "./agent-filter.ts";
 import { automationDetailFields, BoardAutomation } from "./view-automation.tsx";
 import { getCardActionState, CardAction, StartExecutionButton } from "./view-card-actions.tsx";
@@ -34,6 +31,7 @@ import {
   formatPriorityLabel,
   workboardErrorMessage,
   workboardMutationContext,
+  workboardViewState,
   renderPriorityIcon,
   formatStatusLabel,
   formatUpdatedTime,
@@ -106,10 +104,7 @@ function CardDetailsContent(props: WorkboardProps & { card: WorkboardCard }) {
     initialActiveElement instanceof HTMLElement && initialActiveElement !== document.body
       ? initialActiveElement
       : undefined;
-  const state = () => {
-    void props.revision;
-    return getWorkboardState(props.host);
-  };
+  const state = workboardViewState(() => props);
   const noteValue = liveInputValue(() => state().detailCommentBody);
   const visibleError = () => workboardErrorMessage(state(), props.pageError);
   const card = () => {
@@ -202,7 +197,9 @@ function CardDetailsContent(props: WorkboardProps & { card: WorkboardCard }) {
   const boardId = () => workboardCardBoardId(card());
   const board = () => state().boards.find((entry) => entry.id === boardId());
   const events = createMemo(() => (card().events ?? []).toReversed());
-  const dependencies = createMemo(() => getWorkboardDependencyState(card(), state().cards));
+  const dependencies = createMemo(() =>
+    getWorkboardDependencyState(card(), state().cards, !state().nextCursor),
+  );
   const technical = createMemo(() => technicalDetailsData(card(), action().linkedSessionKey));
   const tabs = () =>
     [
@@ -227,7 +224,7 @@ function CardDetailsContent(props: WorkboardProps & { card: WorkboardCard }) {
         label: card().title,
         description: lifecycle().session?.displayName ?? formatted().detail,
         style:
-          "--openclaw-modal-width: 620px; --openclaw-modal-backdrop-filter: none; --wa-color-overlay-modal: rgba(0, 0, 0, 0.24);",
+          "--openclaw-modal-width: 620px; --openclaw-modal-backdrop-filter: none; --openclaw-modal-backdrop-color: rgba(0, 0, 0, 0.24);",
         onCancel: dismissDetails,
       }}
     >

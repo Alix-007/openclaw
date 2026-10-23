@@ -724,6 +724,8 @@ export function startDiagnosticStabilityRecorder(): void {
         "diagnostic.gc",
         "diagnostic.child_process.spawn",
         "worker.request",
+        "secret.egress",
+        "tool.catalog",
       ],
     },
   );
@@ -780,6 +782,7 @@ export function selectDiagnosticStabilitySnapshot(
   };
 }
 
+/** @internal Test-support reset; see diagnostic.test-support.ts. */
 export function resetDiagnosticStabilityRecorderForTest(): void {
   const state = getDiagnosticStabilityState();
   state.unsubscribe?.();
