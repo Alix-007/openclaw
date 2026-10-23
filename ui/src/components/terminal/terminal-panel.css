@@ -170,7 +170,7 @@ openclaw-terminal-panel {
     overflow: hidden;
     white-space: pre;
     text-overflow: ellipsis;
-    font-family: var(--font-mono);
+    font-family: var(--mono);
   }
   .tp-find__preview mark {
     background: var(--accent);
