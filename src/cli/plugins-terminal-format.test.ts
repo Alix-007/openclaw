@@ -13,6 +13,7 @@ import {
   buildPluginSnapshotReportMock,
   pluginsCliRuntimeLogs as logs,
   resetPluginsCliTestState,
+  runtimeErrors,
   runPluginsCommand,
 } from "./plugins-cli-test-helpers.js";
 
@@ -89,6 +90,22 @@ describe("installed plugin terminal rendering", () => {
       }
     },
   );
+
+  it.each([false, true])("handles controls in missing plugin IDs (json=%s)", async (json) => {
+    const id = `${untrusted("missing-plugin")}\nforged error`;
+    await expect(
+      runPluginsCommand(["plugins", "inspect", id, ...(json ? ["--json"] : [])]),
+    ).rejects.toThrow("__exit__:1");
+    if (json) {
+      expect(JSON.parse(logs.at(-1) ?? "null").error.message).toContain(id);
+    } else {
+      const output = runtimeErrors.join("\n");
+      expect(output).toContain("missing-plugin");
+      expect(output).not.toContain(escape);
+      expect(output).toContain("\\nforged error");
+      expect(hasTerminalControl(output.replaceAll("\n", ""))).toBe(false);
+    }
+  });
 
   it("retains trusted status styling in the all-plugins table", async () => {
     const colors = new Chalk({ level: 1 });
