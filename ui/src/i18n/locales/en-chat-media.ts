@@ -5,8 +5,6 @@ const enChatMedia = {
   chat: {
     imageLightbox: {
       compare: "Compare images",
-      compareFailed:
-        "Could not compare these images. Choose a valid PNG, JPEG, or WebP image and try again.",
       loadingDetail: "Loading sharper image…",
       detailFailed: "Preview shown. Sharper image could not load.",
       actions: "Image actions",

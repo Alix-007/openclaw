@@ -30,7 +30,7 @@ export function ImageComparisonAction(props: {
       await showImageComparison(read, title, lifetime.signal);
     } catch {
       if (!lifetime.signal.aborted) {
-        showToast({ message: t("chat.imageLightbox.compareFailed"), severity: "error" });
+        showToast({ message: t("chat.imageLightbox.loadFailed"), severity: "error" });
       }
     } finally {
       comparing = false;
