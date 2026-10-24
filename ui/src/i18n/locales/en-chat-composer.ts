@@ -54,6 +54,9 @@ const catalog = {
       attach: "Attach…",
       attachPhoto: "Photo",
       attachFileOption: "File",
+      drawSketch: "Draw a sketch",
+      sketchFailed:
+        "Could not create the sketch. Your message is unchanged. Reopen Draw a sketch to try again.",
       menu: {
         back: "Back",
         skills: "Skills",

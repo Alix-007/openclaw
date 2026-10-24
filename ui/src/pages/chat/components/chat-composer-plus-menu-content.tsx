@@ -1,9 +1,8 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, Errored, For, Loading, onSettled } from "solid-js";
+import { createMemo, Errored, For, lazy, Loading, onSettled } from "solid-js";
 import { pathForRoute } from "../../../app-route-paths.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
 import type { MenuEntry, MenuHandle, MenuItem } from "../../../components/solid/menu.tsx";
-import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
 import { registerMcpEnglish } from "../../../i18n/locales/en-mcp.ts";
 import { formatUiExternalText } from "../../../lib/format-error.ts";
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
@@ -16,6 +15,7 @@ import {
   resolveToolOverrideState,
   resolveWebSearchToolOverrideState,
 } from "../../../lib/sessions/tool-overrides.ts";
+import { showToast } from "../../../lib/toast.ts";
 import { uploadsEnabled } from "../../../lib/uploads.ts";
 import "./chat-camera-capture.tsx";
 import { resolveComposerSkills } from "../composer-capability-catalog.ts";
@@ -42,10 +42,10 @@ import type {
   ChatComposerPlusMenuContentProps,
   ChatComposerPlusMenuView,
 } from "./chat-composer-plus-menu.types.ts";
-import { openChatSketch } from "./chat-sketch-entry.tsx";
 
 registerEnglishCatalog(registerMcpEnglish);
-registerEnglishCatalog(registerChatSketchEnglish);
+
+const SketchDialog = lazy(() => import("./chat-sketch-dialog.tsx"), { export: "SketchDialog" });
 
 function rootItems(menu: ChatComposerPlusMenuContentProps): MenuEntry[] {
   const entries: MenuEntry[] = [];
@@ -392,7 +392,21 @@ function handleMenuSelection(
   const overlay = menu.overlay;
   const { surface } = overlay;
   if (value === "sketch" && uploadsEnabled(props.attachments.uploadConfig)) {
-    void openChatSketch(() => ownerProps.menu.attachments);
+    const readControls = () => ownerProps.menu.attachments;
+    const signal = props.attachments.readSignal ?? props.attachments.attachmentReads?.readSignal;
+    void SketchDialog.preload()
+      .then(({ openChatSketch }) => {
+        const current = readControls();
+        if (signal === (current.readSignal ?? current.attachmentReads?.readSignal)) {
+          return openChatSketch(readControls);
+        }
+        return undefined;
+      })
+      .catch(() => {
+        if (!signal?.aborted) {
+          showToast({ message: t("chat.composer.sketchFailed"), severity: "error" });
+        }
+      });
     return;
   }
   if (
