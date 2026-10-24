@@ -73,7 +73,7 @@ export function ImageComparison(props: {
     background: "var(--bg-elevated)",
     border: "1px solid var(--border)",
   } as const;
-  const captionStyle = { "margin-bottom": "0.5rem", color: "var(--text-muted)" } as const;
+  const captionStyle = { "margin-bottom": "0.5rem", color: "var(--muted)" } as const;
   const choose = (event: Event) => {
     const target = event.currentTarget;
     if (!(target instanceof HTMLInputElement)) {

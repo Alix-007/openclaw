@@ -166,15 +166,6 @@ export function ChatImageActions(props: {
         <button
           type="button"
           class="chat-image-action"
-          title={t("chat.imageLightbox.compare")}
-          aria-label={t("chat.imageLightbox.compare")}
-          onClick={() => void compare()}
-        >
-          <Icon name="image" />
-        </button>
-        <button
-          type="button"
-          class="chat-image-action"
           title={t("chat.imageLightbox.download")}
           aria-label={t("chat.imageLightbox.download")}
           onClick={() => void download()}
