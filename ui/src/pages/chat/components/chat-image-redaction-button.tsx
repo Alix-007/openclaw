@@ -1,10 +1,12 @@
+import { lazyModule } from "solid-js";
 import type { ChatAttachment } from "../../../lib/chat/chat-types.ts";
 import { t } from "../../../lib/reactive/i18n.ts";
 import { showToast } from "../../../lib/toast.ts";
 import { getChatAttachmentBlob } from "../attachment-payload-store.ts";
 import type { ChatAttachmentControlsProps } from "./chat-attachment-controls.types.ts";
-import { showImageRedaction } from "./chat-image-redaction-dialog.tsx";
-import { replaceRedactedAttachment } from "./chat-image-redaction.ts";
+
+const loadRedaction = lazyModule(() => import("./chat-image-redaction-dialog.tsx"));
+const loadRedactionOwner = lazyModule(() => import("./chat-image-redaction.ts"));
 
 export function ImageRedactionButton(props: {
   attachment: ChatAttachment;
@@ -23,6 +25,17 @@ export function ImageRedactionButton(props: {
     }
     editing = true;
     try {
+      const [{ showImageRedaction }, { replaceRedactedAttachment }] = await Promise.all([
+        loadRedaction(),
+        loadRedactionOwner(),
+      ]);
+      if (
+        props.controls.disabled ||
+        signal?.aborted ||
+        signal !== (props.controls.readSignal ?? props.controls.attachmentReads?.readSignal)
+      ) {
+        return;
+      }
       const result = await showImageRedaction(blob, signal);
       if (
         result &&
