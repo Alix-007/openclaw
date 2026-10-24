@@ -26,7 +26,10 @@ export async function showImageRedaction(blob: Blob, signal?: AbortSignal): Prom
   }
 }
 
-function ImageRedaction(props: { image: ImageBitmap; onFinish: (value: string | null) => void }) {
+export function ImageRedaction(props: {
+  image: ImageBitmap;
+  onFinish: (value: string | null) => void;
+}) {
   const drag = createPointerDrag();
   const rectangles: ImageRedactionRectangle[] = [];
   const [count, setCount] = createSignal(0);
