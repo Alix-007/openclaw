@@ -3,11 +3,8 @@ import {
   paintAnnotations,
   type AnnotationStroke,
 } from "../../../components/browser/browser-annotation.ts";
-import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
-import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
+import { t } from "../../../lib/reactive/i18n.ts";
 import { createPointerDrag } from "../../../lib/reactive/pointer-drag.ts";
-
-registerEnglishCatalog(registerChatSketchEnglish);
 
 export function SketchDialog(props: { onFinish: (value: string | null) => void }) {
   const drag = createPointerDrag();

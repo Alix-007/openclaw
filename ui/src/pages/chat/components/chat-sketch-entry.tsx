@@ -1,13 +1,10 @@
 import { lazy } from "solid-js";
 import { withPromiseModalHost } from "../../../components/promise-modal-host.ts";
-import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
-import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
+import { t } from "../../../lib/reactive/i18n.ts";
 import { showToast } from "../../../lib/toast.ts";
 import { uploadsEnabled } from "../../../lib/uploads.ts";
 import type { ChatAttachmentControlsProps } from "./chat-attachment-controls.types.ts";
 import { attachChatSketch } from "./chat-sketch.ts";
-
-registerEnglishCatalog(registerChatSketchEnglish);
 
 const SketchDialog = lazy(() => import("./chat-sketch-dialog.tsx"), { export: "SketchDialog" });
 
