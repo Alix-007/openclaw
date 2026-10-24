@@ -42,7 +42,7 @@ import type {
   ChatComposerPlusMenuContentProps,
   ChatComposerPlusMenuView,
 } from "./chat-composer-plus-menu.types.ts";
-import { openChatSketch } from "./chat-sketch-dialog.tsx";
+import { openChatSketch } from "./chat-sketch-entry.tsx";
 
 registerEnglishCatalog(registerMcpEnglish);
 registerEnglishCatalog(registerChatSketchEnglish);

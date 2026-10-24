@@ -3,45 +3,13 @@ import {
   paintAnnotations,
   type AnnotationStroke,
 } from "../../../components/browser/browser-annotation.ts";
-import { withPromiseModalHost } from "../../../components/promise-modal-host.ts";
 import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
 import { createPointerDrag } from "../../../lib/reactive/pointer-drag.ts";
-import { showToast } from "../../../lib/toast.ts";
-import { uploadsEnabled } from "../../../lib/uploads.ts";
-import type { ChatAttachmentControlsProps } from "./chat-attachment-controls.types.ts";
-import { attachChatSketch } from "./chat-sketch.ts";
 
 registerEnglishCatalog(registerChatSketchEnglish);
 
-export async function openChatSketch(
-  readControls: () => ChatAttachmentControlsProps,
-): Promise<void> {
-  const initial = readControls();
-  const signal = initial.readSignal ?? initial.attachmentReads?.readSignal;
-  if (initial.disabled || !uploadsEnabled(initial.uploadConfig) || signal?.aborted) {
-    return;
-  }
-  try {
-    const result = await withPromiseModalHost<string | null>({ signal, value: null }, (modal) =>
-      modal.render(() => <SketchDialog onFinish={modal.finish} />),
-    );
-    const current = readControls();
-    if (
-      result &&
-      !signal?.aborted &&
-      signal === (current.readSignal ?? current.attachmentReads?.readSignal)
-    ) {
-      attachChatSketch(result, current);
-    }
-  } catch {
-    if (!signal?.aborted) {
-      showToast({ message: t("chat.composer.sketchFailed"), severity: "error" });
-    }
-  }
-}
-
-function SketchDialog(props: { onFinish: (value: string | null) => void }) {
+export function SketchDialog(props: { onFinish: (value: string | null) => void }) {
   const drag = createPointerDrag();
   const strokes: AnnotationStroke[] = [];
   const [count, setCount] = createSignal(0);
