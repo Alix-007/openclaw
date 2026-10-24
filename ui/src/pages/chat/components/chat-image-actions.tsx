@@ -1,4 +1,5 @@
-import { Show } from "solid-js";
+import { onSettled, Show } from "solid-js";
+import { showImageComparison } from "../../../components/image-comparison.tsx";
 import { Icon } from "../../../components/solid/icon.tsx";
 import { Menu } from "../../../components/solid/menu.tsx";
 import { registerChatMediaEnglish } from "../../../i18n/locales/en-chat-media.ts";
@@ -76,6 +77,26 @@ export function ChatImageActions(props: {
   readOriginalBlob: () => Promise<Blob>;
   overlay?: boolean;
 }) {
+  const lifetime = new AbortController();
+  onSettled(() => () => lifetime.abort());
+  let comparing = false;
+  const compare = async () => {
+    if (comparing || lifetime.signal.aborted) {
+      return;
+    }
+    comparing = true;
+    const readOriginalBlob = props.readOriginalBlob;
+    const title = props.title;
+    try {
+      await showImageComparison(readOriginalBlob, title, lifetime.signal);
+    } catch {
+      if (!lifetime.signal.aborted) {
+        showToast({ message: t("chat.imageLightbox.compareFailed"), severity: "error" });
+      }
+    } finally {
+      comparing = false;
+    }
+  };
   const download = async () => {
     try {
       const blob = await props.readOriginalBlob();
@@ -107,6 +128,12 @@ export function ChatImageActions(props: {
           trigger={<Icon name="moreHorizontal" />}
           items={[
             {
+              id: "compare",
+              label: t("chat.imageLightbox.compare"),
+              class: "session-menu__item",
+              icon: <Icon name="image" />,
+            },
+            {
               id: "copy",
               label: t("chat.imageLightbox.copy"),
               class: "session-menu__item",
@@ -130,12 +157,21 @@ export function ChatImageActions(props: {
             },
           ]}
           onSelect={(item) => {
-            void (item.id === "copy" ? copy() : download());
+            void (item.id === "copy" ? copy() : item.id === "compare" ? compare() : download());
           }}
         />
       }
     >
       <span class="chat-image-actions chat-image-actions--overlay">
+        <button
+          type="button"
+          class="chat-image-action"
+          title={t("chat.imageLightbox.compare")}
+          aria-label={t("chat.imageLightbox.compare")}
+          onClick={() => void compare()}
+        >
+          <Icon name="image" />
+        </button>
         <button
           type="button"
           class="chat-image-action"
