@@ -27,6 +27,7 @@ import { registerChatOutputsEnglish } from "../../ui/src/i18n/locales/en-chat-ou
 import { registerChatProviderReviewEnglish } from "../../ui/src/i18n/locales/en-chat-provider-review.ts";
 import { registerChatQuestionsEnglish } from "../../ui/src/i18n/locales/en-chat-questions.ts";
 import { registerChatSessionEnglish } from "../../ui/src/i18n/locales/en-chat-session.ts";
+import { registerChatSketchEnglish } from "../../ui/src/i18n/locales/en-chat-sketch.ts";
 import { registerChatToolContentEnglish } from "../../ui/src/i18n/locales/en-chat-tool-content.ts";
 import { registerChatToolLabelsEnglish } from "../../ui/src/i18n/locales/en-chat-tool-labels.ts";
 import { registerClawsEnglish } from "../../ui/src/i18n/locales/en-claws.ts";
@@ -409,6 +410,7 @@ export function loadControlUiSourceCatalog(): TranslationMap {
     registerChatCiEnglish.catalog,
     registerChatCommandResultsEnglish.catalog,
     registerChatComposerEnglish.catalog,
+    registerChatSketchEnglish.catalog,
     registerChatGoalsEnglish.catalog,
     registerChatProviderReviewEnglish.catalog,
     registerCodeBlocksEnglish.catalog,

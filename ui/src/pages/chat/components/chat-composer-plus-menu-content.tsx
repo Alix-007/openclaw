@@ -3,6 +3,7 @@ import { createMemo, Errored, For, Loading, onSettled } from "solid-js";
 import { pathForRoute } from "../../../app-route-paths.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
 import type { MenuEntry, MenuHandle, MenuItem } from "../../../components/solid/menu.tsx";
+import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
 import { registerMcpEnglish } from "../../../i18n/locales/en-mcp.ts";
 import { formatUiExternalText } from "../../../lib/format-error.ts";
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
@@ -41,8 +42,10 @@ import type {
   ChatComposerPlusMenuContentProps,
   ChatComposerPlusMenuView,
 } from "./chat-composer-plus-menu.types.ts";
+import { openChatSketch } from "./chat-sketch-dialog.tsx";
 
 registerEnglishCatalog(registerMcpEnglish);
+registerEnglishCatalog(registerChatSketchEnglish);
 
 function rootItems(menu: ChatComposerPlusMenuContentProps): MenuEntry[] {
   const entries: MenuEntry[] = [];
@@ -65,6 +68,12 @@ function rootItems(menu: ChatComposerPlusMenuContentProps): MenuEntry[] {
         icon: <Icon name={icon} />,
       });
     }
+    entries.push({
+      id: "sketch",
+      label: t("chat.composer.drawSketch"),
+      class: "agent-chat__attach-menu-option",
+      icon: <Icon name="pencil" />,
+    });
   }
   if (menu.showCapabilities || menu.rootToggles?.length) {
     if (canUpload) {
@@ -382,6 +391,10 @@ function handleMenuSelection(
   const props = ownerProps.menu;
   const overlay = menu.overlay;
   const { surface } = overlay;
+  if (value === "sketch" && uploadsEnabled(props.attachments.uploadConfig)) {
+    void openChatSketch(() => ownerProps.menu.attachments);
+    return;
+  }
   if (
     uploadsEnabled(props.attachments.uploadConfig) &&
     (value === "camera" || value === "photo" || value === "file")

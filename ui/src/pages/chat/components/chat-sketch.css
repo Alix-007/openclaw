@@ -1,0 +1,26 @@
+.chat-sketch {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+}
+
+.chat-sketch p {
+  margin: 0;
+}
+
+.chat-sketch__viewport {
+  max-height: min(55vh, var(--openclaw-modal-height-limit));
+  overflow: auto;
+}
+
+.chat-sketch canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
