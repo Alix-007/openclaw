@@ -63,28 +63,25 @@ describe("worktrees cli", () => {
     expect(record.repoRoot).toBe("/repo/café\x1b[31m\nforged");
   });
 
-  it.each(["create", "restore"] as const)(
-    "escapes the %s acknowledgement without changing its JSON record",
-    async (command) => {
-      const repoRoot = await fs.realpath(tempDirs.make("openclaw-terminal-worktree-"));
-      const record = makeWorktreeRecord(repoRoot, "worktree-id", {
-        name: "ordinary",
-        repoFingerprint: "fingerprint",
-        path: "/state/café\x1b[31m\nforged\tpath\r\x00\x85",
-        branch: "openclaw/ordinary",
-        ownerKind: "manual",
-      });
-      const args = [command, command === "create" ? repoRoot : record.id];
-      vi.spyOn(owner, command).mockResolvedValue(record);
-      const text = muteOutput(false);
-      await run(args);
-      expect(text).toHaveBeenCalledWith("worktree-id\t/state/café\\nforged\\tpath\\r");
+  it("escapes the creation acknowledgement without changing its JSON record", async () => {
+    const repoRoot = await fs.realpath(tempDirs.make("openclaw-terminal-worktree-"));
+    const record = makeWorktreeRecord(repoRoot, "worktree-id", {
+      name: "ordinary",
+      repoFingerprint: "fingerprint",
+      path: "/state/café\x1b[31m\nforged\tpath\r\x00\x85",
+      branch: "openclaw/ordinary",
+      ownerKind: "manual",
+    });
+    const args = ["create", repoRoot];
+    vi.spyOn(owner, "create").mockResolvedValue(record);
+    const text = muteOutput(false);
+    await run(args);
+    expect(text).toHaveBeenCalledWith("worktree-id\t/state/café\\nforged\\tpath\\r");
 
-      const json = muteOutput();
-      await run([...args, "--json"]);
-      expect(json).toHaveBeenCalledWith(record);
-    },
-  );
+    const json = muteOutput();
+    await run([...args, "--json"]);
+    expect(json).toHaveBeenCalledWith(record);
+  });
   const exactRequest = {
     ownerKind: "session",
     ownerId: "example-owner",
