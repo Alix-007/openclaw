@@ -43,6 +43,16 @@ export function ImageRedactionButton(props: {
     <button
       type="button"
       class="chat-attachment-redact"
+      style={{
+        position: "absolute",
+        "inset-inline": 0,
+        bottom: 0,
+        border: 0,
+        padding: "0.25rem",
+        background: "var(--bg-elevated)",
+        color: "var(--text)",
+        "font-size": "0.7rem",
+      }}
       disabled={props.controls.disabled}
       aria-label={t("chat.attachments.redactImage")}
       title={t("chat.attachments.redactImage")}

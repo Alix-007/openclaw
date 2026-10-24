@@ -4,7 +4,6 @@ import { registerChatComposerEnglish } from "../../../i18n/locales/en-chat-compo
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
 import { createPointerDrag } from "../../../lib/reactive/pointer-drag.ts";
 import { paintImageRedactions, type ImageRedactionRectangle } from "./chat-image-redaction.ts";
-import "./chat-image-redaction.css";
 
 registerEnglishCatalog(registerChatComposerEnglish);
 
@@ -91,20 +90,43 @@ function ImageRedaction(props: { image: ImageBitmap; onFinish: (value: string | 
       onModal-cancel={() => props.onFinish(null)}
       style={{ "--openclaw-modal-width": "52rem" }}
     >
-      <div class="chat-image-redaction">
-        <p>{t("chat.attachments.redactionHint")}</p>
-        <div class="chat-image-redaction__viewport">
+      <div
+        class="chat-image-redaction"
+        style={{
+          display: "grid",
+          gap: "0.75rem",
+          padding: "1rem",
+          "border-radius": "var(--radius-xl)",
+          background: "var(--bg)",
+        }}
+      >
+        <p style={{ margin: 0 }}>{t("chat.attachments.redactionHint")}</p>
+        <div
+          style={{
+            "max-height": "min(55vh, var(--openclaw-modal-height-limit))",
+            overflow: "auto",
+          }}
+        >
           <canvas
             ref={(element) => {
               canvas = element;
             }}
             width={props.image.width}
             height={props.image.height}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "auto",
+              cursor: "crosshair",
+              "touch-action": "none",
+            }}
             aria-label={t("chat.attachments.redactionCanvas")}
             onPointerDown={start}
           />
         </div>
-        <p role="status">{t("chat.attachments.redactionCount", { count: String(count()) })}</p>
+        <p role="status" style={{ margin: 0 }}>
+          {t("chat.attachments.redactionCount", { count: String(count()) })}
+        </p>
         <openclaw-modal-actions>
           <button class="btn" type="button" onClick={() => props.onFinish(null)}>
             {t("common.cancel")}
