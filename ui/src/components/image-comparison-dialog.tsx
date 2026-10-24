@@ -4,7 +4,6 @@ import { formatUiError, UserFacingError } from "../lib/format-error.ts";
 import { downloadImageBlob } from "../lib/image-download.ts";
 import { registerEnglishCatalog, t } from "../lib/reactive/i18n.ts";
 import { compareImagePixels } from "./image-pixel-diff.ts";
-import "./image-comparison.css";
 
 registerEnglishCatalog(registerChatMediaEnglish);
 
@@ -67,6 +66,14 @@ export function ImageComparison(props: {
   const [attempt, setAttempt] = createSignal<{ result: ReturnType<typeof compareImages> }>();
   const result = createMemo(() => attempt()?.result ?? null);
   let input!: HTMLInputElement;
+  const imageStyle = {
+    display: "block",
+    width: "100%",
+    height: "auto",
+    background: "var(--bg-elevated)",
+    border: "1px solid var(--border)",
+  } as const;
+  const captionStyle = { "margin-bottom": "0.5rem", color: "var(--text-muted)" } as const;
   const choose = (event: Event) => {
     const target = event.currentTarget;
     if (!(target instanceof HTMLInputElement)) {
@@ -90,8 +97,19 @@ export function ImageComparison(props: {
       style={{ "--openclaw-modal-width": "64rem" }}
       onModal-cancel={() => props.onClose()}
     >
-      <div class="image-comparison">
-        <p>{t("chat.imageLightbox.compareHint")}</p>
+      <div
+        class="image-comparison"
+        style={{
+          display: "grid",
+          gap: "0.75rem",
+          padding: "1rem",
+          "max-height": "var(--openclaw-modal-height-limit)",
+          overflow: "auto",
+          "border-radius": "var(--radius-xl)",
+          background: "var(--bg)",
+        }}
+      >
+        <p style={{ margin: 0 }}>{t("chat.imageLightbox.compareHint")}</p>
         <input
           ref={(element) => {
             input = element;
@@ -112,7 +130,7 @@ export function ImageComparison(props: {
             <Show when={result()}>
               {(comparison) => (
                 <>
-                  <p role="status" class="image-comparison__count">
+                  <p role="status" class="image-comparison__count" style={{ margin: 0 }}>
                     {t("chat.imageLightbox.compareCount", {
                       count: String(comparison().changedPixels),
                       total: String(comparison().totalPixels),
@@ -122,24 +140,39 @@ export function ImageComparison(props: {
                       ).toFixed(2),
                     })}
                   </p>
-                  <div class="image-comparison__images">
-                    <figure>
-                      <figcaption>{t("chat.imageLightbox.compareOriginal")}</figcaption>
+                  <div
+                    style={{
+                      display: "grid",
+                      "grid-template-columns": "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))",
+                      gap: "0.75rem",
+                    }}
+                  >
+                    <figure style={{ margin: 0 }}>
+                      <figcaption style={captionStyle}>
+                        {t("chat.imageLightbox.compareOriginal")}
+                      </figcaption>
                       <img
+                        style={imageStyle}
                         src={comparison().original}
                         alt={t("chat.imageLightbox.compareOriginal")}
                       />
                     </figure>
-                    <figure>
-                      <figcaption>{t("chat.imageLightbox.compareReference")}</figcaption>
+                    <figure style={{ margin: 0 }}>
+                      <figcaption style={captionStyle}>
+                        {t("chat.imageLightbox.compareReference")}
+                      </figcaption>
                       <img
+                        style={imageStyle}
                         src={comparison().reference}
                         alt={t("chat.imageLightbox.compareReference")}
                       />
                     </figure>
-                    <figure>
-                      <figcaption>{t("chat.imageLightbox.compareDifference")}</figcaption>
+                    <figure style={{ margin: 0 }}>
+                      <figcaption style={captionStyle}>
+                        {t("chat.imageLightbox.compareDifference")}
+                      </figcaption>
                       <img
+                        style={imageStyle}
                         src={comparison().difference}
                         alt={t("chat.imageLightbox.compareDifference")}
                       />
