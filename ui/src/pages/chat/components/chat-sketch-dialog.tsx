@@ -2,16 +2,13 @@ import { createSignal, onSettled } from "solid-js";
 import {
   paintAnnotations,
   type AnnotationStroke,
-} from "../../../components/browser/browser-annotation.ts";
+} from "../../../components/browser/annotation-paint.ts";
 import { withPromiseModalHost } from "../../../components/promise-modal-host.ts";
-import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
-import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
+import { t } from "../../../lib/reactive/i18n.ts";
 import { createPointerDrag } from "../../../lib/reactive/pointer-drag.ts";
 import { uploadsEnabled } from "../../../lib/uploads.ts";
 import type { ChatAttachmentControlsProps } from "./chat-attachment-controls.types.ts";
 import { attachChatSketch } from "./chat-sketch.ts";
-
-registerEnglishCatalog(registerChatSketchEnglish);
 
 export async function openChatSketch(
   readControls: () => ChatAttachmentControlsProps,

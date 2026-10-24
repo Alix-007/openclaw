@@ -3,6 +3,7 @@ import { createMemo, Errored, For, lazy, Loading, onSettled } from "solid-js";
 import { pathForRoute } from "../../../app-route-paths.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
 import type { MenuEntry, MenuHandle, MenuItem } from "../../../components/solid/menu.tsx";
+import { registerChatSketchEnglish } from "../../../i18n/locales/en-chat-sketch.ts";
 import { registerMcpEnglish } from "../../../i18n/locales/en-mcp.ts";
 import { formatUiExternalText } from "../../../lib/format-error.ts";
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
@@ -44,6 +45,7 @@ import type {
 } from "./chat-composer-plus-menu.types.ts";
 
 registerEnglishCatalog(registerMcpEnglish);
+registerEnglishCatalog(registerChatSketchEnglish);
 
 const SketchDialog = lazy(() => import("./chat-sketch-dialog.tsx"), { export: "SketchDialog" });
 
