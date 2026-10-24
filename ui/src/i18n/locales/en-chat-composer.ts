@@ -341,14 +341,7 @@ const catalog = {
       "This saved copy changed while you were reviewing it. Nothing was deleted. Reload and review it again.",
     attachments: {
       redactImage: "Redact image",
-      redactionHint:
-        "Drag over areas to cover with opaque black pixels. Applying creates a PNG copy; your original file is unchanged. Review the entire image before sending.",
-      redactionCanvas: "Image redaction canvas. Drag to cover an area.",
-      redactionCount: "Covered areas: {count}",
-      redactionUndo: "Undo last area",
-      redactionApply: "Apply redaction",
       redactionFailed: "Could not redact this image. Try a smaller PNG, JPEG, or WebP image.",
-      redactionTooLarge: "Choose an image with at most 16 million pixels for redaction.",
       allowImage: "Allow image",
       attachedFile: "Attached file",
       audio: "Audio",

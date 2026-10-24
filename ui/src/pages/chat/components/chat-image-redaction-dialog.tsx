@@ -1,11 +1,13 @@
 import { createSignal, onSettled } from "solid-js";
 import { withPromiseModalHost } from "../../../components/promise-modal-host.ts";
 import { registerChatComposerEnglish } from "../../../i18n/locales/en-chat-composer.ts";
+import { registerImageRedactionEnglish } from "../../../i18n/locales/en-image-redaction.ts";
 import { registerEnglishCatalog, t } from "../../../lib/reactive/i18n.ts";
 import { createPointerDrag } from "../../../lib/reactive/pointer-drag.ts";
 import { paintImageRedactions, type ImageRedactionRectangle } from "./chat-image-redaction.ts";
 
 registerEnglishCatalog(registerChatComposerEnglish);
+registerEnglishCatalog(registerImageRedactionEnglish);
 
 export async function showImageRedaction(blob: Blob, signal?: AbortSignal): Promise<string | null> {
   const image = await createImageBitmap(blob);
