@@ -12,7 +12,8 @@ const catalog = {
       sketchClear: "Clear sketch",
       sketchAttach: "Attach sketch",
       sketchCount: "Strokes: {count}",
-      sketchFailed: "Could not create the sketch. Your message is unchanged.",
+      sketchFailed:
+        "Could not create the sketch. Your message is unchanged. Reopen Draw a sketch to try again.",
     },
   },
 } satisfies TranslationMap;
