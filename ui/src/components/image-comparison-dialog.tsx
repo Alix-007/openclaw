@@ -5,9 +5,27 @@ import { formatUiError, UserFacingError } from "../lib/format-error.ts";
 import { downloadImageBlob } from "../lib/image-download.ts";
 import { registerEnglishCatalog, t } from "../lib/reactive/i18n.ts";
 import { compareImagePixels } from "./image-pixel-diff.ts";
+import { withPromiseModalHost } from "./promise-modal-host.ts";
 
 registerEnglishCatalog(registerChatMediaEnglish);
 registerEnglishCatalog(registerImageComparisonEnglish);
+
+/** Both invocation surfaces use the authorized reader captured by their own lifetime. */
+export function showImageComparison(
+  readOriginalBlob: () => Promise<Blob>,
+  title: string,
+  signal: AbortSignal,
+): Promise<void> {
+  return withPromiseModalHost<void>({ signal, value: undefined }, (modal) =>
+    modal.render(() => (
+      <ImageComparison
+        readOriginalBlob={readOriginalBlob}
+        title={title}
+        onClose={() => modal.finish()}
+      />
+    )),
+  );
+}
 
 async function compareImages(source: Blob, reference: Blob) {
   const left = await createImageBitmap(source);

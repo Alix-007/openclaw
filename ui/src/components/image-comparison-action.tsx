@@ -1,11 +1,13 @@
-import { lazyModule, onSettled, Show } from "solid-js";
+import { lazy, onSettled, Show } from "solid-js";
 import { t } from "../lib/reactive/i18n.ts";
 import { showToast } from "../lib/toast.ts";
 import { LightboxAction } from "./image-lightbox-view.tsx";
 import type { ImageLightboxItem } from "./image-lightbox.types.ts";
 import { Icon } from "./solid/icon.tsx";
 
-const loadComparison = lazyModule(() => import("./image-comparison.tsx"));
+const ComparisonDialog = lazy(() => import("./image-comparison-dialog.tsx"), {
+  export: "ImageComparison",
+});
 
 export function ImageComparisonAction(props: {
   image: Pick<ImageLightboxItem, "readOriginalBlob">;
@@ -24,7 +26,7 @@ export function ImageComparisonAction(props: {
     const title = props.title;
     comparing = true;
     try {
-      const { showImageComparison } = await loadComparison();
+      const { showImageComparison } = await ComparisonDialog.preload();
       await showImageComparison(read, title, lifetime.signal);
     } catch {
       if (!lifetime.signal.aborted) {
