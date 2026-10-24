@@ -5,7 +5,7 @@ import { elementRef } from "../lib/reactive/element-ref.ts";
 import { t, registerEnglishCatalog } from "../lib/reactive/i18n.ts";
 import { listen } from "../lib/reactive/listener.ts";
 import { nativeListener } from "../lib/solid-native-listener.ts";
-import { ImageComparisonAction } from "./image-comparison.tsx";
+import { ImageComparisonAction } from "./image-comparison-action.tsx";
 import { ImageLightboxHost } from "./image-lightbox-context.ts";
 import {
   downloadLightboxImage,
