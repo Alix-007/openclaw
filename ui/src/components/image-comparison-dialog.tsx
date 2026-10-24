@@ -1,11 +1,13 @@
 import { createMemo, createSignal, Errored, Loading, Show } from "solid-js";
 import { registerChatMediaEnglish } from "../i18n/locales/en-chat-media.ts";
+import { registerImageComparisonEnglish } from "../i18n/locales/en-image-comparison.ts";
 import { formatUiError, UserFacingError } from "../lib/format-error.ts";
 import { downloadImageBlob } from "../lib/image-download.ts";
 import { registerEnglishCatalog, t } from "../lib/reactive/i18n.ts";
 import { compareImagePixels } from "./image-pixel-diff.ts";
 
 registerEnglishCatalog(registerChatMediaEnglish);
+registerEnglishCatalog(registerImageComparisonEnglish);
 
 async function compareImages(source: Blob, reference: Blob) {
   const left = await createImageBitmap(source);
