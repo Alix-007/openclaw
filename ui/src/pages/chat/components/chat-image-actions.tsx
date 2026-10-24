@@ -1,5 +1,4 @@
-import { onSettled, Show } from "solid-js";
-import { showImageComparison } from "../../../components/image-comparison.tsx";
+import { lazyModule, onSettled, Show } from "solid-js";
 import { Icon } from "../../../components/solid/icon.tsx";
 import { Menu } from "../../../components/solid/menu.tsx";
 import { registerChatMediaEnglish } from "../../../i18n/locales/en-chat-media.ts";
@@ -9,6 +8,8 @@ import { t, registerEnglishCatalog } from "../../../lib/reactive/i18n.ts";
 import { showToast } from "../../../lib/toast.ts";
 
 registerEnglishCatalog(registerChatMediaEnglish);
+
+const loadComparison = lazyModule(() => import("../../../components/image-comparison.tsx"));
 
 let nextMenuId = 0;
 
@@ -88,6 +89,7 @@ export function ChatImageActions(props: {
     const readOriginalBlob = props.readOriginalBlob;
     const title = props.title;
     try {
+      const { showImageComparison } = await loadComparison();
       await showImageComparison(readOriginalBlob, title, lifetime.signal);
     } catch {
       if (!lifetime.signal.aborted) {
