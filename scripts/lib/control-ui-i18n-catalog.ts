@@ -126,6 +126,7 @@ const sourceFiles = [
   "en-chat-ci.ts",
   "en-chat-command-results.ts",
   "en-chat-composer.ts",
+  "en-chat-sketch.ts",
   "en-chat-details.ts",
   "en-chat-goals.ts",
   "en-chat-message-metadata.ts",
