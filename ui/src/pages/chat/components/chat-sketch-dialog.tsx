@@ -11,7 +11,6 @@ import { showToast } from "../../../lib/toast.ts";
 import { uploadsEnabled } from "../../../lib/uploads.ts";
 import type { ChatAttachmentControlsProps } from "./chat-attachment-controls.types.ts";
 import { attachChatSketch } from "./chat-sketch.ts";
-import "./chat-sketch.css";
 
 registerEnglishCatalog(registerChatSketchEnglish);
 
@@ -100,20 +99,45 @@ function SketchDialog(props: { onFinish: (value: string | null) => void }) {
       style={{ "--openclaw-modal-width": "52rem" }}
       onModal-cancel={() => props.onFinish(null)}
     >
-      <div class="chat-sketch">
-        <p>{t("chat.composer.sketchHint")}</p>
-        <div class="chat-sketch__viewport">
+      <div
+        class="chat-sketch"
+        style={{
+          display: "grid",
+          gap: "0.75rem",
+          padding: "1rem",
+          "border-radius": "var(--radius-xl)",
+          background: "var(--bg)",
+        }}
+      >
+        <p style={{ margin: 0 }}>{t("chat.composer.sketchHint")}</p>
+        <div
+          style={{
+            "max-height": "min(55vh, var(--openclaw-modal-height-limit))",
+            overflow: "auto",
+          }}
+        >
           <canvas
             ref={(element) => {
               canvas = element;
             }}
             width={800}
             height={450}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "auto",
+              cursor: "crosshair",
+              "touch-action": "none",
+              border: "1px solid var(--border)",
+              "border-radius": "var(--radius-md)",
+            }}
             aria-label={t("chat.composer.sketchCanvas")}
             onPointerDown={start}
           />
         </div>
-        <p role="status">{t("chat.composer.sketchCount", { count: String(count()) })}</p>
+        <p role="status" style={{ margin: 0 }}>
+          {t("chat.composer.sketchCount", { count: String(count()) })}
+        </p>
         <openclaw-modal-actions>
           <button class="btn" type="button" onClick={() => props.onFinish(null)}>
             {t("common.cancel")}
