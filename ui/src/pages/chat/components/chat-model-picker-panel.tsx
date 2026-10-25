@@ -413,7 +413,7 @@ export function ChatModelPickerPanel(panel: PanelProps) {
             provider={props.provider}
             options={[...props.lead, ...props.more]}
             favorites={props.provider === FAVORITES_GROUP}
-            view={searchView}
+            view={searchView ?? undefined}
             toggle
             more={props.more.length > 0}
           />
@@ -524,19 +524,33 @@ export function ChatModelPickerPanel(panel: PanelProps) {
           ) : undefined}
           <Show when={favorites.available()}>
             <details
-              class="chat-controls__favorites-editor"
+              class="chat-controls__favorites-editor muted"
+              style={{ padding: "7px" }}
               open={managingFavorites()}
               onToggle={(event) => setManagingFavorites(event.currentTarget.open)}
             >
               <summary>{t("chat.modelControls.manageFavorites")}</summary>
               <Show when={managingFavorites()}>
-                <div role="group" aria-label={t("chat.modelControls.manageFavorites")}>
+                <div
+                  class="grid"
+                  style={{
+                    gap: "6px",
+                    "max-height": "180px",
+                    "overflow-y": "auto",
+                    "margin-top": "7px",
+                  }}
+                  role="group"
+                  aria-label={t("chat.modelControls.manageFavorites")}
+                >
                   <For
                     each={mounted(panel.params.modelOptions.filter((option) => !option.isDefault))}
                     keyed={modelPickerOptionKey}
                   >
                     {(entry) => (
-                      <label class="chat-controls__favorite-choice">
+                      <label
+                        class="chat-controls__favorite-choice row"
+                        style={{ gap: "8px", "min-width": "0" }}
+                      >
                         <input
                           type="checkbox"
                           data-chat-model-favorite={modelPickerOptionKey(entry())}
@@ -547,7 +561,13 @@ export function ChatModelPickerPanel(panel: PanelProps) {
                             favorites.toggle(modelPickerOptionKey(entry()));
                           }}
                         />
-                        <span>
+                        <span
+                          style={{
+                            overflow: "hidden",
+                            "text-overflow": "ellipsis",
+                            "white-space": "nowrap",
+                          }}
+                        >
                           {[
                             entry().label,
                             formatModelRuntimeLabel(entry().provider, entry().agentRuntimeId)
