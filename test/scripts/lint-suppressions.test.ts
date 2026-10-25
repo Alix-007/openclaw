@@ -185,7 +185,16 @@ describe("production lint suppressions", () => {
         "src/agents/agent-tools.abort.ts|typescript/prefer-promise-reject-errors|1",
         "src/agents/auth-profiles/oauth-refresh-fence.ts|preserve-caught-error|1",
         "src/agents/auth-profiles/oauth-refresh-peers.ts|preserve-caught-error|1",
+        // Sort only freshly materialized private arrays; avoid a second copying sort.
+        "src/agents/embedded-agent-runner/model.static-catalog.ts|unicorn/no-array-sort|2",
+        "src/agents/embedded-agent-runner/post-compaction-loop-guard.ts|unicorn/no-array-sort|1",
+        "src/agents/embedded-agent-runner/run/attempt-context-summary.ts|unicorn/no-array-sort|1",
+        "src/agents/embedded-agent-runner/run/attempt-system-prompt-prepare.ts|unicorn/no-array-sort|2",
+        "src/agents/embedded-agent-runner/session-prompt-state.ts|unicorn/no-array-sort|1",
+        "src/agents/embedded-agent-runner/tool-name-allowlist.ts|unicorn/no-array-sort|1",
         "src/agents/mcp-http-transport.ts|unicorn/prefer-add-event-listener|3",
+        // Board private helpers only sort cloned layouts or freshly filtered arrays.
+        "src/boards/board-layout.ts|unicorn/no-array-sort|1",
         "src/channels/plugins/channel-runtime-surface.types.ts|typescript/no-unnecessary-type-parameters|1",
         "src/channels/plugins/config-schema.ts|typescript/no-generated-empty-object-type|1",
         "src/channels/plugins/contracts/test-helpers.ts|typescript/no-unnecessary-type-parameters|1",
@@ -261,6 +270,8 @@ describe("production lint suppressions", () => {
         "src/secrets/private-plan-file.ts|preserve-caught-error|1",
         // Synchronous acquisition failures reject with the acquiring owner's original value.
         "src/shared/store-writer-acquisitions.ts|typescript/prefer-promise-reject-errors|1",
+        // Usage outputs sort freshly materialized private arrays without another copy.
+        "src/shared/usage-aggregates.ts|unicorn/no-array-sort|1",
         "src/state/config-machine-state.ts|typescript/no-unnecessary-type-parameters|1",
         // JSON string scanning must detect and reject unescaped control characters.
         "src/state/json-predicate-fields.ts|no-control-regex|1",
