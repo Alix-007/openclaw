@@ -53,13 +53,10 @@ export async function storageListCommand(runtime: RuntimeEnv, opts: StorageComma
     runtime.log("No storage locations configured. Configure storage.locations to add one.");
   }
   for (const location of locations) {
-    const lines = [
-      `${location.name} (${location.provider}): ${location.state}${location.displayTarget ? ` — ${location.displayTarget}` : ""}`,
-    ];
-    if (location.message) {
-      lines.push(`  ${location.message}`);
-    }
-    runtime.log(lines.map(sanitizeTerminalText).join("\n"));
+    const summary = `${location.name} (${location.provider}): ${location.state}${location.displayTarget ? ` — ${location.displayTarget}` : ""}`;
+    runtime.log(
+      `${sanitizeTerminalText(summary)}${location.message ? `\n  ${sanitizeTerminalText(location.message)}` : ""}`,
+    );
   }
 }
 
@@ -130,9 +127,7 @@ export async function storageTestCommand(
       writeRuntimeJson(runtime, { ...location.describe(), state: "ok", sizeBytes: payload.length });
     } else {
       runtime.log(
-        sanitizeTerminalText(
-          `Storage location ${name}: wrote, read, verified, and deleted ${payload.length} bytes.`,
-        ),
+        `Storage location ${name}: wrote, read, verified, and deleted ${payload.length} bytes.`,
       );
     }
   } finally {
