@@ -125,11 +125,10 @@ function resolveEventWebPushNotification(
 }
 
 /** Routes attention events to offline browsers without expanding live session visibility. */
-export function createEventWebPushDelivery(params: {
-  getRuntimeConfig: () => OpenClawConfig;
-  getSessionRowProjection?: () => Pick<SessionRowProjection, "readCapabilityEntry"> | undefined;
-  stateDir?: string;
-}) {
+export function createEventWebPushDelivery(
+  getRuntimeConfig: () => OpenClawConfig,
+  getSessionRowProjection?: () => Pick<SessionRowProjection, "readCapabilityEntry"> | undefined,
+) {
   const deliver = (
     notification: EventNotification,
     event: string,
@@ -139,11 +138,11 @@ export function createEventWebPushDelivery(params: {
   ): void => {
     let stage = "subscriptions";
     void (async () => {
-      if (!(await hasBoundWebPushSubscriptions(params.stateDir))) {
+      if (!(await hasBoundWebPushSubscriptions())) {
         return;
       }
       stage = "sender";
-      const sender = await prepareWebPushNotificationSender(params.stateDir);
+      const sender = await prepareWebPushNotificationSender();
       stage = "authority";
       const agentId = normalizeOptionalString(
         opts?.agentId ?? (isRecord(payload) ? payload.agentId : undefined),
@@ -151,9 +150,9 @@ export function createEventWebPushDelivery(params: {
       const sessionKeys = opts?.sessionKeys ?? [];
       const preparedIcon = mention
         ? undefined
-        : await prepareWebPushAgentIcon(params.getRuntimeConfig(), agentId);
+        : await prepareWebPushAgentIcon(getRuntimeConfig(), agentId);
       const groupedResults = await withCurrentWebPushAuthority(
-        { ...params, sessionKeys, agentId, preparePublication: mention?.prepare },
+        { getRuntimeConfig, sessionKeys, agentId, preparePublication: mention?.prepare },
         (authority) => {
           const { cfg } = authority;
           const recipientProfileId =
@@ -237,7 +236,7 @@ export function createEventWebPushDelivery(params: {
               // Read resident metadata only after authorization; never infer a title from content.
               const authorized = authority.sessions.get(sessionKey)?.target;
               const entry = authorized
-                ? params.getSessionRowProjection?.()?.readCapabilityEntry({
+                ? getSessionRowProjection?.()?.readCapabilityEntry({
                     agentId: authorized.agentId,
                     storePath: authorized.storePath,
                     key: authorized.canonicalKey,
