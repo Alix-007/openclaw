@@ -69,6 +69,7 @@ it.each([false, true])(
           ambientOwnerId,
           note: `ambient owner stays ${ambientOwnerId}; talk to the coordinator by name`,
         }),
+        2,
       );
     } else {
       expect(log).toHaveBeenCalledWith(
