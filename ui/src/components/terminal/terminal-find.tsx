@@ -1,5 +1,6 @@
 import { createMemo, createSignal, onSettled, Show } from "solid-js";
-import { t } from "../../lib/reactive/i18n.ts";
+import { registerTerminalEnglish } from "../../i18n/locales/en-terminal.ts";
+import { registerEnglishCatalog, t } from "../../lib/reactive/i18n.ts";
 import { Icon } from "../solid/icon.tsx";
 import { PanelIconButton } from "../solid/panel-icon-button.tsx";
 import {
@@ -8,6 +9,8 @@ import {
   type TerminalFindMatch,
 } from "./terminal-find.ts";
 import type { TerminalPanelSessionTab } from "./terminal-panel-session-types.ts";
+
+registerEnglishCatalog(registerTerminalEnglish);
 
 /** A tab-local search snapshot. Refresh/Next re-read the emulator after streamed output. */
 export function TerminalFind(props: { tab: Pick<TerminalPanelSessionTab, "controller"> }) {
