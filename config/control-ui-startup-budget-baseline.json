@@ -1,5 +1,5 @@
 {
-  "startupJsGzipBytes": 311358,
-  "reason": "Panel header imports and Labs/Usage copy: matched 721d124 build 311566 to 311358 B startup, 1333529 to 1324362 B Chat and 816308 to 814674 B New Session; seven startup JS requests.",
-  "updatedAt": "2026-10-23"
+  "startupJsGzipBytes": 281702,
+  "reason": "Combined warm transcript and shared visible clocks: measured 281702 B after integrating main. Warm transcript remote median improved from 509.3 to 304.7 ms; shared clocks retain their separately measured CPU win. Startup requests remain 7 JS and 1 CSS; accept the sub-0.5 KB change against main.",
+  "updatedAt": "2026-10-24"
 }
