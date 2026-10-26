@@ -4,13 +4,20 @@ import {
   toErrorObject,
 } from "@openclaw/normalization-core/error-coercion";
 import { getDatabaseEngineSelection } from "../infra/database-engine/context.js";
+import {
+  createPostgresPoolEndpoints,
+  postgresPoolTransferList,
+} from "../infra/postgres-sync/pool.js";
 import { runtimeProcessEntrypoints } from "../infra/runtime-process-entrypoints.js";
 import {
   resolveRuntimeWorkerThreadExecArgv,
   resolveRuntimeWorkerUrl,
 } from "../infra/runtime-worker-url.js";
 import { trackSqliteDatabaseAdmissionWorker } from "../infra/sqlite-database-admission.js";
-import { formatSqliteErrorCodeSuffix } from "../infra/sqlite-error-diagnostics.js";
+import {
+  formatSqliteErrorCodeSuffix,
+  isSqliteLockError,
+} from "../infra/sqlite-error-diagnostics.js";
 import { retainSqliteWriteAdmissionService } from "../infra/sqlite-transaction.js";
 import { readDatabasePathIdentitySync } from "../infra/sqlite-worker-identity.js";
 import { createSqliteDatabaseAdmissionRelay } from "../infra/sqlite-worker-operation-admission.js";
@@ -18,6 +25,7 @@ import { createCpuTrackedWorker } from "../infra/worker-cpu.js";
 import { createDeferredCore } from "../shared/deferred.js";
 import { runInDetachedAsyncContext } from "../shared/detached-async-context.js";
 import { scheduleAbsoluteDeadline } from "../utils/absolute-deadline.js";
+import { OpenClawStateLeaseError } from "./openclaw-state-lease-error.js";
 import {
   acquireLeaseHeartbeatCarrier,
   type LeaseHeartbeatCarrier,
@@ -30,6 +38,7 @@ import {
   leaseHeartbeatState as state,
   leaseHeartbeatStartupPhase,
   LEASE_HEARTBEAT_START_TIMEOUT_MS,
+  LEASE_CONTENTION_RETRY_MS,
   type LeaseHeartbeatLoss,
   type LeaseHeartbeatRenewalFailure,
   type LeaseHeartbeatRequest,
@@ -57,10 +66,13 @@ export function startOpenClawStateLeaseTimer(params: {
   let expiryClosed = false;
   let renewal: Promise<void> | undefined;
   let cancelExpiry: (() => void) | undefined;
-  let heartbeat: ReturnType<typeof setInterval> | undefined = setInterval(() => {
+  let retry: ReturnType<typeof setTimeout> | undefined;
+  const renew = () => {
     if (stopped || renewal) {
       return;
     }
+    clearTimeout(retry);
+    retry = undefined;
     const pending = (async () => {
       await params.renew();
     })();
@@ -72,9 +84,18 @@ export function startOpenClawStateLeaseTimer(params: {
       (error: unknown) => {
         renewal = undefined;
         params.onRenewError(error);
+        if (!stopped && isSqliteLockError(error)) {
+          // Waiting for the next normal tick can leave no retry before durable expiry.
+          retry = setTimeout(renew, LEASE_CONTENTION_RETRY_MS);
+          retry.unref?.();
+        }
       },
     );
-  }, params.heartbeatMs);
+  };
+  let heartbeat: ReturnType<typeof setInterval> | undefined = setInterval(
+    renew,
+    params.heartbeatMs,
+  );
   heartbeat.unref?.();
   const checkExpiry = () => {
     cancelExpiry = undefined;
@@ -87,6 +108,8 @@ export function startOpenClawStateLeaseTimer(params: {
       stopped = true;
       expiryClosed = true;
       clearInterval(heartbeat);
+      clearTimeout(retry);
+      retry = undefined;
       heartbeat = undefined;
       params.onLost(new Error("state lease expired"));
       return;
@@ -97,12 +120,16 @@ export function startOpenClawStateLeaseTimer(params: {
     checkExpiry();
   } catch (error) {
     clearInterval(heartbeat);
+    clearTimeout(retry);
+    retry = undefined;
     cancelExpiry?.();
     throw error;
   }
   const stopRenewal = async () => {
     stopped = true;
     clearInterval(heartbeat);
+    clearTimeout(retry);
+    retry = undefined;
     heartbeat = undefined;
     if (renewal) {
       // The lease owner handles the error; stopping must still join native settlement.
@@ -215,11 +242,19 @@ export function startOpenClawStateLeaseHeartbeat(
   let workerLoss: LeaseHeartbeatLoss | undefined;
   const lossDetail = () =>
     workerLoss ? ` (lossPath=${workerLoss.path}, lossOutcome=${workerLoss.outcome})` : "";
-  const fail = (error: Error) => {
+  const fail = (cause: Error) => {
     if (lossReported || Atomics.load(shared, state.status) === state.closed) {
       return;
     }
     lossReported = true;
+    const error =
+      workerLoss?.leaseLoss && !(cause instanceof OpenClawStateLeaseError)
+        ? new OpenClawStateLeaseError(cause.message, {
+            code: "OPENCLAW_STATE_LEASE_LOST",
+            loss: workerLoss.leaseLoss,
+            cause,
+          })
+        : cause;
     Atomics.store(shared, state.status, state.lost);
     clearStartupTimers();
     cancelExpiry?.();
@@ -421,10 +456,12 @@ export function startOpenClawStateLeaseHeartbeat(
     // Keep the lease worker isolated from every other ambient environment setting.
     const sourceTsconfig = execArgv.length > 0 ? process.env.TSX_TSCONFIG_PATH : undefined;
     startupContext?.admission.assertCurrent();
+    const databaseEngineSelection =
+      startupContext?.databaseEngineSelection ?? getDatabaseEngineSelection();
     const data = {
-      databaseEngineSelection:
-        startupContext?.databaseEngineSelection ?? getDatabaseEngineSelection(),
+      databaseEngineSelection,
       databaseAdmissionPort: databaseAdmission.port,
+      postgresPool: createPostgresPoolEndpoints(databaseEngineSelection),
       path: databasePath,
       expectedIdentity,
       ...(startupContext ? { deferActivation: true as const } : {}),
@@ -448,7 +485,10 @@ export function startOpenClawStateLeaseHeartbeat(
           runInDetachedAsyncContext(() => {
             const native = createCpuTrackedWorker(url, {
               workerData: data,
-              transferList: [databaseAdmission.port],
+              transferList: [
+                databaseAdmission.port,
+                ...postgresPoolTransferList(data.postgresPool),
+              ],
               env: sourceTsconfig ? { TSX_TSCONFIG_PATH: sourceTsconfig } : {},
               execArgv,
               stdout: true,

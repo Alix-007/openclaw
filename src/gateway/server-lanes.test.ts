@@ -1,13 +1,11 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { createDeferred } from "../../test/helpers/promise.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
-import {
-  createBackgroundWorkOwner,
-  getBackgroundWorkSnapshot,
-} from "../process/background-work.js";
+import { getBackgroundWorkSnapshot } from "../process/background-work.js";
 import {
   enqueueCommandInLane,
   getCommandLaneSnapshot,
+  publishLaneConfiguration,
   setCommandLaneConcurrency,
 } from "../process/command-queue.js";
 import { resetCommandQueueStateForTest } from "../process/command-queue.test-support.js";
@@ -18,11 +16,6 @@ const applyConfig = (config: OpenClawConfig, gatewayStart = false) =>
   applyGatewayLaneConcurrency(resolveGatewayLaneConcurrency(config), { gatewayStart });
 
 afterEach(async () => {
-  if (vi.isFakeTimers()) {
-    await vi.runOnlyPendingTimersAsync();
-    vi.clearAllTimers();
-  }
-  vi.useRealTimers();
   // Startup drains this process-global state; isolate subsequent lane assertions.
   const { resetSessionSuspensionStateForTest } =
     await import("../agents/session-suspension.test-support.js");
@@ -146,11 +139,19 @@ it("applies recall cap changes without releasing occupied capacity or reordering
 });
 
 it("preserves shared background capacity across gateway lane publication", async () => {
-  const owner = createBackgroundWorkOwner({ owner: "plugin:reload-test", maxConcurrent: 3 });
+  const lane = "background:plugin:reload-test";
+  publishLaneConfiguration({
+    lanes: { [lane]: 3 },
+    groups: { "background-work": { budget: 3, members: [lane] } },
+  });
   const gates = Array.from({ length: 3 }, () => createDeferred());
-  const active = gates.map((gate) => owner.enqueue(async () => await gate.promise));
+  const active = gates.map((gate) =>
+    enqueueCommandInLane(lane, async () => await gate.promise, {
+      priority: "background",
+    }),
+  );
   const nextRun = vi.fn(async () => {});
-  const next = owner.enqueue(nextRun);
+  const next = enqueueCommandInLane(lane, nextRun, { priority: "background" });
   try {
     applyConfig({ hooks: { enabled: true } });
     applyConfig({ hooks: { enabled: false } });

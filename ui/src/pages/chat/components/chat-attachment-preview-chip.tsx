@@ -4,20 +4,18 @@ import { Icon } from "../../../components/solid/icon.tsx";
 import { attachmentAdmissionRef } from "./chat-attachment-admission-ref.ts";
 import "../../../styles/chat/selection-annotations.css";
 
-export type AttachmentChipRemoval = {
-  label: string;
-  onRemove: (event: Event) => void;
-  disabled: boolean;
-};
-
 export function AttachmentPreviewChip(props: {
   label: string;
   icon: JSX.Element;
   onClick?: () => void;
   onReveal?: () => void;
-  removal?: AttachmentChipRemoval;
+  removal?: {
+    label: string;
+    onRemove: (event: Event) => void;
+    disabled: boolean;
+  };
   elementRef?: (element: Element | undefined) => void;
-  triggerRef?: (element: HTMLButtonElement) => void;
+  triggerRef?: JSX.Ref<HTMLButtonElement>;
 }) {
   const ref = attachmentAdmissionRef(() => props.elementRef);
   const label = () => (

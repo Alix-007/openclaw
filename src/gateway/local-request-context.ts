@@ -13,6 +13,7 @@ import {
   withPluginRuntimeGatewayRequestScope,
 } from "../plugins/runtime/gateway-request-scope.js";
 import { trackAsyncWork } from "../shared/async-work-scope.js";
+import { createAgentRuntimeApprovalAuthorityValidator } from "./agent-runtime-approval-authority.js";
 import { loadGatewayConfigRevisionProjector } from "./config-revision-token.js";
 import { NodeRegistry } from "./node-registry.js";
 import type { ChannelRuntimeSnapshot } from "./server-channel-runtime.types.js";
@@ -109,6 +110,7 @@ async function createLocalGatewayRequestContext(
     cron,
     cronStorePath: "",
     getRuntimeConfig: params.getRuntimeConfig,
+    validateAgentRuntimeApprovalAuthority: createAgentRuntimeApprovalAuthorityValidator(),
     resolveSessionRequestTargets: (request) =>
       resolveSessionRequestTargets({ ...request, context }),
     // Embedded calls have no running Gateway application owner.
@@ -123,8 +125,11 @@ async function createLocalGatewayRequestContext(
     loadGatewayModelCatalogSnapshot: loadCatalogSnapshot,
     readPreparedGatewayModelCatalog: (loadParams) =>
       readPreparedGatewayModelCatalog({ ...loadParams, getConfig: params.getRuntimeConfig }),
-    readPreparedGatewayModelCatalogBatch: (agentIds) =>
-      readPreparedGatewayModelCatalogBatch(agentIds, { getConfig: params.getRuntimeConfig }),
+    readPreparedGatewayModelCatalogBatch: (agentIds, options) =>
+      readPreparedGatewayModelCatalogBatch(agentIds, {
+        ...options,
+        getConfig: params.getRuntimeConfig,
+      }),
     readChatMetadata: async () => {
       throw new Error("Chat metadata is unavailable in local embedded agent gateway context.");
     },

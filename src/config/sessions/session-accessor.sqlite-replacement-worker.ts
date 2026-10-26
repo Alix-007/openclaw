@@ -204,7 +204,6 @@ export async function withSessionEntryWorker<T>(
               ? err(decodeSessionTranscriptWorkerReadError(result.readError))
               : ok(result.entry)),
             source: result.source,
-            facts: result.facts,
           };
         },
         async entries(request) {
@@ -599,6 +598,8 @@ export async function runSessionEntryWorkerMutation<T>(
             ([key]) => !committed.unavailableParticipantKeys?.includes(key),
           ),
         ),
+        committed.conversationPublication,
+        committed.fullEntries,
       );
     },
     executionOptions.retainedExecution,

@@ -1,5 +1,5 @@
-import type { sanitizeTerminalText } from "openclaw/plugin-sdk/text-chunking";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { truncateUtf16Safe } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { sanitizeTerminalText } from "openclaw/plugin-sdk/terminal-safe-text";
 import { isJsonObject, type JsonObject, type CodexThread } from "./app-server/protocol.js";
 import { detachCodexCatalogString } from "./session-catalog-limits.js";
 import {
@@ -7,7 +7,6 @@ import {
   MAX_CURSOR_LENGTH,
   MAX_CWD_LENGTH,
   MAX_SESSION_ID_LENGTH,
-  selectCodexCatalogPreviewInput,
   truncateCodexCatalogPreview,
 } from "./session-catalog-parsing.js";
 import { copyCodexCatalogSource } from "./session-catalog-source.js";
@@ -84,9 +83,7 @@ export function projectCodexCatalogNativeThread(
   if (preview !== undefined) {
     row.preview = preview;
   } else if (typeof rawPreview === "string") {
-    row.preview = rawPreview
-      ? truncateCodexCatalogPreview(selectCodexCatalogPreviewInput(rawPreview), sanitize)
-      : "";
+    row.preview = rawPreview ? truncateCodexCatalogPreview(rawPreview, sanitize) : "";
   } else if (rawPreview === null) {
     row.preview = null;
   }

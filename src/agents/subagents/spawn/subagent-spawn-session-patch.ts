@@ -63,6 +63,7 @@ export async function createInitialSubagentSession(input: {
   requesterInternalKey: string;
   parentTarget: GatewaySessionStoreTargetWithStore;
   senderIsOwner?: boolean;
+  gitContributorProfileId?: string;
   expectedParentSessionId?: string;
   assertActive?: SessionSourceAssertion;
   creationPolicy: Pick<Parameters<typeof buildSessionCreationStamp>[0], "actor" | "sandbox">;
@@ -87,6 +88,7 @@ export async function createInitialSubagentSession(input: {
   >;
   swarmGroupId?: string;
   collect: boolean;
+  blind?: boolean;
   outputSchema?: Record<string, unknown>;
   firstAdmission?: { delivery?: DeliveryContext; group: TrustedGroupMetadata };
 }): Promise<
@@ -110,6 +112,8 @@ export async function createInitialSubagentSession(input: {
   const initialChildSessionPatch: Partial<InternalSessionEntry> = {
     ...admissionPatch,
     ...(subagentRole ? { subagentRole } : {}),
+    // Explicit undefined keeps a reused child key from inheriting an earlier blind spawn.
+    blindPrompt: params.blind ? true : undefined,
     inheritedToolPolicyVersion: 1,
     ...(params.delegatedToolPolicy ? { delegatedToolPolicy: params.delegatedToolPolicy } : {}),
     ...(params.inheritedToolPolicySource
@@ -302,8 +306,15 @@ export async function createInitialSubagentSession(input: {
                     ...params.creationPolicy,
                     ...(!params.incognito
                       ? {
-                          inheritedGitContributorProfileIds:
-                            inheritSessionGitContributorProfileIds(parentEntry),
+                          inheritedGitContributorProfileIds: inheritSessionGitContributorProfileIds(
+                            parentEntry,
+                            {
+                              config: params.cfg,
+                              agentId: params.requesterAgentId,
+                              sessionKey: params.requesterInternalKey,
+                              requesterProfileId: params.gitContributorProfileId,
+                            },
+                          ),
                         }
                       : {}),
                   }),

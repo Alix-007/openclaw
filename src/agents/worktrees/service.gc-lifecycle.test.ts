@@ -76,14 +76,12 @@ const tempDirs = useAutoCleanupTempDirTracker((cleanup) => {
 });
 const initializeRepository = useManagedWorktreeTestRepository();
 
-it("releases session mutation admission during Git while the registry claim fences consumers", async ({
-  signal,
-}) => {
+async function archivedSession(name: string) {
   const root = tempDirs.make("openclaw-worktree-cleanup-lifecycle-");
   const repoRoot = await initializeRepository(root);
   const stateDir = path.join(root, "state");
   const env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
-  const sessionKey = "agent:main:archived-worktree";
+  const sessionKey = `agent:main:${name}-worktree`;
   const storePath = path.join(root, "sessions.json");
   const cfg = { session: { store: storePath } };
   setRuntimeConfigSnapshot(cfg);
@@ -91,18 +89,27 @@ it("releases session mutation admission during Git while the registry claim fenc
     env,
     stateDir,
     repoRoot,
-    name: "archived",
+    name,
     now: 1,
     ownerKind: "session",
     ownerId: sessionKey,
   });
   const entry: SessionEntry = {
-    sessionId: "archived-session",
+    sessionId: `${name}-session`,
     updatedAt: 1,
     archivedAt: 1,
     worktree: { id: record.id, branch: record.branch, repoRoot },
   };
-  await replaceSessionEntry({ agentId: "main", sessionKey, storePath, env }, entry);
+  const scope = { sessionKey, storePath, env };
+  await replaceSessionEntry({ agentId: "main", ...scope }, entry);
+  return { repoRoot, env, sessionKey, storePath, cfg, record, entry, scope };
+}
+
+it("releases session mutation admission during Git while the registry claim fences consumers", async ({
+  signal,
+}) => {
+  const { repoRoot, env, sessionKey, storePath, cfg, record, entry, scope } =
+    await archivedSession("archived");
   await fs.writeFile(path.join(record.path, "draft.txt"), "preserved draft\n");
   const service = new ManagedWorktreeService({ env });
   const entered = createDeferred();
@@ -128,16 +135,7 @@ it("releases session mutation admission during Git while the registry claim fenc
   });
   void cleanup.catch(() => {});
   const waitForStage = (gate: Promise<void>, stage: string) =>
-    withinTest(
-      awaitGateBeforeSettlement(
-        gate,
-        cleanup.then((result) => {
-          throw new Error(`Cleanup settled before ${stage}: ${JSON.stringify(result)}`);
-        }),
-        `Cleanup settled before ${stage}`,
-      ),
-      signal,
-    );
+    withinTest(awaitGateBeforeSettlement(gate, cleanup, `Cleanup settled before ${stage}`), signal);
   const identities = [sessionKey, entry.sessionId];
   try {
     await waitForStage(entered.promise, "snapshot capture");
@@ -148,12 +146,9 @@ it("releases session mutation admission during Git while the registry claim fenc
       scope: storePath,
       identities,
       run: async () => {
-        await expect(
-          restoreSessionWorktree({
-            entry,
-            scope: { sessionKey, storePath, env },
-          }),
-        ).rejects.toMatchObject({ reason: "busy" });
+        await expect(restoreSessionWorktree({ entry, scope })).rejects.toMatchObject({
+          reason: "busy",
+        });
         // A session delete cannot hold this fence while waiting on the remover's checkout lease.
         await expect(service.remove({ id: record.id, reason: "session-delete" })).rejects.toThrow(
           /removal is in progress/i,
@@ -201,37 +196,9 @@ it("releases session mutation admission during Git while the registry claim fenc
 });
 
 it("refuses unarchive after an interrupted removal releases its process claim", async () => {
-  const root = tempDirs.make("openclaw-worktree-partial-cleanup-");
-  const repoRoot = await initializeRepository(root);
-  const stateDir = path.join(root, "state");
-  const env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
-  const sessionKey = "agent:main:partial-worktree";
-  const storePath = path.join(root, "sessions.json");
-  const cfg = { session: { store: storePath } };
-  setRuntimeConfigSnapshot(cfg);
-  const record = await materializeManagedWorktreeFixture({
-    env,
-    stateDir,
-    repoRoot,
-    name: "partial",
-    now: 1,
-    ownerKind: "session",
-    ownerId: sessionKey,
-  });
-  const entry: SessionEntry = {
-    sessionId: "partial-session",
-    updatedAt: 1,
-    archivedAt: 1,
-    worktree: { id: record.id, branch: record.branch, repoRoot },
-  };
-  await replaceSessionEntry({ agentId: "main", sessionKey, storePath, env }, entry);
+  const { repoRoot, env, record, entry, scope } = await archivedSession("partial");
   await requireGit(repoRoot, ["update-ref", `refs/openclaw/removals/${record.id}`, "HEAD"]);
-  await expect(
-    restoreSessionWorktree({
-      entry,
-      scope: { sessionKey, storePath, env },
-    }),
-  ).rejects.toThrow(/removal is incomplete/i);
+  await expect(restoreSessionWorktree({ entry, scope })).rejects.toThrow(/removal is incomplete/i);
   expect(entry.archivedAt).toBe(1);
   expect(getRegistryWorktree(env, record.id)?.removedAt).toBeUndefined();
 });
@@ -241,47 +208,36 @@ it("bounds Git housekeeping without delaying orphan cleanup or newly registered 
   const env = { ...process.env, OPENCLAW_STATE_DIR: path.join(root, "state") };
   setRuntimeConfigSnapshot({});
   const repo = await initializeRepository(tempDirs.make("worktree-gc-cadence-"));
-  await materializeManagedWorktreeFixtures({
-    env,
-    repoRoot: repo,
-    stateDir: repo,
-    names: ["first", "second", "third"],
-    now: 1,
-  });
+  const seed = (repoRoot: string, names: string[], now = 1) =>
+    materializeManagedWorktreeFixtures({ env, repoRoot, stateDir: repoRoot, names, now });
+  await seed(repo, ["first", "second", "third"]);
   const service = new ManagedWorktreeService({ env });
   const commands = vi.spyOn(gitExec, "executeGitCommand");
-  const maintenanceRoots = () =>
-    commands.mock.calls.flatMap(([cwd, , options]) =>
-      options?.operation === "worktree.maintenance" ? [cwd] : [],
+  const expectMaintenance = (...roots: string[]) => {
+    const calls = commands.mock.calls.filter(
+      (call) => call[2]?.operation === "worktree.maintenance",
     );
+    expect(new Set(calls.map(([cwd]) => cwd))).toEqual(new Set(roots));
+    commands.mockClear();
+  };
   await service.gc();
-  expect(maintenanceRoots().length).toBeGreaterThan(0);
-  expect(new Set(maintenanceRoots())).toEqual(new Set([repo]));
-  commands.mockClear();
+  expectMaintenance(repo);
 
   const orphan = path.join(env.OPENCLAW_STATE_DIR, "worktrees", "unregistered", "empty");
   await fs.mkdir(orphan, { recursive: true });
   expect(await service.gc()).toMatchObject({ orphansDeleted: 1, outcome: "completed" });
   await expect(fs.access(orphan)).rejects.toMatchObject({ code: "ENOENT" });
-  expect(maintenanceRoots()).toEqual([]);
+  expectMaintenance();
 
   const otherRepo = await initializeRepository(tempDirs.make("worktree-gc-new-repo-"));
-  await materializeManagedWorktreeFixtures({
-    env,
-    repoRoot: otherRepo,
-    stateDir: otherRepo,
-    names: ["new-repo"],
-    now: Date.now(),
-  });
+  await seed(otherRepo, ["new-repo"], Date.now());
   await service.gc();
-  expect(new Set(maintenanceRoots())).toEqual(new Set([otherRepo]));
-  commands.mockClear();
+  expectMaintenance(otherRepo);
 
   await service.gc({ retryDeferred: true });
-  expect(new Set(maintenanceRoots())).toEqual(new Set([repo, otherRepo]));
-  commands.mockClear();
+  expectMaintenance(repo, otherRepo);
   await service.gc();
-  expect(maintenanceRoots()).toEqual([]);
+  expectMaintenance();
 
   // Registry preparation and native leases finish before the cadence-only clock scope.
   const records = await registryReads.readRegistryWorktrees(env);
@@ -292,14 +248,13 @@ it("bounds Git housekeeping without delaying orphan cleanup or newly registered 
   try {
     const maintain = createWorktreeGitMaintenance(env);
     await maintain({});
-    expect(new Set(maintenanceRoots())).toEqual(new Set([repo, otherRepo]));
-    commands.mockClear();
+    expectMaintenance(repo, otherRepo);
     now += WORKTREE_GC_INTERVAL_MS - 1;
     await maintain({});
-    expect(maintenanceRoots()).toEqual([]);
+    expectMaintenance();
     now += 1;
     await maintain({});
-    expect(new Set(maintenanceRoots())).toEqual(new Set([repo, otherRepo]));
+    expectMaintenance(repo, otherRepo);
   } finally {
     clock.mockRestore();
     inventory.mockRestore();

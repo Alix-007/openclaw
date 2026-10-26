@@ -1,5 +1,6 @@
 import { expectDefined, stableStringify } from "@openclaw/normalization-core";
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { resolveRequesterPrincipalKey } from "../../../agents/requester-origin.js";
 import { withSandboxRuntimeStatusesInWorker } from "../../../agents/sandbox/runtime-status.js";
 import { withPreparedSessionCapabilityRead } from "../../../agents/subagents/spawn/subagent-session-store.js";
 import { readToolAllowlistIntersection } from "../../../agents/tool-policy.js";
@@ -71,6 +72,11 @@ function resolveTurnAdoptionLifecycleDeliveryKey(
 export function resolveFollowupAuthorizationKey(run: FollowupRun): string {
   const execution = run.run;
   return JSON.stringify([
+    resolveRequesterPrincipalKey({
+      ...execution,
+      messageChannel: run.originatingChannel,
+      operatorAuthority: run.operatorAuthority,
+    }),
     resolveReplyOperatorAuthorityKey(run.operatorAuthority),
     execution.senderId ?? "",
     JSON.stringify(execution.channelContext ?? null),
@@ -247,31 +253,6 @@ export function resolveFollowupReplyAnchor(run: FollowupRun): string | undefined
   return hasRoutedThread ? undefined : normalizeOptionalString(run.messageId);
 }
 
-type FollowupRuntimeMetadata = Pick<
-  FollowupRun,
-  | "sourceTurnId"
-  | "createChannelCronAuthority"
-  | "operatorAuthority"
-  | "personalBootstrapEligible"
-  | "currentInboundEventKind"
-  | "currentInboundAudio"
-  | "currentInboundContext"
-  | "explicitSkillSelections"
-  | "channelAdmissionEvidence"
-  | "gatewayLocalUserIngress"
-  | "toolsAllow"
-  | "disableTools"
-  | "forceRestartSafeTools"
-  | "forceCodeModeTools"
-  | "abortSignal"
-  | "queueAbortSignal"
-  | "deliveryCorrelations"
-  | "turnAdoptionLifecycle"
-  | "replyOperationRunStates"
-  | "queuedFollowupReplyDisposition"
-  | "runObservers"
->;
-
 function collectCurrentInboundContext(items: FollowupRun[]): FollowupRun["currentInboundContext"] {
   const contexts = items.flatMap((item, index) =>
     item.currentInboundContext ? [{ context: item.currentInboundContext, index }] : [],
@@ -344,10 +325,7 @@ function collectReplyDisposition(
   };
 }
 
-export function collectRuntimeMetadata(
-  items: FollowupRun[],
-  abortSignal?: AbortSignal,
-): FollowupRuntimeMetadata {
+export function collectRuntimeMetadata(items: FollowupRun[], abortSignal?: AbortSignal) {
   const currentTurnSource = items.find(
     (item) =>
       item.currentInboundEventKind === "room_event" ||
@@ -373,6 +351,7 @@ export function collectRuntimeMetadata(
   return {
     sourceTurnId: authoritySource?.sourceTurnId,
     createChannelCronAuthority: authoritySource?.createChannelCronAuthority,
+    readAdmissionConfig: authoritySource?.readAdmissionConfig,
     operatorAuthority: authoritySource?.operatorAuthority,
     personalBootstrapEligible:
       items.length > 0 && items.every((item) => item.personalBootstrapEligible === true)
@@ -404,7 +383,9 @@ export function collectRuntimeMetadata(
         ? authoritySource?.runObservers
         : {
             ...authoritySource?.runObservers,
-            onAgentRunTerminalOutcome: (outcome) => {
+            onAgentRunTerminalOutcome: (
+              outcome: Parameters<(typeof terminalObservers)[number]>[0],
+            ) => {
               const failures: unknown[] = [];
               for (const observer of terminalObservers) {
                 try {
@@ -421,7 +402,7 @@ export function collectRuntimeMetadata(
   };
 }
 
-function getFollowupOriginRouting(source: FollowupRun) {
+export function getFollowupOriginRouting(source: FollowupRun) {
   return {
     originatingChannel: source.originatingChannel,
     originatingTo: source.originatingTo,
@@ -440,6 +421,7 @@ export function createOverflowSummaryRetrySource(source: InternalFollowupRun): I
     prompt: source.prompt,
     sourceTurnId: source.sourceTurnId,
     createChannelCronAuthority: source.createChannelCronAuthority,
+    readAdmissionConfig: source.readAdmissionConfig,
     admissionSessionId: source.admissionSessionId,
     operatorAuthority: source.operatorAuthority,
     personalBootstrapEligible: source.personalBootstrapEligible,
