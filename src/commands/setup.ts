@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text.js";
 import {
   listAgentEntries,
   resolveAgentEntry,
@@ -260,7 +261,7 @@ async function setupUnderOwner(
     skipOptionalBootstrapFiles: resolvedDefaults.skipOptionalBootstrapFiles,
   });
   if (!opts?.json) {
-    runtime.log(`Workspace OK: ${shortenHomePath(ws.dir)}`);
+    runtime.log(`Workspace OK: ${sanitizeTerminalText(shortenHomePath(ws.dir))}`);
   }
 
   const { resolveSessionTranscriptsDirForAgent } = await import("../config/sessions.js");
@@ -281,7 +282,7 @@ async function setupUnderOwner(
     });
     return;
   }
-  runtime.log(`Sessions OK: ${shortenHomePath(sessionsDir)}`);
+  runtime.log(`Sessions OK: ${sanitizeTerminalText(shortenHomePath(sessionsDir))}`);
   runtime.log("");
   runtime.log("Setup complete: config, workspace, and session directories are ready.");
   runtime.log(`Next guided path: ${formatCliCommand("openclaw onboard")}.`);
