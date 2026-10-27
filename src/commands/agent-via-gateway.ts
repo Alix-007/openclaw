@@ -886,10 +886,8 @@ export async function agentCliCommand(opts: AgentCliOpts, runtime: RuntimeEnv) {
     throw new Error("--message-file must not be empty.");
   }
   const message = messageFile ? await readAgentMessageFile(messageFile) : (opts.message ?? "");
-  if (!message.trim()) {
-    throw messageFile
-      ? new Error(`Message file is empty: ${messageFile}`)
-      : missingAgentMessageError();
+  if (!messageFile && !message.trim()) {
+    throw missingAgentMessageError();
   }
   // `/compact` cannot run as a plain CLI agent turn: the slash-command handler
   // rejects CLI-originated senders, so the message would fall through to a

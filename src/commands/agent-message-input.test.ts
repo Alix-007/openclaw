@@ -1,55 +1,109 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
 import path from "node:path";
 import { Readable } from "node:stream";
-import { afterEach, describe, expect, it } from "vitest";
+import { expectDefined } from "@openclaw/normalization-core";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { useAutoCleanupTempDirTracker } from "../../test/helpers/temp-dir.js";
-import { readAgentMessageFile } from "./agent-message-input.js";
+import { agentCliCommand } from "./agent-via-gateway.js";
+import { gatewaySuccessReply } from "./agent-via-gateway.test-support.js";
+
+const { callGateway, loadConfig } = vi.hoisted(() => ({
+  callGateway: vi.fn(),
+  loadConfig: vi.fn(),
+}));
+
+// mock-isolation: input validation and dispatch must not load operator config or contact a Gateway.
+vi.mock("../config/gateway-dispatch-config.js", () => ({
+  readGatewayDispatchConfig: loadConfig,
+  readGatewayDispatchConfigWithShellEnvFallback: loadConfig,
+}));
+// mock-isolation: the command's config reader must not inspect operator state.
+vi.mock("../config/io.js", () => ({
+  getRuntimeConfig: loadConfig,
+  captureRuntimeConfigAsyncReader: () => async () => loadConfig(),
+  loadConfig,
+}));
+vi.mock("../gateway/call.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../gateway/call.js")>()),
+  callGateway,
+}));
 
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
+const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
+let messageFile: string;
 
-describe("agent message stdin", () => {
-  const originalStdin = Object.getOwnPropertyDescriptor(process, "stdin");
-  afterEach(() => {
-    if (originalStdin) {
-      Object.defineProperty(process, "stdin", originalStdin);
-    }
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.stubEnv("OPENCLAW_GATEWAY_URL", "");
+  const dir = tempDirs.make("agent-message-input-");
+  messageFile = path.join(dir, "-");
+  loadConfig.mockReturnValue({
+    agents: { entries: { main: {} } },
+    session: { store: path.join(dir, "sessions.json"), mainKey: "main" },
   });
+  callGateway.mockResolvedValue(gatewaySuccessReply());
+});
+afterEach(() => vi.unstubAllEnvs());
 
-  function useStdin(chunks: Buffer[]) {
-    Object.defineProperty(process, "stdin", {
-      configurable: true,
-      value: Readable.from(chunks),
-    });
-  }
+function runInput() {
+  return agentCliCommand({ messageFile: "-", sessionKey: "agent:main:stdin" }, runtime);
+}
 
-  it("strips a BOM and preserves multiline Unicode across byte chunks", async () => {
-    const bytes = Buffer.from("\uFEFF First line\n中文 😀\r\nLast line\n");
-    useStdin([bytes.subarray(0, 17), bytes.subarray(17, 20), bytes.subarray(20)]);
-    await expect(readAgentMessageFile("-")).resolves.toBe(" First line\n中文 😀\r\nLast line\n");
-  });
-
-  it.each([Buffer.from([0xff]), Buffer.from([0xe4, 0xb8])])(
-    "rejects malformed or incomplete UTF-8 stdin",
-    async (bytes) => {
-      useStdin([bytes]);
-      await expect(readAgentMessageFile("-")).rejects.toThrow("Message stdin must be valid UTF-8");
-    },
+it("dispatches chunked UTF-8 stdin with BOM removal and preserved multiline content", async () => {
+  const originalStdin = expectDefined(
+    Object.getOwnPropertyDescriptor(process, "stdin"),
+    "stdin descriptor",
   );
-
-  it("uses the same 4 MiB byte budget for stdin as files", async () => {
-    const atLimit = Buffer.alloc(4 * 1024 * 1024, "x");
-    useStdin([atLimit]);
-    await expect(readAgentMessageFile("-")).resolves.toHaveLength(atLimit.length);
-    useStdin([atLimit, Buffer.from("x")]);
-    await expect(readAgentMessageFile("-")).rejects.toThrow("Message stdin exceeds 4194304 bytes");
+  const bytes = Buffer.from("\uFEFF First line\n中文 😀\r\nLast line\n");
+  Object.defineProperty(process, "stdin", {
+    configurable: true,
+    value: Readable.from([bytes.subarray(0, 17), bytes.subarray(17, 20), bytes.subarray(20)]),
   });
+  try {
+    await runInput();
+    expect(callGateway).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        method: "agent",
+        params: expect.objectContaining({ message: " First line\n中文 😀\r\nLast line\n" }),
+      }),
+    );
+  } finally {
+    Object.defineProperty(process, "stdin", originalStdin);
+  }
+});
 
-  it("keeps explicitly addressed dash files separate from stdin", async () => {
-    const root = tempDirs.make("agent-dash-file-");
-    const file = path.join(root, "-");
-    await fs.writeFile(file, "literal dash file");
-    useStdin([Buffer.from("piped input")]);
-    await expect(readAgentMessageFile(file)).resolves.toBe("literal dash file");
-    await expect(readAgentMessageFile("-")).resolves.toBe("piped input");
-  });
+it.each([
+  ["empty", Buffer.from(" \n"), "Message stdin is empty"],
+  ["invalid UTF-8", Buffer.from([0xff]), "Message stdin must be valid UTF-8"],
+  ["oversized", Buffer.alloc(4 * 1024 * 1024 + 1, "x"), "Message stdin exceeds 4194304 bytes"],
+])("rejects %s stdin before dispatch", async (_kind, bytes, error) => {
+  const originalStdin = expectDefined(
+    Object.getOwnPropertyDescriptor(process, "stdin"),
+    "stdin descriptor",
+  );
+  Object.defineProperty(process, "stdin", { configurable: true, value: Readable.from([bytes]) });
+  try {
+    await expect(runInput()).rejects.toThrow(error);
+    expect(callGateway).not.toHaveBeenCalled();
+  } finally {
+    Object.defineProperty(process, "stdin", originalStdin);
+  }
+});
+
+it("reads an explicitly addressed literal dash file", async () => {
+  fs.writeFileSync(messageFile, "literal dash prompt");
+  await agentCliCommand({ messageFile, sessionKey: "agent:main:file" }, runtime);
+  expect(callGateway).toHaveBeenCalledExactlyOnceWith(
+    expect.objectContaining({
+      params: expect.objectContaining({ message: "literal dash prompt" }),
+    }),
+  );
+});
+
+it("rejects a blank file before dispatch", async () => {
+  fs.writeFileSync(messageFile, " \n");
+  await expect(
+    agentCliCommand({ messageFile, sessionKey: "agent:main:file" }, runtime),
+  ).rejects.toThrow(`Message file is empty: ${messageFile}`);
+  expect(callGateway).not.toHaveBeenCalled();
 });

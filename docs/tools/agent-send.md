@@ -31,7 +31,11 @@ output projection, and process status, use [`openclaw agent exec`](/cli/agent#ag
     openclaw agent --agent ops --message-file ./task.md
     ```
 
-    Reads a valid UTF-8 file as the agent message body.
+    Reads a valid UTF-8 file as the agent message body. To pipe a prompt:
+
+    ```bash
+    cat task.md | openclaw agent --agent ops --message-file -
+    ```
 
   </Step>
 
@@ -91,9 +95,10 @@ output projection, and process status, use [`openclaw agent exec`](/cli/agent#ag
 
 - By default, the CLI goes **through the Gateway**. Add `--local` to force the
   embedded runtime on the current machine.
-- Pass exactly one of `--message` or `--message-file`. File messages preserve
-  multiline content after removing an optional UTF-8 BOM. Files larger than
-  4 MiB are rejected before dispatch.
+- Pass exactly one of `--message` or `--message-file`. Exact `--message-file -`
+  reads stdin; use `./-` or an absolute path for a file named `-`. File and stdin
+  messages preserve multiline content after removing an optional UTF-8 BOM.
+  Invalid UTF-8, empty prompts, and input larger than 4 MiB are rejected before dispatch.
 - After transient handshake retries, a Gateway timeout or closed connection
   fails the command with a stderr hint; the CLI never silently reruns the turn
   embedded. The Gateway may still finish an accepted turn, so verify Gateway
