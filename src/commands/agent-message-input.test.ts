@@ -41,7 +41,7 @@ beforeEach(() => {
     agents: { entries: { main: {} } },
     session: { store: path.join(dir, "sessions.json"), mainKey: "main" },
   });
-  callGateway.mockResolvedValue(gatewaySuccessReply());
+  callGateway.mockResolvedValue(gatewaySuccessReply("ok"));
 });
 afterEach(() => vi.unstubAllEnvs());
 
