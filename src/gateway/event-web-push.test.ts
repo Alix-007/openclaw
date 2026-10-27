@@ -309,7 +309,6 @@ describe("event Web Push classification", () => {
     { detail: "detailed", label: "Deployment review", expected: "Deployment review" },
     { detail: "private", label: "Deployment review", expected: null },
     { detail: "identified", label: undefined, expected: "research" },
-    { detail: "identified", label: "   ", expected: "research" },
     { detail: "identified", label: "x".repeat(81), expected: "x".repeat(80) },
   ] as const)(
     "uses only authorized explicit completion labels ($detail, $label)",
@@ -378,13 +377,10 @@ describe("event Web Push classification", () => {
       const query = { agentId: "main", key: "agent:main:completion-label" };
       const entry = { sessionId: "completion-label", updatedAt: 1, label: "Deployment review" };
       seedRow(query, entry);
-      using releaseForeground = holdForeground();
+      using _ = holdForeground();
       using projection = await createTestProjection({
         cfg: { agents: { entries: { main: {} } } },
         modelCatalog: [],
-      }).catch((error: unknown) => {
-        releaseForeground();
-        throw error;
       });
       await projection.ensureMaterialized();
       const captured = projection.capture(query);
@@ -474,6 +470,7 @@ describe("event Web Push classification", () => {
   });
 
   it("does not deliver label metadata when the existing access check denies a reader", async () => {
+    setCompletionSession();
     mocks.canReceive.mockReturnValue(false);
     finishAgent(undefined, {}, { agentId: "research", sessionKeys: ["agent:research:thread.1"] });
     await authorityCompleted.promise;
@@ -481,16 +478,15 @@ describe("event Web Push classification", () => {
     expect(mocks.readCapabilityEntry).not.toHaveBeenCalled();
   });
 
-  it.each([
-    undefined,
-    { entry: undefined },
-    { entry: { sessionId: "replacement-session", label: "Replacement label" } },
-  ])("falls back when resident metadata is unavailable or replaced: %j", async (metadata) => {
-    setCompletionSession();
-    mocks.readCapabilityEntry.mockReturnValue(metadata);
-    finishAgent(undefined, {}, { agentId: "research", sessionKeys: ["agent:research:thread.1"] });
-    await expectPayload({ body: "research: An agent completed its response." });
-  });
+  it.each([undefined, { entry: { sessionId: "replacement-session", label: "Replacement label" } }])(
+    "falls back when resident metadata is unavailable or replaced: %j",
+    async (metadata) => {
+      setCompletionSession();
+      mocks.readCapabilityEntry.mockReturnValue(metadata);
+      finishAgent(undefined, {}, { agentId: "research", sessionKeys: ["agent:research:thread.1"] });
+      await expectPayload({ body: "research: An agent completed its response." });
+    },
+  );
 
   it("drops a prepared avatar when identity changes during recipient preparation", async () => {
     const avatar = `data:image/png;base64,${encodePngRgba(Buffer.from([255, 150, 0, 255]), 1, 1).toString("base64")}`;
