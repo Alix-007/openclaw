@@ -670,6 +670,29 @@ describe("plugin authoring commands", () => {
     expect(log).toHaveBeenCalledWith(`Created ${projectDir}`);
   });
 
+  it.each(["tool", "provider"])(
+    "keeps scoped package names publishable for %s scaffolds",
+    async (type) => {
+      const tmpDir = tempDirs.make("openclaw-scoped-plugin-init-");
+      for (const [id, packageName] of [
+        ["quotes", "openclaw-plugin-quotes"],
+        ["@acme/quotes", "@acme/openclaw-plugin-quotes"],
+      ] as const) {
+        const projectDir = path.join(tmpDir, id);
+        await runPluginsInitCommand(id, { directory: projectDir, type });
+        const packageManifest = readJson(projectDir, "package.json");
+        expect(packageManifest.name).toBe(packageName);
+        expect(readJson(projectDir, "openclaw.plugin.json").id).toBe(id);
+        if (type === "provider") {
+          expect(packageManifest.openclaw.install.clawhubSpec).toBe(`clawhub:${packageName}`);
+          expect(readText(projectDir, "README.md")).toContain(
+            `clawhub -- package trusted-publisher set ${packageName}`,
+          );
+        }
+      }
+    },
+  );
+
   it("scaffolds a provider plugin project with ClawHub validation and release metadata", async () => {
     const tmpDir = tempDirs.make("openclaw-provider-init-");
     const projectDir = path.join(tmpDir, "plugin-init-test");
