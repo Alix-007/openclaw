@@ -1,5 +1,6 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { AsyncWorkScope } from "../../shared/async-work-scope.js";
 import { createNonExitingRuntimeEnv } from "../../test-utils/plugin-runtime-env.js";
 import { runGatewayResume, runGatewaySuspend } from "./suspend-cli.js";
 
@@ -90,13 +91,43 @@ it("polls with one stable request id until the Gateway is ready", async () => {
 
   await suspend({ requestId: "host-operation", waitSeconds: "2" });
 
-  expect(sleep).toHaveBeenCalledExactlyOnceWith(200);
+  expect(sleep).toHaveBeenCalledExactlyOnceWith(200, undefined, { signal: undefined });
   expect(callGateway.mock.calls.map((call) => call[2])).toEqual([
     { requestId: "host-operation" },
     { requestId: "host-operation" },
   ]);
   expect(runtime.log).toHaveBeenCalledWith("Resume with: openclaw gateway resume suspension-1");
 });
+
+it.each(["before", "sleep", "busy", "ready"] as const)(
+  "stops interrupted waiting during %s without losing an acquired lease",
+  async (phase) => {
+    const scope = new AsyncWorkScope();
+    if (phase === "before") {
+      scope.beginClose();
+    }
+    callGateway.mockImplementation(async () => {
+      if (phase === "busy" || phase === "ready") {
+        scope.beginClose();
+      }
+      return phase === "ready" ? readyResult : busyResult;
+    });
+    vi.mocked(sleep).mockImplementation(async (_delay, _value, options) => {
+      scope.beginClose();
+      options?.signal?.throwIfAborted();
+    });
+    await scope.run(() => suspend({ waitSeconds: 30, json: true }));
+    expect(callGateway).toHaveBeenCalledTimes(phase === "before" ? 0 : 1);
+    expect(runtime.writeJson).toHaveBeenCalledTimes(phase === "ready" ? 1 : 0);
+    if (phase === "ready") {
+      expect(runtime.writeJson).toHaveBeenCalledWith(expect.objectContaining(readyResult));
+    }
+    expect(runtime.log).not.toHaveBeenCalled();
+    expect(runtime.error).not.toHaveBeenCalled();
+    expect(runtime.exit).not.toHaveBeenCalled();
+    await scope.drain();
+  },
+);
 
 it("emits the latest busy result and exits nonzero in JSON mode", async () => {
   callGateway.mockResolvedValue(busyResult);
