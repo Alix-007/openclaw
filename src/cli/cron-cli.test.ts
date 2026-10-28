@@ -2,6 +2,8 @@ import { Command } from "commander";
 import { afterEach, expect, it, vi } from "vitest";
 import type { CronDeliveryPreview, CronJob, CronJobCreate, CronJobPatch } from "../cron/types.js";
 import { ExitError } from "../runtime.js";
+import { AsyncWorkScope } from "../shared/async-work-scope.js";
+import { createDeferredCore } from "../shared/deferred.js";
 import { registerCronCli } from "./cron-cli.js";
 import { ExpectedCliError, formatCliJsonFailure } from "./failure-output.js";
 
@@ -341,6 +343,81 @@ it("bounds oversized poll intervals by the wait timeout", async () => {
   await vi.advanceTimersByTimeAsync(10);
   expect((await run).exitCode).toBe(1);
 });
+
+it.each(["sleep", "request", "completion"] as const)(
+  "cancels cron run waiting during %s without reporting a new outcome",
+  async (phase) => {
+    vi.useFakeTimers();
+    resetGatewayMock();
+    const scope = new AsyncWorkScope();
+    const completed = { status: "ok", completionStatus: "succeeded" } as const;
+    const read = createDeferredCore<{ entries: Array<typeof completed> }>();
+    let cleanup = false;
+    callGatewayFromCli.mockImplementation(
+      async (
+        method: string,
+        _opts: unknown,
+        _params: unknown,
+        extra?: { signal?: AbortSignal },
+      ) => {
+        if (method === "cron.run") {
+          return { ok: true, enqueued: true, runId: "queued-run" };
+        }
+        if (phase === "sleep" || cleanup) {
+          return { entries: cleanup ? [completed] : [] };
+        }
+        if (phase === "request") {
+          extra?.signal?.addEventListener("abort", () => read.reject(extra.signal?.reason), {
+            once: true,
+          });
+        }
+        return read.promise;
+      },
+    );
+    let settled = false;
+    const command = scope.run(() =>
+      parse([...RUN_WAIT, "--wait-timeout", "1s", "--poll-interval", "500ms"]),
+    );
+    const outcome = command.then(
+      () => {
+        settled = true;
+      },
+      (error: unknown) => {
+        settled = true;
+        return error;
+      },
+    );
+    const exitCode = process.exitCode;
+    try {
+      await vi.advanceTimersByTimeAsync(0);
+      expect(
+        callGatewayFromCli.mock.calls.filter(([method]) => method === "cron.runs"),
+      ).toHaveLength(1);
+      process.exitCode = 130;
+      scope.beginClose(new DOMException("CLI stopping (SIGINT)", "AbortError"));
+      if (phase === "completion") {
+        read.resolve({ entries: [completed] });
+      }
+      await vi.advanceTimersByTimeAsync(0);
+      expect(settled).toBe(true);
+      expect(await outcome).toBeUndefined();
+      expect(process.exitCode).toBe(130);
+      expect(defaultRuntime.writeStdout).not.toHaveBeenCalled();
+      expect(defaultRuntime.error).not.toHaveBeenCalled();
+      expect(defaultRuntime.exit).not.toHaveBeenCalled();
+      expect(
+        callGatewayFromCli.mock.calls.filter(([method]) => method === "cron.runs"),
+      ).toHaveLength(1);
+    } finally {
+      process.exitCode = exitCode;
+      cleanup = true;
+      read.resolve({ entries: [completed] });
+      await vi.advanceTimersByTimeAsync(500);
+      await outcome;
+      await scope.drain();
+    }
+  },
+);
 
 it.each([
   ["rm", "cron.remove"],
