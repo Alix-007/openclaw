@@ -220,7 +220,10 @@ describe("voice-call CLI status fallback", () => {
     }
     const args = phase === "poll" ? continueArgs : ["call", "--message", "hello"];
     const completed = vi.fn();
-    const outcome = runCli(buildProgram({}, ensureRuntime), args).then(completed, (error) => error);
+    const outcome = runCli(buildProgram({}, ensureRuntime), args).then(
+      completed,
+      (error: unknown) => error,
+    );
     const handlers = () => process.listeners(signal).filter((fn) => !originalListeners.has(fn));
     try {
       await ready.promise;
