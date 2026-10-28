@@ -217,10 +217,11 @@ describe("PlaywrightDiffScreenshotter", () => {
     const { pages, screenshotter } = await createScreenshotterHarness();
     const pdfPath = path.join(rootDir, "preview.pdf");
 
-    await screenshotter.screenshotHtml(
+    const scale = await screenshotter.screenshotHtml(
       screenshotParams({ outputPath: pdfPath, theme: "light", image: { format: "pdf" } }),
     );
 
+    expect(scale).toBe(2);
     expect(launchMock).toHaveBeenCalledTimes(1);
     expect(pages).toHaveLength(1);
     const page = expectDefined(pages[0], "diffs browser page");
@@ -230,6 +231,30 @@ describe("PlaywrightDiffScreenshotter", () => {
     expect(page.screenshot).toHaveBeenCalledTimes(0);
     await expect(fs.readFile(pdfPath, "utf8")).resolves.toContain("%PDF-1.7");
   });
+
+  it.each([
+    { requestedScale: 2, height: 240, renderedScale: 2, pageCount: 1 },
+    { requestedScale: 4, height: 1700, renderedScale: 2.14, pageCount: 2 },
+  ])(
+    "returns the rendered PNG scale after $pageCount page attempts",
+    async ({ requestedScale, height, renderedScale, pageCount }) => {
+      const { pages, browser, screenshotter } = await createScreenshotterHarness({
+        boundingBox: { x: 40, y: 40, width: 960, height },
+      });
+
+      const scale = await screenshotter.screenshotHtml(
+        screenshotParams({ image: { scale: requestedScale } }),
+      );
+
+      expect(scale).toBe(renderedScale);
+      expect(pages).toHaveLength(pageCount);
+      expect(browser.newPage).toHaveBeenLastCalledWith(
+        expect.objectContaining({ deviceScaleFactor: renderedScale }),
+      );
+      expect(pages.at(-1)?.screenshot).toHaveBeenCalledTimes(1);
+      await expect(fs.readFile(outputPath, "utf8")).resolves.toBe("png");
+    },
+  );
 
   it.each(["pdf", "png"] as const)("rejects oversized %s output", async (format) => {
     const { pages, screenshotter } = await createScreenshotterHarness(
@@ -537,8 +562,11 @@ function createMockBrowser(
   options?: Parameters<typeof createMockPage>[0],
 ) {
   return {
-    newPage: vi.fn(async (_options?: unknown) => {
-      const page = createMockPage(options);
+    newPage: vi.fn(async (pageOptions?: { deviceScaleFactor?: number }) => {
+      const page = createMockPage({
+        ...options,
+        deviceScaleFactor: pageOptions?.deviceScaleFactor,
+      });
       pages.push(page);
       return page;
     }),
@@ -549,6 +577,7 @@ function createMockBrowser(
 
 function createMockPage(options?: {
   boundingBox?: { x: number; y: number; width: number; height: number };
+  deviceScaleFactor?: number;
 }) {
   const box = options?.boundingBox ?? { x: 40, y: 40, width: 640, height: 240 };
   const writer = (contents: string) =>
@@ -560,7 +589,7 @@ function createMockPage(options?: {
     route: vi.fn(async () => {}),
     setContent: vi.fn(async () => {}),
     waitForFunction: vi.fn(async () => {}),
-    evaluate: vi.fn(async () => 1),
+    evaluate: vi.fn(async () => options?.deviceScaleFactor ?? 1),
     emulateMedia: vi.fn(async () => {}),
     locator: vi.fn(() => ({
       waitFor: vi.fn(async () => {}),

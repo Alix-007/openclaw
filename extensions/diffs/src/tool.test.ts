@@ -130,6 +130,7 @@ describe("diffs tool", () => {
     expect(result.text).toContain("use an available file-sending tool");
     expect(result.text).not.toMatch(/`message`|\bmessage tool\b/);
     expect(result.details.fileFormat).toBe(format);
+    expect(result.details.fileScale).toBe(2);
     expect(filePath.endsWith(`preview.${format}`)).toBe(true);
     expect(filePath).toContain(fixture.rootDir);
     expect(Date.parse(String(expiresAt))).toBeGreaterThan(Date.now());
@@ -144,6 +145,18 @@ describe("diffs tool", () => {
     await fixture.store.cleanupExpired();
     await expect(fs.stat(filePath)).rejects.toMatchObject({ code: "ENOENT" });
   });
+
+  it.each(["file", "both", "image"])(
+    "reports the renderer's actual scale for %s output",
+    async (mode) => {
+      const tool = createTool({}, createScreenshotter("png", 1.7));
+
+      const result = await executeDiff(tool, { mode, fileScale: 4 });
+
+      expect(result.details.fileScale).toBe(1.7);
+      await expect(fs.readFile(String(result.details.filePath), "utf8")).resolves.toBe("png");
+    },
+  );
 
   it.each(["render", "load"])("keeps the viewer when the renderer fails to %s", async (stage) => {
     if (stage === "render") {
@@ -261,13 +274,14 @@ describe("diffs tool", () => {
 
 function createScreenshotter(
   format: DiffRenderOptions["image"]["format"] = "png",
+  renderedScale?: number,
 ): DiffScreenshotter {
   const screenshotHtml = vi.fn<DiffScreenshotter["screenshotHtml"]>(async (params) => {
     const { outputPath, image } = params;
     expect(image.format).toBe(format);
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, Buffer.from(format === "pdf" ? "%PDF-1.7" : "png"));
-    return outputPath;
+    return renderedScale ?? image.scale;
   });
   return { screenshotHtml };
 }
