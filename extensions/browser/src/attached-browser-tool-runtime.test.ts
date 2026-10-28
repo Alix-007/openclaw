@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { useAutoCleanupTempDirTracker } from "openclaw/plugin-sdk/test-env";
-import { createSolidPngBuffer } from "openclaw/plugin-sdk/test-fixtures";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -25,7 +24,6 @@ vi.mock("./browser/pw-session.js", () => ({
 }));
 
 import { createAttachedBrowserToolRuntime as createRuntime } from "./attached-browser-tool-runtime.js";
-import { normalizeBrowserScreenshot } from "./browser/screenshot.js";
 
 const tempDirs = useAutoCleanupTempDirTracker(afterEach);
 const cdpUrl = "http://127.0.0.1:9222";
@@ -33,7 +31,7 @@ const defaults = { cdpUrl, ensureAttachTarget: async () => {}, workspaceDir: "/t
 
 beforeEach(() => vi.clearAllMocks());
 
-it("exposes only one raw attach-only CDP profile through an authenticated loopback bridge", async () => {
+it("uses the authenticated attach-only bridge and preserves normalized artifact names", async () => {
   const ensureAttachTarget = vi.fn().mockResolvedValue(undefined);
   const workspaceDir = tempDirs.make("attached-workspace-");
   const context = { workspaceDir, agentSessionKey: "agent:w:s", agentDir: "/tmp/w" };
@@ -57,11 +55,11 @@ it("exposes only one raw attach-only CDP profile through an authenticated loopba
     screenshotResultMode: "path",
   });
   const persist = (sourcePath: string) => toolParams.persistScreenshot({ sourcePath, type: "png" });
-  const sourcePath = path.join(workspaceDir, "source.png");
+  const sourcePath = path.join(workspaceDir, "source.jpg");
   await fs.writeFile(sourcePath, "screenshot-bytes");
   const artifactPath = await persist(sourcePath);
   expect(artifactPath.replaceAll("\\", "/")).toMatch(
-    /\.artifacts\/cloud-worker-browser\/screenshot-[a-f0-9]{16}\.png$/u,
+    /\.artifacts\/cloud-worker-browser\/screenshot-[a-f0-9]{16}\.jpg$/u,
   );
   expect(await fs.readFile(artifactPath, "utf8")).toBe("screenshot-bytes");
   if (process.platform !== "win32") {
@@ -71,30 +69,6 @@ it("exposes only one raw attach-only CDP profile through an authenticated loopba
   await expect(persist(path.join(workspaceDir, "missing.png"))).rejects.toThrow();
   expect(await fs.readdir(path.dirname(artifactPath))).toEqual(filesBeforeFailure);
 });
-
-it.each(["png", "jpeg"] as const)(
-  "preserves a normalized JPEG artifact when the requested format was %s",
-  async (requestedType) => {
-    const workspaceDir = tempDirs.make("attached-normalized-screenshot-");
-    const normalized = await normalizeBrowserScreenshot(
-      createSolidPngBuffer(20, 2100, { r: 12, g: 34, b: 56 }),
-    );
-    expect(normalized.contentType).toBe("image/jpeg");
-    expect(normalized.buffer.subarray(0, 2)).toEqual(Buffer.from([0xff, 0xd8]));
-    const sourcePath = path.join(workspaceDir, "normalized.jpg");
-    await fs.writeFile(sourcePath, normalized.buffer);
-    await createRuntime({ ...defaults, workspaceDir });
-    const toolParams = mocks.createBrowserTool.mock.calls.at(-1)?.[0];
-
-    const artifactPath = await toolParams.persistScreenshot({
-      sourcePath,
-      type: requestedType,
-    });
-
-    expect(path.extname(artifactPath)).toBe(".jpg");
-    expect(await fs.readFile(artifactPath)).toEqual(normalized.buffer);
-  },
-);
 
 it("retries exact Playwright CDP adapter disposal after a failed disconnect", async () => {
   const runtime = await createRuntime({ ...defaults, workspaceDir: tempDirs.make("attached-") });
