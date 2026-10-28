@@ -136,23 +136,32 @@ describe("completion-cli", () => {
   itUnix.each(["built-in", "root"] as const)("keeps %s zsh descriptions literal", (scope) => {
     const program = new Command().name("openclaw");
     let describedCommand: Command;
-    let completionFunction: string;
+    let commandPath: string[];
     if (scope === "built-in") {
       registerModelsCli(program);
       describedCommand = commandAt(program, "models", "auth", "logout");
-      completionFunction = "_openclaw_models_auth";
+      commandPath = ["models", "auth"];
     } else {
       describedCommand = program
         .command("inspect")
         .alias("review")
         .description('Show John\'s "literal" $OPENCLAW_COMPLETION_LITERAL with `models auth list`');
-      completionFunction = "_openclaw_root_completion";
+      commandPath = [];
     }
     const stdout = runZshScript(
       `${getCompletionScript("zsh", program)}
 OPENCLAW_COMPLETION_LITERAL=expanded-value
 models() { printf '%s\\n' "OPENCLAW_COMPLETION_DESCRIPTION_EVALUATED:$*" >&2; }
+typeset -a command_path line
+command_path=(${commandPath.join(" ")})
 _arguments() {
+  if (( \${#command_path} )); then
+    state=args
+    line=("$command_path[1]")
+    shift command_path
+    return
+  fi
+  state=''
   local spec
   for spec in "$@"; do
     if [[ "$spec" == "1: :"* ]]; then
@@ -162,7 +171,7 @@ _arguments() {
     fi
   done
 }
-${completionFunction}
+_openclaw_root_completion
 `,
       10_000,
     );
@@ -198,7 +207,7 @@ _openclaw_root_completion
     expect(stdout).toContain(`--literal[${description}]`);
   });
 
-  itUnix("completes zsh option values and short clusters in groups and leaves", async (ctx) => {
+  itUnix("completes zsh options and distinct command paths", async (ctx) => {
     const probe = runZsh("zmodload zsh/zpty");
     if (probe.error && "code" in probe.error && probe.error.code === "ENOENT") {
       ctx.skip();
@@ -208,12 +217,22 @@ _openclaw_root_completion
     const program = new Command().name("openclaw");
     registerCompletionCli(program);
     registerAcpCli(program);
+    const proof = program.command("proof").alias("p");
+    proof.command("foo-bar").alias("hyphen-alias").option("--hyphen-only");
+    proof.command("foo_bar").option("--underscore-only");
+    proof.command("a").command("b").option("--nested-only");
+    proof.command("a_b").option("--flat-only");
     const cases = [
       ["openclaw completion -ys f", "openclaw completion -ys fish"],
       ["openclaw completion --shell=f", "openclaw completion --shell=fish"],
       ["openclaw completion -s f", "openclaw completion -s fish"],
       ["openclaw completion -yi --shell f", "openclaw completion -yi --shell fish"],
       ["openclaw acp -vv cl", "openclaw acp -vv client"],
+      ["openclaw proof foo-bar --hy", "openclaw proof foo-bar --hyphen-only"],
+      ["openclaw proof foo_bar --un", "openclaw proof foo_bar --underscore-only"],
+      ["openclaw proof a b --ne", "openclaw proof a b --nested-only"],
+      ["openclaw proof a_b --fl", "openclaw proof a_b --flat-only"],
+      ["openclaw p hyphen-alias --hy", "openclaw p hyphen-alias --hyphen-only"],
     ];
     const tempDir = tempDirs.make("openclaw-zsh-completion-");
     await fs.writeFile(

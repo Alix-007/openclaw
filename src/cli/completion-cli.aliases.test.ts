@@ -25,13 +25,11 @@ describe("completion-cli command aliases", () => {
     );
   });
 
-  it("completes root and nested aliases in zsh lists and dispatch", () => {
+  it("includes root and nested aliases in zsh command lists", () => {
     const script = getCompletionScript("zsh", createAliasedCompletionProgram());
 
     expect(script).toContain("'capability[Run inference]'");
-    expect(script).toContain("(infer|capability) _openclaw_infer ;;");
     expect(script).toContain("'create[Add a job]'");
-    expect(script).toContain("(add|create) _openclaw_cron_add ;;");
   });
 
   it.skipIf(process.platform === "win32")("offers options after a nested alias in bash", () => {
