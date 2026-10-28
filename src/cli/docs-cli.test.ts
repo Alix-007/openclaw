@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { isRich } from "../../packages/terminal-core/src/theme.js";
+import { AsyncWorkScope } from "../shared/async-work-scope.js";
 import { registerDocsCli } from "./docs-cli.js";
 
 const runtime = vi.hoisted(() => ({
@@ -68,6 +69,50 @@ beforeEach(() => {
 });
 
 afterEach(() => vi.unstubAllGlobals());
+
+it.each(["before", "headers", "body", "completed"] as const)(
+  "settles an interrupted search during %s without rendering results or errors",
+  async (phase) => {
+    const scope = new AsyncWorkScope();
+    if (phase === "before") {
+      scope.beginClose();
+    }
+    fetchMock.mockImplementation(async (_url, init) => {
+      const signal = init?.signal;
+      expect(signal).toBeInstanceOf(AbortSignal);
+      if (phase === "headers") {
+        return await new Promise<Response>((_resolve, reject) => {
+          signal?.addEventListener(
+            "abort",
+            () => reject(new DOMException("Interrupted", "AbortError")),
+            { once: true },
+          );
+          scope.beginClose();
+        });
+      }
+      if (phase === "body") {
+        return new Response(
+          new ReadableStream({
+            pull(controller) {
+              signal?.addEventListener("abort", () => controller.error(signal.reason), {
+                once: true,
+              });
+              scope.beginClose();
+            },
+          }),
+        );
+      }
+      scope.beginClose();
+      return new Response(JSON.stringify({ results: [{ title: "Late", link: "/late" }] }));
+    });
+    await scope.run(() => search(["gateway"], { json: true }));
+    expect(fetchMock).toHaveBeenCalledTimes(phase === "before" ? 0 : 1);
+    expect(runtime.log).not.toHaveBeenCalled();
+    expect(runtime.error).not.toHaveBeenCalled();
+    expect(runtime.exit).not.toHaveBeenCalled();
+    await scope.drain();
+  },
+);
 
 it("calls the Cloudflare docs search API", async () => {
   respond([]);
