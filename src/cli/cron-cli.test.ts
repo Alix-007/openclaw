@@ -344,80 +344,50 @@ it("bounds oversized poll intervals by the wait timeout", async () => {
   expect((await run).exitCode).toBe(1);
 });
 
-it.each(["sleep", "request", "completion"] as const)(
-  "cancels cron run waiting during %s without reporting a new outcome",
-  async (phase) => {
-    vi.useFakeTimers();
-    resetGatewayMock();
-    const scope = new AsyncWorkScope();
-    const completed = { status: "ok", completionStatus: "succeeded" } as const;
-    const read = createDeferredCore<{ entries: Array<typeof completed> }>();
-    let cleanup = false;
-    callGatewayFromCli.mockImplementation(
-      async (
-        method: string,
-        _opts: unknown,
-        _params: unknown,
-        extra?: { signal?: AbortSignal },
-      ) => {
-        if (method === "cron.run") {
-          return { ok: true, enqueued: true, runId: "queued-run" };
-        }
-        if (phase === "sleep" || cleanup) {
-          return { entries: cleanup ? [completed] : [] };
-        }
-        if (phase === "request") {
-          extra?.signal?.addEventListener("abort", () => read.reject(extra.signal?.reason), {
-            once: true,
-          });
-        }
-        return read.promise;
-      },
-    );
-    let settled = false;
-    const command = scope.run(() =>
-      parse([...RUN_WAIT, "--wait-timeout", "1s", "--poll-interval", "500ms"]),
-    );
-    const outcome = command.then(
-      () => {
-        settled = true;
-      },
-      (error: unknown) => {
-        settled = true;
-        return error;
-      },
-    );
-    const exitCode = process.exitCode;
-    try {
-      await vi.advanceTimersByTimeAsync(0);
-      expect(
-        callGatewayFromCli.mock.calls.filter(([method]) => method === "cron.runs"),
-      ).toHaveLength(1);
-      process.exitCode = 130;
-      scope.beginClose(new DOMException("CLI stopping (SIGINT)", "AbortError"));
-      if (phase === "completion") {
-        read.resolve({ entries: [completed] });
+it.each(["sleep", "request", "completion"])("cancels cron wait during %s", async (phase) => {
+  vi.useFakeTimers();
+  resetGatewayMock();
+  const scope = new AsyncWorkScope();
+  const completed = { entries: [{ status: "ok", completionStatus: "succeeded" }] } as const;
+  const read = createDeferredCore<typeof completed>();
+  const polls = () => callGatewayFromCli.mock.calls.filter(([method]) => method === "cron.runs");
+  callGatewayFromCli
+    .mockResolvedValue(completed)
+    .mockResolvedValueOnce({ ok: true, enqueued: true, runId: "queued-run" })
+    .mockImplementationOnce(async (_method, _opts, _params, extra?: { signal?: AbortSignal }) => {
+      const signal = extra?.signal;
+      if (phase === "request" && signal) {
+        signal.addEventListener("abort", () => read.reject(signal.reason), { once: true });
       }
-      await vi.advanceTimersByTimeAsync(0);
-      expect(settled).toBe(true);
-      expect(await outcome).toBeUndefined();
-      expect(process.exitCode).toBe(130);
-      expect(defaultRuntime.writeStdout).not.toHaveBeenCalled();
-      expect(defaultRuntime.error).not.toHaveBeenCalled();
-      expect(defaultRuntime.exit).not.toHaveBeenCalled();
-      expect(
-        callGatewayFromCli.mock.calls.filter(([method]) => method === "cron.runs"),
-      ).toHaveLength(1);
-    } finally {
-      process.exitCode = exitCode;
-      cleanup = true;
-      read.resolve({ entries: [completed] });
-      await vi.advanceTimersByTimeAsync(500);
-      await outcome;
-      await scope.drain();
+      return phase === "sleep" ? { entries: [] } : read.promise;
+    });
+  const settled = vi.fn();
+  void scope
+    .track(() => parse([...RUN_WAIT, "--wait-timeout", "1s", "--poll-interval", "500ms"]))
+    .then(() => settled(), settled);
+  const exitCode = process.exitCode;
+  try {
+    await vi.advanceTimersByTimeAsync(0);
+    expect(polls()).toHaveLength(1);
+    process.exitCode = 130;
+    scope.beginClose(new DOMException("CLI stopping (SIGINT)", "AbortError"));
+    if (phase === "completion") {
+      read.resolve(completed);
     }
-  },
-);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(settled).toHaveBeenCalledExactlyOnceWith();
+    expect(process.exitCode).toBe(130);
+    expect(defaultRuntime.writeStdout).not.toHaveBeenCalled();
+    expect(defaultRuntime.error).not.toHaveBeenCalled();
+    expect(defaultRuntime.exit).not.toHaveBeenCalled();
+    expect(polls()).toHaveLength(1);
+  } finally {
+    process.exitCode = exitCode;
+    read.resolve(completed);
+    await vi.advanceTimersByTimeAsync(500);
+    await scope.drain();
+  }
+});
 
 it.each([
   ["rm", "cron.remove"],
