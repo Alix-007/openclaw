@@ -230,6 +230,84 @@ describe("gateway-status command", () => {
     vi.useRealTimers();
   });
 
+  it.each([100, 2 ** 31 + 5000])(
+    "lets a reachable gateway finish within the %s ms budget and releases the deadline",
+    async (timeoutMs) => {
+      vi.useFakeTimers();
+      readBestEffortConfig.mockResolvedValueOnce(localGatewayConfig());
+      probeGateway.mockImplementation(
+        async ({ url, signal }) =>
+          await new Promise<GatewayProbeResult>((resolve) => {
+            const onAbort = () => {
+              clearTimeout(timer);
+              resolve(createUnreachableGatewayProbe(url, "aborted"));
+            };
+            const timer = setTimeout(() => {
+              signal?.removeEventListener("abort", onAbort);
+              resolve(mocks.successfulProbe(url));
+            }, 10);
+            signal?.addEventListener("abort", onAbort, { once: true });
+          }),
+      );
+
+      const command = run({ timeout: String(timeoutMs) });
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(10),
+        expect(command).resolves.toBeUndefined(),
+      ]);
+
+      expect(output()).toMatchObject({
+        ok: true,
+        timeoutMs,
+        targets: [{ id: "localLoopback", connect: { ok: true } }],
+      });
+      expect(requireProbeCall("ws://127.0.0.1:18789").signal?.aborted).toBe(false);
+      expect(vi.getTimerCount()).toBe(0);
+    },
+  );
+
+  it("retains the full overall deadline beyond the native timer limit", async () => {
+    vi.useFakeTimers();
+    const timeoutMs = 2 ** 31 + 5000;
+    readBestEffortConfig.mockResolvedValueOnce(localGatewayConfig());
+    probeGateway.mockImplementation(
+      async ({ url, signal }) =>
+        await new Promise<GatewayProbeResult>((resolve) => {
+          signal?.addEventListener(
+            "abort",
+            () => resolve(createUnreachableGatewayProbe(url, "aborted")),
+            { once: true },
+          );
+        }),
+    );
+
+    const command = run({ timeout: String(timeoutMs) }).catch((error: unknown) => error);
+    await vi.advanceTimersByTimeAsync(timeoutMs - 1);
+    const signal = requireProbeCall("ws://127.0.0.1:18789").signal;
+    expect(signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+
+    expect(await command).toEqual(new Error("__exit__:1"));
+    expect(output()).toMatchObject({
+      ok: false,
+      timeoutMs,
+      targets: [{ id: "localLoopback", connect: { ok: false, error: "timeout" } }],
+    });
+    expect(signal?.aborted).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("releases the overall deadline when a probe rejects", async () => {
+    vi.useFakeTimers();
+    readBestEffortConfig.mockResolvedValueOnce(localGatewayConfig());
+    probeGateway.mockRejectedValueOnce(new Error("probe failed"));
+
+    await expect(run({ timeout: String(2 ** 31 + 5000) })).rejects.toThrow("probe failed");
+
+    expect(requireProbeCall("ws://127.0.0.1:18789").signal?.aborted).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("checks known targets during discovery and cancels unfinished checks at the overall deadline", async () => {
     vi.useFakeTimers();
     readBestEffortConfig.mockResolvedValueOnce(localGatewayConfig());
