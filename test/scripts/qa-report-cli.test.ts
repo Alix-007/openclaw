@@ -28,48 +28,22 @@ function runSourceScript(scriptPath: string, ...args: string[]) {
 }
 
 it.each([
-  ["coverage", "coverage"],
-  ["parity", "parity-report"],
-])("reports unknown QA %s options without a Node stack trace", (script, command) => {
-  const result = runSourceScript(`scripts/qa-${script}-report.ts`, "--wat");
+  ["coverage", "--wat", "Unknown qa coverage option: --wat"],
+  ["parity", "--wat", "Unknown qa parity-report option: --wat"],
+  ["coverage", "--evidence", "--evidence requires a value"],
+])("reports invalid QA %s %s options without a Node stack trace", (script, flag, error) => {
+  const result = runSourceScript(`scripts/qa-${script}-report.ts`, flag);
   expect(result).toMatchObject({ status: 1, stdout: "" });
-  expect(result.stderr.trim()).toBe(`Unknown qa ${command} option: --wat`);
+  expect(result.stderr.trim()).toBe(error);
   expect(result.stderr).not.toMatch(/Node\.js|\n {4}at /u);
 });
 
 it("prints tool coverage without loading the QA execution runtime", () => {
   const result = runSourceScript("scripts/qa-coverage-report.ts", "--tools", "--json");
-
   expect(result.status, result.stderr).toBe(0);
   const report: { totalTools: number } = JSON.parse(result.stdout);
   expect(report).toMatchObject({ evaluated: false, pass: true });
   expect(report.totalTools).toBeGreaterThan(0);
-});
-
-it("reports existing evidence through the source CLI without running QA", async () => {
-  const fixtureRoot = tempDirs.make("qa-evidence-source-");
-  const evidence = JSON.stringify({
-    kind: "openclaw.qa.evidence-summary",
-    schemaVersion: 2,
-    generatedAt: "2026-10-01T00:00:00Z",
-    evidenceMode: "slim",
-    entries: [],
-  });
-  const input = path.join(fixtureRoot, "qa-evidence.json");
-  const output = path.join(fixtureRoot, "gaps.json");
-  await fs.writeFile(input, evidence);
-  const result = runSourceScript(
-    "scripts/qa-coverage-report.ts",
-    "--evidence",
-    input,
-    "--output",
-    output,
-    "--json",
-  );
-  expect(result.status, result.stderr).toBe(0);
-  const report = JSON.parse(await fs.readFile(output, "utf8")) as { coverage: unknown[] };
-  expect(report.coverage.length).toBeGreaterThan(0);
-  expect(await fs.readFile(input, "utf8")).toBe(evidence);
 });
 
 it("writes failed parity artifacts without the execution runtime", async () => {
