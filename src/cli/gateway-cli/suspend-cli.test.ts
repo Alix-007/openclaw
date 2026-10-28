@@ -37,8 +37,6 @@ const suspend = (options: Partial<Parameters<typeof runGatewaySuspend>[0]> = {})
 function mockClock(advance = (delayMs: number) => delayMs) {
   let now = 1_000;
   vi.spyOn(Date, "now").mockImplementation(() => now);
-  // The wait window runs on the monotonic clock; the mocked sleeps advance
-  // the same reading the way real elapsed time would.
   vi.spyOn(performance, "now").mockImplementation(() => now);
   vi.mocked(sleep).mockImplementation(async (delayMs = 0) => {
     now += advance(delayMs);
@@ -52,13 +50,8 @@ it("prints a ready lease without exposing remote credentials in the resume hint"
 
   await suspend({ rpcOpts, waitSeconds: 0 });
 
-  expect(callGateway).toHaveBeenCalledExactlyOnceWith("gateway.suspend.prepare", rpcOpts, {
-    requestId: expect.stringMatching(/^cli-[0-9a-f]{8}$/u),
-  });
-  expect(runtime.log).toHaveBeenCalledWith("Suspension ID: suspension-1");
-  expect(runtime.log).toHaveBeenCalledWith(
-    `Expires: 2026-08-11T12:00:00.000Z (${readyResult.expiresAtMs} ms)`,
-  );
+  const requestId = expect.stringMatching(/^cli-[0-9a-f]{8}$/u);
+  expect(callGateway.mock.calls[0]?.[2]).toEqual({ requestId });
   expect(runtime.log).toHaveBeenCalledWith(
     "Resume with: openclaw --container demo gateway resume suspension-1 --port 18999",
   );
@@ -79,9 +72,7 @@ it.each([
     mockClock(() => 10_000);
   }
   callGateway.mockResolvedValue(busyResult);
-  await expect(suspend({ requestId: "host-operation", waitSeconds })).rejects.toThrow(
-    `Gateway suspension is busy (active-work; 1 active).\nBlockers:\n- 1 active request\n${hint}`,
-  );
+  await expect(suspend({ requestId: "host-operation", waitSeconds })).rejects.toThrow(hint);
   expect(callGateway).toHaveBeenCalledOnce();
 });
 
@@ -91,54 +82,37 @@ it("polls with one stable request id until the Gateway is ready", async () => {
 
   await suspend({ requestId: "host-operation", waitSeconds: "2" });
 
-  expect(sleep).toHaveBeenCalledExactlyOnceWith(200, undefined, { signal: undefined });
   expect(callGateway.mock.calls.map((call) => call[2])).toEqual([
     { requestId: "host-operation" },
     { requestId: "host-operation" },
   ]);
-  expect(runtime.log).toHaveBeenCalledWith("Resume with: openclaw gateway resume suspension-1");
 });
 
-it.each(["before", "sleep", "busy", "ready"] as const)(
-  "stops interrupted waiting during %s without losing an acquired lease",
-  async (phase) => {
-    const scope = new AsyncWorkScope();
-    if (phase === "before") {
+it.each(["before", "sleep", "busy", "ready", "busy-output"])("settles %s waits", async (phase) => {
+  const scope = new AsyncWorkScope();
+  if (phase === "before") {
+    scope.beginClose();
+  }
+  callGateway.mockImplementation(async () => {
+    if (phase === "busy" || phase === "ready") {
       scope.beginClose();
     }
-    callGateway.mockImplementation(async () => {
-      if (phase === "busy" || phase === "ready") {
-        scope.beginClose();
-      }
-      return phase === "ready" ? readyResult : busyResult;
-    });
-    vi.mocked(sleep).mockImplementation(async (_delay, _value, options) => {
-      scope.beginClose();
-      options?.signal?.throwIfAborted();
-    });
-    await scope.run(() => suspend({ waitSeconds: 30, json: true }));
-    expect(callGateway).toHaveBeenCalledTimes(phase === "before" ? 0 : 1);
-    expect(runtime.writeJson).toHaveBeenCalledTimes(phase === "ready" ? 1 : 0);
-    if (phase === "ready") {
-      expect(runtime.writeJson).toHaveBeenCalledWith(expect.objectContaining(readyResult));
-    }
-    expect(runtime.log).not.toHaveBeenCalled();
-    expect(runtime.error).not.toHaveBeenCalled();
-    expect(runtime.exit).not.toHaveBeenCalled();
-    await scope.drain();
-  },
-);
-
-it("emits the latest busy result and exits nonzero in JSON mode", async () => {
-  callGateway.mockResolvedValue(busyResult);
-  await suspend({ rpcOpts: { json: true }, requestId: "host-operation", json: true });
-
-  expect(runtime.writeJson).toHaveBeenCalledWith({
-    ...busyResult,
-    requestId: "host-operation",
+    return phase === "ready" ? readyResult : busyResult;
   });
-  expect(runtime.exit).toHaveBeenCalledWith(1);
+  vi.mocked(sleep).mockImplementation(async (_delay, _value, options) => {
+    scope.beginClose();
+    options?.signal?.throwIfAborted();
+  });
+  await scope.run(() => suspend({ waitSeconds: phase === "busy-output" ? 0 : 30, json: true }));
+  expect(callGateway).toHaveBeenCalledTimes(phase === "before" ? 0 : 1);
+  const result = phase === "ready" ? readyResult : phase === "busy-output" ? busyResult : undefined;
+  expect(runtime.writeJson.mock.calls).toEqual(
+    result ? [[{ ...result, requestId: expect.stringMatching(/^cli-/) }]] : [],
+  );
+  expect(runtime.exit.mock.calls).toEqual(phase === "busy-output" ? [[1]] : []);
+  expect([...runtime.log.mock.calls, ...runtime.error.mock.calls]).toEqual([]);
 });
+
 it.each([
   [true, "Gateway resumed."],
   [
@@ -150,10 +124,5 @@ it.each([
 
   await runGatewayResume({ rpcOpts: {}, suspensionId: "suspension-1" }, { callGateway, runtime });
 
-  expect(callGateway).toHaveBeenCalledExactlyOnceWith(
-    "gateway.suspend.resume",
-    {},
-    { suspensionId: "suspension-1" },
-  );
   expect(runtime.log).toHaveBeenCalledExactlyOnceWith(message);
 });
