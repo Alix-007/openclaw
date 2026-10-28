@@ -106,11 +106,11 @@ it.each(["before", "sleep", "busy", "ready", "busy-output"])("settles %s waits",
   await scope.run(() => suspend({ waitSeconds: phase === "busy-output" ? 0 : 30, json: true }));
   expect(callGateway).toHaveBeenCalledTimes(phase === "before" ? 0 : 1);
   const result = phase === "ready" ? readyResult : phase === "busy-output" ? busyResult : undefined;
-  expect(runtime.writeJson.mock.calls).toEqual(
+  expect(vi.mocked(runtime.writeJson).mock.calls).toEqual(
     result ? [[{ ...result, requestId: expect.stringMatching(/^cli-/) }]] : [],
   );
-  expect(runtime.exit.mock.calls).toEqual(phase === "busy-output" ? [[1]] : []);
-  expect([...runtime.log.mock.calls, ...runtime.error.mock.calls]).toEqual([]);
+  expect(vi.mocked(runtime.exit).mock.calls).toEqual(phase === "busy-output" ? [[1]] : []);
+  expect([runtime.log, runtime.error].every((fn) => !vi.mocked(fn).mock.calls.length)).toBe(true);
 });
 
 it.each([
