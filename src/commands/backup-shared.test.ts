@@ -1,6 +1,6 @@
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { resolveRequiredBackupPath } from "./backup-shared.js";
+import { resolveBackupArchivePath, resolveRequiredBackupPath } from "./backup-shared.js";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -31,5 +31,26 @@ describe("resolveRequiredBackupPath", () => {
   it("preserves absolute paths", () => {
     const absolute = path.resolve("absolute-backup");
     expect(resolveRequiredBackupPath(`  ${absolute}  `, "--scratch")).toBe(absolute);
+  });
+});
+
+describe("resolveBackupArchivePath", () => {
+  it.each([undefined, "", " \t "])("rejects a blank archive path: %j", (value) => {
+    expect(() => resolveBackupArchivePath(value, "<archive>")).toThrow(
+      "Missing required <archive> value.",
+    );
+  });
+
+  it("preserves literal relative, absolute, and home-relative archive paths", () => {
+    const home = path.resolve("effective-home");
+    vi.stubEnv("OPENCLAW_HOME", home);
+    expect(resolveBackupArchivePath("  archive.tar.gz ", "<archive>")).toBe(
+      path.resolve("  archive.tar.gz "),
+    );
+    const absolute = path.resolve("archive output ");
+    expect(resolveBackupArchivePath(absolute, "--output")).toBe(absolute);
+    expect(resolveBackupArchivePath("~/restore target ", "--target")).toBe(
+      path.join(home, "restore target "),
+    );
   });
 });
