@@ -11,10 +11,7 @@ const { sleepMock, historyMock } = vi.hoisted(() => ({
   sleepMock: vi.fn(),
   historyMock: vi.fn(),
 }));
-vi.mock("../api.js", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../api.js")>()),
-  sleep: sleepMock,
-}));
+vi.mock("node:timers/promises", () => ({ setTimeout: sleepMock }));
 vi.mock("./manager/store.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./manager/store.js")>()),
   getCallHistoryFromStore: historyMock,
@@ -26,9 +23,12 @@ let workspace: Awaited<ReturnType<typeof tempWorkspace>>;
 let file: string;
 let output: Buffer[];
 let stdout: MockInstance<typeof process.stdout.write>;
+let previousExitCode: typeof process.exitCode;
 const stopped = new Error("diagnostic test finished");
 
 beforeEach(async () => {
+  previousExitCode = process.exitCode;
+  process.exitCode = undefined;
   workspace = await tempWorkspace({
     rootDir: resolvePreferredOpenClawTmpDir(),
     prefix: "voice-call-log-",
@@ -41,6 +41,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  process.exitCode = previousExitCode;
   vi.restoreAllMocks();
   await workspace.cleanup();
 });
@@ -192,4 +193,53 @@ it("deduplicates retained SQLite snapshots without retaining retired history for
       .split("\n")
       .map((line) => JSON.parse(line)),
   ).toEqual([first, second, first]);
+});
+
+it.each([
+  ["custom", "SIGINT", 130],
+  ["custom", "SIGTERM", 143],
+  ["history", "SIGINT", 130],
+  ["history", "SIGTERM", 143],
+] as const)("stops %s tail on %s and releases its listeners", async (source, signal, code) => {
+  const listeners = [process.listeners("SIGINT"), process.listeners("SIGTERM")];
+  const record = { callId: "first", state: "completed" };
+  if (source === "history") {
+    file = path.join(workspace.dir, "calls.jsonl");
+  } else {
+    fs.writeFileSync(file, `${JSON.stringify(record)}\n`);
+  }
+  historyMock.mockResolvedValue([record]);
+  sleepMock.mockImplementationOnce(async (_ms, _value, options?: { signal?: AbortSignal }) => {
+    process.emit(signal);
+    process.emit(signal === "SIGINT" ? "SIGTERM" : "SIGINT");
+    options?.signal?.throwIfAborted();
+  });
+  await command("tail", "--since", "1");
+  expect(process.exitCode).toBe(code);
+  expect(text()).toBe(`${JSON.stringify(record)}\n`);
+  expect([process.listeners("SIGINT"), process.listeners("SIGTERM")]).toEqual(listeners);
+});
+
+it("settles an active history read without printing after interruption", async () => {
+  file = path.join(workspace.dir, "calls.jsonl");
+  const reading = createDeferred<void>(),
+    release = createDeferred<void>();
+  historyMock.mockImplementationOnce(async () => {
+    reading.resolve();
+    await release.promise;
+    return [{ callId: "after-interruption", state: "completed" }];
+  });
+  const running = command("tail");
+  try {
+    await reading.promise;
+    process.emit("SIGINT");
+    release.resolve();
+    await running;
+    expect(process.exitCode).toBe(130);
+    expect(text()).toBe("");
+    expect(sleepMock).not.toHaveBeenCalled();
+  } finally {
+    release.resolve();
+    await running;
+  }
 });
