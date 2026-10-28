@@ -46,14 +46,17 @@ async function runPolicyWatch(args: readonly string[]): Promise<void> {
 }
 
 it("caps oversized watch intervals and appends failures to the JSON stream", async () => {
+  const listeners = { SIGINT: process.listeners("SIGINT"), SIGTERM: process.listeners("SIGTERM") };
   await runPolicyWatch(["--interval-ms", String(Number.MAX_SAFE_INTEGER)]);
 
   expect(mocks.delay).toHaveBeenCalledTimes(1);
-  expect(mocks.delay).toHaveBeenCalledWith(MAX_TIMER_TIMEOUT_MS);
+  expect(mocks.delay.mock.calls[0]?.[0]).toBe(MAX_TIMER_TIMEOUT_MS);
   expect(process.exitCode).toBe(2);
   const records = mocks.writeStdout.mock.calls.map(([chunk]) => JSON.parse(String(chunk)));
   expect(records).toEqual([
     expect.objectContaining({ status: "clean", ok: true }),
     { ok: false, error: { type: "cli_error", message: "stop watch fixture" } },
   ]);
+  expect(process.listeners("SIGINT")).toEqual(listeners.SIGINT);
+  expect(process.listeners("SIGTERM")).toEqual(listeners.SIGTERM);
 });
