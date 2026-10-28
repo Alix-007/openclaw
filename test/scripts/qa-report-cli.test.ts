@@ -46,6 +46,32 @@ it("prints tool coverage without loading the QA execution runtime", () => {
   expect(report.totalTools).toBeGreaterThan(0);
 });
 
+it("reports existing evidence through the source CLI without running QA", async () => {
+  const fixtureRoot = tempDirs.make("qa-evidence-source-");
+  const evidence = JSON.stringify({
+    kind: "openclaw.qa.evidence-summary",
+    schemaVersion: 2,
+    generatedAt: "2026-10-01T00:00:00Z",
+    evidenceMode: "slim",
+    entries: [],
+  });
+  const input = path.join(fixtureRoot, "qa-evidence.json");
+  const output = path.join(fixtureRoot, "gaps.json");
+  await fs.writeFile(input, evidence);
+  const result = runSourceScript(
+    "scripts/qa-coverage-report.ts",
+    "--evidence",
+    input,
+    "--output",
+    output,
+    "--json",
+  );
+  expect(result.status, result.stderr).toBe(0);
+  const report = JSON.parse(await fs.readFile(output, "utf8")) as { coverage: unknown[] };
+  expect(report.coverage.length).toBeGreaterThan(0);
+  expect(await fs.readFile(input, "utf8")).toBe(evidence);
+});
+
 it("writes failed parity artifacts without the execution runtime", async () => {
   const fixtureRoot = tempDirs.make("qa-report-cli-");
   for (const [label, status] of [
