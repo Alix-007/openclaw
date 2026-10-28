@@ -13,22 +13,10 @@ const tailscaleMocks = vi.hoisted(() => ({
   getSelfInfo: vi.fn(),
   setup: vi.fn(),
 }));
-const sleepMock = vi.hoisted(() =>
-  vi.fn(
-    async (ms: number) =>
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-      }),
-  ),
-);
 
 vi.mock("openclaw/plugin-sdk/gateway-runtime", async (importOriginal) => ({
   ...(await importOriginal<typeof import("openclaw/plugin-sdk/gateway-runtime")>()),
   callGatewayFromCli: callGatewayFromCliMock,
-}));
-vi.mock("../api.js", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../api.js")>()),
-  sleep: sleepMock,
 }));
 vi.mock("./manager/store.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./manager/store.js")>()),
@@ -101,7 +89,6 @@ describe("voice-call CLI status fallback", () => {
     tailscaleMocks.cleanup.mockReset();
     tailscaleMocks.getSelfInfo.mockReset();
     tailscaleMocks.setup.mockReset();
-    sleepMock.mockReset();
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -491,6 +478,114 @@ describe("voice-call CLI status fallback", () => {
     });
   }
   const continueTimeout = "voicecall continue timed out waiting for gateway operation";
+
+  it.each(["completed", "failed"])("preserves a %s continue result", async (status) => {
+    const listeners = [process.listeners("SIGINT"), process.listeners("SIGTERM")];
+    const result = { success: true, transcript: "done" };
+    pendingContinue(5_000).mockResolvedValue({ status, result, error: "continue failed" });
+    const output = captureStdout();
+    const command = run(continueArgs);
+    if (status === "failed") {
+      await expect(command).rejects.toThrow("continue failed");
+      expect(output()).toBe("");
+    } else {
+      await command;
+      expect(JSON.parse(output())).toEqual(result);
+    }
+    expect([process.listeners("SIGINT"), process.listeners("SIGTERM")]).toEqual(listeners);
+  });
+
+  it.each(["sleep", "request", "completion", "start", "unavailable", "standalone", "failure"])(
+    "interrupts continue during %s without publishing a result or starting a fallback",
+    async (phase) => {
+      vi.useFakeTimers();
+      const signal = phase === "request" ? "SIGTERM" : "SIGINT";
+      const listeners = process.listeners(signal);
+      const otherSignal = signal === "SIGINT" ? "SIGTERM" : "SIGINT";
+      const otherListeners = process.listeners(otherSignal);
+      const exitCode = process.exitCode;
+      const read = Promise.withResolvers<unknown>();
+      const completed = { status: "completed", result: { success: true, transcript: "done" } };
+      const stop = vi.fn();
+      const ensureRuntime = vi.fn(
+        async () =>
+          ({
+            manager: { continueCall: () => read.promise },
+            stop,
+          }) as never,
+      );
+      const output = captureStdout();
+      const starting = phase === "start" || phase === "unavailable";
+      callGatewayFromCliMock.mockResolvedValue(completed).mockImplementationOnce(async () => {
+        if (starting) {
+          return read.promise;
+        }
+        if (phase === "standalone") {
+          throw gatewayTransportError();
+        }
+        return { operationId: "op-1", pollTimeoutMs: 5_000 };
+      });
+      if (!starting && phase !== "standalone") {
+        callGatewayFromCliMock.mockImplementationOnce(async (_method, _opts, _params, extra) => {
+          if (phase === "sleep") {
+            return { status: "pending" };
+          }
+          if (phase === "request") {
+            extra?.signal?.addEventListener(
+              "abort",
+              () => read.reject(new DOMException("aborted", "AbortError")),
+              { once: true },
+            );
+          }
+          return read.promise;
+        });
+      }
+      const settled = vi.fn();
+      const command = runCli(buildProgram({}, ensureRuntime), continueArgs).then(
+        () => settled(),
+        settled,
+      );
+      try {
+        await vi.advanceTimersByTimeAsync(0);
+        const handlers = process
+          .listeners(signal)
+          .filter((handler) => !listeners.includes(handler));
+        expect(handlers).toHaveLength(1);
+        handlers[0]?.(signal);
+        if (phase === "unavailable") {
+          read.reject(gatewayTransportError());
+        } else if (phase === "failure") {
+          read.reject(gatewayRequestError("operation failed"));
+        } else if (phase !== "request" && phase !== "sleep") {
+          read.resolve(phase === "standalone" ? { success: true } : completed);
+        }
+        await vi.advanceTimersByTimeAsync(0);
+        if (phase === "failure") {
+          expect(settled).toHaveBeenCalledExactlyOnceWith(
+            expect.objectContaining({ message: expect.stringContaining("operation failed") }),
+          );
+        } else {
+          expect(settled).toHaveBeenCalledExactlyOnceWith();
+        }
+        expect(output()).toBe("");
+        expect(process.exitCode).toBe(signal === "SIGTERM" ? 143 : 130);
+        expect(callGatewayFromCliMock.mock.calls.map(([method]) => method)).toEqual(
+          starting || phase === "standalone"
+            ? ["voicecall.continue.start"]
+            : ["voicecall.continue.start", "voicecall.continue.result"],
+        );
+        expect(ensureRuntime).toHaveBeenCalledTimes(phase === "standalone" ? 1 : 0);
+        expect(stop).toHaveBeenCalledTimes(phase === "standalone" ? 1 : 0);
+        expect(process.listeners(signal)).toEqual(listeners);
+        expect(process.listeners(otherSignal)).toEqual(otherListeners);
+      } finally {
+        read.resolve(completed);
+        await vi.advanceTimersByTimeAsync(5_000);
+        await command;
+        process.exitCode = exitCode;
+      }
+    },
+  );
 
   it("caps oversized operation timeouts through the start command", async () => {
     callGatewayFromCliMock.mockResolvedValue({ callId: "call-1" });
