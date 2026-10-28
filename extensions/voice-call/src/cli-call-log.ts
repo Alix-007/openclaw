@@ -10,8 +10,8 @@ import { getCallHistoryFromStore, MAX_CALL_RECORD_EVENTS } from "./manager/store
 const READ_BYTES = 64 * 1024;
 type LogLine = { fd: number; start: number; end: number };
 
-async function writeLogChunk(chunk: string | Buffer, signal?: AbortSignal): Promise<void> {
-  signal?.throwIfAborted();
+async function writeLogChunk(chunk: string | Buffer, signal: AbortSignal): Promise<void> {
+  signal.throwIfAborted();
   if (!process.stdout.write(chunk)) {
     await once(process.stdout, "drain", { signal });
   }
