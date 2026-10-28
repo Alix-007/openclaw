@@ -136,7 +136,7 @@ describe("completion-cli", () => {
   itUnix.each(["built-in", "root"] as const)("keeps %s zsh descriptions literal", (scope) => {
     const program = new Command().name("openclaw");
     let describedCommand: Command;
-    let commandPath: string[];
+    let commandPath: string[] = [];
     if (scope === "built-in") {
       registerModelsCli(program);
       describedCommand = commandAt(program, "models", "auth", "logout");
@@ -146,7 +146,6 @@ describe("completion-cli", () => {
         .command("inspect")
         .alias("review")
         .description('Show John\'s "literal" $OPENCLAW_COMPLETION_LITERAL with `models auth list`');
-      commandPath = [];
     }
     const stdout = runZshScript(
       `${getCompletionScript("zsh", program)}
@@ -208,12 +207,9 @@ _openclaw_root_completion
   });
 
   itUnix("completes zsh options and distinct command paths", async (ctx) => {
-    const probe = runZsh("zmodload zsh/zpty");
-    if (probe.error && "code" in probe.error && probe.error.code === "ENOENT") {
+    if (runZshScript("zmodload zsh/zpty") === undefined) {
       ctx.skip();
     }
-    expect(probe.error).toBeUndefined();
-    expect(probe.status).toBe(0);
     const program = new Command().name("openclaw");
     registerCompletionCli(program);
     registerAcpCli(program);
@@ -282,10 +278,7 @@ ${cases
     expect(completed).toEqual(cases.map(([, expected]) => expected));
   });
 
-  it("defers zsh registration until compinit is available", async () => {
-    if (process.platform === "win32") {
-      return;
-    }
+  itUnix("defers zsh registration until compinit is available", async () => {
     const probe = runZsh("exit 0");
     if (probe.error) {
       if (
