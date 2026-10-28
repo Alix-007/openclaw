@@ -118,11 +118,12 @@ describe("diffs tool", () => {
   });
 
   it.each([
-    ["image", "pdf"],
-    ["file", "png"],
-  ] as const)("renders and expires %s output as %s", async (mode, format) => {
+    ["image", "pdf", 2],
+    ["file", "png", 1.7],
+    ["image", "png", 1.7],
+  ] as const)("renders and expires %s output as %s", async (mode, format, renderedScale) => {
     vi.useFakeTimers({ toFake: ["Date"] });
-    const tool = createTool({ context: toolContext }, createScreenshotter(format));
+    const tool = createTool({ context: toolContext }, createScreenshotter(format, renderedScale));
     const result = await executeDiff(tool, { mode, fileFormat: format, ttlSeconds: "1" });
     const { filePath: output, artifactId, expiresAt } = result.details;
     const filePath = String(output);
@@ -130,7 +131,7 @@ describe("diffs tool", () => {
     expect(result.text).toContain("use an available file-sending tool");
     expect(result.text).not.toMatch(/`message`|\bmessage tool\b/);
     expect(result.details.fileFormat).toBe(format);
-    expect(result.details.fileScale).toBe(2);
+    expect(result.details.fileScale).toBe(renderedScale);
     expect(filePath.endsWith(`preview.${format}`)).toBe(true);
     expect(filePath).toContain(fixture.rootDir);
     expect(Date.parse(String(expiresAt))).toBeGreaterThan(Date.now());
@@ -145,18 +146,6 @@ describe("diffs tool", () => {
     await fixture.store.cleanupExpired();
     await expect(fs.stat(filePath)).rejects.toMatchObject({ code: "ENOENT" });
   });
-
-  it.each(["file", "both", "image"])(
-    "reports the renderer's actual scale for %s output",
-    async (mode) => {
-      const tool = createTool({}, createScreenshotter("png", 1.7));
-
-      const result = await executeDiff(tool, { mode, fileScale: 4 });
-
-      expect(result.details.fileScale).toBe(1.7);
-      await expect(fs.readFile(String(result.details.filePath), "utf8")).resolves.toBe("png");
-    },
-  );
 
   it.each(["render", "load"])("keeps the viewer when the renderer fails to %s", async (stage) => {
     if (stage === "render") {

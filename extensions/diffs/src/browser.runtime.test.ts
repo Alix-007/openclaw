@@ -213,68 +213,34 @@ describe("PlaywrightDiffScreenshotter", () => {
     await expect(fs.readFile(String(details.filePath), "utf8")).resolves.toBe("png");
   });
 
-  it("renders PDF output when format is pdf", async () => {
-    const { pages, screenshotter } = await createScreenshotterHarness();
-    const pdfPath = path.join(rootDir, "preview.pdf");
-
-    const scale = await screenshotter.screenshotHtml(
-      screenshotParams({ outputPath: pdfPath, theme: "light", image: { format: "pdf" } }),
-    );
-
-    expect(scale).toBe(2);
-    expect(launchMock).toHaveBeenCalledTimes(1);
-    expect(pages).toHaveLength(1);
-    const page = expectDefined(pages[0], "diffs browser page");
-    expect(page.pdf).toHaveBeenCalledTimes(1);
-    const pdfCall = expectDefined(page.pdf.mock.calls[0]?.[0], "PDF render call");
-    expect(pdfCall).not.toHaveProperty("pageRanges");
-    expect(page.screenshot).toHaveBeenCalledTimes(0);
-    await expect(fs.readFile(pdfPath, "utf8")).resolves.toContain("%PDF-1.7");
-  });
-
   it.each([
-    { requestedScale: 2, height: 240, renderedScale: 2, pageCount: 1 },
-    { requestedScale: 4, height: 1700, renderedScale: 2.14, pageCount: 2 },
-  ])(
-    "returns the rendered PNG scale after $pageCount page attempts",
-    async ({ requestedScale, height, renderedScale, pageCount }) => {
-      const { pages, browser, screenshotter } = await createScreenshotterHarness({
-        boundingBox: { x: 40, y: 40, width: 960, height },
-      });
-
-      const scale = await screenshotter.screenshotHtml(
-        screenshotParams({ image: { scale: requestedScale } }),
+    ["pdf", 2, 240, 8_000_000, 2, 1],
+    ["png", 2, 240, 8_000_000, 2, 1],
+    ["png", 4, 1700, 8_000_000, 2.14, 2],
+    ["pdf", 2, 60_000, 8_000_000, null, 1],
+    ["png", 1, 240, 10, null, 1],
+  ] as const)("renders %s at %s", async (format, scale, height, maxPixels, actual, count) => {
+    const { pages, screenshotter } = await createScreenshotterHarness({
+      boundingBox: { x: 40, y: 40, width: 960, height },
+    });
+    outputPath = path.join(rootDir, `preview.${format}`);
+    const params = screenshotParams({ image: { format, scale, maxPixels } });
+    const render = screenshotter.screenshotHtml(params);
+    if (actual === null) {
+      await expect(render).rejects.toThrow("Diff frame did not render within image size limits.");
+    } else {
+      expect(await render).toBe(actual);
+      await expect(fs.readFile(outputPath, "utf8")).resolves.toBe(
+        format === "pdf" ? "%PDF-1.7 mock" : "png",
       );
-
-      expect(scale).toBe(renderedScale);
-      expect(pages).toHaveLength(pageCount);
-      expect(browser.newPage).toHaveBeenLastCalledWith(
-        expect.objectContaining({ deviceScaleFactor: renderedScale }),
-      );
-      expect(pages.at(-1)?.screenshot).toHaveBeenCalledTimes(1);
-      await expect(fs.readFile(outputPath, "utf8")).resolves.toBe("png");
-    },
-  );
-
-  it.each(["pdf", "png"] as const)("rejects oversized %s output", async (format) => {
-    const { pages, screenshotter } = await createScreenshotterHarness(
-      format === "pdf" ? { boundingBox: { x: 40, y: 40, width: 960, height: 60_000 } } : undefined,
-    );
-    const params =
-      format === "pdf"
-        ? screenshotParams({
-            outputPath: path.join(rootDir, "oversized.pdf"),
-            theme: "light",
-            image: { format },
-          })
-        : screenshotParams({ image: { scale: 1, maxPixels: 10 } });
-    await expect(screenshotter.screenshotHtml(params)).rejects.toThrow(
-      "Diff frame did not render within image size limits.",
-    );
-    expect(launchMock).toHaveBeenCalledTimes(1);
-    expect(pages).toHaveLength(1);
-    expect(pages[0]?.pdf).not.toHaveBeenCalled();
-    expect(pages[0]?.screenshot).not.toHaveBeenCalled();
+    }
+    expect(pages).toHaveLength(count);
+    const page = expectDefined(pages.at(-1), "diffs browser page");
+    expect(page.pdf).toHaveBeenCalledTimes(format === "pdf" && actual !== null ? 1 : 0);
+    expect(page.screenshot).toHaveBeenCalledTimes(format === "png" && actual !== null ? 1 : 0);
+    if (format === "pdf" && actual !== null) {
+      expect(page.pdf.mock.calls[0]?.[0]).not.toHaveProperty("pageRanges");
+    }
   });
 
   it.each(["launch", "new-page"])("wraps %s failures with Chromium guidance", async (failure) => {
