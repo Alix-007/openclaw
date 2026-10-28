@@ -1,10 +1,11 @@
 import * as fs from "node:fs/promises";
 import { join } from "node:path";
 import { Command } from "commander";
+import { createDeferred } from "openclaw/plugin-sdk/concurrency-runtime";
 import { clearConfigCache } from "openclaw/plugin-sdk/runtime-config-snapshot";
+import { useAutoCleanupTempDirTracker } from "openclaw/plugin-sdk/test-env";
+import { awaitGateBeforeSettlement } from "openclaw/plugin-sdk/test-fixtures";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { awaitGateBeforeSettlement, createDeferred } from "../../../test/helpers/promise.js";
-import { useAutoCleanupTempDirTracker } from "../../../test/helpers/temp-dir.js";
 import { registerPolicyCli } from "./cli.js";
 
 const mocks = vi.hoisted(() => ({ beforeRead: vi.fn(async (_path: unknown) => {}) }));
