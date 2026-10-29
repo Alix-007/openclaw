@@ -201,6 +201,7 @@ describe("session branch diff stats", () => {
   });
 
   it("keeps PR facts when unrelated snapshot refs change or refs are packed", async () => {
+    using _ = vi.spyOn(performance, "now").mockImplementation(() => Date.now());
     await initializeFeatureWork({ trackFeature: true });
     await connectGithub();
     stubGithub();
