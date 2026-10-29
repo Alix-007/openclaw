@@ -520,6 +520,45 @@ describe("Systems workspace", () => {
     },
   );
 
+  it("matches canonically equivalent machine searches without changing inventory or selection", async () => {
+    const environments = [
+      environment("node:nfd", "node", "Mu\u0308nchen-nfd"),
+      environment("node:nfc", "node", "München-nfc"),
+      environment("node:ascii", "node", "ASCII-control"),
+      environment("node:Mu\u0308nchen-id", "node", "ID control", { platform: "cafe\u0301-os" }),
+    ];
+    const { controller, request } = harness(async () => environments);
+    const { sidebar } = await mount(controller);
+    sidebar.querySelector<HTMLButtonElement>(".systems-machine")!.click();
+    const selected = controller.state.selectedId;
+    const input = sidebar.querySelector<HTMLInputElement>('input[type="search"]')!;
+    for (const [query, expected] of [
+      ["  MÜNCHEN-nfd  ", ["Mu\u0308nchen-nfd"]],
+      ["MU\u0308NCHEN-nfc", ["München-nfc"]],
+      ["münchen-nfc", ["München-nfc"]],
+      ["mu\u0308nchen-nfd", ["Mu\u0308nchen-nfd"]],
+      ["aScIi-CoNtRoL", ["ASCII-control"]],
+      ["MÜNCHEN-id", ["ID control"]],
+      ["CAFÉ-OS", ["ID control"]],
+      ["Munchen", []],
+      ["nonexistent-place", []],
+    ] as const) {
+      input.value = query;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      await sidebar.updateComplete;
+      expect(
+        [...sidebar.querySelectorAll(".systems-machine__name")].map((row) => row.textContent),
+      ).toEqual(expected);
+      expect(controller.state.selectedId).toBe(selected);
+    }
+    input.value = "";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    await sidebar.updateComplete;
+    expect(sidebar.querySelectorAll(".systems-machine")).toHaveLength(4);
+    expect(controller.state.inventory?.environments).toEqual(environments);
+    expect(calls(request, "environments.list")).toHaveLength(1);
+  });
+
   it("sorts and filters the machine inventory without replacing the selected machine", async () => {
     const warnings = vi.spyOn(console, "warn");
     // Open menus need frame boundaries instead of the sidebar fixture's recursive microtasks.
