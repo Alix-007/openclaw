@@ -1,2 +1,2 @@
 # Bounded policy-compare regression coverage; exact net test-line growth.
-33
+23

@@ -475,51 +475,27 @@ describe("policy commands", () => {
   });
 
   it("checks policy file conformance with metadata-backed global rules", async () => {
-    const { exitCode, parsed } = await runPolicyCompareFixture(
-      globalPolicy(false),
-      globalPolicy(true),
-    );
-    expect(exitCode).toBe(0);
-    expect(parsed).toMatchObject({
-      ok: true,
-      baselinePath: "baseline.policy.jsonc",
-      policyPath: "policy.jsonc",
-      findings: [],
-    });
-    expect(parsed.rulesChecked).toBeGreaterThan(10);
-  });
-
-  it.each([" candidate.jsonc", "candidate.jsonc "])(
-    "compares the literal explicit policy filename %j without selecting a trimmed decoy",
-    async (filename) => {
-      const baseline = { network: { privateNetwork: { allow: false } } };
-      await writeFixture(join(workspaceDir, "baseline.jsonc"), baseline);
-      await writeFixture(join(workspaceDir, filename), baseline);
-      await writeFixture(join(workspaceDir, filename.trim()), {
-        network: { privateNetwork: { allow: true } },
-      });
-
+    await writeFixture(join(workspaceDir, "baseline.policy.jsonc"), globalPolicy(false));
+    for (const filename of ["policy.jsonc", " candidate.jsonc", "candidate.jsonc "]) {
+      await writeFixture(join(workspaceDir, filename), globalPolicy(true));
+      if (filename !== filename.trim()) {
+        await writeFixture(join(workspaceDir, filename.trim()), {
+          network: { privateNetwork: { allow: true } },
+        });
+      }
       const { exitCode, parsed } = await runPolicyCompareJson({
-        baseline: "baseline.jsonc",
+        baseline: "baseline.policy.jsonc",
         policy: filename,
       });
       expect(exitCode).toBe(0);
-      expect(parsed).toMatchObject({ ok: true, policyPath: filename, findings: [] });
-    },
-  );
-
-  it("reports a missing literal policy instead of comparing its existing trimmed decoy", async () => {
-    const baseline = { network: { privateNetwork: { allow: false } } };
-    await writeFixture(join(workspaceDir, "baseline.jsonc"), baseline);
-    await writeFixture(join(workspaceDir, "missing.jsonc"), baseline);
-
-    const { exitCode, parsed } = await runPolicyCompareJson({
-      baseline: "baseline.jsonc",
-      policy: "missing.jsonc ",
-    });
-    expect(exitCode).toBe(1);
-    expect(parsed).toMatchObject({ ok: false, policyPath: "missing.jsonc ", rulesChecked: 0 });
-    expectIncludedFindings(parsed.findings, { checkId: "policy/policy-conformance-invalid" });
+      expect(parsed).toMatchObject({
+        ok: true,
+        baselinePath: "baseline.policy.jsonc",
+        policyPath: filename,
+        findings: [],
+      });
+      expect(parsed.rulesChecked).toBeGreaterThan(10);
+    }
   });
 
   it("accepts exec approval allowlist conformance entries with argPattern", async () => {
@@ -642,6 +618,20 @@ describe("policy commands", () => {
           target: "oc://missing.policy.jsonc",
         },
       ],
+    });
+    await writeFixture(join(workspaceDir, "baseline.policy.jsonc"), {});
+    const missingLiteral = await runPolicyCompareJson({
+      baseline: "baseline.policy.jsonc",
+      policy: "policy.jsonc ",
+    });
+    expect(missingLiteral.exitCode).toBe(1);
+    expect(missingLiteral.parsed).toMatchObject({
+      ok: false,
+      policyPath: "policy.jsonc ",
+      rulesChecked: 0,
+    });
+    expectIncludedFindings(missingLiteral.parsed.findings, {
+      checkId: "policy/policy-conformance-invalid",
     });
   });
 
