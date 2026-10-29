@@ -1,5 +1,5 @@
 /* @vitest-environment jsdom */
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { createDeferred } from "../../../../../test/helpers/promise.ts";
 import { createApplicationGateway } from "../../../test-helpers/application-context-fixtures.ts";
 import { installModelPickerLayout } from "../../../test-helpers/model-picker-layout.ts";
@@ -14,6 +14,11 @@ import {
 
 const key = "ui.modelFavorites:research";
 const model = JSON.stringify(["openai/small", null]);
+
+// Cold loading is covered by browser proof; these cases exercise the loaded picker.
+beforeAll(async () => {
+  await import("./chat-model-picker-panel.tsx");
+});
 
 beforeEach(installModelPickerLayout);
 afterEach(() => vi.restoreAllMocks());

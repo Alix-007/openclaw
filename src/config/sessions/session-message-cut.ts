@@ -15,7 +15,7 @@ import { toDatabaseOptions, type ResolvedSqliteScope } from "./session-accessor.
 import type { SessionMessageCutMutationParams } from "./session-accessor.types.js";
 import { restoreSessionColdTranscript } from "./session-cold-storage.js";
 import { runSessionEntryWorkerOperation } from "./session-entry-patch.js";
-import { withSessionEntryReadOnlyInWorker } from "./session-entry-read-runtime.js";
+import { readSessionEntryReadOnlyInWorker } from "./session-entry-read-runtime.js";
 import { executeSessionForkOperation } from "./session-fork-domain.js";
 import type {
   SessionMessageCutCandidate,
@@ -47,7 +47,7 @@ export async function mutateSessionHistoryInWorker(
     assertExistingDatabaseIdentity(resolved.path ?? database.path, source.key, source.birthtime);
     params.commitGuard?.();
   };
-  const preparedEntry = await withSessionEntryReadOnlyInWorker(
+  const preparedEntry = await readSessionEntryReadOnlyInWorker(
     {
       agentId: resolved.agentId,
       env: database.env,
@@ -55,12 +55,6 @@ export async function mutateSessionHistoryInWorker(
       storePath: database.path,
     },
     assertCurrent,
-    async (read) => {
-      if (!read.ok) {
-        throw read.error;
-      }
-      return read.value;
-    },
   );
   if (!preparedEntry?.sessionId) {
     return { status: "missing-session" };
@@ -143,7 +137,12 @@ export async function mutateSessionHistoryInWorker(
         }
         return false;
       },
-      assertCandidate: () => preconditions?.assertUpstreamCurrent?.(),
+      assertCandidate: (candidate) => {
+        preconditions?.assertUpstreamCurrent?.();
+        if (intent.mode === "fork" && candidate.result.status === "created") {
+          preconditions?.assertForkVisibilityAllowed?.(candidate.result.entry.visibility);
+        }
+      },
       candidateKind: "session-message-cut" as const,
       onAcknowledged(candidate: SessionMessageCutCandidate) {
         if (candidate.result.status === "created") {
