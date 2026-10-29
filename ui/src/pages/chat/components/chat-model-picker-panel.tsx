@@ -3,11 +3,11 @@ import { createMemo, createSignal, Errored, For, Loading, Show, useContext } fro
 import { resolveModelRuntimeRoute } from "../../../../../src/shared/model-runtime-route.js";
 import { providerDisplayLabel } from "../../../components/provider-icon-data.ts";
 import { Icon } from "../../../components/solid/icon.tsx";
-import { formatModelRuntimeLabel } from "../../../lib/model-runtime-label.ts";
 import { t } from "../../../lib/reactive/i18n.ts";
 import { ChatContextWindowControl } from "./chat-context-window-control.tsx";
 import { ChatModelAccountSectionView } from "./chat-model-account-control.tsx";
 import { ChatModelCatalogRefresh, ChatModelCatalogState } from "./chat-model-catalog-state.tsx";
+import { ChatModelFavoritesEditor } from "./chat-model-favorites-editor.tsx";
 import { createChatModelFavorites, createChatModelFavoritesScope } from "./chat-model-favorites.ts";
 import {
   isModelPickerOptionSelected,
@@ -561,80 +561,12 @@ export function ChatModelPickerPanel(panel: PanelProps) {
               ) : undefined}
             </div>
           ) : undefined}
-          <Show when={favorites.available()}>
-            <details
-              class="chat-controls__favorites-editor muted"
-              style={{ padding: "7px" }}
-              open={managingFavorites()}
-              onToggle={(event) => setManagingFavorites(event.currentTarget.open)}
-            >
-              <summary>{t("chat.modelControls.manageFavorites")}</summary>
-              <Show when={managingFavorites()}>
-                <div
-                  class="grid"
-                  style={{
-                    gap: "6px",
-                    "max-height": "180px",
-                    "overflow-y": "auto",
-                    "margin-top": "7px",
-                  }}
-                  role="group"
-                  aria-label={t("chat.modelControls.manageFavorites")}
-                >
-                  <For
-                    each={mounted(panel.params.modelOptions.filter((option) => !option.isDefault))}
-                    keyed={modelPickerOptionKey}
-                  >
-                    {(entry) => (
-                      <label
-                        class="chat-controls__favorite-choice row"
-                        style={{ gap: "8px", "min-width": "0" }}
-                      >
-                        <input
-                          type="checkbox"
-                          data-chat-model-favorite={modelPickerOptionKey(entry())}
-                          checked={favorites.keys().includes(modelPickerOptionKey(entry()))}
-                          disabled={favorites.disabled()}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            favorites.toggle(modelPickerOptionKey(entry()));
-                          }}
-                        />
-                        <span
-                          style={{
-                            overflow: "hidden",
-                            "text-overflow": "ellipsis",
-                            "white-space": "nowrap",
-                          }}
-                        >
-                          {[
-                            entry().label,
-                            formatModelRuntimeLabel(entry().provider, entry().agentRuntimeId)
-                              ?.label,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </span>
-                      </label>
-                    )}
-                  </For>
-                </div>
-              </Show>
-            </details>
-            <Show when={favorites.snapshot().error}>
-              <div role="alert">
-                {favorites.snapshot().error}
-                <button type="button" onClick={() => favorites.retry()}>
-                  {t("common.retry")}
-                </button>
-              </div>
-            </Show>
-            <Show when={!favorites.saving()}>
-              <Errored fallback={(error) => <div role="alert">{String(error())}</div>}>
-                {favorites.outcome()}
-              </Errored>
-            </Show>
-          </Show>
+          <ChatModelFavoritesEditor
+            favorites={favorites}
+            managing={managingFavorites()}
+            onManagingChange={setManagingFavorites}
+            options={mounted(modelOptions().filter((option) => !option.isDefault))}
+          />
           {renderCatalogStatus()(() => (
             <ChatModelCatalogState
               state={panel.params.modelCatalogState}
