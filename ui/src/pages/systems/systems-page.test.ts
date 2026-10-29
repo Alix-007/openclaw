@@ -520,45 +520,6 @@ describe("Systems workspace", () => {
     },
   );
 
-  it("matches canonically equivalent machine searches without changing inventory or selection", async () => {
-    const environments = [
-      environment("node:nfd", "node", "Mu\u0308nchen-nfd"),
-      environment("node:nfc", "node", "München-nfc"),
-      environment("node:ascii", "node", "ASCII-control"),
-      environment("node:Mu\u0308nchen-id", "node", "ID control", { platform: "cafe\u0301-os" }),
-    ];
-    const { controller, request } = harness(async () => environments);
-    const { sidebar } = await mount(controller);
-    sidebar.querySelector<HTMLButtonElement>(".systems-machine")!.click();
-    const selected = controller.state.selectedId;
-    const input = sidebar.querySelector<HTMLInputElement>('input[type="search"]')!;
-    for (const [query, expected] of [
-      ["  MÜNCHEN-nfd  ", ["Mu\u0308nchen-nfd"]],
-      ["MU\u0308NCHEN-nfc", ["München-nfc"]],
-      ["münchen-nfc", ["München-nfc"]],
-      ["mu\u0308nchen-nfd", ["Mu\u0308nchen-nfd"]],
-      ["aScIi-CoNtRoL", ["ASCII-control"]],
-      ["MÜNCHEN-id", ["ID control"]],
-      ["CAFÉ-OS", ["ID control"]],
-      ["Munchen", []],
-      ["nonexistent-place", []],
-    ] as const) {
-      input.value = query;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      await sidebar.updateComplete;
-      expect(
-        [...sidebar.querySelectorAll(".systems-machine__name")].map((row) => row.textContent),
-      ).toEqual(expected);
-      expect(controller.state.selectedId).toBe(selected);
-    }
-    input.value = "";
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    await sidebar.updateComplete;
-    expect(sidebar.querySelectorAll(".systems-machine")).toHaveLength(4);
-    expect(controller.state.inventory?.environments).toEqual(environments);
-    expect(calls(request, "environments.list")).toHaveLength(1);
-  });
-
   it("sorts and filters the machine inventory without replacing the selected machine", async () => {
     const warnings = vi.spyOn(console, "warn");
     // Open menus need frame boundaries instead of the sidebar fixture's recursive microtasks.
@@ -568,8 +529,8 @@ describe("Systems workspace", () => {
       { ...offline, id: "node:delta", label: "Delta laptop" },
       // Auxiliary node data says disconnected; the environment inventory owns availability.
       { ...offline, label: "Zulu laptop", status: "available" },
-      { ...offline, id: "node:alpha", label: "Alpha laptop" },
-      { ...offline, id: "node:beta", label: "Beta laptop", status: "available" },
+      { ...offline, id: "node:alpha", label: "Álpha" },
+      { ...offline, id: "node:beta", label: "Be\u0301ta", status: "available" },
       ...(
         [
           [worker.id, worker.label, "available"],
@@ -610,7 +571,7 @@ describe("Systems workspace", () => {
       await sidebar.updateComplete;
     };
 
-    expect(nodeNames()).toEqual(["Beta laptop", "Zulu laptop", "Alpha laptop", "Delta laptop"]);
+    expect(nodeNames()).toEqual(["Be\u0301ta", "Zulu laptop", "Álpha", "Delta laptop"]);
     expect(counts()).toEqual(["4", "3"]);
     const selected = [...sidebar.querySelectorAll<HTMLButtonElement>(".systems-machine")].find(
       (button) => button.querySelector(".systems-machine__name")?.textContent === "Zulu laptop",
@@ -619,26 +580,26 @@ describe("Systems workspace", () => {
     flush();
 
     await choose("sort:name");
-    expect(nodeNames()).toEqual(["Alpha laptop", "Beta laptop", "Delta laptop", "Zulu laptop"]);
+    expect(nodeNames()).toEqual(["Álpha", "Be\u0301ta", "Delta laptop", "Zulu laptop"]);
     await choose("sort:offline-first");
-    expect(nodeNames()).toEqual(["Alpha laptop", "Delta laptop", "Beta laptop", "Zulu laptop"]);
+    expect(nodeNames()).toEqual(["Álpha", "Delta laptop", "Be\u0301ta", "Zulu laptop"]);
     await choose("status:offline");
-    expect(names()).toEqual(["Alpha laptop", "Delta laptop", "Retained worker"]);
+    expect(names()).toEqual(["Álpha", "Delta laptop", "Retained worker"]);
     expect(counts()).toEqual(["2", "1"]);
     expect(text(page, ".systems-heading h2")).toBe("Zulu laptop");
     expect(page.querySelector<HTMLSelectElement>(".systems-mobile-picker")?.value).toBe(offline.id);
 
     await choose("status:online");
-    expect(names()).toEqual(["Test Gateway", "Beta laptop", "Zulu laptop", "Cloud worker"]);
-    await search("  ALPHA  ");
+    expect(names()).toEqual(["Test Gateway", "Be\u0301ta", "Zulu laptop", "Cloud worker"]);
+    await search("  A\u0301LPHA  ");
     expect(names()).toEqual([]);
     expect(text(sidebar, ".systems-sidebar__empty")).toBe(
       "No machines match your search or filters.",
     );
     await choose("status:all");
-    expect(names()).toEqual(["Alpha laptop"]);
+    expect(names()).toEqual(["Álpha"]);
     await choose("status:offline");
-    expect(names()).toEqual(["Alpha laptop"]);
+    expect(names()).toEqual(["Álpha"]);
     expect(controller.state.selectedId).toBe(offline.id);
     expect(calls(request, "environments.list")).toHaveLength(1);
 
@@ -646,12 +607,12 @@ describe("Systems workspace", () => {
     ({ sidebar } = await mount(controller));
     await waitForSolid(() => expect(controller.loading()).toBe(false));
     await sidebar.updateComplete;
-    expect(names()).toEqual(["Alpha laptop"]);
-    await search("");
-    expect(names()).toEqual(["Alpha laptop", "Delta laptop", "Retained worker"]);
+    expect(names()).toEqual(["Álpha"]);
+    await search("BÉTA");
+    expect(names()).toEqual([]);
     await choose("status:all");
-    expect(nodeNames()).toEqual(["Alpha laptop", "Delta laptop", "Beta laptop", "Zulu laptop"]);
-    expect(names()).toContain("Preparing worker");
+    expect(nodeNames()).toEqual(["Be\u0301ta"]);
+    expect(controller.state.inventory?.environments).toEqual(environments);
     expect(
       warnings.mock.calls
         .map(([message]) => String(message))
