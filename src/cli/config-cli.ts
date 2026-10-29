@@ -16,6 +16,7 @@ import {
   writeRuntimeJson,
   writeRuntimeStdout,
 } from "../runtime.js";
+import { getAsyncWorkSignal } from "../shared/async-work-scope.js";
 import { parseConcreteConfigPathTokens } from "../shared/dot-path.js";
 import { shortenHomePath } from "../utils.js";
 import { formatCliCommand } from "./command-format.js";
@@ -69,14 +70,18 @@ async function runConfigMutation(
     runtime?: RuntimeEnv;
     throwOnError?: boolean;
     localStateOwner?: ConfigMutationOwner;
+    preparationSignal?: AbortSignal;
   },
-  prepare: () => Promise<Omit<ConfigOperationParams, "runtime" | "options">>,
+  prepare: () => Promise<Omit<ConfigOperationParams, "runtime" | "options"> | undefined>,
   jsonOutput = Boolean(opts.cliOptions.json),
 ) {
   const runtime = opts.runtime ?? defaultRuntime;
   const { handleConfigMutationError, runConfigOperations } = await import("./config-cli-runner.js");
   try {
     const prepared = await prepare();
+    if (!prepared || opts.preparationSignal?.aborted) {
+      return;
+    }
     const databaseOnly =
       opts.localStateOwner !== undefined &&
       prepared.operations.length > 0 &&
@@ -173,19 +178,28 @@ export async function runConfigPatch(opts: {
   runtime?: RuntimeEnv;
   localStateOwner?: ConfigMutationOwner;
 }) {
-  return runConfigMutation(opts, async () => {
-    const { configPatchModeError, readConfigPatchOperations } =
-      await import("./config-cli-input.js");
-    if (opts.cliOptions.allowExec && !opts.cliOptions.dryRun) {
-      throw configPatchModeError("--allow-exec requires --dry-run.");
+  const signal = opts.cliOptions.stdin ? getAsyncWorkSignal() : undefined;
+  return runConfigMutation({ ...opts, preparationSignal: signal }, async () => {
+    try {
+      signal?.throwIfAborted();
+      const { configPatchModeError, readConfigPatchOperations } =
+        await import("./config-cli-input.js");
+      if (opts.cliOptions.allowExec && !opts.cliOptions.dryRun) {
+        throw configPatchModeError("--allow-exec requires --dry-run.");
+      }
+      if (opts.cliOptions.json && !opts.cliOptions.dryRun) {
+        throw configPatchModeError("--json requires --dry-run.");
+      }
+      const operations = await readConfigPatchOperations(opts.cliOptions);
+      signal?.throwIfAborted();
+      return { operations, successMode: "patch" };
+    } catch (err) {
+      // Cancellation abandons input preparation, never an admitted config write.
+      if (!signal?.aborted) {
+        throw err;
+      }
+      return undefined;
     }
-    if (opts.cliOptions.json && !opts.cliOptions.dryRun) {
-      throw configPatchModeError("--json requires --dry-run.");
-    }
-    return {
-      operations: await readConfigPatchOperations(opts.cliOptions),
-      successMode: "patch",
-    };
   });
 }
 

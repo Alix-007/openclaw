@@ -1,8 +1,11 @@
+import { getEventListeners } from "node:events";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { describe, expect, it } from "vitest";
+import { AsyncWorkScope } from "../shared/async-work-scope.js";
+import { createDeferredCore } from "../shared/deferred.js";
 import {
   buildConfigSetOperations,
   readConfigPatchOperations,
@@ -24,6 +27,54 @@ async function readPatch(contents: string, options: Omit<ConfigPatchOptions, "fi
 }
 
 describe("readConfigPatchOperations", () => {
+  it.each([false, true])("releases interrupted stdin (pre-aborted: %s)", async (preAborted) => {
+    const started = createDeferredCore();
+    const stdin = new Readable({ read: () => started.resolve() });
+    const scope = new AsyncWorkScope();
+    const original = Object.getOwnPropertyDescriptor(process, "stdin");
+    Object.defineProperty(process, "stdin", { configurable: true, value: stdin });
+    if (preAborted) {
+      scope.beginClose();
+    }
+    const operation = scope.run(() => readConfigPatchOperations({ stdin: true }));
+    const rejected = expect(operation).rejects.toMatchObject({ name: "AbortError" });
+    try {
+      if (!preAborted) {
+        await started.promise;
+        scope.beginClose();
+      }
+      await rejected;
+      expect(stdin.destroyed).toBe(!preAborted);
+      expect(getEventListeners(scope.signal, "abort")).toHaveLength(0);
+    } finally {
+      stdin.destroy();
+      await Promise.allSettled([operation]);
+      await scope.drain();
+      if (original) {
+        Object.defineProperty(process, "stdin", original);
+      }
+    }
+  });
+
+  it("releases the invocation abort listener after completed stdin", async () => {
+    const stdin = Readable.from(['{ "gateway": { "port": 18889 } }']);
+    const original = Object.getOwnPropertyDescriptor(process, "stdin");
+    const scope = new AsyncWorkScope();
+    Object.defineProperty(process, "stdin", { configurable: true, value: stdin });
+    try {
+      await expect(
+        scope.run(() => readConfigPatchOperations({ stdin: true })),
+      ).resolves.toMatchObject([{ setPath: ["gateway", "port"], value: 18889 }]);
+      expect(getEventListeners(scope.signal, "abort")).toHaveLength(0);
+    } finally {
+      stdin.destroy();
+      await scope.drain();
+      if (original) {
+        Object.defineProperty(process, "stdin", original);
+      }
+    }
+  });
+
   it.each([
     {
       label: "malformed bytes",
