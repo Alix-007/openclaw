@@ -1,5 +1,4 @@
 import { getEventListeners } from "node:events";
-import { performance } from "node:perf_hooks";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createDeferred } from "../../test/helpers/promise.js";
 import { runGitWorkerOperation } from "../infra/git-worker.js";
@@ -112,6 +111,7 @@ describe("loadControlUiSessionPullRequests", () => {
     vi.stubEnv("GH_TOKEN", "");
     vi.stubEnv("GITHUB_TOKEN", "");
     cacheEpochMs += 10 * 60_000;
+    vi.advanceTimersByTime(cacheEpochMs);
     vi.setSystemTime(cacheEpochMs);
   });
 
@@ -385,7 +385,6 @@ describe("loadControlUiSessionPullRequests", () => {
   });
 
   it("revalidates local facts on refresh and observes changed merged heads or the slow fallback", async () => {
-    using _ = vi.spyOn(performance, "now").mockImplementation(() => Date.now());
     let pulls: Record<string, unknown>[] = [];
     const fetchImpl = routedFetch([pullsRoute(() => githubJson(pulls)), repoRoute()]);
     vi.stubGlobal("fetch", fetchImpl);

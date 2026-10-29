@@ -1,5 +1,4 @@
 import { getEventListeners } from "node:events";
-import { performance } from "node:perf_hooks";
 import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { captureSessionDiffBaseline, loadCheckoutDiff } from "../sessions/session-diff.js";
 import { createDeferredCore } from "../shared/deferred.js";
@@ -19,7 +18,6 @@ const gitRead = vi.fn<typeof runGitWorkerOperation>();
 const readRevision = vi.fn<() => Promise<GitReadOperations["checkout.revision"]["output"]>>();
 
 beforeEach(() => {
-  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
   readRevision.mockResolvedValue({ key: "unchanged" });
   vi.mocked(runGitWorkerOperation).mockImplementation((operation, options) =>
     operation.type === "checkout.revision"
@@ -39,7 +37,6 @@ afterEach(() => {
   vi.mocked(runGitWorkerOperation).mockReset();
   gitRead.mockReset();
   readRevision.mockReset();
-  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
@@ -293,72 +290,9 @@ describe("typed Git read ownership", () => {
     await expect(runGitReadOperation(operation)).resolves.toEqual([]);
   });
 
-  it.each([-3_600_000, 3_600_000])(
-    "expires unversioned facts by elapsed time across a %d ms wall-clock step",
-    async (step) => {
-      vi.useFakeTimers();
-      const clock = vi.spyOn(performance, "now").mockReturnValue(100);
-      readRevision.mockResolvedValue(null);
-      const operation = contextRead(`/wall-expiry-${step}`);
-      const previous = { owner: "fixture", repo: "repository", branch: "previous" };
-      const current = { ...previous, branch: "current" };
-      gitRead.mockResolvedValueOnce(previous).mockResolvedValue(current);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(previous);
-      vi.setSystemTime(Date.now() + step);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(previous);
-      expect(gitRead).toHaveBeenCalledOnce();
-      clock.mockReturnValue(75_101);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(current);
-      expect(gitRead).toHaveBeenCalledTimes(2);
-    },
-  );
-
-  it.each([-3_600_000, 3_600_000])(
-    "retries unavailable checkouts by elapsed time across a %d ms wall-clock step",
-    async (step) => {
-      vi.useFakeTimers();
-      const clock = vi.spyOn(performance, "now").mockReturnValue(100);
-      const operation = { type: "checkout.diff" as const, input: { cwd: `/wall-retry-${step}` } };
-      const unavailable = { ...emptyDiff, unavailableReason: "not_git" as const };
-      const current = { ...emptyDiff, additions: 2 };
-      gitRead.mockResolvedValueOnce(unavailable).mockResolvedValue(current);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(unavailable);
-      vi.setSystemTime(Date.now() + step);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(unavailable);
-      expect(readRevision).toHaveBeenCalledOnce();
-      clock.mockReturnValue(1_101);
-      await expect(runGitReadOperation(operation)).resolves.toEqual(current);
-      expect(readRevision).toHaveBeenCalledTimes(2);
-      expect(gitRead).toHaveBeenCalledTimes(2);
-    },
-  );
-
-  it.each([-3_600_000, 3_600_000])(
-    "expires completed polls by elapsed time across a %d ms wall-clock step",
-    async (step) => {
-      vi.useFakeTimers();
-      const clock = vi.spyOn(performance, "now").mockReturnValue(100);
-      const operation = { type: "checkout.diff" as const, input: { cwd: `/wall-poll-${step}` } };
-      const previous = { ...emptyDiff, additions: 1 };
-      const current = { ...emptyDiff, additions: 2 };
-      gitRead.mockResolvedValueOnce(previous).mockResolvedValue(current);
-      await expect(runGitReadOperation(operation, { poll: true })).resolves.toEqual(previous);
-      readRevision.mockResolvedValue({ key: "changed" });
-      vi.setSystemTime(Date.now() + step);
-      await expect(runGitReadOperation(operation, { poll: true })).resolves.toEqual(previous);
-      expect(readRevision).toHaveBeenCalledOnce();
-      clock.mockReturnValue(1_101);
-      await expect(runGitReadOperation(operation, { poll: true })).resolves.toEqual(current);
-      expect(readRevision).toHaveBeenCalledTimes(2);
-      expect(gitRead).toHaveBeenCalledTimes(2);
-    },
-  );
-
   it("shares concurrent checkout work without sharing session envelopes or settled file state", async () => {
     readRevision.mockResolvedValue(null);
-    const held = createDeferredCore<GitReadOperations["checkout.diff"]["output"]>();
-    onTestFinished(() => held.resolve(emptyDiff));
-    gitRead.mockReturnValueOnce(held.promise);
+    const held = holdRead("checkout.diff", emptyDiff);
     const first = loadCheckoutDiff({ cwd: "/diff-sharing", sessionKey: "session-a" });
     const second = loadCheckoutDiff({ cwd: "/diff-sharing", sessionKey: "session-b" });
     await vi.waitFor(() => expect(gitRead).toHaveBeenCalledOnce());
@@ -379,14 +313,14 @@ describe("typed Git read ownership", () => {
         ? Promise.resolve(operation.input.summaryOnly ? null : { key: "unchanged-full-diff" })
         : gitRead(operation, options),
     );
-    const held = createDeferredCore<GitReadOperations["checkout.diff"]["output"]>();
-    onTestFinished(() => held.resolve(emptyDiff));
-    gitRead.mockReturnValueOnce(held.promise);
+    const held = holdRead("checkout.diff", emptyDiff);
     const input = { cwd: "/summary-sharing", summaryOnly: true };
-    const first = loadCheckoutDiff({ ...input, sessionKey: "first" });
+    const read = (sessionKey: string, summaryOnly = true) =>
+      loadCheckoutDiff({ ...input, sessionKey, summaryOnly });
+    const first = read("first");
     await vi.waitFor(() => expect(gitRead).toHaveBeenCalledOnce());
     vi.advanceTimersByTime(15_000);
-    const second = loadCheckoutDiff({ ...input, sessionKey: "second" });
+    const second = read("second");
     // Admit the second viewer through its async revision check before settling the scan.
     await vi.advanceTimersByTimeAsync(0);
     expect(gitRead).toHaveBeenCalledOnce();
@@ -394,35 +328,25 @@ describe("typed Git read ownership", () => {
     await expect(first).resolves.toMatchObject({ sessionKey: "first", additions: 2 });
     await expect(second).resolves.toMatchObject({ sessionKey: "second", additions: 2 });
     gitRead.mockResolvedValueOnce({ ...emptyDiff, additions: 3 });
-    await expect(loadCheckoutDiff({ ...input, sessionKey: "first" })).resolves.toMatchObject({
-      additions: 3,
-    });
+    await expect(read("first")).resolves.toMatchObject({ additions: 3 });
     const workBeforeRetainedRead = vi.mocked(runGitWorkerOperation).mock.calls.length;
-    await expect(loadCheckoutDiff({ ...input, sessionKey: "second" })).resolves.toMatchObject({
-      additions: 3,
-    });
+    await expect(read("second")).resolves.toMatchObject({ additions: 3 });
     expect(vi.mocked(runGitWorkerOperation).mock.calls.length).toBe(workBeforeRetainedRead);
     expect(gitRead).toHaveBeenCalledTimes(2);
     gitRead.mockResolvedValueOnce({ ...emptyDiff, additions: 4 });
-    await expect(loadCheckoutDiff({ cwd: input.cwd, sessionKey: "first" })).resolves.toMatchObject({
-      additions: 4,
-    });
+    await expect(read("first", false)).resolves.toMatchObject({ additions: 4 });
     expect(gitRead).toHaveBeenCalledTimes(3);
     vi.advanceTimersByTime(10_001);
     gitRead.mockResolvedValueOnce({ ...emptyDiff, additions: 5 });
-    await expect(loadCheckoutDiff({ ...input, sessionKey: "first" })).resolves.toMatchObject({
-      additions: 5,
-    });
+    await expect(read("first")).resolves.toMatchObject({ additions: 5 });
     expect(gitRead).toHaveBeenCalledTimes(4);
-    await expect(loadCheckoutDiff({ cwd: input.cwd, sessionKey: "first" })).resolves.toMatchObject({
-      additions: 4,
-    });
+    await expect(read("first", false)).resolves.toMatchObject({ additions: 4 });
     expect(gitRead).toHaveBeenCalledTimes(4);
   });
 
-  it("retains unchanged checkout diffs by revision and complete request shape", async () => {
+  it.each([-3_600_000, 3_600_000])("revisioned diffs across %dms steps", async (step) => {
     vi.useFakeTimers();
-    const input = { cwd: "/versioned-diff" };
+    const input = { cwd: `/versioned-diff-${step}` };
     const summary = { ...input, summaryOnly: true };
     const changedBase = { ...input, baseCommit: "a".repeat(40) };
     const changedSession = { ...input, sessionId: "another-session" };
@@ -451,18 +375,19 @@ describe("typed Git read ownership", () => {
     readRevision.mockResolvedValue({ key: "retryable-checkout" });
     gitRead.mockResolvedValueOnce({ ...emptyDiff, unavailableReason: "not_git" });
     await read(input);
+    vi.setSystemTime(Date.now() + step);
     await expect(read(input)).resolves.toMatchObject({ unavailableReason: "not_git" });
     vi.advanceTimersByTime(1_001);
     await expect(read(input)).resolves.toMatchObject({ additions: 2 });
     expect(gitRead).toHaveBeenCalledTimes(9);
   });
 
-  it("polls one cold checkout without waiting for revision work or losing unversioned results", async () => {
+  it.each([-3_600_000, 3_600_000])("shares cold polls across %dms steps", async (step) => {
     vi.useFakeTimers();
     const revision = createDeferredCore<GitReadOperations["checkout.revision"]["output"]>();
     readRevision.mockReturnValue(revision.promise);
     gitRead.mockResolvedValue({ ...emptyDiff, additions: 7 });
-    const input = { cwd: "/poll-cold-checkout", sessionId: "first" };
+    const input = { cwd: `/poll-cold-checkout-${step}`, sessionId: "first" };
     const poll = (sessionId = input.sessionId) =>
       runGitReadOperation(
         { type: "checkout.diff", input: { ...input, sessionId } },
@@ -486,6 +411,7 @@ describe("typed Git read ownership", () => {
       await runGitReadOperation({ type: "checkout.diff", input });
       expect(gitRead).toHaveBeenCalledTimes(3);
       await expect(poll()).resolves.toMatchObject({ additions: 7 });
+      vi.setSystemTime(Date.now() + step);
       await vi.advanceTimersByTimeAsync(500);
       await expect(poll()).resolves.toMatchObject({ additions: 7 });
       await expect(poll("second")).resolves.toMatchObject({ additions: 7 });
@@ -782,20 +708,24 @@ describe("typed Git read ownership", () => {
     expect(gitRead).toHaveBeenCalledTimes(2);
   });
 
-  it("expires pending unversioned branch facts from admission", async () => {
+  it.each([-3_600_000, 3_600_000])("expires facts across %dms steps", async (step) => {
     vi.useFakeTimers();
     readRevision.mockResolvedValue(null);
     const held = holdRead("pull-request.branch-facts", undefined);
     const operation = {
       type: "pull-request.branch-facts" as const,
       input: {
-        root: "/admission-expiry-null-true",
+        root: `/admission-expiry-${step}`,
         branch: "feature",
         mergedHeads: [],
       },
     };
     const first = runGitReadOperation(operation);
     await vi.waitFor(() => expect(gitRead).toHaveBeenCalledOnce());
+    vi.setSystemTime(Date.now() + step);
+    void runGitReadOperation(operation);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(gitRead).toHaveBeenCalledOnce();
     vi.advanceTimersByTime(74_000);
     const earlier = { creatable: true, stats: { additions: 1, deletions: 0, changedFiles: 1 } };
     vi.advanceTimersByTime(1_001);
