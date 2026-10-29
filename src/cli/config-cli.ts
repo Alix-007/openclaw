@@ -72,16 +72,19 @@ async function runConfigMutation(
     localStateOwner?: ConfigMutationOwner;
     preparationSignal?: AbortSignal;
   },
-  prepare: () => Promise<Omit<ConfigOperationParams, "runtime" | "options"> | undefined>,
+  prepare: () => Promise<Omit<ConfigOperationParams, "runtime" | "options">>,
   jsonOutput = Boolean(opts.cliOptions.json),
 ) {
   const runtime = opts.runtime ?? defaultRuntime;
   const { handleConfigMutationError, runConfigOperations } = await import("./config-cli-runner.js");
+  let inputPrepared = false;
   try {
+    opts.preparationSignal?.throwIfAborted();
     const prepared = await prepare();
-    if (!prepared || opts.preparationSignal?.aborted) {
+    if (opts.preparationSignal?.aborted) {
       return;
     }
+    inputPrepared = true;
     const databaseOnly =
       opts.localStateOwner !== undefined &&
       prepared.operations.length > 0 &&
@@ -132,6 +135,9 @@ async function runConfigMutation(
       });
     }
   } catch (err) {
+    if (!inputPrepared && opts.preparationSignal?.aborted) {
+      return;
+    }
     if (opts.throwOnError) {
       throw err;
     }
@@ -180,26 +186,18 @@ export async function runConfigPatch(opts: {
 }) {
   const signal = opts.cliOptions.stdin ? getAsyncWorkSignal() : undefined;
   return runConfigMutation({ ...opts, preparationSignal: signal }, async () => {
-    try {
-      signal?.throwIfAborted();
-      const { configPatchModeError, readConfigPatchOperations } =
-        await import("./config-cli-input.js");
-      if (opts.cliOptions.allowExec && !opts.cliOptions.dryRun) {
-        throw configPatchModeError("--allow-exec requires --dry-run.");
-      }
-      if (opts.cliOptions.json && !opts.cliOptions.dryRun) {
-        throw configPatchModeError("--json requires --dry-run.");
-      }
-      const operations = await readConfigPatchOperations(opts.cliOptions);
-      signal?.throwIfAborted();
-      return { operations, successMode: "patch" };
-    } catch (err) {
-      // Cancellation abandons input preparation, never an admitted config write.
-      if (!signal?.aborted) {
-        throw err;
-      }
-      return undefined;
+    const { configPatchModeError, readConfigPatchOperations } =
+      await import("./config-cli-input.js");
+    if (opts.cliOptions.allowExec && !opts.cliOptions.dryRun) {
+      throw configPatchModeError("--allow-exec requires --dry-run.");
     }
+    if (opts.cliOptions.json && !opts.cliOptions.dryRun) {
+      throw configPatchModeError("--json requires --dry-run.");
+    }
+    return {
+      operations: await readConfigPatchOperations(opts.cliOptions),
+      successMode: "patch",
+    };
   });
 }
 
