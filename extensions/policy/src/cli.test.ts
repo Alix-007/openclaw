@@ -489,6 +489,39 @@ describe("policy commands", () => {
     expect(parsed.rulesChecked).toBeGreaterThan(10);
   });
 
+  it.each([" candidate.jsonc", "candidate.jsonc "])(
+    "compares the literal explicit policy filename %j without selecting a trimmed decoy",
+    async (filename) => {
+      const baseline = { network: { privateNetwork: { allow: false } } };
+      await writeFixture(join(workspaceDir, "baseline.jsonc"), baseline);
+      await writeFixture(join(workspaceDir, filename), baseline);
+      await writeFixture(join(workspaceDir, filename.trim()), {
+        network: { privateNetwork: { allow: true } },
+      });
+
+      const { exitCode, parsed } = await runPolicyCompareJson({
+        baseline: "baseline.jsonc",
+        policy: filename,
+      });
+      expect(exitCode).toBe(0);
+      expect(parsed).toMatchObject({ ok: true, policyPath: filename, findings: [] });
+    },
+  );
+
+  it("reports a missing literal policy instead of comparing its existing trimmed decoy", async () => {
+    const baseline = { network: { privateNetwork: { allow: false } } };
+    await writeFixture(join(workspaceDir, "baseline.jsonc"), baseline);
+    await writeFixture(join(workspaceDir, "missing.jsonc"), baseline);
+
+    const { exitCode, parsed } = await runPolicyCompareJson({
+      baseline: "baseline.jsonc",
+      policy: "missing.jsonc ",
+    });
+    expect(exitCode).toBe(1);
+    expect(parsed).toMatchObject({ ok: false, policyPath: "missing.jsonc ", rulesChecked: 0 });
+    expectIncludedFindings(parsed.findings, { checkId: "policy/policy-conformance-invalid" });
+  });
+
   it("accepts exec approval allowlist conformance entries with argPattern", async () => {
     const policy = approvalAllowlist(
       ["status", { pattern: "calendar-cli", argPattern: "^sync\\b" }],
