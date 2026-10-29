@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { AsyncWorkScope } from "../shared/async-work-scope.js";
 import { createCliRuntimeCapture } from "./test-runtime-capture.js";
 
 const callGatewayFromCli = vi.fn();
@@ -8,7 +9,8 @@ const { runtimeLogs, runtimeErrors, defaultRuntime, resetRuntimeCapture } =
   createCliRuntimeCapture();
 
 // mock-isolation: Exercise command registration without opening a live Gateway connection.
-vi.mock("./gateway-rpc.js", () => ({
+vi.mock("./gateway-rpc.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./gateway-rpc.js")>()),
   addGatewayClientOptions: (command: Command) => command,
   callGatewayFromCli,
 }));
@@ -83,5 +85,73 @@ describe("system-cli", () => {
       params,
     ]);
     expect(runtimeLogs).toEqual([output]);
+  });
+
+  it("does not dispatch a read query after its invocation closes", async () => {
+    const scope = new AsyncWorkScope();
+    scope.beginClose();
+
+    await scope.run(() => runCli(["system", "presence"]));
+
+    expect(callGatewayFromCli).not.toHaveBeenCalled();
+    expect(runtimeLogs).toEqual([]);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  it.each([
+    [["presence"], "resolve"],
+    [["presence"], "reject"],
+    [["heartbeat", "last"], "resolve"],
+    [["heartbeat", "last"], "reject"],
+  ] as const)("keeps cancelled %j quiet after a late %s", async (args, outcome) => {
+    const scope = new AsyncWorkScope();
+    const reply = Promise.withResolvers<unknown>();
+    callGatewayFromCli.mockReturnValueOnce(reply.promise);
+    const pending = scope.run(() => runCli(["system", ...args]));
+    scope.beginClose(new DOMException("CLI stopping", "AbortError"));
+    if (outcome === "resolve") {
+      reply.resolve({ ok: true });
+    } else {
+      reply.reject(new Error("Gateway closed"));
+    }
+
+    await pending;
+
+    expect(runtimeLogs).toEqual([]);
+    expect(runtimeErrors).toEqual([]);
+    expect(defaultRuntime.exit).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [["event", "--text", "ping"], "ok"],
+    [["heartbeat", "enable"], '{\n  "ok": true\n}'],
+    [["heartbeat", "disable"], '{\n  "ok": true\n}'],
+  ] as const)("retains the accepted mutation receipt for %j", async (args, output) => {
+    const scope = new AsyncWorkScope();
+    callGatewayFromCli.mockImplementationOnce(async (_method, _opts, _params, extra) => {
+      expect(extra.signal).toBeUndefined();
+      scope.beginClose();
+      return { ok: true };
+    });
+
+    await scope.run(() => runCli(["system", ...args]));
+
+    expect(runtimeLogs).toEqual([output]);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  it("retains ordinary read query errors as JSON failures", async () => {
+    callGatewayFromCli.mockRejectedValueOnce(new Error("Gateway unavailable"));
+
+    await expect(runCli(["system", "presence"])).rejects.toThrow("__exit__:1");
+
+    expect(runtimeLogs).toEqual([
+      JSON.stringify(
+        { ok: false, error: { type: "cli_error", message: "Gateway unavailable" } },
+        null,
+        2,
+      ),
+    ]);
+    expect(runtimeErrors).toEqual([]);
   });
 });
