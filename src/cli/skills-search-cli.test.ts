@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { beforeEach, expect, it, vi } from "vitest";
+import { AsyncWorkScope } from "../shared/async-work-scope.js";
 import { registerSkillsSearchCli } from "./skills-search-cli.js";
 
 const { searchSkillsFromClawHubMock, defaultRuntime } = vi.hoisted(() => ({
@@ -13,7 +14,10 @@ const skill = <T extends object>(fields: T) => ({
   ...fields,
 });
 
-vi.mock("../runtime.js", () => ({ defaultRuntime }));
+vi.mock("../runtime.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../runtime.js")>()),
+  defaultRuntime,
+}));
 vi.mock("../skills/lifecycle/clawhub.js", () => ({
   searchSkillsFromClawHub: searchSkillsFromClawHubMock,
 }));
@@ -97,3 +101,24 @@ it("rejects partial numeric search limits", async () => {
   );
   expect(searchSkillsFromClawHubMock).not.toHaveBeenCalled();
 });
+
+it.each(["response", "failure"])(
+  "does not report a late %s after cancellation",
+  async (outcome) => {
+    const scope = new AsyncWorkScope();
+    searchSkillsFromClawHubMock.mockImplementation(async () => {
+      scope.beginClose();
+      if (outcome === "failure") {
+        throw new Error("Search aborted");
+      }
+      return [skill({})];
+    });
+
+    await scope.run(() => runCommand(["skills", "search", "calendar", "--json"]));
+
+    expect(defaultRuntime.writeJson).not.toHaveBeenCalled();
+    expect(defaultRuntime.log).not.toHaveBeenCalled();
+    expect(defaultRuntime.error).not.toHaveBeenCalled();
+    expect(defaultRuntime.exit).not.toHaveBeenCalled();
+  },
+);
