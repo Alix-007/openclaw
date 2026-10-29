@@ -1,2 +1,0 @@
-# Exact configured hook root discovery and relative/home path controls.
-49
