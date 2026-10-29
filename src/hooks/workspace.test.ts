@@ -3,6 +3,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAutoCleanupTempDirTracker } from "../../test/helpers/temp-dir.js";
 import { MANIFEST_KEY } from "../compat/legacy-names.js";
+import { withUserPathBaseDirectory } from "../infra/home-dir.js";
 import { writeHookFixture } from "./hook-fixture.test-support.js";
 import { loadWorkspaceHookEntries } from "./workspace.js";
 
@@ -36,7 +37,10 @@ describe("hooks workspace", () => {
     root = tempDirs.make("openclaw-hooks-workspace-");
     hooksRoot = path.join(root, "hooks");
   });
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
 
   function loadNames() {
     return loadWorkspaceHookEntries(root, {
@@ -45,6 +49,51 @@ describe("hooks workspace", () => {
       config: { plugins: { enabled: false }, hooks: { internal: { load: { extraDirs: [] } } } },
     }).map((entry) => entry.hook.name);
   }
+
+  it.skipIf(process.platform === "win32").each(["absolute", "relative", "home"] as const)(
+    "preserves exact extra-directory paths (%s)",
+    (mode) => {
+      vi.stubEnv("OPENCLAW_HOME", root);
+      const literalDir = path.join(root, mode === "relative" ? " linked-hook " : "linked-hook ");
+      const missingDir = path.join(root, "missing-hook ");
+      writeHookFixture(literalDir, "---\nname: literal-hook\n---\n", undefined, "handler.js");
+      writeHookFixture(
+        path.join(root, path.basename(literalDir).trim()),
+        "---\nname: decoy\n---\n",
+        undefined,
+        "handler.js",
+      );
+      writeHookFixture(
+        missingDir.trim(),
+        "---\nname: missing-decoy\n---\n",
+        undefined,
+        "handler.js",
+      );
+      const ordinaryDir = writePlainHook(root, "ordinary");
+      const asInput = (dir: string) =>
+        mode === "absolute" ? dir : `${mode === "home" ? "~/" : ""}${path.basename(dir)}`;
+      const entries = withUserPathBaseDirectory(root, () =>
+        loadWorkspaceHookEntries(root, {
+          managedHooksDir: path.join(root, "managed-none"),
+          bundledHooksDir: path.join(root, "bundled-none"),
+          config: {
+            plugins: { enabled: false },
+            hooks: {
+              internal: {
+                load: {
+                  extraDirs: ["", " \t ", asInput(literalDir), asInput(missingDir), ordinaryDir],
+                },
+              },
+            },
+          },
+        }),
+      );
+      expect(entries.map(({ hook }) => [hook.name, hook.baseDir])).toEqual([
+        ["literal-hook", literalDir],
+        ["ordinary", ordinaryDir],
+      ]);
+    },
+  );
 
   it.each(["traversal", "symlink"])(
     "rejects package %s escapes without scanning unlisted children",
