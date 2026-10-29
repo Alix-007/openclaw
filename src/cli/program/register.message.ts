@@ -81,7 +81,8 @@ async function runPluginStopHooks(registry: PluginRegistry): Promise<void> {
       withPluginRuntimeRegistryScope(registry, () =>
         runner.runGatewayStop({ reason: "cli message action complete" }, {}),
       ),
-    Date.now() + GATEWAY_STOP_TIMEOUT_MS,
+    performance.now() + GATEWAY_STOP_TIMEOUT_MS,
+    () => performance.now(),
   );
   if (result === ABSOLUTE_DEADLINE_EXPIRED) {
     defaultRuntime.error(
