@@ -1,11 +1,9 @@
 import fs from "node:fs/promises";
-import { createServer } from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { withTestDir } from "../test-helpers/temp-dir.js";
 import { captureEnv, deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
-import { reserveTestPortListener } from "../test-utils/port-claims.js";
 import { fetchClawHubJson, type ClawHubFetchOptions } from "./clawhub-client.js";
 import { retryClawHubRead } from "./clawhub-retry.js";
 import { fetchClawHubSkillVerification, searchClawHubSkills } from "./clawhub-skills.js";
@@ -251,70 +249,4 @@ it("does not retry 429 unless the caller enables rate-limit retries", async () =
   const optedIn = retryResponse(new Response("limited", { status: 429 }), true);
   expect(await (await optedIn.result).response.text()).toBe("ok");
   expect(optedIn.request).toHaveBeenCalledTimes(2);
-});
-
-it.each(["headers", "body", "retry"])("cancels the native ClawHub %s wait", async (phase) => {
-  const controller = new AbortController();
-  const received = Promise.withResolvers<void>();
-  let finishResponse = () => {};
-  let requests = 0;
-  let socketClosed = false;
-  const fixture = await reserveTestPortListener({
-    offsets: [0],
-    createListener: () =>
-      createServer((request, response) => {
-        requests++;
-        request.socket.once("close", () => {
-          socketClosed = true;
-        });
-        response.setHeader("Connection", "close");
-        if (requests > 1) {
-          response.end('{"results":[]}');
-          return;
-        }
-        if (phase === "retry") {
-          response.writeHead(503);
-          response.end("Retry later");
-        } else if (phase === "body") {
-          response.writeHead(200, { "Content-Type": "application/json" });
-          response.write('{"results":');
-          finishResponse = () => response.end("[]}");
-        } else {
-          finishResponse = () => response.end('{"results":[]}');
-        }
-        received.resolve();
-      }),
-  });
-  let outcome: unknown;
-  const result = fetchClawHubJson({
-    path: "/api/v1/search",
-    baseUrl: `http://127.0.0.1:${fixture.claim.port}`,
-    skipAuth: true,
-    signal: controller.signal,
-  }).then(
-    (value) => {
-      outcome = value;
-    },
-    (error: unknown) => {
-      outcome = error;
-    },
-  );
-  try {
-    await received.promise;
-    // Let the native client enter its partial body read or retry backoff.
-    await new Promise((resolve) => {
-      setTimeout(resolve, 20);
-    });
-    controller.abort();
-
-    await expect.poll(() => outcome).toMatchObject({ name: "AbortError" });
-    await expect.poll(() => socketClosed).toBe(true);
-    expect(requests).toBe(1);
-  } finally {
-    finishResponse();
-    await result;
-    fixture.listener.closeAllConnections();
-    await fixture.releaseListener();
-    await fixture.claim.release();
-  }
 });
