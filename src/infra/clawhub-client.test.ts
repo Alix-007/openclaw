@@ -253,7 +253,7 @@ it("does not retry 429 unless the caller enables rate-limit retries", async () =
   expect(optedIn.request).toHaveBeenCalledTimes(2);
 });
 
-it.each(["headers", "body", "retry"])("cancels the native ClawHub %s wait", async (phase) => {
+it.each(["headers", "body"])("cancels the native ClawHub %s wait", async (phase) => {
   const controller = new AbortController();
   const received = Promise.withResolvers<void>();
   let finishResponse = () => {};
@@ -272,19 +272,39 @@ it.each(["headers", "body", "retry"])("cancels the native ClawHub %s wait", asyn
           response.end('{"results":[]}');
           return;
         }
-        if (phase === "retry") {
-          response.writeHead(503);
-          response.end("Retry later");
-        } else if (phase === "body") {
+        if (phase === "body") {
           response.writeHead(200, { "Content-Type": "application/json" });
           response.write('{"results":');
           finishResponse = () => response.end("[]}");
         } else {
           finishResponse = () => response.end('{"results":[]}');
+          received.resolve();
         }
-        received.resolve();
       }),
   });
+  if (phase === "body") {
+    const nativeFetch = globalThis.fetch;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (...args) => {
+      const response = await nativeFetch(...args);
+      const body = response.body!;
+      const getReader = body.getReader.bind(body);
+      vi.spyOn(body, "getReader").mockImplementation(() => {
+        const reader = getReader();
+        const read = reader.read.bind(reader);
+        let reads = 0;
+        vi.spyOn(reader, "read").mockImplementation(() => {
+          const pending = read();
+          // The next read starts only after the partial JSON chunk was consumed.
+          if (++reads === 2) {
+            received.resolve();
+          }
+          return pending;
+        });
+        return reader;
+      });
+      return response;
+    });
+  }
   let outcome: unknown;
   const result = fetchClawHubJson({
     path: "/api/v1/search",
@@ -301,20 +321,60 @@ it.each(["headers", "body", "retry"])("cancels the native ClawHub %s wait", asyn
   );
   try {
     await received.promise;
-    // Let the native client enter its partial body read or retry backoff.
-    await new Promise((resolve) => {
-      setTimeout(resolve, 20);
-    });
     controller.abort();
 
     await expect.poll(() => outcome).toMatchObject({ name: "AbortError" });
     await expect.poll(() => socketClosed).toBe(true);
     expect(requests).toBe(1);
   } finally {
+    vi.restoreAllMocks();
     finishResponse();
     await result;
     fixture.listener.closeAllConnections();
-    await fixture.releaseListener();
-    await fixture.claim.release();
+    try {
+      await fixture.releaseListener();
+    } finally {
+      await fixture.claim.release();
+    }
+  }
+});
+
+it("cancels ClawHub retry backoff before its timer expires", async () => {
+  vi.useFakeTimers();
+  const controller = new AbortController();
+  const backoff = Promise.withResolvers<void>();
+  const schedule = globalThis.setTimeout;
+  vi.spyOn(globalThis, "setTimeout").mockImplementation((callback, delay, ...args) => {
+    const timer = schedule(callback, delay, ...args);
+    if (delay === 7_000) {
+      backoff.resolve();
+    }
+    return timer;
+  });
+  const request = respond("Retry later", { status: 503, headers: { "Retry-After": "7" } });
+  let outcome: unknown;
+  const result = fetchClawHubJson({
+    path: "/api/v1/search",
+    skipAuth: true,
+    signal: controller.signal,
+  }).catch((error: unknown) => {
+    outcome = error;
+  });
+  try {
+    await backoff.promise;
+    controller.abort();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(outcome).toMatchObject({ name: "AbortError" });
+    expect(request.fetch).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
+  } finally {
+    controller.abort();
+    try {
+      await vi.runAllTimersAsync();
+      await result;
+    } finally {
+      vi.restoreAllMocks();
+      vi.useRealTimers();
+    }
   }
 });
