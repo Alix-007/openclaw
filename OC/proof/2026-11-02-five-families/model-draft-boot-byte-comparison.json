@@ -1,0 +1,218 @@
+{
+  "scope": "Local fixed-environment build attribution, not a CI pass or a claim to have normalized CI artifacts",
+  "base": {
+    "requests": 20,
+    "rawBytes": 4092487,
+    "gzipBytes": 1277765,
+    "brotliBytes": 1084661
+  },
+  "head": {
+    "requests": 20,
+    "rawBytes": 4092487,
+    "gzipBytes": 1278121,
+    "brotliBytes": 1084541
+  },
+  "chunks": [
+    {
+      "chunk": "assets/app-sidebar-online-HASH0000.js",
+      "baseRaw": 7538,
+      "headRaw": 7538,
+      "baseGzip": 2958,
+      "headGzip": 2959,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "c1ca38d37c164871577ecd0f6f6511428a8e8daccf61158b8fef8bdfe2c3501c",
+      "headSha256": "6007a078a49c8e8d64471e16a3177b560672bd071ef03cd234b58599eeaeef94"
+    },
+    {
+      "chunk": "assets/chat-english-HASH0000.js",
+      "baseRaw": 2669,
+      "headRaw": 2669,
+      "baseGzip": 1116,
+      "headGzip": 1116,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "73398aab3aed1f8415fcefaaebdf96c20dc28de01e43c41a08f32f8f2c727d00",
+      "headSha256": "d70c5a311a7972dcd983b1cd1c38964108a1ca58f227ffc213938e266e71dd2a"
+    },
+    {
+      "chunk": "assets/chat-interaction-runtime-HASH0000.js",
+      "baseRaw": 45653,
+      "headRaw": 45653,
+      "baseGzip": 15029,
+      "headGzip": 15032,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "b7205ee8bb2f08a9e1c475a23907255a5bc37f23a3f15ea76d6f944daef8bd09",
+      "headSha256": "16d704b051d044dd69b1a47a6993b93d333e263149545886f6f2a4c27c3a4cab"
+    },
+    {
+      "chunk": "assets/chat-live-events-runtime-HASH0000.js",
+      "baseRaw": 26634,
+      "headRaw": 26634,
+      "baseGzip": 8919,
+      "headGzip": 8914,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "9c123998c3ae4de86b13d0308c9efbac1ce5c6af87bf7202264c309098d1a202",
+      "headSha256": "e83df15ed29e8237ffd60c79d94a3863dc5a279a795fd0dea37f6c42b7945bdd"
+    },
+    {
+      "chunk": "assets/chat-message-media-runtime-HASH0000.js",
+      "baseRaw": 25557,
+      "headRaw": 25557,
+      "baseGzip": 9052,
+      "headGzip": 9049,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "aaaffabdf3570b2c17e1708d4aa9fb23809b689584146d1d6a2dc2827a6d68d1",
+      "headSha256": "8e867f4c32c9e2061337e03fd5da917a50c5223fd1fe0ab7f4f04a2d711307d2"
+    },
+    {
+      "chunk": "assets/chat-route-entry-HASH0000.js",
+      "baseRaw": 371,
+      "headRaw": 371,
+      "baseGzip": 256,
+      "headGzip": 253,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "939078fa621de1ee398ec1188be4fbbb403d14558b9cfc7bc928d01e31eb3467",
+      "headSha256": "6155946ed4153adef4e7be114726694e7725c67ae9f18fece7f3854411509e72"
+    },
+    {
+      "chunk": "assets/composer-invocation-menus-HASH0000.js",
+      "baseRaw": 24017,
+      "headRaw": 24017,
+      "baseGzip": 8053,
+      "headGzip": 8054,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "1b36b78d015bd33132f22d43b957ca65f58c3fd931876b5ef2c918f902879011",
+      "headSha256": "7d380fe7a4ca48a9f67ceae94a7cfff3ae9a3973e621cc1c6a8840a42c9cb0c5"
+    },
+    {
+      "chunk": "assets/control-ui-boot-chat-HASH0000.js",
+      "baseRaw": 1426238,
+      "headRaw": 1426238,
+      "baseGzip": 421975,
+      "headGzip": 422098,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "f51f6932f3f648b413582d8210b454c3f3c1b72ebd73cd33dda9605603b0d455",
+      "headSha256": "12f7dfc2d07b2e25f37bbe73c09977a5da25107e655a0bdd48638cd9c77c88e6"
+    },
+    {
+      "chunk": "assets/control-ui-boot-chat-styles-HASH0000.js",
+      "baseRaw": 35161,
+      "headRaw": 35161,
+      "baseGzip": 10422,
+      "headGzip": 10414,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "d77c27bd8dcfb7dafd29b8be243a4810e06af1166c10640dceb694c1a64540a1",
+      "headSha256": "223cea83a7a056e05b874e5fe4b92bbe83766b72b35189d15ffa9029d0623037"
+    },
+    {
+      "chunk": "assets/control-ui-boot-shared-HASH0000.js",
+      "baseRaw": 1769440,
+      "headRaw": 1769440,
+      "baseGzip": 548532,
+      "headGzip": 548764,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "0066dcb5013360ebaa277cf49e26031ad0193c979819e0c56b9f085b36508386",
+      "headSha256": "f21ac5196d7e06674d6031c88345e20e114c3bdadbb61880289946e879000ed1"
+    },
+    {
+      "chunk": "assets/control-ui-boot-shared-styles-HASH0000.js",
+      "baseRaw": 1596,
+      "headRaw": 1596,
+      "baseGzip": 503,
+      "headGzip": 504,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "80201767a404b95c9fa468a05875162945a20fbabea10d0bdcacf83efbdbf44c",
+      "headSha256": "e9e6efa0f77fba8c605e46e556e0f5fe8481c439e3717f3316a0c730558270aa"
+    },
+    {
+      "chunk": "assets/control-ui-connection-HASH0000.js",
+      "baseRaw": 281771,
+      "headRaw": 281771,
+      "baseGzip": 89851,
+      "headGzip": 89851,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "c7bc6f1f7be5968f749103f624485e2e406a51aebd5c77ace97baf3a4ecb63d0",
+      "headSha256": "2ac618581b84c43d5215a54cb77185bba009e8bd7ba30dd660cc3d7f71cccb69"
+    },
+    {
+      "chunk": "assets/deferred-ui-support-HASH0000.js",
+      "baseRaw": 60457,
+      "headRaw": 60457,
+      "baseGzip": 21784,
+      "headGzip": 21807,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "5acc93a10ad5b8b83eaefa3edcd9733fb5ef09859a5cae4df0604ec6b70bf7cd",
+      "headSha256": "7b8d204a0d0e653934a5fb22772226afe05b630e03c46ebecc20a55390839872"
+    },
+    {
+      "chunk": "assets/device-signing-runtime-HASH0000.js",
+      "baseRaw": 7226,
+      "headRaw": 7226,
+      "baseGzip": 3649,
+      "headGzip": 3649,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "99a5738a22137657efc3ab612a7c5e5bb4253136610d33fc50b15da9d4349b39",
+      "headSha256": "691614cfd524db1ddcec4e5cb6c2f80ac51b1ac17efc8bec81f6393b169f04e1"
+    },
+    {
+      "chunk": "assets/index-HASH0000.js",
+      "baseRaw": 146,
+      "headRaw": 146,
+      "baseGzip": 144,
+      "headGzip": 145,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "edce7ae25779079669446ed5c99fdf85ea2fd8f071e6a3d7820a0137553133ad",
+      "headSha256": "8a961d9ebeb8bb3229df3fbf4b1acdc31b3c27742be2a1a9b9e5492f16f4594a"
+    },
+    {
+      "chunk": "assets/markdown-runtime-HASH0000.js",
+      "baseRaw": 209555,
+      "headRaw": 209555,
+      "baseGzip": 78616,
+      "headGzip": 78611,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "fa9b649c6557e76eee9f244951cf088334b84ac79ab6ed0a3c0ddb00ebfeebf8",
+      "headSha256": "6fd99f026359c60be3328c1d50283e77ddb030b23f05aeef6afeb7a3a75cc271"
+    },
+    {
+      "chunk": "assets/markdown-streaming-runtime-HASH0000.js",
+      "baseRaw": 28158,
+      "headRaw": 28158,
+      "baseGzip": 10198,
+      "headGzip": 10198,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "b7034375dc6bbe2ce81a02c54922f69cc7652fe6e7accad620d790f2737fafa0",
+      "headSha256": "e72c478962a9ee589b955940b75dc5a34fa931d8f14d752685f28edc1487eacc"
+    },
+    {
+      "chunk": "assets/rolldown-runtime-HASH0000.js",
+      "baseRaw": 817,
+      "headRaw": 817,
+      "baseGzip": 477,
+      "headGzip": 477,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "2d8d100f1a8f491dcf0b1adcd5d5f59a48dfd1683b8123c97785039b0e72e99d",
+      "headSha256": "2d8d100f1a8f491dcf0b1adcd5d5f59a48dfd1683b8123c97785039b0e72e99d"
+    },
+    {
+      "chunk": "assets/solid-runtime-HASH0000.js",
+      "baseRaw": 113836,
+      "headRaw": 113836,
+      "baseGzip": 39124,
+      "headGzip": 39119,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "128f0914f469c421a0995db7f71419096464780222e0f541c49de15cddb74bee",
+      "headSha256": "2e6e26d230ddd725116820bee0e73e412e8e027cf2545e38d35733cb2ed12a50"
+    },
+    {
+      "chunk": "assets/virtual-core-runtime-HASH0000.js",
+      "baseRaw": 25647,
+      "headRaw": 25647,
+      "baseGzip": 7107,
+      "headGzip": 7107,
+      "sameAfterAssetHashNormalization": true,
+      "baseSha256": "e5beff9f51f3ce0cf3db7858ead82b5752e42bbd5dc1db8c1759ffb8779766ba",
+      "headSha256": "e5beff9f51f3ce0cf3db7858ead82b5752e42bbd5dc1db8c1759ffb8779766ba"
+    }
+  ],
+  "changedMappedModules": []
+}
