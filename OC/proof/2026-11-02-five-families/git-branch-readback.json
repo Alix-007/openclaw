@@ -1,0 +1,440 @@
+[
+  {
+    "at": "2026-11-02T09:58:53.486Z",
+    "sha": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+    "buildStamp": {
+      "builtAt": 1793607647332,
+      "head": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+      "inputsClean": true,
+      "inputSignature": "eb01427a96f3fc4af4f8fd917e011198d37e7ea9167783425e62e24945ee9006"
+    },
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "42233"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "expected": "base",
+      "source": "anonymous public clone plus ordinary local branch, text commit, and tag",
+      "remoteWrites": false,
+      "githubCredential": "none in isolated runtime",
+      "privateHelpersInvoked": false,
+      "publicEntry": [
+        "sessions.create",
+        "controlUi.sessionPullRequests.subscribe",
+        "controlUi.sessionPullRequests.changed"
+      ]
+    },
+    "cases": [
+      {
+        "name": "control: no colliding tag",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T09:59:18.831Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "release"
+        }
+      },
+      {
+        "name": "same-name local branch and tag",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "heads/release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T09:59:27.031Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "heads/release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "heads/release"
+        }
+      },
+      {
+        "name": "control: colliding tag removed",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T09:59:36.782Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "release"
+        }
+      }
+    ],
+    "observation": "RED: public subscription changes the real branch identity from release to heads/release after a local-only same-name tag; removing the tag restores release",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "at": "2026-11-02T10:45:20.122Z",
+    "sha": "3a5a86f1002b50b5462671aae65b2f93a50673e4",
+    "buildStamp": {
+      "builtAt": 1793616259265,
+      "head": "3a5a86f1002b50b5462671aae65b2f93a50673e4",
+      "inputsClean": true,
+      "inputSignature": "db2d8771594374f49de430e6aaf9308b84e82593e5f89978fac3177ce6905f08"
+    },
+    "command": [
+      "node",
+      "$PROOF_ROOT/git-branch/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "33765"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "expected": "head",
+      "source": "anonymous public clone plus ordinary local branch, text commit, and tag",
+      "remoteWrites": false,
+      "githubCredential": "none in isolated runtime",
+      "privateHelpersInvoked": false,
+      "publicEntry": [
+        "sessions.create",
+        "controlUi.sessionPullRequests.subscribe",
+        "controlUi.sessionPullRequests.changed"
+      ]
+    },
+    "cases": [
+      {
+        "name": "control: no colliding tag",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T10:45:44.706Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "release"
+        }
+      },
+      {
+        "name": "same-name local branch and tag",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T10:45:53.896Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "heads/release"
+        }
+      },
+      {
+        "name": "control: colliding tag removed",
+        "snapshot": {
+          "pullRequests": [],
+          "rateLimited": false,
+          "repository": {
+            "owner": "octocat",
+            "repo": "Hello-World"
+          },
+          "branch": {
+            "owner": "octocat",
+            "repo": "Hello-World",
+            "branch": "release",
+            "additions": 1,
+            "deletions": 0,
+            "changedFiles": 1
+          },
+          "taskPullRequests": [],
+          "taskPullRequestCount": 0,
+          "pullRequestCount": 0,
+          "status": "ready"
+        },
+        "publicEvent": {
+          "at": "2026-11-02T10:46:03.738Z",
+          "event": "controlUi.sessionPullRequests.changed",
+          "payload": {
+            "sessions": {
+              "agent:main:git-branch-proof": {
+                "pullRequests": [],
+                "rateLimited": false,
+                "repository": {
+                  "owner": "octocat",
+                  "repo": "Hello-World"
+                },
+                "branch": {
+                  "owner": "octocat",
+                  "repo": "Hello-World",
+                  "branch": "release",
+                  "additions": 1,
+                  "deletions": 0,
+                  "changedFiles": 1
+                },
+                "taskPullRequests": [],
+                "taskPullRequestCount": 0,
+                "pullRequestCount": 0,
+                "status": "ready"
+              }
+            }
+          }
+        },
+        "git": {
+          "fullHead": "refs/heads/release",
+          "abbreviatedHead": "release"
+        }
+      }
+    ],
+    "observation": "GREEN: public subscription preserves release through a same-name local tag and removal",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

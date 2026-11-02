@@ -1,0 +1,260 @@
+[
+  {
+    "sourceHead": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+    "mode": "label",
+    "expected": "base",
+    "source": "$PROOF_ROOT/baseline",
+    "artifactDir": "$PROOF_ROOT/ui-proof/ui-settings-label-base-wX5IRQ",
+    "verdict": "RED",
+    "stages": [
+      {
+        "name": "dependencies-imported",
+        "at": "2026-11-02T10:41:03.067Z"
+      },
+      {
+        "name": "matching-headless-chromium-started",
+        "at": "2026-11-02T10:41:03.243Z"
+      },
+      {
+        "name": "stock-vite-source-started",
+        "at": "2026-11-02T10:41:08.307Z"
+      },
+      {
+        "name": "scenario-and-controls-finished",
+        "at": "2026-11-02T10:41:16.921Z"
+      }
+    ],
+    "cases": [
+      {
+        "name": "cold-custom-model-label",
+        "action": "custom-blur",
+        "pageErrors": [],
+        "httpStatus": 200,
+        "initial": {
+          "value": "",
+          "hidden": true,
+          "disabled": false,
+          "display": "none",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": false,
+          "focused": false,
+          "activeElement": "body",
+          "activeClass": null,
+          "selectionStart": 0,
+          "selectionEnd": 0,
+          "width": 0,
+          "height": 0,
+          "usagePublication": null
+        },
+        "customOptionLabel": "cron.form.customModel",
+        "customOptionText": "cron.form.customModel",
+        "chosenCustom": {
+          "value": "",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": false,
+          "focused": true,
+          "activeElement": "input",
+          "activeClass": "settings-input model-picker__custom",
+          "selectionStart": 0,
+          "selectionEnd": 0,
+          "width": 181,
+          "height": 32,
+          "usagePublication": null
+        },
+        "before": {
+          "value": "anthropic/collector-draft-model",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": true,
+          "focused": true,
+          "activeElement": "input",
+          "activeClass": "settings-input model-picker__custom",
+          "selectionStart": 31,
+          "selectionEnd": 31,
+          "width": 181,
+          "height": 32,
+          "usagePublication": null
+        },
+        "requestsBefore": [],
+        "after": {
+          "value": "anthropic/collector-draft-model",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": true,
+          "focused": false,
+          "activeElement": "body",
+          "activeClass": null,
+          "selectionStart": 31,
+          "selectionEnd": 31,
+          "width": 216,
+          "height": 32,
+          "usagePublication": null
+        },
+        "requestsAfter": [
+          {
+            "id": "16:0429599f-ab5c-4011-a0cb-c80c4e13e519",
+            "method": "config.set",
+            "params": {
+              "raw": "{\n  \"agents\": {\n    \"defaults\": {\n      \"userTimezone\": \"Asia/Singapore\"\n    }\n  },\n  \"plugins\": {\n    \"slots\": {\n      \"memory\": \"memory-core\"\n    },\n    \"entries\": {\n      \"memory-core\": {\n        \"config\": {\n          \"dreaming\": {\n            \"frequency\": \"0 6 * * *\",\n            \"verboseLogging\": true,\n            \"model\": \"anthropic/collector-draft-model\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+              "baseHash": "memory-defaults-e2e"
+            }
+          }
+        ],
+        "socketUrls": [
+          "ws://127.0.0.1:45713"
+        ],
+        "customRowText": "Dreaming modelProvider/model override for dream diary narration. Requires subagent model overrides to be allowed. Default: Agent modelanthropic/collector-draft-modelNo matches",
+        "draftPreserved": false,
+        "savedModel": "anthropic/collector-draft-model",
+        "commitControlPass": true
+      }
+    ],
+    "externalRequestsBlocked": [],
+    "playwrightBrowsersPath": "$PROOF_ROOT/tooling/browsers",
+    "browserVersion": "156.0.8078.4",
+    "origin": "http://127.0.0.1:45713",
+    "controlsPass": true,
+    "harnessSha256": "3819c12134f483cd733673d5e8a131a0b93bf83cdb4d6490716d2d88f594b098",
+    "collectorWallSeconds": 15.733182704076171
+  },
+  {
+    "sourceHead": "89693e8cbea4cf4ef7daa77386b56f65203f3cf8",
+    "mode": "label",
+    "expected": "head",
+    "source": "$PROOF_ROOT/settings-label",
+    "artifactDir": "$PROOF_ROOT/ui-proof/ui-settings-label-head-aXb4EZ",
+    "verdict": "GREEN",
+    "stages": [
+      {
+        "name": "dependencies-imported",
+        "at": "2026-11-02T10:44:53.856Z"
+      },
+      {
+        "name": "matching-headless-chromium-started",
+        "at": "2026-11-02T10:44:54.048Z"
+      },
+      {
+        "name": "stock-vite-source-started",
+        "at": "2026-11-02T10:44:59.280Z"
+      },
+      {
+        "name": "scenario-and-controls-finished",
+        "at": "2026-11-02T10:45:10.239Z"
+      }
+    ],
+    "cases": [
+      {
+        "name": "cold-custom-model-label",
+        "action": "custom-blur",
+        "pageErrors": [],
+        "httpStatus": 200,
+        "initial": {
+          "value": "",
+          "hidden": true,
+          "disabled": false,
+          "display": "none",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": false,
+          "focused": false,
+          "activeElement": "body",
+          "activeClass": null,
+          "selectionStart": 0,
+          "selectionEnd": 0,
+          "width": 0,
+          "height": 0,
+          "usagePublication": null
+        },
+        "customOptionLabel": "Custom model…",
+        "customOptionText": "Custom model…",
+        "chosenCustom": {
+          "value": "",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": false,
+          "focused": true,
+          "activeElement": "input",
+          "activeClass": "settings-input model-picker__custom",
+          "selectionStart": 0,
+          "selectionEnd": 0,
+          "width": 181,
+          "height": 32,
+          "usagePublication": null
+        },
+        "before": {
+          "value": "anthropic/collector-draft-model",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": true,
+          "focused": true,
+          "activeElement": "input",
+          "activeClass": "settings-input model-picker__custom",
+          "selectionStart": 31,
+          "selectionEnd": 31,
+          "width": 181,
+          "height": 32,
+          "usagePublication": null
+        },
+        "requestsBefore": [],
+        "after": {
+          "value": "anthropic/collector-draft-model",
+          "hidden": false,
+          "disabled": false,
+          "display": "block",
+          "visibility": "visible",
+          "connected": true,
+          "sameNode": true,
+          "focused": false,
+          "activeElement": "body",
+          "activeClass": null,
+          "selectionStart": 31,
+          "selectionEnd": 31,
+          "width": 216,
+          "height": 32,
+          "usagePublication": null
+        },
+        "requestsAfter": [
+          {
+            "id": "16:5f52933a-5bc7-4305-abeb-e11aa8052914",
+            "method": "config.set",
+            "params": {
+              "raw": "{\n  \"agents\": {\n    \"defaults\": {\n      \"userTimezone\": \"Asia/Singapore\"\n    }\n  },\n  \"plugins\": {\n    \"slots\": {\n      \"memory\": \"memory-core\"\n    },\n    \"entries\": {\n      \"memory-core\": {\n        \"config\": {\n          \"dreaming\": {\n            \"frequency\": \"0 6 * * *\",\n            \"verboseLogging\": true,\n            \"model\": \"anthropic/collector-draft-model\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+              "baseHash": "memory-defaults-e2e"
+            }
+          }
+        ],
+        "socketUrls": [
+          "ws://127.0.0.1:35905"
+        ],
+        "customRowText": "Dreaming modelProvider/model override for dream diary narration. Requires subagent model overrides to be allowed. Default: Agent modelanthropic/collector-draft-modelNo matches",
+        "draftPreserved": false,
+        "savedModel": "anthropic/collector-draft-model",
+        "commitControlPass": true
+      }
+    ],
+    "externalRequestsBlocked": [],
+    "playwrightBrowsersPath": "$PROOF_ROOT/tooling/browsers",
+    "browserVersion": "156.0.8078.4",
+    "origin": "http://127.0.0.1:35905",
+    "controlsPass": true,
+    "harnessSha256": "3819c12134f483cd733673d5e8a131a0b93bf83cdb4d6490716d2d88f594b098",
+    "collectorWallSeconds": 18.293932772707194
+  }
+]
