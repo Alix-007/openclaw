@@ -1,0 +1,63 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--check",
+      "src/gateway/server-methods/projects-recents.ts",
+      "src/gateway/server-methods/projects-recents.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.35562275210395455
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "config/tsconfig/oxlint.core.json",
+      "src/gateway/server-methods/projects-recents.ts",
+      "src/gateway/server-methods/projects-recents.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 52.821241134777665
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/project-recents-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 103.20402098307386
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "baaf869a3a4e754ad9e4437f90b0aaba7931a716"
+    ],
+    "exitCode": 0,
+    "seconds": 21.337933250237256
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "src/gateway/server-methods/projects-recents.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 203.72285437583923
+  }
+]

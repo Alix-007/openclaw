@@ -1,0 +1,914 @@
+[
+  {
+    "at": "2026-11-02T13:44:19.486Z",
+    "sha": "baaf869a3a4e754ad9e4437f90b0aaba7931a716",
+    "buildStamp": {
+      "builtAt": 1793626217963,
+      "head": "baaf869a3a4e754ad9e4437f90b0aaba7931a716",
+      "inputsClean": true,
+      "inputSignature": "f401049afdaa4b7b1e10d4449891c7a1dd6be387eff17b777fb39133b23121f4"
+    },
+    "domain": "ws://127.0.0.1:43379",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "b82b7759-784b-4a72-a6e4-f2e13f222fbb",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "64a419d9-fe06-456e-8fba-8f76f165a083",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "72f193ad-8b21-4c22-80d1-07ad86535c4b",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "d0088a95-f284-4fa5-a476-c32a648a1550",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "d0229648-5fcd-4e63-9489-04de055fbb7c",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "4502f8f1-9cf4-45f1-a208-1189f24042d6",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:project-recents-proof",
+            "sessionId": "b5e8520d-abd0-4e1a-9368-dc60a701476d",
+            "entry": {
+              "sessionId": "b5e8520d-abd0-4e1a-9368-dc60a701476d",
+              "lifecycleRevision": "13000cd2-87e8-4bce-b560-feead71ef311",
+              "updatedAt": 1793627081101,
+              "sessionRoot": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793627081103,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof/packages/app",
+              "worktree": {
+                "id": "7ab6be58-1113-43d8-bc36-250df51f8309",
+                "branch": "openclaw/recents-proof",
+                "repoRoot": "$PROOF_ROOT/recents-base/workspace/repository",
+                "canonicalWorkspaceDir": "$PROOF_ROOT/recents-base/workspace/repository/packages/app"
+              },
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            },
+            "worktree": {
+              "id": "7ab6be58-1113-43d8-bc36-250df51f8309",
+              "path": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof",
+              "branch": "openclaw/recents-proof"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "b41458fb-054e-4463-a20c-89fac30c4e5b",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/recents-base/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/recents-base/workspace/repository",
+                "displayName": "repository"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recent-replay-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-base/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "5ccd835c-307a-45c0-a161-bcfc945762d8",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recent-replay-proof",
+            "sessionId": "def4cb48-ab1a-4e73-a297-b858c4c1cef1",
+            "entry": {
+              "sessionId": "def4cb48-ab1a-4e73-a297-b858c4c1cef1",
+              "lifecycleRevision": "d0197f90-7aef-4a69-8404-3013df9930fa",
+              "updatedAt": 1793627081678,
+              "sessionRoot": "$PROOF_ROOT/recents-base/workspace/repository",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793627081678,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/recents-base/workspace/repository",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "43379"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "entry": [
+        "sessions.create",
+        "projects.list"
+      ],
+      "externalServices": false,
+      "modelsCalled": false,
+      "privateHelpersInvoked": false
+    },
+    "gitCommands": [
+      {
+        "args": [
+          "init",
+          "-b",
+          "main"
+        ],
+        "stdout": "Initialized empty Git repository in $PROOF_ROOT/recents-base/workspace/repository/.git/\n"
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "Fixture"
+        ],
+        "stdout": "[main (root-commit) a33bada] Fixture\n 2 files changed, 2 insertions(+)\n create mode 100644 packages/app/nested.txt\n create mode 100644 root.txt\n"
+      }
+    ],
+    "cases": [
+      {
+        "name": "public managed session creation",
+        "response": {
+          "ok": true,
+          "key": "agent:main:project-recents-proof",
+          "sessionId": "b5e8520d-abd0-4e1a-9368-dc60a701476d",
+          "entry": {
+            "sessionId": "b5e8520d-abd0-4e1a-9368-dc60a701476d",
+            "lifecycleRevision": "13000cd2-87e8-4bce-b560-feead71ef311",
+            "updatedAt": 1793627081101,
+            "sessionRoot": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793627081103,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof/packages/app",
+            "worktree": {
+              "id": "7ab6be58-1113-43d8-bc36-250df51f8309",
+              "branch": "openclaw/recents-proof",
+              "repoRoot": "$PROOF_ROOT/recents-base/workspace/repository",
+              "canonicalWorkspaceDir": "$PROOF_ROOT/recents-base/workspace/repository/packages/app"
+            },
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          },
+          "worktree": {
+            "id": "7ab6be58-1113-43d8-bc36-250df51f8309",
+            "path": "$PROOF_ROOT/recents-base/state/worktrees/348f6b20b149cc06/recents-proof",
+            "branch": "openclaw/recents-proof"
+          }
+        }
+      },
+      {
+        "name": "recent source selection",
+        "response": {
+          "projects": [
+            {
+              "id": "workspace:main",
+              "displayName": "workspace",
+              "repoRoot": "$PROOF_ROOT/recents-base/workspace",
+              "source": "workspace",
+              "agentId": "main"
+            }
+          ],
+          "githubHost": "github.com",
+          "recents": [
+            {
+              "kind": "folder",
+              "folder": "$PROOF_ROOT/recents-base/workspace/repository",
+              "displayName": "repository"
+            }
+          ]
+        }
+      },
+      {
+        "name": "replay returned recent folder",
+        "response": {
+          "ok": true,
+          "key": "agent:main:recent-replay-proof",
+          "sessionId": "def4cb48-ab1a-4e73-a297-b858c4c1cef1",
+          "entry": {
+            "sessionId": "def4cb48-ab1a-4e73-a297-b858c4c1cef1",
+            "lifecycleRevision": "d0197f90-7aef-4a69-8404-3013df9930fa",
+            "updatedAt": 1793627081678,
+            "sessionRoot": "$PROOF_ROOT/recents-base/workspace/repository",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793627081678,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/recents-base/workspace/repository",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        }
+      }
+    ],
+    "observation": "RED: selecting a nested folder for a managed session records it correctly, but recents replays the repository root",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "at": "2026-11-02T14:17:52.856Z",
+    "sha": "eef07d6adf6a4f689cc715932824f7611ec20b0b",
+    "buildStamp": {
+      "builtAt": 1793628909850,
+      "head": "eef07d6adf6a4f689cc715932824f7611ec20b0b",
+      "inputsClean": true,
+      "inputSignature": "91a9f30b38db05fd8b1857177c15924ef02e0b6510b5f60fd38efaa9d825819e"
+    },
+    "domain": "ws://127.0.0.1:41277",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "de6f7545-97e9-4bc9-9760-f425a8dc0f77",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "6743312f-b53c-4d6a-90cb-dfe0caa3b3d6",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "eea1a7dc-15b1-4ab7-b307-c165486cfb14",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "ca30e2e2-83a2-466a-bdcb-38b1e5fdd7ea",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "8ec44e1d-2c1c-4389-b04e-368a2d17d0ed",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:project-recents-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": true,
+          "worktreeBaseRef": "HEAD",
+          "worktreeName": "recents-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "d5e77e51-a31d-46f4-9010-8e927dfd002f",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:project-recents-proof",
+            "sessionId": "f74cd6ce-2b24-4980-9048-e23747fc72a8",
+            "entry": {
+              "sessionId": "f74cd6ce-2b24-4980-9048-e23747fc72a8",
+              "lifecycleRevision": "c2a1f918-50b1-4f91-89b3-8f986fa65817",
+              "updatedAt": 1793629094671,
+              "sessionRoot": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793629094672,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof/packages/app",
+              "worktree": {
+                "id": "318f915f-e24a-439c-8491-bc98699fc5b1",
+                "branch": "openclaw/recents-proof",
+                "repoRoot": "$PROOF_ROOT/recents-head/workspace/repository",
+                "canonicalWorkspaceDir": "$PROOF_ROOT/recents-head/workspace/repository/packages/app"
+              },
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            },
+            "worktree": {
+              "id": "318f915f-e24a-439c-8491-bc98699fc5b1",
+              "path": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof",
+              "branch": "openclaw/recents-proof"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "1e29118b-4ddf-4b96-bf5c-10e4713ec9c5",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/recents-head/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+                "displayName": "app"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recent-replay-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "deec4994-70d1-407a-b59d-19bf68014e37",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recent-replay-proof",
+            "sessionId": "6afc679b-1670-46ff-b0b2-98dca90b9da6",
+            "entry": {
+              "sessionId": "6afc679b-1670-46ff-b0b2-98dca90b9da6",
+              "lifecycleRevision": "1b521604-8637-40a2-a0d3-386316c765c2",
+              "updatedAt": 1793629095341,
+              "sessionRoot": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793629095342,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/project-recents/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "41277"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "entry": [
+        "sessions.create",
+        "projects.list"
+      ],
+      "externalServices": false,
+      "modelsCalled": false,
+      "privateHelpersInvoked": false
+    },
+    "gitCommands": [
+      {
+        "args": [
+          "init",
+          "-b",
+          "main"
+        ],
+        "stdout": "Initialized empty Git repository in $PROOF_ROOT/recents-head/workspace/repository/.git/\n"
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "Fixture"
+        ],
+        "stdout": "[main (root-commit) b19a69d] Fixture\n 2 files changed, 2 insertions(+)\n create mode 100644 packages/app/nested.txt\n create mode 100644 root.txt\n"
+      }
+    ],
+    "cases": [
+      {
+        "name": "public managed session creation",
+        "response": {
+          "ok": true,
+          "key": "agent:main:project-recents-proof",
+          "sessionId": "f74cd6ce-2b24-4980-9048-e23747fc72a8",
+          "entry": {
+            "sessionId": "f74cd6ce-2b24-4980-9048-e23747fc72a8",
+            "lifecycleRevision": "c2a1f918-50b1-4f91-89b3-8f986fa65817",
+            "updatedAt": 1793629094671,
+            "sessionRoot": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793629094672,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof/packages/app",
+            "worktree": {
+              "id": "318f915f-e24a-439c-8491-bc98699fc5b1",
+              "branch": "openclaw/recents-proof",
+              "repoRoot": "$PROOF_ROOT/recents-head/workspace/repository",
+              "canonicalWorkspaceDir": "$PROOF_ROOT/recents-head/workspace/repository/packages/app"
+            },
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          },
+          "worktree": {
+            "id": "318f915f-e24a-439c-8491-bc98699fc5b1",
+            "path": "$PROOF_ROOT/recents-head/state/worktrees/996dd1a55b5b550c/recents-proof",
+            "branch": "openclaw/recents-proof"
+          }
+        }
+      },
+      {
+        "name": "recent source selection",
+        "response": {
+          "projects": [
+            {
+              "id": "workspace:main",
+              "displayName": "workspace",
+              "repoRoot": "$PROOF_ROOT/recents-head/workspace",
+              "source": "workspace",
+              "agentId": "main"
+            }
+          ],
+          "githubHost": "github.com",
+          "recents": [
+            {
+              "kind": "folder",
+              "folder": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+              "displayName": "app"
+            }
+          ]
+        }
+      },
+      {
+        "name": "replay returned recent folder",
+        "response": {
+          "ok": true,
+          "key": "agent:main:recent-replay-proof",
+          "sessionId": "6afc679b-1670-46ff-b0b2-98dca90b9da6",
+          "entry": {
+            "sessionId": "6afc679b-1670-46ff-b0b2-98dca90b9da6",
+            "lifecycleRevision": "1b521604-8637-40a2-a0d3-386316c765c2",
+            "updatedAt": 1793629095341,
+            "sessionRoot": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793629095342,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/recents-head/workspace/repository/packages/app",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        }
+      }
+    ],
+    "observation": "GREEN: recent source folder replays the original nested selection",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

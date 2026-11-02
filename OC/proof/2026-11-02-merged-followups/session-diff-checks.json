@@ -1,0 +1,69 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--check",
+      "src/sessions/session-diff.runtime.ts",
+      "src/sessions/session-diff-revisions.ts",
+      "src/sessions/session-diff-revisions.test.ts",
+      "src/gateway/server-methods/sessions-diff.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.28932813834398985
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "config/tsconfig/oxlint.core.json",
+      "src/sessions/session-diff.runtime.ts",
+      "src/sessions/session-diff-revisions.ts",
+      "src/sessions/session-diff-revisions.test.ts",
+      "src/gateway/server-methods/sessions-diff.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 48.40558122098446
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/session-diff-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 98.14531084056944
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "baaf869a3a4e754ad9e4437f90b0aaba7931a716"
+    ],
+    "exitCode": 0,
+    "seconds": 5.853044007904828
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "src/sessions/session-diff-revisions.test.ts",
+      "src/gateway/server-methods/sessions-diff.test.ts",
+      "src/sessions/session-diff-baseline-files.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 1,
+    "seconds": 136.38759482000023
+  }
+]

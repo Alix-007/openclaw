@@ -1,0 +1,123 @@
+[test] starting test/vitest/vitest.gateway.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/session-diff
+
+[vitest-workers] local cache hit after 9191ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 010b15893a03 in 9398ms (18311 inputs, 23287 outputs)
+[vitest] still running with no output for 30000ms.
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > reports unknown sessions without touching a workspace 61ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > returns computing while sharing delayed workspace metadata across diff polls 1515ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps authority per caller and metadata separate per session while polls share preparation 693ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps pending checkouts separate from the agent workspace 72ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > never executes a checkout-configured core.fsmonitor command 408ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > uses the persisted fixed-store owner for a bare session checkout 199ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > rejects a foreign agent before loading a bare fixed-store checkout 11ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps tracked counts while omitting patches above the total changed-line limit 208ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > reports a failed tracked inventory instead of an empty diff 202ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > reports a failed untracked inventory instead of an empty diff 212ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > returns session-filtered summary counts without patches or branch history 551ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > shows an unrelated root commit merged into the feature branch in a sha256 repository 497ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > scopes branch, working-tree, and commit diffs against origin/master with branch metadata 2156ms
+ × |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > uses the accepted managed base for working, committed, and archived reads 3664ms
+   → expected null to match object { worktreeStatus: { clean: true } }
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > never executes configured textconv drivers from the read RPC 955ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > withholds patch content for hardlinked files pointing outside the checkout 316ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > reports staged files and filters the session baseline before the first sha256 commit 644ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > preserves checkout path bytes for detached baseline and diff reads 728ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps pre-session changes hidden when new files exceed the fingerprint budget 430ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > ignores a baseline from an older session generation 256ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps exact large-file counts and later previews when untracked patches are omitted 470ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > bounds untracked filename materialization for a 100-path inventory 291ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > bounds untracked filename materialization for a 101-path inventory 250ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > bounds untracked filename materialization for a 10000-path inventory 244ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > batches untracked Git reads without changing native output (summary: false) 529ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > batches untracked Git reads without changing native output (summary: true) 448ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > reads outside sparse cones without writing split-index backing files 676ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > preserves no-index previews when tracked attributes are absent 378ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps other untracked files when a required filter fails (summary: false) 422ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps other untracked files when a required filter fails (summary: true) 442ms
+ × |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > refreshes untracked diffs for file, nested-directory, and ignore changes 1247ms
+   → expected 2 to be 4 // Object.is equality
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > invalidates cached diffs when the Git installation's system configuration appears 1129ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps tracked and untracked previews under oversized prefixes 335ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps carriage-return header-like content as text in both diff paths 314ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > preserves C-escaped and octal filenames in tracked and untracked previews 315ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps fitting untracked previews after ident contraction without extra conversion passes 555ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sessionStateNotices
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/gateway/server-methods/sessions-diff.test.ts: retiring openclaw.sessionGroupCatalog
+
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > keeps fitting untracked previews after working-tree encoding without extra conversion passes 805ms
+ ✓ |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > rejects invalid params through the handler 18ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > uses the accepted managed base for working, committed, and archived reads
+AssertionError: expected null to match object { worktreeStatus: { clean: true } }
+
+- Expected:
+{
+  "worktreeStatus": {
+    "clean": true,
+  },
+}
+
++ Received:
+null
+
+ ❯ src/gateway/server-methods/sessions-diff.test.ts:<redacted len=6>
+    534|             input: { root: repoRoot, scope: "diff" },
+    535|           }),
+    536|         ).toMatchObject({ worktreeStatus: { clean: true } });
+       |           ^
+    537|         expect(fs.readFileSync(indexPath)).toEqual(originalIndex);
+    538|         mockSession(repoRoot, { worktree });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |gateway-methods| src/gateway/server-methods/sessions-diff.test.ts > loadSessionDiff > refreshes untracked diffs for file, nested-directory, and ignore changes
+AssertionError: expected 2 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 2
+
+ ❯ src/gateway/server-methods/sessions-diff.test.ts:<redacted len=6>
+    891|       write("loose.txt", "new\nsecond\n");
+    892|       append("tracked.txt", "third\n");
+    893|       expect((await readDiff({ summaryOnly: true })).additions).toBe(4…
+       |                                                                 ^
+    894|       expect(diffFile(await readDiff(), "loose.txt")?.patch).toContain…
+    895|       fs.mkdirSync(path.join(repoRoot, "nested", "empty"), { recursive…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 36 passed (38)
+   Start at  21:59:46
+   Duration  74.65s (transform 58%, tests 31%, import 7%, worker 3%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 89.30s
+[test] FAILED (exit 1)

@@ -1,0 +1,60 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {withIsolatedGateway} from './isolated-gateway.mjs';
+const [checkout,out,expected]=process.argv.slice(2);
+assert.ok(['base','head'].includes(expected));
+let root,base,head;const commands=[];
+function git(...args){
+ const stdout=execFileSync('git',['-C',root,...args],{encoding:'utf8',stdio:'pipe',env:{PATH:'/usr/bin:/bin',HOME:path.join(out,'home'),GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_TERMINAL_PROMPT:'0'},timeout:30000});
+ commands.push({args,stdout});return stdout.trim();
+}
+const commit=message=>git('-c','user.name=Proof fixture','-c','user.email=proof@example.invalid','-c','commit.gpgsign=false','commit','-m',message);
+await withIsolatedGateway(checkout,out,async()=>{
+ root=path.join(out,'workspace','repository');fs.mkdirSync(root);
+ git('init','-b','main');fs.writeFileSync(path.join(root,'base.txt'),'Base commit\n');git('add','.');commit('base');base=git('rev-parse','HEAD');git('switch','-c','feature');
+},async({record,rpc,save})=>{
+ const key='agent:main:diff-ref-proof';
+ const created=await rpc('sessions.create',{key,agentId:'main',cwd:root,worktree:false});assert.equal(created.runStarted,false);assert.equal(created.entry.spawnedCwd,root);
+ fs.writeFileSync(path.join(root,'session.txt'),'A committed session change\n');git('add','.');commit('session change');head=git('rev-parse','HEAD');
+ record.proof={entry:['sessions.create','sessions.diff'],modelsCalled:false,externalServices:false,privateHelpersInvoked:false};record.cases=[];record.gitCommands=commands;
+ const read=async(name,hasChange,branch='feature',extra={})=>{
+  const value=await rpc('sessions.diff',{sessionKey:key,...extra});
+  const files=value.worktrees?.[0]?.diff??value;
+  record.cases.push({name,response:value});save();
+  assert.equal(files.branch,branch,name+': branch');
+  assert.equal(files.files.some(x=>x.path==='session.txt'),hasChange,name+': file visibility');
+  return files;
+ };
+ await read('legal control: ordinary local main branch',true);
+ git('tag','main');
+ await read('same-name main tag at feature HEAD',expected==='head');
+ const committed=await rpc('sessions.diff',{sessionKey:key,scope:'commit',commit:head});
+ record.cases.push({name:'same committed change selected explicitly',response:committed});save();
+ const committedDiff=committed.worktrees?.[0]?.diff??committed;
+ assert.equal(committedDiff.unavailableReason,expected==='base'?'unknown_commit':undefined);
+ if(expected==='head')assert.equal(committedDiff.files.some(x=>x.path==='session.txt'),true);
+ git('tag','feature',base);
+ await read('same-name current branch tag',expected==='head',expected==='base'?'heads/feature':'feature');
+ git('tag','-d','main','feature');
+ await read('legal control: tags removed',true);
+ git('switch','-c','heads/feature');
+ await read('legal control: branch literally named heads/feature',true,expected==='base'?'heads/heads/feature':'heads/feature');
+ git('switch','feature');
+ git('update-ref','refs/remotes/origin/trunk',base);
+ git('symbolic-ref','refs/remotes/origin/HEAD','refs/remotes/origin/trunk');
+ git('tag','origin/trunk');
+ const remoteDefault=await read('same-name remote default tag',true);
+ assert.equal(remoteDefault.baseRef,expected==='base'?'remotes/origin/trunk':'trunk');
+ git('symbolic-ref','--delete','refs/remotes/origin/HEAD');git('update-ref','-d','refs/remotes/origin/trunk');git('tag','-d','origin/trunk');
+ git('branch','-D','main');git('tag','main',base);
+ const missing=await read('legal control: a tag cannot replace a missing branch',expected==='base');
+ assert.equal(missing.baseRef,expected==='base'?'main':'HEAD');
+ git('switch','--detach',head);
+ const detached=await rpc('sessions.diff',{sessionKey:key});record.cases.push({name:'legal control: detached HEAD',response:detached});save();
+ const detachedDiff=detached.worktrees?.[0]?.diff??detached;
+ assert.equal(detachedDiff.branch,undefined);assert.deepEqual(detachedDiff.files,[]);
+ record.observation=expected==='base'?'RED: adding a legal tag main at the feature commit hides the committed session file and makes that commit unavailable':'GREEN: full branch references retain the committed session change and actual branch name; ordinary and detached controls remain correct';
+ record.revisions={base,head};save();
+});

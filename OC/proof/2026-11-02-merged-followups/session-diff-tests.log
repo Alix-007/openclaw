@@ -1,0 +1,255 @@
+[test] starting test/vitest/vitest.unit.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/session-diff
+
+[vitest-workers] local cache miss after 4636ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 90000ms.
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 3.1s of this 3.4s build (91%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin tsdown:deps generateBundle (68%, 2.3s, 1 call)
+Additional callback time came from the callbacks below and from callbacks under 1s.
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin tsdown:deps resolveId (1742 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+[vitest-workers] prepared 1a30a499bfea in 102151ms (18311 inputs, 23287 outputs)
+ × |unit| src/sessions/session-diff-revisions.test.ts > validates large-index diffs with sparse checkout false 338ms
+   → expected null not to be null
+ × |unit| src/sessions/session-diff-revisions.test.ts > validates large-index diffs with sparse checkout true 107ms
+   → expected null not to be null
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > reads Git's empty tree for format undefined without retaining failures 7ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > reads Git's empty tree for format --show-object-format without retaining failures 5ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > reads Git's empty tree for format unknown-format without retaining failures 5ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch feature with default refs/remotes/origin/trunk and refs ["refs/remotes/origin/trunk","refs/heads/main","refs/heads/master","refs/remotes/origin/main","refs/remotes/origin/master"] to trunk 4ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch feature with default null and refs ["refs/heads/main","refs/heads/master","refs/remotes/origin/main","refs/remotes/origin/master"] to main 7ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch feature with default null and refs ["refs/heads/master","refs/remotes/origin/main","refs/remotes/origin/master"] to master 5ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch feature with default null and refs ["refs/remotes/origin/main","refs/remotes/origin/master"] to origin/main 4ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch undefined with default null and refs ["refs/remotes/origin/main","refs/remotes/origin/master"] to HEAD 4ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch main with default null and refs ["refs/remotes/origin/main","refs/remotes/origin/master"] to HEAD 4ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch master with default null and refs ["refs/remotes/origin/main","refs/remotes/origin/master"] to HEAD 3ms
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > resolves branch feature with default null and refs [] to HEAD 3ms
+ × |unit| src/sessions/session-diff-revisions.test.ts > does not admit commits added after the checkout revision was captured 227ms
+   → expected +0 to be 1 // Object.is equality
+ × |unit| src/sessions/session-diff-revisions.test.ts > reuses a clean status inventory for all and still observes later edits 954ms
+   → expected [] to have a length of 1 but got +0
+ × |unit| src/sessions/session-diff-revisions.test.ts > reuses a clean status inventory for uncommitted and still observes later edits 857ms
+   → expected [] to have a length of 1 but got +0
+ × |unit| src/sessions/session-diff-revisions.test.ts > binds a clean inventory to its checkout, HEAD, and selected comparison 661ms
+   → expected { …(9) } to match object { files: [], aheadCount: 1, …(1) }
+(8 matching properties omitted from actual)
+ ✓ |unit| src/sessions/session-diff-revisions.test.ts > briefly reuses missing checkout results and observes a recreated checkout after expiry 911ms
+ × |unit| src/sessions/session-diff-revisions.test.ts > reuses managed diffs from nested and aliased linked worktrees while an index writer holds its lock 1046ms
+   → expected 'cache-miss' to be 'cache-hit' // Object.is equality
+ × |unit| src/sessions/session-diff-revisions.test.ts > caches opaque nested repositories and refreshes gitlink dirtiness 1011ms
+   → expected 'cache-miss' to be 'cache-hit' // Object.is equality
+stderr | unknown test
+[sqlite-test-lifecycle] src/sessions/session-diff-revisions.test.ts: retiring openclaw.agentDatabaseReaders
+
+ × |unit| src/sessions/session-diff-revisions.test.ts > reuses committed diffs across ignored and index churn but refreshes patch eligibility and attributes 1934ms
+   → expected 10 to be +0 // Object.is equality
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > preserves live SQLite locks for a database candidate 1875ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > preserves live SQLite locks for a hardlink candidate 1073ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > preserves live SQLite locks for a memory-reindex candidate 1135ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > retains unchanged content when modification time changes during the display read 187ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > preserves stored rename, deletion, symlink and literal-name fingerprints 283ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > keeps the per-file and aggregate byte caps while rejecting hardlinks 275ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > ignores pre-session edits without repeating unrelated Git work (undefined, tracked=true) 901ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > ignores pre-session edits without repeating unrelated Git work (HEAD, tracked=true) 901ms
+ ✓ |unit| src/sessions/session-diff-baseline-files.test.ts > ignores pre-session edits without repeating unrelated Git work (undefined, tracked=false) 798ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > validates large-index diffs with sparse checkout false
+AssertionError: expected null not to be null
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    117|       const directories = vi.spyOn(fsSync, "opendirSync");
+    118|       const first = await readCheckoutDiffRevision(root);
+    119|       expect(first).not.toBeNull();
+       |                         ^
+    120|       expect(await readCheckoutDiffRevision(root)).toEqual(first);
+    121|       expect(directories.mock.calls.filter(([directory]) => directory …
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > validates large-index diffs with sparse checkout true
+AssertionError: expected null not to be null
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    117|       const directories = vi.spyOn(fsSync, "opendirSync");
+    118|       const first = await readCheckoutDiffRevision(root);
+    119|       expect(first).not.toBeNull();
+       |                         ^
+    120|       expect(await readCheckoutDiffRevision(root)).toEqual(first);
+    121|       expect(directories.mock.calls.filter(([directory]) => directory …
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > does not admit commits added after the checkout revision was captured
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    212|     gitOut: async (_root, args) => git(...args),
+    213|   });
+    214|   expect(metadata.aheadCount).toBe(1);
+       |                               ^
+    215|   expect(metadata.commits?.map((commit) => commit.subject)).toEqual(["…
+    216|   expect(metadata.mergeBase?.subject).toBe("base");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > reuses a clean status inventory for all and still observes later edits
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > reuses a clean status inventory for uncommitted and still observes later edits
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    229|       const commands = vi.spyOn(execRunner, "runCommandBuffersWithTime…
+    230|       expect(await read()).toMatchObject({ files: [], additions: 0, de…
+    231|       expect(commands.mock.calls.filter(([argv]) => argv.includes("sta…
+       |                                                                               ^
+    232|       expect(
+    233|         commands.mock.calls.filter(([argv]) => argv.includes("diff") |…
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > binds a clean inventory to its checkout, HEAD, and selected comparison
+AssertionError: expected { …(9) } to match object { files: [], aheadCount: 1, …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  {
+-   "aheadCount": 1,
++   "aheadCount": 0,
+    "commits": [
+      {
+        "subject": "feature",
+      },
+    ],
+
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    258|       input: { cwd: root, scope: "uncommitted", worktreeStatus },
+    259|     });
+    260|     expect(clean).toMatchObject({ files: [], aheadCount: 1, commits: […
+       |                   ^
+    261|     const commands = vi.spyOn(execRunner, "runCommandBuffersWithTimeou…
+    262|     for (const input of [{ scope: "all" as const }, { scope: "commit" …
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > reuses managed diffs from nested and aliased linked worktrees while an index writer holds its lock
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > caches opaque nested repositories and refreshes gitlink dirtiness
+AssertionError: expected 'cache-miss' to be 'cache-hit' // Object.is equality
+
+Expected: "cache-hit"
+Received: "cache-miss"
+
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    334|         await fs.writeFile(path.join(checkout, "ignored/build.txt"), "…
+    335|         expect(await read()).toEqual(first);
+    336|         expect(timing.outcome).toBe("cache-hit");
+       |                                ^
+    337|         await fs.appendFile(path.join(checkout, "tracked.txt"), "later…
+    338|         expect((await read()).files[0]?.patch).toContain("+later");
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  |unit| src/sessions/session-diff-revisions.test.ts > reuses committed diffs across ignored and index churn but refreshes patch eligibility and attributes
+AssertionError: expected 10 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 10
+
+ ❯ src/sessions/session-diff-revisions.test.ts:<redacted len=6>
+    457|       const commands = vi.spyOn(execRunner, "runCommandBuffersWithTime…
+    458|       expect(await read()).toEqual(full);
+    459|       expect(commands.mock.calls.length).toBe(0);
+       |                                          ^
+    460|       await write("ignored.txt", "rebuilt output\n");
+    461|       await fs.utimes(path.join(root, ".git/index"), new Date(0), new …
+ ❯ withCheckout src/sessions/session-diff-revisions.test.ts:<redacted len=4>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  9 failed | 21 passed (30)
+   Start at  21:53:50
+   Duration  128.18s (transform 85%, tests 12%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 135.02s
+[test] FAILED (exit 1)

@@ -1,0 +1,1904 @@
+[
+  {
+    "at": "2026-11-02T14:03:23.767Z",
+    "sha": "baaf869a3a4e754ad9e4437f90b0aaba7931a716",
+    "buildStamp": {
+      "builtAt": 1793626217963,
+      "head": "baaf869a3a4e754ad9e4437f90b0aaba7931a716",
+      "inputsClean": true,
+      "inputSignature": "f401049afdaa4b7b1e10d4449891c7a1dd6be387eff17b777fb39133b23121f4"
+    },
+    "domain": "ws://127.0.0.1:37467",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "87e0660b-aa64-40d2-b539-5c743a3fd868",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "b4459b00-0a45-476e-8991-16d5574f62de",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "1c303f34-3a8f-496a-a4e7-46c490e17e59",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "68e31a95-faf9-4420-af7e-f39486b8c14d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "65ebd3ba-aff5-4c15-bd5e-f4c25e480fc0",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "68b4ac57-c3cb-4dd7-bf95-682d98638499",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "c34fab1c-a960-4e9d-8bc9-a53531932ec6",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:diff-ref-proof",
+            "sessionId": "0732a162-d58c-463d-8beb-7b7d53615866",
+            "entry": {
+              "sessionId": "0732a162-d58c-463d-8beb-7b7d53615866",
+              "lifecycleRevision": "684b3e57-3db2-409e-8d09-88dc9e6afb69",
+              "updatedAt": 1793628231890,
+              "sessionRoot": "$PROOF_ROOT/diff-base-final/workspace/repository",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793628231892,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/diff-base-final/workspace/repository",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "b86a49a4-8479-4b39-bed1-5cb36a4a13c7",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "2472948",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "c838ef5",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "cc3ceba1-63de-4041-a725-ee705e520da5",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof",
+          "scope": "commit",
+          "commit": "2472948796d40ffe55b5c10b01d0f67757a175ab"
+        },
+        "response": {
+          "type": "res",
+          "id": "b56e2ab2-a179-4140-a299-086365e1f634",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "unavailableReason": "unknown_commit",
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "ab540af3-00cf-45d2-95b5-d8a02664bbd5",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "heads/feature",
+            "baseRef": "main",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "5a548080-2675-4017-9327-78990c72b242",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "2472948",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "c838ef5",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "802d8835-3d9e-4248-a5cd-654c627e889d",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "heads/heads/feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "2472948",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "c838ef5",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "ebb5486e-7a94-41e5-a445-40f2ca4046b9",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "remotes/origin/trunk",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "2472948",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "c838ef5",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "2f938ac4-195f-41d4-9937-82ff6af0c9cd",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "2472948",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "c838ef5",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "b200ede5-510b-4915-aeb9-c3d5a367b20f",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+            "baseRef": "HEAD",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "37467"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "entry": [
+        "sessions.create",
+        "sessions.diff"
+      ],
+      "modelsCalled": false,
+      "externalServices": false,
+      "privateHelpersInvoked": false
+    },
+    "cases": [
+      {
+        "name": "legal control: ordinary local main branch",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "2472948",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "c838ef5",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name main tag at feature HEAD",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same committed change selected explicitly",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "unavailableReason": "unknown_commit",
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name current branch tag",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "heads/feature",
+          "baseRef": "main",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: tags removed",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "2472948",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "c838ef5",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: branch literally named heads/feature",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "heads/heads/feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "2472948",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "c838ef5",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name remote default tag",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "remotes/origin/trunk",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "2472948",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "c838ef5",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: a tag cannot replace a missing branch",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "2472948",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "c838ef5",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: detached HEAD",
+        "response": {
+          "root": "$PROOF_ROOT/diff-base-final/workspace/repository",
+          "baseRef": "HEAD",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      }
+    ],
+    "gitCommands": [
+      {
+        "args": [
+          "init",
+          "-b",
+          "main"
+        ],
+        "stdout": "Initialized empty Git repository in $PROOF_ROOT/diff-base-final/workspace/repository/.git/\n"
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "base"
+        ],
+        "stdout": "[main (root-commit) c838ef5] base\n 1 file changed, 1 insertion(+)\n create mode 100644 base.txt\n"
+      },
+      {
+        "args": [
+          "rev-parse",
+          "HEAD"
+        ],
+        "stdout": "c838ef5a68eddd84a83b2ba6504d74f4c918b4be\n"
+      },
+      {
+        "args": [
+          "switch",
+          "-c",
+          "feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "session change"
+        ],
+        "stdout": "[feature 2472948] session change\n 1 file changed, 1 insertion(+)\n create mode 100644 session.txt\n"
+      },
+      {
+        "args": [
+          "rev-parse",
+          "HEAD"
+        ],
+        "stdout": "2472948796d40ffe55b5c10b01d0f67757a175ab\n"
+      },
+      {
+        "args": [
+          "tag",
+          "main"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "feature",
+          "c838ef5a68eddd84a83b2ba6504d74f4c918b4be"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "-d",
+          "main",
+          "feature"
+        ],
+        "stdout": "Deleted tag 'main' (was 2472948)\nDeleted tag 'feature' (was c838ef5)\n"
+      },
+      {
+        "args": [
+          "switch",
+          "-c",
+          "heads/feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "switch",
+          "feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "update-ref",
+          "refs/remotes/origin/trunk",
+          "c838ef5a68eddd84a83b2ba6504d74f4c918b4be"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "symbolic-ref",
+          "refs/remotes/origin/HEAD",
+          "refs/remotes/origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "symbolic-ref",
+          "--delete",
+          "refs/remotes/origin/HEAD"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "update-ref",
+          "-d",
+          "refs/remotes/origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "-d",
+          "origin/trunk"
+        ],
+        "stdout": "Deleted tag 'origin/trunk' (was 2472948)\n"
+      },
+      {
+        "args": [
+          "branch",
+          "-D",
+          "main"
+        ],
+        "stdout": "Deleted branch main (was c838ef5).\n"
+      },
+      {
+        "args": [
+          "tag",
+          "main",
+          "c838ef5a68eddd84a83b2ba6504d74f4c918b4be"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "switch",
+          "--detach",
+          "2472948796d40ffe55b5c10b01d0f67757a175ab"
+        ],
+        "stdout": ""
+      }
+    ],
+    "observation": "RED: adding a legal tag main at the feature commit hides the committed session file and makes that commit unavailable",
+    "revisions": {
+      "base": "c838ef5a68eddd84a83b2ba6504d74f4c918b4be",
+      "head": "2472948796d40ffe55b5c10b01d0f67757a175ab"
+    },
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "at": "2026-11-02T14:16:04.393Z",
+    "sha": "124bda968b203a1b5d474eb9c7c849252694869c",
+    "buildStamp": {
+      "builtAt": 1793628749411,
+      "head": "124bda968b203a1b5d474eb9c7c849252694869c",
+      "inputsClean": true,
+      "inputSignature": "138d92a736aba9f25d10626b5d99789a8ed83e55b250e6c3dc030e7941305dd3"
+    },
+    "domain": "ws://127.0.0.1:38787",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "c22fbfbc-40a0-4d61-8b84-587b3927ae64",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "e7b4d54b-513f-41c0-a0b1-5ac0f9464681",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "02e2c85a-bf70-413a-a609-0571b2e29af3",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "27a107af-ade6-4374-8400-867d5aecf17d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "e3f39f49-26c2-4c06-a707-083c51a9bf87",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "8110d2bc-cc5b-471c-bd7d-d43d4fd033a6",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:diff-ref-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/diff-head/workspace/repository",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "d9f51817-a35c-4738-b192-1db7b3432e1d",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:diff-ref-proof",
+            "sessionId": "146b2de2-0476-480b-8eef-49957dd4f383",
+            "entry": {
+              "sessionId": "146b2de2-0476-480b-8eef-49957dd4f383",
+              "lifecycleRevision": "dee63653-a6de-4ce7-9771-8e7ffd83ba93",
+              "updatedAt": 1793628986517,
+              "sessionRoot": "$PROOF_ROOT/diff-head/workspace/repository",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793628986518,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/diff-head/workspace/repository",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "95305e04-4a2e-4c3c-a69d-5beb74971722",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "7a854d94-36be-46c3-93d1-74d80fee7ced",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof",
+          "scope": "commit",
+          "commit": "d5a753b16a54fda76dc8dd8b1a9d86964a35b2c0"
+        },
+        "response": {
+          "type": "res",
+          "id": "0e8daf01-15d9-4084-b81f-a6696f5f9f8d",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "3bbaa985-7de8-4331-b7ba-5a627e8afa12",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "f9e5c42f-2707-41c1-b007-32888a40aa25",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "0867833c-e8d6-4816-80df-717852a57ebf",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "heads/feature",
+            "baseRef": "main",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "980a5cc2-b242-46b0-89d4-7257e93d01b1",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "trunk",
+            "aheadCount": 1,
+            "commits": [
+              {
+                "sha": "d5a753b",
+                "subject": "session change"
+              }
+            ],
+            "mergeBase": {
+              "sha": "b82a7f8",
+              "subject": "base"
+            },
+            "files": [
+              {
+                "path": "session.txt",
+                "status": "added",
+                "additions": 1,
+                "deletions": 0,
+                "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+              }
+            ],
+            "additions": 1,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "51d6cc60-acf6-403f-9478-1fe9dceb6707",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "branch": "feature",
+            "baseRef": "HEAD",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      },
+      {
+        "method": "sessions.diff",
+        "params": {
+          "sessionKey": "agent:main:diff-ref-proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "93e97b79-c38f-4eed-a1cd-e43fbbc4078e",
+          "ok": true,
+          "payload": {
+            "root": "$PROOF_ROOT/diff-head/workspace/repository",
+            "baseRef": "HEAD",
+            "files": [],
+            "additions": 0,
+            "deletions": 0,
+            "sessionKey": "agent:main:diff-ref-proof"
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/session-diff/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "38787"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "proof": {
+      "entry": [
+        "sessions.create",
+        "sessions.diff"
+      ],
+      "modelsCalled": false,
+      "externalServices": false,
+      "privateHelpersInvoked": false
+    },
+    "cases": [
+      {
+        "name": "legal control: ordinary local main branch",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name main tag at feature HEAD",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same committed change selected explicitly",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name current branch tag",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: tags removed",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: branch literally named heads/feature",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "heads/feature",
+          "baseRef": "main",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "same-name remote default tag",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "trunk",
+          "aheadCount": 1,
+          "commits": [
+            {
+              "sha": "d5a753b",
+              "subject": "session change"
+            }
+          ],
+          "mergeBase": {
+            "sha": "b82a7f8",
+            "subject": "base"
+          },
+          "files": [
+            {
+              "path": "session.txt",
+              "status": "added",
+              "additions": 1,
+              "deletions": 0,
+              "patch": "diff --git a/session.txt b/session.txt\nnew file mode 100644\nindex 0000000..740055c\n--- /dev/null\n+++ b/session.txt\n@@ -0,0 +1 @@\n+A committed session change\n"
+            }
+          ],
+          "additions": 1,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: a tag cannot replace a missing branch",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "branch": "feature",
+          "baseRef": "HEAD",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      },
+      {
+        "name": "legal control: detached HEAD",
+        "response": {
+          "root": "$PROOF_ROOT/diff-head/workspace/repository",
+          "baseRef": "HEAD",
+          "files": [],
+          "additions": 0,
+          "deletions": 0,
+          "sessionKey": "agent:main:diff-ref-proof"
+        }
+      }
+    ],
+    "gitCommands": [
+      {
+        "args": [
+          "init",
+          "-b",
+          "main"
+        ],
+        "stdout": "Initialized empty Git repository in $PROOF_ROOT/diff-head/workspace/repository/.git/\n"
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "base"
+        ],
+        "stdout": "[main (root-commit) b82a7f8] base\n 1 file changed, 1 insertion(+)\n create mode 100644 base.txt\n"
+      },
+      {
+        "args": [
+          "rev-parse",
+          "HEAD"
+        ],
+        "stdout": "b82a7f818c933a006c530df6ff35253420d5eb7f\n"
+      },
+      {
+        "args": [
+          "switch",
+          "-c",
+          "feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "add",
+          "."
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "-c",
+          "user.name=Proof fixture",
+          "-c",
+          "user.email=proof@example.invalid",
+          "-c",
+          "commit.gpgsign=false",
+          "commit",
+          "-m",
+          "session change"
+        ],
+        "stdout": "[feature d5a753b] session change\n 1 file changed, 1 insertion(+)\n create mode 100644 session.txt\n"
+      },
+      {
+        "args": [
+          "rev-parse",
+          "HEAD"
+        ],
+        "stdout": "d5a753b16a54fda76dc8dd8b1a9d86964a35b2c0\n"
+      },
+      {
+        "args": [
+          "tag",
+          "main"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "feature",
+          "b82a7f818c933a006c530df6ff35253420d5eb7f"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "-d",
+          "main",
+          "feature"
+        ],
+        "stdout": "Deleted tag 'main' (was d5a753b)\nDeleted tag 'feature' (was b82a7f8)\n"
+      },
+      {
+        "args": [
+          "switch",
+          "-c",
+          "heads/feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "switch",
+          "feature"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "update-ref",
+          "refs/remotes/origin/trunk",
+          "b82a7f818c933a006c530df6ff35253420d5eb7f"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "symbolic-ref",
+          "refs/remotes/origin/HEAD",
+          "refs/remotes/origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "symbolic-ref",
+          "--delete",
+          "refs/remotes/origin/HEAD"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "update-ref",
+          "-d",
+          "refs/remotes/origin/trunk"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "tag",
+          "-d",
+          "origin/trunk"
+        ],
+        "stdout": "Deleted tag 'origin/trunk' (was d5a753b)\n"
+      },
+      {
+        "args": [
+          "branch",
+          "-D",
+          "main"
+        ],
+        "stdout": "Deleted branch main (was b82a7f8).\n"
+      },
+      {
+        "args": [
+          "tag",
+          "main",
+          "b82a7f818c933a006c530df6ff35253420d5eb7f"
+        ],
+        "stdout": ""
+      },
+      {
+        "args": [
+          "switch",
+          "--detach",
+          "d5a753b16a54fda76dc8dd8b1a9d86964a35b2c0"
+        ],
+        "stdout": ""
+      }
+    ],
+    "observation": "GREEN: full branch references retain the committed session change and actual branch name; ordinary and detached controls remain correct",
+    "revisions": {
+      "base": "b82a7f818c933a006c530df6ff35253420d5eb7f",
+      "head": "d5a753b16a54fda76dc8dd8b1a9d86964a35b2c0"
+    },
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]
