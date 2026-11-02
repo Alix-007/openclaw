@@ -1,0 +1,241 @@
+[
+  {
+    "at": "2026-11-02T09:49:57.091Z",
+    "sha": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+    "buildStamp": {
+      "builtAt": 1793607647332,
+      "head": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+      "inputsClean": true,
+      "inputSignature": "eb01427a96f3fc4af4f8fd917e011198d37e7ea9167783425e62e24945ee9006"
+    },
+    "command": [
+      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "33035"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "name": "memory_get",
+        "selectedSentinel": false,
+        "result": {
+          "ok": true,
+          "toolName": "memory_get",
+          "output": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"status\": \"ok\",\n  \"text\": \"# Memory\\n\\nCORE_MEMORY_FILE_CONTROL\",\n  \"path\": \"MEMORY.md\",\n  \"from\": 1,\n  \"lines\": 3\n}"
+              }
+            ],
+            "details": {
+              "status": "ok",
+              "text": "# Memory\n\nCORE_MEMORY_FILE_CONTROL",
+              "path": "MEMORY.md",
+              "from": 1,
+              "lines": 3
+            }
+          },
+          "source": "plugin"
+        }
+      },
+      {
+        "name": "memory_search",
+        "selectedSentinel": false,
+        "result": {
+          "ok": true,
+          "toolName": "memory_search",
+          "output": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"results\": [\n    {\n      \"path\": \"MEMORY.md\",\n      \"startLine\": 1,\n      \"endLine\": 4,\n      \"score\": 0.42196589595317924,\n      \"textScore\": 9.99999000001e-7,\n      \"snippet\": \"# Memory\\n\\nCORE_MEMORY_FILE_CONTROL\\n\\nSource: MEMORY.md#L1-L4\",\n      \"source\": \"memory\",\n      \"provenance\": {\n        \"originClass\": \"agent\",\n        \"sessionKind\": \"unknown\",\n        \"observedAt\": 1793612997090\n      },\n      \"corpus\": \"memory\",\n      \"citation\": \"MEMORY.md#L1-L4\"\n    }\n  ],\n  \"provider\": \"none\",\n  \"citations\": \"auto\",\n  \"corpora\": [],\n  \"warning\": \"Automatic memory index repair was requested. To rebuild manually, run: openclaw memory status --index --agent main. Rebuilding uses keyword indexing only and does not call an embedding provider.\",\n  \"debug\": {\n    \"backend\": \"builtin\",\n    \"effectiveMode\": \"n/a\",\n    \"managerMs\": 1658,\n    \"searchMs\": 6309,\n    \"hits\": 1,\n    \"candidateHits\": 1,\n    \"withheldHits\": 0,\n    \"searchWindow\": 6,\n    \"toolMs\": 7974,\n    \"outsideSearchMs\": 1665\n  }\n}"
+              }
+            ],
+            "details": {
+              "results": [
+                {
+                  "path": "MEMORY.md",
+                  "startLine": 1,
+                  "endLine": 4,
+                  "score": 0.42196589595317924,
+                  "textScore": 9.99999000001e-7,
+                  "snippet": "# Memory\n\nCORE_MEMORY_FILE_CONTROL\n\nSource: MEMORY.md#L1-L4",
+                  "source": "memory",
+                  "provenance": {
+                    "originClass": "agent",
+                    "sessionKind": "unknown",
+                    "observedAt": 1793612997090
+                  },
+                  "corpus": "memory",
+                  "citation": "MEMORY.md#L1-L4"
+                }
+              ],
+              "provider": "none",
+              "citations": "auto",
+              "corpora": [],
+              "warning": "Automatic memory index repair was requested. To rebuild manually, run: openclaw memory status --index --agent main. Rebuilding uses keyword indexing only and does not call an embedding provider.",
+              "debug": {
+                "backend": "builtin",
+                "effectiveMode": "n/a",
+                "managerMs": 1658,
+                "searchMs": 6309,
+                "hits": 1,
+                "candidateHits": 1,
+                "withheldHits": 0,
+                "searchWindow": 6,
+                "toolMs": 7974,
+                "outsideSearchMs": 1665
+              }
+            }
+          },
+          "source": "plugin"
+        }
+      }
+    ],
+    "control": {
+      "name": "unselected memory-core standing-intent sidecar",
+      "result": {
+        "ok": true,
+        "toolName": "intent",
+        "output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"intents\": []\n}"
+            }
+          ],
+          "details": {
+            "intents": []
+          }
+        },
+        "source": "plugin"
+      }
+    },
+    "observation": "RED: unselected bundled memory-core shadows standard recall tools from selected memory plugin",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "at": "2026-11-02T09:53:39.029Z",
+    "sha": "d6bddcfeca046696839fef398a9040380c7e8bfe",
+    "buildStamp": {
+      "builtAt": 1793613178431,
+      "head": "d6bddcfeca046696839fef398a9040380c7e8bfe",
+      "inputsClean": true,
+      "inputSignature": "c6899b4c00b4357cf4b5448020bf783b18993d98756682e09b164e92fcb87782"
+    },
+    "command": [
+      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "$PROOF_ROOT/memory-slot/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "34965"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "name": "memory_get",
+        "selectedSentinel": true,
+        "result": {
+          "ok": true,
+          "toolName": "memory_get",
+          "output": {
+            "content": [
+              {
+                "type": "text",
+                "text": "SELECTED_MEMORY_SENTINEL_memory_get"
+              }
+            ],
+            "details": {
+              "owner": "proof-memory"
+            }
+          },
+          "source": "plugin"
+        }
+      },
+      {
+        "name": "memory_search",
+        "selectedSentinel": true,
+        "result": {
+          "ok": true,
+          "toolName": "memory_search",
+          "output": {
+            "content": [
+              {
+                "type": "text",
+                "text": "SELECTED_MEMORY_SENTINEL_memory_search"
+              }
+            ],
+            "details": {
+              "owner": "proof-memory"
+            }
+          },
+          "source": "plugin"
+        }
+      }
+    ],
+    "control": {
+      "name": "unselected memory-core standing-intent sidecar",
+      "result": {
+        "ok": true,
+        "toolName": "intent",
+        "output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"intents\": []\n}"
+            }
+          ],
+          "details": {
+            "intents": []
+          }
+        },
+        "source": "plugin"
+      }
+    },
+    "observation": "GREEN: both standard recall invocations return the selected memory plugin sentinel",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

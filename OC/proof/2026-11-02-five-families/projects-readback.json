@@ -1,0 +1,178 @@
+[
+  {
+    "at": "2026-11-02T08:42:32.949Z",
+    "sha": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+    "buildStamp": {
+      "builtAt": 1793607647332,
+      "head": "b0fdadd6b3448af5e23c45794465d48d97944fbe",
+      "inputsClean": true,
+      "inputSignature": "eb01427a96f3fc4af4f8fd917e011198d37e7ea9167783425e62e24945ee9006"
+    },
+    "command": [
+      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "42065"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "name": "two host folders",
+        "observedProjects": [],
+        "recents": [
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/proof-project-roots-red/workspace/A",
+            "displayName": "A"
+          },
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/proof-project-roots-red/workspace/B",
+            "displayName": "B"
+          }
+        ]
+      },
+      {
+        "name": "50 repeated A host folders",
+        "observedProjects": [],
+        "sessionCount": 51
+      },
+      {
+        "name": "explicit discovery opt-out",
+        "observedProjectsPresent": false
+      }
+    ],
+    "observation": "RED: public host sessions persist cwd and appear in recents but observed Git checkouts remain empty",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "at": "2026-11-02T09:53:39.170Z",
+    "sha": "c15686d2a771d78896587e0bd4bea1ece1d231a6",
+    "buildStamp": {
+      "builtAt": 1793613136947,
+      "head": "c15686d2a771d78896587e0bd4bea1ece1d231a6",
+      "inputsClean": true,
+      "inputSignature": "1b32a16ca57c5e7cdc55c0dbcb7f7972796741b5ed4a67fbe6473e78c1b163fb"
+    },
+    "command": [
+      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "$PROOF_ROOT/project-discovery/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "34553"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "name": "two host folders",
+        "observedProjects": [
+          {
+            "name": "A",
+            "checkouts": [
+              {
+                "runnerId": "gateway",
+                "path": "$PROOF_ROOT/proof-project-roots-green/workspace/A"
+              }
+            ],
+            "lastUsedAt": 1793613243057
+          },
+          {
+            "name": "B",
+            "checkouts": [
+              {
+                "runnerId": "gateway",
+                "path": "$PROOF_ROOT/proof-project-roots-green/workspace/B"
+              }
+            ],
+            "lastUsedAt": 1793613242347
+          }
+        ],
+        "recents": [
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/proof-project-roots-green/workspace/A",
+            "displayName": "A"
+          },
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/proof-project-roots-green/workspace/B",
+            "displayName": "B"
+          }
+        ]
+      },
+      {
+        "name": "50 repeated A host folders",
+        "observedProjects": [
+          {
+            "name": "A",
+            "checkouts": [
+              {
+                "runnerId": "gateway",
+                "path": "$PROOF_ROOT/proof-project-roots-green/workspace/A"
+              }
+            ],
+            "lastUsedAt": 1793613248887
+          },
+          {
+            "name": "B",
+            "checkouts": [
+              {
+                "runnerId": "gateway",
+                "path": "$PROOF_ROOT/proof-project-roots-green/workspace/B"
+              }
+            ],
+            "lastUsedAt": 1793613242347
+          }
+        ],
+        "sessionCount": 51
+      },
+      {
+        "name": "explicit discovery opt-out",
+        "observedProjectsPresent": false
+      }
+    ],
+    "observation": "GREEN: real host Git checkouts A/B are discovered once, even after 50 sessions at A; opt-out unchanged",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]
