@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/check-control-ui-controllers.mts"
+  ],
+  "exitCode": 0,
+  "result": "Control UI controller guard OK",
+  "countsChanged": false,
+  "seconds": null
+}

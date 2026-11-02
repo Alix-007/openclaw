@@ -1,0 +1,24 @@
+[
+  {
+    "name": "plugins",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "$PROOF_ROOT/meeting-edit/scripts/tsx.mjs",
+      "$PROOF_ROOT/prepare-ui-proof-distributions.mts",
+      "meeting-edit"
+    ],
+    "exitCode": 0,
+    "seconds": 25.4954620921053
+  },
+  {
+    "name": "ui",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/ui.js",
+      "build"
+    ],
+    "exitCode": 0,
+    "seconds": 67.67945488076657
+  }
+]

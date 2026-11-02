@@ -1,0 +1,16 @@
+{
+  "base": "baaf869a3a4e754ad9e4437f90b0aaba7931a716",
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-vitest.mjs",
+    "ui/src/pages/config/meeting-capture.test.tsx",
+    "--maxWorkers=1",
+    "--testNamePattern",
+    "keeps source edits after saving an unrelated setting"
+  ],
+  "exitCode": 1,
+  "seconds": 17.954455484636128,
+  "testSHA256": "586a062233359daf94bc920b204f8f6f4c9036df6b0e523e302356039d73275a",
+  "baselineSourceRestored": true,
+  "log": "meeting-edit-regression-red.log"
+}

@@ -1,0 +1,74 @@
+[test] starting test/vitest/vitest.ui.config.ts
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 $PROOF_ROOT/baseline
+
+(node:2540862) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains source controls and health rows through refresh snapshots
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > shows unknown health after disconnect (failed read=false)
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > shows unknown health after disconnect (failed read=true)
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains pending validation for guildId through health refresh
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains missing provider validation for accountId through health refresh
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains empty setup validation for guildId through health refresh
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains pending validation for channelId through health refresh
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains error validation for accountId through health refresh
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not seed an editor from another client's retained health
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not seed an editor from another epoch's retained health
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains requirements learned after opening an editor without metadata
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves original provider validation through pending provider round trips
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves original provider validation through error provider round trips
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > explains a session ID conflict without hiding the configured ID or changing the draft
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > disables an occupancy source's ignored custom ID while preserving it through a title edit
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not save another entry's dirty locator when switching directly between equal sources
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > opens the transcript library
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves  test-voice  on re-entry and save
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves  unknown  on re-entry and save
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > normalizes edited values and explicitly clears optional fields without rewriting untouched values
+stderr | unknown test
+[sqlite-test-lifecycle] ui/src/pages/config/meeting-capture.test.tsx: retiring openclaw.agentDatabaseReaders
+
+ × |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps source edits after saving an unrelated setting 399ms
+   → expected undefined to be 'two' // Object.is equality
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > requires Cancel and reopen to edit a replaced source, including after re-entry
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > validates a genuine provider change against current metadata (unavailable=false)
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > validates a genuine provider change against current metadata (unavailable=true)
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > rejects an open editor submission after admin access is revoked
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > adds a source and removes an entry without removing stored transcripts or sibling config
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > offers enabled manifest setup before runtime loads, but rejects observed start contradictions
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps existing disabled sources editable with unavailable guidance
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps health unknown after read failure and disables mutations under the parent's permission gate
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps the draft and Refresh control through a rejected health read and retry
+ ↓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not overwrite an authoritative raw config draft with an old source array
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps source edits after saving an unrelated setting
+AssertionError: expected undefined to be 'two' // Object.is equality
+
+- Expected:
+"two"
+
++ Received:
+undefined
+
+ ❯ ui/src/pages/config/meeting-capture.test.tsx:488:29
+    486|     await runtimeConfig.flushFormChanges();
+    487|     const write = request.mock.calls.find(([method]) => method === "co…
+    488|     expect(write?.baseHash).toBe("two");
+       |                             ^
+    489|     expect(JSON.parse(write!.raw!).transcripts).toEqual({
+    490|       enabled: false,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 30 skipped (31)
+   Start at  22:41:39
+   Duration  10.47s (worker 46%, transform 22%, environment 21%, import 5%, tests 4%, setup 1%)
+
+[test] failed 1 Vitest shard in 16.22s
+[test] FAILED (exit 1)

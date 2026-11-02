@@ -1,0 +1,50 @@
+[test] starting test/vitest/vitest.ui.config.ts
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 $PROOF_ROOT/meeting-edit
+
+(node:2528840) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains source controls and health rows through refresh snapshots 308ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > shows unknown health after disconnect (failed read=false) 43ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > shows unknown health after disconnect (failed read=true) 57ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains pending validation for guildId through health refresh 73ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains missing provider validation for accountId through health refresh 103ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains empty setup validation for guildId through health refresh 74ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains pending validation for channelId through health refresh 69ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains error validation for accountId through health refresh 73ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not seed an editor from another client's retained health 107ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not seed an editor from another epoch's retained health 85ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > retains requirements learned after opening an editor without metadata 77ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves original provider validation through pending provider round trips 51ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves original provider validation through error provider round trips 49ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > explains a session ID conflict without hiding the configured ID or changing the draft 32ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > disables an occupancy source's ignored custom ID while preserving it through a title edit 48ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not save another entry's dirty locator when switching directly between equal sources 42ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > opens the transcript library 21ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves  test-voice  on re-entry and save 47ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > preserves  unknown  on re-entry and save 29ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > normalizes edited values and explicitly clears optional fields without rewriting untouched values 29ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps source edits after saving an unrelated setting 43ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > requires Cancel and reopen to edit a replaced source, including after re-entry 45ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > validates a genuine provider change against current metadata (unavailable=false) 30ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > validates a genuine provider change against current metadata (unavailable=true) 29ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > rejects an open editor submission after admin access is revoked 33ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > adds a source and removes an entry without removing stored transcripts or sibling config 66ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > offers enabled manifest setup before runtime loads, but rejects observed start contradictions 30ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps existing disabled sources editable with unavailable guidance 29ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps health unknown after read failure and disables mutations under the parent's permission gate 16ms
+stderr | unknown test
+[sqlite-test-lifecycle] ui/src/pages/config/meeting-capture.test.tsx: retiring openclaw.agentDatabaseReaders
+
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > keeps the draft and Refresh control through a rejected health read and retry 182ms
+ ✓ |ui| ui/src/pages/config/meeting-capture.test.tsx > curated meeting capture > does not overwrite an authoritative raw config draft with an old source array 44ms
+
+ Test Files  1 passed (1)
+      Tests  31 passed (31)
+   Start at  22:37:43
+   Duration  6.11s (tests 36%, worker 28%, environment 18%, import 9%, transform 8%, setup 1%)
+
+[test] passed 1 Vitest shard in 9.74s
