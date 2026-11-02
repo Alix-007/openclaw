@@ -9,7 +9,7 @@
       "inputSignature": "eb01427a96f3fc4af4f8fd917e011198d37e7ea9167783425e62e24945ee9006"
     },
     "command": [
-      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "node",
       "$PROOF_ROOT/baseline/openclaw.mjs",
       "gateway",
       "run",
@@ -147,7 +147,7 @@
       "inputSignature": "c6899b4c00b4357cf4b5448020bf783b18993d98756682e09b164e92fcb87782"
     },
     "command": [
-      "/media/vdc/0668001470/workSpace/claw-campaign/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "node",
       "$PROOF_ROOT/memory-slot/openclaw.mjs",
       "gateway",
       "run",
