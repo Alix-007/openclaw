@@ -957,22 +957,22 @@
   {
     "version": "head",
     "scenario": "node-recents-head",
-    "at": "2026-11-03T05:00:05.027Z",
-    "sha": "87e0b2b4c861f83b356703dbc591fa82bb6b9638",
+    "at": "2026-11-03T06:41:30.296Z",
+    "sha": "991cbfd918ecd668eb4fb05491c85b61f3549f9d",
     "buildStamp": {
-      "builtAt": 1793681941302,
-      "head": "87e0b2b4c861f83b356703dbc591fa82bb6b9638",
+      "builtAt": 1793687870290,
+      "head": "991cbfd918ecd668eb4fb05491c85b61f3549f9d",
       "inputsClean": true,
-      "inputSignature": "6c48bea8b63a7cc996dd35805e1d000022e9ba85e0bc20cb6aa39929bc38f584"
+      "inputSignature": "57f3788b8671f865c2256f17a739ca0108a6e88a14b42e180a5eda90fad4f589"
     },
-    "domain": "ws://127.0.0.1:38631",
+    "domain": "ws://127.0.0.1:40597",
     "calls": [
       {
         "method": "device.pair.list",
         "params": {},
         "response": {
           "type": "res",
-          "id": "b6eb4bc0-03ec-4f91-b70f-0cb38d0f2067",
+          "id": "f24a157d-6778-4b6c-8af5-5f38944cf953",
           "ok": true,
           "payload": {
             "pending": [],
@@ -985,7 +985,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "ac830480-92f3-40a1-841c-d990778d998b",
+          "id": "01dcda6b-a0f4-4fcd-b962-7f816bda3566",
           "ok": true,
           "payload": {
             "pending": [],
@@ -998,10 +998,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "8e737986-8bb1-4e5a-aa26-ac0701f8a804",
+          "id": "6f1fa622-d85b-4aa7-8958-abfae86351ba",
           "ok": true,
           "payload": {
-            "ts": 1793682021448,
+            "ts": 1793688105012,
             "nodes": []
           }
         }
@@ -1011,7 +1011,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "1d05c683-be31-499c-b8b4-9c109845b00f",
+          "id": "75d13bff-b9c7-4e6a-a232-277c3ec675c2",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1024,7 +1024,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "6f75f9c5-e0fb-4099-9b4e-482a70e5a964",
+          "id": "535ab7c3-c919-4d36-82fd-554290f1fcfa",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1037,10 +1037,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "7b7f4119-c403-4229-b6b7-4e51eb3a964a",
+          "id": "c8e85311-5b07-4aba-b4de-e0cfe5aa7c2f",
           "ok": true,
           "payload": {
-            "ts": 1793682023877,
+            "ts": 1793688107291,
             "nodes": []
           }
         }
@@ -1050,7 +1050,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "a50b9a72-5e7b-4c1c-8e64-f7d1cb661221",
+          "id": "c3c6992e-b8fa-4913-aa47-4c0b200fa4f9",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1063,7 +1063,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "653a6ca0-ee19-4754-aa0d-74f042fc4d02",
+          "id": "55ce2efd-0a41-4096-9042-1c4a7d0db9fe",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1076,10 +1076,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "fc291d3f-cc0e-4d48-80e1-e2f9ebd2bfca",
+          "id": "faecb00f-3556-41de-be56-2a4dd889e311",
           "ok": true,
           "payload": {
-            "ts": 1793682024997,
+            "ts": 1793688108355,
             "nodes": []
           }
         }
@@ -1089,7 +1089,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "9b8cca25-15ac-41c4-97da-b63126786756",
+          "id": "b261f146-b6fc-4da5-b804-97286953ba4a",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1102,7 +1102,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "d28de8bb-e3e2-46f5-a0c2-a1373bc49f6a",
+          "id": "770ba8a9-bdf5-4b16-8c0f-c912a359d190",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1115,10 +1115,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "841f8488-c98c-421a-bd0a-c80b8fe8f8bc",
+          "id": "75014194-c7fc-419b-8948-c7f082a15e6f",
           "ok": true,
           "payload": {
-            "ts": 1793682026179,
+            "ts": 1793688109425,
             "nodes": []
           }
         }
@@ -1128,7 +1128,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "af01b797-e427-4177-be51-a93496ccb4e9",
+          "id": "ec6c3e8b-c821-4479-b5b9-7b482a38bd8c",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1141,7 +1141,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "197897eb-ef16-425c-b226-f8610ca0f632",
+          "id": "ae72e469-acba-42e4-9f88-ac6d932a5821",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1154,10 +1154,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "e2c72f12-1f29-49f6-86c8-e5b170d39a81",
+          "id": "2bb0eb29-3d4e-46de-8b11-c48d3937dd15",
           "ok": true,
           "payload": {
-            "ts": 1793682027194,
+            "ts": 1793688110438,
             "nodes": []
           }
         }
@@ -1167,7 +1167,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "90127d0a-8953-4e4e-9b66-8fca246bbba9",
+          "id": "d218bab6-0222-4605-98cb-b353f3c1e76c",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1180,7 +1180,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "dd67247b-dce2-4684-8126-b4090c2db68e",
+          "id": "f0e562d7-8238-435c-ab18-b423a0355c9e",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1193,10 +1193,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "29964f17-321b-40df-beae-a09d57d4ccf8",
+          "id": "de31be6a-418b-441d-b9bc-c2519db146d2",
           "ok": true,
           "payload": {
-            "ts": 1793682028246,
+            "ts": 1793688111456,
             "nodes": []
           }
         }
@@ -1206,7 +1206,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "65bf8eca-d38a-46d7-b242-6f88a0785bd8",
+          "id": "54b1f443-68af-411a-9d19-c9198913ad3b",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1219,7 +1219,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "396de3e8-5612-486b-8ac1-87fb4e7dcbe6",
+          "id": "e00ee6d8-3ec2-4d6a-8f34-e3483dfd0aa4",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1232,10 +1232,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "bba0643b-83d7-47dc-ab65-8b6a1709202d",
+          "id": "7db9089a-59d5-4c63-a21d-becda9b29b17",
           "ok": true,
           "payload": {
-            "ts": 1793682029322,
+            "ts": 1793688112471,
             "nodes": []
           }
         }
@@ -1245,7 +1245,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "8b31c515-d72d-44fb-8bfe-22b8884722d3",
+          "id": "1d117e12-a678-47a3-b776-e629e373c125",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1258,7 +1258,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "da982862-53b2-44b1-86e2-01999f71bb4e",
+          "id": "86e527d7-9de4-4cc8-88d5-2cc0966cd5fc",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1271,10 +1271,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "ef5e04a1-7114-491e-932c-031f9ec5f18d",
+          "id": "7d98ffed-65e3-4601-902a-315613798892",
           "ok": true,
           "payload": {
-            "ts": 1793682030348,
+            "ts": 1793688113534,
             "nodes": []
           }
         }
@@ -1284,7 +1284,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "7400a84f-bc87-48ea-a13b-2cf3394cc4a1",
+          "id": "cf7bb9e3-adc0-491b-8cb5-b0e12809bda9",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1297,7 +1297,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "d25957d0-138c-4668-b0c3-ab2c660c9325",
+          "id": "8d464f90-43c8-4471-a9dc-25c63316e93a",
           "ok": true,
           "payload": {
             "pending": [],
@@ -1310,10 +1310,10 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "6945b190-0b3b-4238-99d7-8b301846746f",
+          "id": "75ed7fb6-c514-4b9e-82a9-5ee4083c257e",
           "ok": true,
           "payload": {
-            "ts": 1793682031371,
+            "ts": 1793688114581,
             "nodes": []
           }
         }
@@ -1323,14 +1323,14 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "d4284ed7-343f-43fa-bcae-95b1bc0601a8",
+          "id": "42d9dff8-532c-4e62-a1bb-64fe36f89eb3",
           "ok": true,
           "payload": {
             "pending": [],
             "paired": [
               {
-                "deviceId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
-                "publicKey": "FkiYkbde5-WQqPOtjiQan6afY-dNsAkDcoXGOVgca00",
+                "deviceId": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
+                "publicKey": "sIAIrKApnpND-BJf8qkf8_doAFIEZGt8ATIqfrr1FRw",
                 "displayName": "Recent-folder proof node",
                 "platform": "linux",
                 "deviceFamily": "Linux",
@@ -1344,7 +1344,7 @@
                 "approvedVia": "silent",
                 "nodeSurface": {
                   "displayName": "Recent-folder proof node",
-                  "version": "2026.10.9",
+                  "version": "2026.10.10",
                   "modelIdentifier": "OpenStack Nova",
                   "caps": [
                     "system"
@@ -1352,20 +1352,20 @@
                   "commands": [
                     "system.which"
                   ],
-                  "createdAtMs": 1793682032112,
-                  "approvedAtMs": 1793682032112,
-                  "lastConnectedAtMs": 1793682032124
+                  "createdAtMs": 1793688115419,
+                  "approvedAtMs": 1793688115419,
+                  "lastConnectedAtMs": 1793688115431
                 },
-                "createdAtMs": 1793682032053,
-                "approvedAtMs": 1793682032053,
-                "lastSeenAtMs": 1793682032023,
+                "createdAtMs": 1793688115374,
+                "approvedAtMs": 1793688115374,
+                "lastSeenAtMs": 1793688115336,
                 "lastSeenReason": "connect",
                 "connected": true,
                 "tokens": [
                   {
                     "role": "node",
                     "scopes": [],
-                    "createdAtMs": 1793682032053
+                    "createdAtMs": 1793688115374
                   }
                 ]
               }
@@ -1378,18 +1378,18 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "75614740-4f56-48d1-8f1f-92b841e8d00d",
+          "id": "cc79d190-33c9-4bb0-bee9-5c579dc998b2",
           "ok": true,
           "payload": {
             "pending": [],
             "paired": [
               {
-                "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+                "nodeId": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
                 "clientId": "node-host",
                 "clientMode": "node",
                 "displayName": "Recent-folder proof node",
                 "platform": "linux",
-                "version": "2026.10.9",
+                "version": "2026.10.10",
                 "deviceFamily": "Linux",
                 "modelIdentifier": "OpenStack Nova",
                 "caps": [
@@ -1398,10 +1398,10 @@
                 "commands": [
                   "system.which"
                 ],
-                "createdAtMs": 1793682032112,
-                "approvedAtMs": 1793682032112,
-                "lastConnectedAtMs": 1793682032124,
-                "lastSeenAtMs": 1793682032023,
+                "createdAtMs": 1793688115419,
+                "approvedAtMs": 1793688115419,
+                "lastConnectedAtMs": 1793688115431,
+                "lastSeenAtMs": 1793688115336,
                 "lastSeenReason": "connect"
               }
             ]
@@ -1413,16 +1413,16 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "2c010a27-addd-4378-9bf0-2e16d7e83174",
+          "id": "dad9e01f-fe45-4905-8de6-580ea88c5fb0",
           "ok": true,
           "payload": {
-            "ts": 1793682032408,
+            "ts": 1793688115603,
             "nodes": [
               {
-                "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+                "nodeId": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
                 "displayName": "Recent-folder proof node",
                 "platform": "linux",
-                "version": "2026.10.9",
+                "version": "2026.10.10",
                 "clientId": "node-host",
                 "clientMode": "node",
                 "deviceFamily": "Linux",
@@ -1436,11 +1436,11 @@
                 "sessionHost": false,
                 "nodePluginTools": [],
                 "approvalState": "approved",
-                "connectedAtMs": 1793682032124,
-                "lastConnectedAtMs": 1793682032124,
-                "lastSeenAtMs": 1793682032124,
+                "connectedAtMs": 1793688115431,
+                "lastConnectedAtMs": 1793688115431,
+                "lastSeenAtMs": 1793688115431,
                 "lastSeenReason": "connect",
-                "approvedAtMs": 1793682032112,
+                "approvedAtMs": 1793688115419,
                 "paired": true,
                 "connected": true
               }
@@ -1456,7 +1456,7 @@
         },
         "response": {
           "type": "res",
-          "id": "af9cd8e8-5108-4df0-aa23-e8c4e15842ef",
+          "id": "2156086d-61b8-4b0f-b43a-73fcfd708c26",
           "ok": true,
           "payload": {
             "id": "local-registered-proof",
@@ -1472,20 +1472,20 @@
           "key": "agent:main:recents-node-registered",
           "agentId": "main",
           "cwd": "$PROOF_ROOT/node-recents-head/registered-repo",
-          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
         },
         "response": {
           "type": "res",
-          "id": "a4ae7a03-af98-49b3-bc3d-105de73ef19d",
+          "id": "1c15cc79-995d-4dd0-82de-3f342683d3ba",
           "ok": true,
           "payload": {
             "ok": true,
             "key": "agent:main:recents-node-registered",
-            "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+            "sessionId": "18059360-901d-4aa9-a0cd-cb109c32450b",
             "entry": {
-              "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
-              "lifecycleRevision": "720759c5-4554-420b-be18-850c35daf0b8",
-              "updatedAt": 1793682035418,
+              "sessionId": "18059360-901d-4aa9-a0cd-cb109c32450b",
+              "lifecycleRevision": "1d0ea871-a294-4fd8-bac6-a0da103a9123",
+              "updatedAt": 1793688118309,
               "delivery": {
                 "kind": "none"
               },
@@ -1495,10 +1495,10 @@
                 "source": "profile",
                 "id": "gateway-owner"
               },
-              "createdAt": 1793682035419,
+              "createdAt": 1793688118311,
               "skillLibrarySelections": [],
               "execHost": "node",
-              "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+              "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
               "execCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
               "spawnDepth": 0,
               "modelOverrideSource": "default",
@@ -1519,7 +1519,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "8bc11d44-7169-42dc-9e8c-0d9f00813d52",
+          "id": "3ecd0fc0-f99f-47a8-b57c-f5fde1c5336a",
           "ok": true,
           "payload": {
             "projects": [
@@ -1543,7 +1543,7 @@
                 "kind": "folder",
                 "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
                 "displayName": "registered-repo",
-                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+                "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
               }
             ]
           }
@@ -1555,20 +1555,20 @@
           "key": "agent:main:recents-node-workspace",
           "agentId": "main",
           "cwd": "$PROOF_ROOT/node-recents-head/workspace",
-          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
         },
         "response": {
           "type": "res",
-          "id": "04e7e267-4631-4108-a287-6fa87b40da06",
+          "id": "21aaf537-6424-4523-b3de-8e265e06ad37",
           "ok": true,
           "payload": {
             "ok": true,
             "key": "agent:main:recents-node-workspace",
-            "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+            "sessionId": "4d32ad6d-03d8-46b1-a013-a6f044de105e",
             "entry": {
-              "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
-              "lifecycleRevision": "0b6d4d50-4da8-4f5b-9b1a-5516a66418a3",
-              "updatedAt": 1793682036007,
+              "sessionId": "4d32ad6d-03d8-46b1-a013-a6f044de105e",
+              "lifecycleRevision": "d66df76c-a3d9-43f7-acfb-4a29f82bc139",
+              "updatedAt": 1793688118950,
               "delivery": {
                 "kind": "none"
               },
@@ -1578,10 +1578,10 @@
                 "source": "profile",
                 "id": "gateway-owner"
               },
-              "createdAt": 1793682036008,
+              "createdAt": 1793688118950,
               "skillLibrarySelections": [],
               "execHost": "node",
-              "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+              "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
               "execCwd": "$PROOF_ROOT/node-recents-head/workspace",
               "spawnDepth": 0,
               "modelOverrideSource": "default",
@@ -1602,7 +1602,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "bd33dc1e-3956-49b2-b196-45d66865bad3",
+          "id": "1cf31c47-b44d-4750-8c6e-2eb3e63c672b",
           "ok": true,
           "payload": {
             "projects": [
@@ -1626,13 +1626,13 @@
                 "kind": "folder",
                 "folder": "$PROOF_ROOT/node-recents-head/workspace",
                 "displayName": "workspace",
-                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+                "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
               },
               {
                 "kind": "folder",
                 "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
                 "displayName": "registered-repo",
-                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+                "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
               }
             ]
           }
@@ -1647,16 +1647,16 @@
         },
         "response": {
           "type": "res",
-          "id": "1093bafb-f68f-4c7c-8b79-c6f3d9e31d38",
+          "id": "4b3e1ec6-38a9-488d-8b61-85526db6fafc",
           "ok": true,
           "payload": {
             "ok": true,
             "key": "agent:main:recents-local-control",
-            "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+            "sessionId": "0a4c4d1b-6a27-40bc-ab67-f76a462b52d3",
             "entry": {
-              "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
-              "lifecycleRevision": "62050208-6eb2-45f2-8f15-f7be90f9e291",
-              "updatedAt": 1793682036120,
+              "sessionId": "0a4c4d1b-6a27-40bc-ab67-f76a462b52d3",
+              "lifecycleRevision": "1fc05ac7-d6fa-4d6d-a66c-bb5ecd9ac8a4",
+              "updatedAt": 1793688119049,
               "sessionRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
               "delivery": {
                 "kind": "none"
@@ -1667,7 +1667,7 @@
                 "source": "profile",
                 "id": "gateway-owner"
               },
-              "createdAt": 1793682036120,
+              "createdAt": 1793688119049,
               "skillLibrarySelections": [],
               "spawnedCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
               "spawnDepth": 0,
@@ -1689,7 +1689,7 @@
         "params": {},
         "response": {
           "type": "res",
-          "id": "b6319cfe-539d-4e6b-bd07-e2d9131517d8",
+          "id": "59f735c4-a0d2-4153-a159-28d6033f4689",
           "ok": true,
           "payload": {
             "projects": [
@@ -1718,13 +1718,13 @@
                 "kind": "folder",
                 "folder": "$PROOF_ROOT/node-recents-head/workspace",
                 "displayName": "workspace",
-                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+                "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
               },
               {
                 "kind": "folder",
                 "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
                 "displayName": "registered-repo",
-                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+                "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
               }
             ]
           }
@@ -1740,7 +1740,7 @@
       "--bind",
       "loopback",
       "--port",
-      "38631"
+      "40597"
     ],
     "connect": {
       "protocol": 4,
@@ -1759,7 +1759,7 @@
       "--host",
       "127.0.0.1",
       "--port",
-      "38631",
+      "40597",
       "--node-id",
       "proof-recents-node",
       "--display-name",
@@ -1776,7 +1776,7 @@
       "directStoreWrites": false
     },
     "node": {
-      "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+      "nodeId": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
       "connected": true,
       "paired": true,
       "commands": [
@@ -1789,11 +1789,11 @@
         "created": {
           "ok": true,
           "key": "agent:main:recents-node-registered",
-          "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+          "sessionId": "18059360-901d-4aa9-a0cd-cb109c32450b",
           "entry": {
-            "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
-            "lifecycleRevision": "720759c5-4554-420b-be18-850c35daf0b8",
-            "updatedAt": 1793682035418,
+            "sessionId": "18059360-901d-4aa9-a0cd-cb109c32450b",
+            "lifecycleRevision": "1d0ea871-a294-4fd8-bac6-a0da103a9123",
+            "updatedAt": 1793688118309,
             "delivery": {
               "kind": "none"
             },
@@ -1803,10 +1803,10 @@
               "source": "profile",
               "id": "gateway-owner"
             },
-            "createdAt": 1793682035419,
+            "createdAt": 1793688118311,
             "skillLibrarySelections": [],
             "execHost": "node",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
             "execCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
             "spawnDepth": 0,
             "modelOverrideSource": "default",
@@ -1824,14 +1824,14 @@
           "kind": "folder",
           "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
           "displayName": "registered-repo",
-          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
         },
         "fullRecents": [
           {
             "kind": "folder",
             "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
             "displayName": "registered-repo",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
           }
         ]
       },
@@ -1840,11 +1840,11 @@
         "created": {
           "ok": true,
           "key": "agent:main:recents-node-workspace",
-          "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+          "sessionId": "4d32ad6d-03d8-46b1-a013-a6f044de105e",
           "entry": {
-            "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
-            "lifecycleRevision": "0b6d4d50-4da8-4f5b-9b1a-5516a66418a3",
-            "updatedAt": 1793682036007,
+            "sessionId": "4d32ad6d-03d8-46b1-a013-a6f044de105e",
+            "lifecycleRevision": "d66df76c-a3d9-43f7-acfb-4a29f82bc139",
+            "updatedAt": 1793688118950,
             "delivery": {
               "kind": "none"
             },
@@ -1854,10 +1854,10 @@
               "source": "profile",
               "id": "gateway-owner"
             },
-            "createdAt": 1793682036008,
+            "createdAt": 1793688118950,
             "skillLibrarySelections": [],
             "execHost": "node",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76",
             "execCwd": "$PROOF_ROOT/node-recents-head/workspace",
             "spawnDepth": 0,
             "modelOverrideSource": "default",
@@ -1875,20 +1875,20 @@
           "kind": "folder",
           "folder": "$PROOF_ROOT/node-recents-head/workspace",
           "displayName": "workspace",
-          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
         },
         "fullRecents": [
           {
             "kind": "folder",
             "folder": "$PROOF_ROOT/node-recents-head/workspace",
             "displayName": "workspace",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
           },
           {
             "kind": "folder",
             "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
             "displayName": "registered-repo",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
           }
         ]
       },
@@ -1897,11 +1897,11 @@
         "created": {
           "ok": true,
           "key": "agent:main:recents-local-control",
-          "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+          "sessionId": "0a4c4d1b-6a27-40bc-ab67-f76a462b52d3",
           "entry": {
-            "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
-            "lifecycleRevision": "62050208-6eb2-45f2-8f15-f7be90f9e291",
-            "updatedAt": 1793682036120,
+            "sessionId": "0a4c4d1b-6a27-40bc-ab67-f76a462b52d3",
+            "lifecycleRevision": "1fc05ac7-d6fa-4d6d-a66c-bb5ecd9ac8a4",
+            "updatedAt": 1793688119049,
             "sessionRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
             "delivery": {
               "kind": "none"
@@ -1912,7 +1912,7 @@
               "source": "profile",
               "id": "gateway-owner"
             },
-            "createdAt": 1793682036120,
+            "createdAt": 1793688119049,
             "skillLibrarySelections": [],
             "spawnedCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
             "spawnDepth": 0,
@@ -1937,13 +1937,13 @@
             "kind": "folder",
             "folder": "$PROOF_ROOT/node-recents-head/workspace",
             "displayName": "workspace",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
           },
           {
             "kind": "folder",
             "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
             "displayName": "registered-repo",
-            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+            "execNode": "68e3cd552fde203c13925128315178906efe3ef40e5bcc713bc3b8713a6afb76"
           }
         ]
       }

@@ -9,7 +9,7 @@
       "src/gateway/server-methods/projects-recents.test.ts"
     ],
     "exitCode": 0,
-    "seconds": 0.4
+    "seconds": 0.26
   },
   {
     "name": "lint",
@@ -22,7 +22,7 @@
       "src/gateway/server-methods/projects-recents.test.ts"
     ],
     "exitCode": 0,
-    "seconds": 65.29
+    "seconds": 58.0
   },
   {
     "name": "types",
@@ -34,7 +34,7 @@
       "--incremental"
     ],
     "exitCode": 0,
-    "seconds": 108.16
+    "seconds": 110.89
   },
   {
     "name": "test-lines",
@@ -44,10 +44,10 @@
       "./scripts/tsx.mjs",
       "scripts/check-test-lines-ratchet.mts",
       "--base",
-      "b3d0977b0cc484c4b472628385d1a988a794ac42"
+      "68f6775adfe02ab5577ae75133c0834e81476ad6"
     ],
     "exitCode": 0,
-    "seconds": 20.35
+    "seconds": 18.65
   },
   {
     "name": "tests",
@@ -58,6 +58,6 @@
       "--maxWorkers=1"
     ],
     "exitCode": 0,
-    "seconds": 190.21
+    "seconds": 180.0
   }
 ]

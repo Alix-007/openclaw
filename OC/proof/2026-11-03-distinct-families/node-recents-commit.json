@@ -1,5 +1,17 @@
 {
+  "previousHead": "87e0b2b4c861f83b356703dbc591fa82bb6b9638",
+  "upstreamBase": "68f6775adfe02ab5577ae75133c0834e81476ad6",
+  "head": "991cbfd918ecd668eb4fb05491c85b61f3549f9d",
+  "seconds": 508.47,
+  "deltaFiles": [
+    "config/test-lines-allocations/alix-node-recents-20261103.txt",
+    "src/gateway/server-methods/projects-recents.test.ts",
+    "src/gateway/server-methods/projects-recents.ts"
+  ],
+  "normalMerge": true,
+  "forcePush": false,
   "exitCode": 0,
-  "seconds": 2.7,
-  "reviewedTree": "945d7bc99d9fd6209b55521c42d8e7d84f643353"
+  "reviewedTree": "609ddbe5318d7a048d60138518fa0334dcb87911",
+  "kind": "normal merge of accepted upstream CI repair; original contributor patch unchanged",
+  "normalGitHooksNotBypassed": true
 }
