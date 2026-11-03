@@ -1,0 +1,1971 @@
+[
+  {
+    "version": "base",
+    "scenario": "node-recents-base",
+    "at": "2026-11-03T04:42:17.757Z",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "buildStamp": {
+      "builtAt": 1793677166642,
+      "head": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+      "inputsClean": true,
+      "inputSignature": "b90a72d10189a76219c41eb46a800705cc494c98f6fe29883d7027c58e4b082b"
+    },
+    "domain": "ws://127.0.0.1:37081",
+    "calls": [
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "4854e34b-b16d-48bd-aa7e-d9911f918ebf",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "231ec171-8af0-4a5e-8f7b-6f73fdc3794e",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "1828a63c-1ee3-4ead-8b0e-fb1e89e7f81c",
+          "ok": true,
+          "payload": {
+            "ts": 1793680958905,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "84463ad6-cd87-416e-9ae9-7a51e9e7d634",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "11733233-4e3b-4589-bbad-9286f4a0b33a",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "7a05ecc5-b46d-4217-9012-8d62c30370ae",
+          "ok": true,
+          "payload": {
+            "ts": 1793680962571,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "80f21b95-597a-47a0-8b27-978d55b0e69f",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "f9314764-0e18-45c3-aeec-d3bc9882bd0e",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "4744983b-5f25-40f5-9379-cff4d84522ef",
+          "ok": true,
+          "payload": {
+            "ts": 1793680963655,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "a7f55d4f-bb40-4738-b0a7-e1ae40affc2e",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "f2b08853-6564-40ac-8ba7-87a8ea9223c0",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "b9cc0597-676f-4cf4-a0c1-c7fdc1d30fa7",
+          "ok": true,
+          "payload": {
+            "ts": 1793680964773,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "40e1ef8c-adec-4a1f-af0b-b37d8a06a61f",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "c8389477-d891-4c29-858f-a6002d948c51",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "d152a9eb-d8b0-4e8d-bd56-800ba49ceec3",
+          "ok": true,
+          "payload": {
+            "ts": 1793680965798,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "c2eab648-b31c-460e-bdf9-a44327ca1d22",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "9198c685-19fb-41b6-8a8c-6e3b2b17839a",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "394dc746-f01c-4fc3-933f-4c20edec851b",
+          "ok": true,
+          "payload": {
+            "ts": 1793680966813,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "3d53738c-aa63-4098-b29e-ba7458f4f97c",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "e3b2ae2e-1710-4932-8659-d80fa3549980",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "6204486b-5f18-4b78-91b4-c1ce51a0cabc",
+          "ok": true,
+          "payload": {
+            "ts": 1793680968212,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "0e203991-41d5-41da-ba06-fd2cbfdf31cd",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "cb4af01b-3515-4672-a413-cfb67b1883f8",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "97a8fcc6-ff0e-43ae-8ce9-6ee543e0cd95",
+          "ok": true,
+          "payload": {
+            "ts": 1793680969237,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "31c69a82-fd1d-42ee-bee7-9af0953bf7cf",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": [
+              {
+                "deviceId": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+                "publicKey": "5qn4foJO135WRGsOUNhT7c1HPnaMCRzNIYfv-74pfbM",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "deviceFamily": "Linux",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "role": "node",
+                "roles": [
+                  "node"
+                ],
+                "scopes": [],
+                "approvedVia": "silent",
+                "pendingNodeSurface": {
+                  "requestId": "74a574c9-3eb1-47b3-b43a-f27ffa5e1280",
+                  "revision": "6d81294b-6175-4e5e-8033-cd3a25ea5c9a",
+                  "displayName": "Recent-folder proof node",
+                  "platform": "linux",
+                  "version": "2026.10.9",
+                  "deviceFamily": "Linux",
+                  "modelIdentifier": "OpenStack Nova",
+                  "caps": [
+                    "system"
+                  ],
+                  "commands": [
+                    "system.which"
+                  ],
+                  "silent": true,
+                  "ts": 1793680970257
+                },
+                "createdAtMs": 1793680970230,
+                "approvedAtMs": 1793680970230,
+                "lastSeenAtMs": 1793680970201,
+                "lastSeenReason": "connect",
+                "connected": false,
+                "tokens": [
+                  {
+                    "role": "node",
+                    "scopes": [],
+                    "createdAtMs": 1793680970230
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "beb929f2-c532-4a71-8523-c3af916edbb7",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": [
+              {
+                "nodeId": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "version": "2026.10.9",
+                "deviceFamily": "Linux",
+                "modelIdentifier": "OpenStack Nova",
+                "caps": [
+                  "system"
+                ],
+                "commands": [
+                  "system.which"
+                ],
+                "createdAtMs": 1793680970276,
+                "approvedAtMs": 1793680970276,
+                "lastSeenAtMs": 1793680970201,
+                "lastSeenReason": "connect"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "f992f81c-aa93-4724-97ae-8b7dcec3eb5b",
+          "ok": true,
+          "payload": {
+            "ts": 1793680970314,
+            "nodes": [
+              {
+                "nodeId": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "version": "2026.10.9",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "deviceFamily": "Linux",
+                "modelIdentifier": "OpenStack Nova",
+                "caps": [
+                  "system"
+                ],
+                "commands": [
+                  "system.which"
+                ],
+                "sessionHost": false,
+                "nodePluginTools": [],
+                "approvalState": "approved",
+                "connectedAtMs": 1793680970292,
+                "lastConnectedAtMs": 1793680970292,
+                "lastSeenAtMs": 1793680970292,
+                "lastSeenReason": "connect",
+                "approvedAtMs": 1793680970276,
+                "paired": true,
+                "connected": true
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "projects.register",
+        "params": {
+          "path": "$PROOF_ROOT/node-recents-base/registered-repo",
+          "name": "Local registered proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "1ac6a7dc-777d-4c37-b7ba-0cd04c298241",
+          "ok": true,
+          "payload": {
+            "id": "local-registered-proof",
+            "displayName": "Local registered proof",
+            "repoRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+            "source": "registered"
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-node-registered",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-base/registered-repo",
+          "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6"
+        },
+        "response": {
+          "type": "res",
+          "id": "dc54e8fb-f8a7-45d8-b4d6-04f6c59e7cc2",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-node-registered",
+            "sessionId": "dbc12e37-d602-4039-8af2-2b5f5062faf6",
+            "entry": {
+              "sessionId": "dbc12e37-d602-4039-8af2-2b5f5062faf6",
+              "lifecycleRevision": "3f44dd53-14af-4db3-949e-34a14342f7ec",
+              "updatedAt": 1793680973354,
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793680973357,
+              "skillLibrarySelections": [],
+              "execHost": "node",
+              "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+              "execCwd": "$PROOF_ROOT/node-recents-base/registered-repo",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "0919cedc-c577-4645-9eda-738223ee3f11",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "project",
+                "projectId": "local-registered-proof",
+                "displayName": "Local registered proof"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-node-workspace",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-base/workspace",
+          "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6"
+        },
+        "response": {
+          "type": "res",
+          "id": "53960744-e0c0-405c-960a-7e030a336802",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-node-workspace",
+            "sessionId": "86f9315b-05cf-4b0f-bf00-8d81b817f209",
+            "entry": {
+              "sessionId": "86f9315b-05cf-4b0f-bf00-8d81b817f209",
+              "lifecycleRevision": "2cbc4170-bead-4bc2-bb19-cd8ada065272",
+              "updatedAt": 1793680974037,
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793680974037,
+              "skillLibrarySelections": [],
+              "execHost": "node",
+              "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+              "execCwd": "$PROOF_ROOT/node-recents-base/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "b6a86259-97a3-4b0f-b0eb-9c3583279101",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "project",
+                "projectId": "workspace:main",
+                "displayName": "workspace"
+              },
+              {
+                "kind": "project",
+                "projectId": "local-registered-proof",
+                "displayName": "Local registered proof"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-local-control",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-base/registered-repo"
+        },
+        "response": {
+          "type": "res",
+          "id": "36c9e67e-0497-4682-b6ca-00ff89a4a333",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-local-control",
+            "sessionId": "0adf1ce2-f05b-4c9c-aaf2-3d91d3c1eeee",
+            "entry": {
+              "sessionId": "0adf1ce2-f05b-4c9c-aaf2-3d91d3c1eeee",
+              "lifecycleRevision": "4ca990b3-1dc3-4e97-8901-700fed7680d8",
+              "updatedAt": 1793680974145,
+              "sessionRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793680974145,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/node-recents-base/registered-repo",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "1830caff-2ab0-413b-bb13-94186736a53f",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-base/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "project",
+                "projectId": "local-registered-proof",
+                "displayName": "Local registered proof"
+              },
+              {
+                "kind": "project",
+                "projectId": "workspace:main",
+                "displayName": "workspace"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "37081"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "nodeCommand": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "node",
+      "run",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "37081",
+      "--node-id",
+      "proof-recents-node",
+      "--display-name",
+      "Recent-folder proof node",
+      "--auth-from-env",
+      "--commands",
+      "system.which"
+    ],
+    "proof": {
+      "entry": "Normally built Gateway and normally built node host -> public sessions.create -> projects.list",
+      "modelsCalled": false,
+      "nodeCommandsInvoked": false,
+      "externalChannels": false,
+      "directStoreWrites": false
+    },
+    "node": {
+      "nodeId": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+      "connected": true,
+      "paired": true,
+      "commands": [
+        "system.which"
+      ]
+    },
+    "cases": [
+      {
+        "name": "registered",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-node-registered",
+          "sessionId": "dbc12e37-d602-4039-8af2-2b5f5062faf6",
+          "entry": {
+            "sessionId": "dbc12e37-d602-4039-8af2-2b5f5062faf6",
+            "lifecycleRevision": "3f44dd53-14af-4db3-949e-34a14342f7ec",
+            "updatedAt": 1793680973354,
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793680973357,
+            "skillLibrarySelections": [],
+            "execHost": "node",
+            "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+            "execCwd": "$PROOF_ROOT/node-recents-base/registered-repo",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recent": {
+          "kind": "project",
+          "projectId": "local-registered-proof",
+          "displayName": "Local registered proof"
+        },
+        "fullRecents": [
+          {
+            "kind": "project",
+            "projectId": "local-registered-proof",
+            "displayName": "Local registered proof"
+          }
+        ]
+      },
+      {
+        "name": "workspace",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-node-workspace",
+          "sessionId": "86f9315b-05cf-4b0f-bf00-8d81b817f209",
+          "entry": {
+            "sessionId": "86f9315b-05cf-4b0f-bf00-8d81b817f209",
+            "lifecycleRevision": "2cbc4170-bead-4bc2-bb19-cd8ada065272",
+            "updatedAt": 1793680974037,
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793680974037,
+            "skillLibrarySelections": [],
+            "execHost": "node",
+            "execNode": "f97e0cc28ca4124c724dd1d237bb74a4be8d6a28a58642456d50aa292f6b04a6",
+            "execCwd": "$PROOF_ROOT/node-recents-base/workspace",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recent": {
+          "kind": "project",
+          "projectId": "workspace:main",
+          "displayName": "workspace"
+        },
+        "fullRecents": [
+          {
+            "kind": "project",
+            "projectId": "workspace:main",
+            "displayName": "workspace"
+          },
+          {
+            "kind": "project",
+            "projectId": "local-registered-proof",
+            "displayName": "Local registered proof"
+          }
+        ]
+      },
+      {
+        "name": "local binding and independent node dedup control",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-local-control",
+          "sessionId": "0adf1ce2-f05b-4c9c-aaf2-3d91d3c1eeee",
+          "entry": {
+            "sessionId": "0adf1ce2-f05b-4c9c-aaf2-3d91d3c1eeee",
+            "lifecycleRevision": "4ca990b3-1dc3-4e97-8901-700fed7680d8",
+            "updatedAt": 1793680974145,
+            "sessionRoot": "$PROOF_ROOT/node-recents-base/registered-repo",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793680974145,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/node-recents-base/registered-repo",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recents": [
+          {
+            "kind": "project",
+            "projectId": "local-registered-proof",
+            "displayName": "Local registered proof"
+          },
+          {
+            "kind": "project",
+            "projectId": "workspace:main",
+            "displayName": "workspace"
+          }
+        ]
+      }
+    ],
+    "observation": "RED: paired node folders at local registry/workspace paths become local projects and lose their runner",
+    "nodeCleanup": {
+      "exit": {
+        "code": 143,
+        "signal": null
+      },
+      "serviceInstalled": false,
+      "nodeCommandSideEffects": false
+    },
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "node-recents-head",
+    "at": "2026-11-03T05:00:05.027Z",
+    "sha": "87e0b2b4c861f83b356703dbc591fa82bb6b9638",
+    "buildStamp": {
+      "builtAt": 1793681941302,
+      "head": "87e0b2b4c861f83b356703dbc591fa82bb6b9638",
+      "inputsClean": true,
+      "inputSignature": "6c48bea8b63a7cc996dd35805e1d000022e9ba85e0bc20cb6aa39929bc38f584"
+    },
+    "domain": "ws://127.0.0.1:38631",
+    "calls": [
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "b6eb4bc0-03ec-4f91-b70f-0cb38d0f2067",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "ac830480-92f3-40a1-841c-d990778d998b",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "8e737986-8bb1-4e5a-aa26-ac0701f8a804",
+          "ok": true,
+          "payload": {
+            "ts": 1793682021448,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "1d05c683-be31-499c-b8b4-9c109845b00f",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "6f75f9c5-e0fb-4099-9b4e-482a70e5a964",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "7b7f4119-c403-4229-b6b7-4e51eb3a964a",
+          "ok": true,
+          "payload": {
+            "ts": 1793682023877,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "a50b9a72-5e7b-4c1c-8e64-f7d1cb661221",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "653a6ca0-ee19-4754-aa0d-74f042fc4d02",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "fc291d3f-cc0e-4d48-80e1-e2f9ebd2bfca",
+          "ok": true,
+          "payload": {
+            "ts": 1793682024997,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "9b8cca25-15ac-41c4-97da-b63126786756",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "d28de8bb-e3e2-46f5-a0c2-a1373bc49f6a",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "841f8488-c98c-421a-bd0a-c80b8fe8f8bc",
+          "ok": true,
+          "payload": {
+            "ts": 1793682026179,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "af01b797-e427-4177-be51-a93496ccb4e9",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "197897eb-ef16-425c-b226-f8610ca0f632",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "e2c72f12-1f29-49f6-86c8-e5b170d39a81",
+          "ok": true,
+          "payload": {
+            "ts": 1793682027194,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "90127d0a-8953-4e4e-9b66-8fca246bbba9",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "dd67247b-dce2-4684-8126-b4090c2db68e",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "29964f17-321b-40df-beae-a09d57d4ccf8",
+          "ok": true,
+          "payload": {
+            "ts": 1793682028246,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "65bf8eca-d38a-46d7-b242-6f88a0785bd8",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "396de3e8-5612-486b-8ac1-87fb4e7dcbe6",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "bba0643b-83d7-47dc-ab65-8b6a1709202d",
+          "ok": true,
+          "payload": {
+            "ts": 1793682029322,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "8b31c515-d72d-44fb-8bfe-22b8884722d3",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "da982862-53b2-44b1-86e2-01999f71bb4e",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "ef5e04a1-7114-491e-932c-031f9ec5f18d",
+          "ok": true,
+          "payload": {
+            "ts": 1793682030348,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "7400a84f-bc87-48ea-a13b-2cf3394cc4a1",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "d25957d0-138c-4668-b0c3-ab2c660c9325",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": []
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "6945b190-0b3b-4238-99d7-8b301846746f",
+          "ok": true,
+          "payload": {
+            "ts": 1793682031371,
+            "nodes": []
+          }
+        }
+      },
+      {
+        "method": "device.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "d4284ed7-343f-43fa-bcae-95b1bc0601a8",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": [
+              {
+                "deviceId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+                "publicKey": "FkiYkbde5-WQqPOtjiQan6afY-dNsAkDcoXGOVgca00",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "deviceFamily": "Linux",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "role": "node",
+                "roles": [
+                  "node"
+                ],
+                "scopes": [],
+                "approvedVia": "silent",
+                "nodeSurface": {
+                  "displayName": "Recent-folder proof node",
+                  "version": "2026.10.9",
+                  "modelIdentifier": "OpenStack Nova",
+                  "caps": [
+                    "system"
+                  ],
+                  "commands": [
+                    "system.which"
+                  ],
+                  "createdAtMs": 1793682032112,
+                  "approvedAtMs": 1793682032112,
+                  "lastConnectedAtMs": 1793682032124
+                },
+                "createdAtMs": 1793682032053,
+                "approvedAtMs": 1793682032053,
+                "lastSeenAtMs": 1793682032023,
+                "lastSeenReason": "connect",
+                "connected": true,
+                "tokens": [
+                  {
+                    "role": "node",
+                    "scopes": [],
+                    "createdAtMs": 1793682032053
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "node.pair.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "75614740-4f56-48d1-8f1f-92b841e8d00d",
+          "ok": true,
+          "payload": {
+            "pending": [],
+            "paired": [
+              {
+                "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "version": "2026.10.9",
+                "deviceFamily": "Linux",
+                "modelIdentifier": "OpenStack Nova",
+                "caps": [
+                  "system"
+                ],
+                "commands": [
+                  "system.which"
+                ],
+                "createdAtMs": 1793682032112,
+                "approvedAtMs": 1793682032112,
+                "lastConnectedAtMs": 1793682032124,
+                "lastSeenAtMs": 1793682032023,
+                "lastSeenReason": "connect"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "node.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "2c010a27-addd-4378-9bf0-2e16d7e83174",
+          "ok": true,
+          "payload": {
+            "ts": 1793682032408,
+            "nodes": [
+              {
+                "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+                "displayName": "Recent-folder proof node",
+                "platform": "linux",
+                "version": "2026.10.9",
+                "clientId": "node-host",
+                "clientMode": "node",
+                "deviceFamily": "Linux",
+                "modelIdentifier": "OpenStack Nova",
+                "caps": [
+                  "system"
+                ],
+                "commands": [
+                  "system.which"
+                ],
+                "sessionHost": false,
+                "nodePluginTools": [],
+                "approvalState": "approved",
+                "connectedAtMs": 1793682032124,
+                "lastConnectedAtMs": 1793682032124,
+                "lastSeenAtMs": 1793682032124,
+                "lastSeenReason": "connect",
+                "approvedAtMs": 1793682032112,
+                "paired": true,
+                "connected": true
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "projects.register",
+        "params": {
+          "path": "$PROOF_ROOT/node-recents-head/registered-repo",
+          "name": "Local registered proof"
+        },
+        "response": {
+          "type": "res",
+          "id": "af9cd8e8-5108-4df0-aa23-e8c4e15842ef",
+          "ok": true,
+          "payload": {
+            "id": "local-registered-proof",
+            "displayName": "Local registered proof",
+            "repoRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "source": "registered"
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-node-registered",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-head/registered-repo",
+          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+        },
+        "response": {
+          "type": "res",
+          "id": "a4ae7a03-af98-49b3-bc3d-105de73ef19d",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-node-registered",
+            "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+            "entry": {
+              "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+              "lifecycleRevision": "720759c5-4554-420b-be18-850c35daf0b8",
+              "updatedAt": 1793682035418,
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793682035419,
+              "skillLibrarySelections": [],
+              "execHost": "node",
+              "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+              "execCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "8bc11d44-7169-42dc-9e8c-0d9f00813d52",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "displayName": "registered-repo",
+                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-node-workspace",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-head/workspace",
+          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+        },
+        "response": {
+          "type": "res",
+          "id": "04e7e267-4631-4108-a287-6fa87b40da06",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-node-workspace",
+            "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+            "entry": {
+              "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+              "lifecycleRevision": "0b6d4d50-4da8-4f5b-9b1a-5516a66418a3",
+              "updatedAt": 1793682036007,
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793682036008,
+              "skillLibrarySelections": [],
+              "execHost": "node",
+              "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+              "execCwd": "$PROOF_ROOT/node-recents-head/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "bd33dc1e-3956-49b2-b196-45d66865bad3",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/node-recents-head/workspace",
+                "displayName": "workspace",
+                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+              },
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "displayName": "registered-repo",
+                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:recents-local-control",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/node-recents-head/registered-repo"
+        },
+        "response": {
+          "type": "res",
+          "id": "1093bafb-f68f-4c7c-8b79-c6f3d9e31d38",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:recents-local-control",
+            "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+            "entry": {
+              "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+              "lifecycleRevision": "62050208-6eb2-45f2-8f15-f7be90f9e291",
+              "updatedAt": 1793682036120,
+              "sessionRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793682036120,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "projects.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "b6319cfe-539d-4e6b-bd07-e2d9131517d8",
+          "ok": true,
+          "payload": {
+            "projects": [
+              {
+                "id": "local-registered-proof",
+                "displayName": "Local registered proof",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "source": "registered"
+              },
+              {
+                "id": "workspace:main",
+                "displayName": "workspace",
+                "repoRoot": "$PROOF_ROOT/node-recents-head/workspace",
+                "source": "workspace",
+                "agentId": "main"
+              }
+            ],
+            "githubHost": "github.com",
+            "recents": [
+              {
+                "kind": "project",
+                "projectId": "local-registered-proof",
+                "displayName": "Local registered proof"
+              },
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/node-recents-head/workspace",
+                "displayName": "workspace",
+                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+              },
+              {
+                "kind": "folder",
+                "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+                "displayName": "registered-repo",
+                "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/node-recents/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "38631"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "nodeCommand": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/node-recents/openclaw.mjs",
+      "node",
+      "run",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "38631",
+      "--node-id",
+      "proof-recents-node",
+      "--display-name",
+      "Recent-folder proof node",
+      "--auth-from-env",
+      "--commands",
+      "system.which"
+    ],
+    "proof": {
+      "entry": "Normally built Gateway and normally built node host -> public sessions.create -> projects.list",
+      "modelsCalled": false,
+      "nodeCommandsInvoked": false,
+      "externalChannels": false,
+      "directStoreWrites": false
+    },
+    "node": {
+      "nodeId": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+      "connected": true,
+      "paired": true,
+      "commands": [
+        "system.which"
+      ]
+    },
+    "cases": [
+      {
+        "name": "registered",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-node-registered",
+          "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+          "entry": {
+            "sessionId": "f87ad568-cb0b-4972-9854-9f1541475f2f",
+            "lifecycleRevision": "720759c5-4554-420b-be18-850c35daf0b8",
+            "updatedAt": 1793682035418,
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793682035419,
+            "skillLibrarySelections": [],
+            "execHost": "node",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+            "execCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recent": {
+          "kind": "folder",
+          "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+          "displayName": "registered-repo",
+          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+        },
+        "fullRecents": [
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "displayName": "registered-repo",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          }
+        ]
+      },
+      {
+        "name": "workspace",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-node-workspace",
+          "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+          "entry": {
+            "sessionId": "306909e3-d8a7-413a-a392-d271f5369ed1",
+            "lifecycleRevision": "0b6d4d50-4da8-4f5b-9b1a-5516a66418a3",
+            "updatedAt": 1793682036007,
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793682036008,
+            "skillLibrarySelections": [],
+            "execHost": "node",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11",
+            "execCwd": "$PROOF_ROOT/node-recents-head/workspace",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recent": {
+          "kind": "folder",
+          "folder": "$PROOF_ROOT/node-recents-head/workspace",
+          "displayName": "workspace",
+          "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+        },
+        "fullRecents": [
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/node-recents-head/workspace",
+            "displayName": "workspace",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          },
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "displayName": "registered-repo",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          }
+        ]
+      },
+      {
+        "name": "local binding and independent node dedup control",
+        "created": {
+          "ok": true,
+          "key": "agent:main:recents-local-control",
+          "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+          "entry": {
+            "sessionId": "d6b29204-45c1-4744-ae16-57e9063ebd77",
+            "lifecycleRevision": "62050208-6eb2-45f2-8f15-f7be90f9e291",
+            "updatedAt": 1793682036120,
+            "sessionRoot": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "delivery": {
+              "kind": "none"
+            },
+            "createdVia": "operator",
+            "createdActor": {
+              "type": "human",
+              "source": "profile",
+              "id": "gateway-owner"
+            },
+            "createdAt": 1793682036120,
+            "skillLibrarySelections": [],
+            "spawnedCwd": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "spawnDepth": 0,
+            "modelOverrideSource": "default",
+            "chatType": "direct",
+            "parentSessionKey": "agent:main:main"
+          },
+          "runStarted": false,
+          "publicRead": false,
+          "resolved": {
+            "modelProvider": "openai",
+            "model": "gpt-6-astra"
+          }
+        },
+        "recents": [
+          {
+            "kind": "project",
+            "projectId": "local-registered-proof",
+            "displayName": "Local registered proof"
+          },
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/node-recents-head/workspace",
+            "displayName": "workspace",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          },
+          {
+            "kind": "folder",
+            "folder": "$PROOF_ROOT/node-recents-head/registered-repo",
+            "displayName": "registered-repo",
+            "execNode": "83ce93e5b64203425b94627f4c7a991b24e93f16a96b9dd7e3cc0b4f54d60e11"
+          }
+        ]
+      }
+    ],
+    "observation": "GREEN: paired node folders retain runner identity; local project lookup remains unchanged",
+    "nodeCleanup": {
+      "exit": {
+        "code": 143,
+        "signal": null
+      },
+      "serviceInstalled": false,
+      "nodeCommandSideEffects": false
+    },
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]
