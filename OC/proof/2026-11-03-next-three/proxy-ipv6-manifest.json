@@ -1,0 +1,37 @@
+{
+  "kind": "proxy-ipv6",
+  "base": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+  "head": "fdd487adf21706c15f86c3c431b48a2e13df542b",
+  "files": [
+    {
+      "path": "isolated-gateway.mjs",
+      "sha256": "a96c7a0184e7448e470950ae2cdb2db7029bb8402e2dc3175ea4cac49790a932",
+      "bytes": 5653
+    },
+    {
+      "path": "proof-proxy-ipv6.mjs",
+      "sha256": "2edb008953ef84e62ec83dd0877aac68def7eed8b82c1654c35a6b6200bef383",
+      "bytes": 5576
+    },
+    {
+      "path": "proxy-ipv6-readback.json",
+      "sha256": "b02e2e916e8d50e5f3b0826de22648d882ae0386ea48254139e4f35458909df9",
+      "bytes": 16735
+    },
+    {
+      "path": "proxy-ipv6-checks.json",
+      "sha256": "9c3178557eb93c58a837de325900b71e0ee9774b0b79a52fed69e6d2a9928b66",
+      "bytes": 1296
+    },
+    {
+      "path": "proxy-ipv6-build.json",
+      "sha256": "829621a834f18aaf829ccd9734536c7594e1cdde80ac2dac79a17789c83b70d7",
+      "bytes": 169
+    },
+    {
+      "path": "proxy-ipv6-commit.json",
+      "sha256": "7f39295fab4c4a687b941980d1b9026877e115d5e8c10cef0f6b0009f4e7055e",
+      "bytes": 100
+    }
+  ]
+}

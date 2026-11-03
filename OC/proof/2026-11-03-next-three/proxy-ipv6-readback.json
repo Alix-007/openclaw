@@ -1,0 +1,426 @@
+[
+  {
+    "version": "base",
+    "scenario": "proof-proxy-ipv6-base3",
+    "at": "2026-11-03T14:36:27.316Z",
+    "sha": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+    "buildStamp": {
+      "builtAt": 1793713699746,
+      "head": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+      "inputsClean": true,
+      "inputSignature": "c8bb5e2c9720e9020c6a022329e8a32b180d61d2b8352faf9137ac379d71e173"
+    },
+    "domain": "ws://127.0.0.1:38799",
+    "calls": [],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "38799"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "label": "ipv4-run",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "proxy",
+          "run",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "0",
+          "--",
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proof-proxy-ipv6-base3/child.cjs",
+          "http://127.0.0.1:39885/proxy-proof"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "{\"body\":\"local-proxy-proof-ok\",\"proxyOrigin\":\"http://127.0.0.1:36871\",\"privateEndpointOrigin\":\"http://127.0.0.1:36871\",\"privateEndpointHasCredential\":true,\"publicProxyHasCredential\":false}\n",
+        "stderr": ""
+      },
+      {
+        "label": "ipv6-run",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "proxy",
+          "run",
+          "--host",
+          "::1",
+          "--port",
+          "0",
+          "--",
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proof-proxy-ipv6-base3/child.cjs",
+          "http://127.0.0.1:39885/proxy-proof"
+        ],
+        "exit": {
+          "code": null,
+          "signal": "SIGTERM"
+        },
+        "watchdog": true,
+        "stdout": "",
+        "stderr": "[openclaw] The CLI command failed.\n[openclaw] Reason: Invalid URL\n[openclaw] Stack:\n[openclaw] TypeError: Invalid URL\n[openclaw]     at new URL (node:internal/url:911:25)\n[openclaw]     at startDebugProxyServer (file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:444:20)\n[openclaw]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:657:20\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:513:14\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:487:11\n[openclaw]     at async withDeferredDebugProxyCapture (file://$PROOF_ROOT/baseline/dist/runtime-deferral-Rnj8_D2w.mjs:7:58)\n[openclaw]     at async Module.runDebugProxyRunCommand (file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:637:3)\n[openclaw]     at async OpenClawCommand.<anonymous> (file://$PROOF_ROOT/baseline/dist/proxy-cli-DrfnG-IT.mjs:30:3)\n[openclaw]     at async OpenClawCommand.parseAsync (file://$PROOF_ROOT/baseline/node_modules/.pnpm/commander@15.0.0/node_modules/commander/lib/command.js:1113:5)\n[openclaw] Try: openclaw doctor\n[openclaw] Help: openclaw --help\n"
+      },
+      {
+        "label": "ipv4-start",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "proxy",
+          "start",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "0"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "Debug proxy: http://127.0.0.1:40091\nCA cert: $PROOF_ROOT/proof-proxy-ipv6-base3/state/debug-proxy/certs/root-ca.pem\nCapture DB: $PROOF_ROOT/proof-proxy-ipv6-base3/state/state/openclaw.sqlite\nPress Ctrl+C to stop.\n",
+        "stderr": "",
+        "readback": {
+          "status": 200,
+          "body": "local-proxy-proof-ok",
+          "proxyUrl": "http://127.0.0.1:40091"
+        },
+        "stopSignalSent": "SIGTERM"
+      },
+      {
+        "label": "ipv6-start",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "proxy",
+          "start",
+          "--host",
+          "::1",
+          "--port",
+          "0"
+        ],
+        "exit": {
+          "code": null,
+          "signal": "SIGTERM"
+        },
+        "watchdog": true,
+        "stdout": "",
+        "stderr": "[openclaw] The CLI command failed.\n[openclaw] Reason: Invalid URL\n[openclaw] Stack:\n[openclaw] TypeError: Invalid URL\n[openclaw]     at new URL (node:internal/url:911:25)\n[openclaw]     at startDebugProxyServer (file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:444:20)\n[openclaw]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:600:20\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:513:14\n[openclaw]     at async file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:487:11\n[openclaw]     at async withDeferredDebugProxyCapture (file://$PROOF_ROOT/baseline/dist/runtime-deferral-Rnj8_D2w.mjs:7:58)\n[openclaw]     at async Module.runDebugProxyStartCommand (file://$PROOF_ROOT/baseline/dist/proxy-cli.runtime-BmrO-nvi.mjs:582:3)\n[openclaw]     at async OpenClawCommand.<anonymous> (file://$PROOF_ROOT/baseline/dist/proxy-cli-DrfnG-IT.mjs:27:3)\n[openclaw]     at async OpenClawCommand.parseAsync (file://$PROOF_ROOT/baseline/node_modules/.pnpm/commander@15.0.0/node_modules/commander/lib/command.js:1113:5)\n[openclaw] Try: openclaw doctor\n[openclaw] Help: openclaw --help\n"
+      },
+      {
+        "label": "capture-readback",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "proxy",
+          "sessions",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "{\n  \"sessions\": [\n    {\n      \"id\": \"256e6ab4-6200-4045-9974-8627cdcd6820\",\n      \"startedAt\": 1793716636717,\n      \"endedAt\": 1793716636899,\n      \"mode\": \"proxy-start\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 0\n    },\n    {\n      \"id\": \"1928c3f6-57ea-45cd-bf2b-b085659f7a20\",\n      \"startedAt\": 1793716632472,\n      \"endedAt\": 1793716632740,\n      \"mode\": \"proxy-start\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    },\n    {\n      \"id\": \"e6439c66-18e5-4b23-babe-801132175a17\",\n      \"startedAt\": 1793716612105,\n      \"endedAt\": 1793716612274,\n      \"mode\": \"proxy-run\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 0\n    },\n    {\n      \"id\": \"590b5829-67ca-462a-9eb2-94e3d9208814\",\n      \"startedAt\": 1793716607655,\n      \"endedAt\": 1793716608194,\n      \"mode\": \"proxy-run\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    }\n  ]\n}\n",
+        "stderr": ""
+      }
+    ],
+    "proof": {
+      "entry": "Normally built openclaw proxy start/run with real isolated Gateway persistence, native loopback IPv6 listener, actual child and HTTP origin",
+      "modelsCalled": false,
+      "externalChannels": false,
+      "sourceImportsOrMocks": false
+    },
+    "captureSessions": {
+      "sessions": [
+        {
+          "id": "256e6ab4-6200-4045-9974-8627cdcd6820",
+          "startedAt": 1793716636717,
+          "endedAt": 1793716636899,
+          "mode": "proxy-start",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 0
+        },
+        {
+          "id": "1928c3f6-57ea-45cd-bf2b-b085659f7a20",
+          "startedAt": 1793716632472,
+          "endedAt": 1793716632740,
+          "mode": "proxy-start",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        },
+        {
+          "id": "e6439c66-18e5-4b23-babe-801132175a17",
+          "startedAt": 1793716612105,
+          "endedAt": 1793716612274,
+          "mode": "proxy-run",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 0
+        },
+        {
+          "id": "590b5829-67ca-462a-9eb2-94e3d9208814",
+          "startedAt": 1793716607655,
+          "endedAt": 1793716608194,
+          "mode": "proxy-run",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        }
+      ]
+    },
+    "originHits": [
+      "/proxy-proof",
+      "/proxy-proof"
+    ],
+    "observation": "RED: documented --host ::1 binds but URL parsing fails; neither start nor run reaches local HTTP origin. IPv4 controls pass.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "proof-proxy-ipv6-head",
+    "at": "2026-11-03T15:14:54.917Z",
+    "sha": "fdd487adf21706c15f86c3c431b48a2e13df542b",
+    "buildStamp": {
+      "builtAt": 1793718676631,
+      "head": "fdd487adf21706c15f86c3c431b48a2e13df542b",
+      "inputsClean": true,
+      "inputSignature": "36c1730aec5eed2e0821ef012cb1f084d95f3b76ccdfbbddc33dbd9b50c35bd5"
+    },
+    "domain": "ws://127.0.0.1:43649",
+    "calls": [],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "43649"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "label": "ipv4-run",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+          "proxy",
+          "run",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "0",
+          "--",
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proof-proxy-ipv6-head/child.cjs",
+          "http://127.0.0.1:41849/proxy-proof"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "{\"body\":\"local-proxy-proof-ok\",\"proxyOrigin\":\"http://127.0.0.1:35975\",\"privateEndpointOrigin\":\"http://127.0.0.1:35975\",\"privateEndpointHasCredential\":true,\"publicProxyHasCredential\":false}\n",
+        "stderr": ""
+      },
+      {
+        "label": "ipv6-run",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+          "proxy",
+          "run",
+          "--host",
+          "::1",
+          "--port",
+          "0",
+          "--",
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proof-proxy-ipv6-head/child.cjs",
+          "http://127.0.0.1:41849/proxy-proof"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "{\"body\":\"local-proxy-proof-ok\",\"proxyOrigin\":\"http://[::1]:38357\",\"privateEndpointOrigin\":\"http://[::1]:38357\",\"privateEndpointHasCredential\":true,\"publicProxyHasCredential\":false}\n",
+        "stderr": ""
+      },
+      {
+        "label": "ipv4-start",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+          "proxy",
+          "start",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "0"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "Debug proxy: http://127.0.0.1:35181\nCA cert: $PROOF_ROOT/proof-proxy-ipv6-head/state/debug-proxy/certs/root-ca.pem\nCapture DB: $PROOF_ROOT/proof-proxy-ipv6-head/state/state/openclaw.sqlite\nPress Ctrl+C to stop.\n",
+        "stderr": "",
+        "readback": {
+          "status": 200,
+          "body": "local-proxy-proof-ok",
+          "proxyUrl": "http://127.0.0.1:35181"
+        },
+        "stopSignalSent": "SIGTERM"
+      },
+      {
+        "label": "ipv6-start",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+          "proxy",
+          "start",
+          "--host",
+          "::1",
+          "--port",
+          "0"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "Debug proxy: http://[::1]:40747\nCA cert: $PROOF_ROOT/proof-proxy-ipv6-head/state/debug-proxy/certs/root-ca.pem\nCapture DB: $PROOF_ROOT/proof-proxy-ipv6-head/state/state/openclaw.sqlite\nPress Ctrl+C to stop.\n",
+        "stderr": "",
+        "readback": {
+          "status": 200,
+          "body": "local-proxy-proof-ok",
+          "proxyUrl": "http://[::1]:40747"
+        },
+        "stopSignalSent": "SIGTERM"
+      },
+      {
+        "label": "capture-readback",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/proxy-ipv6/openclaw.mjs",
+          "proxy",
+          "sessions",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "stdout": "{\n  \"sessions\": [\n    {\n      \"id\": \"4730ddc5-26fe-420c-b8e4-b7a00aa11f4f\",\n      \"startedAt\": 1793718929373,\n      \"endedAt\": 1793718929627,\n      \"mode\": \"proxy-start\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    },\n    {\n      \"id\": \"0dcf3928-47aa-42dd-8736-cd3cf6b34b49\",\n      \"startedAt\": 1793718924934,\n      \"endedAt\": 1793718925194,\n      \"mode\": \"proxy-start\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    },\n    {\n      \"id\": \"0aba3a73-076a-49d2-b23d-9aa7ccbf672f\",\n      \"startedAt\": 1793718920345,\n      \"endedAt\": 1793718920683,\n      \"mode\": \"proxy-run\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    },\n    {\n      \"id\": \"419d2f19-3722-418c-b5bd-c733396c336a\",\n      \"startedAt\": 1793718915433,\n      \"endedAt\": 1793718916212,\n      \"mode\": \"proxy-run\",\n      \"sourceProcess\": \"openclaw\",\n      \"proxyUrl\": null,\n      \"eventCount\": 2\n    }\n  ]\n}\n",
+        "stderr": ""
+      }
+    ],
+    "proof": {
+      "entry": "Normally built openclaw proxy start/run with real isolated Gateway persistence, native loopback IPv6 listener, actual child and HTTP origin",
+      "modelsCalled": false,
+      "externalChannels": false,
+      "sourceImportsOrMocks": false
+    },
+    "captureSessions": {
+      "sessions": [
+        {
+          "id": "4730ddc5-26fe-420c-b8e4-b7a00aa11f4f",
+          "startedAt": 1793718929373,
+          "endedAt": 1793718929627,
+          "mode": "proxy-start",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        },
+        {
+          "id": "0dcf3928-47aa-42dd-8736-cd3cf6b34b49",
+          "startedAt": 1793718924934,
+          "endedAt": 1793718925194,
+          "mode": "proxy-start",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        },
+        {
+          "id": "0aba3a73-076a-49d2-b23d-9aa7ccbf672f",
+          "startedAt": 1793718920345,
+          "endedAt": 1793718920683,
+          "mode": "proxy-run",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        },
+        {
+          "id": "419d2f19-3722-418c-b5bd-c733396c336a",
+          "startedAt": 1793718915433,
+          "endedAt": 1793718916212,
+          "mode": "proxy-run",
+          "sourceProcess": "openclaw",
+          "proxyUrl": null,
+          "eventCount": 2
+        }
+      ]
+    },
+    "originHits": [
+      "/proxy-proof",
+      "/proxy-proof",
+      "/proxy-proof",
+      "/proxy-proof"
+    ],
+    "observation": "GREEN: start and run serialize [::1], forward real HTTP and complete capture cleanup; IPv4 and credential-isolation controls pass.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]
