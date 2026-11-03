@@ -1,0 +1,12 @@
+{
+  "name": "plugins",
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "$PROOF_ROOT/prepare-ui-proof-distributions.mts",
+    "draft-focus"
+  ],
+  "exitCode": 0,
+  "seconds": 25.2
+}

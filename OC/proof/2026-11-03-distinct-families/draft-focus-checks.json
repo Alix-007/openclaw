@@ -1,0 +1,63 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/pages/chat/components/file-draft-recovery-dialog-view.tsx",
+      "ui/src/pages/chat/components/file-draft-recovery-dialog.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.23
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "ui/tsconfig.json",
+      "ui/src/pages/chat/components/file-draft-recovery-dialog-view.tsx",
+      "ui/src/pages/chat/components/file-draft-recovery-dialog.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 313.49
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/draft-focus-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 117.22
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "b3d0977b0cc484c4b472628385d1a988a794ac42"
+    ],
+    "exitCode": 0,
+    "seconds": 10.94
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "ui/src/pages/chat/components/file-draft-recovery-dialog.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 13.26
+  }
+]

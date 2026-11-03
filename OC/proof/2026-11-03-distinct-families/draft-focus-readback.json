@@ -1,0 +1,1582 @@
+[
+  {
+    "version": "base",
+    "scenario": "draft-focus-base-final",
+    "at": "2026-11-03T06:19:03.583Z",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "buildStamp": {
+      "builtAt": 1793677166642,
+      "head": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+      "inputsClean": true,
+      "inputSignature": "b90a72d10189a76219c41eb46a800705cc494c98f6fe29883d7027c58e4b082b"
+    },
+    "domain": "ws://127.0.0.1:32867",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "46a18e95-8280-42f0-b6c6-cb3b49045a9d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "a8704dac-bd22-4e15-8066-9ef46871c235",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "a26871ed-8b6e-4e66-83a4-2dff3d8342d0",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "49c1ca40-5450-437e-bd68-e79d08b9fe5d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "d9ff4aa7-a62d-4190-8e52-1751fc416ad9",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "d8ab57f0-0ec6-4ecf-8341-b4733f12b32e",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:draft-focus-proof",
+            "sessionId": "82d81c41-ce00-41c6-87ea-db5e29ef6a02",
+            "entry": {
+              "sessionId": "82d81c41-ce00-41c6-87ea-db5e29ef6a02",
+              "lifecycleRevision": "8575d640-cab3-47c7-911a-3af97eae3e41",
+              "updatedAt": 1793686767278,
+              "sessionRoot": "$PROOF_ROOT/draft-focus-base-final/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793686767280,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/draft-focus-base-final/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "32867"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "stage": "complete",
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:32867/__openclaw__/workspace-icon/agent%3Amain%3Adraft-focus-proof",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/api/users/gateway-owner/avatar?v=1793686760351",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/route-chrome-styles-DNapsqBR.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/lobster-pet-identity-D4tlOWIt.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-page-BpZNj8-h.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/en-settings-sidebar-Cl41O7QG.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/en-route-subtitles-Di3tDyrB.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/settings-navigation-6B7gjYBS.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-error-OMS9QGMY.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/route-chrome-styles-BIcIHIzc.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-page-DlSwv4zJ.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/response-body-ByeIXUHY.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/theme-palette-CC2uloFH.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/en-settings-XvUD1MVi.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/en-preferences-BDxivq1I.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/lobster-pet-identity-Cwez3pXm.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/session-source-presentation-BxM1DLlv.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/control-ui-boot-shared-DsegYo6K.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-form-utils-runtime-CSx4SQKW.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-form-analysis-runtime-BCqtD12R.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/lobster-dex-BqzdFsQF.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/lobster-pet-audio-waE6qgq0.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/session-background-image-BXUWz_i4.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/hub-tabs-BR7EyG0Z.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/phone-layout-CAO-lwt3.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-draft-model-FkSTyXwS.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/config-form.numeric-ClklwzWp.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/route-chrome-DoGcc-xH.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/model-picker-CEIKB8Sl.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/model-runtime-label-CD_OiC9B.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/session-BrECK8xE.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/talk-event-vocabulary-DeVLT5XG.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/settings-select-row-SLR_Or6d.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/model-setting-B93dTzWp.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/memory-schema-Ft8Y4ERF.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/slots-x7zKspa8.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/settings-model-DwOfLnNu.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/assets/events-browser-mFJ-UgGC.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/index.html",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:32867/index.html",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI; real file edits, browser offline CSS failure, real reload guard and recovery modal",
+      "modelsCalled": false,
+      "gatewayOrModulesMocked": false,
+      "applicationStateInjected": false
+    },
+    "browserVersion": "156.0.8078.4",
+    "browserEngine": "Chromium",
+    "servedAssets": [
+      "/assets/index-I7wxC30Y.js"
+    ],
+    "servedEntry": {
+      "path": "/assets/index-I7wxC30Y.js",
+      "status": 200,
+      "sha256": "6c79e6b873b9cbfd5b6a2a4b92b53237e24e6d59abf6bcad4a80b2c6b469dc6e"
+    },
+    "afterDiscard": {
+      "tag": "BODY",
+      "text": "Skip to main contentOpenClawSearch or jump to… (⌘K)Back to appescSettingsmainAgentNo matchesAsk Open",
+      "ariaLabel": null,
+      "isBody": true,
+      "inModal": false
+    },
+    "nextTab": {
+      "tag": "TEXTAREA",
+      "text": "",
+      "ariaLabel": null,
+      "inModal": true
+    },
+    "control": {
+      "remainingDraft": "Unsaved B\n",
+      "keepDraftsCloses": true,
+      "savedFilesUnchanged": true
+    },
+    "observation": "RED: keyboard Discard removes its focused row and leaves focus outside the still-open recovery dialog",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "draft-focus-base-webkit-final",
+    "at": "2026-11-03T05:56:08.454Z",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "buildStamp": {
+      "builtAt": 1793677166642,
+      "head": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+      "inputsClean": true,
+      "inputSignature": "b90a72d10189a76219c41eb46a800705cc494c98f6fe29883d7027c58e4b082b"
+    },
+    "domain": "ws://127.0.0.1:40497",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "0eee3419-6d75-4660-bce9-eb31e66a93c7",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "536cd7f4-3b04-4748-b33e-93476b638e31",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "b5db087c-8e62-48d3-a442-4e0c4b7c09f2",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "553faa49-e764-4d65-aae9-725e00f780c3",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "ff4fdd24-921d-4bde-9608-28e73a6fee63",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:draft-focus-proof",
+            "sessionId": "b9874251-fbbe-45dc-9ee7-2f3ed0439ff8",
+            "entry": {
+              "sessionId": "b9874251-fbbe-45dc-9ee7-2f3ed0439ff8",
+              "lifecycleRevision": "56f66166-858e-4bb6-a815-9e40250f13ff",
+              "updatedAt": 1793685388413,
+              "sessionRoot": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793685388415,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/draft-focus-base-webkit-final/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "40497"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "stage": "complete",
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:40497/fonts/instrument-sans-latin.woff2?v=2026.10.9-b3d0977b0cc4-2026-11-03T03-35-58.115Z-bc83f98136a039592d8e6b10fe581b63f472b913630915d01248fd3200d60328",
+        "error": "Load request cancelled"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/en-settings-sidebar-Cl41O7QG.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/en-route-subtitles-Di3tDyrB.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/settings-navigation-6B7gjYBS.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-error-OMS9QGMY.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/route-chrome-styles-BIcIHIzc.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/route-chrome-styles-DNapsqBR.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-page-DlSwv4zJ.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/response-body-ByeIXUHY.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/theme-palette-CC2uloFH.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/en-settings-XvUD1MVi.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/en-preferences-BDxivq1I.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/lobster-pet-identity-Cwez3pXm.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/session-source-presentation-BxM1DLlv.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/control-ui-boot-shared-DsegYo6K.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-form-utils-runtime-CSx4SQKW.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-form-analysis-runtime-BCqtD12R.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/lobster-dex-BqzdFsQF.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/lobster-pet-audio-waE6qgq0.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/session-background-image-BXUWz_i4.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/hub-tabs-BR7EyG0Z.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/phone-layout-CAO-lwt3.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-draft-model-FkSTyXwS.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-form.numeric-ClklwzWp.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/route-chrome-DoGcc-xH.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/model-picker-CEIKB8Sl.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/model-runtime-label-CD_OiC9B.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/session-BrECK8xE.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/talk-event-vocabulary-DeVLT5XG.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/settings-select-row-SLR_Or6d.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/model-setting-B93dTzWp.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/memory-schema-Ft8Y4ERF.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/slots-x7zKspa8.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/settings-model-DwOfLnNu.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/events-browser-mFJ-UgGC.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/lobster-pet-identity-D4tlOWIt.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/assets/config-page-BpZNj8-h.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40497/index.html",
+        "error": "WebKit encountered an internal error"
+      }
+    ],
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI; real file edits, browser offline CSS failure, real reload guard and recovery modal",
+      "modelsCalled": false,
+      "gatewayOrModulesMocked": false,
+      "applicationStateInjected": false
+    },
+    "browserVersion": "27.2",
+    "browserEngine": "WebKit",
+    "servedAssets": [
+      "/assets/index-I7wxC30Y.js"
+    ],
+    "servedEntry": {
+      "path": "/assets/index-I7wxC30Y.js",
+      "status": 200,
+      "sha256": "6c79e6b873b9cbfd5b6a2a4b92b53237e24e6d59abf6bcad4a80b2c6b469dc6e"
+    },
+    "afterDiscard": {
+      "tag": "BODY",
+      "text": "Skip to main contentOpenClawSearch or jump to… (⌘K)Back to appSettingsSettings navigation could not ",
+      "ariaLabel": null,
+      "isBody": true,
+      "inModal": false
+    },
+    "nextTab": {
+      "tag": "TEXTAREA",
+      "text": "",
+      "ariaLabel": null,
+      "inModal": true
+    },
+    "control": {
+      "remainingDraft": "Unsaved B\n",
+      "keepDraftsCloses": true,
+      "savedFilesUnchanged": true
+    },
+    "observation": "RED: keyboard Discard removes its focused row and leaves focus outside the still-open recovery dialog",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "draft-focus-head-final",
+    "at": "2026-11-03T06:22:04.120Z",
+    "sha": "020ce8a913c242c08cfc2a1e1cfb18e204c43295",
+    "buildStamp": {
+      "builtAt": 1793686415212,
+      "head": "020ce8a913c242c08cfc2a1e1cfb18e204c43295",
+      "inputsClean": true,
+      "inputSignature": "a3093bb3505b86bdd150d478a4685df09546b6cea1af391791d9ff657612342c"
+    },
+    "domain": "ws://127.0.0.1:39079",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "eceb0dcc-e95b-4019-be57-631ed5629f4e",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "3f8258d6-c81e-4ec4-8698-447bccbddae0",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "9a5a3bc8-6ee0-45d5-a14c-fd5b43c85900",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "e5a02fcf-ee2b-47b9-ab00-12563ccddae6",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "92c45ef2-df8e-48c1-a0a5-6cf13e592d97",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "106b3c8a-a20e-470e-8ae9-08672f166cda",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:draft-focus-proof",
+            "sessionId": "4b85d68f-049f-450f-92f8-2df12893aa69",
+            "entry": {
+              "sessionId": "4b85d68f-049f-450f-92f8-2df12893aa69",
+              "lifecycleRevision": "3c3e7888-35ce-4d16-8eb9-d835d927c3df",
+              "updatedAt": 1793686946535,
+              "sessionRoot": "$PROOF_ROOT/draft-focus-head-final/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793686946537,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/draft-focus-head-final/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/draft-focus/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "39079"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "stage": "complete",
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:39079/api/users/gateway-owner/avatar?v=1793686939088",
+        "error": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/route-chrome-styles-DNapsqBR.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/lobster-pet-identity-D4tlOWIt.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-page-BpZNj8-h.css",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/en-settings-sidebar-Dy65ZNfY.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/en-route-subtitles-DnM3YE84.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/settings-navigation-CfhLNwKm.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-error-CHsK4XEj.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/route-chrome-styles-BIcIHIzc.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-page-DlNUPaDq.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/response-body-Dnt2sOat.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/theme-palette-5UDElU6P.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/en-settings-D_2rAliz.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/en-preferences-H2dRUwJi.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/lobster-pet-identity-CnX_qJLI.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/session-source-presentation-BxM1DLlv.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/control-ui-boot-shared-DsegYo6K.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-form-utils-runtime-xthoUY9a.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-form-analysis-runtime--1jSb6f1.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/lobster-dex-E-hnNrTL.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/lobster-pet-audio-waE6qgq0.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/session-background-image-BWpXoTrt.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/hub-tabs-Brtgfu_E.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/phone-layout-CAO-lwt3.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-draft-model-CzjPCMlv.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/config-form.numeric-ClklwzWp.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/route-chrome-BprDyavl.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/model-picker-C7eX0nHq.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/model-runtime-label-BFHaFPBH.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/session-CQBuRu5s.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/talk-event-vocabulary-DeVLT5XG.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/settings-select-row-Cm6PgC9O.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/model-setting-CQvhpeBi.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/memory-schema-DtrSirmF.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/slots-ByqU-Znx.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/settings-model-CuYaQCkZ.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/assets/events-browser-D4eW078p.js",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/index.html",
+        "error": "net::ERR_INTERNET_DISCONNECTED"
+      },
+      {
+        "url": "http://127.0.0.1:39079/index.html",
+        "error": "net::ERR_ABORTED"
+      }
+    ],
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI; real file edits, browser offline CSS failure, real reload guard and recovery modal",
+      "modelsCalled": false,
+      "gatewayOrModulesMocked": false,
+      "applicationStateInjected": false
+    },
+    "browserVersion": "156.0.8078.4",
+    "browserEngine": "Chromium",
+    "servedAssets": [
+      "/assets/index-CDqS8360.js"
+    ],
+    "servedEntry": {
+      "path": "/assets/index-CDqS8360.js",
+      "status": 200,
+      "sha256": "428ff618c68aacdc4fd8d2f46e9dc74370bb0ff41f196fc3eb5ebb2521868ec6"
+    },
+    "afterDiscard": {
+      "tag": "BUTTON",
+      "text": "Keep drafts",
+      "ariaLabel": null,
+      "isBody": false,
+      "inModal": true
+    },
+    "nextTab": {
+      "tag": "TEXTAREA",
+      "text": "",
+      "ariaLabel": null,
+      "inModal": true
+    },
+    "control": {
+      "remainingDraft": "Unsaved B\n",
+      "keepDraftsCloses": true,
+      "savedFilesUnchanged": true
+    },
+    "observation": "GREEN: keyboard Discard moves focus to a surviving recovery action while retaining the other draft",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "draft-focus-head-webkit-final",
+    "at": "2026-11-03T06:22:04.155Z",
+    "sha": "020ce8a913c242c08cfc2a1e1cfb18e204c43295",
+    "buildStamp": {
+      "builtAt": 1793686415212,
+      "head": "020ce8a913c242c08cfc2a1e1cfb18e204c43295",
+      "inputsClean": true,
+      "inputSignature": "a3093bb3505b86bdd150d478a4685df09546b6cea1af391791d9ff657612342c"
+    },
+    "domain": "ws://127.0.0.1:40651",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "9d78174b-b36b-4ead-8563-a3a3989e7b7d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "fd7d4109-b534-4c7a-87e8-571dd1c9fb9d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "03431ad6-d57e-459f-b03d-fd5a28088208",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "c956c38c-e448-4ffa-8a9f-080e0003b187",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:draft-focus-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "09632a03-37e8-49ae-a90c-69f5578ef25a",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:draft-focus-proof",
+            "sessionId": "e20aa43e-1843-477d-b3e3-a2e192da49c3",
+            "entry": {
+              "sessionId": "e20aa43e-1843-477d-b3e3-a2e192da49c3",
+              "lifecycleRevision": "f5ec86a6-0277-48f7-9330-2e82eea0cb36",
+              "updatedAt": 1793686945465,
+              "sessionRoot": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793686945466,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/draft-focus-head-webkit-final/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/draft-focus/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "40651"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "stage": "complete",
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:40651/fonts/instrument-sans-latin.woff2?v=2026.10.9-020ce8a913c2-2026-11-03T06-09-57.287Z-bc83f98136a039592d8e6b10fe581b63f472b913630915d01248fd3200d60328",
+        "error": "Load request cancelled"
+      },
+      {
+        "url": "http://127.0.0.1:40651/__openclaw__/workspace-icon/agent%3Amain%3Adraft-focus-proof",
+        "error": "Load request cancelled"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/en-settings-sidebar-Dy65ZNfY.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/en-route-subtitles-DnM3YE84.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/settings-navigation-CfhLNwKm.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-error-CHsK4XEj.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/route-chrome-styles-BIcIHIzc.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/route-chrome-styles-DNapsqBR.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-page-DlNUPaDq.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/response-body-Dnt2sOat.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/theme-palette-5UDElU6P.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/en-settings-D_2rAliz.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/en-preferences-H2dRUwJi.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/lobster-pet-identity-CnX_qJLI.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/session-source-presentation-BxM1DLlv.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/control-ui-boot-shared-DsegYo6K.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-form-utils-runtime-xthoUY9a.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-form-analysis-runtime--1jSb6f1.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/lobster-dex-E-hnNrTL.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/lobster-pet-audio-waE6qgq0.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/session-background-image-BWpXoTrt.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/hub-tabs-Brtgfu_E.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/phone-layout-CAO-lwt3.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-draft-model-CzjPCMlv.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-form.numeric-ClklwzWp.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/route-chrome-BprDyavl.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/model-picker-C7eX0nHq.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/model-runtime-label-BFHaFPBH.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/session-CQBuRu5s.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/talk-event-vocabulary-DeVLT5XG.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/settings-select-row-Cm6PgC9O.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/model-setting-CQvhpeBi.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/memory-schema-DtrSirmF.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/slots-ByqU-Znx.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/settings-model-CuYaQCkZ.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/events-browser-D4eW078p.js",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/lobster-pet-identity-D4tlOWIt.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/assets/config-page-BpZNj8-h.css",
+        "error": "WebKit encountered an internal error"
+      },
+      {
+        "url": "http://127.0.0.1:40651/index.html",
+        "error": "WebKit encountered an internal error"
+      }
+    ],
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI; real file edits, browser offline CSS failure, real reload guard and recovery modal",
+      "modelsCalled": false,
+      "gatewayOrModulesMocked": false,
+      "applicationStateInjected": false
+    },
+    "browserVersion": "27.2",
+    "browserEngine": "WebKit",
+    "servedAssets": [
+      "/assets/index-CDqS8360.js"
+    ],
+    "servedEntry": {
+      "path": "/assets/index-CDqS8360.js",
+      "status": 200,
+      "sha256": "428ff618c68aacdc4fd8d2f46e9dc74370bb0ff41f196fc3eb5ebb2521868ec6"
+    },
+    "afterDiscard": {
+      "tag": "BUTTON",
+      "text": "Keep drafts",
+      "ariaLabel": null,
+      "isBody": false,
+      "inModal": true
+    },
+    "nextTab": {
+      "tag": "TEXTAREA",
+      "text": "",
+      "ariaLabel": null,
+      "inModal": true
+    },
+    "control": {
+      "remainingDraft": "Unsaved B\n",
+      "keepDraftsCloses": true,
+      "savedFilesUnchanged": true
+    },
+    "observation": "GREEN: keyboard Discard moves focus to a surviving recovery action while retaining the other draft",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

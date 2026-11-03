@@ -1,0 +1,9 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/ui.js",
+    "build"
+  ],
+  "exitCode": 0,
+  "seconds": 65.63114892691374
+}
