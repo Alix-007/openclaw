@@ -1,0 +1,62 @@
+{
+  "kind": "terminal-tabs",
+  "base": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+  "head": "d134bbaa6aebf279b78a6907a6162e6f8a1bed8f",
+  "files": [
+    {
+      "path": "isolated-gateway.mjs",
+      "sha256": "fc62ce72ef1bebcbcd9a644da95b099eac34d876f3ed609c7e5489b23d14e007",
+      "bytes": 5805
+    },
+    {
+      "path": "proof-terminal-tabs.mjs",
+      "sha256": "3a7e617a99e2df14ca568e095e9bc74b9924959b3641c29c9db19d43ec6d63ad",
+      "bytes": 6674
+    },
+    {
+      "path": "terminal-tabs-base-after-arrow.png",
+      "sha256": "a6108fa21668db478e65e3a242d89bd552a62820c82f1df1cbeca817307da965",
+      "bytes": 85553
+    },
+    {
+      "path": "terminal-tabs-head-after-arrow.png",
+      "sha256": "bbde4452bae2bf12de92630c29d2014ef081f127e416a68e1245ddb872c538bc",
+      "bytes": 87515
+    },
+    {
+      "path": "terminal-tabs-readback.json",
+      "sha256": "7b1887584362548076505b3e1979b0edf111d401317e753ec9eb754d4914eda5",
+      "bytes": 10240
+    },
+    {
+      "path": "terminal-tabs-checks.json",
+      "sha256": "25fdc9109b62a1d730760cce3dbae66312b4771f9858f94c4025314ef63d9b31",
+      "bytes": 2822
+    },
+    {
+      "path": "terminal-tabs-build.json",
+      "sha256": "6c9360252b5f965c619c68c153d0d545ccaa61900c4239b6f8a43b02447b4fda",
+      "bytes": 169
+    },
+    {
+      "path": "terminal-tabs-commit.json",
+      "sha256": "b668f05e0b3cf3b3a1e0a08868d5c9d4f26935b84bafb11d91577c7ba12c96ae",
+      "bytes": 100
+    },
+    {
+      "path": "terminal-tabs-ui-build.json",
+      "sha256": "d287505d7a14e6b055e07ae85712854f900d998ac0d583df94eda4072d8061b2",
+      "bytes": 114
+    },
+    {
+      "path": "terminal-tabs-ui-plugins.json",
+      "sha256": "77a7fa95cba00a7575e7858a75f29f2b844a734b356a26edbd5b29053279c369",
+      "bytes": 220
+    },
+    {
+      "path": "terminal-tabs-ui-controllers.json",
+      "sha256": "34443bd951ec4607fab8556a2ab230a18dbca51e1f3955cfbf7fb4c833e140c9",
+      "bytes": 169
+    }
+  ]
+}

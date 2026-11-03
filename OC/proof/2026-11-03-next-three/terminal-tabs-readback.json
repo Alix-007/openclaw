@@ -1,0 +1,368 @@
+[
+  {
+    "version": "base",
+    "scenario": "proof-terminal-tabs-base-publish",
+    "at": "2026-11-03T16:03:38.652Z",
+    "sha": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+    "buildStamp": {
+      "builtAt": 1793713699746,
+      "head": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+      "inputsClean": true,
+      "inputSignature": "c8bb5e2c9720e9020c6a022329e8a32b180d61d2b8352faf9137ac379d71e173"
+    },
+    "domain": "ws://127.0.0.1:33173",
+    "calls": [
+      {
+        "method": "terminal.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "060a93f5-27e8-49ba-9d57-02cdfd3ac231",
+          "ok": true,
+          "payload": {
+            "sessions": [
+              {
+                "sessionId": "c77a7577-b043-434e-a569-58bf4235b7da",
+                "agentId": "main",
+                "shell": "/bin/sh",
+                "cwd": "/tmp/openclaw-terminal-proof-W7Y8Vq",
+                "confined": false,
+                "attached": true,
+                "owner": "conn",
+                "createdAtMs": 1793721837411
+              },
+              {
+                "sessionId": "9c14ced8-5b7c-45b9-81e5-15449c57fd12",
+                "agentId": "main",
+                "shell": "/bin/sh",
+                "cwd": "/tmp/openclaw-terminal-proof-W7Y8Vq",
+                "confined": false,
+                "attached": true,
+                "owner": "conn",
+                "createdAtMs": 1793721838543
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "33173"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "pageErrors": [],
+    "stage": "complete",
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI terminal page with real native PTYs and real keyboard navigation",
+      "modelsCalled": false,
+      "applicationStateInjected": false,
+      "gatewayOrModulesMocked": false,
+      "terminalCommandsEntered": false
+    },
+    "browserEngine": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "servedEntry": {
+      "path": "/assets/index-Dp2gnDKn.js",
+      "status": 200,
+      "sha256": "62fce51b2f8dc631fea26296d01911fc37b38d7a894d7e458449225fe1131ad8"
+    },
+    "afterLeft": {
+      "tag": "DIV",
+      "role": "textbox",
+      "name": "Terminal input",
+      "text": "",
+      "className": "tp-host",
+      "id": ""
+    },
+    "tabStates": [
+      {
+        "id": "terminal-6374d4c7-0b9d-41d4-a5f8-6be35d9a64bc-tab-tab-1",
+        "selected": "true",
+        "focused": false
+      },
+      {
+        "id": "terminal-6374d4c7-0b9d-41d4-a5f8-6be35d9a64bc-tab-tab-2",
+        "selected": "false",
+        "focused": false
+      }
+    ],
+    "explicitActivation": [
+      {
+        "action": "Enter",
+        "focus": {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": null,
+          "text": "sh",
+          "className": "oc-tab tabstrip-tab is-live",
+          "id": "terminal-6374d4c7-0b9d-41d4-a5f8-6be35d9a64bc-tab-tab-1"
+        }
+      },
+      {
+        "action": "Space",
+        "focus": {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": null,
+          "text": "sh",
+          "className": "oc-tab tabstrip-tab is-live",
+          "id": "terminal-6374d4c7-0b9d-41d4-a5f8-6be35d9a64bc-tab-tab-1"
+        }
+      },
+      {
+        "action": "selected-click",
+        "focus": {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": null,
+          "text": "sh",
+          "className": "oc-tab tabstrip-tab is-live",
+          "id": "terminal-6374d4c7-0b9d-41d4-a5f8-6be35d9a64bc-tab-tab-1"
+        }
+      }
+    ],
+    "pointerControl": {
+      "tag": "DIV",
+      "role": "textbox",
+      "name": "Terminal input",
+      "text": "",
+      "className": "tp-host",
+      "id": ""
+    },
+    "inputFrames": [],
+    "nativeSessions": {
+      "sessions": [
+        {
+          "sessionId": "c77a7577-b043-434e-a569-58bf4235b7da",
+          "agentId": "main",
+          "shell": "/bin/sh",
+          "cwd": "/tmp/openclaw-terminal-proof-W7Y8Vq",
+          "confined": false,
+          "attached": true,
+          "owner": "conn",
+          "createdAtMs": 1793721837411
+        },
+        {
+          "sessionId": "9c14ced8-5b7c-45b9-81e5-15449c57fd12",
+          "agentId": "main",
+          "shell": "/bin/sh",
+          "cwd": "/tmp/openclaw-terminal-proof-W7Y8Vq",
+          "confined": false,
+          "attached": true,
+          "owner": "conn",
+          "createdAtMs": 1793721838543
+        }
+      ]
+    },
+    "observation": "RED: ArrowLeft selects the previous terminal but the after-render callback steals focus from the tablist into the PTY.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "proof-terminal-tabs-head-publish",
+    "at": "2026-11-03T16:03:38.634Z",
+    "sha": "d134bbaa6aebf279b78a6907a6162e6f8a1bed8f",
+    "buildStamp": {
+      "builtAt": 1793720180930,
+      "head": "d134bbaa6aebf279b78a6907a6162e6f8a1bed8f",
+      "inputsClean": true,
+      "inputSignature": "677e0318140eed7d4b7a59ae6dd5f27f5949070a31832d1f1acd9fc16841c63c"
+    },
+    "domain": "ws://127.0.0.1:35681",
+    "calls": [
+      {
+        "method": "terminal.list",
+        "params": {},
+        "response": {
+          "type": "res",
+          "id": "fb5a1757-513f-41c0-8528-dec2d568a0e2",
+          "ok": true,
+          "payload": {
+            "sessions": [
+              {
+                "sessionId": "b514afa8-86fb-446a-b142-2c98280bacf2",
+                "agentId": "main",
+                "shell": "/bin/sh",
+                "cwd": "/tmp/openclaw-terminal-proof-cjVvr0",
+                "confined": false,
+                "attached": true,
+                "owner": "conn",
+                "createdAtMs": 1793721837761
+              },
+              {
+                "sessionId": "668ef242-336b-471a-aec4-fe20a2de2098",
+                "agentId": "main",
+                "shell": "/bin/sh",
+                "cwd": "/tmp/openclaw-terminal-proof-cjVvr0",
+                "confined": false,
+                "attached": true,
+                "owner": "conn",
+                "createdAtMs": 1793721838825
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/terminal-tabs/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "35681"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "pageErrors": [],
+    "stage": "complete",
+    "proof": {
+      "entry": "Normally built Gateway-served Control UI terminal page with real native PTYs and real keyboard navigation",
+      "modelsCalled": false,
+      "applicationStateInjected": false,
+      "gatewayOrModulesMocked": false,
+      "terminalCommandsEntered": false
+    },
+    "browserEngine": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "servedEntry": {
+      "path": "/assets/index-B1UXmifO.js",
+      "status": 200,
+      "sha256": "f39c842b3601b42d247b239442be5dc0b1a15c4b32edf63f03dd3b3fcd486e68"
+    },
+    "afterLeft": {
+      "tag": "BUTTON",
+      "role": "tab",
+      "name": null,
+      "text": "sh",
+      "className": "oc-tab tabstrip-tab is-live",
+      "id": "terminal-98241736-b4cc-4f4f-bf99-de58e9a5e9f2-tab-tab-1"
+    },
+    "tabStates": [
+      {
+        "id": "terminal-98241736-b4cc-4f4f-bf99-de58e9a5e9f2-tab-tab-1",
+        "selected": "true",
+        "focused": true
+      },
+      {
+        "id": "terminal-98241736-b4cc-4f4f-bf99-de58e9a5e9f2-tab-tab-2",
+        "selected": "false",
+        "focused": false
+      }
+    ],
+    "explicitActivation": [
+      {
+        "action": "Enter",
+        "focus": {
+          "tag": "DIV",
+          "role": "textbox",
+          "name": "Terminal input",
+          "text": "",
+          "className": "tp-host",
+          "id": ""
+        }
+      },
+      {
+        "action": "Space",
+        "focus": {
+          "tag": "DIV",
+          "role": "textbox",
+          "name": "Terminal input",
+          "text": "",
+          "className": "tp-host",
+          "id": ""
+        }
+      },
+      {
+        "action": "selected-click",
+        "focus": {
+          "tag": "DIV",
+          "role": "textbox",
+          "name": "Terminal input",
+          "text": "",
+          "className": "tp-host",
+          "id": ""
+        }
+      }
+    ],
+    "pointerControl": {
+      "tag": "DIV",
+      "role": "textbox",
+      "name": "Terminal input",
+      "text": "",
+      "className": "tp-host",
+      "id": ""
+    },
+    "inputFrames": [],
+    "nativeSessions": {
+      "sessions": [
+        {
+          "sessionId": "b514afa8-86fb-446a-b142-2c98280bacf2",
+          "agentId": "main",
+          "shell": "/bin/sh",
+          "cwd": "/tmp/openclaw-terminal-proof-cjVvr0",
+          "confined": false,
+          "attached": true,
+          "owner": "conn",
+          "createdAtMs": 1793721837761
+        },
+        {
+          "sessionId": "668ef242-336b-471a-aec4-fe20a2de2098",
+          "agentId": "main",
+          "shell": "/bin/sh",
+          "cwd": "/tmp/openclaw-terminal-proof-cjVvr0",
+          "confined": false,
+          "attached": true,
+          "owner": "conn",
+          "createdAtMs": 1793721838825
+        }
+      ]
+    },
+    "observation": "GREEN: Arrow/Home/End stay on selected tabs without emitting terminal input; pointer selection still focuses the native terminal.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": 0,
+        "signal": null
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

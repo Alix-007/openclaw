@@ -1,0 +1,86 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/components/panel-tab-strip-solid.tsx",
+      "ui/src/components/panel-hosted-tabs.ts",
+      "ui/src/components/terminal/terminal-panel-registration.tsx",
+      "ui/src/components/terminal/terminal-panel-view.tsx",
+      "ui/src/components/terminal/terminal-panel.ts",
+      "ui/src/pages/chat/components/chat-sidebar-region-header.tsx",
+      "ui/src/components/terminal/terminal-panel-session-controller.ts",
+      "ui/src/components/terminal/terminal-panel-session-rendering.ts",
+      "ui/src/components/terminal/terminal-panel-hosted-tabs.test.ts",
+      "ui/src/components/panel-tab-strip-solid.test.tsx",
+      "ui/src/components/panel-tab-strip.test.tsx",
+      "ui/src/pages/chat/components/chat-sidebar-region-hosted-tabs.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.43
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "ui/tsconfig.json",
+      "ui/src/components/panel-tab-strip-solid.tsx",
+      "ui/src/components/panel-hosted-tabs.ts",
+      "ui/src/components/terminal/terminal-panel-registration.tsx",
+      "ui/src/components/terminal/terminal-panel-view.tsx",
+      "ui/src/components/terminal/terminal-panel.ts",
+      "ui/src/pages/chat/components/chat-sidebar-region-header.tsx",
+      "ui/src/components/terminal/terminal-panel-session-controller.ts",
+      "ui/src/components/terminal/terminal-panel-session-rendering.ts",
+      "ui/src/components/terminal/terminal-panel-hosted-tabs.test.ts",
+      "ui/src/components/panel-tab-strip-solid.test.tsx",
+      "ui/src/components/panel-tab-strip.test.tsx",
+      "ui/src/pages/chat/components/chat-sidebar-region-hosted-tabs.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 63.91
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/terminal-tabs-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 189.88
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "2ac42c830f3eb28206f6570bf821b481ab02d3fa"
+    ],
+    "exitCode": 0,
+    "seconds": 16.11
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "ui/src/components/terminal/terminal-panel-hosted-tabs.test.ts",
+      "ui/src/components/panel-tab-strip-solid.test.tsx",
+      "ui/src/components/panel-tab-strip.test.tsx",
+      "ui/src/pages/chat/components/chat-sidebar-region-hosted-tabs.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 19.9
+  }
+]
