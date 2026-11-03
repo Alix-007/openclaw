@@ -1,0 +1,10 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/build-all.mts"
+  ],
+  "exitCode": 0,
+  "seconds": 847.85
+}
