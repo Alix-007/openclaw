@@ -1,0 +1,718 @@
+[
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/initialize-SIGTERM",
+    "mode": "initialize",
+    "signal": "SIGTERM",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/initialize-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 611978,
+      "peerPid": 612284,
+      "fixture": {
+        "pid": 612284,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 3502,
+      "cliExit": null,
+      "peerAlive": true,
+      "fixture": {
+        "pid": 612284,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      }
+    },
+    "observation": "RED: interrupting ACP startup leaves CLI and its initialized peer running",
+    "cleanup": {
+      "cliExit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/initialize-SIGINT",
+    "mode": "initialize",
+    "signal": "SIGINT",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/initialize-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612460,
+      "peerPid": 612672,
+      "fixture": {
+        "pid": 612672,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 3504,
+      "cliExit": null,
+      "peerAlive": true,
+      "fixture": {
+        "pid": 612672,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      }
+    },
+    "observation": "RED: interrupting ACP startup leaves CLI and its initialized peer running",
+    "cleanup": {
+      "cliExit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/newSession-SIGTERM",
+    "mode": "newSession",
+    "signal": "SIGTERM",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/newSession-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612849,
+      "peerPid": 613050,
+      "fixture": {
+        "pid": 613050,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 3504,
+      "cliExit": null,
+      "peerAlive": true,
+      "fixture": {
+        "pid": 613050,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      }
+    },
+    "observation": "RED: interrupting ACP startup leaves CLI and its initialized peer running",
+    "cleanup": {
+      "cliExit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/newSession-SIGINT",
+    "mode": "newSession",
+    "signal": "SIGINT",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/newSession-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 613214,
+      "peerPid": 613449,
+      "fixture": {
+        "pid": 613449,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 3503,
+      "cliExit": null,
+      "peerAlive": true,
+      "fixture": {
+        "pid": 613449,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      }
+    },
+    "observation": "RED: interrupting ACP startup leaves CLI and its initialized peer running",
+    "cleanup": {
+      "cliExit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/ready-SIGTERM",
+    "mode": "ready",
+    "signal": "SIGTERM",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/ready-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 613599,
+      "peerPid": 613797,
+      "fixture": {
+        "pid": 613797,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 165,
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 613797,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "stdin-eof"
+        ]
+      }
+    },
+    "observation": "CONTROL: interactive signal still joins its peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "base",
+    "scenario": "acp-startup-base-final/ready-SIGINT",
+    "mode": "ready",
+    "signal": "SIGINT",
+    "sha": "b3d0977b0cc484c4b472628385d1a988a794ac42",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-base-final/ready-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 613820,
+      "peerPid": 614003,
+      "fixture": {
+        "pid": 614003,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 144,
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 614003,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "stdin-eof"
+        ]
+      }
+    },
+    "observation": "CONTROL: interactive signal still joins its peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/initialize-SIGTERM",
+    "mode": "initialize",
+    "signal": "SIGTERM",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/initialize-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612080,
+      "peerPid": 612277,
+      "fixture": {
+        "pid": 612277,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 1045,
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 612277,
+        "requests": [
+          "initialize"
+        ],
+        "events": [
+          "SIGTERM"
+        ]
+      }
+    },
+    "observation": "GREEN: startup signal settles handshake, joins peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/initialize-SIGINT",
+    "mode": "initialize",
+    "signal": "SIGINT",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/initialize-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612332,
+      "peerPid": 612520,
+      "fixture": {
+        "pid": 612520,
+        "requests": [
+          "initialize"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 1050,
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 612520,
+        "requests": [
+          "initialize"
+        ],
+        "events": [
+          "SIGTERM"
+        ]
+      }
+    },
+    "observation": "GREEN: startup signal settles handshake, joins peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/newSession-SIGTERM",
+    "mode": "newSession",
+    "signal": "SIGTERM",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/newSession-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612577,
+      "peerPid": 612802,
+      "fixture": {
+        "pid": 612802,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 1049,
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 612802,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "SIGTERM"
+        ]
+      }
+    },
+    "observation": "GREEN: startup signal settles handshake, joins peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/newSession-SIGINT",
+    "mode": "newSession",
+    "signal": "SIGINT",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/newSession-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 612861,
+      "peerPid": 613063,
+      "fixture": {
+        "pid": 613063,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 1045,
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 613063,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "SIGTERM"
+        ]
+      }
+    },
+    "observation": "GREEN: startup signal settles handshake, joins peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/ready-SIGTERM",
+    "mode": "ready",
+    "signal": "SIGTERM",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/ready-SIGTERM",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 613111,
+      "peerPid": 613312,
+      "fixture": {
+        "pid": 613312,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 147,
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 613312,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "stdin-eof"
+        ]
+      }
+    },
+    "observation": "CONTROL: interactive signal still joins its peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 143,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "acp-startup-head-final/ready-SIGINT",
+    "mode": "ready",
+    "signal": "SIGINT",
+    "sha": "7f5fd70056e009f5796e4af276c2da4553b66501",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/acp-startup/openclaw.mjs",
+      "acp",
+      "client",
+      "--server",
+      "$NODE_BIN/node",
+      "--cwd",
+      "$PROOF_ROOT/acp-startup-head-final/ready-SIGINT",
+      "--verbose"
+    ],
+    "result": "PASS",
+    "beforeSignal": {
+      "cliPid": 613344,
+      "peerPid": 613545,
+      "fixture": {
+        "pid": 613545,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": []
+      },
+      "cliAlive": true,
+      "peerAlive": true
+    },
+    "signalDelivery": "CLI PID only; peer PID and process group not signalled by driver",
+    "afterSignal": {
+      "elapsedMs": 141,
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerAlive": false,
+      "fixture": {
+        "pid": 613545,
+        "requests": [
+          "initialize",
+          "session/new"
+        ],
+        "events": [
+          "stdin-eof"
+        ]
+      }
+    },
+    "observation": "CONTROL: interactive signal still joins its peer and preserves signal exit code",
+    "cleanup": {
+      "cliExit": {
+        "code": 130,
+        "signal": null
+      },
+      "peerStillAlive": false,
+      "productionServicesTouched": false,
+      "externalModelsOrChannels": false
+    }
+  }
+]

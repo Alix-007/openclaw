@@ -65,7 +65,7 @@ export async function withIsolatedGateway(checkoutArg,outArg,prepare,run){
  }catch(error){record.result='SETUP_OR_PRODUCT_FAILURE';record.error=String(error);save();throw error;}
  finally{
   socket?.terminate();for(const entry of pending.values())entry.reject(new Error('Proof cleanup'));
-  if(!exited)child.kill('SIGTERM');await Promise.race([closed,new Promise(resolve=>setTimeout(resolve,10000))]);
+  if(!exited)child.kill('SIGTERM');await Promise.race([closed,new Promise(resolve=>setTimeout(resolve,30000))]);
   if(!exited){child.kill('SIGKILL');await closed;}
   record.cleanup={gatewayExit:exited,productionServicesTouched:false,externalChannels:false,isolatedStateRetained:true,configUnchanged:createHash('sha256').update(fs.readFileSync(configPath)).digest('hex')===configHash};save();
   fs.closeSync(stdout);fs.closeSync(stderr);
