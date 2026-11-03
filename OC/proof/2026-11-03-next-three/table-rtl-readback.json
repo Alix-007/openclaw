@@ -1,0 +1,1352 @@
+[
+  {
+    "version": "base",
+    "scenario": "proof-table-rtl-base-final",
+    "at": "2026-11-03T15:41:07.073Z",
+    "sha": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+    "buildStamp": {
+      "builtAt": 1793713699746,
+      "head": "2ac42c830f3eb28206f6570bf821b481ab02d3fa",
+      "inputsClean": true,
+      "inputSignature": "c8bb5e2c9720e9020c6a022329e8a32b180d61d2b8352faf9137ac379d71e173"
+    },
+    "domain": "ws://127.0.0.1:43815",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "b9cdada2-1fab-4de8-af71-5dda1c4b243d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "0454132d-76f8-4951-b5d9-c41f13bdeddf",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "bd4be91a-870f-477a-b167-5659d020fd7d",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "debfd5dc-dde0-4521-a0c6-8db00ed178fd",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "b4ad511d-6cd2-4ab0-b8d4-d86fe95f639e",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:table-rtl-proof",
+            "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+            "entry": {
+              "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+              "lifecycleRevision": "f76e02a6-eff4-4de1-9d88-7f88cbcbfaa6",
+              "updatedAt": 1793720487892,
+              "sessionRoot": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793720487893,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "message": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+        },
+        "response": {
+          "type": "res",
+          "id": "595a4e4d-a4d6-41e6-b915-0aa42d13f801",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "462af39b-6113-4d3d-b3ef-8376af27230e"
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "message": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+        },
+        "response": {
+          "type": "res",
+          "id": "12505bea-4204-4c3a-9c95-828360f1e895",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "c86c5ffe-bfb8-4d29-b51c-46b0635e51e4"
+          }
+        }
+      },
+      {
+        "method": "chat.history",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "limit": 10
+        },
+        "response": {
+          "type": "res",
+          "id": "ace130c0-e03a-46b4-a4f9-6432b3462de8",
+          "ok": true,
+          "payload": {
+            "sessionKey": "agent:main:table-rtl-proof",
+            "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+            "messages": [
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+                  }
+                ],
+                "timestamp": 1793720488447,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "462af39b-6113-4d3d-b3ef-8376af27230e",
+                  "recordTimestampMs": 1793720488447,
+                  "transcriptPosition": {
+                    "source": "8cUfoV25bds4X_WECbl4FmJW7d6b29BmRgGAIv-55Qg",
+                    "rawSeq": 1
+                  },
+                  "seq": 1
+                }
+              },
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+                  }
+                ],
+                "timestamp": 1793720488833,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "c86c5ffe-bfb8-4d29-b51c-46b0635e51e4",
+                  "recordTimestampMs": 1793720488833,
+                  "transcriptPosition": {
+                    "source": "8cUfoV25bds4X_WECbl4FmJW7d6b29BmRgGAIv-55Qg",
+                    "rawSeq": 2
+                  },
+                  "seq": 2
+                }
+              }
+            ],
+            "hasMore": false,
+            "totalMessages": 2,
+            "pendingInputs": {
+              "items": [],
+              "total": 0,
+              "queuedCount": 0
+            },
+            "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiJiMmQzMzEzYWMwOWI0ZDgzYTFmYTNjNDcyOGE5YTM2MSIsImxhc3RTZXEiOjIsInNlc3Npb25JZCI6IjI2ZmJiZDJlLTEzNWYtNDM3Mi04ZjViLTVlOTlhOGY4OWUwNiIsInZlcnNpb24iOjF9",
+            "defaults": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "contextTokens": null,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "communication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "modelSelectionTarget": "session"
+            },
+            "sessionInfo": {
+              "key": "agent:main:table-rtl-proof",
+              "sessionModelRevision": "08eow1ZEjATF-DxmliEizzWkufeC7Y2pqTfFFpgBsmQ",
+              "visibility": "shared",
+              "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+              "workspaceDir": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+              "effectiveCommunication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "permissionModePending": false,
+              "spawnDepth": 0,
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "id": "gateway-owner",
+                "identity": {
+                  "type": "profile",
+                  "id": "gateway-owner"
+                }
+              },
+              "owner": {
+                "actor": {
+                  "type": "human",
+                  "id": "gateway-owner",
+                  "identity": {
+                    "type": "profile",
+                    "id": "gateway-owner"
+                  }
+                }
+              },
+              "createdAt": 1793720487893,
+              "kind": "direct",
+              "classification": "direct",
+              "agentId": "main",
+              "isMain": false,
+              "isDock": false,
+              "isBackground": false,
+              "chatType": "direct",
+              "updatedAt": 1793720488859,
+              "archived": false,
+              "pinned": false,
+              "sidebarRoot": false,
+              "unread": false,
+              "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+              "lifecycleRevision": "f76e02a6-eff4-4de1-9d88-7f88cbcbfaa6",
+              "effectiveFastMode": false,
+              "effectiveFastModeSource": "default",
+              "fastAutoOnSeconds": 60,
+              "parentSessionKey": "agent:main:main",
+              "effectiveResponseUsage": "off",
+              "effectiveQueueMode": "steer",
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "modelOverrideSource": null,
+              "runtimeSelectionLocked": false,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "snapshotAt": 1793720490168,
+              "totalTokensFresh": false,
+              "activitySummary": {
+                "state": "stale",
+                "canEnsure": true
+              },
+              "hasBoard": false,
+              "titlePending": false,
+              "childOwnerSessionKeys": [
+                "agent:main:main"
+              ],
+              "hiddenFromInvolvingMe": false,
+              "sharingRole": "admin",
+              "sendDisabledReason": null,
+              "workspaceReadDisabledReason": null,
+              "hasActiveRun": false,
+              "activeRunIds": [],
+              "activeLeafEntryId": "c86c5ffe-bfb8-4d29-b51c-46b0635e51e4"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "43815"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "pageErrors": [],
+    "cases": [
+      {
+        "direction": "rtl",
+        "start": {
+          "direction": "rtl",
+          "scrollLeft": 0,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": false,
+          "right": true,
+          "mask": "linear-gradient(90deg, rgb(0, 0, 0) calc(100% - 28px), rgba(0, 0, 0, 0))"
+        },
+        "end": {
+          "direction": "rtl",
+          "scrollLeft": -264,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": false,
+          "right": true,
+          "mask": "linear-gradient(90deg, rgb(0, 0, 0) calc(100% - 28px), rgba(0, 0, 0, 0))"
+        }
+      },
+      {
+        "direction": "ltr",
+        "start": {
+          "direction": "ltr",
+          "scrollLeft": 0,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": false,
+          "right": true,
+          "mask": "linear-gradient(90deg, rgb(0, 0, 0) calc(100% - 28px), rgba(0, 0, 0, 0))"
+        },
+        "end": {
+          "direction": "ltr",
+          "scrollLeft": 264,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": true,
+          "right": false,
+          "mask": "linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 28px)"
+        }
+      }
+    ],
+    "stage": "complete",
+    "proof": {
+      "entry": "Normally built Gateway chat.inject -> persisted chat.history -> built Control UI -> native horizontal wheel scrolling -> computed masks and readback",
+      "modelsCalled": false,
+      "applicationStateInjected": false,
+      "gatewayOrModulesMocked": false,
+      "externalChannels": false
+    },
+    "history": {
+      "sessionKey": "agent:main:table-rtl-proof",
+      "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+            }
+          ],
+          "timestamp": 1793720488447,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "462af39b-6113-4d3d-b3ef-8376af27230e",
+            "recordTimestampMs": 1793720488447,
+            "transcriptPosition": {
+              "source": "8cUfoV25bds4X_WECbl4FmJW7d6b29BmRgGAIv-55Qg",
+              "rawSeq": 1
+            },
+            "seq": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+            }
+          ],
+          "timestamp": 1793720488833,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "c86c5ffe-bfb8-4d29-b51c-46b0635e51e4",
+            "recordTimestampMs": 1793720488833,
+            "transcriptPosition": {
+              "source": "8cUfoV25bds4X_WECbl4FmJW7d6b29BmRgGAIv-55Qg",
+              "rawSeq": 2
+            },
+            "seq": 2
+          }
+        }
+      ],
+      "hasMore": false,
+      "totalMessages": 2,
+      "pendingInputs": {
+        "items": [],
+        "total": 0,
+        "queuedCount": 0
+      },
+      "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiJiMmQzMzEzYWMwOWI0ZDgzYTFmYTNjNDcyOGE5YTM2MSIsImxhc3RTZXEiOjIsInNlc3Npb25JZCI6IjI2ZmJiZDJlLTEzNWYtNDM3Mi04ZjViLTVlOTlhOGY4OWUwNiIsInZlcnNpb24iOjF9",
+      "defaults": {
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "contextTokens": null,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "communication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "modelSelectionTarget": "session"
+      },
+      "sessionInfo": {
+        "key": "agent:main:table-rtl-proof",
+        "sessionModelRevision": "08eow1ZEjATF-DxmliEizzWkufeC7Y2pqTfFFpgBsmQ",
+        "visibility": "shared",
+        "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+        "workspaceDir": "$PROOF_ROOT/proof-table-rtl-base-final/workspace",
+        "effectiveCommunication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "permissionModePending": false,
+        "spawnDepth": 0,
+        "createdVia": "operator",
+        "createdActor": {
+          "type": "human",
+          "id": "gateway-owner",
+          "identity": {
+            "type": "profile",
+            "id": "gateway-owner"
+          }
+        },
+        "owner": {
+          "actor": {
+            "type": "human",
+            "id": "gateway-owner",
+            "identity": {
+              "type": "profile",
+              "id": "gateway-owner"
+            }
+          }
+        },
+        "createdAt": 1793720487893,
+        "kind": "direct",
+        "classification": "direct",
+        "agentId": "main",
+        "isMain": false,
+        "isDock": false,
+        "isBackground": false,
+        "chatType": "direct",
+        "updatedAt": 1793720488859,
+        "archived": false,
+        "pinned": false,
+        "sidebarRoot": false,
+        "unread": false,
+        "sessionId": "26fbbd2e-135f-4372-8f5b-5e99a8f89e06",
+        "lifecycleRevision": "f76e02a6-eff4-4de1-9d88-7f88cbcbfaa6",
+        "effectiveFastMode": false,
+        "effectiveFastModeSource": "default",
+        "fastAutoOnSeconds": 60,
+        "parentSessionKey": "agent:main:main",
+        "effectiveResponseUsage": "off",
+        "effectiveQueueMode": "steer",
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "modelOverrideSource": null,
+        "runtimeSelectionLocked": false,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "snapshotAt": 1793720490168,
+        "totalTokensFresh": false,
+        "activitySummary": {
+          "state": "stale",
+          "canEnsure": true
+        },
+        "hasBoard": false,
+        "titlePending": false,
+        "childOwnerSessionKeys": [
+          "agent:main:main"
+        ],
+        "hiddenFromInvolvingMe": false,
+        "sharingRole": "admin",
+        "sendDisabledReason": null,
+        "workspaceReadDisabledReason": null,
+        "hasActiveRun": false,
+        "activeRunIds": [],
+        "activeLeafEntryId": "c86c5ffe-bfb8-4d29-b51c-46b0635e51e4"
+      }
+    },
+    "browserEngine": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "servedEntry": {
+      "path": "/assets/index-Dp2gnDKn.js",
+      "status": 200,
+      "sha256": "62fce51b2f8dc631fea26296d01911fc37b38d7a894d7e458449225fe1131ad8"
+    },
+    "observation": "RED: RTL tables fade the physical right edge at both scroll endpoints; LTR controls correctly switch fades.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "scenario": "proof-table-rtl-head",
+    "at": "2026-11-03T15:34:28.253Z",
+    "sha": "ee5bcefea490ac38d56dc49cb196c852f8e26c4d",
+    "buildStamp": {
+      "builtAt": 1793719125215,
+      "head": "ee5bcefea490ac38d56dc49cb196c852f8e26c4d",
+      "inputsClean": true,
+      "inputSignature": "29295531fce5a44535cd38d1624aab7299572d87602f1e5622dcfd1252246afc"
+    },
+    "domain": "ws://127.0.0.1:35083",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "bfa70089-be7a-4223-b42d-aeacf24cf0ef",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "f9a89336-481b-472c-891b-2221bb412b6c",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "75541424-e142-4118-a27b-8b655d49ed17",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "b10d8421-50ab-4589-be77-3e3156140ab0",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "27f02252-9410-401c-a5f2-31db3d48ddec",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-rtl-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "f037961a-15c8-4ec0-afe9-a4c84e90f0c4",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:table-rtl-proof",
+            "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+            "entry": {
+              "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+              "lifecycleRevision": "0f66af02-2ce3-4a2d-a04c-ad3aecc3ae84",
+              "updatedAt": 1793720093582,
+              "sessionRoot": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793720093584,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "message": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+        },
+        "response": {
+          "type": "res",
+          "id": "9fc4797d-8273-4a28-9bb2-648c61ac9f4e",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "3f0e92b4-48f5-4550-b9a8-69ac956e2944"
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "message": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+        },
+        "response": {
+          "type": "res",
+          "id": "2a663f76-71e1-4f9b-a881-5d3ff0e7d57c",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "b9f6f9a2-d7d4-474b-abea-120c97963c28"
+          }
+        }
+      },
+      {
+        "method": "chat.history",
+        "params": {
+          "sessionKey": "agent:main:table-rtl-proof",
+          "limit": 10
+        },
+        "response": {
+          "type": "res",
+          "id": "0d3a1987-c168-46d3-adc4-e3fa1a6767c3",
+          "ok": true,
+          "payload": {
+            "sessionKey": "agent:main:table-rtl-proof",
+            "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+            "messages": [
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+                  }
+                ],
+                "timestamp": 1793720094240,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "3f0e92b4-48f5-4550-b9a8-69ac956e2944",
+                  "recordTimestampMs": 1793720094240,
+                  "transcriptPosition": {
+                    "source": "HFifUt5P0qyavvGlWIb0MhKE7Uk4cicomPiZdgWWKsI",
+                    "rawSeq": 1
+                  },
+                  "seq": 1
+                }
+              },
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+                  }
+                ],
+                "timestamp": 1793720094485,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "b9f6f9a2-d7d4-474b-abea-120c97963c28",
+                  "recordTimestampMs": 1793720094485,
+                  "transcriptPosition": {
+                    "source": "HFifUt5P0qyavvGlWIb0MhKE7Uk4cicomPiZdgWWKsI",
+                    "rawSeq": 2
+                  },
+                  "seq": 2
+                }
+              }
+            ],
+            "hasMore": false,
+            "totalMessages": 2,
+            "pendingInputs": {
+              "items": [],
+              "total": 0,
+              "queuedCount": 0
+            },
+            "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiI3ZTQ5MGVmNjg0YmU0MzQ2YTJjNWJlNDE0NGY5NTg1YyIsImxhc3RTZXEiOjIsInNlc3Npb25JZCI6ImY1OWM0MjBhLTFlOWMtNDk2Ny1iNzM2LTRhNDQzYWVkOTAxZiIsInZlcnNpb24iOjF9",
+            "defaults": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "contextTokens": null,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "communication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "modelSelectionTarget": "session"
+            },
+            "sessionInfo": {
+              "key": "agent:main:table-rtl-proof",
+              "sessionModelRevision": "QRGWMvemYeCqxlGTN7xERnmVEozHNEONC6w4TYIrQZQ",
+              "visibility": "shared",
+              "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+              "workspaceDir": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+              "effectiveCommunication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "permissionModePending": false,
+              "spawnDepth": 0,
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "id": "gateway-owner",
+                "identity": {
+                  "type": "profile",
+                  "id": "gateway-owner"
+                }
+              },
+              "owner": {
+                "actor": {
+                  "type": "human",
+                  "id": "gateway-owner",
+                  "identity": {
+                    "type": "profile",
+                    "id": "gateway-owner"
+                  }
+                }
+              },
+              "createdAt": 1793720093584,
+              "kind": "direct",
+              "classification": "direct",
+              "agentId": "main",
+              "isMain": false,
+              "isDock": false,
+              "isBackground": false,
+              "chatType": "direct",
+              "updatedAt": 1793720094510,
+              "archived": false,
+              "pinned": false,
+              "sidebarRoot": false,
+              "unread": false,
+              "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+              "lifecycleRevision": "0f66af02-2ce3-4a2d-a04c-ad3aecc3ae84",
+              "effectiveFastMode": false,
+              "effectiveFastModeSource": "default",
+              "fastAutoOnSeconds": 60,
+              "parentSessionKey": "agent:main:main",
+              "effectiveResponseUsage": "off",
+              "effectiveQueueMode": "steer",
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "modelOverrideSource": null,
+              "runtimeSelectionLocked": false,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "snapshotAt": 1793720095716,
+              "totalTokensFresh": false,
+              "activitySummary": {
+                "state": "stale",
+                "canEnsure": true
+              },
+              "hasBoard": false,
+              "titlePending": false,
+              "childOwnerSessionKeys": [
+                "agent:main:main"
+              ],
+              "hiddenFromInvolvingMe": false,
+              "sharingRole": "admin",
+              "sendDisabledReason": null,
+              "workspaceReadDisabledReason": null,
+              "hasActiveRun": false,
+              "activeRunIds": [],
+              "activeLeafEntryId": "b9f6f9a2-d7d4-474b-abea-120c97963c28"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "node",
+      "$PROOF_ROOT/table-rtl/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "35083"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "pageErrors": [],
+    "cases": [
+      {
+        "direction": "rtl",
+        "start": {
+          "direction": "rtl",
+          "scrollLeft": 0,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": true,
+          "right": false,
+          "mask": "linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 28px)"
+        },
+        "end": {
+          "direction": "rtl",
+          "scrollLeft": -264,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": false,
+          "right": true,
+          "mask": "linear-gradient(90deg, rgb(0, 0, 0) calc(100% - 28px), rgba(0, 0, 0, 0))"
+        }
+      },
+      {
+        "direction": "ltr",
+        "start": {
+          "direction": "ltr",
+          "scrollLeft": 0,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": false,
+          "right": true,
+          "mask": "linear-gradient(90deg, rgb(0, 0, 0) calc(100% - 28px), rgba(0, 0, 0, 0))"
+        },
+        "end": {
+          "direction": "ltr",
+          "scrollLeft": 264,
+          "clientWidth": 774,
+          "scrollWidth": 1038,
+          "left": true,
+          "right": false,
+          "mask": "linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 28px)"
+        }
+      }
+    ],
+    "stage": "complete",
+    "proof": {
+      "entry": "Normally built Gateway chat.inject -> persisted chat.history -> built Control UI -> native horizontal wheel scrolling -> computed masks and readback",
+      "modelsCalled": false,
+      "applicationStateInjected": false,
+      "gatewayOrModulesMocked": false,
+      "externalChannels": false
+    },
+    "history": {
+      "sessionKey": "agent:main:table-rtl-proof",
+      "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "مرحبا، تقرير الجدول\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+            }
+          ],
+          "timestamp": 1793720094240,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "3f0e92b4-48f5-4550-b9a8-69ac956e2944",
+            "recordTimestampMs": 1793720094240,
+            "transcriptPosition": {
+              "source": "HFifUt5P0qyavvGlWIb0MhKE7Uk4cicomPiZdgWWKsI",
+              "rawSeq": 1
+            },
+            "seq": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Hello, table report\n\n| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 | Column 7 | Column 8 | Column 9 | Column 10 | Column 11 | Column 12 | Column 13 | Column 14 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| value-0-long-cell | value-1-long-cell | value-2-long-cell | value-3-long-cell | value-4-long-cell | value-5-long-cell | value-6-long-cell | value-7-long-cell | value-8-long-cell | value-9-long-cell | value-10-long-cell | value-11-long-cell | value-12-long-cell | value-13-long-cell |"
+            }
+          ],
+          "timestamp": 1793720094485,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "b9f6f9a2-d7d4-474b-abea-120c97963c28",
+            "recordTimestampMs": 1793720094485,
+            "transcriptPosition": {
+              "source": "HFifUt5P0qyavvGlWIb0MhKE7Uk4cicomPiZdgWWKsI",
+              "rawSeq": 2
+            },
+            "seq": 2
+          }
+        }
+      ],
+      "hasMore": false,
+      "totalMessages": 2,
+      "pendingInputs": {
+        "items": [],
+        "total": 0,
+        "queuedCount": 0
+      },
+      "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiI3ZTQ5MGVmNjg0YmU0MzQ2YTJjNWJlNDE0NGY5NTg1YyIsImxhc3RTZXEiOjIsInNlc3Npb25JZCI6ImY1OWM0MjBhLTFlOWMtNDk2Ny1iNzM2LTRhNDQzYWVkOTAxZiIsInZlcnNpb24iOjF9",
+      "defaults": {
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "contextTokens": null,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "communication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "modelSelectionTarget": "session"
+      },
+      "sessionInfo": {
+        "key": "agent:main:table-rtl-proof",
+        "sessionModelRevision": "QRGWMvemYeCqxlGTN7xERnmVEozHNEONC6w4TYIrQZQ",
+        "visibility": "shared",
+        "spawnedCwd": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+        "workspaceDir": "$PROOF_ROOT/proof-table-rtl-head/workspace",
+        "effectiveCommunication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "permissionModePending": false,
+        "spawnDepth": 0,
+        "createdVia": "operator",
+        "createdActor": {
+          "type": "human",
+          "id": "gateway-owner",
+          "identity": {
+            "type": "profile",
+            "id": "gateway-owner"
+          }
+        },
+        "owner": {
+          "actor": {
+            "type": "human",
+            "id": "gateway-owner",
+            "identity": {
+              "type": "profile",
+              "id": "gateway-owner"
+            }
+          }
+        },
+        "createdAt": 1793720093584,
+        "kind": "direct",
+        "classification": "direct",
+        "agentId": "main",
+        "isMain": false,
+        "isDock": false,
+        "isBackground": false,
+        "chatType": "direct",
+        "updatedAt": 1793720094510,
+        "archived": false,
+        "pinned": false,
+        "sidebarRoot": false,
+        "unread": false,
+        "sessionId": "f59c420a-1e9c-4967-b736-4a443aed901f",
+        "lifecycleRevision": "0f66af02-2ce3-4a2d-a04c-ad3aecc3ae84",
+        "effectiveFastMode": false,
+        "effectiveFastModeSource": "default",
+        "fastAutoOnSeconds": 60,
+        "parentSessionKey": "agent:main:main",
+        "effectiveResponseUsage": "off",
+        "effectiveQueueMode": "steer",
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "modelOverrideSource": null,
+        "runtimeSelectionLocked": false,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "snapshotAt": 1793720095716,
+        "totalTokensFresh": false,
+        "activitySummary": {
+          "state": "stale",
+          "canEnsure": true
+        },
+        "hasBoard": false,
+        "titlePending": false,
+        "childOwnerSessionKeys": [
+          "agent:main:main"
+        ],
+        "hiddenFromInvolvingMe": false,
+        "sharingRole": "admin",
+        "sendDisabledReason": null,
+        "workspaceReadDisabledReason": null,
+        "hasActiveRun": false,
+        "activeRunIds": [],
+        "activeLeafEntryId": "b9f6f9a2-d7d4-474b-abea-120c97963c28"
+      }
+    },
+    "browserEngine": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "servedEntry": {
+      "path": "/assets/index-CllYR_bD.js",
+      "status": 200,
+      "sha256": "8e96b3fe2b67d6f6fe1dbcf8c4d32018ab07389820a6191991604f11bae6b525"
+    },
+    "observation": "GREEN: RTL and LTR table fades track the physical edge with hidden content at both native scroll endpoints.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

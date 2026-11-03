@@ -1,0 +1,63 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/components/markdown-tables.ts",
+      "ui/src/components/markdown-tables.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.25
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "ui/tsconfig.json",
+      "ui/src/components/markdown-tables.ts",
+      "ui/src/components/markdown-tables.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 330.73
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/table-rtl-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 120.36
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "2ac42c830f3eb28206f6570bf821b481ab02d3fa"
+    ],
+    "exitCode": 0,
+    "seconds": 14.95
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "ui/src/components/markdown-tables.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 13.76
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/check-control-ui-controllers.mts"
+  ],
+  "exitCode": 0,
+  "seconds": 19.01
+}

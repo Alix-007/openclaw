@@ -29,7 +29,7 @@ export async function withIsolatedGateway(checkoutArg,outArg,prepare,run){
  const child=spawn(record.command[0],record.command.slice(1),{cwd:checkout,env,stdio:['ignore',stdout,stderr]});
  let exited;const closed=new Promise(resolve=>child.on('close',(code,signal)=>{exited={code,signal};resolve();}));
  const {WebSocket}=createRequire(path.join(checkout,'package.json'))('ws');
- let socket;const pending=new Map();
+ let socket;const pending=new Map();const earlyFrames=[];let onFrame;
  const rpc=async(method,params,startupAttempt=0)=>{
   const id=randomUUID();
   const response=await new Promise((resolve,reject)=>{
@@ -47,18 +47,19 @@ export async function withIsolatedGateway(checkoutArg,outArg,prepare,run){
   const deadline=performance.now()+120000;
   for(;;){
    assert.equal(exited,undefined,`Gateway exited ${JSON.stringify(exited)}`);
-   try{socket=await new Promise((resolve,reject)=>{const ws=new WebSocket(record.domain);ws.once('open',()=>resolve(ws));ws.once('error',reject);});break;}
+   try{socket=await new Promise((resolve,reject)=>{const ws=new WebSocket(record.domain);ws.on('message',raw=>{if(onFrame)onFrame(raw);else earlyFrames.push(raw);});ws.once('open',()=>resolve(ws));ws.once('error',reject);});break;}
    catch(error){if(performance.now()>deadline)throw error;await new Promise(resolve=>setTimeout(resolve,500));}
   }
   await new Promise((resolve,reject)=>{
    const timer=setTimeout(()=>reject(new Error('Handshake deadline')),30000);
-   socket.on('message',raw=>{
+   onFrame=raw=>{
     const frame=JSON.parse(raw.toString());
     if(frame.type==='res'){const handler=pending.get(frame.id);pending.delete(frame.id);handler?.resolve(frame);}
     if(frame.type==='event'&&frame.event==='connect.challenge'){
      rpc('connect',{minProtocol:4,maxProtocol:4,client:{id:'cli',version:'2026.10.9',platform:'linux',mode:'cli'},role:'operator',scopes:['operator.admin','operator.read','operator.write'],auth:{token}}).then(payload=>{record.connect={protocol:payload.protocol,role:payload.auth?.role,scopes:payload.auth?.scopes};clearTimeout(timer);resolve();},reject);
     }
-   });
+   };
+   for(const raw of earlyFrames.splice(0))onFrame(raw);
   });
   await run({out,checkout,config,record,rpc,save});
   record.result='PASS';save();console.log(JSON.stringify({sha,result:record.result,observation:record.observation,cases:record.cases}));
