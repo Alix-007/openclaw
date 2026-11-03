@@ -1,0 +1,65 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "extensions/diffs/src/plugin.ts",
+      "extensions/diffs/src/plugin.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.9
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "config/tsconfig/oxlint.source.json",
+      "extensions/diffs/src/plugin.ts",
+      "extensions/diffs/src/plugin.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 353.1
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/diffs-language-pack-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 94.98
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "b3d0977b0cc484c4b472628385d1a988a794ac42"
+    ],
+    "exitCode": 0,
+    "seconds": 18.6
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "extensions/diffs/src/plugin.test.ts",
+      "extensions/diffs/src/language-hints.test.ts",
+      "extensions/diffs/src/render.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 13.68
+  }
+]
