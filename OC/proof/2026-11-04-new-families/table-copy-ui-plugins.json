@@ -1,0 +1,11 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "$PROOF_ROOT/table-copy/scripts/tsx.mjs",
+    "$PROOF_ROOT/prepare-ui-proof-distributions.mts",
+    "table-copy"
+  ],
+  "exitCode": 0,
+  "seconds": 25.83
+}

@@ -1,0 +1,64 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/components/markdown-tables.ts",
+      "ui/src/components/markdown-tables.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.29
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "ui/tsconfig.json",
+      "ui/src/components/markdown-tables.ts",
+      "ui/src/components/markdown-tables.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 54.74
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/table-copy-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 122.43
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "258d034391ac03a8ee3530ba33552a5cbf2062fc"
+    ],
+    "exitCode": 0,
+    "seconds": 7.08
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "ui/src/components/markdown-tables.test.ts",
+      "ui/src/pages/chat/components/chat-context-copy.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 29.01
+  }
+]

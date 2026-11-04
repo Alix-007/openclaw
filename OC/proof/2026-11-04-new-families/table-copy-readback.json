@@ -1,0 +1,1244 @@
+[
+  {
+    "version": "base",
+    "at": "2026-11-04T11:08:33.439Z",
+    "sha": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+    "buildStamp": {
+      "builtAt": 1793785769990,
+      "head": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+      "inputsClean": true,
+      "inputSignature": "5dced43a8cc87cddabc071424a69701e962d5800d0470af872f8d20ef654b715"
+    },
+    "domain": "ws://127.0.0.1:36367",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "00f2952d-6846-4208-a524-1792bf3a3662",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "da328b73-b941-46f1-b48a-e7d4e603cd95",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "c8e145f7-b8b6-44cf-aaed-22c704588065",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "18aba598-ea56-4e0f-ba72-47b9b0161a81",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "9d520ab9-4f0c-4054-89e5-4d3ae812d50f",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:table-copy-proof",
+            "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+            "entry": {
+              "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+              "lifecycleRevision": "a35014d9-d9ec-4288-8316-9b29c0907ded",
+              "updatedAt": 1793790534934,
+              "sessionRoot": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793790534935,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-copy-proof",
+          "message": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+        },
+        "response": {
+          "type": "res",
+          "id": "b82becc4-45f1-4a11-a16c-e6363a056f8e",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "3e5313b9-12d9-48d1-9007-bfd6361cce47"
+          }
+        }
+      },
+      {
+        "method": "chat.history",
+        "params": {
+          "sessionKey": "agent:main:table-copy-proof",
+          "limit": 10
+        },
+        "response": {
+          "type": "res",
+          "id": "b2f99a78-17a4-4705-8981-a3b2393ed5a5",
+          "ok": true,
+          "payload": {
+            "sessionKey": "agent:main:table-copy-proof",
+            "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+            "messages": [
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+                  }
+                ],
+                "timestamp": 1793790535493,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "3e5313b9-12d9-48d1-9007-bfd6361cce47",
+                  "recordTimestampMs": 1793790535493,
+                  "transcriptPosition": {
+                    "source": "nXKKRgWvWQU1nISIOnsaNLnV5SGcuNR6e2YVDQIU4t8",
+                    "rawSeq": 1
+                  },
+                  "seq": 1
+                }
+              }
+            ],
+            "hasMore": false,
+            "totalMessages": 1,
+            "pendingInputs": {
+              "items": [],
+              "total": 0,
+              "queuedCount": 0
+            },
+            "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiIxYmE3NjYwMDhkYTE0ZjNmODllN2JmYzcxOTQ4NGViNiIsImxhc3RTZXEiOjEsInNlc3Npb25JZCI6IjQzOTkxZDAwLWQyNmYtNGE0OS05YjgxLWJiNTcyMzljZDAxMSIsInZlcnNpb24iOjF9",
+            "defaults": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "contextTokens": null,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "communication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "modelSelectionTarget": "session"
+            },
+            "sessionInfo": {
+              "key": "agent:main:table-copy-proof",
+              "sessionModelRevision": "3LsK_MglqGrPVk-JKRC0T6_Y2B7QFf0BUFU6ZfEDVoA",
+              "visibility": "shared",
+              "spawnedCwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+              "workspaceDir": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+              "effectiveCommunication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "permissionModePending": false,
+              "spawnDepth": 0,
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "id": "gateway-owner",
+                "identity": {
+                  "type": "profile",
+                  "id": "gateway-owner"
+                },
+                "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790528468"
+              },
+              "owner": {
+                "actor": {
+                  "type": "human",
+                  "id": "gateway-owner",
+                  "identity": {
+                    "type": "profile",
+                    "id": "gateway-owner"
+                  },
+                  "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790528468"
+                }
+              },
+              "createdAt": 1793790534935,
+              "kind": "direct",
+              "classification": "direct",
+              "agentId": "main",
+              "isMain": false,
+              "isDock": false,
+              "isBackground": false,
+              "chatType": "direct",
+              "updatedAt": 1793790535655,
+              "archived": false,
+              "pinned": false,
+              "sidebarRoot": false,
+              "unread": false,
+              "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+              "lifecycleRevision": "a35014d9-d9ec-4288-8316-9b29c0907ded",
+              "effectiveFastMode": false,
+              "effectiveFastModeSource": "default",
+              "fastAutoOnSeconds": 60,
+              "parentSessionKey": "agent:main:main",
+              "effectiveResponseUsage": "off",
+              "effectiveQueueMode": "steer",
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "modelOverrideSource": null,
+              "runtimeSelectionLocked": false,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "snapshotAt": 1793790536999,
+              "totalTokensFresh": false,
+              "activitySummary": {
+                "state": "stale",
+                "canEnsure": true
+              },
+              "hasBoard": false,
+              "titlePending": false,
+              "childOwnerSessionKeys": [
+                "agent:main:main"
+              ],
+              "hiddenFromInvolvingMe": false,
+              "sharingRole": "admin",
+              "sendDisabledReason": null,
+              "workspaceReadDisabledReason": null,
+              "hasActiveRun": false,
+              "activeRunIds": [],
+              "activeLeafEntryId": "3e5313b9-12d9-48d1-9007-bfd6361cce47"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/baseline/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "36367"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "label": "ordinary-control",
+        "clipboard": "Name\tValue\nAlpha\tOne\nBold\tcode"
+      },
+      {
+        "label": "inline-table",
+        "clipboard": "Label\tValue\tEmpty\nAlphaBeta\tOne\t\nQuote \"here\"next\tComma, kept\t\nA\tB\tEnd\t\nQuote \"only\"\tPlain\t"
+      },
+      {
+        "label": "context-menu",
+        "clipboard": "Label\tValue\tEmpty\nAlphaBeta\tOne\t\nQuote \"here\"next\tComma, kept\t\nA\tB\tEnd\t\nQuote \"only\"\tPlain\t"
+      },
+      {
+        "label": "expanded-context-menu",
+        "clipboard": "Label\tValue\tEmpty\nAlphaBeta\tOne\t\nQuote \"here\"next\tComma, kept\t\nA\tB\tEnd\t\nQuote \"only\"\tPlain\t"
+      }
+    ],
+    "pageErrors": [],
+    "entry": "Normally built Gateway chat.inject -> persisted chat.history -> real served Control UI -> click table Copy -> native Clipboard API readback",
+    "scope": "Existing table copy content/TSV cell boundaries; no UI state injection, owner mocks, external model or channel",
+    "history": {
+      "sessionKey": "agent:main:table-copy-proof",
+      "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+            }
+          ],
+          "timestamp": 1793790535493,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "3e5313b9-12d9-48d1-9007-bfd6361cce47",
+            "recordTimestampMs": 1793790535493,
+            "transcriptPosition": {
+              "source": "nXKKRgWvWQU1nISIOnsaNLnV5SGcuNR6e2YVDQIU4t8",
+              "rawSeq": 1
+            },
+            "seq": 1
+          }
+        }
+      ],
+      "hasMore": false,
+      "totalMessages": 1,
+      "pendingInputs": {
+        "items": [],
+        "total": 0,
+        "queuedCount": 0
+      },
+      "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiIxYmE3NjYwMDhkYTE0ZjNmODllN2JmYzcxOTQ4NGViNiIsImxhc3RTZXEiOjEsInNlc3Npb25JZCI6IjQzOTkxZDAwLWQyNmYtNGE0OS05YjgxLWJiNTcyMzljZDAxMSIsInZlcnNpb24iOjF9",
+      "defaults": {
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "contextTokens": null,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "communication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "modelSelectionTarget": "session"
+      },
+      "sessionInfo": {
+        "key": "agent:main:table-copy-proof",
+        "sessionModelRevision": "3LsK_MglqGrPVk-JKRC0T6_Y2B7QFf0BUFU6ZfEDVoA",
+        "visibility": "shared",
+        "spawnedCwd": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+        "workspaceDir": "$PROOF_ROOT/proof-table-copy-base-publish/workspace",
+        "effectiveCommunication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "permissionModePending": false,
+        "spawnDepth": 0,
+        "createdVia": "operator",
+        "createdActor": {
+          "type": "human",
+          "id": "gateway-owner",
+          "identity": {
+            "type": "profile",
+            "id": "gateway-owner"
+          },
+          "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790528468"
+        },
+        "owner": {
+          "actor": {
+            "type": "human",
+            "id": "gateway-owner",
+            "identity": {
+              "type": "profile",
+              "id": "gateway-owner"
+            },
+            "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790528468"
+          }
+        },
+        "createdAt": 1793790534935,
+        "kind": "direct",
+        "classification": "direct",
+        "agentId": "main",
+        "isMain": false,
+        "isDock": false,
+        "isBackground": false,
+        "chatType": "direct",
+        "updatedAt": 1793790535655,
+        "archived": false,
+        "pinned": false,
+        "sidebarRoot": false,
+        "unread": false,
+        "sessionId": "43991d00-d26f-4a49-9b81-bb57239cd011",
+        "lifecycleRevision": "a35014d9-d9ec-4288-8316-9b29c0907ded",
+        "effectiveFastMode": false,
+        "effectiveFastModeSource": "default",
+        "fastAutoOnSeconds": 60,
+        "parentSessionKey": "agent:main:main",
+        "effectiveResponseUsage": "off",
+        "effectiveQueueMode": "steer",
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "modelOverrideSource": null,
+        "runtimeSelectionLocked": false,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "snapshotAt": 1793790536999,
+        "totalTokensFresh": false,
+        "activitySummary": {
+          "state": "stale",
+          "canEnsure": true
+        },
+        "hasBoard": false,
+        "titlePending": false,
+        "childOwnerSessionKeys": [
+          "agent:main:main"
+        ],
+        "hiddenFromInvolvingMe": false,
+        "sharingRole": "admin",
+        "sendDisabledReason": null,
+        "workspaceReadDisabledReason": null,
+        "hasActiveRun": false,
+        "activeRunIds": [],
+        "activeLeafEntryId": "3e5313b9-12d9-48d1-9007-bfd6361cce47"
+      }
+    },
+    "browser": {
+      "engine": "Chromium",
+      "version": "156.0.8078.4"
+    },
+    "servedEntry": {
+      "path": "/assets/index-DodSo_N3.js",
+      "status": 200,
+      "sha256": "69b363eeb355f5fa7c71cd964f0960177314d6171104c24fad7dd19697056932"
+    },
+    "rendered": {
+      "brCount": 2,
+      "rows": [
+        [
+          {
+            "text": "Label",
+            "visible": "Label"
+          },
+          {
+            "text": "Value",
+            "visible": "Value"
+          },
+          {
+            "text": "Empty",
+            "visible": "Empty"
+          }
+        ],
+        [
+          {
+            "text": "AlphaBeta",
+            "visible": "Alpha\nBeta"
+          },
+          {
+            "text": "One",
+            "visible": "One"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "Quote \"here\"next",
+            "visible": "Quote \"here\"\nnext"
+          },
+          {
+            "text": "Comma, kept",
+            "visible": "Comma, kept"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "A\tB",
+            "visible": "A B"
+          },
+          {
+            "text": "End",
+            "visible": "End"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "Quote \"only\"",
+            "visible": "Quote \"only\""
+          },
+          {
+            "text": "Plain",
+            "visible": "Plain"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ]
+      ]
+    },
+    "observation": "RED: visible Alpha/Beta and quoted multiline text are concatenated in native clipboard; an embedded tab becomes an extra TSV delimiter. Toolbar and inline/expanded context Copy share the defect; ordinary control is correct.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  },
+  {
+    "version": "head",
+    "at": "2026-11-04T11:15:36.715Z",
+    "sha": "bca959064c92a3e1f94c2bc095ebea68760ee0cc",
+    "buildStamp": {
+      "builtAt": 1793790756783,
+      "head": "bca959064c92a3e1f94c2bc095ebea68760ee0cc",
+      "inputsClean": true,
+      "inputSignature": "90cdda978e4f3f509041ec0b360489b33c3baaeedf75756b449bed3b2164ec6c"
+    },
+    "domain": "ws://127.0.0.1:43769",
+    "calls": [
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "52880d8a-b20c-4a0c-8bc5-bc9332afabd7",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "8a17e47a-3d14-46f5-af90-2d8db46dde43",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "4db41413-474e-4f2f-b8d6-995a6015d47a",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "39c126d9-8890-4dc2-9b82-751dce3e1bbd",
+          "ok": false,
+          "error": {
+            "code": "UNAVAILABLE",
+            "message": "sessions.create unavailable during gateway startup",
+            "retryable": true,
+            "retryAfterMs": 500,
+            "details": {
+              "reason": "startup-sidecars",
+              "method": "sessions.create"
+            }
+          }
+        }
+      },
+      {
+        "method": "sessions.create",
+        "params": {
+          "key": "agent:main:table-copy-proof",
+          "agentId": "main",
+          "cwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+          "worktree": false
+        },
+        "response": {
+          "type": "res",
+          "id": "2a140410-c7f4-4240-b12d-47a32fbf23a1",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "key": "agent:main:table-copy-proof",
+            "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+            "entry": {
+              "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+              "lifecycleRevision": "ea854e19-a4ef-43a3-a0d6-4c90441b3572",
+              "updatedAt": 1793790956495,
+              "sessionRoot": "$PROOF_ROOT/proof-table-copy-head/workspace",
+              "delivery": {
+                "kind": "none"
+              },
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "source": "profile",
+                "id": "gateway-owner"
+              },
+              "createdAt": 1793790956497,
+              "skillLibrarySelections": [],
+              "spawnedCwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+              "spawnDepth": 0,
+              "modelOverrideSource": "default",
+              "chatType": "direct",
+              "parentSessionKey": "agent:main:main"
+            },
+            "runStarted": false,
+            "publicRead": false,
+            "resolved": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra"
+            }
+          }
+        }
+      },
+      {
+        "method": "chat.inject",
+        "params": {
+          "sessionKey": "agent:main:table-copy-proof",
+          "message": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+        },
+        "response": {
+          "type": "res",
+          "id": "96c555fa-ccaa-4b6f-83e9-e253f683e2d5",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "messageId": "d6c03ff3-9d02-4c25-9e47-aba3ebba4e28"
+          }
+        }
+      },
+      {
+        "method": "chat.history",
+        "params": {
+          "sessionKey": "agent:main:table-copy-proof",
+          "limit": 10
+        },
+        "response": {
+          "type": "res",
+          "id": "e2dbfa4f-2022-41a8-8edf-99a91edffab9",
+          "ok": true,
+          "payload": {
+            "sessionKey": "agent:main:table-copy-proof",
+            "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+            "messages": [
+              {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+                  }
+                ],
+                "timestamp": 1793790957122,
+                "stopReason": "stop",
+                "usage": {
+                  "input": 0,
+                  "output": 0,
+                  "totalTokens": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "api": "openai-responses",
+                "provider": "openclaw",
+                "model": "gateway-injected",
+                "__openclaw": {
+                  "id": "d6c03ff3-9d02-4c25-9e47-aba3ebba4e28",
+                  "recordTimestampMs": 1793790957122,
+                  "transcriptPosition": {
+                    "source": "kJiNo6m7pOMuGa-v_9WmqWR3fMvLBTpAClNdJQ0J4xY",
+                    "rawSeq": 1
+                  },
+                  "seq": 1
+                }
+              }
+            ],
+            "hasMore": false,
+            "totalMessages": 1,
+            "pendingInputs": {
+              "items": [],
+              "total": 0,
+              "queuedCount": 0
+            },
+            "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiIyZDM1ZmVjODA4MDg0ODkyYWI1NzQzNzYzZTg4ODMyYiIsImxhc3RTZXEiOjEsInNlc3Npb25JZCI6IjllY2ZiNjkxLTdkOTAtNDNiZC1iYTJkLTAyMjYxOWEzNjE4ZCIsInZlcnNpb24iOjF9",
+            "defaults": {
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "contextTokens": null,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "communication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "modelSelectionTarget": "session"
+            },
+            "sessionInfo": {
+              "key": "agent:main:table-copy-proof",
+              "sessionModelRevision": "ZPiutdRMAupZKnxBPTPi-jAkQQuQMuzzLqsM0Q0Xnvs",
+              "visibility": "shared",
+              "spawnedCwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+              "workspaceDir": "$PROOF_ROOT/proof-table-copy-head/workspace",
+              "effectiveCommunication": {
+                "send": "always",
+                "receive": "always"
+              },
+              "permissionModePending": false,
+              "spawnDepth": 0,
+              "createdVia": "operator",
+              "createdActor": {
+                "type": "human",
+                "id": "gateway-owner",
+                "identity": {
+                  "type": "profile",
+                  "id": "gateway-owner"
+                },
+                "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790950401"
+              },
+              "owner": {
+                "actor": {
+                  "type": "human",
+                  "id": "gateway-owner",
+                  "identity": {
+                    "type": "profile",
+                    "id": "gateway-owner"
+                  },
+                  "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790950401"
+                }
+              },
+              "createdAt": 1793790956497,
+              "kind": "direct",
+              "classification": "direct",
+              "agentId": "main",
+              "isMain": false,
+              "isDock": false,
+              "isBackground": false,
+              "chatType": "direct",
+              "updatedAt": 1793790957303,
+              "archived": false,
+              "pinned": false,
+              "sidebarRoot": false,
+              "unread": false,
+              "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+              "lifecycleRevision": "ea854e19-a4ef-43a3-a0d6-4c90441b3572",
+              "effectiveFastMode": false,
+              "effectiveFastModeSource": "default",
+              "fastAutoOnSeconds": 60,
+              "parentSessionKey": "agent:main:main",
+              "effectiveResponseUsage": "off",
+              "effectiveQueueMode": "steer",
+              "modelProvider": "openai",
+              "model": "gpt-6-astra",
+              "modelOverrideSource": null,
+              "runtimeSelectionLocked": false,
+              "agentRuntime": {
+                "id": "codex",
+                "cloudPlacementSupported": false,
+                "devicePlacementSupported": false,
+                "source": "implicit"
+              },
+              "snapshotAt": 1793790958497,
+              "totalTokensFresh": false,
+              "activitySummary": {
+                "state": "stale",
+                "canEnsure": true
+              },
+              "hasBoard": false,
+              "titlePending": false,
+              "childOwnerSessionKeys": [
+                "agent:main:main"
+              ],
+              "hiddenFromInvolvingMe": false,
+              "sharingRole": "admin",
+              "sendDisabledReason": null,
+              "workspaceReadDisabledReason": null,
+              "hasActiveRun": false,
+              "activeRunIds": [],
+              "activeLeafEntryId": "d6c03ff3-9d02-4c25-9e47-aba3ebba4e28"
+            }
+          }
+        }
+      }
+    ],
+    "result": "PASS",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/table-copy/openclaw.mjs",
+      "gateway",
+      "run",
+      "--bind",
+      "loopback",
+      "--port",
+      "43769"
+    ],
+    "connect": {
+      "protocol": 4,
+      "role": "operator",
+      "scopes": [
+        "operator.admin",
+        "operator.read",
+        "operator.write"
+      ]
+    },
+    "cases": [
+      {
+        "label": "ordinary-control",
+        "clipboard": "Name\tValue\nAlpha\tOne\nBold\tcode"
+      },
+      {
+        "label": "inline-table",
+        "clipboard": "Label\tValue\tEmpty\n\"Alpha\nBeta\"\tOne\t\n\"Quote \"\"here\"\"\nnext\"\tComma, kept\t\n\"A\tB\"\tEnd\t\n\"Quote \"\"only\"\"\"\tPlain\t"
+      },
+      {
+        "label": "context-menu",
+        "clipboard": "Label\tValue\tEmpty\n\"Alpha\nBeta\"\tOne\t\n\"Quote \"\"here\"\"\nnext\"\tComma, kept\t\n\"A\tB\"\tEnd\t\n\"Quote \"\"only\"\"\"\tPlain\t"
+      },
+      {
+        "label": "expanded-context-menu",
+        "clipboard": "Label\tValue\tEmpty\n\"Alpha\nBeta\"\tOne\t\n\"Quote \"\"here\"\"\nnext\"\tComma, kept\t\n\"A\tB\"\tEnd\t\n\"Quote \"\"only\"\"\"\tPlain\t"
+      }
+    ],
+    "pageErrors": [],
+    "entry": "Normally built Gateway chat.inject -> persisted chat.history -> real served Control UI -> click table Copy -> native Clipboard API readback",
+    "scope": "Existing table copy content/TSV cell boundaries; no UI state injection, owner mocks, external model or channel",
+    "history": {
+      "sessionKey": "agent:main:table-copy-proof",
+      "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Synthetic table copy proof.\n\n| Name | Value |\n| --- | --- |\n| Alpha | One |\n| **Bold** | `code` |\n\n| Label | Value | Empty |\n| --- | --- | --- |\n| Alpha<br>Beta | One | |\n| Quote \"here\"<br>next | Comma, kept | |\n| `A\tB` | End | |\n| Quote \"only\" | Plain | |"
+            }
+          ],
+          "timestamp": 1793790957122,
+          "stopReason": "stop",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "totalTokens": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "api": "openai-responses",
+          "provider": "openclaw",
+          "model": "gateway-injected",
+          "__openclaw": {
+            "id": "d6c03ff3-9d02-4c25-9e47-aba3ebba4e28",
+            "recordTimestampMs": 1793790957122,
+            "transcriptPosition": {
+              "source": "kJiNo6m7pOMuGa-v_9WmqWR3fMvLBTpAClNdJQ0J4xY",
+              "rawSeq": 1
+            },
+            "seq": 1
+          }
+        }
+      ],
+      "hasMore": false,
+      "totalMessages": 1,
+      "pendingInputs": {
+        "items": [],
+        "total": 0,
+        "queuedCount": 0
+      },
+      "deltaCursor": "eyJhZ2VudElkIjoibWFpbiIsImdlbmVyYXRpb24iOiIyZDM1ZmVjODA4MDg0ODkyYWI1NzQzNzYzZTg4ODMyYiIsImxhc3RTZXEiOjEsInNlc3Npb25JZCI6IjllY2ZiNjkxLTdkOTAtNDNiZC1iYTJkLTAyMjYxOWEzNjE4ZCIsInZlcnNpb24iOjF9",
+      "defaults": {
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "contextTokens": null,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "communication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "modelSelectionTarget": "session"
+      },
+      "sessionInfo": {
+        "key": "agent:main:table-copy-proof",
+        "sessionModelRevision": "ZPiutdRMAupZKnxBPTPi-jAkQQuQMuzzLqsM0Q0Xnvs",
+        "visibility": "shared",
+        "spawnedCwd": "$PROOF_ROOT/proof-table-copy-head/workspace",
+        "workspaceDir": "$PROOF_ROOT/proof-table-copy-head/workspace",
+        "effectiveCommunication": {
+          "send": "always",
+          "receive": "always"
+        },
+        "permissionModePending": false,
+        "spawnDepth": 0,
+        "createdVia": "operator",
+        "createdActor": {
+          "type": "human",
+          "id": "gateway-owner",
+          "identity": {
+            "type": "profile",
+            "id": "gateway-owner"
+          },
+          "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790950401"
+        },
+        "owner": {
+          "actor": {
+            "type": "human",
+            "id": "gateway-owner",
+            "identity": {
+              "type": "profile",
+              "id": "gateway-owner"
+            },
+            "avatarUrl": "/api/users/gateway-owner/avatar?v=1793790950401"
+          }
+        },
+        "createdAt": 1793790956497,
+        "kind": "direct",
+        "classification": "direct",
+        "agentId": "main",
+        "isMain": false,
+        "isDock": false,
+        "isBackground": false,
+        "chatType": "direct",
+        "updatedAt": 1793790957303,
+        "archived": false,
+        "pinned": false,
+        "sidebarRoot": false,
+        "unread": false,
+        "sessionId": "9ecfb691-7d90-43bd-ba2d-022619a3618d",
+        "lifecycleRevision": "ea854e19-a4ef-43a3-a0d6-4c90441b3572",
+        "effectiveFastMode": false,
+        "effectiveFastModeSource": "default",
+        "fastAutoOnSeconds": 60,
+        "parentSessionKey": "agent:main:main",
+        "effectiveResponseUsage": "off",
+        "effectiveQueueMode": "steer",
+        "modelProvider": "openai",
+        "model": "gpt-6-astra",
+        "modelOverrideSource": null,
+        "runtimeSelectionLocked": false,
+        "agentRuntime": {
+          "id": "codex",
+          "cloudPlacementSupported": false,
+          "devicePlacementSupported": false,
+          "source": "implicit"
+        },
+        "snapshotAt": 1793790958497,
+        "totalTokensFresh": false,
+        "activitySummary": {
+          "state": "stale",
+          "canEnsure": true
+        },
+        "hasBoard": false,
+        "titlePending": false,
+        "childOwnerSessionKeys": [
+          "agent:main:main"
+        ],
+        "hiddenFromInvolvingMe": false,
+        "sharingRole": "admin",
+        "sendDisabledReason": null,
+        "workspaceReadDisabledReason": null,
+        "hasActiveRun": false,
+        "activeRunIds": [],
+        "activeLeafEntryId": "d6c03ff3-9d02-4c25-9e47-aba3ebba4e28"
+      }
+    },
+    "browser": {
+      "engine": "Chromium",
+      "version": "156.0.8078.4"
+    },
+    "servedEntry": {
+      "path": "/assets/index-wJSPD5SF.js",
+      "status": 200,
+      "sha256": "839e75cbed17601a301852ba6f119f478f136c5f10aa61e402f43a15db6894e1"
+    },
+    "rendered": {
+      "brCount": 2,
+      "rows": [
+        [
+          {
+            "text": "Label",
+            "visible": "Label"
+          },
+          {
+            "text": "Value",
+            "visible": "Value"
+          },
+          {
+            "text": "Empty",
+            "visible": "Empty"
+          }
+        ],
+        [
+          {
+            "text": "AlphaBeta",
+            "visible": "Alpha\nBeta"
+          },
+          {
+            "text": "One",
+            "visible": "One"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "Quote \"here\"next",
+            "visible": "Quote \"here\"\nnext"
+          },
+          {
+            "text": "Comma, kept",
+            "visible": "Comma, kept"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "A\tB",
+            "visible": "A B"
+          },
+          {
+            "text": "End",
+            "visible": "End"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ],
+        [
+          {
+            "text": "Quote \"only\"",
+            "visible": "Quote \"only\""
+          },
+          {
+            "text": "Plain",
+            "visible": "Plain"
+          },
+          {
+            "text": "",
+            "visible": ""
+          }
+        ]
+      ]
+    },
+    "observation": "GREEN: native clipboard preserves linebreaks and quotes/tab cell boundaries for toolbar and inline/expanded context Copy; ordinary formatted-text control remains byte-identical.",
+    "cleanup": {
+      "gatewayExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "productionServicesTouched": false,
+      "externalChannels": false,
+      "isolatedStateRetained": true,
+      "configUnchanged": true
+    }
+  }
+]

@@ -1,0 +1,287 @@
+{
+  "result": "PASS",
+  "parser": "Python standard-library csv.reader, delimiter=TAB, default quote escaping",
+  "observations": [
+    {
+      "version": "base",
+      "sourceHead": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+      "cases": [
+        {
+          "label": "ordinary-control",
+          "rows": [
+            [
+              "Name",
+              "Value"
+            ],
+            [
+              "Alpha",
+              "One"
+            ],
+            [
+              "Bold",
+              "code"
+            ]
+          ],
+          "columnCounts": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "label": "inline-table",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "AlphaBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"next",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A",
+              "B",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            4,
+            3
+          ]
+        },
+        {
+          "label": "context-menu",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "AlphaBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"next",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A",
+              "B",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            4,
+            3
+          ]
+        },
+        {
+          "label": "expanded-context-menu",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "AlphaBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"next",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A",
+              "B",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            4,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "version": "head",
+      "sourceHead": "bca959064c92a3e1f94c2bc095ebea68760ee0cc",
+      "cases": [
+        {
+          "label": "ordinary-control",
+          "rows": [
+            [
+              "Name",
+              "Value"
+            ],
+            [
+              "Alpha",
+              "One"
+            ],
+            [
+              "Bold",
+              "code"
+            ]
+          ],
+          "columnCounts": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "label": "inline-table",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "Alpha\nBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"\nnext",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A\tB",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        {
+          "label": "context-menu",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "Alpha\nBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"\nnext",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A\tB",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        {
+          "label": "expanded-context-menu",
+          "rows": [
+            [
+              "Label",
+              "Value",
+              "Empty"
+            ],
+            [
+              "Alpha\nBeta",
+              "One",
+              ""
+            ],
+            [
+              "Quote \"here\"\nnext",
+              "Comma, kept",
+              ""
+            ],
+            [
+              "A\tB",
+              "End",
+              ""
+            ],
+            [
+              "Quote \"only\"",
+              "Plain",
+              ""
+            ]
+          ],
+          "columnCounts": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        }
+      ]
+    }
+  ]
+}
