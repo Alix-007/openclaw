@@ -1,0 +1,124 @@
+{
+  "sessionId": "01a1a611-6593-7807-85fb-c4ac2fe42d74",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "<skill name=\"proof-tab\" location=\"$PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/\t#tab/SKILL.md\">\nReferences are relative to $PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/\t#tab.\n\nSYNTHETIC_PRIVATE_TAB_PAYLOAD\nReply only with Proof complete. No tools or side effects.\n</skill>\n\nprobe"
+        }
+      ],
+      "timestamp": 1793787520411
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Proof complete."
+        }
+      ],
+      "api": "openai-completions",
+      "provider": "ignore-proof-openai",
+      "model": "ignore-proof-model",
+      "usage": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "totalTokens": 0,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        },
+        "usageReport": {
+          "state": "unavailable"
+        },
+        "contextUsage": {
+          "state": "unavailable"
+        }
+      },
+      "stopReason": "stop",
+      "timestamp": 1793787520413,
+      "responseId": "proof-2"
+    }
+  ],
+  "sessionBranch": [
+    {
+      "type": "model_change",
+      "provider": "ignore-proof-openai",
+      "modelId": "ignore-proof-model",
+      "id": "6992dd55-6b31-4ca8-92b4-611bb362ab93",
+      "parentId": null,
+      "timestamp": "2026-11-04T10:18:40.404Z"
+    },
+    {
+      "type": "thinking_level_change",
+      "thinkingLevel": "off",
+      "id": "b1276cf6-75f9-490b-9b47-204b58a6c277",
+      "parentId": "6992dd55-6b31-4ca8-92b4-611bb362ab93",
+      "timestamp": "2026-11-04T10:18:40.404Z"
+    },
+    {
+      "type": "message",
+      "id": "53abbc46-8507-4771-a508-d2878606e475",
+      "parentId": "b1276cf6-75f9-490b-9b47-204b58a6c277",
+      "timestamp": "2026-11-04T10:18:40.412Z",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "<skill name=\"proof-tab\" location=\"$PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/\t#tab/SKILL.md\">\nReferences are relative to $PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/\t#tab.\n\nSYNTHETIC_PRIVATE_TAB_PAYLOAD\nReply only with Proof complete. No tools or side effects.\n</skill>\n\nprobe"
+          }
+        ],
+        "timestamp": 1793787520411
+      }
+    },
+    {
+      "type": "message",
+      "id": "897d8a71-a8cd-41ad-810b-aaea5d01d0b5",
+      "parentId": "53abbc46-8507-4771-a508-d2878606e475",
+      "timestamp": "2026-11-04T10:18:40.427Z",
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Proof complete."
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "ignore-proof-openai",
+        "model": "ignore-proof-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          },
+          "usageReport": {
+            "state": "unavailable"
+          },
+          "contextUsage": {
+            "state": "unavailable"
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1793787520413,
+        "responseId": "proof-2"
+      }
+    }
+  ]
+}

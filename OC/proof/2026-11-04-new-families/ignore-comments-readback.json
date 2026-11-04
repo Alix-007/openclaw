@@ -1,0 +1,416 @@
+[
+  {
+    "version": "base",
+    "at": "2026-11-04T10:18:05.782Z",
+    "sha": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+    "buildStamp": {
+      "builtAt": 1793785769990,
+      "head": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+      "inputsClean": true,
+      "inputSignature": "5dced43a8cc87cddabc071424a69701e962d5800d0470af872f8d20ef654b715"
+    },
+    "cases": [],
+    "result": "PASS",
+    "entry": "Real standalone createAgentSession prompt + DefaultResourceLoader resources_discover + native OpenAI-compatible loopback HTTP transport",
+    "scope": "Explicit session skill-path loading only; ordinary CLI/Gateway discovery and external provider compatibility are outside this proof.",
+    "harnessSha256": "df925dacdd7015bfaad98b6c6c22c73ab6ca810fbf4adb760accc1f26fac1cf9",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "$PROOF_ROOT/baseline/scripts/tsx.mjs",
+      "$PROOF_ROOT/proof-ignore-session.child.mts",
+      "$PROOF_ROOT/baseline",
+      "$PROOF_ROOT/proof-ignore-session-base-run4",
+      "base"
+    ],
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "watchdog": false,
+    "seconds": 34.87,
+    "productAcceptance": false,
+    "observation": "RED: leading-space/hash, tab/hash and nested hash-pattern skills expand into three real provider requests despite Git exclusions. Escaped-hash exclusion, visible/comment/BOM controls and seven final replies behave correctly.",
+    "native": {
+      "result": "PASS",
+      "entry": "Explicit standalone session /skill:name expansion through real resource discovery and native provider HTTP",
+      "sourceHead": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+      "expected": "base",
+      "parity": [
+        {
+          "directory": " #space",
+          "name": "proof-space",
+          "gitIgnored": true
+        },
+        {
+          "directory": "\t#tab",
+          "name": "proof-tab",
+          "gitIgnored": true
+        },
+        {
+          "directory": "group/ #nested",
+          "name": "proof-nested",
+          "gitIgnored": true
+        },
+        {
+          "directory": "normal-visible",
+          "name": "proof-visible",
+          "gitIgnored": false
+        },
+        {
+          "directory": "#comment-control",
+          "name": "proof-comment-control",
+          "gitIgnored": false
+        },
+        {
+          "directory": "#escaped",
+          "name": "proof-escaped",
+          "gitIgnored": true
+        },
+        {
+          "directory": "bom/visible",
+          "name": "proof-bom-comment",
+          "gitIgnored": false
+        }
+      ],
+      "fixtureHashesBefore": {
+        " #space/SKILL.md": "3400560e04c4fc7b48ac575ee00d7244df5adc166054f5cc32b88e0bbae26c24",
+        "\t#tab/SKILL.md": "b710ae0ee3e9db3f31c1c836d0a936d31412563403117c679950e4525c8b882e",
+        "group/ #nested/SKILL.md": "bd78a1e82359d1f442cdc14064db804b2f96fd8bef77cec12ff09fc3226096ca",
+        "normal-visible/SKILL.md": "39d151928880cae4e2d89839b73bbe03f732e4fe26ef5813b3810e3143bb640b",
+        "#comment-control/SKILL.md": "621f9111a45e521f1268509271135f1003b37a7ba70ad4e75814a3242730345d",
+        "#escaped/SKILL.md": "bbc33fc4064e5ebf581158b60ded025f4f3238f37b5b715e4e93cf625f2468b4",
+        "bom/visible/SKILL.md": "ddd329dfb6ffd6618bddf28265aaeab7acd6df7bacd42ec2b527697632983ee9",
+        ".gitignore": "b2118f38331f52d8347bb75c0fa7f038cadaa7f1a782b1ea03a0149508c4142b",
+        ".ignore": "8ecc711ce0db1df62f07fdbb690c384101a10606e848b0f3c89b490c21c40f6d",
+        "group/.fdignore": "76ed3e9275dd23c7d9f33dfc0db31a4af734047239ec29508bc2806e32a94ecc",
+        "bom/.gitignore": "488c3f777e0f57f646df99f16e93e38379020b981a9fee0df8d4f9a38f2ea406"
+      },
+      "scenarios": [
+        {
+          "name": "proof-space",
+          "directory": " #space",
+          "ignored": true,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-6060-77bb-9999-e6e160ae463c"
+        },
+        {
+          "name": "proof-tab",
+          "directory": "\t#tab",
+          "ignored": true,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-6593-7807-85fb-c4ac2fe42d74"
+        },
+        {
+          "name": "proof-nested",
+          "directory": "group/ #nested",
+          "ignored": true,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-65ad-746c-9237-48e00f0d0c72"
+        },
+        {
+          "name": "proof-visible",
+          "directory": "normal-visible",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-65ca-746a-b282-723a95a2f12b"
+        },
+        {
+          "name": "proof-comment-control",
+          "directory": "#comment-control",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-65dd-7bbe-bd79-badb68ec6be1"
+        },
+        {
+          "name": "proof-escaped",
+          "directory": "#escaped",
+          "ignored": true,
+          "expanded": false,
+          "expectedExpansion": false,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-65f6-7548-8e62-8992cc508d36"
+        },
+        {
+          "name": "proof-bom-comment",
+          "directory": "bom/visible",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a611-6607-7b37-b65c-d9a62f735dfe"
+        }
+      ],
+      "cleanup": {
+        "serverClosed": true
+      },
+      "limitations": [
+        "Source SDK/session entry; ordinary skills CLI and embedded Gateway discovery use a different path.",
+        "Synthetic local OpenAI-compatible responder exercises native transport; no real external provider or channel is tested.",
+        "Session readback is the real in-memory SessionManager/AgentSession state, not a persisted transcript claim."
+      ],
+      "fixtureHashesAfter": {
+        " #space/SKILL.md": "3400560e04c4fc7b48ac575ee00d7244df5adc166054f5cc32b88e0bbae26c24",
+        "\t#tab/SKILL.md": "b710ae0ee3e9db3f31c1c836d0a936d31412563403117c679950e4525c8b882e",
+        "group/ #nested/SKILL.md": "bd78a1e82359d1f442cdc14064db804b2f96fd8bef77cec12ff09fc3226096ca",
+        "normal-visible/SKILL.md": "39d151928880cae4e2d89839b73bbe03f732e4fe26ef5813b3810e3143bb640b",
+        "#comment-control/SKILL.md": "621f9111a45e521f1268509271135f1003b37a7ba70ad4e75814a3242730345d",
+        "#escaped/SKILL.md": "bbc33fc4064e5ebf581158b60ded025f4f3238f37b5b715e4e93cf625f2468b4",
+        "bom/visible/SKILL.md": "ddd329dfb6ffd6618bddf28265aaeab7acd6df7bacd42ec2b527697632983ee9",
+        ".gitignore": "b2118f38331f52d8347bb75c0fa7f038cadaa7f1a782b1ea03a0149508c4142b",
+        ".ignore": "8ecc711ce0db1df62f07fdbb690c384101a10606e848b0f3c89b490c21c40f6d",
+        "group/.fdignore": "76ed3e9275dd23c7d9f33dfc0db31a4af734047239ec29508bc2806e32a94ecc",
+        "bom/.gitignore": "488c3f777e0f57f646df99f16e93e38379020b981a9fee0df8d4f9a38f2ea406"
+      },
+      "productAcceptance": false,
+      "observation": "RED: leading-space/hash, tab/hash and nested hash-pattern skills expand into three real provider requests despite Git exclusions. Escaped-hash exclusion, visible/comment/BOM controls and seven final replies behave correctly."
+    },
+    "cleanup": {
+      "productionConfigTouched": false,
+      "externalModelCalls": false,
+      "syntheticLoopbackProviderOnly": true,
+      "childExited": true,
+      "isolatedFilesOnly": true,
+      "serverClosed": true
+    },
+    "elapsedMilliseconds": 34872.44,
+    "receiptCorrection": "Runtime units corrected from milliseconds to seconds; native observations unchanged."
+  },
+  {
+    "version": "head",
+    "at": "2026-11-04T10:43:09.865Z",
+    "sha": "6cd5d58d1769303cdd7eac8106918d55f11f36f9",
+    "buildStamp": {
+      "builtAt": 1793788774078,
+      "head": "6cd5d58d1769303cdd7eac8106918d55f11f36f9",
+      "inputsClean": true,
+      "inputSignature": "7ff25d1be14310dfa42c27133956fce187f1cdfb592eccad92add1e1ab3f6920"
+    },
+    "cases": [],
+    "result": "PASS",
+    "entry": "Real standalone createAgentSession prompt + DefaultResourceLoader resources_discover + native OpenAI-compatible loopback HTTP transport",
+    "scope": "Explicit session skill-path loading only; ordinary CLI/Gateway discovery and external provider compatibility are outside this proof.",
+    "harnessSha256": "df925dacdd7015bfaad98b6c6c22c73ab6ca810fbf4adb760accc1f26fac1cf9",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "$PROOF_ROOT/ignore-comments/scripts/tsx.mjs",
+      "$PROOF_ROOT/proof-ignore-session.child.mts",
+      "$PROOF_ROOT/ignore-comments",
+      "$PROOF_ROOT/proof-ignore-session-head",
+      "head"
+    ],
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "watchdog": false,
+    "seconds": 33.14,
+    "productAcceptance": true,
+    "observation": "GREEN: all authored exclusions suppress skill expansion into the real provider requests; visible/comment/BOM controls still expand and all seven native sessions finish successfully.",
+    "native": {
+      "result": "PASS",
+      "entry": "Explicit standalone session /skill:name expansion through real resource discovery and native provider HTTP",
+      "sourceHead": "6cd5d58d1769303cdd7eac8106918d55f11f36f9",
+      "expected": "head",
+      "parity": [
+        {
+          "directory": " #space",
+          "name": "proof-space",
+          "gitIgnored": true
+        },
+        {
+          "directory": "\t#tab",
+          "name": "proof-tab",
+          "gitIgnored": true
+        },
+        {
+          "directory": "group/ #nested",
+          "name": "proof-nested",
+          "gitIgnored": true
+        },
+        {
+          "directory": "normal-visible",
+          "name": "proof-visible",
+          "gitIgnored": false
+        },
+        {
+          "directory": "#comment-control",
+          "name": "proof-comment-control",
+          "gitIgnored": false
+        },
+        {
+          "directory": "#escaped",
+          "name": "proof-escaped",
+          "gitIgnored": true
+        },
+        {
+          "directory": "bom/visible",
+          "name": "proof-bom-comment",
+          "gitIgnored": false
+        }
+      ],
+      "fixtureHashesBefore": {
+        " #space/SKILL.md": "3400560e04c4fc7b48ac575ee00d7244df5adc166054f5cc32b88e0bbae26c24",
+        "\t#tab/SKILL.md": "b710ae0ee3e9db3f31c1c836d0a936d31412563403117c679950e4525c8b882e",
+        "group/ #nested/SKILL.md": "bd78a1e82359d1f442cdc14064db804b2f96fd8bef77cec12ff09fc3226096ca",
+        "normal-visible/SKILL.md": "39d151928880cae4e2d89839b73bbe03f732e4fe26ef5813b3810e3143bb640b",
+        "#comment-control/SKILL.md": "621f9111a45e521f1268509271135f1003b37a7ba70ad4e75814a3242730345d",
+        "#escaped/SKILL.md": "bbc33fc4064e5ebf581158b60ded025f4f3238f37b5b715e4e93cf625f2468b4",
+        "bom/visible/SKILL.md": "ddd329dfb6ffd6618bddf28265aaeab7acd6df7bacd42ec2b527697632983ee9",
+        ".gitignore": "b2118f38331f52d8347bb75c0fa7f038cadaa7f1a782b1ea03a0149508c4142b",
+        ".ignore": "8ecc711ce0db1df62f07fdbb690c384101a10606e848b0f3c89b490c21c40f6d",
+        "group/.fdignore": "76ed3e9275dd23c7d9f33dfc0db31a4af734047239ec29508bc2806e32a94ecc",
+        "bom/.gitignore": "488c3f777e0f57f646df99f16e93e38379020b981a9fee0df8d4f9a38f2ea406"
+      },
+      "scenarios": [
+        {
+          "name": "proof-space",
+          "directory": " #space",
+          "ignored": true,
+          "expanded": false,
+          "expectedExpansion": false,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-4d6d-730c-8204-aaa97cbc435b"
+        },
+        {
+          "name": "proof-tab",
+          "directory": "\t#tab",
+          "ignored": true,
+          "expanded": false,
+          "expectedExpansion": false,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-520c-7f10-899d-0335c8c817f4"
+        },
+        {
+          "name": "proof-nested",
+          "directory": "group/ #nested",
+          "ignored": true,
+          "expanded": false,
+          "expectedExpansion": false,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-5225-70c2-bd5b-34adc93a65b9"
+        },
+        {
+          "name": "proof-visible",
+          "directory": "normal-visible",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-5239-7f7d-b962-eb7e4d16cc34"
+        },
+        {
+          "name": "proof-comment-control",
+          "directory": "#comment-control",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-524d-7a3d-bd84-32a1f26bb44b"
+        },
+        {
+          "name": "proof-escaped",
+          "directory": "#escaped",
+          "ignored": true,
+          "expanded": false,
+          "expectedExpansion": false,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-5264-7fe9-aad1-7f6295f6411a"
+        },
+        {
+          "name": "proof-bom-comment",
+          "directory": "bom/visible",
+          "ignored": false,
+          "expanded": true,
+          "expectedExpansion": true,
+          "requestCount": 1,
+          "discoveryCalls": 1,
+          "finalReply": "Proof complete.",
+          "stopReason": "stop",
+          "sessionId": "01a1a628-528e-77ad-8584-daccc5b165fa"
+        }
+      ],
+      "cleanup": {
+        "serverClosed": true
+      },
+      "limitations": [
+        "Source SDK/session entry; ordinary skills CLI and embedded Gateway discovery use a different path.",
+        "Synthetic local OpenAI-compatible responder exercises native transport; no real external provider or channel is tested.",
+        "Session readback is the real in-memory SessionManager/AgentSession state, not a persisted transcript claim."
+      ],
+      "fixtureHashesAfter": {
+        " #space/SKILL.md": "3400560e04c4fc7b48ac575ee00d7244df5adc166054f5cc32b88e0bbae26c24",
+        "\t#tab/SKILL.md": "b710ae0ee3e9db3f31c1c836d0a936d31412563403117c679950e4525c8b882e",
+        "group/ #nested/SKILL.md": "bd78a1e82359d1f442cdc14064db804b2f96fd8bef77cec12ff09fc3226096ca",
+        "normal-visible/SKILL.md": "39d151928880cae4e2d89839b73bbe03f732e4fe26ef5813b3810e3143bb640b",
+        "#comment-control/SKILL.md": "621f9111a45e521f1268509271135f1003b37a7ba70ad4e75814a3242730345d",
+        "#escaped/SKILL.md": "bbc33fc4064e5ebf581158b60ded025f4f3238f37b5b715e4e93cf625f2468b4",
+        "bom/visible/SKILL.md": "ddd329dfb6ffd6618bddf28265aaeab7acd6df7bacd42ec2b527697632983ee9",
+        ".gitignore": "b2118f38331f52d8347bb75c0fa7f038cadaa7f1a782b1ea03a0149508c4142b",
+        ".ignore": "8ecc711ce0db1df62f07fdbb690c384101a10606e848b0f3c89b490c21c40f6d",
+        "group/.fdignore": "76ed3e9275dd23c7d9f33dfc0db31a4af734047239ec29508bc2806e32a94ecc",
+        "bom/.gitignore": "488c3f777e0f57f646df99f16e93e38379020b981a9fee0df8d4f9a38f2ea406"
+      },
+      "productAcceptance": true,
+      "observation": "GREEN: all authored exclusions suppress skill expansion into the real provider requests; visible/comment/BOM controls still expand and all seven native sessions finish successfully."
+    },
+    "cleanup": {
+      "productionConfigTouched": false,
+      "externalModelCalls": false,
+      "syntheticLoopbackProviderOnly": true,
+      "childExited": true,
+      "isolatedFilesOnly": true,
+      "serverClosed": true
+    }
+  }
+]

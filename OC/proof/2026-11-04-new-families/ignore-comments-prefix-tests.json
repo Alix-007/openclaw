@@ -1,0 +1,11 @@
+{
+  "name": "prefix-tests",
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-vitest.mjs",
+    "src/agents/agent-tools.prefix-stability.test.ts",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 0,
+  "seconds": 221.78
+}

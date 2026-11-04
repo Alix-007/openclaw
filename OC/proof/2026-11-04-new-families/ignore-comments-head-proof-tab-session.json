@@ -1,0 +1,124 @@
+{
+  "sessionId": "01a1a628-520c-7f10-899d-0335c8c817f4",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "/skill:proof-tab probe"
+        }
+      ],
+      "timestamp": 1793789022738
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Proof complete."
+        }
+      ],
+      "api": "openai-completions",
+      "provider": "ignore-proof-openai",
+      "model": "ignore-proof-model",
+      "usage": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "totalTokens": 0,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        },
+        "usageReport": {
+          "state": "unavailable"
+        },
+        "contextUsage": {
+          "state": "unavailable"
+        }
+      },
+      "stopReason": "stop",
+      "timestamp": 1793789022740,
+      "responseId": "proof-2"
+    }
+  ],
+  "sessionBranch": [
+    {
+      "type": "model_change",
+      "provider": "ignore-proof-openai",
+      "modelId": "ignore-proof-model",
+      "id": "84b23a62-d601-4af2-aaad-d8351e8cf5b1",
+      "parentId": null,
+      "timestamp": "2026-11-04T10:43:42.733Z"
+    },
+    {
+      "type": "thinking_level_change",
+      "thinkingLevel": "off",
+      "id": "447df307-7726-4bf1-bfae-8019d24b04af",
+      "parentId": "84b23a62-d601-4af2-aaad-d8351e8cf5b1",
+      "timestamp": "2026-11-04T10:43:42.733Z"
+    },
+    {
+      "type": "message",
+      "id": "0d4ad4c0-d9b6-4b15-afd7-788b5c6cbe5b",
+      "parentId": "447df307-7726-4bf1-bfae-8019d24b04af",
+      "timestamp": "2026-11-04T10:43:42.739Z",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "/skill:proof-tab probe"
+          }
+        ],
+        "timestamp": 1793789022738
+      }
+    },
+    {
+      "type": "message",
+      "id": "a1cd064f-43fb-4c18-a26a-3cff017dd297",
+      "parentId": "0d4ad4c0-d9b6-4b15-afd7-788b5c6cbe5b",
+      "timestamp": "2026-11-04T10:43:42.755Z",
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Proof complete."
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "ignore-proof-openai",
+        "model": "ignore-proof-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          },
+          "usageReport": {
+            "state": "unavailable"
+          },
+          "contextUsage": {
+            "state": "unavailable"
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1793789022740,
+        "responseId": "proof-2"
+      }
+    }
+  ]
+}

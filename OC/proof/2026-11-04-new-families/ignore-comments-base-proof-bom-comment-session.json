@@ -1,0 +1,124 @@
+{
+  "sessionId": "01a1a611-6607-7b37-b65c-d9a62f735dfe",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "<skill name=\"proof-bom-comment\" location=\"$PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/bom/visible/SKILL.md\">\nReferences are relative to $PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/bom/visible.\n\nSYNTHETIC_BOM_COMMENT_CONTROL_PAYLOAD\nReply only with Proof complete. No tools or side effects.\n</skill>\n\nprobe"
+        }
+      ],
+      "timestamp": 1793787520524
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Proof complete."
+        }
+      ],
+      "api": "openai-completions",
+      "provider": "ignore-proof-openai",
+      "model": "ignore-proof-model",
+      "usage": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "totalTokens": 0,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        },
+        "usageReport": {
+          "state": "unavailable"
+        },
+        "contextUsage": {
+          "state": "unavailable"
+        }
+      },
+      "stopReason": "stop",
+      "timestamp": 1793787520525,
+      "responseId": "proof-7"
+    }
+  ],
+  "sessionBranch": [
+    {
+      "type": "model_change",
+      "provider": "ignore-proof-openai",
+      "modelId": "ignore-proof-model",
+      "id": "f759696f-8688-4ef1-a064-d298ad55b928",
+      "parentId": null,
+      "timestamp": "2026-11-04T10:18:40.520Z"
+    },
+    {
+      "type": "thinking_level_change",
+      "thinkingLevel": "off",
+      "id": "9b45de9e-9b86-4587-afce-5973eb31324f",
+      "parentId": "f759696f-8688-4ef1-a064-d298ad55b928",
+      "timestamp": "2026-11-04T10:18:40.520Z"
+    },
+    {
+      "type": "message",
+      "id": "ebd0d284-a625-44d8-b875-75c777ee0389",
+      "parentId": "9b45de9e-9b86-4587-afce-5973eb31324f",
+      "timestamp": "2026-11-04T10:18:40.525Z",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "<skill name=\"proof-bom-comment\" location=\"$PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/bom/visible/SKILL.md\">\nReferences are relative to $PROOF_ROOT/proof-ignore-session-base-run4/workspace/skills/bom/visible.\n\nSYNTHETIC_BOM_COMMENT_CONTROL_PAYLOAD\nReply only with Proof complete. No tools or side effects.\n</skill>\n\nprobe"
+          }
+        ],
+        "timestamp": 1793787520524
+      }
+    },
+    {
+      "type": "message",
+      "id": "f50e51e9-3bab-4374-9ff0-591241dc5ac5",
+      "parentId": "ebd0d284-a625-44d8-b875-75c777ee0389",
+      "timestamp": "2026-11-04T10:18:40.534Z",
+      "message": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Proof complete."
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "ignore-proof-openai",
+        "model": "ignore-proof-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          },
+          "usageReport": {
+            "state": "unavailable"
+          },
+          "contextUsage": {
+            "state": "unavailable"
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1793787520525,
+        "responseId": "proof-7"
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "src/shared/ignore-rules.ts",
+      "src/shared/ignore-rules.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 0.43
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "config/tsconfig/oxlint.core.json",
+      "src/shared/ignore-rules.ts",
+      "src/shared/ignore-rules.test.ts"
+    ],
+    "exitCode": 0,
+    "seconds": 32.08
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/ignore-comments-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 21.91
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "258d034391ac03a8ee3530ba33552a5cbf2062fc"
+    ],
+    "exitCode": 0,
+    "seconds": 6.35
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "src/shared/ignore-rules.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 7.05
+  }
+]
