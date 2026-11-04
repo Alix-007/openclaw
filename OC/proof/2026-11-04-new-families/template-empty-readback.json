@@ -1,0 +1,530 @@
+[
+  {
+    "version": "base",
+    "at": "2026-11-04T10:11:27.060Z",
+    "sha": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+    "buildStamp": {
+      "builtAt": 1793785769990,
+      "head": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+      "inputsClean": true,
+      "inputSignature": "5dced43a8cc87cddabc071424a69701e962d5800d0470af872f8d20ef654b715"
+    },
+    "cases": [
+      {
+        "label": "empty-name",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/empty-name",
+          "--name",
+          "",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 4.533,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/empty-name\",\n  \"packageJson\": {\n    \"name\": \"empty-name\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": true,
+            "root": "$PROOF_ROOT/proof-template-create-base-final/empty-name",
+            "packageJson": {
+              "name": "empty-name",
+              "version": "0.1.0",
+              "openclaw": {
+                "template": "CLAW.md"
+              }
+            },
+            "filesWritten": [
+              "package.json",
+              "CLAW.md"
+            ]
+          },
+          "targetExists": true,
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ]
+        }
+      },
+      {
+        "label": "empty-agent",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/empty-agent",
+          "--agent-id",
+          "",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.94,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/empty-agent\",\n  \"packageJson\": {\n    \"name\": \"empty-agent\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": true,
+            "root": "$PROOF_ROOT/proof-template-create-base-final/empty-agent",
+            "packageJson": {
+              "name": "empty-agent",
+              "version": "0.1.0",
+              "openclaw": {
+                "template": "CLAW.md"
+              }
+            },
+            "filesWritten": [
+              "package.json",
+              "CLAW.md"
+            ]
+          },
+          "targetExists": true,
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ]
+        }
+      },
+      {
+        "label": "invalid-name",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/invalid-name",
+          "--name",
+          "invalid name",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 3.163,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_package_name\",\n    \"message\": \"Package name \\\"invalid name\\\" must be a valid ClawHub package name.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_package_name",
+              "message": "Package name \"invalid name\" must be a valid ClawHub package name."
+            }
+          },
+          "targetExists": false
+        }
+      },
+      {
+        "label": "invalid-agent",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/invalid-agent",
+          "--agent-id",
+          "INVALID",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.81,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_agent_id\",\n    \"message\": \"Agent id \\\"INVALID\\\" must match /^[a-z][a-z0-9_-]{0,63}$/.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_agent_id",
+              "message": "Agent id \"INVALID\" must match /^[a-z][a-z0-9_-]{0,63}$/."
+            }
+          },
+          "targetExists": false
+        }
+      },
+      {
+        "label": "omitted-defaults",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/omitted-defaults",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.982,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/omitted-defaults\",\n  \"packageJson\": {\n    \"name\": \"omitted-defaults\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "packageName": "omitted-defaults",
+          "manifest": "---\nschemaVersion: 1\nagent:\n  id: \"omitted-defaults\"\n  name: \"Omitted Defaults\"\n---\nYou are Omitted Defaults, a purpose-built OpenClaw agent.\n",
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ],
+          "validatedAgentId": "omitted-defaults"
+        }
+      },
+      {
+        "label": "omitted-defaults-validate",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "validate",
+          "$PROOF_ROOT/proof-template-create-base-final/omitted-defaults",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 3.099,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/omitted-defaults\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"omitted-defaults\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$PROOF_ROOT/proof-template-create-base-final/omitted-defaults\",\n    \"manifestPath\": \"$PROOF_ROOT/proof-template-create-base-final/omitted-defaults/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:b04896729d74ab14988491884ac6a684e5a21a3f173161fd4eb5887f0d146edc\",\n    \"byteLength\": 389\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"omitted-defaults\",\n      \"name\": \"Omitted Defaults\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"packages\": [],\n    \"mcpServers\": {},\n    \"cronJobs\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+        "stderr": ""
+      },
+      {
+        "label": "explicit-valid",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-base-final/explicit-valid",
+          "--name",
+          "proof-package",
+          "--agent-id",
+          "proof-worker",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 3.04,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/explicit-valid\",\n  \"packageJson\": {\n    \"name\": \"proof-package\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "packageName": "proof-package",
+          "manifest": "---\nschemaVersion: 1\nagent:\n  id: \"proof-worker\"\n  name: \"Proof Worker\"\n---\nYou are Proof Worker, a purpose-built OpenClaw agent.\n",
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ],
+          "validatedAgentId": "proof-worker"
+        }
+      },
+      {
+        "label": "explicit-valid-validate",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/baseline/openclaw.mjs",
+          "templates",
+          "validate",
+          "$PROOF_ROOT/proof-template-create-base-final/explicit-valid",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 3.221,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-base-final/explicit-valid\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"proof-package\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$PROOF_ROOT/proof-template-create-base-final/explicit-valid\",\n    \"manifestPath\": \"$PROOF_ROOT/proof-template-create-base-final/explicit-valid/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:18722d554792bd7625cd2c6d784146fed14b98f11f8c7acaa1c9ce51f2001bdb\",\n    \"byteLength\": 372\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-worker\",\n      \"name\": \"Proof Worker\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"packages\": [],\n    \"mcpServers\": {},\n    \"cronJobs\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+        "stderr": ""
+      }
+    ],
+    "result": "PASS",
+    "entry": "Normally built public openclaw.mjs templates create/validate CLI; no production imports or mocks",
+    "observation": "RED: both explicitly empty identity options are silently dropped; create exits0 and writes two default-identity files. Omitted and valid explicit controls create valid projects.",
+    "cleanup": {
+      "productionConfigTouched": false,
+      "externalServiceOrModelCalls": false,
+      "isolatedFixtureOnly": true
+    }
+  },
+  {
+    "version": "head",
+    "at": "2026-11-04T10:33:13.241Z",
+    "sha": "95aced129985af4261171d19b361420cfffe9bba",
+    "buildStamp": {
+      "builtAt": 1793788368941,
+      "head": "95aced129985af4261171d19b361420cfffe9bba",
+      "inputsClean": true,
+      "inputSignature": "a286c4ae0cc868d75cb9cf26d68781611c751b7d8a2da235616a0ddd8c71ac01"
+    },
+    "cases": [
+      {
+        "label": "empty-name",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/empty-name",
+          "--name",
+          "",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.801,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_package_name\",\n    \"message\": \"Package name \\\"\\\" must be a valid ClawHub package name.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_package_name",
+              "message": "Package name \"\" must be a valid ClawHub package name."
+            }
+          },
+          "targetExists": false,
+          "files": []
+        }
+      },
+      {
+        "label": "empty-agent",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/empty-agent",
+          "--agent-id",
+          "",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.766,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_agent_id\",\n    \"message\": \"Agent id \\\"\\\" must match /^[a-z][a-z0-9_-]{0,63}$/.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_agent_id",
+              "message": "Agent id \"\" must match /^[a-z][a-z0-9_-]{0,63}$/."
+            }
+          },
+          "targetExists": false,
+          "files": []
+        }
+      },
+      {
+        "label": "invalid-name",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/invalid-name",
+          "--name",
+          "invalid name",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.826,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_package_name\",\n    \"message\": \"Package name \\\"invalid name\\\" must be a valid ClawHub package name.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_package_name",
+              "message": "Package name \"invalid name\" must be a valid ClawHub package name."
+            }
+          },
+          "targetExists": false
+        }
+      },
+      {
+        "label": "invalid-agent",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/invalid-agent",
+          "--agent-id",
+          "INVALID",
+          "--json"
+        ],
+        "exit": {
+          "code": 1,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.695,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"invalid_agent_id\",\n    \"message\": \"Agent id \\\"INVALID\\\" must match /^[a-z][a-z0-9_-]{0,63}$/.\"\n  }\n}\n",
+        "stderr": "",
+        "readback": {
+          "body": {
+            "schemaVersion": "openclaw.templateProject.v1",
+            "stability": "experimental",
+            "ok": false,
+            "error": {
+              "code": "invalid_agent_id",
+              "message": "Agent id \"INVALID\" must match /^[a-z][a-z0-9_-]{0,63}$/."
+            }
+          },
+          "targetExists": false
+        }
+      },
+      {
+        "label": "omitted-defaults",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/omitted-defaults",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.706,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-head/omitted-defaults\",\n  \"packageJson\": {\n    \"name\": \"omitted-defaults\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "packageName": "omitted-defaults",
+          "manifest": "---\nschemaVersion: 1\nagent:\n  id: \"omitted-defaults\"\n  name: \"Omitted Defaults\"\n---\nYou are Omitted Defaults, a purpose-built OpenClaw agent.\n",
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ],
+          "validatedAgentId": "omitted-defaults"
+        }
+      },
+      {
+        "label": "omitted-defaults-validate",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "validate",
+          "$PROOF_ROOT/proof-template-create-head/omitted-defaults",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.727,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-head/omitted-defaults\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"omitted-defaults\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$PROOF_ROOT/proof-template-create-head/omitted-defaults\",\n    \"manifestPath\": \"$PROOF_ROOT/proof-template-create-head/omitted-defaults/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:0fa09f904e87e9328dd9a6185864f86e3b9933a32daae0e17d5511bbeae2a077\",\n    \"byteLength\": 383\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"omitted-defaults\",\n      \"name\": \"Omitted Defaults\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"packages\": [],\n    \"mcpServers\": {},\n    \"cronJobs\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+        "stderr": ""
+      },
+      {
+        "label": "explicit-valid",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "create",
+          "$PROOF_ROOT/proof-template-create-head/explicit-valid",
+          "--name",
+          "proof-package",
+          "--agent-id",
+          "proof-worker",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.907,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-head/explicit-valid\",\n  \"packageJson\": {\n    \"name\": \"proof-package\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+        "stderr": "",
+        "readback": {
+          "packageName": "proof-package",
+          "manifest": "---\nschemaVersion: 1\nagent:\n  id: \"proof-worker\"\n  name: \"Proof Worker\"\n---\nYou are Proof Worker, a purpose-built OpenClaw agent.\n",
+          "files": [
+            "CLAW.md",
+            "package.json"
+          ],
+          "validatedAgentId": "proof-worker"
+        }
+      },
+      {
+        "label": "explicit-valid-validate",
+        "command": [
+          "$NODE_BIN/node",
+          "$PROOF_ROOT/template-empty/openclaw.mjs",
+          "templates",
+          "validate",
+          "$PROOF_ROOT/proof-template-create-head/explicit-valid",
+          "--json"
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "watchdog": false,
+        "seconds": 2.794,
+        "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$PROOF_ROOT/proof-template-create-head/explicit-valid\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"proof-package\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$PROOF_ROOT/proof-template-create-head/explicit-valid\",\n    \"manifestPath\": \"$PROOF_ROOT/proof-template-create-head/explicit-valid/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:eaf97f18a602eb1c878ded5363164bba166ef2f66a97b88d1f28ad6dd54531eb\",\n    \"byteLength\": 366\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-worker\",\n      \"name\": \"Proof Worker\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"packages\": [],\n    \"mcpServers\": {},\n    \"cronJobs\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+        "stderr": ""
+      }
+    ],
+    "result": "PASS",
+    "entry": "Normally built public openclaw.mjs templates create/validate CLI; no production imports or mocks",
+    "observation": "GREEN: both explicitly empty identity options return their canonical errors with exit1 and zero target files/directories. Omitted defaults and explicit valid identities still create and validate.",
+    "cleanup": {
+      "productionConfigTouched": false,
+      "externalServiceOrModelCalls": false,
+      "isolatedFixtureOnly": true
+    }
+  }
+]

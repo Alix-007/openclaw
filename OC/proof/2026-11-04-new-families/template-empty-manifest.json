@@ -1,0 +1,37 @@
+{
+  "kind": "template-empty",
+  "base": "258d034391ac03a8ee3530ba33552a5cbf2062fc",
+  "head": "95aced129985af4261171d19b361420cfffe9bba",
+  "files": [
+    {
+      "path": "native-cli.mjs",
+      "sha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+      "bytes": 2575
+    },
+    {
+      "path": "proof-template-create.mjs",
+      "sha256": "fc6d3d9ed95377a1638a2ce8ce6224443c2085494bddc341dcf636fe7b19480c",
+      "bytes": 3498
+    },
+    {
+      "path": "template-empty-readback.json",
+      "sha256": "953d7b3f0a20c41485d4ce55113aa374fbc2cd2760be283ba6c9df36cc11d4e4",
+      "bytes": 23138
+    },
+    {
+      "path": "template-empty-checks.json",
+      "sha256": "1e3c45eb44057b23cdb7ed7379b61505a221b87ae82bcf5844bff63c48152454",
+      "bytes": 1295
+    },
+    {
+      "path": "template-empty-build.json",
+      "sha256": "708a96e8916bde68d2de66c30aabd5ccea9a67a987fdc644aa5b393e733ab030",
+      "bytes": 169
+    },
+    {
+      "path": "template-empty-commit.json",
+      "sha256": "7094a9f416e645b0a04d02c3e1d44762761aa8730bfb238eea0a5c1fb0454cc4",
+      "bytes": 99
+    }
+  ]
+}
