@@ -1,0 +1,122 @@
+{
+  "kind": "mobile-sidebar-events",
+  "base": "91f796d79f906b234d024abde6bcb9410327060c",
+  "head": "eb7f646f8d7db55660cb560ccfaa191f1f5454b8",
+  "files": [
+    {
+      "path": "isolated-gateway.mjs",
+      "sha256": "fc62ce72ef1bebcbcd9a644da95b099eac34d876f3ed609c7e5489b23d14e007",
+      "bytes": 5805
+    },
+    {
+      "path": "proof-mobile-sidebar-events.mjs",
+      "sha256": "4125b3c7e2bb4c4595e960ba64c50998e04bc61ae5da4c618c8067506aaa67e7",
+      "bytes": 14455
+    },
+    {
+      "path": "proof-mobile-sidebar-events-webkit.mjs",
+      "sha256": "acb3194ea18e0f0faa39a36f04180d9be485dce86ad194803c68f640d69b7bfc",
+      "bytes": 11683
+    },
+    {
+      "path": "prepare-ui-proof-distributions.mts",
+      "sha256": "e314dfb65983c092e7d558b28909df8b45c28fffc84d5241b54439e1728a91f8",
+      "bytes": 1660
+    },
+    {
+      "path": "mobile-sidebar-events-readback.json",
+      "sha256": "55c617b65889cfcc067e87b68ff24342667c704139bb9699f23295a248b44da0",
+      "bytes": 285003
+    },
+    {
+      "path": "mobile-sidebar-events-checks.json",
+      "sha256": "c45ac25b11b90eff9f658296afc37fe20f828563cf7a378ec1ea60b47ed67142",
+      "bytes": 1522
+    },
+    {
+      "path": "mobile-sidebar-events-build.json",
+      "sha256": "55666bf4b1fa6524b682de449bd64ace4625552505ef05825b3bc93e4b309048",
+      "bytes": 169
+    },
+    {
+      "path": "mobile-sidebar-events-commit.json",
+      "sha256": "810863cd62c390e770e25ac0610aede08b9c3c47cb73a1af507873e13092fc1a",
+      "bytes": 100
+    },
+    {
+      "path": "mobile-sidebar-events-ui-build.json",
+      "sha256": "5b615ffa8e97865fc4458d65e5d91576f39d6cb5e88ef4402ae886a5e4666963",
+      "bytes": 114
+    },
+    {
+      "path": "mobile-sidebar-events-ui-plugins.json",
+      "sha256": "3ca011874a9885da9612394e0f9e939b83bcdaf968b6cddab74b739762ca029f",
+      "bytes": 224
+    },
+    {
+      "path": "mobile-sidebar-events-ui-controllers.json",
+      "sha256": "ea4288e12b0984e82bd212012e2aa6a9bd230a99decad32fb15eae1c2fd7357e",
+      "bytes": 230
+    },
+    {
+      "path": "mobile-sidebar-events-webkit-blocked.json",
+      "sha256": "9c25efe76186813c812d9b37ed04c644b5dd6895e68141300ba490fa4cc628f0",
+      "bytes": 1390
+    },
+    {
+      "path": "README.md",
+      "sha256": "1b2d6a7d4dfda1c6a52ab7fbe21ad958bd39dbb8e37b0f60cb14cf788dd9716c",
+      "bytes": 1247
+    },
+    {
+      "path": "mobile-sidebar-events-base-after-Find-focus.png",
+      "sha256": "ef1b9c33ed813a2be70f97c4bf6d5cbfe51c65ba39dd5b1a2c73dc335345e861",
+      "bytes": 25985
+    },
+    {
+      "path": "mobile-sidebar-events-base-after-close-painted-state.png",
+      "sha256": "07249b722484881aae246996f1d437c5aff53e79b64722efd2df16cef8a1df21",
+      "bytes": 26325
+    },
+    {
+      "path": "mobile-sidebar-events-base-after-composing-escape.png",
+      "sha256": "ef1b9c33ed813a2be70f97c4bf6d5cbfe51c65ba39dd5b1a2c73dc335345e861",
+      "bytes": 25985
+    },
+    {
+      "path": "mobile-sidebar-events-base-before-Find-focus.png",
+      "sha256": "bd220ca244ee2368e445a3f13d349f36dc567b2111c2fb6cd9105c33c7955584",
+      "bytes": 27634
+    },
+    {
+      "path": "mobile-sidebar-events-base-before-composing-escape.png",
+      "sha256": "8657a5f74fb54fbd0431680641a2ca787458985107deece78fce0fb1d3f76aec",
+      "bytes": 26130
+    },
+    {
+      "path": "mobile-sidebar-events-head-after-Find-focus.png",
+      "sha256": "9348ad50669df711c2cf594484a79a4c3679c8a12af413b3d62baf210380c6bb",
+      "bytes": 21740
+    },
+    {
+      "path": "mobile-sidebar-events-head-after-close-painted-state.png",
+      "sha256": "f484c1edb48ffb237c18778c55593e097586a5c50ac0602f00dc5dfd6acee6ca",
+      "bytes": 15015
+    },
+    {
+      "path": "mobile-sidebar-events-head-after-composing-escape.png",
+      "sha256": "1406e7df5fa92d1a2b09252ade78c8196ef8b09731c39bbbb99922434c611c0f",
+      "bytes": 21728
+    },
+    {
+      "path": "mobile-sidebar-events-head-before-Find-focus.png",
+      "sha256": "49dd19def86ccd337a6a8b41cf8420311f0a3e236410c8fd3bafd47fe4459eae",
+      "bytes": 27574
+    },
+    {
+      "path": "mobile-sidebar-events-head-before-composing-escape.png",
+      "sha256": "62b6e210cfd0b771365961b3b50edc2c5880eda5e6babb0eb984cf234a80af9d",
+      "bytes": 21882
+    }
+  ]
+}

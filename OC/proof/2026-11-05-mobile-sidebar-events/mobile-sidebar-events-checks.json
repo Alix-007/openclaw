@@ -1,0 +1,66 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/pages/chat/chat-pane-sidebar-view.tsx",
+      "ui/src/pages/chat/chat-pane-sidebar-view.test.tsx"
+    ],
+    "exitCode": 0,
+    "seconds": 0.29
+  },
+  {
+    "name": "lint",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "ui/tsconfig.json",
+      "ui/src/pages/chat/chat-pane-sidebar-view.tsx",
+      "ui/src/pages/chat/chat-pane-sidebar-view.test.tsx"
+    ],
+    "exitCode": 0,
+    "seconds": 58.5
+  },
+  {
+    "name": "types",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$PROOF_ROOT/mobile-sidebar-events-types.tsconfig.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 138.9
+  },
+  {
+    "name": "test-lines",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "91f796d79f906b234d024abde6bcb9410327060c"
+    ],
+    "exitCode": 0,
+    "seconds": 6.35
+  },
+  {
+    "name": "tests",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-vitest.mjs",
+      "ui/src/pages/chat/chat-pane-sidebar-view.test.tsx",
+      "ui/src/pages/chat/chat-pane-mobile-chrome-loading.test.tsx",
+      "ui/src/pages/chat/chat-mobile-host.test.ts",
+      "ui/src/pages/chat/chat-mobile-host-release.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 23.43
+  }
+]

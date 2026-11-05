@@ -1,0 +1,11 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "$PROOF_ROOT/mobile-sidebar-events/scripts/tsx.mjs",
+    "prepare-ui-proof-distributions.mts",
+    "mobile-sidebar-events"
+  ],
+  "exitCode": 0,
+  "seconds": 26.66
+}

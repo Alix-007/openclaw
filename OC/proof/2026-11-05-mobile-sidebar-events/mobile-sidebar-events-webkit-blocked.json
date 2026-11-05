@@ -1,0 +1,17 @@
+{
+  "sha": "91f796d79f906b234d024abde6bcb9410327060c",
+  "result": "SETUP_OR_PRODUCT_FAILURE",
+  "proofStatus": "BLOCKED",
+  "error": "Error: Error: browserType.launch: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> $LOCAL_RUNTIME --inspector-pipe --headless --no-startup-window\n<launched> pid=784892\n[pid=784892][err] $LOCAL_RUNTIME error while loading shared libraries: libicudata.so.74: cannot open shared object file: No such file or directory\nCall log:\n  - <launching> $LOCAL_RUNTIME --inspector-pipe --headless --no-startup-window\n  - <launched> pid=784892\n  - [pid=784892][err] $LOCAL_RUNTIME error while loading shared libraries: libicudata.so.74: cannot open shared object file: No such file or directory\n  - [pid=784892] <gracefully close start>\n  - [pid=784892] <kill>\n  - [pid=784892] <will force kill>\n  - [pid=784892] exception while trying to kill process: Error: kill ESRCH\n  - [pid=784892] <process did exit: exitCode=127, signal=null>\n  - [pid=784892] starting temporary directories cleanup\n  - [pid=784892] finished temporary directories cleanup\n  - [pid=784892] <gracefully close end>\n",
+  "cases": [],
+  "cleanup": {
+    "gatewayExit": {
+      "code": 0,
+      "signal": null
+    },
+    "productionServicesTouched": false,
+    "externalChannels": false,
+    "isolatedStateRetained": true,
+    "configUnchanged": true
+  }
+}
