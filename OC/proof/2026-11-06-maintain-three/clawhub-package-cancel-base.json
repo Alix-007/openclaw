@@ -1,0 +1,132 @@
+{
+  "at": "2026-11-06T09:02:00.378Z",
+  "sha": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+  "buildStamp": {
+    "builtAt": 1793952814365,
+    "head": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "inputsClean": true,
+    "inputSignature": "4a66956ba1e364acda25ace89c965cde94b40085c80d439028deb6d731e099c0"
+  },
+  "cases": [
+    {
+      "label": "control",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "plugins",
+        "search",
+        "scout-cancel-control",
+        "--json"
+      ],
+      "requests": [
+        {
+          "at": "2026-11-06T09:02:06.323Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=code-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:06.329Z"
+        },
+        {
+          "at": "2026-11-06T09:02:06.323Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=bundle-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:06.329Z"
+        }
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 6.166,
+      "stdout": "{\n  \"results\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "SIGINT",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "plugins",
+        "search",
+        "scout-cancel-control",
+        "--json"
+      ],
+      "requests": [
+        {
+          "at": "2026-11-06T09:02:11.345Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=code-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:12.848Z"
+        },
+        {
+          "at": "2026-11-06T09:02:11.345Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=bundle-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:12.848Z"
+        }
+      ],
+      "observation": {
+        "signalAcknowledged": true,
+        "observationLimitMs": 1500,
+        "closedBeforeRelease": false,
+        "openRequests": 2,
+        "alive": true
+      },
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 6.418,
+      "stdout": "{\n  \"results\": []\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "label": "SIGTERM",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "plugins",
+        "search",
+        "scout-cancel-control",
+        "--json"
+      ],
+      "requests": [
+        {
+          "at": "2026-11-06T09:02:17.414Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=code-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:18.917Z"
+        },
+        {
+          "at": "2026-11-06T09:02:17.415Z",
+          "path": "/api/v1/packages/search?q=scout-cancel-control&family=bundle-plugin&limit=20",
+          "closed": true,
+          "responded": true,
+          "closedAt": "2026-11-06T09:02:18.917Z"
+        }
+      ],
+      "observation": {
+        "signalAcknowledged": true,
+        "observationLimitMs": 1500,
+        "closedBeforeRelease": false,
+        "openRequests": 2,
+        "alive": true
+      },
+      "exit": {
+        "code": 143,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 6.071,
+      "stdout": "{\n  \"results\": []\n}\n",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n"
+    }
+  ],
+  "result": "RED"
+}

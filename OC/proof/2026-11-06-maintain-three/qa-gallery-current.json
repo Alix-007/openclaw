@@ -1,0 +1,296 @@
+{
+  "at": "2026-11-06T09:18:22.430Z",
+  "head": "8bcc0c03e1e63cf72a7d9fb36731b819020e91b4",
+  "buildCommit": "8bcc0c03e1e63cf72a7d9fb36731b819020e91b4",
+  "diffHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outcome": "GREEN",
+  "failures": {
+    "literalEvidenceFilename": false,
+    "literalEvidenceDirectory": false,
+    "serializedArtifactPath": false,
+    "sourcePath": false,
+    "indexedArtifactBytes": false,
+    "indexedArtifactLength": false,
+    "directArtifactBytes": false,
+    "literalEvidenceHead": false
+  },
+  "http": [
+    {
+      "name": "ordinary evidence",
+      "method": "GET",
+      "route": "/api/evidence?path=control.json",
+      "status": 200,
+      "contentLength": null,
+      "readback": {
+        "evidencePath": "control.json",
+        "sourcePath": "fixture.test.ts",
+        "artifact": {
+          "path": "ordinary.log",
+          "exists": true,
+          "mediaKind": "text",
+          "preview": "ORDINARY CONTROL CONTENT\n",
+          "href": "/api/evidence/artifact?evidencePath=control.json&entryIndex=0&artifactIndex=0"
+        }
+      }
+    },
+    {
+      "name": "ordinary artifact GET",
+      "method": "GET",
+      "route": "/api/evidence/artifact?evidencePath=control.json&entryIndex=0&artifactIndex=0",
+      "status": 200,
+      "contentLength": "25",
+      "readback": "ORDINARY CONTROL CONTENT\n"
+    },
+    {
+      "name": "ordinary artifact HEAD",
+      "method": "HEAD",
+      "route": "/api/evidence/artifact?evidencePath=control.json&entryIndex=0&artifactIndex=0",
+      "status": 200,
+      "contentLength": "25",
+      "readback": ""
+    },
+    {
+      "name": "literal evidence filename",
+      "method": "GET",
+      "route": "/api/evidence?path=evidence.json+",
+      "status": 200,
+      "contentLength": null,
+      "readback": {
+        "evidencePath": "evidence.json ",
+        "sourcePath": "fixture.test.ts",
+        "artifact": {
+          "path": "ordinary.log",
+          "exists": true,
+          "mediaKind": "text",
+          "preview": "ORDINARY CONTROL CONTENT\n",
+          "href": "/api/evidence/artifact?evidencePath=evidence.json+&entryIndex=0&artifactIndex=0"
+        }
+      }
+    },
+    {
+      "name": "literal evidence directory",
+      "method": "GET",
+      "route": "/api/evidence?path=run+",
+      "status": 200,
+      "contentLength": null,
+      "readback": {
+        "evidencePath": "run /qa-evidence.json",
+        "sourcePath": "fixture.test.ts",
+        "artifact": {
+          "path": "ordinary.log",
+          "exists": true,
+          "mediaKind": "text",
+          "preview": "ORDINARY CONTROL CONTENT\n",
+          "href": "/api/evidence/artifact?evidencePath=run+%2Fqa-evidence.json&entryIndex=0&artifactIndex=0"
+        }
+      }
+    },
+    {
+      "name": "serialized literal artifact",
+      "method": "GET",
+      "route": "/api/evidence?path=artifact.json",
+      "status": 200,
+      "contentLength": null,
+      "readback": {
+        "evidencePath": "artifact.json",
+        "sourcePath": "fixture.test.ts ",
+        "artifact": {
+          "path": "captured.log ",
+          "exists": true,
+          "mediaKind": "file",
+          "preview": null,
+          "href": "/api/evidence/artifact?evidencePath=artifact.json&entryIndex=0&artifactIndex=0"
+        }
+      }
+    },
+    {
+      "name": "literal artifact indexed GET",
+      "method": "GET",
+      "route": "/api/evidence/artifact?evidencePath=artifact.json&entryIndex=0&artifactIndex=0",
+      "status": 200,
+      "contentLength": "25",
+      "readback": "LITERAL ARTIFACT CONTENT\n"
+    },
+    {
+      "name": "literal artifact indexed HEAD",
+      "method": "HEAD",
+      "route": "/api/evidence/artifact?evidencePath=artifact.json&entryIndex=0&artifactIndex=0",
+      "status": 200,
+      "contentLength": "25",
+      "readback": ""
+    },
+    {
+      "name": "literal artifact direct GET",
+      "method": "GET",
+      "route": "/api/evidence/artifact?evidencePath=artifact.json&artifactPath=captured.log+",
+      "status": 200,
+      "contentLength": "25",
+      "readback": "LITERAL ARTIFACT CONTENT\n"
+    },
+    {
+      "name": "literal evidence direct HEAD",
+      "method": "HEAD",
+      "route": "/api/evidence/artifact?evidencePath=evidence.json+&artifactPath=ordinary.log",
+      "status": 200,
+      "contentLength": "25",
+      "readback": ""
+    },
+    {
+      "name": "blank evidence selector remains rejected",
+      "method": "GET",
+      "route": "/api/evidence/artifact?evidencePath=+&artifactPath=ordinary.log",
+      "status": 400,
+      "contentLength": "54",
+      "readback": {
+        "error": "Missing evidencePath and artifact selector"
+      }
+    },
+    {
+      "name": "undeclared artifact remains rejected",
+      "method": "GET",
+      "route": "/api/evidence/artifact?evidencePath=control.json&artifactPath=undeclared.log",
+      "status": 403,
+      "contentLength": "71",
+      "readback": {
+        "error": "Evidence artifact is not declared by this evidence summary."
+      }
+    },
+    {
+      "name": "outside evidence remains rejected",
+      "method": "GET",
+      "route": "/api/evidence?path=..%2Fopenclaw.json",
+      "status": 403,
+      "contentLength": "57",
+      "readback": {
+        "error": "Evidence path must stay inside the repo root."
+      }
+    }
+  ],
+  "browser": {
+    "outcome": "BROWSER_GREEN",
+    "version": "152.0.7977.64",
+    "artifactHref": "/api/evidence/artifact?evidencePath=artifact.json&entryIndex=0&artifactIndex=0",
+    "artifactReadback": {
+      "status": 200,
+      "body": "LITERAL ARTIFACT CONTENT\n"
+    },
+    "trailingArtifact": {
+      "path": "captured.log ",
+      "mediaKind": "file",
+      "preview": null,
+      "domPath": "captured.log ",
+      "domPreviewCount": 0
+    },
+    "leadingArtifact": {
+      "path": " captured.log",
+      "mediaKind": "text",
+      "preview": "LITERAL ARTIFACT CONTENT\n",
+      "previewVisible": true,
+      "href": "/api/evidence/artifact?evidencePath=leading-artifact.json&entryIndex=0&artifactIndex=0",
+      "readback": {
+        "status": 200,
+        "body": "LITERAL ARTIFACT CONTENT\n"
+      }
+    },
+    "controlPreview": "ORDINARY CONTROL CONTENT\n",
+    "pageErrors": [],
+    "network": [
+      {
+        "name": "initial path",
+        "requestedPath": "evidence.json ",
+        "status": 200,
+        "readback": {
+          "evidencePath": "evidence.json ",
+          "sourcePath": "fixture.test.ts",
+          "artifact": {
+            "path": "ordinary.log",
+            "exists": true,
+            "mediaKind": "text",
+            "preview": "ORDINARY CONTROL CONTENT\n",
+            "href": "/api/evidence/artifact?evidencePath=evidence.json+&entryIndex=0&artifactIndex=0"
+          }
+        }
+      },
+      {
+        "name": "initial evidencePath",
+        "requestedPath": "evidence.json ",
+        "status": 200,
+        "readback": {
+          "evidencePath": "evidence.json ",
+          "sourcePath": "fixture.test.ts",
+          "artifact": {
+            "path": "ordinary.log",
+            "exists": true,
+            "mediaKind": "text",
+            "preview": "ORDINARY CONTROL CONTENT\n",
+            "href": "/api/evidence/artifact?evidencePath=evidence.json+&entryIndex=0&artifactIndex=0"
+          }
+        }
+      },
+      {
+        "name": "browser ordinary control",
+        "requestedPath": "control.json",
+        "status": 200,
+        "readback": {
+          "evidencePath": "control.json",
+          "sourcePath": "fixture.test.ts",
+          "artifact": {
+            "path": "ordinary.log",
+            "exists": true,
+            "mediaKind": "text",
+            "preview": "ORDINARY CONTROL CONTENT\n",
+            "href": "/api/evidence/artifact?evidencePath=control.json&entryIndex=0&artifactIndex=0"
+          }
+        }
+      },
+      {
+        "name": "form literal evidence path",
+        "requestedPath": "submitted.json ",
+        "status": 200,
+        "readback": {
+          "evidencePath": "submitted.json ",
+          "sourcePath": "fixture.test.ts",
+          "artifact": {
+            "path": "ordinary.log",
+            "exists": true,
+            "mediaKind": "text",
+            "preview": "ORDINARY CONTROL CONTENT\n",
+            "href": "/api/evidence/artifact?evidencePath=submitted.json+&entryIndex=0&artifactIndex=0"
+          }
+        }
+      },
+      {
+        "name": "form serialized artifact read",
+        "requestedPath": "artifact.json",
+        "status": 200,
+        "readback": {
+          "evidencePath": "artifact.json",
+          "sourcePath": "fixture.test.ts ",
+          "artifact": {
+            "path": "captured.log ",
+            "exists": true,
+            "mediaKind": "file",
+            "preview": null,
+            "href": "/api/evidence/artifact?evidencePath=artifact.json&entryIndex=0&artifactIndex=0"
+          }
+        }
+      },
+      {
+        "name": "form preview-eligible leading artifact",
+        "requestedPath": "leading-artifact.json",
+        "status": 200,
+        "readback": {
+          "evidencePath": "leading-artifact.json",
+          "sourcePath": "fixture.test.ts",
+          "artifact": {
+            "path": " captured.log",
+            "exists": true,
+            "mediaKind": "text",
+            "preview": "LITERAL ARTIFACT CONTENT\n",
+            "href": "/api/evidence/artifact?evidencePath=leading-artifact.json&entryIndex=0&artifactIndex=0"
+          }
+        }
+      }
+    ]
+  }
+}

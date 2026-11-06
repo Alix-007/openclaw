@@ -1,0 +1,83 @@
+{
+  "at": "2026-11-06",
+  "files": [
+    {
+      "path": "native-cli.mjs",
+      "bytes": 2575,
+      "sha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+      "binary": false
+    },
+    {
+      "path": "scout-plugin-search-proof.mjs",
+      "bytes": 4202,
+      "sha256": "fcf69dd9de353cea6cc841189a98272f6ec4291b365d2b477d5700cc74dd0124",
+      "binary": false
+    },
+    {
+      "path": "gallery-path-proof.mjs",
+      "bytes": 17385,
+      "sha256": "75934b6870890caa8e56cf9cce4563a59c83dfb033953cdd03c62a066ee4d1a6",
+      "binary": false
+    },
+    {
+      "path": "favorites-proof.mjs",
+      "bytes": 20215,
+      "sha256": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+      "binary": false
+    },
+    {
+      "path": "favorites-proof-stable-seed.mjs",
+      "bytes": 1802,
+      "sha256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+      "binary": false
+    },
+    {
+      "path": "clawhub-package-cancel-base.json",
+      "bytes": 3765,
+      "sha256": "eaa89b2916f89110d449866d45b8fd1d58d9b4197ee30bd24804f5b1e6351468",
+      "binary": false
+    },
+    {
+      "path": "clawhub-package-cancel-head.json",
+      "bytes": 3761,
+      "sha256": "9f702b6bac4dae86cf094d257ac955695866f8af20724762b7bc4aea8dff98ef",
+      "binary": false
+    },
+    {
+      "path": "qa-gallery-current.json",
+      "bytes": 9436,
+      "sha256": "953ed7ab50a6bb8a806feb2edc5e6e3d6db3b90843fadee53b595a1ef6f5f055",
+      "binary": false
+    },
+    {
+      "path": "favorites-built-current.json",
+      "bytes": 12799,
+      "sha256": "968c51a786eeda894e658a311e17e2ad03406fe9ef6a8fa6d0ad47e3e7123268",
+      "binary": false
+    },
+    {
+      "path": "favorites-before.png",
+      "bytes": 44860,
+      "sha256": "86d1ba5781feafdc189fa20ecf6c8f9ac81dd4b0657110c58b87fb5bec56b373",
+      "binary": true
+    },
+    {
+      "path": "favorites-after.png",
+      "bytes": 45528,
+      "sha256": "d9eadbd6c171a394e31b89202edd854a79c78d88d98670234d0e52bcca1eda2d",
+      "binary": true
+    },
+    {
+      "path": "stable-2026.11.1-acquisition.json",
+      "bytes": 322,
+      "sha256": "4039961fa55e26c7901139be1c319dd7c4e1e03fbcbc2bad68fa10298a63cf7e",
+      "binary": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 2160,
+      "sha256": "95b58cd7b3f03de073aa9a1030121ea927b7b0f2f176d6fd191e55a63fc84577",
+      "binary": false
+    }
+  ]
+}
