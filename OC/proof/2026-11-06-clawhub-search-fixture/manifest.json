@@ -1,0 +1,46 @@
+{
+  "files": [
+    {
+      "path": "clawhub-fixture-final-focused.json",
+      "binary": false,
+      "bytes": 5428,
+      "sha256": "03cb07ec9897d1252cdae8b13a2340f8f502125a53b120f19fc828c6a576410b"
+    },
+    {
+      "path": "clawhub-fixture-final-results.md",
+      "binary": false,
+      "bytes": 4213,
+      "sha256": "5ae06b69cb2573039d12e84fffb8710e855a928d43e88a35510a874f9727a5dc"
+    },
+    {
+      "path": "clawhub-fixture-prebuilt-results.md",
+      "binary": false,
+      "bytes": 4888,
+      "sha256": "bf3276be4a8116841de8f7ca778d4cc5912066ffa746906c99b3aac75d8669e3"
+    },
+    {
+      "path": "clawhub-fixture-prebuilt-runs.json",
+      "binary": false,
+      "bytes": 9094,
+      "sha256": "d6df3f3587e4f46642b9af41c6b719aebaad354c057fc3abe2cbd22b7ece9ca0"
+    },
+    {
+      "path": "clawhub-fixture-final-focused.stdout.log",
+      "binary": false,
+      "bytes": 682,
+      "sha256": "d292f95353fc294f668546e23eca29295bc2c67660114fe7b68afd03784669a7"
+    },
+    {
+      "path": "clawhub-fixture-final-focused.stderr.log",
+      "binary": false,
+      "bytes": 5034,
+      "sha256": "a3391d458c17fe16b50c71bf13d25996db3a86c4333be9df2c77201337097550"
+    },
+    {
+      "path": "README.md",
+      "binary": false,
+      "bytes": 1990,
+      "sha256": "017cd5627c08553799d349b7d23f592a847ef1d16b95666527978387bcf61e24"
+    }
+  ]
+}

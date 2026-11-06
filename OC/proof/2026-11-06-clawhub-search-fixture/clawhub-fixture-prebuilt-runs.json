@@ -1,0 +1,172 @@
+{
+  "at": "2026-11-06T13:30:23.313799+00:00",
+  "nodeVersion": "v26.12.1",
+  "cases": [
+    {
+      "worktree": "$PROOF_ROOT/baseline",
+      "command": [
+        "$NODE_BIN/node",
+        "scripts/run-vitest.mjs",
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts",
+        "--maxWorkers=1"
+      ],
+      "environmentDelta": {
+        "OPENCLAW_E2E_USE_PREBUILT_DIST": "1"
+      },
+      "keyEnvironment": {
+        "OPENCLAW_VITEST_RUNTIME": null,
+        "OPENCLAW_E2E_WORKERS": null,
+        "OPENCLAW_E2E_VERBOSE": null,
+        "OPENCLAW_E2E_SKIP_BUILD": null
+      },
+      "sourceHead": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+      "gitStatusBefore": "",
+      "buildStamp": {
+        "builtAt": 1793952814365,
+        "head": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+        "inputsClean": true,
+        "inputSignature": "4a66956ba1e364acda25ace89c965cde94b40085c80d439028deb6d731e099c0"
+      },
+      "inputHashesBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "e37f5ebbf5fcb1b26c94f18200de06d70d813fd98161ecac7197ace56063e43e",
+        "src/cli/plugins-search-command.ts": "921b63ce33d8a24993d2751b1caa6d1f0a818a5412b841c648b6a53e710ba0b3",
+        "src/plugins/catalog-search.ts": "95392081b885a64e8f5f05976fdd1b4c79fe89a25155ec0227aad1fb31bee0b7",
+        "src/infra/clawhub-packages.ts": "c337ce6ced29f56922bc848debf78e92633b9c1a6608be848db04a0fa96b0c00",
+        "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+        "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d"
+      },
+      "artifactMetadataBefore": {
+        "dist/.buildstamp": "529ff9e061474ce054c14fc1f363acf4ccc1f6c1525b5dc7e09e64364ae80f08",
+        "dist/.runtime-postbuildstamp": "de61f1df1108518872f7000b058fc8c5b75a4b09316c1dd5ed73e91d6901bc96",
+        "dist/build-info.json": "eb8de365c80a7fbe77a0b868c81a30b455d4b554da5370370b4d5f2753361ea7"
+      },
+      "stdout": "$PROOF_ROOT/clawhub-fixture-prebuilt-base.stdout.log",
+      "stderr": "$PROOF_ROOT/clawhub-fixture-prebuilt-base.stderr.log",
+      "startedAt": "2026-11-06T13:30:23.541300+00:00",
+      "exitCode": 1,
+      "seconds": 181.991,
+      "finishedAt": "2026-11-06T13:33:25.532320+00:00",
+      "inputHashesAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "e37f5ebbf5fcb1b26c94f18200de06d70d813fd98161ecac7197ace56063e43e",
+        "src/cli/plugins-search-command.ts": "921b63ce33d8a24993d2751b1caa6d1f0a818a5412b841c648b6a53e710ba0b3",
+        "src/plugins/catalog-search.ts": "95392081b885a64e8f5f05976fdd1b4c79fe89a25155ec0227aad1fb31bee0b7",
+        "src/infra/clawhub-packages.ts": "c337ce6ced29f56922bc848debf78e92633b9c1a6608be848db04a0fa96b0c00",
+        "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+        "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d"
+      },
+      "artifactMetadataAfter": {
+        "dist/.buildstamp": "529ff9e061474ce054c14fc1f363acf4ccc1f6c1525b5dc7e09e64364ae80f08",
+        "dist/.runtime-postbuildstamp": "de61f1df1108518872f7000b058fc8c5b75a4b09316c1dd5ed73e91d6901bc96",
+        "dist/build-info.json": "eb8de365c80a7fbe77a0b868c81a30b455d4b554da5370370b4d5f2753361ea7"
+      },
+      "gitStatusAfter": "",
+      "sourceFrozen": true,
+      "sharedArtifactMetadataUnchanged": true,
+      "guardRefusal": false,
+      "nativeTestStatus": "FAILED_INSPECT_LOG",
+      "testCaseMs": 30101,
+      "pinnedBunStagingAttempted": true,
+      "actualRuntime": "node",
+      "actualRuntimeEvidence": "Official wrapper logged pinned Bun unavailable; using Node; launcher node --version v26.12.1.",
+      "invocationWorkerCompilation": {
+        "identityPrefix": "ddba45c3e152",
+        "ms": 119401,
+        "inputs": 18808,
+        "outputs": 23945
+      },
+      "stdoutSha256": "84ff9f6d4f30a5d69be21f5478c3c847935fa3b1d11900d2b31613706f89b568",
+      "stderrSha256": "5d00a45467a126ac379d458b54dda0a019407abe194fc1616c3d336476987074",
+      "originalAssertionsCompleted": false
+    },
+    {
+      "worktree": "$PROOF_ROOT/clawhub-package-cancel",
+      "command": [
+        "$NODE_BIN/node",
+        "scripts/run-vitest.mjs",
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts",
+        "--maxWorkers=1"
+      ],
+      "environmentDelta": {
+        "OPENCLAW_E2E_USE_PREBUILT_DIST": "1"
+      },
+      "keyEnvironment": {
+        "OPENCLAW_VITEST_RUNTIME": null,
+        "OPENCLAW_E2E_WORKERS": null,
+        "OPENCLAW_E2E_VERBOSE": null,
+        "OPENCLAW_E2E_SKIP_BUILD": null
+      },
+      "sourceHead": "6df5b5d59df83a6de070919b7810f7e0b0f134a9",
+      "gitStatusBefore": "",
+      "buildStamp": {
+        "builtAt": 1793957457521,
+        "head": "d6dd353d0b500658bb9fbf565314096d3b0039a9",
+        "inputsClean": true,
+        "inputSignature": "0cf01f06976671852f572f0d023c9263ebf721054d44c735058f45f334540fe6"
+      },
+      "inputHashesBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba",
+        "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+        "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+        "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+        "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+        "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d"
+      },
+      "artifactMetadataBefore": {
+        "dist/.buildstamp": "6c413bd6088d6708ecfdc80b80d1e71a5e62f6a62ed0d9f8a93ee9ea04dfb26f",
+        "dist/.runtime-postbuildstamp": "2c4e07be6de71263e7043107e3f0bca8b7dcf6b463d79be873a4342a6aa73d51",
+        "dist/build-info.json": "eda9fea6de956080e73c46d1d03fb6c1601ee017997d58681ed2566581a72baa"
+      },
+      "stdout": "$PROOF_ROOT/clawhub-fixture-prebuilt-candidate.stdout.log",
+      "stderr": "$PROOF_ROOT/clawhub-fixture-prebuilt-candidate.stderr.log",
+      "startedAt": "2026-11-06T13:33:26.254267+00:00",
+      "exitCode": 0,
+      "seconds": 173.065,
+      "finishedAt": "2026-11-06T13:36:19.319795+00:00",
+      "inputHashesAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba",
+        "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+        "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+        "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+        "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+        "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d"
+      },
+      "artifactMetadataAfter": {
+        "dist/.buildstamp": "6c413bd6088d6708ecfdc80b80d1e71a5e62f6a62ed0d9f8a93ee9ea04dfb26f",
+        "dist/.runtime-postbuildstamp": "2c4e07be6de71263e7043107e3f0bca8b7dcf6b463d79be873a4342a6aa73d51",
+        "dist/build-info.json": "eda9fea6de956080e73c46d1d03fb6c1601ee017997d58681ed2566581a72baa"
+      },
+      "gitStatusAfter": "",
+      "sourceFrozen": true,
+      "sharedArtifactMetadataUnchanged": true,
+      "guardRefusal": false,
+      "nativeTestStatus": "PASS",
+      "testCaseMs": 573,
+      "pinnedBunStagingAttempted": true,
+      "actualRuntime": "node",
+      "actualRuntimeEvidence": "Official wrapper logged pinned Bun unavailable; using Node; launcher node --version v26.12.1.",
+      "invocationWorkerCompilation": {
+        "identityPrefix": "5de9c8d4676c",
+        "ms": 136417,
+        "inputs": 18808,
+        "outputs": 23945
+      },
+      "stdoutSha256": "e11144e696a2aae6a011ce99bf063f60f1f55ce77e245913d45372f8437f1736",
+      "stderrSha256": "67bc728f641a9ae7f58724473ad694765d5cf52e2a0a3d3d7bbfba08169d307d",
+      "originalAssertionsCompleted": true
+    }
+  ],
+  "testsEdited": false,
+  "buildRequested": false,
+  "fixtureComparison": {
+    "candidateMinusOnlyAddedHeaderEqualsOriginal": true,
+    "expectCallSitesOriginal": 10,
+    "expectCallSitesCandidate": 10,
+    "timeout30000Unchanged": true
+  },
+  "sameProductionOwnerHashes": {
+    "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+    "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d"
+  },
+  "limitation": "Baseline and candidate product sources differ by the already merged cancellation repair; client/retry owners match. No AsyncWorkScope is created by this E2E. The final fixture-only current-main exact-head test remains the publishing owner obligation; do not claim only fixture bytes differ across these two source heads.",
+  "result": "NATIVE_EXISTING_E2E_BASE_TIMEOUT_AND_CANDIDATE_PASS"
+}

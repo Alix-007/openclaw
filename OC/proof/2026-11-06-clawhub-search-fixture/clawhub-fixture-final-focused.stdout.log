@@ -1,0 +1,21 @@
+
+ RUN  v5.0.5 $PROOF_ROOT/clawhub-search-fixture
+
+
+ RUN  v5.0.5 $PROOF_ROOT/clawhub-search-fixture
+
+ ✓ src/cli/plugins-search-command.clawhub.e2e.test.ts > keeps plugin discovery separate from skills and surfaces empty and failed lookups 393ms
+ ✓ src/cli/plugins-search-command.clawhub.e2e.test.ts (1 test) 411ms
+   ✓ keeps plugin discovery separate from skills and surfaces empty and failed lookups 393ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:47:14
+   Duration  131.16s (transform 96%, worker 2%, import 2%)
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:47:14
+   Duration  131.17s (transform 96%, worker 2%, import 2%)
+

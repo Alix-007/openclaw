@@ -1,0 +1,119 @@
+{
+  "startedAt": "2026-11-06T13:47:08.283411+00:00",
+  "worktree": "$PROOF_ROOT/clawhub-search-fixture",
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-vitest.mjs",
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts",
+    "--maxWorkers=1"
+  ],
+  "environmentDelta": {
+    "OPENCLAW_E2E_USE_PREBUILT_DIST": "1",
+    "OPENCLAW_VITEST_RUNTIME": "node"
+  },
+  "runtime": "v26.12.1",
+  "baseCommit": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "publicationState": "UNCOMMITTED_WORKTREE_NOT_EXACT_COMMITTED_HEAD",
+  "gitStatusBefore": " M src/cli/plugins-search-command.clawhub.e2e.test.ts\n?? config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt\n",
+  "sourceDiffSha256": "98d60e52b11d5375b3875fd8b558767b1a5c92e44d2c19f6ebab1e250b6170d6",
+  "inputHashesBefore": {
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba",
+    "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+    "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+    "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+    "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+    "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d",
+    "scripts/lib/vitest-build-prerequisites.mts": "13d2ab40c3a7513cc9e4d391b4a6d80820011f86ef161af717fbb7b5372db1dc"
+  },
+  "productOutputsBefore": {
+    "dist": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    },
+    "dist-runtime": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    },
+    "dist-windows": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    }
+  },
+  "originalFixtureSha256": "e37f5ebbf5fcb1b26c94f18200de06d70d813fd98161ecac7197ace56063e43e",
+  "candidateMinusAddedHeaderEqualsBase": true,
+  "expectCallSitesOriginal": 10,
+  "expectCallSitesCandidate": 10,
+  "timeout30000Unchanged": true,
+  "exitCode": 0,
+  "seconds": 139.826,
+  "finishedAt": "2026-11-06T13:49:28.340003+00:00",
+  "inputHashesAfter": {
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba",
+    "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+    "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+    "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+    "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+    "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d",
+    "scripts/lib/vitest-build-prerequisites.mts": "13d2ab40c3a7513cc9e4d391b4a6d80820011f86ef161af717fbb7b5372db1dc"
+  },
+  "productOutputsAfter": {
+    "dist": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    },
+    "dist-runtime": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    },
+    "dist-windows": {
+      "exists": false,
+      "symlink": false,
+      "files": {}
+    }
+  },
+  "gitStatusAfter": "A  config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt\nM  src/cli/plugins-search-command.clawhub.e2e.test.ts\n",
+  "stdout": "$PROOF_ROOT/clawhub-fixture-final-focused.stdout.log",
+  "stderr": "$PROOF_ROOT/clawhub-fixture-final-focused.stderr.log",
+  "sourceFrozen": true,
+  "productOutputsUnchanged": true,
+  "gitStatusUnchanged": false,
+  "guardRefusal": false,
+  "nativeTestStatus": "PASS",
+  "testCaseMs": 393,
+  "actualRuntime": "Node v26.12.1 explicitly selected",
+  "pinnedBunStagingAttempted": false,
+  "invocationWorkerCompilation": {
+    "identityPrefix": "43a37783cca0",
+    "ms": 110528,
+    "inputs": 18810,
+    "outputs": 23950
+  },
+  "stdoutSha256": "441ffec1034ca9eef2de62c7348138799b5cb735b28f36ba4ff2eccf0461a8a3",
+  "stderrSha256": "a3391d458c17fe16b50c71bf13d25996db3a86c4333be9df2c77201337097550",
+  "headAfter": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "gitStateObservation": "Root-owned staging occurred during test: same two files moved from unstaged/untracked to staged. This lane made no Git mutations; source bytes remained unchanged and HEAD stayed at the base.",
+  "finalCandidateFiles": [
+    "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt",
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts"
+  ],
+  "stagedVsWorktreeSha256": {
+    "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": {
+      "staged": "ad34a2ec1729690f232b4b880bd217cd35ab1e576b34c7ab44021a1942df0099",
+      "worktree": "ad34a2ec1729690f232b4b880bd217cd35ab1e576b34c7ab44021a1942df0099"
+    },
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": {
+      "staged": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba",
+      "worktree": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba"
+    }
+  },
+  "stagedBytesMatchTestedWorktree": true,
+  "finalCandidateDiffSha256": "fd40e1f4def2d3c60411835376ca01e16cfbf2fc4dcc21cfb009f3cf0bafd219",
+  "productionDeltaAgainstBase": "none",
+  "existingAssertionsAllCompleted": true,
+  "result": "PASS_EXISTING_E2E_UNCOMMITTED_WORKTREE_NO_PRODUCT_DIST"
+}
