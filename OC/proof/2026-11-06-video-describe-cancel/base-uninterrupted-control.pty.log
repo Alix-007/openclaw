@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "capability": "video.describe",
+  "transport": "local",
+  "provider": "moonshot",
+  "model": "kimi-k2.6",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "PROOF_ROOT/video-describe-cancel-proof-base-v4/clip.mp4",
+      "text": "Synthetic video: a poster frame.",
+      "kind": "video.description"
+    }
+  ]
+}

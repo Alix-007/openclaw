@@ -1,0 +1,165 @@
+{
+  "at": "2026-11-06T17:14:31Z",
+  "head": "a8edb953a861e323fa551b09da611271ff2856f4",
+  "buildStamp": {
+    "builtAt": 1793985258343,
+    "head": "a8edb953a861e323fa551b09da611271ff2856f4",
+    "inputsClean": true,
+    "inputSignature": "db121ddc0e3b5caa1970b126a7d2d42164f4336186d3494064da13bbc0793c33"
+  },
+  "collectorSha256": "23df9c6880c2c2791ae9626dca543465b13a97a25b959f9a49635d4108ac3bd3",
+  "entry": "openclaw.mjs",
+  "expected": "head",
+  "sourceHashesBefore": {
+    "src/cli/capability-cli/media-understanding-command.ts": "05bd93e815a5b3d4029dcdde8af198d1799eee4d02385c1680c04dec166939d4",
+    "src/media-understanding/runtime.ts": "9f9c75f8a7a788c4a2e78e7997080b9082931c27146c7eb2e980274124dd1037",
+    "src/media-understanding/runner.entries.ts": "a2c6525c15f19b1d0df27ad9c230155f55a522ed8c77658a6c963bd3014097b5",
+    "src/media-understanding/openai-compatible-video.ts": "3d39a790c1ac39c1a1241f64852abfcdd1e3912ecea57da22ca18eab543edcb7"
+  },
+  "boundary": "Normal shipped CLI in controlling PTY -> Moonshot real HTTP upload -> OS VINTR/SIGINT -> process status and passive peer-close recorder",
+  "noRespawnOverride": false,
+  "videoBytes": 31772,
+  "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+  "cases": [
+    {
+      "label": "uninterrupted-control",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/video-describe-cancel/openclaw.mjs",
+        "infer",
+        "video",
+        "describe",
+        "--file",
+        "PROOF_ROOT/video-describe-cancel-proof-head-v4/clip.mp4",
+        "--agent",
+        "main",
+        "--model",
+        "moonshot/kimi-k2.6",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 8.6454,
+      "exitCode": 0,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToPeerCloseMs": [
+        null
+      ],
+      "output": "{\r\n  \"ok\": true,\r\n  \"capability\": \"video.describe\",\r\n  \"transport\": \"local\",\r\n  \"provider\": \"moonshot\",\r\n  \"model\": \"kimi-k2.6\",\r\n  \"attempts\": [],\r\n  \"outputs\": [\r\n    {\r\n      \"path\": \"PROOF_ROOT/video-describe-cancel-proof-head-v4/clip.mp4\",\r\n      \"text\": \"Synthetic video: a poster frame.\",\r\n      \"kind\": \"video.description\"\r\n    }\r\n  ]\r\n}\r\n",
+      "processBeforeInterrupt": null,
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "method": "POST",
+          "receivedAt": 1793985279.7251568,
+          "receivedMonotonic": 3124888.556064167,
+          "headers": {
+            "host": "127.0.0.1:35303",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "42572"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "4034f1f0afa304a97138a9bb22993968caeac8a23061d769f340a34ef1067eb2",
+          "model": "kimi-k2.6",
+          "videoBytes": 31772,
+          "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+          "prompt": "Describe the video. Respond in at most 500 characters.",
+          "responseCompleted": true,
+          "peerClosed": false,
+          "responseCompletedAt": 1793985279.925411
+        }
+      ]
+    },
+    {
+      "label": "real-pty-interrupt",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/video-describe-cancel/openclaw.mjs",
+        "infer",
+        "video",
+        "describe",
+        "--file",
+        "PROOF_ROOT/video-describe-cancel-proof-head-v4/clip.mp4",
+        "--agent",
+        "main",
+        "--model",
+        "moonshot/kimi-k2.6",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 8.6658,
+      "exitCode": 130,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": true,
+      "interruptToExitMs": 147.99,
+      "interruptToPeerCloseMs": [
+        3.62
+      ],
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "processBeforeInterrupt": {
+        "pid": 3564495,
+        "foregroundProcessGroup": 3564495,
+        "status": "Name:\tnode-MainThread\nUmask:\t0027\nState:\tS (sleeping)\nTgid:\t3564495\nNgid:\t0\nPid:\t3564495\nPPid:\t3564201\nTracerPid:\t0\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nFDSize:\t64\nGroups:\t10 984 1000 \nNStgid:\t3564495\nNSpid:\t3564495\nNSpgid:\t3564495\nNSsid:\t3564495\nVmPeak:\t 1442980 kB\nVmSize:\t 1442728 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   72892 kB\nVmRSS:\t   72892 kB\nRssAnon:\t   22256 kB\nRssFile:\t   50636 kB\nRssShmem:\t       0 kB\nVmData:\t  583812 kB\nVmStk:\t     132 kB\nVmExe:\t   45692 kB\nVmLib:\t    7444 kB\nVmPTE:\t     932 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nThreads:\t7\nSigQ:\t1/127769\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000188014607\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nCpus_allowed:\tffff\nCpus_allowed_list:\t0-15\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t26\nnonvoluntary_ctxt_switches:\t1\n",
+        "children": "3564503"
+      },
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "method": "POST",
+          "receivedAt": 1793985288.2280426,
+          "receivedMonotonic": 3124897.058925362,
+          "headers": {
+            "host": "127.0.0.1:35303",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "42572"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "4034f1f0afa304a97138a9bb22993968caeac8a23061d769f340a34ef1067eb2",
+          "model": "kimi-k2.6",
+          "videoBytes": 31772,
+          "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+          "prompt": "Describe the video. Respond in at most 500 characters.",
+          "responseCompleted": false,
+          "peerClosed": true,
+          "peerClosedMonotonic": 3124897.578590835,
+          "peerClosedAt": 1793985288.7472775
+        }
+      ]
+    }
+  ],
+  "result": "GREEN_COOPERATIVE_CANCEL_WITH_SUCCESS_CONTROL",
+  "sourceHashesAfter": {
+    "src/cli/capability-cli/media-understanding-command.ts": "05bd93e815a5b3d4029dcdde8af198d1799eee4d02385c1680c04dec166939d4",
+    "src/media-understanding/runtime.ts": "9f9c75f8a7a788c4a2e78e7997080b9082931c27146c7eb2e980274124dd1037",
+    "src/media-understanding/runner.entries.ts": "a2c6525c15f19b1d0df27ad9c230155f55a522ed8c77658a6c963bd3014097b5",
+    "src/media-understanding/openai-compatible-video.ts": "3d39a790c1ac39c1a1241f64852abfcdd1e3912ecea57da22ca18eab543edcb7"
+  },
+  "configUnchanged": true,
+  "sourceStatusAfter": "",
+  "cleanup": {
+    "httpServerStopped": true,
+    "directCliProcessesWaited": true,
+    "productionServicesTouched": false,
+    "externalModelOrChannelCalls": false,
+    "syntheticStateRetained": true
+  }
+}

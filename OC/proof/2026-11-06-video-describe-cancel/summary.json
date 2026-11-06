@@ -1,0 +1,75 @@
+{
+  "head": "a8edb953a861e323fa551b09da611271ff2856f4",
+  "sourceBase": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "actuallyExecutedBaseline": "d928e37739e672f7802475db462856b4740d495b",
+  "baselineProductionSourceEquivalence": {
+    "src/cli/capability-cli/media-understanding-command.ts": "e452f6e4e71401e336593a3eea55e39e825bad60a2927eb45ad1c51d49f161b5",
+    "src/media-understanding/runtime.ts": "727082bb6aee1758d7c62e693de621d08fbf52f2e32304461ddb8b6c76a6638d",
+    "src/media-understanding/runner.entries.ts": "a2c6525c15f19b1d0df27ad9c230155f55a522ed8c77658a6c963bd3014097b5",
+    "src/media-understanding/openai-compatible-video.ts": "3d39a790c1ac39c1a1241f64852abfcdd1e3912ecea57da22ca18eab543edcb7"
+  },
+  "sameCollectorSha256": "23df9c6880c2c2791ae9626dca543465b13a97a25b959f9a49635d4108ac3bd3",
+  "normalHeadBuildSeconds": 247.882,
+  "nativeHeadCollectionSeconds": 18.437,
+  "baseAndHead": [
+    {
+      "ref": "base",
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "result": "RED_ESCALATED_PROCESS_KILL_WITH_SUCCESS_CONTROL",
+      "cases": [
+        {
+          "label": "uninterrupted-control",
+          "exitCode": 0,
+          "signalNumber": null,
+          "safetyKill": false,
+          "interruptToExitMs": null,
+          "interruptToPeerCloseMs": [
+            null
+          ]
+        },
+        {
+          "label": "real-pty-interrupt",
+          "exitCode": -9,
+          "signalNumber": 9,
+          "safetyKill": false,
+          "interruptToExitMs": 2050.6,
+          "interruptToPeerCloseMs": [
+            2041.02
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "head",
+      "head": "a8edb953a861e323fa551b09da611271ff2856f4",
+      "result": "GREEN_COOPERATIVE_CANCEL_WITH_SUCCESS_CONTROL",
+      "cases": [
+        {
+          "label": "uninterrupted-control",
+          "exitCode": 0,
+          "signalNumber": null,
+          "safetyKill": false,
+          "interruptToExitMs": null,
+          "interruptToPeerCloseMs": [
+            null
+          ]
+        },
+        {
+          "label": "real-pty-interrupt",
+          "exitCode": 130,
+          "signalNumber": null,
+          "safetyKill": false,
+          "interruptToExitMs": 147.99,
+          "interruptToPeerCloseMs": [
+            3.62
+          ]
+        }
+      ]
+    }
+  ],
+  "sanitization": "Only literal task-root/node-binary/home path prefixes replaced with named placeholders in JSON/transcripts/build metadata. Request Authorization was already redacted by the recorder. Collector bytes are unchanged. Synthetic credentials in collectors are intentionally non-secret fixtures. Full original private artifacts retained.",
+  "cleanup": "Collector stops HTTP server, joins threads and waits its direct CLI children; isolated synthetic state is retained. No production services, external provider, real account or channel touched.",
+  "limits": "Linux/POSIX PTY; normal launcher; supported Moonshot-compatible HTTP fixture, explicitly isolated allowPrivateNetwork=true config, not a paid remote inference/provider or billing proof. Audio positive control is a separate WAV/OpenAI-compatible supported adapter. No cross-provider, Windows/macOS, live authenticated Gateway, external channel or FFmpeg child-process native claim.",
+  "work_tokens": null,
+  "usd": null
+}

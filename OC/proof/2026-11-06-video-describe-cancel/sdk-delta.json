@@ -1,0 +1,12 @@
+{
+  "scope": "Canonical renderer narrowed to existing media-understanding-runtime, not all-SDK diff",
+  "changes": [
+    {
+      "name": "describeVideoFile",
+      "before": "export function describeVideoFile(params: DescribeVideoFileParams): Promise<RunMediaUnderstandingFileResult>;",
+      "after": "export function describeVideoFile(params: DescribeVideoFileParams, execution?: MediaExecutionContext): Promise<RunMediaUnderstandingFileResult>;",
+      "closureBefore": "b867acfa4adfc3dd81768cf48f9bd8fa6ab1f8e98d7ee33f25e1798527be0e19",
+      "closureAfter": "93780b3cd4f55519eea5e24a1e7e30445078bedcac895955617045c7170f5fea"
+    }
+  ]
+}

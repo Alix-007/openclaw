@@ -1,0 +1,12 @@
+{
+  "head": "a8edb953a861e323fa551b09da611271ff2856f4",
+  "command": [
+    "NODE_BIN",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/build-all.mts",
+    "cliStartup"
+  ],
+  "exitCode": 0,
+  "seconds": 247.882
+}

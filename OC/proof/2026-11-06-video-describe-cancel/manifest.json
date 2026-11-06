@@ -1,0 +1,97 @@
+{
+  "productHead": "a8edb953a861e323fa551b09da611271ff2856f4",
+  "sourceBase": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "actuallyExecutedBaseline": "d928e37739e672f7802475db462856b4740d495b",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2556,
+      "sha256": "1cac992099b8540cba023aaf5ed280e0dba3c2552ca45166cf280f52c827f2b0",
+      "binary": false
+    },
+    {
+      "path": "audio-control-real-pty-interrupt.pty.log",
+      "bytes": 131,
+      "sha256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+      "binary": false
+    },
+    {
+      "path": "audio-control-uninterrupted-control.pty.log",
+      "bytes": 357,
+      "sha256": "c9fdf2b0355d5f5b4773bddb09914483e7f96026f1534b01cb3c6b4896d4adb3",
+      "binary": false
+    },
+    {
+      "path": "audio-control.json",
+      "bytes": 7162,
+      "sha256": "5b05418ae94d72f5b3e43490348893c3f83df92201d2d0a254b448eff67cf7d6",
+      "binary": false
+    },
+    {
+      "path": "base-real-pty-interrupt.pty.log",
+      "bytes": 70,
+      "sha256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "binary": false
+    },
+    {
+      "path": "base-uninterrupted-control.pty.log",
+      "bytes": 347,
+      "sha256": "ad4259d5974e79f175089555099cc5745d844a7dd00e8ce4c518e6b35058f4b1",
+      "binary": false
+    },
+    {
+      "path": "base.json",
+      "bytes": 8057,
+      "sha256": "4bfa2cfb50f3f9ab37630f5f57d925e87211c5d4804dcfc4ef0963396faece79",
+      "binary": false
+    },
+    {
+      "path": "head-real-pty-interrupt.pty.log",
+      "bytes": 131,
+      "sha256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+      "binary": false
+    },
+    {
+      "path": "head-uninterrupted-control.pty.log",
+      "bytes": 347,
+      "sha256": "824a8a4778672e8d7ec47fa46b6acead164c26762bfa9ecb3592c60e596f87e5",
+      "binary": false
+    },
+    {
+      "path": "head.json",
+      "bytes": 8159,
+      "sha256": "00373caf9feca456a8e2981f5dbdd0af439820c6516ce25f1f5bd7749b0c80c2",
+      "binary": false
+    },
+    {
+      "path": "normal-head-build.json",
+      "bytes": 218,
+      "sha256": "7c9b34586b199eb3c4c0c0e470090ec1f77f3048c85d2274f7b30d08b7088f9c",
+      "binary": false
+    },
+    {
+      "path": "scout-audio-transcribe-interrupt-control.py",
+      "bytes": 10090,
+      "sha256": "1fd45680cb47f111f624697f09fbcb1c4af031a8e4fc58a88b1ae46e205bde8c",
+      "binary": false
+    },
+    {
+      "path": "sdk-delta.json",
+      "bytes": 641,
+      "sha256": "875831ad6dfbf5b8c29bb40aa3797f67a2315da9c7111a062f3c34326c5fb7d6",
+      "binary": false
+    },
+    {
+      "path": "summary.json",
+      "bytes": 3301,
+      "sha256": "aa162e2eaff9505c7ee3a15eb33181a3a2da5e683fab8d22182627ab0bd4a0b0",
+      "binary": false
+    },
+    {
+      "path": "video-describe-cancel-proof-v4.py",
+      "bytes": 10893,
+      "sha256": "23df9c6880c2c2791ae9626dca543465b13a97a25b959f9a49635d4108ac3bd3",
+      "binary": false
+    }
+  ]
+}

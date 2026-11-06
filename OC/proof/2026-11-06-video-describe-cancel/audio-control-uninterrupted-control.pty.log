@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "capability": "audio.transcribe",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-4o-transcribe",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "PROOF_ROOT/scout-audio-transcribe-interrupt-control/clip.wav",
+      "text": "Synthetic audio transcript.",
+      "kind": "audio.transcription"
+    }
+  ]
+}

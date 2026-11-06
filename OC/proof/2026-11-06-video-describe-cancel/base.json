@@ -1,0 +1,165 @@
+{
+  "at": "2026-11-06T16:34:07Z",
+  "head": "d928e37739e672f7802475db462856b4740d495b",
+  "buildStamp": {
+    "builtAt": 1793977930160,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "inputSignature": "c803db7869f2805627a9dc16632f1213bc3d87b609b8a89a944860702c6f45d3"
+  },
+  "collectorSha256": "23df9c6880c2c2791ae9626dca543465b13a97a25b959f9a49635d4108ac3bd3",
+  "entry": "openclaw.mjs",
+  "expected": "base",
+  "sourceHashesBefore": {
+    "src/cli/capability-cli/media-understanding-command.ts": "e452f6e4e71401e336593a3eea55e39e825bad60a2927eb45ad1c51d49f161b5",
+    "src/media-understanding/runtime.ts": "727082bb6aee1758d7c62e693de621d08fbf52f2e32304461ddb8b6c76a6638d",
+    "src/media-understanding/runner.entries.ts": "a2c6525c15f19b1d0df27ad9c230155f55a522ed8c77658a6c963bd3014097b5",
+    "src/media-understanding/openai-compatible-video.ts": "3d39a790c1ac39c1a1241f64852abfcdd1e3912ecea57da22ca18eab543edcb7"
+  },
+  "boundary": "Normal shipped CLI in controlling PTY -> Moonshot real HTTP upload -> OS VINTR/SIGINT -> process status and passive peer-close recorder",
+  "noRespawnOverride": false,
+  "videoBytes": 31772,
+  "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+  "cases": [
+    {
+      "label": "uninterrupted-control",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "infer",
+        "video",
+        "describe",
+        "--file",
+        "PROOF_ROOT/video-describe-cancel-proof-base-v4/clip.mp4",
+        "--agent",
+        "main",
+        "--model",
+        "moonshot/kimi-k2.6",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 8.7745,
+      "exitCode": 0,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToPeerCloseMs": [
+        null
+      ],
+      "output": "{\r\n  \"ok\": true,\r\n  \"capability\": \"video.describe\",\r\n  \"transport\": \"local\",\r\n  \"provider\": \"moonshot\",\r\n  \"model\": \"kimi-k2.6\",\r\n  \"attempts\": [],\r\n  \"outputs\": [\r\n    {\r\n      \"path\": \"PROOF_ROOT/video-describe-cancel-proof-base-v4/clip.mp4\",\r\n      \"text\": \"Synthetic video: a poster frame.\",\r\n      \"kind\": \"video.description\"\r\n    }\r\n  ]\r\n}\r\n",
+      "processBeforeInterrupt": null,
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "method": "POST",
+          "receivedAt": 1793982855.7122598,
+          "receivedMonotonic": 3122464.54310917,
+          "headers": {
+            "host": "127.0.0.1:41869",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "42572"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "4034f1f0afa304a97138a9bb22993968caeac8a23061d769f340a34ef1067eb2",
+          "model": "kimi-k2.6",
+          "videoBytes": 31772,
+          "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+          "prompt": "Describe the video. Respond in at most 500 characters.",
+          "responseCompleted": true,
+          "peerClosed": false,
+          "responseCompletedAt": 1793982855.9124074
+        }
+      ]
+    },
+    {
+      "label": "real-pty-interrupt",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "infer",
+        "video",
+        "describe",
+        "--file",
+        "PROOF_ROOT/video-describe-cancel-proof-base-v4/clip.mp4",
+        "--agent",
+        "main",
+        "--model",
+        "moonshot/kimi-k2.6",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 10.3958,
+      "exitCode": -9,
+      "signalNumber": 9,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": true,
+      "interruptToExitMs": 2050.6,
+      "interruptToPeerCloseMs": [
+        2041.02
+      ],
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n",
+      "processBeforeInterrupt": {
+        "pid": 3500147,
+        "foregroundProcessGroup": 3500147,
+        "status": "Name:\tnode-MainThread\nUmask:\t0027\nState:\tS (sleeping)\nTgid:\t3500147\nNgid:\t0\nPid:\t3500147\nPPid:\t3499796\nTracerPid:\t0\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nFDSize:\t64\nGroups:\t10 984 1000 \nNStgid:\t3500147\nNSpid:\t3500147\nNSpgid:\t3500147\nNSsid:\t3500147\nVmPeak:\t 1498796 kB\nVmSize:\t 1442732 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   69188 kB\nVmRSS:\t   68912 kB\nRssAnon:\t   17940 kB\nRssFile:\t   50972 kB\nRssShmem:\t       0 kB\nVmData:\t  583364 kB\nVmStk:\t     132 kB\nVmExe:\t   45692 kB\nVmLib:\t    7444 kB\nVmPTE:\t     972 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nThreads:\t7\nSigQ:\t1/127769\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000188014607\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nCpus_allowed:\tffff\nCpus_allowed_list:\t0-15\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t20\nnonvoluntary_ctxt_switches:\t1\n",
+        "children": "3500154"
+      },
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "method": "POST",
+          "receivedAt": 1793982864.0775244,
+          "receivedMonotonic": 3122472.908462572,
+          "headers": {
+            "host": "127.0.0.1:41869",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "42572"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "4034f1f0afa304a97138a9bb22993968caeac8a23061d769f340a34ef1067eb2",
+          "model": "kimi-k2.6",
+          "videoBytes": 31772,
+          "videoSha256": "aad1489e43c7e53dfae24be463d67d4e73de4debc091f07adad36d2a02af2822",
+          "prompt": "Describe the video. Respond in at most 500 characters.",
+          "responseCompleted": false,
+          "peerClosed": true,
+          "peerClosedMonotonic": 3122475.455296944,
+          "peerClosedAt": 1793982866.6239848
+        }
+      ]
+    }
+  ],
+  "result": "RED_ESCALATED_PROCESS_KILL_WITH_SUCCESS_CONTROL",
+  "sourceHashesAfter": {
+    "src/cli/capability-cli/media-understanding-command.ts": "e452f6e4e71401e336593a3eea55e39e825bad60a2927eb45ad1c51d49f161b5",
+    "src/media-understanding/runtime.ts": "727082bb6aee1758d7c62e693de621d08fbf52f2e32304461ddb8b6c76a6638d",
+    "src/media-understanding/runner.entries.ts": "a2c6525c15f19b1d0df27ad9c230155f55a522ed8c77658a6c963bd3014097b5",
+    "src/media-understanding/openai-compatible-video.ts": "3d39a790c1ac39c1a1241f64852abfcdd1e3912ecea57da22ca18eab543edcb7"
+  },
+  "configUnchanged": true,
+  "sourceStatusAfter": "",
+  "cleanup": {
+    "httpServerStopped": true,
+    "directCliProcessesWaited": true,
+    "productionServicesTouched": false,
+    "externalModelOrChannelCalls": false,
+    "syntheticStateRetained": true
+  }
+}

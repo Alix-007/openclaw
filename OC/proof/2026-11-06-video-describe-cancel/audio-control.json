@@ -1,0 +1,152 @@
+{
+  "at": "2026-11-06T16:30:02Z",
+  "head": "d928e37739e672f7802475db462856b4740d495b",
+  "buildStamp": {
+    "builtAt": 1793977930160,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "inputSignature": "c803db7869f2805627a9dc16632f1213bc3d87b609b8a89a944860702c6f45d3"
+  },
+  "collectorSha256": "1fd45680cb47f111f624697f09fbcb1c4af031a8e4fc58a88b1ae46e205bde8c",
+  "entry": "openclaw.mjs",
+  "boundary": "Normal shipped CLI in controlling PTY -> OpenAI real HTTP multipart upload -> OS VINTR/SIGINT -> process status and passive peer-close recorder",
+  "noRespawnOverride": false,
+  "videoBytes": 16044,
+  "videoSha256": "358c6dcef4442790decb0a5c03fb320154f9d1dd5b4618e301f9e6661a413cb5",
+  "cases": [
+    {
+      "label": "uninterrupted-control",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "infer",
+        "audio",
+        "transcribe",
+        "--file",
+        "PROOF_ROOT/scout-audio-transcribe-interrupt-control/clip.wav",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-4o-transcribe",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 9.4714,
+      "exitCode": 0,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToPeerCloseMs": [
+        null
+      ],
+      "output": "{\r\n  \"ok\": true,\r\n  \"capability\": \"audio.transcribe\",\r\n  \"transport\": \"local\",\r\n  \"provider\": \"openai\",\r\n  \"model\": \"gpt-4o-transcribe\",\r\n  \"attempts\": [],\r\n  \"outputs\": [\r\n    {\r\n      \"path\": \"PROOF_ROOT/scout-audio-transcribe-interrupt-control/clip.wav\",\r\n      \"text\": \"Synthetic audio transcript.\",\r\n      \"kind\": \"audio.transcription\"\r\n    }\r\n  ]\r\n}\r\n",
+      "processBeforeInterrupt": null,
+      "requests": [
+        {
+          "path": "/v1/audio/transcriptions",
+          "method": "POST",
+          "receivedAt": 1793982611.6251228,
+          "receivedMonotonic": 3122220.451830955,
+          "headers": {
+            "host": "127.0.0.1:40631",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-095238535740",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "node",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "16316"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "21e7aa975bbd468efe1a94c09756dde9e49ada5031c322188eddfd26fa20a3b2",
+          "model": "gpt-4o-transcribe",
+          "videoBytes": 16044,
+          "videoSha256": "358c6dcef4442790decb0a5c03fb320154f9d1dd5b4618e301f9e6661a413cb5",
+          "prompt": null,
+          "responseCompleted": true,
+          "peerClosed": false,
+          "responseCompletedAt": 1793982611.8211772
+        }
+      ]
+    },
+    {
+      "label": "real-pty-interrupt",
+      "command": [
+        "NODE_BIN",
+        "PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "infer",
+        "audio",
+        "transcribe",
+        "--file",
+        "PROOF_ROOT/scout-audio-transcribe-interrupt-control/clip.wav",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-4o-transcribe",
+        "--json"
+      ],
+      "normalLauncherEnvironment": true,
+      "seconds": 9.7571,
+      "exitCode": 130,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": true,
+      "interruptToExitMs": 196.97,
+      "interruptToPeerCloseMs": [
+        4.92
+      ],
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "processBeforeInterrupt": {
+        "pid": 3493431,
+        "foregroundProcessGroup": 3493431,
+        "status": "Name:\tnode-MainThread\nUmask:\t0027\nState:\tS (sleeping)\nTgid:\t3493431\nNgid:\t0\nPid:\t3493431\nPPid:\t3493097\nTracerPid:\t0\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nFDSize:\t64\nGroups:\t10 984 1000 \nNStgid:\t3493431\nNSpid:\t3493431\nNSpgid:\t3493431\nNSsid:\t3493431\nVmPeak:\t 1442972 kB\nVmSize:\t 1442868 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   69280 kB\nVmRSS:\t   69280 kB\nRssAnon:\t   18820 kB\nRssFile:\t   50460 kB\nRssShmem:\t       0 kB\nVmData:\t  583960 kB\nVmStk:\t     132 kB\nVmExe:\t   45692 kB\nVmLib:\t    7444 kB\nVmPTE:\t     952 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nThreads:\t7\nSigQ:\t1/127769\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000188014607\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nCpus_allowed:\tffff\nCpus_allowed_list:\t0-15\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t23\nnonvoluntary_ctxt_switches:\t1\n",
+        "children": "3493438"
+      },
+      "requests": [
+        {
+          "path": "/v1/audio/transcriptions",
+          "method": "POST",
+          "receivedAt": 1793982621.207748,
+          "receivedMonotonic": 3122230.035391698,
+          "headers": {
+            "host": "127.0.0.1:40631",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-015236695370",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "node",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "16316"
+          },
+          "authMatchesSynthetic": true,
+          "bodySha256": "2301e3167c042332342631c36486e892899a53af98523114bcfdc67e7ef7136b",
+          "model": "gpt-4o-transcribe",
+          "videoBytes": 16044,
+          "videoSha256": "358c6dcef4442790decb0a5c03fb320154f9d1dd5b4618e301f9e6661a413cb5",
+          "prompt": null,
+          "responseCompleted": false,
+          "peerClosed": true,
+          "peerClosedMonotonic": 3122230.54774266,
+          "peerClosedAt": 1793982621.7164302
+        }
+      ]
+    }
+  ],
+  "result": "PASS_AUDIO_SIBLING_NATIVE_CANCEL_CONTROL",
+  "configUnchanged": true,
+  "sourceStatusAfter": "",
+  "cleanup": {
+    "httpServerStopped": true,
+    "directCliProcessesWaited": true,
+    "productionServicesTouched": false,
+    "externalModelOrChannelCalls": false,
+    "syntheticStateRetained": true
+  }
+}
