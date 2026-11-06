@@ -1,0 +1,3 @@
+ClawHub plugins (1)
+@acme/calendar  bundle-plugin | official
+  Install: openclaw plugins install @acme/calendar

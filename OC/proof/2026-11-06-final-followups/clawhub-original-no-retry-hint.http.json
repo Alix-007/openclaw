@@ -1,0 +1,368 @@
+{
+  "label": "original-no-retry-hint",
+  "fixture": {
+    "status": 503,
+    "retryAfter": null,
+    "query": "unavailable"
+  },
+  "requestsByFamily": {
+    "code-plugin": 5,
+    "bundle-plugin": 5
+  },
+  "requestGapsMs": {
+    "code-plugin": [
+      1019,
+      3011,
+      10010,
+      30006
+    ],
+    "bundle-plugin": [
+      1016,
+      3008,
+      10011,
+      30016
+    ]
+  },
+  "requests": [
+    {
+      "at": "2026-11-06T15:15:12.849Z",
+      "msSinceCellStart": 4334,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:12.854Z",
+      "closedAt": "2026-11-06T15:15:12.855Z"
+    },
+    {
+      "at": "2026-11-06T15:15:12.855Z",
+      "msSinceCellStart": 4340,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:12.855Z",
+      "closedAt": "2026-11-06T15:15:12.855Z"
+    },
+    {
+      "at": "2026-11-06T15:15:13.868Z",
+      "msSinceCellStart": 5353,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:13.868Z",
+      "closedAt": "2026-11-06T15:15:13.868Z"
+    },
+    {
+      "at": "2026-11-06T15:15:13.871Z",
+      "msSinceCellStart": 5356,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:13.872Z",
+      "closedAt": "2026-11-06T15:15:13.872Z"
+    },
+    {
+      "at": "2026-11-06T15:15:16.879Z",
+      "msSinceCellStart": 8364,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:16.879Z",
+      "closedAt": "2026-11-06T15:15:16.880Z"
+    },
+    {
+      "at": "2026-11-06T15:15:16.880Z",
+      "msSinceCellStart": 8364,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:16.880Z",
+      "closedAt": "2026-11-06T15:15:16.880Z"
+    },
+    {
+      "at": "2026-11-06T15:15:26.889Z",
+      "msSinceCellStart": 18374,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:26.890Z",
+      "closedAt": "2026-11-06T15:15:26.890Z"
+    },
+    {
+      "at": "2026-11-06T15:15:26.890Z",
+      "msSinceCellStart": 18375,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:26.890Z",
+      "closedAt": "2026-11-06T15:15:26.890Z"
+    },
+    {
+      "at": "2026-11-06T15:15:56.895Z",
+      "msSinceCellStart": 48380,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:56.896Z",
+      "closedAt": "2026-11-06T15:15:56.896Z"
+    },
+    {
+      "at": "2026-11-06T15:15:56.906Z",
+      "msSinceCellStart": 48391,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:15:56.906Z",
+      "closedAt": "2026-11-06T15:15:56.907Z"
+    }
+  ]
+}

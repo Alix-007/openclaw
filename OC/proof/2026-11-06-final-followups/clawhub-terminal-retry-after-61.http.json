@@ -1,0 +1,88 @@
+{
+  "label": "terminal-retry-after-61",
+  "fixture": {
+    "status": 503,
+    "retryAfter": "61",
+    "query": "unavailable"
+  },
+  "requestsByFamily": {
+    "code-plugin": 1,
+    "bundle-plugin": 1
+  },
+  "requestGapsMs": {
+    "code-plugin": [],
+    "bundle-plugin": []
+  },
+  "requests": [
+    {
+      "at": "2026-11-06T15:16:01.028Z",
+      "msSinceCellStart": 3979,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json",
+          "retry-after": "61"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:16:01.029Z",
+      "closedAt": "2026-11-06T15:16:01.029Z"
+    },
+    {
+      "at": "2026-11-06T15:16:01.029Z",
+      "msSinceCellStart": 3981,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "unavailable",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 503,
+        "headers": {
+          "content-type": "application/json",
+          "retry-after": "61"
+        },
+        "body": {
+          "error": "catalog unavailable"
+        }
+      },
+      "finishedAt": "2026-11-06T15:16:01.030Z",
+      "closedAt": "2026-11-06T15:16:01.030Z"
+    }
+  ]
+}

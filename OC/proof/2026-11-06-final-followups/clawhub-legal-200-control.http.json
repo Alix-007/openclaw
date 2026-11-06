@@ -1,0 +1,106 @@
+{
+  "label": "legal-200-control",
+  "fixture": {
+    "status": 200,
+    "retryAfter": null,
+    "query": "calendar"
+  },
+  "requestsByFamily": {
+    "code-plugin": 1,
+    "bundle-plugin": 1
+  },
+  "requestGapsMs": {
+    "code-plugin": [],
+    "bundle-plugin": []
+  },
+  "requests": [
+    {
+      "at": "2026-11-06T15:16:05.260Z",
+      "msSinceCellStart": 4055,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "calendar",
+        "family": "code-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "results": [
+            {
+              "score": 4,
+              "package": {
+                "name": "@acme/calendar",
+                "family": "code-plugin",
+                "channel": "official",
+                "isOfficial": true
+              }
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-11-06T15:16:05.260Z",
+      "closedAt": "2026-11-06T15:16:05.260Z"
+    },
+    {
+      "at": "2026-11-06T15:16:05.260Z",
+      "msSinceCellStart": 4056,
+      "method": "GET",
+      "path": "/api/v1/packages/search",
+      "query": {
+        "q": "calendar",
+        "family": "bundle-plugin",
+        "limit": "5"
+      },
+      "headers": {
+        "host": "$LOOPBACK",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "undici",
+        "accept-encoding": "gzip, deflate"
+      },
+      "authorizationPresent": false,
+      "closed": true,
+      "finished": true,
+      "response": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "results": [
+            {
+              "score": 12,
+              "package": {
+                "name": "@acme/calendar",
+                "family": "bundle-plugin",
+                "channel": "official",
+                "isOfficial": true
+              }
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-11-06T15:16:05.261Z",
+      "closedAt": "2026-11-06T15:16:05.261Z"
+    }
+  ]
+}

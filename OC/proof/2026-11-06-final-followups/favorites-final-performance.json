@@ -1,0 +1,145 @@
+{
+  "head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+  "node": "v26.12.1",
+  "build": {
+    "head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/ui.js",
+      "build"
+    ],
+    "exitCode": 0,
+    "seconds": 115.522
+  },
+  "native": {
+    "head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "tsx",
+      "$PROOF_ROOT/favorites-proof.mjs",
+      "$CHECKOUT",
+      "$PROOF_ROOT",
+      "exact-head",
+      "$PROOF_ROOT/stable-2026.11.1/package"
+    ],
+    "exitCode": 0,
+    "seconds": 62.631,
+    "priorAttempt": "favorites-final-native.json failed before product run: omitted canonical TypeScript loader; no rebuild/relabel"
+  },
+  "local_current": {
+    "css_gzip": 324803,
+    "css_raw": 1677015,
+    "chat_js_gzip": 1288631,
+    "css_gzip_cap": 324685,
+    "css_raw_cap": 1676828,
+    "chat_js_gzip_cap": 1288198
+  },
+  "matched_d98_to_final_chat_js_delta": -26,
+  "known_local_excess": {
+    "css_gzip": 118,
+    "css_raw": 187,
+    "chat_js_gzip": 433
+  },
+  "previous_hosted": {
+    "classification": "ATTRIBUTABLE_CHAT_BOOT_JS_BUDGET_REGRESSION_NOT_INHERITED",
+    "head": "d98c890942f41c58d78df460bb27de7ac37d2d48",
+    "ci_merge": "b229ffe42888a02e76044a8a83e79fabce64ac63",
+    "ci_main_parent": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+    "job": {
+      "id": 127912832223,
+      "run_id": 42223831917,
+      "name": "control-ui-performance",
+      "head_sha": "d98c890942f41c58d78df460bb27de7ac37d2d48",
+      "conclusion": "failure",
+      "started_at": "2026-11-06T13:15:28Z",
+      "completed_at": "2026-11-06T13:18:35Z",
+      "html_url": "https://github.com/openclaw/openclaw/actions/runs/42223831917/job/127912832223"
+    },
+    "node": "v24.22.1",
+    "metrics_bytes": {
+      "total_css_gzip": {
+        "baseline": 324228,
+        "candidate": 324304,
+        "delta": 76,
+        "limit": 324685,
+        "candidate_headroom": 381,
+        "baseline_headroom": 457
+      },
+      "total_css_raw": {
+        "baseline": 1674730,
+        "candidate": 1675005,
+        "delta": 275,
+        "limit": 1678428,
+        "candidate_headroom": 3423,
+        "baseline_headroom": 3698
+      },
+      "chat_boot_js_gzip": {
+        "baseline": 1288929,
+        "candidate": 1289157,
+        "delta": 228,
+        "limit": 1289137,
+        "candidate_headroom": -20,
+        "baseline_headroom": 208
+      },
+      "new_boot_js_gzip": {
+        "baseline": 797252,
+        "candidate": 797480,
+        "delta": 228,
+        "limit": 797620,
+        "candidate_headroom": 140,
+        "baseline_headroom": 368
+      }
+    },
+    "candidate_violations": [
+      {
+        "metric": "chat boot JS gzip",
+        "actual": 1289157,
+        "limit": 1289137,
+        "unit": "bytes"
+      }
+    ],
+    "baseline_violations": [],
+    "candidate_warnings": [],
+    "baseline_warnings": [],
+    "evidence_log": "ci-favorites-css-head-current-job.log",
+    "evidence_log_sha256": "a2f511ff6eb2fc79abde218713335f52a15044073e298ff4ad102fd079113765",
+    "line_evidence": {
+      "checkout_merge_and_main": [
+        835,
+        836,
+        837
+      ],
+      "only_runtime_warning": [
+        7337
+      ],
+      "css_caps_and_totals": [
+        7345,
+        7357,
+        7358
+      ],
+      "chat_route_and_paired_delta": [
+        7347,
+        7349
+      ],
+      "new_route_and_paired_delta": [
+        7351,
+        7353
+      ],
+      "candidate_violation_json": [
+        8328,
+        8335
+      ],
+      "baseline_violation_json": [
+        24852
+      ]
+    },
+    "limitations": [
+      "One job/log download only; no rerun, build, CI polling, source/Git edits or remote writes.",
+      "Historical local Node26 -37gzip/-450raw pair is not the hosted CI baseline pair.",
+      "Standalone source-module gzip figures are not additive, nor a claimed prediction of final bundle savings.",
+      "Human personal/shared semantics HOLD remains independent of technical CI."
+    ]
+  },
+  "current_hosted": "NOT_RUN before final push; local compression is not a prediction of current-main merged CI. Prior d98 hosted20B JS overage is attributable, not inherited. No cap raised."
+}

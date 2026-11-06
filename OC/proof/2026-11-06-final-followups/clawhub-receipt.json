@@ -1,0 +1,692 @@
+{
+  "at": "2026-11-06T15:15:08.425Z",
+  "sha": "d928e37739e672f7802475db462856b4740d495b",
+  "buildStamp": {
+    "builtAt": 1793977930160,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "inputSignature": "c803db7869f2805627a9dc16632f1213bc3d87b609b8a89a944860702c6f45d3"
+  },
+  "cases": [
+    {
+      "label": "original-no-retry-hint",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "unavailable",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 48.529,
+      "stdout": "",
+      "stderr": "ClawHub /api/v1/packages/search failed (503): {\"error\":\"catalog unavailable\"}\n",
+      "fixture": {
+        "status": 503,
+        "retryAfter": null,
+        "query": "unavailable"
+      },
+      "requests": [
+        {
+          "at": "2026-11-06T15:15:12.849Z",
+          "msSinceCellStart": 4334,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:12.854Z",
+          "closedAt": "2026-11-06T15:15:12.855Z"
+        },
+        {
+          "at": "2026-11-06T15:15:12.855Z",
+          "msSinceCellStart": 4340,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:12.855Z",
+          "closedAt": "2026-11-06T15:15:12.855Z"
+        },
+        {
+          "at": "2026-11-06T15:15:13.868Z",
+          "msSinceCellStart": 5353,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:13.868Z",
+          "closedAt": "2026-11-06T15:15:13.868Z"
+        },
+        {
+          "at": "2026-11-06T15:15:13.871Z",
+          "msSinceCellStart": 5356,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:13.872Z",
+          "closedAt": "2026-11-06T15:15:13.872Z"
+        },
+        {
+          "at": "2026-11-06T15:15:16.879Z",
+          "msSinceCellStart": 8364,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:16.879Z",
+          "closedAt": "2026-11-06T15:15:16.880Z"
+        },
+        {
+          "at": "2026-11-06T15:15:16.880Z",
+          "msSinceCellStart": 8364,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:16.880Z",
+          "closedAt": "2026-11-06T15:15:16.880Z"
+        },
+        {
+          "at": "2026-11-06T15:15:26.889Z",
+          "msSinceCellStart": 18374,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:26.890Z",
+          "closedAt": "2026-11-06T15:15:26.890Z"
+        },
+        {
+          "at": "2026-11-06T15:15:26.890Z",
+          "msSinceCellStart": 18375,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:26.890Z",
+          "closedAt": "2026-11-06T15:15:26.890Z"
+        },
+        {
+          "at": "2026-11-06T15:15:56.895Z",
+          "msSinceCellStart": 48380,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:56.896Z",
+          "closedAt": "2026-11-06T15:15:56.896Z"
+        },
+        {
+          "at": "2026-11-06T15:15:56.906Z",
+          "msSinceCellStart": 48391,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:15:56.906Z",
+          "closedAt": "2026-11-06T15:15:56.907Z"
+        }
+      ],
+      "unexpectedRequests": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "63af189aceeb1082940a3f314c2699be0b7433d0b7d9087caa1448ef858c8a11",
+      "requestsByFamily": {
+        "code-plugin": 5,
+        "bundle-plugin": 5
+      },
+      "requestGapsMs": {
+        "code-plugin": [
+          1019,
+          3011,
+          10010,
+          30006
+        ],
+        "bundle-plugin": [
+          1016,
+          3008,
+          10011,
+          30016
+        ]
+      },
+      "assertionsPassed": true
+    },
+    {
+      "label": "terminal-retry-after-61",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "unavailable",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.152,
+      "stdout": "",
+      "stderr": "ClawHub /api/v1/packages/search failed (503): {\"error\":\"catalog unavailable\"}\n",
+      "fixture": {
+        "status": 503,
+        "retryAfter": "61",
+        "query": "unavailable"
+      },
+      "requests": [
+        {
+          "at": "2026-11-06T15:16:01.028Z",
+          "msSinceCellStart": 3979,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json",
+              "retry-after": "61"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:16:01.029Z",
+          "closedAt": "2026-11-06T15:16:01.029Z"
+        },
+        {
+          "at": "2026-11-06T15:16:01.029Z",
+          "msSinceCellStart": 3981,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "unavailable",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json",
+              "retry-after": "61"
+            },
+            "body": {
+              "error": "catalog unavailable"
+            }
+          },
+          "finishedAt": "2026-11-06T15:16:01.030Z",
+          "closedAt": "2026-11-06T15:16:01.030Z"
+        }
+      ],
+      "unexpectedRequests": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "63af189aceeb1082940a3f314c2699be0b7433d0b7d9087caa1448ef858c8a11",
+      "requestsByFamily": {
+        "code-plugin": 1,
+        "bundle-plugin": 1
+      },
+      "requestGapsMs": {
+        "code-plugin": [],
+        "bundle-plugin": []
+      },
+      "assertionsPassed": true
+    },
+    {
+      "label": "legal-200-control",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "calendar",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.187,
+      "stdout": "ClawHub plugins (1)\n@acme/calendar  bundle-plugin | official\n  Install: openclaw plugins install @acme/calendar\n",
+      "stderr": "",
+      "fixture": {
+        "status": 200,
+        "retryAfter": null,
+        "query": "calendar"
+      },
+      "requests": [
+        {
+          "at": "2026-11-06T15:16:05.260Z",
+          "msSinceCellStart": 4055,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "calendar",
+            "family": "code-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "results": [
+                {
+                  "score": 4,
+                  "package": {
+                    "name": "@acme/calendar",
+                    "family": "code-plugin",
+                    "channel": "official",
+                    "isOfficial": true
+                  }
+                }
+              ]
+            }
+          },
+          "finishedAt": "2026-11-06T15:16:05.260Z",
+          "closedAt": "2026-11-06T15:16:05.260Z"
+        },
+        {
+          "at": "2026-11-06T15:16:05.260Z",
+          "msSinceCellStart": 4056,
+          "method": "GET",
+          "path": "/api/v1/packages/search",
+          "query": {
+            "q": "calendar",
+            "family": "bundle-plugin",
+            "limit": "5"
+          },
+          "headers": {
+            "host": "$LOOPBACK",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate"
+          },
+          "authorizationPresent": false,
+          "closed": true,
+          "finished": true,
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "results": [
+                {
+                  "score": 12,
+                  "package": {
+                    "name": "@acme/calendar",
+                    "family": "bundle-plugin",
+                    "channel": "official",
+                    "isOfficial": true
+                  }
+                }
+              ]
+            }
+          },
+          "finishedAt": "2026-11-06T15:16:05.261Z",
+          "closedAt": "2026-11-06T15:16:05.261Z"
+        }
+      ],
+      "unexpectedRequests": 0,
+      "stdoutSha256": "c8273e4903e4dff6453af7f72b99cd6dc43316515babfd32e60cc5240207fe74",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requestsByFamily": {
+        "code-plugin": 1,
+        "bundle-plugin": 1
+      },
+      "requestGapsMs": {
+        "code-plugin": [],
+        "bundle-plugin": []
+      },
+      "assertionsPassed": true
+    }
+  ],
+  "result": "PASS_NATIVE_TERMINAL_ERROR_AND_SUCCESS_CONTROL",
+  "sourceBase": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "node": "v26.12.1",
+  "collector": {
+    "file": "clawhub-search-terminal-native-proof.mjs",
+    "sha256": "861f2dadca32b74c32b3001b2f4de1539d72406da34a0f2dd9c12c7da3473163"
+  },
+  "sourceHashesBefore": {
+    "src/cli/plugins-cli.ts": "9e0120f06f5673c13ae6e353ec37a8cd1ea313ef83200965cb1a0f909714d589",
+    "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+    "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+    "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+    "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+    "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d",
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba"
+  },
+  "productionFilesUnchangedFromBase": true,
+  "buildInfo": {
+    "version": "2026.11.1",
+    "commit": "d928e37739e672f7802475db462856b4740d495b",
+    "builtAt": "2026-11-06T15:08:02.359Z",
+    "buildId": "2026.11.1-d928e37739e6-2026-11-06T15-08-02.359Z"
+  },
+  "runtimePostbuild": {
+    "syncedAt": 1793977930463,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "staticAssets": false,
+    "inputSignature": "c60715e0dd5de35711093a8b2b7ca0f3e33bfe850da450231915bb07b8653852"
+  },
+  "entry": {
+    "path": "openclaw.mjs",
+    "sha256": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a"
+  },
+  "boundary": "Registered shipped CLI subprocess -> catalog/package client -> actual loopback HTTP -> real process stdout/stderr and exit status",
+  "comparison": "Same exact-head product binary in every cell; only the external terminal-error fixture adds Retry-After: 61. Production code is unchanged by this test-only PR.",
+  "registry": "http://$LOOPBACK",
+  "sourceHashesAfter": {
+    "src/cli/plugins-cli.ts": "9e0120f06f5673c13ae6e353ec37a8cd1ea313ef83200965cb1a0f909714d589",
+    "src/cli/plugins-search-command.ts": "ad540a318c52c0a1c15467cbeefa872f61916938c4076d2cc998177cb7a2ed8c",
+    "src/plugins/catalog-search.ts": "a4a1981820e412bc15dfba1dbec5e023e997465ffb929a8ac3c6f670039316c8",
+    "src/infra/clawhub-packages.ts": "1c92a50e7e73369a0f82f298b6e24e581faf11c6b9d72a7f0ba56a84efb9f451",
+    "src/infra/clawhub-client.ts": "4a23c5daf9b9f9231d59e2c8465d480794ce151020ecaea5e608a7e6d7182b95",
+    "src/infra/clawhub-retry.ts": "47153605320382ad19d488da6306b3ec6ccd71dc7680be88326f4f520ab7398d",
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": "7ba4481452bc222fc03ae2a45d8ffbeced07fb91d164e47f0bb6aee45aa1c0ba"
+  },
+  "configUnchanged": true,
+  "observation": "The same normally built shipped CLI exits1 with catalog unavailable in both503cells; nohint waits through real backoff beyond30s, Retry-After61 sends exactlyoneGET per family and finishesunder30s. Legal200 exits0 and printsone deduplicated plugin.",
+  "cleanup": {
+    "listenerClosed": true,
+    "openSockets": 0,
+    "productionServicesTouched": false,
+    "modelOrChannelCalls": false,
+    "syntheticStateRetained": true
+  }
+}

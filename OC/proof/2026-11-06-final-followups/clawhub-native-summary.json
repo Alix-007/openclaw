@@ -1,0 +1,174 @@
+{
+  "result": "PASS_NATIVE_TERMINAL_ERROR_AND_SUCCESS_CONTROL",
+  "head": "d928e37739e672f7802475db462856b4740d495b",
+  "source_base": "d4ae77eae296fd8eb1f90f7a4ebb5d77fa2e6ad9",
+  "version": "2026.11.1",
+  "node": "v26.12.1",
+  "comparison": "Same exact-head product binary in every cell; only the external terminal-error fixture adds Retry-After: 61. Production code is unchanged by this test-only PR.",
+  "normal_build": {
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "worktree": "$PROOF_ROOT/clawhub-search-fixture",
+    "purpose": "cliStartup",
+    "exitCode": 0,
+    "seconds": 262.576,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "sourceStatusAfter": ""
+  },
+  "build_stamp": {
+    "builtAt": 1793977930160,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "inputSignature": "c803db7869f2805627a9dc16632f1213bc3d87b609b8a89a944860702c6f45d3"
+  },
+  "runtime_postbuild": {
+    "syncedAt": 1793977930463,
+    "head": "d928e37739e672f7802475db462856b4740d495b",
+    "inputsClean": true,
+    "staticAssets": false,
+    "inputSignature": "c60715e0dd5de35711093a8b2b7ca0f3e33bfe850da450231915bb07b8653852"
+  },
+  "production_files_unchanged_from_base": true,
+  "cases": [
+    {
+      "label": "original-no-retry-hint",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "unavailable",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 48.529,
+      "fixture": {
+        "status": 503,
+        "retryAfter": null,
+        "query": "unavailable"
+      },
+      "stdout": "",
+      "stderr": "ClawHub /api/v1/packages/search failed (503): {\"error\":\"catalog unavailable\"}\n",
+      "requestsByFamily": {
+        "code-plugin": 5,
+        "bundle-plugin": 5
+      },
+      "requestGapsMs": {
+        "code-plugin": [
+          1019,
+          3011,
+          10010,
+          30006
+        ],
+        "bundle-plugin": [
+          1016,
+          3008,
+          10011,
+          30016
+        ]
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "63af189aceeb1082940a3f314c2699be0b7433d0b7d9087caa1448ef858c8a11",
+      "assertionsPassed": true
+    },
+    {
+      "label": "terminal-retry-after-61",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "unavailable",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.152,
+      "fixture": {
+        "status": 503,
+        "retryAfter": "61",
+        "query": "unavailable"
+      },
+      "stdout": "",
+      "stderr": "ClawHub /api/v1/packages/search failed (503): {\"error\":\"catalog unavailable\"}\n",
+      "requestsByFamily": {
+        "code-plugin": 1,
+        "bundle-plugin": 1
+      },
+      "requestGapsMs": {
+        "code-plugin": [],
+        "bundle-plugin": []
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "63af189aceeb1082940a3f314c2699be0b7433d0b7d9087caa1448ef858c8a11",
+      "assertionsPassed": true
+    },
+    {
+      "label": "legal-200-control",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/clawhub-search-fixture/openclaw.mjs",
+        "plugins",
+        "search",
+        "calendar",
+        "--limit",
+        "5"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.187,
+      "fixture": {
+        "status": 200,
+        "retryAfter": null,
+        "query": "calendar"
+      },
+      "stdout": "ClawHub plugins (1)\n@acme/calendar  bundle-plugin | official\n  Install: openclaw plugins install @acme/calendar\n",
+      "stderr": "",
+      "requestsByFamily": {
+        "code-plugin": 1,
+        "bundle-plugin": 1
+      },
+      "requestGapsMs": {
+        "code-plugin": [],
+        "bundle-plugin": []
+      },
+      "stdoutSha256": "c8273e4903e4dff6453af7f72b99cd6dc43316515babfd32e60cc5240207fe74",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "assertionsPassed": true
+    }
+  ],
+  "source_hashes_unchanged": true,
+  "config_unchanged": true,
+  "cleanup": {
+    "listenerClosed": true,
+    "openSockets": 0,
+    "productionServicesTouched": false,
+    "modelOrChannelCalls": false,
+    "syntheticStateRetained": true
+  },
+  "limitations": [
+    "Loopback synthetic ClawHub; no public registry, account authentication or model/channel integration exercised.",
+    "Same exact-head product binary for all cells; this test-only PR does not alter runtime behavior. The no-hint vs Retry-After61 comparison isolates the fixture header, not different product versions.",
+    "The existing Vitest E2E suite was not rerun for this native proof; native subprocess exit status and HTTP request records are the additional acceptance evidence.",
+    "Synthetic HOME/config/state were isolated and retained for inspection; no production services were used."
+  ],
+  "work_tokens": null,
+  "cost_usd": null
+}
