@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "path": "ime-base.json",
+      "bytes": 15317,
+      "sha256": "0265742a097d9e01135888e65abaf1a8ac3084d2ecba7c582056ac33918007a9",
+      "binary": false
+    },
+    {
+      "path": "ime-base-enter.png",
+      "bytes": 47427,
+      "sha256": "43d5e7e80d193715f3a562f9f75ae9a40a82daa8ccc55447d316337ba7485ed3",
+      "binary": true
+    },
+    {
+      "path": "ime-base-escape.png",
+      "bytes": 48262,
+      "sha256": "da0f4eee9eb4de21de3a7f05d008333a52eeaca41d5c04b66342e1ddc4e5b0ba",
+      "binary": true
+    },
+    {
+      "path": "ime-head.json",
+      "bytes": 13847,
+      "sha256": "d3d641280564e15567571dbf4261496ee088128bc41185562d0e11fac771441e",
+      "binary": false
+    },
+    {
+      "path": "ime-head-enter.png",
+      "bytes": 48270,
+      "sha256": "46977775e1117916ceb1ac13d785d8e6d1f87d2cc47272bf9a25ab7b77a8e5ed",
+      "binary": true
+    },
+    {
+      "path": "ime-head-escape.png",
+      "bytes": 48092,
+      "sha256": "be41bfe245fd8e73834f6f9a78bc0848f62cd79b4545ebbd121294eae991f07f",
+      "binary": true
+    },
+    {
+      "path": "scout-address-ime-built-proof.mjs",
+      "bytes": 11918,
+      "sha256": "89c8baa09bdf6cde89f832ad3fa1cdabf099edf92a5a8110e37ccc232f21a27d",
+      "binary": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 1393,
+      "sha256": "af492d297990b26a8d3d116fce9434dcda171351f0194f97e50c130ea25bb590",
+      "binary": false
+    }
+  ]
+}

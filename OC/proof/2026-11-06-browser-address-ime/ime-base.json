@@ -1,0 +1,507 @@
+{
+  "at": "2026-11-06T12:09:59.236Z",
+  "stage": "base",
+  "checkout": "$PROOF_ROOT/baseline",
+  "head": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+  "worktreeStatus": "",
+  "output": "$PROOF_ROOT/address-ime-built-base-fyOzYO",
+  "collectorSha256": "89c8baa09bdf6cde89f832ad3fa1cdabf099edf92a5a8110e37ccc232f21a27d",
+  "source": {
+    "ui/src/components/browser/browser-panel-toolbar.tsx": "22b5a9bf37b7efc2a5cad5eaf023dec314f8995851108353a90ccc7579724d03",
+    "ui/src/components/browser/browser-panel-owner.ts": "ddc6895a98f753ac607031b475a3d63e5b4060b805c26e5ef8411b792c72b731",
+    "ui/src/components/browser/browser-url.ts": "03761f968f0a87708e4934d8d651de5e3fde239b94af3e2dc11cb74830b59067",
+    "ui/src/lib/ime.ts": "0218b26381a18f2ee579e399bc169653ddc040e0f47c50ac71c5c35e2ef837aa"
+  },
+  "served": [
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:45261/chat",
+      "status": 200,
+      "sha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:45261/assets/index-DiQZIqiC.js",
+      "status": 200,
+      "sha256": "f523cb83ba97247446b87a0ac9f547f0cb00247095d173e019274b94aedce564"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:45261/chat",
+      "status": 200,
+      "sha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:45261/assets/index-DiQZIqiC.js",
+      "status": 200,
+      "sha256": "f523cb83ba97247446b87a0ac9f547f0cb00247095d173e019274b94aedce564"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:45261/chat",
+      "status": 200,
+      "sha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:45261/assets/index-DiQZIqiC.js",
+      "status": 200,
+      "sha256": "f523cb83ba97247446b87a0ac9f547f0cb00247095d173e019274b94aedce564"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:45261/chat",
+      "status": 200,
+      "sha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:45261/assets/index-DiQZIqiC.js",
+      "status": 200,
+      "sha256": "f523cb83ba97247446b87a0ac9f547f0cb00247095d173e019274b94aedce564"
+    }
+  ],
+  "cases": [
+    {
+      "id": "ordinary-enter",
+      "key": "Enter",
+      "composition": false,
+      "before": {
+        "value": "https://ordinary.invalid/path",
+        "title": "https://ordinary.invalid/path",
+        "mirror": "https://ordinary.invalid/path",
+        "focused": true,
+        "events": []
+      },
+      "afterKeydown": {
+        "value": "https://ordinary.invalid/path",
+        "title": "https://ordinary.invalid/path",
+        "mirror": "https://ordinary.invalid/path",
+        "focused": false,
+        "events": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "keyCode": 13,
+            "isComposing": false,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://ordinary.invalid/path",
+            "focused": true
+          },
+          {
+            "type": "blur",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://ordinary.invalid/path",
+            "focused": false
+          }
+        ]
+      },
+      "requests": [
+        {
+          "id": "31:83bf95a2-e401-4452-b069-a4d9f7acc932",
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/tabs/open",
+            "body": {
+              "url": "https://ordinary.invalid/path"
+            },
+            "tabScope": {
+              "sessionKey": "agent:main:main"
+            }
+          }
+        },
+        {
+          "id": "32:1a9762fd-0b5a-4dfe-ac4a-1739aff77a48",
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/tabs",
+            "tabScope": {
+              "sessionKey": "agent:main:main",
+              "referencedTabs": []
+            }
+          }
+        }
+      ],
+      "navigation": [
+        {
+          "id": "31:83bf95a2-e401-4452-b069-a4d9f7acc932",
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/tabs/open",
+            "body": {
+              "url": "https://ordinary.invalid/path"
+            },
+            "tabScope": {
+              "sessionKey": "agent:main:main"
+            }
+          }
+        }
+      ],
+      "nativeKey": {
+        "type": "keydown",
+        "key": "Enter",
+        "keyCode": 13,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "https://ordinary.invalid/path",
+        "focused": true
+      },
+      "control": "PASS"
+    },
+    {
+      "id": "ordinary-escape",
+      "key": "Escape",
+      "composition": false,
+      "before": {
+        "value": "https://ordinary.invalid/path",
+        "title": "https://ordinary.invalid/path",
+        "mirror": "https://ordinary.invalid/path",
+        "focused": true,
+        "events": []
+      },
+      "afterKeydown": {
+        "value": "",
+        "title": "",
+        "mirror": "Enter a URL and press Enter",
+        "focused": false,
+        "events": [
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "keyCode": 27,
+            "isComposing": false,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://ordinary.invalid/path",
+            "focused": true
+          },
+          {
+            "type": "blur",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://ordinary.invalid/path",
+            "focused": false
+          }
+        ]
+      },
+      "requests": [],
+      "navigation": [],
+      "nativeKey": {
+        "type": "keydown",
+        "key": "Escape",
+        "keyCode": 27,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "https://ordinary.invalid/path",
+        "focused": true
+      },
+      "control": "PASS"
+    },
+    {
+      "id": "ime-enter",
+      "key": "Enter",
+      "composition": true,
+      "before": {
+        "value": "https://\u308c\u3044",
+        "title": "https://\u308c\u3044",
+        "mirror": "https://\u308c\u3044",
+        "focused": true,
+        "events": [
+          {
+            "type": "compositionstart",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "compositionupdate",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "input",
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          }
+        ]
+      },
+      "afterKeydown": {
+        "value": "https://\u308c\u3044",
+        "title": "https://\u308c\u3044",
+        "mirror": "https://\u308c\u3044",
+        "focused": false,
+        "events": [
+          {
+            "type": "compositionstart",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "compositionupdate",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "input",
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "keyCode": 13,
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "compositionend",
+            "isTrusted": false,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "blur",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://\u308c\u3044",
+            "focused": false
+          }
+        ]
+      },
+      "requests": [
+        {
+          "id": "31:7dc1b3e8-d0c4-4ae4-9062-b8063db1d01b",
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/tabs/open",
+            "body": {
+              "url": "https://xn--n8jyh/"
+            },
+            "tabScope": {
+              "sessionKey": "agent:main:main"
+            }
+          }
+        },
+        {
+          "id": "32:be172749-5baa-4f86-8ce9-06d436d2db76",
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/tabs",
+            "tabScope": {
+              "sessionKey": "agent:main:main",
+              "referencedTabs": []
+            }
+          }
+        }
+      ],
+      "navigation": [
+        {
+          "id": "31:7dc1b3e8-d0c4-4ae4-9062-b8063db1d01b",
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/tabs/open",
+            "body": {
+              "url": "https://xn--n8jyh/"
+            },
+            "tabScope": {
+              "sessionKey": "agent:main:main"
+            }
+          }
+        }
+      ],
+      "nativeKey": {
+        "type": "keydown",
+        "key": "Enter",
+        "keyCode": 13,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "https://\u308c\u3044",
+        "focused": true
+      },
+      "expected": "No navigation, no UI reset, same focused field and draft while IME owns the key",
+      "acceptance": false
+    },
+    {
+      "id": "ime-escape",
+      "key": "Escape",
+      "composition": true,
+      "before": {
+        "value": "https://\u308c\u3044",
+        "title": "https://\u308c\u3044",
+        "mirror": "https://\u308c\u3044",
+        "focused": true,
+        "events": [
+          {
+            "type": "compositionstart",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "compositionupdate",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "input",
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          }
+        ]
+      },
+      "afterKeydown": {
+        "value": "",
+        "title": "",
+        "mirror": "Enter a URL and press Enter",
+        "focused": false,
+        "events": [
+          {
+            "type": "compositionstart",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "compositionupdate",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://",
+            "focused": true
+          },
+          {
+            "type": "input",
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "keyCode": 27,
+            "isComposing": true,
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "compositionend",
+            "isTrusted": false,
+            "defaultPrevented": false,
+            "data": "\u308c\u3044",
+            "value": "https://\u308c\u3044",
+            "focused": true
+          },
+          {
+            "type": "blur",
+            "isTrusted": true,
+            "defaultPrevented": false,
+            "value": "https://\u308c\u3044",
+            "focused": false
+          }
+        ]
+      },
+      "requests": [],
+      "navigation": [],
+      "nativeKey": {
+        "type": "keydown",
+        "key": "Escape",
+        "keyCode": 27,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "https://\u308c\u3044",
+        "focused": true
+      },
+      "expected": "No navigation, no UI reset, same focused field and draft while IME owns the key",
+      "acceptance": false
+    }
+  ],
+  "errors": [],
+  "blockedExternalRequests": [],
+  "limitations": [
+    "Real native Chromium CDP IME composition and native keyboard events in the actual Control UI Browser panel and controller; synthetic Gateway transport records browser.request only.",
+    "No managed remote browser or external page is contacted. No physical Japanese/Chinese keyboard, Safari, or WKWebView is claimed.",
+    "Normal built Control UI acceptance with exact clean source identity and browser-received HTML/entry hashes; not a live authenticated Gateway or managed browser."
+  ],
+  "build": {
+    "version": "2026.11.1",
+    "commit": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "builtAt": "2026-11-06T08:09:33.801Z",
+    "release": false,
+    "commitAt": "2026-11-06T07:57:32.000Z",
+    "branch": null,
+    "dirty": false,
+    "buildId": "2026.11.1-5bd69e0a3365-2026-11-06T08-09-33.801Z",
+    "indexSha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1",
+    "entryAssets": [
+      {
+        "path": "/assets/index-DiQZIqiC.js",
+        "sha256": "f523cb83ba97247446b87a0ac9f547f0cb00247095d173e019274b94aedce564"
+      }
+    ],
+    "mode": "Existing normal scripts/ui.js build, served unchanged by the official built ControlUiE2e server"
+  },
+  "sourceProofHistory": {
+    "collector": "scout-address-ime-proof.mjs",
+    "sha256": "dd769ea7e031c25fd4b51f19f56cbabf6075d11856f1e224d1510f4f50b84fa3",
+    "base": "address-ime-base-enzGQJ/receipt.json",
+    "sourceGreen": "address-ime-head-0L6R90/receipt.json",
+    "boundary": "Separate earlier source-server proof; not substituted for this built run"
+  },
+  "server": "http://127.0.0.1:45261/",
+  "browser": "152.0.7977.64",
+  "result": "RED",
+  "elapsedMs": 14198
+}
