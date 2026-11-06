@@ -1,0 +1,58 @@
+{
+  "files": [
+    {
+      "path": "favorites-built-current.json",
+      "binary": false,
+      "bytes": 13074,
+      "sha256": "193ca9f1b31fa482932478aa1d43277899911219367dbf399101b19918c888d6"
+    },
+    {
+      "path": "favorites-before.png",
+      "binary": true,
+      "bytes": 44848,
+      "sha256": "993f81809c50a8c54783a6743b1584365bfc050d4b28129de5efdc1faa84035f"
+    },
+    {
+      "path": "favorites-after.png",
+      "binary": true,
+      "bytes": 45519,
+      "sha256": "d7eac0b84debbdb2e3ae491f08c336c708019ea0da0bdb7b114c45b24f84e9fa"
+    },
+    {
+      "path": "favorites-proof.mjs",
+      "binary": false,
+      "bytes": 20215,
+      "sha256": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733"
+    },
+    {
+      "path": "favorites-proof-stable-seed.mjs",
+      "binary": false,
+      "bytes": 1802,
+      "sha256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270"
+    },
+    {
+      "path": "favorites-local-performance-attribution.json",
+      "binary": false,
+      "bytes": 5944,
+      "sha256": "0f32952bc29df7f4ef22df6343387f708c1411ae600fed97843fac0aed9d0436"
+    },
+    {
+      "path": "favorites-local-performance-attribution.md",
+      "binary": false,
+      "bytes": 2215,
+      "sha256": "57c6d1aaf4a252b5b3f7f5fcd5bdbd73d8bedea6325c776d3308c104d91903a4"
+    },
+    {
+      "path": "stable-2026.11.1-acquisition.json",
+      "binary": false,
+      "bytes": 322,
+      "sha256": "4039961fa55e26c7901139be1c319dd7c4e1e03fbcbc2bad68fa10298a63cf7e"
+    },
+    {
+      "path": "README.md",
+      "binary": false,
+      "bytes": 1370,
+      "sha256": "9f9a1e0bf1ce5757abc7986fbdbda002d999e3e9bdec98dbd0cf701b4a92d1eb"
+    }
+  ]
+}

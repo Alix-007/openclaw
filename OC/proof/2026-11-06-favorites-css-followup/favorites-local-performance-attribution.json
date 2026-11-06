@@ -1,0 +1,132 @@
+{
+  "status": "attribution_complete_known_local_budget_failures_retained",
+  "recorded_at": "2026-11-06T11:47:20.376115+00:00",
+  "source_changed_by_reviewer": false,
+  "new_builds_or_ci_polls_by_reviewer": 0,
+  "local_before": {
+    "head": "5ce2ade8ead2058626929fc931d4a041bec16045",
+    "node": "v26.12.1",
+    "record": "favorites-ui-build.log",
+    "metrics": {
+      "css_gzip": 324840,
+      "css_raw": 1677465,
+      "css_gzip_cap": 324685,
+      "css_raw_cap": 1676828,
+      "chat_js_gzip": 1288657,
+      "chat_js_gzip_cap": 1288198,
+      "startup_js_gzip": 90279
+    }
+  },
+  "local_after": {
+    "head": "d98c890942f41c58d78df460bb27de7ac37d2d48",
+    "node": "v26.12.1",
+    "record": "favorites-css-performance.log",
+    "metrics": {
+      "css_gzip": 324803,
+      "css_raw": 1677015,
+      "css_gzip_cap": 324685,
+      "css_raw_cap": 1676828,
+      "chat_js_gzip": 1288657,
+      "chat_js_gzip_cap": 1288198,
+      "startup_js_gzip": 90279
+    },
+    "budget_excess_bytes": {
+      "css_gzip": 118,
+      "css_raw": 187,
+      "chat_js_gzip": 459
+    },
+    "performance_exit_code": 1
+  },
+  "matched_local_repair_delta": {
+    "css_gzip": -37,
+    "css_raw": -450,
+    "chat_js_gzip": 0,
+    "startup_js_gzip": 0
+  },
+  "exact_correction_source_files": [
+    "ui/src/styles/chat/composer.css"
+  ],
+  "hosted_before_repair": {
+    "job": 127841339936,
+    "merge": "0065d38b8ef51c8fe16dbb2fc948858343c6d467",
+    "main_parent": "4dc451812820f0f5bea5ad784c3d6bcbb1c505ec",
+    "node": "v24.22.1",
+    "vite": "8.3.5",
+    "raw_cap": 1678428,
+    "candidate_css": {
+      "requests": 120,
+      "rawBytes": 1678773,
+      "gzipBytes": 324854,
+      "brotliBytes": 285746,
+      "servedGzipBytes": 325106,
+      "servedBrotliBytes": 286006
+    },
+    "main_parent_css": {
+      "requests": 120,
+      "rawBytes": 1678048,
+      "gzipBytes": 324781,
+      "brotliBytes": 287328,
+      "servedGzipBytes": 325033,
+      "servedBrotliBytes": 288203
+    }
+  },
+  "proven_snapshot_differences": {
+    "local_reviewed_main": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "ci_main": "4dc451812820f0f5bea5ad784c3d6bcbb1c505ec",
+    "main_commits_advanced": 25,
+    "main_changed_files": 144,
+    "raw_cap_advanced_bytes": 1600,
+    "budget_owner_patch": "@@ -72,7 +72,8 @@ const controlUiPerformanceBudgets = {\n   largestCssGzipBytes: 58_315,\n   // Header-local notice matching adds 13 B and lowers 400-message 4x scroll CPU 5\u20137%.\n   totalCssGzipBytes: 324_685,\n-  totalCssRawBytes: 1_676_828,\n+  // Ranked selector splits: measured raw CSS plus 64 B headroom.\n+  totalCssRawBytes: 1_678_428,\n } satisfies Record<string, number>;\n export const CONTROL_UI_PERFORMANCE_BUDGETS = Object.freeze(controlUiPerformanceBudgets);\n ",
+    "relevant_main_commit": {
+      "sha": "1e8a1ab504e12caf1f90b3ffcaa6243a9d60aaeb",
+      "title": "perf(ui): reduce style matching in common interactions (#194012)"
+    },
+    "main_stylesheet_files": [
+      "ui/src/styles/app-sidebar.css",
+      "ui/src/styles/base.css",
+      "ui/src/styles/chat/composer-surface.css",
+      "ui/src/styles/chat/composer.css",
+      "ui/src/styles/chat/details-desktop-body.css",
+      "ui/src/styles/chat/details-desktop.css",
+      "ui/src/styles/chat/grouped.css",
+      "ui/src/styles/chat/mobile-host.css",
+      "ui/src/styles/chat/selection-annotations.css",
+      "ui/src/styles/chat/sidebar-panels.css",
+      "ui/src/styles/chat/sidebar.css",
+      "ui/src/styles/chat/startup-layout.css",
+      "ui/src/styles/chat/text.css",
+      "ui/src/styles/chat/tool-cards.css",
+      "ui/src/styles/components.css",
+      "ui/src/styles/layout.mobile.css",
+      "ui/src/styles/session-background.css",
+      "ui/src/styles/settings.css",
+      "ui/src/styles/sidebar-rail.css"
+    ],
+    "toolchain_difference": "Node 26 local vs Node24 hosted; Vite8.3.5 both. The specific byte contribution of Node/toolchain differences was not isolated."
+  },
+  "decisions": [
+    "The CSS-only correction demonstrably saves 37 normalized gzip and 450 raw bytes in the available matched same-worktree Node26 normal builds.",
+    "Chat boot JS is exactly 1,288,657 bytes both before and after the CSS correction; this correction introduces zero measured chat-JS growth. That does not prove the original entire PR chat-JS effect on current main.",
+    "The new local candidate still fails three budgets (118 CSS gzip,187 CSS raw,459 chat JS gzip); neither CSS parity nor build success changes this verdict.",
+    "Do not compare the old hosted candidate with the new local build to claim a 1,758-byte repair saving: 1,308 raw bytes of that difference already existed between old local and hosted snapshots. The true matched repair saving is450.",
+    "Do not label all remaining overage inherited: no matched current-main/new-merge artifact pair has been measured for this new correction. Existing hosted old base/candidate provides old pre-repair attribution only.",
+    "No further unrelated CSS/JS cleanup or budget raise is justified by mixed snapshot results. Root should obtain exact new-head normal hosted performance attribution at its actual main parent, preserve the known local failures in body evidence, and fix only any confirmed contributor regression."
+  ],
+  "limits": [
+    "No newly built baseline or refreshed CI was requested by this read-only lane.",
+    "The old hosted main was already over CSS gzip and chat JS budgets, but that alone does not excuse contributor growth.",
+    "Known UI human scope hold remains independent of technical performance/proof."
+  ],
+  "evidence": [
+    "favorites-ui-build.json",
+    "favorites-ui-build.log",
+    "favorites-css-ui-build.json",
+    "favorites-css-performance.json",
+    "favorites-css-performance.log",
+    "ci-favorites-current-performance-summary.json",
+    "ci-favorites-current-performance-records.json",
+    "favorites-local-vs-ci-base-source.json"
+  ],
+  "work_tokens": null,
+  "usd": null
+}
