@@ -1,0 +1,66 @@
+{
+  "head": "741c9d6719def1b972a29a6fdff256e7f5c22ffe",
+  "build": {
+    "head": "741c9d6719def1b972a29a6fdff256e7f5c22ffe",
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/ui.js",
+      "build"
+    ],
+    "exitCode": 0,
+    "seconds": 127.249
+  },
+  "native": {
+    "head": "741c9d6719def1b972a29a6fdff256e7f5c22ffe",
+    "command": [
+      "$NODE_BIN/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "$PROOF_ROOT/favorites-proof.mjs",
+      "$CHECKOUT",
+      "$PROOF_ROOT",
+      "exact-head",
+      "$PROOF_ROOT/stable-2026.11.1/package"
+    ],
+    "exitCode": 0,
+    "seconds": 106.779
+  },
+  "normal_local_Node26": {
+    "css_gzip": 324832,
+    "css_raw": 1676572,
+    "css_gzip_cap": 324685,
+    "css_raw_cap": 1676828,
+    "chat_js_gzip": 1288631,
+    "chat_js_cap": 1288198
+  },
+  "matched_delta_from854": {
+    "css_gzip": 29,
+    "css_raw": -443,
+    "chat_js_gzip": 0
+  },
+  "prior_854_hosted": {
+    "candidate_css": {
+      "requests": 121,
+      "rawBytes": 1675828,
+      "gzipBytes": 324734,
+      "brotliBytes": 285596,
+      "servedGzipBytes": 324993,
+      "servedBrotliBytes": 285822
+    },
+    "baseline_css": {
+      "requests": 121,
+      "rawBytes": 1675553,
+      "gzipBytes": 324665,
+      "brotliBytes": 287142,
+      "servedGzipBytes": 324924,
+      "servedBrotliBytes": 288022
+    },
+    "candidate_chat_gzip": 1287356,
+    "css_raw_growth": 275,
+    "css_gzip_growth": 69,
+    "css_raw_growth_tolerance": 64,
+    "required_raw_reduction": 211,
+    "required_gzip_reduction": 50
+  },
+  "current_hosted": "NOT_RUN before push; source parity and local aggregate reductions do not establish current-main hosted budgets. No budget raised; personal/shared scope human HOLD remains."
+}

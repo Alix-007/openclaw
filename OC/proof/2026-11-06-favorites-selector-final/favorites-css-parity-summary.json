@@ -1,0 +1,152 @@
+{
+  "status": "SOURCE_FROZEN_READY_FOR_NONAUTHOR_REVIEW_AND_NORMAL_BUILD",
+  "worktree": "$CHECKOUT",
+  "published_head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+  "source_manifest": [
+    {
+      "path": "ui/src/styles/chat/composer.css",
+      "sha256": "708cf99986292b0e9fbb7256f250dd7cb9e6421f24753444beeee03090e10435",
+      "numstat": "50\t50\tui/src/styles/chat/composer.css"
+    }
+  ],
+  "scope": "Exact complete selector nesting within existing picker section; remove only provider-toggle font/color inherit already supplied by canonical base button rule. No DOM, JS, dimensions, colors, selector specificity, public policy, or budget changes.",
+  "actual_ci_before": {
+    "candidate_css": {
+      "requests": 121,
+      "rawBytes": 1675828,
+      "gzipBytes": 324734,
+      "brotliBytes": 285596,
+      "servedGzipBytes": 324993,
+      "servedBrotliBytes": 285822
+    },
+    "baseline_css": {
+      "requests": 121,
+      "rawBytes": 1675553,
+      "gzipBytes": 324665,
+      "brotliBytes": 287142,
+      "servedGzipBytes": 324924,
+      "servedBrotliBytes": 288022
+    },
+    "candidate_chat_gzip": 1287356,
+    "css_raw_growth": 275,
+    "css_gzip_growth": 69,
+    "css_raw_growth_tolerance": 64,
+    "required_raw_reduction": 211,
+    "required_gzip_reduction": 50
+  },
+  "source_proxy": {
+    "metrics": {
+      "before": {
+        "sourceBytes": 100453,
+        "minifiedCssBytes": 76720,
+        "standaloneGzipBytes": 12470,
+        "sha256": "5ec2ca833c1613ae487c54338a7bc88be74d2f841cfe2aebffec0beb2775b2aa"
+      },
+      "after": {
+        "sourceBytes": 100084,
+        "minifiedCssBytes": 76267,
+        "standaloneGzipBytes": 12409,
+        "sha256": "708cf99986292b0e9fbb7256f250dd7cb9e6421f24753444beeee03090e10435"
+      }
+    },
+    "delta": {
+      "sourceBytes": -369,
+      "minifiedCssBytes": -453,
+      "standaloneGzipBytes": -61
+    },
+    "limitation": "Standalone esbuild/libdeflate diagnostic only; final normal-build/CI CSS aggregate budgets remain unverified."
+  },
+  "computed_style_parity": {
+    "status": "PASS",
+    "scenarios": [
+      "normal",
+      "filteredWindow",
+      "unfilteredWindow",
+      "hover",
+      "keyboardFocus",
+      "pressed",
+      "disabled",
+      "viewport400",
+      "viewport1280",
+      "providerExpanded",
+      "providerKeyboardFocus",
+      "sharedTalkFocus",
+      "sharedSelectFocus",
+      "settingsHover",
+      "settingsKeyboardFocus",
+      "highlighted",
+      "emptyVisible",
+      "rtl"
+    ],
+    "original_nine_scenarios_preserved": true,
+    "scenario_count": 18,
+    "observed_elements_per_scenario": 26,
+    "computed_properties_per_element": 791,
+    "mismatches": [],
+    "geometry": {
+      "heart": {
+        "x": 299,
+        "y": 131.015625,
+        "w": 28,
+        "h": 28
+      },
+      "svg": {
+        "x": 304,
+        "y": 136.015625,
+        "w": 18,
+        "h": 18
+      },
+      "hiddenDisplay": "none"
+    },
+    "fixture": "Actual baseline base.css/components.css and before/after composer.css in isolated real Chrome DOM. Includes virtual rows, account meta, warning icon, provider controls and unrelated shared focus controls."
+  },
+  "format": {
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-format.mts",
+      "--write",
+      "ui/src/styles/chat/composer.css"
+    ],
+    "cwd": "$CHECKOUT",
+    "env": {
+      "OPENCLAW_FORMAT_TOOL": "oxfmt"
+    },
+    "exit_code": 0,
+    "elapsed_seconds": 0.7135194460861385,
+    "source_sha256": "708cf99986292b0e9fbb7256f250dd7cb9e6421f24753444beeee03090e10435"
+  },
+  "stylelint": {
+    "command": [
+      "$NODE_BIN/node",
+      "scripts/run-node-package-bin.mts",
+      "stylelint",
+      "--config",
+      "config/stylelint.config.mjs",
+      "ui/src/styles/chat/composer.css"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 2.4673908869735897
+  },
+  "diff_check": "PASS",
+  "invalidated_diagnostics": "Initial text-based selector transformation was discarded before any WT source edit after full diff caught selector-list suffix matching. Initial unordered computed-property serialization and mid-transition sampling were corrected (sorted property names and finite animation settlement). Those attempts remain under *attempt1* / *pre-exact-ast* artifacts. Final exact AST transform and expanded actual-browser parity were completed before source edit.",
+  "limitations": [
+    "Standalone esbuild/libdeflate compression is diagnostic and does not prove aggregate normal build/CI budget.",
+    "No normal build, native full product proof, Git mutation or remote write performed in this lane.",
+    "No repeated algorithm tests for CSS-only delta.",
+    "Personal-vs-shared product question remains pending; CSS repair grants no product-policy approval.",
+    "Independent non-author review plus root normal build/native proof required before publication."
+  ],
+  "artifacts": [
+    "favorites-css-final-source.diff",
+    "favorites-css-final-metrics.json",
+    "favorites-css-final-parity.mjs",
+    "favorites-css-final-parity.json",
+    "favorites-css-final-parity-observations.json",
+    "favorites-css-final-format.json",
+    "favorites-css-final-stylelint.json",
+    "favorites-css-final-ci-attribution.json"
+  ],
+  "work_tokens": null,
+  "cost_usd": null
+}
