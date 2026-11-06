@@ -1,0 +1,345 @@
+{
+  "at": "2026-11-06T14:24:28.270Z",
+  "sha": "423bc87df1cd96d5caa6ff73d4599a0cd1fe847f",
+  "buildStamp": {
+    "builtAt": 1793974485009,
+    "head": "423bc87df1cd96d5caa6ff73d4599a0cd1fe847f",
+    "inputsClean": true,
+    "inputSignature": "0cf2277c3a5e825b711281914d4ce8a9f2c049fc4c3e00c4f6d9d58e45c1a0f4"
+  },
+  "cases": [
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.598,
+      "stdout": "",
+      "stderr": "Config source $PROOF_ROOT/scout-config-utf8-acceptance-head/root-malformed/openclaw.json must be valid UTF-8. | The encoded data was not valid for encoding utf-8 | ERR_ENCODING_INVALID_ENCODED_DATA\n"
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.601,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-head/include-malformed/next-workspace"
+      ],
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.091,
+      "stdout": "",
+      "stderr": "Config source $PROOF_ROOT/scout-config-utf8-acceptance-head/include-malformed/agent.json must be valid UTF-8. | The encoded data was not valid for encoding utf-8 | ERR_ENCODING_INVALID_ENCODED_DATA\n"
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-head/include-legal/next-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.28,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    },
+    {
+      "label": "stable-root",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/stable-2026.11.1/package/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.372,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": ""
+    },
+    {
+      "label": "stable-include",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/stable-2026.11.1/package/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-head/stable-upgrade/next-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.303,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-get",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "get",
+        "agents.entries.main.name",
+        "--json"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.715,
+      "stdout": "\"Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd\"\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-root",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19502"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 9.03,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": "[state/db] state database schema migration pending; verifying integrity first\nConfig metadata state update failed: Client credentials require backed-up migration custody; stop the app and run openclaw doctor --fix.\n[state/db] state database schema migration pending; verifying integrity first\n[state/db] state database schema migration pending; verifying integrity first\n"
+    },
+    {
+      "label": "candidate-include",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/config-file-utf8/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-head/stable-upgrade/final-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.748,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    }
+  ],
+  "result": "GREEN",
+  "collectorSha256": "d8e6bdd36d046486b10d9a25dfff38617d6673256b4c601bb3c6b838cb2c337b",
+  "nativeHelperSha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+  "stable": {
+    "version": "2026.11.1",
+    "launcherSha256": "469e60c9f60b615ff71c985a54238ee532a8f949866d76aebe7d6e4bc7219902",
+    "acquisition": {
+      "version": "2026.11.1",
+      "tarball": "https://registry.npmjs.org/openclaw/-/openclaw-2026.11.1.tgz",
+      "integrity": "sha512-2pSbt/taBKM/ofPXsiOEmVefgUdVHYRZOmcWNDyx67WUfeGFXqtfqLvtwYOiH4NcLolDSLMUgsno2oYhTVXptw==",
+      "sha256": "611282534d576e12f10b0ac5a1ac0d2825aac360637e92815a56eb71fb5a0301",
+      "bytes": 112927779
+    }
+  },
+  "observations": [
+    {
+      "label": "root-malformed",
+      "owner": "root",
+      "invalid": true,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "beforeSha256": "12588a45fcfef4b06feeb78849d39ffe60b9697bb3bb76a5218683ef485b0ea3",
+      "afterSha256": "12588a45fcfef4b06feeb78849d39ffe60b9697bb3bb76a5218683ef485b0ea3",
+      "unchanged": true,
+      "rootUnchanged": true,
+      "beforeContainsFF": true,
+      "afterContainsFF": true,
+      "persistedName": "Synthetic \ufffd name",
+      "ringBefore": {
+        "": "12588a45fcfef4b06feeb78849d39ffe60b9697bb3bb76a5218683ef485b0ea3",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "12588a45fcfef4b06feeb78849d39ffe60b9697bb3bb76a5218683ef485b0ea3",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "result": "GREEN"
+    },
+    {
+      "label": "root-legal",
+      "owner": "root",
+      "invalid": false,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "0c1ee29d25345bf0f74bf032675cc2b0944727a63b3b9083ff534968bc3e4307",
+      "afterSha256": "1cfd93f3402e6e070c0ce5792676f3043e3eef59ed4731af7ec6bee969526fd2",
+      "unchanged": false,
+      "rootUnchanged": false,
+      "beforeContainsFF": false,
+      "afterContainsFF": false,
+      "persistedName": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+      "ringBefore": {
+        "": "0c1ee29d25345bf0f74bf032675cc2b0944727a63b3b9083ff534968bc3e4307",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "1cfd93f3402e6e070c0ce5792676f3043e3eef59ed4731af7ec6bee969526fd2",
+        ".bak": "0c1ee29d25345bf0f74bf032675cc2b0944727a63b3b9083ff534968bc3e4307",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "PASS"
+    },
+    {
+      "label": "include-malformed",
+      "owner": "include",
+      "invalid": true,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "beforeSha256": "4516614fcc936ad09e902286f2065fd229db5a94a4d8faf2241d15a9f4550853",
+      "afterSha256": "4516614fcc936ad09e902286f2065fd229db5a94a4d8faf2241d15a9f4550853",
+      "unchanged": true,
+      "rootUnchanged": true,
+      "beforeContainsFF": true,
+      "afterContainsFF": true,
+      "persistedName": "Synthetic \ufffd name",
+      "ringBefore": {
+        "": "4516614fcc936ad09e902286f2065fd229db5a94a4d8faf2241d15a9f4550853",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "4516614fcc936ad09e902286f2065fd229db5a94a4d8faf2241d15a9f4550853",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "result": "GREEN"
+    },
+    {
+      "label": "include-legal",
+      "owner": "include",
+      "invalid": false,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "3a1e3dafb6be9ebe0cdc845ac839ef093dc75149e7d3b731124cd07652bef568",
+      "afterSha256": "664a6ed5b571e0347e5c240b09a3d8429b093d2dfd8318eb861037ec690a5257",
+      "unchanged": false,
+      "rootUnchanged": true,
+      "beforeContainsFF": false,
+      "afterContainsFF": false,
+      "persistedName": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+      "ringBefore": {
+        "": "3a1e3dafb6be9ebe0cdc845ac839ef093dc75149e7d3b731124cd07652bef568",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "664a6ed5b571e0347e5c240b09a3d8429b093d2dfd8318eb861037ec690a5257",
+        ".bak": "3a1e3dafb6be9ebe0cdc845ac839ef093dc75149e7d3b731124cd07652bef568",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "PASS"
+    }
+  ],
+  "upgrade": {
+    "result": "PASS",
+    "from": "2026.11.1",
+    "sameHomeStateAndFiles": true,
+    "name": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+    "rootBeforeCandidateSha256": "de4742df7cfedd0ff8f4b3fa003032df4f37165d62f3a97ebeaa463b05a36f82",
+    "includeBeforeCandidateSha256": "a9d212552c72152b0c63bdc7a811a7e7db14c658795ffa20d0018039f59f6c3a",
+    "finalRootSha256": "b52685065c1bbd4759f9d565d7725bf5a2f2ef437690df0a8ee7e743d09b379c",
+    "finalIncludeSha256": "6d06e353dc69c9d1c7ef8a1c07c4194fe15c458e9da266a0181873a5f5e798d5",
+    "workspaceUnchanged": true,
+    "rootAndIncludeBackupMatchStableWriter": true
+  },
+  "cleanup": "Dedicated synthetic home/state/config/include/backup/workspace files retained under output for inspection. No production config, channel, model or service was used. Remove only this output directory after archiving.",
+  "limitations": "Native Linux CLI/file publication proof. Explicit destructive-write and Doctor recovery compatibility are covered by owner regressions, not claimed as live commands here. The unrelated opaque pre-update snapshot is outside this fix."
+}

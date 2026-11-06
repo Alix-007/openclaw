@@ -1,0 +1,345 @@
+{
+  "at": "2026-11-06T13:26:05.780Z",
+  "sha": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+  "buildStamp": {
+    "builtAt": 1793952814365,
+    "head": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "inputsClean": true,
+    "inputSignature": "4a66956ba1e364acda25ace89c965cde94b40085c80d439028deb6d731e099c0"
+  },
+  "cases": [
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.715,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.716,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-base/include-malformed/next-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.387,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-base/include-legal/next-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.133,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    },
+    {
+      "label": "stable-root",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/stable-2026.11.1/package/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19501"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 5.215,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": ""
+    },
+    {
+      "label": "stable-include",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/stable-2026.11.1/package/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-base/stable-upgrade/next-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.222,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-get",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "get",
+        "agents.entries.main.name",
+        "--json"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.539,
+      "stdout": "\"Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd\"\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-root",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "gateway.port",
+        "19502"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 8.555,
+      "stdout": "Updated gateway.port. Restart the gateway to apply.\n",
+      "stderr": "[state/db] state database schema migration pending; verifying integrity first\nConfig metadata state update failed: Client credentials require backed-up migration custody; stop the app and run openclaw doctor --fix.\n[state/db] state database schema migration pending; verifying integrity first\n[state/db] state database schema migration pending; verifying integrity first\n"
+    },
+    {
+      "label": "candidate-include",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "config",
+        "set",
+        "agents.entries.main.workspace",
+        "$PROOF_ROOT/scout-config-utf8-acceptance-base/stable-upgrade/final-workspace"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 4.455,
+      "stdout": "Updated agents.entries.main.workspace. Change will apply without restarting the gateway.\n",
+      "stderr": ""
+    }
+  ],
+  "result": "RED",
+  "collectorSha256": "d8e6bdd36d046486b10d9a25dfff38617d6673256b4c601bb3c6b838cb2c337b",
+  "nativeHelperSha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+  "stable": {
+    "version": "2026.11.1",
+    "launcherSha256": "469e60c9f60b615ff71c985a54238ee532a8f949866d76aebe7d6e4bc7219902",
+    "acquisition": {
+      "version": "2026.11.1",
+      "tarball": "https://registry.npmjs.org/openclaw/-/openclaw-2026.11.1.tgz",
+      "integrity": "sha512-2pSbt/taBKM/ofPXsiOEmVefgUdVHYRZOmcWNDyx67WUfeGFXqtfqLvtwYOiH4NcLolDSLMUgsno2oYhTVXptw==",
+      "sha256": "611282534d576e12f10b0ac5a1ac0d2825aac360637e92815a56eb71fb5a0301",
+      "bytes": 112927779
+    }
+  },
+  "observations": [
+    {
+      "label": "root-malformed",
+      "owner": "root",
+      "invalid": true,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "32e565b4afab9f69927da62763cab0de732ad1190eb9dbfb8af052167929c39d",
+      "afterSha256": "1acd33bbf98c94689309428348eea8330de9f9a0e2322c589afe11093577da53",
+      "unchanged": false,
+      "rootUnchanged": false,
+      "beforeContainsFF": true,
+      "afterContainsFF": false,
+      "persistedName": "Synthetic \ufffd name",
+      "ringBefore": {
+        "": "32e565b4afab9f69927da62763cab0de732ad1190eb9dbfb8af052167929c39d",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "1acd33bbf98c94689309428348eea8330de9f9a0e2322c589afe11093577da53",
+        ".bak": "3d16ddbf8018c8ff2d9345697aec54a8ebc88a18da6c4789fdcf38faaf052fed",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "RED"
+    },
+    {
+      "label": "root-legal",
+      "owner": "root",
+      "invalid": false,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "1c6b920995a8f8264af65caec8f82d8dae79f5a691d56d29be9f5d31a1885423",
+      "afterSha256": "f28ee639bc2b0c34cbd4fbf4cb309df48b058db948ef028dcccc52bca3a97d78",
+      "unchanged": false,
+      "rootUnchanged": false,
+      "beforeContainsFF": false,
+      "afterContainsFF": false,
+      "persistedName": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+      "ringBefore": {
+        "": "1c6b920995a8f8264af65caec8f82d8dae79f5a691d56d29be9f5d31a1885423",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "f28ee639bc2b0c34cbd4fbf4cb309df48b058db948ef028dcccc52bca3a97d78",
+        ".bak": "1c6b920995a8f8264af65caec8f82d8dae79f5a691d56d29be9f5d31a1885423",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "PASS"
+    },
+    {
+      "label": "include-malformed",
+      "owner": "include",
+      "invalid": true,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "a0b48261873ad3667f446bbe0dce662f89ff18db68ac1ad5ea06a6b6013b31bf",
+      "afterSha256": "3c71840ed7f55fb383e848b6b826054070f11864bc67b63e44b841f1785ecb77",
+      "unchanged": false,
+      "rootUnchanged": true,
+      "beforeContainsFF": true,
+      "afterContainsFF": false,
+      "persistedName": "Synthetic \ufffd name",
+      "ringBefore": {
+        "": "a0b48261873ad3667f446bbe0dce662f89ff18db68ac1ad5ea06a6b6013b31bf",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "3c71840ed7f55fb383e848b6b826054070f11864bc67b63e44b841f1785ecb77",
+        ".bak": "d295bbd2ad9e058394e0941ea748879163db35ca8bb3787eed545208cfd37e8d",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "RED"
+    },
+    {
+      "label": "include-legal",
+      "owner": "include",
+      "invalid": false,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "beforeSha256": "6b615c29a6103d6e311a5cb9cf555dc962dcffb319b4cc513e48b0c8205d6558",
+      "afterSha256": "f244a889c36ed2901f5359417db0a9473e471d13d80203d3751e553ef03ac1b1",
+      "unchanged": false,
+      "rootUnchanged": true,
+      "beforeContainsFF": false,
+      "afterContainsFF": false,
+      "persistedName": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+      "ringBefore": {
+        "": "6b615c29a6103d6e311a5cb9cf555dc962dcffb319b4cc513e48b0c8205d6558",
+        ".bak": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.1": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.2": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.3": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c",
+        ".bak.4": "762dcaced322ccefb135b00e9db2b824a36b0a2de9d43981c57e13b1737180ed"
+      },
+      "ringAfter": {
+        "": "f244a889c36ed2901f5359417db0a9473e471d13d80203d3751e553ef03ac1b1",
+        ".bak": "6b615c29a6103d6e311a5cb9cf555dc962dcffb319b4cc513e48b0c8205d6558",
+        ".bak.1": "4439c953836274cb79b4e7f975cac03eee527f7fdd87513d57a8f44735527334",
+        ".bak.2": "ae41cd26cc251bca9d3eb8a787b1091421483f1d2de35811ddffd7dea88663cf",
+        ".bak.3": "3be8102326f0686f6e2c47671c7542694c60a8ed2efda4cbb6cbc1bcb8c28c14",
+        ".bak.4": "85fad300cfe79f95a40d0c0fd0e485ed44ebfa2c6ca2a653c1d81c1dadf0756c"
+      },
+      "result": "PASS"
+    }
+  ],
+  "upgrade": {
+    "result": "PASS",
+    "from": "2026.11.1",
+    "sameHomeStateAndFiles": true,
+    "name": "Legal \u4e2d\u6587 \u65e5\u672c\u8a9e \ud55c\uae00 \ud83d\ude00 \ufffd",
+    "rootBeforeCandidateSha256": "4b907f8d19812b435a4c8df1fbc87476e6ae153ca4ae6587d0c2df07a93d1731",
+    "includeBeforeCandidateSha256": "59fcaa9425a31a6960745b3602636d18f0c14744718dd811e57b9e702045d3b7",
+    "finalRootSha256": "155536e849f962039658009f1168d5f500f24a5f06999d6bfadda8bf297ebaa8",
+    "finalIncludeSha256": "990efff3d5aaf057e2293b523701d52cedd5171e303e991fdbe9195bba34d1a6",
+    "workspaceUnchanged": true,
+    "rootAndIncludeBackupMatchStableWriter": true
+  },
+  "cleanup": "Dedicated synthetic home/state/config/include/backup/workspace files retained under output for inspection. No production config, channel, model or service was used. Remove only this output directory after archiving.",
+  "limitations": "Native Linux CLI/file publication proof. Explicit destructive-write and Doctor recovery compatibility are covered by owner regressions, not claimed as live commands here. The unrelated opaque pre-update snapshot is outside this fix."
+}

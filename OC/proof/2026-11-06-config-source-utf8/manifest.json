@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "path": "config-base.json",
+      "binary": false,
+      "bytes": 13476,
+      "sha256": "1e6e0400aed280713cbda21b74d59dde2d957402a4de5033ad198147f70c7421"
+    },
+    {
+      "path": "config-head.json",
+      "binary": false,
+      "bytes": 13786,
+      "sha256": "188355dd02e2cafdd8b4c6cc42c75087f6362bd479408c14f02d1354e4ad2691"
+    },
+    {
+      "path": "scout-config-utf8-acceptance-proof.mjs",
+      "binary": false,
+      "bytes": 9284,
+      "sha256": "d8e6bdd36d046486b10d9a25dfff38617d6673256b4c601bb3c6b838cb2c337b"
+    },
+    {
+      "path": "native-cli.mjs",
+      "binary": false,
+      "bytes": 2575,
+      "sha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9"
+    },
+    {
+      "path": "stable-2026.11.1-acquisition.json",
+      "binary": false,
+      "bytes": 322,
+      "sha256": "4039961fa55e26c7901139be1c319dd7c4e1e03fbcbc2bad68fa10298a63cf7e"
+    },
+    {
+      "path": "README.md",
+      "binary": false,
+      "bytes": 2042,
+      "sha256": "3c95499427ccd6fe3a0d1731a31fc27d267fc53d4648193f6b5a9fd13739029a"
+    }
+  ]
+}
