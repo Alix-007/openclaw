@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "native-cli.mjs",
+      "bytes": 2575,
+      "sha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+      "binary": false
+    },
+    {
+      "path": "browser-read-cancel-proof-v4.mjs",
+      "bytes": 9103,
+      "sha256": "0a9af2cebbe909c4ddeafae70ede3858c9d26764a4bb1e6ee06c0f80c4575919",
+      "binary": false
+    },
+    {
+      "path": "browser-base.json",
+      "bytes": 24787,
+      "sha256": "7d39a0516887296f67d5de5ca5d991b466c8888367fdea00e9e1c297055bfa4c",
+      "binary": false
+    },
+    {
+      "path": "browser-head.json",
+      "bytes": 23070,
+      "sha256": "e8e3c04263e4b8a3d5d4b81373644decaf95d0a5d1f64c80a8651233506c0da5",
+      "binary": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 1438,
+      "sha256": "0f065ab9acc73fee8be7d29afe833c4160232aa1e329345f79a728ac0c23650e",
+      "binary": false
+    }
+  ]
+}

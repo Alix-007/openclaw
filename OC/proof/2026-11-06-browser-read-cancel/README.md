@@ -1,0 +1,7 @@
+# Browser CLI read cancellation — native evidence
+
+Normally build each clean ref with `node --import ./scripts/tsx.mjs scripts/build-all.mts cliStartup`, then run `node browser-read-cancel-proof-v4.mjs CHECKOUT NEW_OUTPUT base|head`. Both versions use the identical frozen collector. BASE PASS means the collector reproduced the defect and legal controls, not a corrected product.
+
+Normal status/tabs work. SIGINT during status, tabs, errors, requests or plain snapshot must stop ordinary reads without stale stdout. Accepted POSTs and GET errors/requests --clear or snapshot --labels instead retain completion receipts. The latter are effects despite the GET verb. Compound start completes its accepted POST before cancelling a later read.
+
+Entry: normally built actual CLI and its shipped Gateway WebSocket client. Recorder: isolated loopback synthetic Gateway protocol peer, real frames and socket closure/release timing. Native stdout, stderr, exits, controls, matching clean build stamp and cleanup remain inspectable. This proves CLI transport/cancellation, not Chrome, actual record deletion or PNG generation. Labels imagePath is explicitly a synthetic protocol receipt. No external channel, provider, production service or user state is touched. Only task-owned HOME/state/workspace is removed; machine paths are replaced with $PROOF_ROOT/$NODE_BIN. No credentials are published; the loopback token is an inert fixture string.

@@ -1,0 +1,884 @@
+{
+  "at": "2026-11-06T10:58:12.218Z",
+  "sha": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+  "buildStamp": {
+    "builtAt": 1793952814365,
+    "head": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "inputsClean": true,
+    "inputSignature": "4a66956ba1e364acda25ace89c965cde94b40085c80d439028deb6d731e099c0"
+  },
+  "cases": [
+    {
+      "command": "status",
+      "interrupt": false,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "cba8b88e-dfe6-4efc-8370-04edd33d76ac"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/",
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "status"
+      ],
+      "expectedPayload": {
+        "enabled": true,
+        "profile": "synthetic-read-only",
+        "running": false,
+        "cdpReady": false,
+        "cdpHttp": false,
+        "cdpPort": 0,
+        "cdpUrl": "http://127.0.0.1:0",
+        "chosenBrowser": null,
+        "executablePath": null,
+        "color": "#0088ff",
+        "headless": true,
+        "noSandbox": false,
+        "attachOnly": true
+      },
+      "socketClosedAtMs": 8134,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "elapsedMs": 8296,
+      "result": "PASS",
+      "stdout": "{\n  \"enabled\": true,\n  \"profile\": \"synthetic-read-only\",\n  \"running\": false,\n  \"cdpReady\": false,\n  \"cdpHttp\": false,\n  \"cdpPort\": 0,\n  \"cdpUrl\": \"http://127.0.0.1:0\",\n  \"chosenBrowser\": null,\n  \"executablePath\": null,\n  \"color\": \"#0088ff\",\n  \"headless\": true,\n  \"noSandbox\": false,\n  \"attachOnly\": true\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": "tabs",
+      "interrupt": false,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "c52fddd8-ac9f-42c8-a342-7bded2947de4"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/tabs",
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "tabs"
+      ],
+      "expectedPayload": {
+        "running": false,
+        "tabs": []
+      },
+      "socketClosedAtMs": 5604,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "elapsedMs": 5712,
+      "result": "PASS",
+      "stdout": "{\n  \"tabs\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": "status",
+      "interrupt": true,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "5a86da2a-d7a5-4570-9a66-f04415296545"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/",
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "status"
+      ],
+      "expectedPayload": {
+        "enabled": true,
+        "profile": "synthetic-read-only",
+        "running": false,
+        "cdpReady": false,
+        "cdpHttp": false,
+        "cdpPort": 0,
+        "cdpUrl": "http://127.0.0.1:0",
+        "chosenBrowser": null,
+        "executablePath": null,
+        "color": "#0088ff",
+        "headless": true,
+        "noSandbox": false,
+        "attachOnly": true
+      },
+      "interruptAtMs": 5641,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7143,
+      "responseSent": true,
+      "socketClosedAtMs": 7147,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7259,
+      "exitAfterInterruptMs": 1619,
+      "result": "PASS",
+      "stdout": "{\n  \"enabled\": true,\n  \"profile\": \"synthetic-read-only\",\n  \"running\": false,\n  \"cdpReady\": false,\n  \"cdpHttp\": false,\n  \"cdpPort\": 0,\n  \"cdpUrl\": \"http://127.0.0.1:0\",\n  \"chosenBrowser\": null,\n  \"executablePath\": null,\n  \"color\": \"#0088ff\",\n  \"headless\": true,\n  \"noSandbox\": false,\n  \"attachOnly\": true\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "tabs",
+      "interrupt": true,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "1e961ce6-bcff-45f6-bddc-b37d8a56ce68"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/tabs",
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "tabs"
+      ],
+      "expectedPayload": {
+        "running": false,
+        "tabs": []
+      },
+      "interruptAtMs": 5735,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7237,
+      "responseSent": true,
+      "socketClosedAtMs": 7241,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7360,
+      "exitAfterInterruptMs": 1625,
+      "result": "PASS",
+      "stdout": "{\n  \"tabs\": []\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "errors",
+      "interrupt": true,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "898f3441-f9ac-4d43-8b7f-f3b80ca6cc56"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/errors",
+            "query": {
+              "clear": "false"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "errors"
+      ],
+      "expectedPayload": {
+        "errors": [
+          {
+            "timestamp": "2026-11-06T00:00:00Z",
+            "message": "synthetic retained error receipt"
+          }
+        ]
+      },
+      "interruptAtMs": 5550,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7051,
+      "responseSent": true,
+      "socketClosedAtMs": 7064,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7219,
+      "exitAfterInterruptMs": 1669,
+      "result": "PASS",
+      "stdout": "{\n  \"errors\": [\n    {\n      \"timestamp\": \"2026-11-06T00:00:00Z\",\n      \"message\": \"synthetic retained error receipt\"\n    }\n  ]\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "requests",
+      "interrupt": true,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "fd9267b4-a476-4ade-a9f5-01617748168f"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/requests",
+            "query": {
+              "clear": "false"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "requests"
+      ],
+      "expectedPayload": {
+        "requests": [
+          {
+            "timestamp": "2026-11-06T00:00:00Z",
+            "method": "GET",
+            "url": "https://synthetic.invalid/receipt"
+          }
+        ]
+      },
+      "interruptAtMs": 6774,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 8277,
+      "responseSent": true,
+      "socketClosedAtMs": 8285,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 8411,
+      "exitAfterInterruptMs": 1637,
+      "result": "PASS",
+      "stdout": "{\n  \"requests\": [\n    {\n      \"timestamp\": \"2026-11-06T00:00:00Z\",\n      \"method\": \"GET\",\n      \"url\": \"https://synthetic.invalid/receipt\"\n    }\n  ]\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "snapshot",
+      "interrupt": true,
+      "post": false,
+      "retained": false,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "c67d8f42-ec3f-4be5-9814-14643dbf8d05"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/snapshot",
+            "query": {
+              "format": "ai",
+              "timeoutMs": "10000"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "snapshot"
+      ],
+      "expectedPayload": {
+        "ok": true,
+        "format": "ai",
+        "targetId": "synthetic-owned-target",
+        "snapshot": "synthetic snapshot receipt",
+        "refs": {}
+      },
+      "interruptAtMs": 5830,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7331,
+      "responseSent": true,
+      "socketClosedAtMs": 7335,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7453,
+      "exitAfterInterruptMs": 1623,
+      "result": "PASS",
+      "stdout": "{\n  \"ok\": true,\n  \"format\": \"ai\",\n  \"targetId\": \"synthetic-owned-target\",\n  \"snapshot\": \"synthetic snapshot receipt\",\n  \"refs\": {}\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "focus",
+      "interrupt": true,
+      "post": true,
+      "retained": true,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "3cb45428-2ed2-41d9-98ea-290a94d0716c"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/tabs/focus",
+            "body": {
+              "targetId": "synthetic-owned-target"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "focus",
+        "synthetic-owned-target"
+      ],
+      "expectedPayload": {
+        "ok": true
+      },
+      "interruptAtMs": 5552,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7054,
+      "responseSent": true,
+      "socketClosedAtMs": 7058,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7226,
+      "exitAfterInterruptMs": 1673,
+      "result": "PASS",
+      "stdout": "{\n  \"ok\": true\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "start",
+      "interrupt": true,
+      "post": true,
+      "retained": true,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "506f3eb3-ef06-41e1-aadc-9cbdf1e9acca"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "POST",
+            "path": "/start",
+            "timeoutMs": 10000
+          }
+        },
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "d0c0b5b6-e81e-4ccd-a8f7-38bc14989bae"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/",
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "start"
+      ],
+      "expectedPayload": {
+        "ok": true
+      },
+      "interruptAtMs": 5665,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7166,
+      "responseSent": true,
+      "socketClosedAtMs": 7182,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7299,
+      "exitAfterInterruptMs": 1634,
+      "result": "PASS",
+      "stdout": "{\n  \"enabled\": true,\n  \"profile\": \"synthetic-read-only\",\n  \"running\": false,\n  \"cdpReady\": false,\n  \"cdpHttp\": false,\n  \"cdpPort\": 0,\n  \"cdpUrl\": \"http://127.0.0.1:0\",\n  \"chosenBrowser\": null,\n  \"executablePath\": null,\n  \"color\": \"#0088ff\",\n  \"headless\": true,\n  \"noSandbox\": false,\n  \"attachOnly\": true\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "errors --clear",
+      "interrupt": true,
+      "post": false,
+      "retained": true,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "b3853fda-0478-4dc8-82b3-ad4ea3dd5873"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/errors",
+            "query": {
+              "clear": "true"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "errors",
+        "--clear"
+      ],
+      "expectedPayload": {
+        "errors": [
+          {
+            "timestamp": "2026-11-06T00:00:00Z",
+            "message": "synthetic retained error receipt"
+          }
+        ]
+      },
+      "interruptAtMs": 5132,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 6634,
+      "responseSent": true,
+      "socketClosedAtMs": 6638,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 6742,
+      "exitAfterInterruptMs": 1609,
+      "result": "PASS",
+      "stdout": "{\n  \"errors\": [\n    {\n      \"timestamp\": \"2026-11-06T00:00:00Z\",\n      \"message\": \"synthetic retained error receipt\"\n    }\n  ]\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "requests --clear",
+      "interrupt": true,
+      "post": false,
+      "retained": true,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "ad8676df-e3bf-4879-a71f-09b4cb31cbec"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/requests",
+            "query": {
+              "clear": "true"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "requests",
+        "--clear"
+      ],
+      "expectedPayload": {
+        "requests": [
+          {
+            "timestamp": "2026-11-06T00:00:00Z",
+            "method": "GET",
+            "url": "https://synthetic.invalid/receipt"
+          }
+        ]
+      },
+      "interruptAtMs": 5879,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 7383,
+      "responseSent": true,
+      "socketClosedAtMs": 7387,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7523,
+      "exitAfterInterruptMs": 1644,
+      "result": "PASS",
+      "stdout": "{\n  \"requests\": [\n    {\n      \"timestamp\": \"2026-11-06T00:00:00Z\",\n      \"method\": \"GET\",\n      \"url\": \"https://synthetic.invalid/receipt\"\n    }\n  ]\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    },
+    {
+      "command": "snapshot --labels",
+      "interrupt": true,
+      "post": false,
+      "retained": true,
+      "frames": [
+        {
+          "method": "connect",
+          "params": {
+            "client": {
+              "id": "cli",
+              "version": "2026.11.1",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "1eea1a26-8ee7-485b-b524-2493e32e055f"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.admin"
+            ]
+          }
+        },
+        {
+          "method": "browser.request",
+          "params": {
+            "method": "GET",
+            "path": "/snapshot",
+            "query": {
+              "format": "ai",
+              "labels": "true",
+              "timeoutMs": "10000"
+            },
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "executable": "$NODE_BIN/node",
+      "args": [
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "browser",
+        "--json",
+        "--url",
+        "ws://127.0.0.1:43571",
+        "--token",
+        "synthetic-loopback-token",
+        "--timeout",
+        "10000",
+        "snapshot",
+        "--labels"
+      ],
+      "expectedPayload": {
+        "ok": true,
+        "format": "ai",
+        "targetId": "synthetic-owned-target",
+        "snapshot": "synthetic snapshot receipt",
+        "refs": {},
+        "imagePath": "/synthetic/receipt-only/browser-labels.png",
+        "labels": true
+      },
+      "interruptAtMs": 5486,
+      "aliveBeforeFixtureRelease": true,
+      "releaseAtMs": 6987,
+      "responseSent": true,
+      "socketClosedAtMs": 6991,
+      "exit": {
+        "code": 130,
+        "signal": null
+      },
+      "elapsedMs": 7095,
+      "exitAfterInterruptMs": 1609,
+      "result": "PASS",
+      "stdout": "{\n  \"ok\": true,\n  \"format\": \"ai\",\n  \"targetId\": \"synthetic-owned-target\",\n  \"snapshot\": \"synthetic snapshot receipt\",\n  \"refs\": {},\n  \"imagePath\": \"/synthetic/receipt-only/browser-labels.png\",\n  \"labels\": true\n}\n",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n"
+    }
+  ],
+  "result": "RED_REPRODUCED_WITH_CONTROLS",
+  "collectorSha256": "0a9af2cebbe909c4ddeafae70ede3858c9d26764a4bb1e6ee06c0f80c4575919",
+  "mode": "base",
+  "boundary": "Normal built CLI -> actual Gateway client WebSocket -> synthetic loopback Gateway protocol peer. No real Chrome or server/browser implementation claim.",
+  "limitations": [
+    "Loopback Gateway protocol peer; no real Chrome/backend operation was run.",
+    "POST start can perform a later status GET; only already-accepted POST settlement, exit130 and the pure focus receipt are invariant controls.",
+    "Clear-record and labels responses are synthetic protocol receipts only, not a claim of real browser-record deletion or image-file creation.",
+    "No changed public config/protocol or production channels exercised."
+  ],
+  "cleanup": {
+    "privateStateRemoved": true,
+    "externalChannels": false,
+    "productionTouched": false
+  }
+}
