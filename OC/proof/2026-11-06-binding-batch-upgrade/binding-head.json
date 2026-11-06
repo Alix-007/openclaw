@@ -1,0 +1,331 @@
+{
+  "at": "2026-11-06T10:19:20.668Z",
+  "expected": "head",
+  "cases": [
+    {
+      "name": "batch",
+      "sha": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+      "runs": [
+        {
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bind",
+            "--agent",
+            "main",
+            "--bind",
+            "telegram",
+            "--bind",
+            "telegram:ops",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "payload": {
+            "agentId": "main",
+            "added": [
+              "telegram accountId=ops"
+            ],
+            "updated": [],
+            "skipped": [],
+            "conflicts": []
+          }
+        },
+        {
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bind",
+            "--agent",
+            "main",
+            "--bind",
+            "telegram",
+            "--bind",
+            "telegram:ops",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "payload": {
+            "agentId": "main",
+            "added": [],
+            "updated": [],
+            "skipped": [
+              "telegram accountId=ops"
+            ],
+            "conflicts": []
+          }
+        }
+      ],
+      "readbacks": [
+        {
+          "diskBindings": [
+            {
+              "type": "route",
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              }
+            }
+          ],
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bindings",
+            "--agent",
+            "main",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "listed": [
+            {
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              },
+              "description": "telegram accountId=ops"
+            }
+          ]
+        },
+        {
+          "diskBindings": [
+            {
+              "type": "route",
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              }
+            }
+          ],
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bindings",
+            "--agent",
+            "main",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "listed": [
+            {
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              },
+              "description": "telegram accountId=ops"
+            }
+          ]
+        }
+      ],
+      "repeatedBatchDidNotExpandRouting": true
+    },
+    {
+      "name": "sequential",
+      "sha": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+      "runs": [
+        {
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bind",
+            "--agent",
+            "main",
+            "--bind",
+            "telegram",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "payload": {
+            "agentId": "main",
+            "added": [
+              "telegram"
+            ],
+            "updated": [],
+            "skipped": [],
+            "conflicts": []
+          }
+        },
+        {
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bind",
+            "--agent",
+            "main",
+            "--bind",
+            "telegram:ops",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "payload": {
+            "agentId": "main",
+            "added": [],
+            "updated": [
+              "telegram accountId=ops"
+            ],
+            "skipped": [],
+            "conflicts": []
+          }
+        }
+      ],
+      "readbacks": [
+        {
+          "diskBindings": [
+            {
+              "type": "route",
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              }
+            }
+          ],
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bindings",
+            "--agent",
+            "main",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "listed": [
+            {
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              },
+              "description": "telegram accountId=ops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "explicit-default-control",
+      "sha": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+      "runs": [
+        {
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bind",
+            "--agent",
+            "main",
+            "--bind",
+            "telegram:default",
+            "--bind",
+            "telegram:ops",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "payload": {
+            "agentId": "main",
+            "added": [
+              "telegram accountId=default",
+              "telegram accountId=ops"
+            ],
+            "updated": [],
+            "skipped": [],
+            "conflicts": []
+          }
+        }
+      ],
+      "readbacks": [
+        {
+          "diskBindings": [
+            {
+              "type": "route",
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "default"
+              }
+            },
+            {
+              "type": "route",
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              }
+            }
+          ],
+          "command": [
+            "$NODE_BIN/node",
+            "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+            "agents",
+            "bindings",
+            "--agent",
+            "main",
+            "--json"
+          ],
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "listed": [
+            {
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "default"
+              },
+              "description": "telegram accountId=default"
+            },
+            {
+              "agentId": "main",
+              "match": {
+                "channel": "telegram",
+                "accountId": "ops"
+              },
+              "description": "telegram accountId=ops"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modelsCalled": false,
+  "channelMessagesSent": false,
+  "result": "PASS",
+  "collectorSha256": "d89255614d1f420145330347c3b0e719b98ec264307ca9aac28c26608eefc036",
+  "productHead": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+  "observation": "GREEN: the batch and sequential commands both retain only ops, repeating the batch is idempotent, and explicit default plus ops still retains both.",
+  "cleanup": "Task-owned private HOME/state/workspace directories removed; synthetic config and native stdout/stderr retained for inspection. No production environment, model call or channel message."
+}

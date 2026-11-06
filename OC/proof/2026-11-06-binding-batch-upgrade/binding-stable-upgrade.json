@@ -1,0 +1,167 @@
+{
+  "at": "2026-11-06T10:21:29.320Z",
+  "sha": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+  "buildStamp": {
+    "builtAt": 1793959697715,
+    "head": "d66efdb54b7efc91917844dbd9f33745acd563c0",
+    "inputsClean": true,
+    "inputSignature": "1ad3b4def47bb396d70f4a7fa287c6dd7af0cf4766e2ef87d7a9d15fb0820533"
+  },
+  "cases": [
+    {
+      "label": "candidate-bind",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+        "agents",
+        "bind",
+        "--agent",
+        "main",
+        "--bind",
+        "telegram",
+        "--bind",
+        "telegram:ops",
+        "--json"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 13.626,
+      "stdout": "{\n  \"agentId\": \"main\",\n  \"added\": [\n    \"telegram accountId=ops\"\n  ],\n  \"updated\": [],\n  \"skipped\": [],\n  \"conflicts\": []\n}\n",
+      "stderr": "[state/db] state database schema migration pending; verifying integrity first\nConfig metadata state update failed: Client credentials require backed-up migration custody; stop the app and run openclaw doctor --fix.\n[state/db] state database schema migration pending; verifying integrity first\n[state/db] state database schema migration pending; verifying integrity first\nConfig health-state write failed: Client credentials require backed-up migration custody; stop the app and run openclaw doctor --fix.\nConfig last-known-good baseline advance did not settle: $PROOF_ROOT/binding-batch-upgrade-proof-stable-final/config.json\n[state/db] state database schema migration pending; verifying integrity first\n[state/db] state database schema migration pending; verifying integrity first\n[state/db] state database schema migration pending; verifying integrity first\n"
+    },
+    {
+      "label": "candidate-readback",
+      "command": [
+        "$NODE_BIN/node",
+        "$PROOF_ROOT/binding-batch-upgrade/openclaw.mjs",
+        "agents",
+        "bindings",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "watchdog": false,
+      "seconds": 3.874,
+      "stdout": "[\n  {\n    \"agentId\": \"main\",\n    \"match\": {\n      \"channel\": \"discord\",\n      \"accountId\": \"legacy\"\n    },\n    \"description\": \"discord accountId=legacy\"\n  },\n  {\n    \"agentId\": \"main\",\n    \"match\": {\n      \"channel\": \"telegram\",\n      \"accountId\": \"ops\"\n    },\n    \"description\": \"telegram accountId=ops\"\n  }\n]\n",
+      "stderr": "[state/db] state database schema migration pending; verifying integrity first\nConfig health-state write failed: Client credentials require backed-up migration custody; stop the app and run openclaw doctor --fix.\n"
+    }
+  ],
+  "result": "PASS",
+  "stableSeed": {
+    "version": "2026.11.1",
+    "command": [
+      "$NODE_BIN/node",
+      "$PROOF_ROOT/stable-2026.11.1/package/openclaw.mjs",
+      "agents",
+      "bind",
+      "--agent",
+      "main",
+      "--bind",
+      "discord:legacy",
+      "--json"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\n  \"agentId\": \"main\",\n  \"added\": [\n    \"discord accountId=legacy\"\n  ],\n  \"updated\": [],\n  \"skipped\": [],\n  \"conflicts\": []\n}\n",
+    "stderr": ""
+  },
+  "releasedReadback": {
+    "gateway": {
+      "mode": "local"
+    },
+    "plugins": {
+      "allow": [],
+      "slots": {
+        "memory": "none"
+      }
+    },
+    "agents": {
+      "defaults": {
+        "workspace": "$PROOF_ROOT/binding-batch-upgrade-proof-stable-final/workspace"
+      },
+      "entries": {
+        "main": {}
+      }
+    },
+    "bindings": [
+      {
+        "type": "route",
+        "agentId": "main",
+        "match": {
+          "channel": "discord",
+          "accountId": "legacy"
+        }
+      }
+    ],
+    "meta": {
+      "migrations": {
+        "modelPolicyAllowlist": true,
+        "utilityModelSeparation": true
+      },
+      "lastTouchedVersion": "2026.11.1"
+    }
+  },
+  "candidateReadback": {
+    "gateway": {
+      "mode": "local"
+    },
+    "plugins": {
+      "allow": [],
+      "slots": {
+        "memory": "none"
+      }
+    },
+    "agents": {
+      "defaults": {
+        "workspace": "$PROOF_ROOT/binding-batch-upgrade-proof-stable-final/workspace"
+      },
+      "entries": {
+        "main": {}
+      }
+    },
+    "bindings": [
+      {
+        "type": "route",
+        "agentId": "main",
+        "match": {
+          "channel": "discord",
+          "accountId": "legacy"
+        }
+      },
+      {
+        "type": "route",
+        "agentId": "main",
+        "match": {
+          "channel": "telegram",
+          "accountId": "ops"
+        }
+      }
+    ],
+    "meta": {
+      "migrations": {
+        "modelPolicyAllowlist": true,
+        "utilityModelSeparation": true,
+        "skillWorkshopPlugin": true,
+        "skillLibraryToolSplit": true
+      },
+      "lastTouchedVersion": "2026.11.1"
+    }
+  },
+  "observation": "Published 2026.11.1 CLI created the existing binding and config metadata. The candidate loaded it, added only the requested scoped Telegram route, retained the existing Discord route and all other authored config, and the independent CLI list confirmed both.",
+  "metadataChanges": {
+    "owner": "src/config/io.meta.ts",
+    "keys": [
+      "meta.migrations.skillWorkshopPlugin=true",
+      "meta.migrations.skillLibraryToolSplit=true"
+    ],
+    "contract": "AUTO_MANAGED_CONFIG_META_PATHS and stampConfigWriteMetadata; lastTouchedAt now belongs to machine state, not authored config"
+  },
+  "cleanup": "Task-owned private HOME/state/workspace removed; synthetic config/native logs retained. No external model calls or channel messages."
+}

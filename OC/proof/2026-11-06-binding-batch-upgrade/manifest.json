@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "path": "native-cli.mjs",
+      "bytes": 2575,
+      "sha256": "42244b19eab4086c35af0017a49616b27c9526b902317a0ab858ab64a7e74aa9",
+      "binary": false
+    },
+    {
+      "path": "binding-batch-upgrade-proof.mjs",
+      "bytes": 4388,
+      "sha256": "d89255614d1f420145330347c3b0e719b98ec264307ca9aac28c26608eefc036",
+      "binary": false
+    },
+    {
+      "path": "binding-batch-upgrade-stable-proof.mjs",
+      "bytes": 4258,
+      "sha256": "f3876acb7872c723bc73842688eee44b1b4427aab7a10ea97f994df6a20cb763",
+      "binary": false
+    },
+    {
+      "path": "binding-base.json",
+      "bytes": 8903,
+      "sha256": "2119b6dc9ecbb9345df66009d5a61ae88a03447602c52b1d9ca8032e0a848266",
+      "binary": false
+    },
+    {
+      "path": "binding-head.json",
+      "bytes": 8291,
+      "sha256": "9f43a284a411ce3fb5c229ac2e8aa32fd41bc7e105e9a5ae75ff2e57886d11ff",
+      "binary": false
+    },
+    {
+      "path": "binding-stable-upgrade.json",
+      "bytes": 5739,
+      "sha256": "d155460973d9af542219080089084dff9bc28a430469a1c158dfe435c0dbae42",
+      "binary": false
+    },
+    {
+      "path": "stable-acquisition.json",
+      "bytes": 321,
+      "sha256": "e56c3b8f3231c1dc3b95d844dd792b1ffb858406707b5198e45d4b57d3313a57",
+      "binary": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 1583,
+      "sha256": "9d7460cadbfc77c989f229ea2b48bbb0de8028fa7496acb5884b1484bb7b5d32",
+      "binary": false
+    }
+  ]
+}
