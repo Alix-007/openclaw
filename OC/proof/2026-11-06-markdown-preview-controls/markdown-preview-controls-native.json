@@ -1,0 +1,14 @@
+{
+  "head": "aaa7865bd73e791ac08b30fdc86311f47baaf158",
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "$PROOF_ROOT/markdown-preview-controls-proof.mjs",
+    "$CHECKOUT",
+    "$PROOF_ROOT/markdown-preview-controls-native-head",
+    "green"
+  ],
+  "exitCode": 0,
+  "seconds": 7.436
+}

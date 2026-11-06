@@ -1,0 +1,12 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/check-test-lines-ratchet.mts",
+    "--base",
+    "5bd69e0a3365a3095df1d34576a6885de6fdf5d3"
+  ],
+  "exitCode": 0,
+  "seconds": 7.356
+}

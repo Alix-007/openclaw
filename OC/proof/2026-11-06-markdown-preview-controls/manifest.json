@@ -1,0 +1,88 @@
+{
+  "files": [
+    {
+      "path": "base.json",
+      "binary": false,
+      "bytes": 5245,
+      "sha256": "ec6e9bed6018cf69f796cb3c6a95c5ff54784f4af6b00547ce6973cb04574acd"
+    },
+    {
+      "path": "base-preview.png",
+      "binary": true,
+      "bytes": 76569,
+      "sha256": "aa09c40c934dfb6892595ae82d7d72726979a9138e5943eda39b2195b6bf3c3e"
+    },
+    {
+      "path": "head.json",
+      "binary": false,
+      "bytes": 5215,
+      "sha256": "1a1cfefe9be739ee960d99f5cdd7213526e16089928ce7fba6471652ab5deb41"
+    },
+    {
+      "path": "head-preview.png",
+      "binary": true,
+      "bytes": 76321,
+      "sha256": "7add627bc3ae7533f17bf679b79cc84b0cf3efe8e40640dac9be04adf40e32a8"
+    },
+    {
+      "path": "chat-copy-positive-control.png",
+      "binary": true,
+      "bytes": 33918,
+      "sha256": "dc0278071972382c2a8b70d6902fc4603fed7589264fff8411ed2842da70903c"
+    },
+    {
+      "path": "markdown-preview-controls-proof.mjs",
+      "binary": false,
+      "bytes": 8008,
+      "sha256": "a0c84a565c2662a8e38edfb07561a809b8d713c430c1dc26be1e4994b5cd92ac"
+    },
+    {
+      "path": "markdown-preview-controls-ui-build.json",
+      "binary": false,
+      "bytes": 170,
+      "sha256": "2d911fa45815c472f8538271a5bd39a72af161d9928fc53a85d855a7dc0e9989"
+    },
+    {
+      "path": "markdown-preview-controls-native.json",
+      "binary": false,
+      "bytes": 317,
+      "sha256": "f34baf25f543daa611775ea7696d1c459611539f92cd1da0d1d182df026c8ea5"
+    },
+    {
+      "path": "markdown-html-controls-regression-red.json",
+      "binary": false,
+      "bytes": 338,
+      "sha256": "22167e8daf9c16cf9bf9fb1ad0820a808afe96a64acab897d4c1a1bc15bc6da8"
+    },
+    {
+      "path": "markdown-html-controls-regression-green.json",
+      "binary": false,
+      "bytes": 338,
+      "sha256": "0b490cb77a7c31ce2b6b7d2d2d9b66286f19fec7c3cdf596c95655f8d5f84e93"
+    },
+    {
+      "path": "markdown-html-controls-lint.json",
+      "binary": false,
+      "bytes": 256,
+      "sha256": "b661df3e47ed33d5504804e34e1cb98819a49531fff09a0f0c59c50d70b9d34b"
+    },
+    {
+      "path": "markdown-html-controls-types.json",
+      "binary": false,
+      "bytes": 405,
+      "sha256": "588bbf2b85f202841d48187acc029f41b2f8dc93a0680bf430674ecae3a21787"
+    },
+    {
+      "path": "markdown-html-controls-test-lines.json",
+      "binary": false,
+      "bytes": 227,
+      "sha256": "a236ad520bbaa6a4e93a76dbc3839354c5ca62504193c26e9d9fd8bcf52a22b6"
+    },
+    {
+      "path": "README.md",
+      "binary": false,
+      "bytes": 2767,
+      "sha256": "a55679139cd3cf5144feca89dce03afa8b1b3c9357d77f20be25d64212b2e9b0"
+    }
+  ]
+}

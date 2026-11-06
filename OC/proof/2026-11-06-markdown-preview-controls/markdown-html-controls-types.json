@@ -1,0 +1,12 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-tsgo.mjs",
+    "-p",
+    "$CHECKOUT-types.tsconfig.json",
+    "--incremental"
+  ],
+  "exitCode": 0,
+  "seconds": 132.653,
+  "priorFailure": "External scoped config omitted worktree typeRoots and source ambient declarations; failed before source checking. Corrected by reusing previous successful scoped UI configuration, no product/tsconfig edit."
+}

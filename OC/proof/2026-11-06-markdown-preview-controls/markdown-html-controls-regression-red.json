@@ -1,0 +1,15 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-vitest.mjs",
+    "ui/src/components/markdown-code-blocks.test.ts",
+    "--maxWorkers=1"
+  ],
+  "workdir": "$CHECKOUT",
+  "env": {
+    "OPENCLAW_VITEST_RUNTIME": "node",
+    "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-vitest-cache"
+  },
+  "exitCode": 1,
+  "seconds": 17.289
+}

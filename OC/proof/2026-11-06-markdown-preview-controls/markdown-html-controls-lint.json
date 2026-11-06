@@ -1,0 +1,12 @@
+{
+  "command": [
+    "$NODE_BIN/node",
+    "scripts/run-oxlint.mjs",
+    "--tsconfig",
+    "tsconfig.ui.json",
+    "ui/src/components/solid/markdown-html.tsx",
+    "ui/src/components/markdown-code-blocks.test.ts"
+  ],
+  "exitCode": 0,
+  "seconds": 44.116
+}

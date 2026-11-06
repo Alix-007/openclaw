@@ -1,0 +1,154 @@
+{
+  "at": "2026-11-06T16:11:13.143Z",
+  "sourceHead": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+  "build": {
+    "version": "2026.11.1",
+    "commit": "5bd69e0a3365a3095df1d34576a6885de6fdf5d3",
+    "builtAt": "2026-11-06T08:09:33.801Z",
+    "release": false,
+    "commitAt": "2026-11-06T07:57:32.000Z",
+    "branch": null,
+    "dirty": false,
+    "buildId": "2026.11.1-5bd69e0a3365-2026-11-06T08-09-33.801Z"
+  },
+  "indexSha256": "21e3eae57c01dfae931f1bce745b1096bb8382162cde82600e76123e9af1bac1",
+  "collectorSha256": "a0c84a565c2662a8e38edfb07561a809b8d713c430c1dc26be1e4994b5cd92ac",
+  "root": "$BASE_CHECKOUT",
+  "output": "$PROOF_ROOT/markdown-preview-controls-native-base",
+  "status": "RED_COPY_INERT",
+  "expectation": "red",
+  "expected": "const garden = \"synthetic\";\nconsole.log(garden);\n",
+  "markdown": "```js\nconst garden = \"synthetic\";\nconsole.log(garden);\n```",
+  "sentinel": "native-clipboard-unchanged-control",
+  "errors": [],
+  "served": [
+    {
+      "url": "http://127.0.0.1:33779/assets/index-DiQZIqiC.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/rolldown-runtime-CNOWq4Kh.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-connection-xgO8--j0.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-shared-styles-ChYplIMW.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/chat-english-D_41VFiZ.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/solid-runtime-CsweEQbc.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-shared-Cc8hLxhm.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-readiness-solid-Cuo1TRGZ.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/device-signing-runtime-VEnuegbv.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-chat-styles-OQmMXL2m.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/deferred-ui-support-NCYeUaiB.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/chat-message-media-runtime-Bcdgh7D0.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/virtual-core-runtime-LhyriIY5.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/markdown-runtime-DPXIYYdN.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-chat-E6oqjN-2.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/chat-route-entry-BkIFVJPw.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/markdown-highlight-runtime-CbsXJ-dh.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/markdown-highlight-runtime-JnaomDDD.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/app-shell-idle.runtime-B1aaQnL2.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-new-DPuv94-O.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/control-ui-boot-new-styles-BtGxYBpy.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/route-controls-runtime-PRjgzw2G.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/new-session-page-entry-LuDEfCRG.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/creation-composer-render-CiR898xg.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:33779/assets/composer-invocation-menus-DNdlLX9s.js",
+      "status": 200
+    }
+  ],
+  "limitations": [
+    "Real normally built UI and native Chromium clipboard; official synthetic Gateway transport supplies saved history and empty cron inventory.",
+    "Preview uses actual ordinary creation form; no automation is saved/run, no external channel/model/production service is invoked.",
+    "Same frozen collector/scenario/control on BASE and HEAD; only expected outcome differs. Earlier source admission remains a separate original receipt. No authenticated live Gateway or physical OS/clipboard compatibility claim."
+  ],
+  "baseUrl": "http://127.0.0.1:33779/",
+  "positiveControl": {
+    "label": "Copied",
+    "clipboard": "const garden = \"synthetic\";\nconsole.log(garden);",
+    "codeText": "const garden = \"synthetic\";\nconsole.log(garden);\n"
+  },
+  "normalUiSmoke": "PASS",
+  "noCompletionWithin2s": "TimeoutError: page.waitForFunction: Timeout 2000ms exceeded.",
+  "preview": {
+    "label": "Copy code",
+    "class": "code-block-copy",
+    "clipboard": "native-clipboard-unchanged-control",
+    "text": "const garden = \"synthetic\";\nconsole.log(garden);\n",
+    "draft": "```js\nconst garden = \"synthetic\";\nconsole.log(garden);\n```",
+    "completed": false
+  },
+  "mutations": {
+    "cron.add": 0,
+    "cron.update": 0,
+    "cron.run": 0
+  },
+  "chatSendCount": 0,
+  "cleanup": "Closed both isolated browser pages/context and built server; no automation save/run or chat send; synthetic clipboard fixture only."
+}
