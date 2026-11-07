@@ -1,0 +1,15 @@
+{
+  "command": [
+    "$NODE26",
+    "--import",
+    "./scripts/tsx.mjs",
+    "scripts/check-control-ui-performance.mts",
+    "--json"
+  ],
+  "env": {},
+  "workdir": "$BASE_CHECKOUT",
+  "exitCode": 1,
+  "elapsedSeconds": 42.3876814218238,
+  "stdout": "favorites-main-performance.metrics.json",
+  "stderr": "favorites-main-performance.stderr.log"
+}

@@ -1,0 +1,59 @@
+{
+  "at": "2026-11-07T17:20:08.869839+00:00",
+  "head": "faa1062bccb9546751b74d181e3888359760ec70",
+  "tree": "15977ef769df89575379e35e77344b64654d68a5",
+  "scope": "One actual normal built candidate artifact; no matched current-main build, no attribution claim",
+  "canonicalCLIExitCode": 1,
+  "canonicalCLISeconds": 42.50646682456136,
+  "actualNormalUIBuildExitCode": 0,
+  "actualNormalUIBuildSeconds": 120.328,
+  "metricsSHA256": "686515f803ee3a61b494b9f8f6fe3c155162406592f002445e0f87baf9675342",
+  "violations": [
+    {
+      "metric": "document gzip",
+      "actual": 16002,
+      "limit": 13893,
+      "unit": "bytes",
+      "excessBytes": 2109
+    },
+    {
+      "metric": "largest JS gzip",
+      "actual": 564549,
+      "limit": 564484,
+      "unit": "bytes",
+      "excessBytes": 65
+    },
+    {
+      "metric": "total CSS gzip",
+      "actual": 325634,
+      "limit": 325109,
+      "unit": "bytes",
+      "excessBytes": 525
+    },
+    {
+      "metric": "total CSS raw",
+      "actual": 1676883,
+      "limit": 1675754,
+      "unit": "bytes",
+      "excessBytes": 1129
+    },
+    {
+      "metric": "chat boot JS gzip",
+      "actual": 1295038,
+      "limit": 1294652,
+      "unit": "bytes",
+      "excessBytes": 386
+    },
+    {
+      "metric": "new boot JS gzip",
+      "actual": 803315,
+      "limit": 803250,
+      "unit": "bytes",
+      "excessBytes": 65
+    }
+  ],
+  "actualBudgetOwnerSHA256": "c96514617b45b31fb5d5645561bf542aa3344fdc1dd223fd6e439678ecd4c7e8",
+  "noThresholdEdits": true,
+  "noRepeatedProductBuildsByLane": true,
+  "next": "Root owns attribution/CI decision; runtime proof reported separately; no blanket inherited explanation."
+}

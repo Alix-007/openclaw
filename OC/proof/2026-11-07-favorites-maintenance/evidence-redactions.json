@@ -1,0 +1,180 @@
+{
+  "at": "2026-11-07T17:27:39.893294+00:00",
+  "policy": "Only private absolute checkout/artifact/Node executable/isolated-state locations in JSON receipts are replaced with portable labels. Source SHA, asset hashes, all observations, outcomes, controls, limitations and failure messages are preserved; images/collector/source diff/performance metrics and gate stderr are byte-identical. The authored EVIDENCE.md is a current summary, not a raw runtime receipt.",
+  "files": [
+    {
+      "file": "current-faa-unselected.png",
+      "originalSHA256": "7e21b68aba7fdafbd441ac3bd0f48b3d96d4a7338f1ad576fe949782aa0c84e3",
+      "publicSHA256": "7e21b68aba7fdafbd441ac3bd0f48b3d96d4a7338f1ad576fe949782aa0c84e3",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "current-faa-selected.png",
+      "originalSHA256": "8362739005f7187cbf8a8a7ce904a97ee6ba895a8521b8100d25536ccc46d7fe",
+      "publicSHA256": "8362739005f7187cbf8a8a7ce904a97ee6ba895a8521b8100d25536ccc46d7fe",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "current-faa-receipt.json",
+      "originalSHA256": "ce74eb816f8c1f2942c9386c67d759294f38f79741f98a254b742f49dab55188",
+      "publicSHA256": "5d3e59986df0a9cc9de755c9c85d8914ddc59d438897b71ba34f7f2e832daa87",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "first-attempt-blocked-receipt.json",
+      "originalSHA256": "1c132bedc67c4adcf86fc96596534f0517685e5829872cb319a44bc546bf661a",
+      "publicSHA256": "ff9f43a2d6e8c865fc3107c39140b80c0105e835e07c8720a83aef28f4019f6f",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "first-attempt-diagnosis.json",
+      "originalSHA256": "0edfdc274e97cf29a6eddf4397a8f74228cd66a25385b74bd70078a710f5173a",
+      "publicSHA256": "0edfdc274e97cf29a6eddf4397a8f74228cd66a25385b74bd70078a710f5173a",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-proof.mjs",
+      "originalSHA256": "5f218e1031ceb98d5d5acdec90e759966c3f478e29fa88cf8cc277dbc5ae1d21",
+      "publicSHA256": "5f218e1031ceb98d5d5acdec90e759966c3f478e29fa88cf8cc277dbc5ae1d21",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-proof-stable-seed.mjs",
+      "originalSHA256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+      "publicSHA256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-proof-portable.diff",
+      "originalSHA256": "8222cd8dcda36f5854b9f93eb77af0d97b4671f66b8b73f4a7d72efe19cf977d",
+      "publicSHA256": "8222cd8dcda36f5854b9f93eb77af0d97b4671f66b8b73f4a7d72efe19cf977d",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-proof-context-qualification.diff",
+      "originalSHA256": "061097a56b8ff4f57b9be8c793f2929c19cc318dc8e89d822954ba38b6a6da58",
+      "publicSHA256": "061097a56b8ff4f57b9be8c793f2929c19cc318dc8e89d822954ba38b6a6da58",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-canonical-native.json",
+      "originalSHA256": "1a98a9735258c33016b281ab9096e0055ba202ea7b722a796890d36457e28a5c",
+      "publicSHA256": "d2fd40579f098295c91bd7744e1660dceb259f7868308bcdefe2b041912180dd",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "favorites-canonical-native-qualified.json",
+      "originalSHA256": "1a904974bed389fc5318f8dd2189ee4b01d033941b368abeaf6d5c2ed084f74f",
+      "publicSHA256": "81d1cb3e01d376c69487595da75c7832bc31d1e2d45544a4cdaf318cc8e4bdb5",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "favorites-ui-build.json",
+      "originalSHA256": "584b578a97c41367c7bc86fcb81301b66acae36c498831ae3ca0c811aa4cdf34",
+      "publicSHA256": "f91d27697b4f80c8a20e25db9162226d69c15320d1bad965992fa72ebd5bdb78",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "favorites-canonical-performance.json",
+      "originalSHA256": "90d7f0697a879b0e7dbac95b6755c83a803c00200229017f34cdeae8e5d9e71e",
+      "publicSHA256": "a2ce51b022b0c063ab760ec70d3679c6143d29bf62aca76f39542f465158ca46",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "favorites-canonical-performance-summary.json",
+      "originalSHA256": "89bb0be6e1f99498af5bcb3490795137e7f2d93e368554a5a851df7f51a46fca",
+      "publicSHA256": "89bb0be6e1f99498af5bcb3490795137e7f2d93e368554a5a851df7f51a46fca",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-canonical-performance.metrics.json",
+      "originalSHA256": "686515f803ee3a61b494b9f8f6fe3c155162406592f002445e0f87baf9675342",
+      "publicSHA256": "686515f803ee3a61b494b9f8f6fe3c155162406592f002445e0f87baf9675342",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-canonical-performance.stderr.log",
+      "originalSHA256": "11326be641c51e1bc5bb058a4842bd114ae6a67c7a77026782fc49e7386d7dc0",
+      "publicSHA256": "11326be641c51e1bc5bb058a4842bd114ae6a67c7a77026782fc49e7386d7dc0",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "historical-854-unselected.png",
+      "originalSHA256": "53752bf9cfe7ba794cc8bf2bce41b1938510180ee556bdfcb6fa2a60ce5485c2",
+      "publicSHA256": "53752bf9cfe7ba794cc8bf2bce41b1938510180ee556bdfcb6fa2a60ce5485c2",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "historical-854-selected.png",
+      "originalSHA256": "027607a23c077697180902d47aef14053e2cc70ca1ab291ba715afcc7f5a2d9e",
+      "publicSHA256": "027607a23c077697180902d47aef14053e2cc70ca1ab291ba715afcc7f5a2d9e",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "historical-capture-provenance.json",
+      "originalSHA256": "fc63818bb7873ea66bd073293427ee9fae47b40969d900a3d441635c6803980a",
+      "publicSHA256": "fc63818bb7873ea66bd073293427ee9fae47b40969d900a3d441635c6803980a",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-main-performance.metrics.json",
+      "originalSHA256": "bda494c3c91d5f793ffc3d85b89038c1a81b00317095154500b3b3758a628dbd",
+      "publicSHA256": "bda494c3c91d5f793ffc3d85b89038c1a81b00317095154500b3b3758a628dbd",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-main-performance.json",
+      "originalSHA256": "d7f9ac9cf5da50f84124e438feb7af864a4dc9ab6eb3dda7ab7628c65a8a1b80",
+      "publicSHA256": "8d0f0b936276929978cb4ae0ca7bef59ec99c34380d327a8d06d043edb08731c",
+      "redactedLocalPathsOnly": true
+    },
+    {
+      "file": "favorites-canonical-paired-evaluation.json",
+      "originalSHA256": "908789b8a14fb1832c8938aa1421c74d525991d7769d9054c1a298e298e38f0f",
+      "publicSHA256": "908789b8a14fb1832c8938aa1421c74d525991d7769d9054c1a298e298e38f0f",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-canonical-paired-performance.json",
+      "originalSHA256": "a2457b2f4ac4fe6317def6ee383b76069ee7c4a2defc7a22a0a9d7cfa5e64d05",
+      "publicSHA256": "a2457b2f4ac4fe6317def6ee383b76069ee7c4a2defc7a22a0a9d7cfa5e64d05",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-main-performance.stderr.log",
+      "originalSHA256": "d812eae95d224d89314e10bde4448f0e9eeaca2f02efcbb18e7b5857a924f318",
+      "publicSHA256": "d812eae95d224d89314e10bde4448f0e9eeaca2f02efcbb18e7b5857a924f318",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "favorites-canonical-paired-performance.md",
+      "originalSHA256": "bb90cd9e4df549aa0db0fa9d2bb9f4707e902dc791c916dbd6777bc86ab134e5",
+      "publicSHA256": "bb90cd9e4df549aa0db0fa9d2bb9f4707e902dc791c916dbd6777bc86ab134e5",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "stable-2026.11.1-acquisition.json",
+      "originalSHA256": "e56c3b8f3231c1dc3b95d844dd792b1ffb858406707b5198e45d4b57d3313a57",
+      "publicSHA256": "e56c3b8f3231c1dc3b95d844dd792b1ffb858406707b5198e45d4b57d3313a57",
+      "redactedLocalPathsOnly": false
+    },
+    {
+      "file": "EVIDENCE.md",
+      "originalSHA256": "64a9db52298cbbbce1f7c198b73197c2d71d7b3c531fe13e7832af829007ad8e",
+      "publicSHA256": "64a9db52298cbbbce1f7c198b73197c2d71d7b3c531fe13e7832af829007ad8e",
+      "redactedLocalPathsOnly": false
+    }
+  ],
+  "portableLabels": {
+    "$NODE26": "Actual Node v26.12.1 executable used for both builds and measurements",
+    "$CHECKOUT": "Clean candidate checkout at faa1062bccb9546751b74d181e3888359760ec70",
+    "$BASE_CHECKOUT": "Clean read-only paired main checkout at 1de61f3e587c3093e57964f1423ba1ad51551b56",
+    "$TASK_ARTIFACTS": "Directory containing the published external favorites-proof.mjs collector",
+    "$STABLE_PACKAGE": "Unmodified published OpenClaw 2026.11.1 package identified by stable-2026.11.1-acquisition.json",
+    "$PREVIOUS_ARTIFACTS": "Retained prior-run proof inputs; historical evidence remains identified by original SHA",
+    "$NATIVE_ARTIFACTS": "Final exact-head collection output directory",
+    "$FIRST_ATTEMPT_ARTIFACTS": "Preserved first blocked attempt output directory",
+    "$ISOLATED_STATEDIR / $ISOLATED_HOME": "Final collector-owned private state/home, removed during cleanup",
+    "$FIRST_ISOLATED_STATEDIR / $FIRST_ISOLATED_HOME": "First collector-owned private state/home, removed during cleanup"
+  }
+}

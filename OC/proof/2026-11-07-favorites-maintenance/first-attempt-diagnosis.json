@@ -1,0 +1,33 @@
+{
+  "at": "2026-11-07T17:23:41.771824+00:00",
+  "head": "faa1062bccb9546751b74d181e3888359760ec70",
+  "firstNativeReceipt": "favorites-exact-head-djeSpK/receipt.json",
+  "result": "READ_ONLY_DIAGNOSIS",
+  "firstFailure": "Added collector assertion expected15px, actual16px before favorite interaction. Original acceptance scenarios not completed; no behavioral pass claim.",
+  "canonicalOwner": {
+    "source": "ui/src/components/solid/icon-button.css",
+    "selector": ".oc-icon-button svg",
+    "glyph": "--oc-icon-button-glyph => --list-row-icon-size =>15px",
+    "specificity": "0,1,1",
+    "emittedAsset": "control-ui-connection-CPyYOnPj.css"
+  },
+  "composerContext": {
+    "source": "ui/src/styles/chat/composer-surface.css",
+    "sourceSHA256": "16af0f30c87db0b4a641f22d66eea51fe7ff8918e021d5787d5d1f2f90be1b90",
+    "selector": ".agent-chat__composer-footer svg",
+    "specificity": "0,1,1",
+    "sourceRule": ".agent-chat__composer-footer svg {\n  display: block;\n  width: var(--chat-composer-icon-size);\n  height: var(--chat-composer-icon-size);\n  flex-shrink: 0;\n  stroke-width: var(--chat-composer-icon-stroke);\n}",
+    "glyph": "--chat-composer-icon-size =>16px",
+    "stroke": "--chat-composer-icon-stroke =>2",
+    "emittedAsset": "control-ui-boot-shared-styles-Bc7BLPuF.css",
+    "cascade": "later route sheet, equal specificity"
+  },
+  "proposedHarnessOnlyCorrection": "Retain owner/28px/native pressed/outline assertions. Assert observed glyph against current inherited composer context token and record actual16px. Keep first blocked attempt/raw evidence. No product source/build/threshold changes. Root approval required before replay after one-run authorization.",
+  "visualInspection": {
+    "firstBlockedBefore": "Inspected native screenshot; centered outline hearts, visible model names, no overlap/obvious clipping in captured viewport. This only covers initial state.",
+    "historical854Selected": "Inspected existing historical selected screenshot, filled old heart. Not same head/current proof."
+  },
+  "nativeReplay": "NOT_STARTED pending root decision",
+  "work_tokens": null,
+  "usd": null
+}

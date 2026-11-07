@@ -1,0 +1,233 @@
+{
+  "at": "2026-11-07T17:31:05.755449+00:00",
+  "status": "HOLD_PERFORMANCE_AND_HUMAN_PRODUCT_SCOPE",
+  "candidate": "faa1062bccb9546751b74d181e3888359760ec70",
+  "base": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+  "nativeResult": "PASS_WITH_EXPLICIT_SYNTHETIC_GATEWAY_SCOPE",
+  "nativeReceiptSHA256": "ce74eb816f8c1f2942c9386c67d759294f38f79741f98a254b742f49dab55188",
+  "candidateAbsoluteGate": {
+    "exitCode": 1,
+    "seconds": 42.50646682456136,
+    "violations": [
+      {
+        "metric": "document gzip",
+        "actual": 16002,
+        "limit": 13893,
+        "unit": "bytes"
+      },
+      {
+        "metric": "largest JS gzip",
+        "actual": 564549,
+        "limit": 564484,
+        "unit": "bytes"
+      },
+      {
+        "metric": "total CSS gzip",
+        "actual": 325634,
+        "limit": 325109,
+        "unit": "bytes"
+      },
+      {
+        "metric": "total CSS raw",
+        "actual": 1676883,
+        "limit": 1675754,
+        "unit": "bytes"
+      },
+      {
+        "metric": "chat boot JS gzip",
+        "actual": 1295038,
+        "limit": 1294652,
+        "unit": "bytes"
+      },
+      {
+        "metric": "new boot JS gzip",
+        "actual": 803315,
+        "limit": 803250,
+        "unit": "bytes"
+      }
+    ]
+  },
+  "baseAbsoluteGate": {
+    "exitCode": 1,
+    "seconds": 42.3876814218238,
+    "violations": [
+      {
+        "metric": "document gzip",
+        "actual": 15982,
+        "limit": 13893,
+        "unit": "bytes"
+      },
+      {
+        "metric": "total CSS gzip",
+        "actual": 325566,
+        "limit": 325109,
+        "unit": "bytes"
+      },
+      {
+        "metric": "total CSS raw",
+        "actual": 1676608,
+        "limit": 1675754,
+        "unit": "bytes"
+      },
+      {
+        "metric": "chat boot JS gzip",
+        "actual": 1294705,
+        "limit": 1294652,
+        "unit": "bytes"
+      }
+    ]
+  },
+  "canonicalPairedEvaluation": [
+    {
+      "metric": "largest JS gzip",
+      "actual": 564549,
+      "limit": 564484,
+      "unit": "bytes"
+    },
+    {
+      "metric": "total CSS gzip",
+      "actual": 325634,
+      "limit": 325630,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 325566,
+        "cap": 325109
+      }
+    },
+    {
+      "metric": "total CSS raw",
+      "actual": 1676883,
+      "limit": 1676672,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 1676608,
+        "cap": 1675754
+      }
+    },
+    {
+      "metric": "chat boot JS gzip",
+      "actual": 1295038,
+      "limit": 1294769,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 1294705,
+        "cap": 1294652
+      }
+    },
+    {
+      "metric": "new boot JS gzip",
+      "actual": 803315,
+      "limit": 803250,
+      "unit": "bytes"
+    }
+  ],
+  "measurements": [
+    {
+      "metric": "document gzip",
+      "mainActual": 15982,
+      "candidateActual": 16002,
+      "delta": 20,
+      "fixedCap": 13893,
+      "pairedEnforcementLimit": 16046,
+      "pairedViolation": false,
+      "excessPaired": 0
+    },
+    {
+      "metric": "largest JS gzip",
+      "mainActual": 564216,
+      "candidateActual": 564549,
+      "delta": 333,
+      "fixedCap": 564484,
+      "pairedEnforcementLimit": 564484,
+      "pairedViolation": true,
+      "excessPaired": 65
+    },
+    {
+      "metric": "total CSS gzip",
+      "mainActual": 325566,
+      "candidateActual": 325634,
+      "delta": 68,
+      "fixedCap": 325109,
+      "pairedEnforcementLimit": 325630,
+      "pairedViolation": true,
+      "excessPaired": 4
+    },
+    {
+      "metric": "total CSS raw",
+      "mainActual": 1676608,
+      "candidateActual": 1676883,
+      "delta": 275,
+      "fixedCap": 1675754,
+      "pairedEnforcementLimit": 1676672,
+      "pairedViolation": true,
+      "excessPaired": 211
+    },
+    {
+      "metric": "chat boot JS gzip",
+      "mainActual": 1294705,
+      "candidateActual": 1295038,
+      "delta": 333,
+      "fixedCap": 1294652,
+      "pairedEnforcementLimit": 1294769,
+      "pairedViolation": true,
+      "excessPaired": 269
+    },
+    {
+      "metric": "new boot JS gzip",
+      "mainActual": 802982,
+      "candidateActual": 803315,
+      "delta": 333,
+      "fixedCap": 803250,
+      "pairedEnforcementLimit": 803250,
+      "pairedViolation": true,
+      "excessPaired": 65
+    }
+  ],
+  "identities": [
+    {
+      "label": "main-ui-performance",
+      "head": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+      "clean": true,
+      "build": {
+        "version": "2026.11.1",
+        "commit": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+        "builtAt": "2026-11-07T17:22:07.218Z",
+        "release": false,
+        "commitAt": "2026-11-07T15:55:23.000Z",
+        "branch": null,
+        "dirty": false,
+        "buildId": "2026.11.1-1de61f3e587c-2026-11-07T17-22-07.218Z"
+      },
+      "indexSHA256": "0388ce656fd529444a0dffa32db4e7ce3442278b0e125c3b5492ff7083f372fc",
+      "performanceOwnerSHA256": "c96514617b45b31fb5d5645561bf542aa3344fdc1dd223fd6e439678ecd4c7e8",
+      "compressionOwnerSHA256": "3ca123afdd71016876222dac90db94218ffe847e205076aaac959cdc2635057b",
+      "packageSHA256": "a34c54ac2c38bed63f5410d8c466518466b85ad44c99ef2bd88e03c159e584c2",
+      "lockSHA256": "98cddbcd3d3a24f6ad2ec3661b7f9ead2dee9a6443fb55ee1fb1568ec273326e"
+    },
+    {
+      "label": "favorites",
+      "head": "faa1062bccb9546751b74d181e3888359760ec70",
+      "clean": true,
+      "build": {
+        "version": "2026.11.1",
+        "commit": "faa1062bccb9546751b74d181e3888359760ec70",
+        "builtAt": "2026-11-07T17:10:34.696Z",
+        "release": false,
+        "commitAt": "2026-11-07T17:08:47.000Z",
+        "branch": "alix/maintain-favorites-20261107",
+        "dirty": false,
+        "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z"
+      },
+      "indexSHA256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60",
+      "performanceOwnerSHA256": "c96514617b45b31fb5d5645561bf542aa3344fdc1dd223fd6e439678ecd4c7e8",
+      "compressionOwnerSHA256": "3ca123afdd71016876222dac90db94218ffe847e205076aaac959cdc2635057b",
+      "packageSHA256": "a34c54ac2c38bed63f5410d8c466518466b85ad44c99ef2bd88e03c159e584c2",
+      "lockSHA256": "98cddbcd3d3a24f6ad2ec3661b7f9ead2dee9a6443fb55ee1fb1568ec273326e"
+    }
+  ],
+  "budgetMethod": "Each clean source built normally once with existing Node26 toolchain; each actual artifact measured once by identical canonical performance CLI. Pure exported evaluateControlUiPerformanceBudgets reused saved measurements with base; no recompression/build repeated.",
+  "limitation": "Normal build identity metadata differs (timestamps/branch/buildId), so document delta20 is not a pure-feature byte attribution. Both builds use same package/lock/performance/compression source. These are local matched normal artifacts, not hosted CI.",
+  "decision": "No threshold raise, proxy gzip prediction, optimization loop or all-gates-pass claim. Five paired performance violations and the human personal/shared product HOLD remain.",
+  "work_tokens": null,
+  "usd": null
+}

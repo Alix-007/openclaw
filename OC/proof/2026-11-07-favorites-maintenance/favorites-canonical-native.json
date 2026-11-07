@@ -1,0 +1,22 @@
+{
+  "command": [
+    "$NODE26",
+    "--import",
+    "./scripts/tsx.mjs",
+    "$TASK_ARTIFACTS/favorites-proof.mjs"
+  ],
+  "env": {
+    "OPENCLAW_FAVORITES_PROOF_CHECKOUT": "$CHECKOUT",
+    "OPENCLAW_FAVORITES_PROOF_OUTPUT": "$TASK_ARTIFACTS",
+    "OPENCLAW_FAVORITES_PROOF_STAGE": "exact-head",
+    "OPENCLAW_FAVORITES_PROOF_BASE": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+    "OPENCLAW_FAVORITES_PROOF_STABLE": "$STABLE_PACKAGE",
+    "OPENCLAW_FAVORITES_PROOF_SMOKE_HISTORY": "$PREVIOUS_ARTIFACTS/favorites-smoke-nIrvVV/receipt.json",
+    "OPENCLAW_VITEST_RUNTIME": "node"
+  },
+  "workdir": "$CHECKOUT",
+  "exitCode": 1,
+  "elapsedSeconds": 77.94572505401447,
+  "stdout": "favorites-canonical-native.log",
+  "stderr": "favorites-canonical-native.stderr.log"
+}

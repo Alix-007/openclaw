@@ -1,0 +1,12 @@
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: document gzip: 15.6 KiB exceeds 13.6 KiB
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: largest JS gzip: 551.3 KiB exceeds 551.3 KiB (564549 B vs 564484 B)
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: total CSS gzip: 318.0 KiB exceeds 317.5 KiB
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: total CSS raw: 1637.6 KiB exceeds 1636.5 KiB
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: chat boot JS gzip: 1264.7 KiB exceeds 1264.3 KiB
+Control UI asset budget
+  scripts/check-control-ui-performance.mts: new boot JS gzip: 784.5 KiB exceeds 784.4 KiB

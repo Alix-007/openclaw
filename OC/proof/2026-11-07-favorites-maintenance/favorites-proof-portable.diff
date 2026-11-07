@@ -1,0 +1,54 @@
+--- original/favorites-proof.mjs
++++ portable/favorites-proof.mjs
+@@ -11,6 +11,8 @@
+ const artifactParent = path.resolve(process.env.OPENCLAW_FAVORITES_PROOF_OUTPUT ?? process.argv[3] ?? path.dirname(fileURLToPath(import.meta.url)));
+ const stage = process.env.OPENCLAW_FAVORITES_PROOF_STAGE ?? process.argv[4] ?? "smoke";
+ const stablePackage = path.resolve(process.env.OPENCLAW_FAVORITES_PROOF_STABLE ?? process.argv[5] ?? path.join(path.dirname(fileURLToPath(import.meta.url)), "stable-2026.11.1/package"));
++const proofBase = process.env.OPENCLAW_FAVORITES_PROOF_BASE ?? "1de61f3e587c3093e57964f1423ba1ad51551b56";
++const sourceSmokeHistory = path.resolve(process.env.OPENCLAW_FAVORITES_PROOF_SMOKE_HISTORY ?? path.join(artifactParent, "favorites-smoke-nIrvVV/receipt.json"));
+ const load = (relative) => import(pathToFileURL(path.join(root, relative)).href);
+ const git = (...args) => execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim();
+ const sha256 = (value) => createHash("sha256").update(value).digest("hex");
+@@ -24,7 +26,10 @@
+   collectorSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))),
+   head: git("rev-parse", "HEAD"), headTree: git("rev-parse", "HEAD^{tree}"),
+   worktreeStatus: git("status", "--porcelain"),
+-  stagedDiffSha256: sha256(git("diff", "--cached", "5bd69e0a3365a3095df1d34576a6885de6fdf5d3", "--binary")),
++  comparisonBase: proofBase,
++  stagedDiffSha256: sha256(git("diff", "--cached", proofBase, "--binary")),
++  originalCollectorSha256: "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
++  canonicalVisualChange: "Current canonical 28px IconButton uses 15px outlined row glyph and shared pressed background; not visual parity with the historical 18px filled-heart captures.",
+   source: {}, served: [], observations: [], controls: {}, errors: [],
+   limitations: ["Synthetic Gateway transport with real browser UI and real canonical preference workers; not a live authenticated Gateway authorization test.", "Personal-versus-shared product scope remains pending maintainer acceptance.", "Chromium only; native WebKit unavailable because required ICU 74 libraries are absent."],
+ };
+@@ -48,7 +53,7 @@
+   const acquisition = path.join(path.dirname(stablePackage), "acquisition.json");
+   receipt.stableAcquisition = { path: acquisition, ...JSON.parse(fs.readFileSync(acquisition, "utf8")) };
+   assert.equal(receipt.stableAcquisition.version, "2026.11.1");
+-  const historyPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "favorites-smoke-nIrvVV/receipt.json");
++  const historyPath = sourceSmokeHistory;
+   const history = JSON.parse(fs.readFileSync(historyPath, "utf8"));
+   receipt.sourceSmokeHistory = { path: historyPath, sha256: sha256(fs.readFileSync(historyPath)), head: history.head, stage: history.stage, result: history.result, boundary: "Earlier source-server smoke; kept separate from this built run" };
+ }
+@@ -102,7 +107,20 @@
+   const png = await page.screenshot({ fullPage: false, animations: "disabled", caret: "hide", scale: "device" });
+   assert.deepEqual(await Promise.all(targets.map(target => target.boundingBox())), settled);
+   fs.writeFileSync(path.join(output, `${name}.png`), png);
+-  (receipt.captures ??= []).push({ file: `${name}.png`, sha256: sha256(png), bounds: settled, method: "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context" });
++  const canonicalStyle = await visibleHeart.evaluate(button => {
++    const icon = button.querySelector("svg");
++    const style = getComputedStyle(button);
++    const glyph = icon && getComputedStyle(icon);
++    return { owner: button.className, pressed: button.getAttribute("aria-pressed"), disabled: button.disabled, width: style.width, height: style.height, glyphWidth: glyph?.width, glyphHeight: glyph?.height, glyphFill: glyph?.fill, background: style.backgroundColor, color: style.color };
++  });
++  assert.ok(canonicalStyle.owner.includes("oc-icon-button--28"));
++  assert.ok(canonicalStyle.owner.includes("oc-icon-button--row-glyph"));
++  assert.equal(canonicalStyle.width, "28px");
++  assert.equal(canonicalStyle.height, "28px");
++  assert.equal(canonicalStyle.glyphWidth, "15px");
++  assert.equal(canonicalStyle.glyphHeight, "15px");
++  assert.equal(canonicalStyle.glyphFill, "none");
++  (receipt.captures ??= []).push({ file: `${name}.png`, sha256: sha256(png), bounds: settled, canonicalStyle, method: "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context" });
+ }
+ try {
+   const { createOpenClawTestState } = await load("src/test-utils/openclaw-test-state.ts");

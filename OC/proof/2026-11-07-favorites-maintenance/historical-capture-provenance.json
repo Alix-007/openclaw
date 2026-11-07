@@ -1,0 +1,53 @@
+{
+  "historyHead": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+  "historyCollector": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+  "historyReceiptSHA256": "7f38f4bc1f7e683a1ebda6f8916f44b00fb382ca2b7babeba0c0f3a2be983a84",
+  "historyResult": "PASS",
+  "captures": [
+    {
+      "file": "historical-854-unselected.png",
+      "sha256": "53752bf9cfe7ba794cc8bf2bce41b1938510180ee556bdfcb6fa2a60ce5485c2",
+      "head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+      "capturedAt": "2026-11-06T15:14:29.584Z",
+      "sourceCapture": "before.png",
+      "label": "Historical original 18px heart rendering; not current-head proof",
+      "bounds": [
+        {
+          "x": 684.375,
+          "y": 444,
+          "width": 340,
+          "height": 400
+        },
+        {
+          "x": 983.375,
+          "y": 578,
+          "width": 28,
+          "height": 28
+        }
+      ]
+    },
+    {
+      "file": "historical-854-selected.png",
+      "sha256": "027607a23c077697180902d47aef14053e2cc70ca1ab291ba715afcc7f5a2d9e",
+      "head": "8543532d9652f2793a4590bcfa0c1e5c2fefbb89",
+      "capturedAt": "2026-11-06T15:14:29.584Z",
+      "sourceCapture": "after.png",
+      "label": "Historical original 18px heart rendering; not current-head proof",
+      "bounds": [
+        {
+          "x": 684.375,
+          "y": 444,
+          "width": 340,
+          "height": 400
+        },
+        {
+          "x": 983.375,
+          "y": 536,
+          "width": 28,
+          "height": 28
+        }
+      ]
+    }
+  ],
+  "comparisonLimitation": "Historical original build and current merged-main build differ beyond canonical heart style; no pixel-parity or same-base budget claim."
+}

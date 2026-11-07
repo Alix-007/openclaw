@@ -1,0 +1,49 @@
+{
+  "scope": "Pure canonical evaluation of already-measured actual candidate and paired-main JSON; no repeated asset compression or product build",
+  "candidate": "faa1062bccb9546751b74d181e3888359760ec70",
+  "base": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+  "pairedViolations": [
+    {
+      "metric": "largest JS gzip",
+      "actual": 564549,
+      "limit": 564484,
+      "unit": "bytes"
+    },
+    {
+      "metric": "total CSS gzip",
+      "actual": 325634,
+      "limit": 325630,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 325566,
+        "cap": 325109
+      }
+    },
+    {
+      "metric": "total CSS raw",
+      "actual": 1676883,
+      "limit": 1676672,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 1676608,
+        "cap": 1675754
+      }
+    },
+    {
+      "metric": "chat boot JS gzip",
+      "actual": 1295038,
+      "limit": 1294769,
+      "unit": "bytes",
+      "overBudgetBase": {
+        "actual": 1294705,
+        "cap": 1294652
+      }
+    },
+    {
+      "metric": "new boot JS gzip",
+      "actual": 803315,
+      "limit": 803250,
+      "unit": "bytes"
+    }
+  ]
+}

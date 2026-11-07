@@ -1,0 +1,453 @@
+{
+  "at": "2026-11-07T17:24:34.889Z",
+  "stage": "exact-head",
+  "output": "$NATIVE_ARTIFACTS",
+  "checkout": "$CHECKOUT",
+  "collectorSha256": "5f218e1031ceb98d5d5acdec90e759966c3f478e29fa88cf8cc277dbc5ae1d21",
+  "head": "faa1062bccb9546751b74d181e3888359760ec70",
+  "headTree": "15977ef769df89575379e35e77344b64654d68a5",
+  "worktreeStatus": "",
+  "comparisonBase": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+  "stagedDiffSha256": "9052d96e7f97ccc62ec97180937cdbbe7b0646ee6e42335a64679d12863f98a2",
+  "originalCollectorSha256": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+  "firstAttempt": {
+    "receipt": "favorites-exact-head-djeSpK/receipt.json",
+    "result": "BLOCKED at unsupported fixed15px glyph assumption before actions",
+    "diagnosis": "favorites-canonical-first-native-diagnosis.json",
+    "qualification": "Pinned-main composer-surface.css .agent-chat__composer-footer svg intentionally supplies the inherited16px glyph size/stroke2 later in the cascade; assert actual context owner tokens without product edits"
+  },
+  "canonicalVisualChange": "Current canonical 28px IconButton uses an outlined row glyph and shared pressed background. Existing composer SVG cascade determines the actual context glyph size (16px in this build); not visual parity with historical 18px filled-heart captures.",
+  "source": {
+    "ui/src/pages/chat/components/chat-model-favorites.ts": {
+      "sha256": "9cfc559f4605e173099576ca98d7711e1b0b5cacf6657951f18171e035c637c4",
+      "indexBlob": "bc7cdd33619c62852da9c0a966b499e3f75a5ea9"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-panel.tsx": {
+      "sha256": "31ec84ee1631a6fcbc38c1377a3c6e2a0a09e88eba48910b37783452ea65573b",
+      "indexBlob": "58cc05773f64f3182a464d29cbd53caef51adbdf"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-options.tsx": {
+      "sha256": "a5bdebd341a3578b0a128f24bd5374406717a4db0d1646388915910a134f4773",
+      "indexBlob": "3b1513141e8985136cea44e84049a2030de84e0d"
+    },
+    "ui/src/pages/chat/components/chat-model-provider-heading.tsx": {
+      "sha256": "545ca85d195d34fa74515f0a08e58701f7c6aea3f156e4992229346bbdb61129",
+      "indexBlob": "3645f1bbaf4c1be1039d5373071789e53e86691f"
+    }
+  },
+  "served": [
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:42595/chat",
+      "status": 200,
+      "sha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:42595/assets/index-BD9KBJCJ.js",
+      "status": 200,
+      "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:42595/chat",
+      "status": 200,
+      "sha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:42595/assets/index-BD9KBJCJ.js",
+      "status": 200,
+      "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:42595/chat/main",
+      "status": 200,
+      "sha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:42595/chat/assets/index-BD9KBJCJ.js",
+      "status": 200,
+      "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+    }
+  ],
+  "observations": [
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {}
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "new-session.migration.v1": true
+        },
+        "expectedEntries": {
+          "new-session.migration.v1": null
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "ui.modelFavorites:main": [
+            "[\"openai/gpt-5-mini\",null]"
+          ]
+        },
+        "expectedEntries": {
+          "ui.modelFavorites:main": null
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "new-session.migration.v1": true,
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ],
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "new-session.migration.v1": true,
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ],
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "ui.modelFavorites:main": null
+        },
+        "expectedEntries": {
+          "ui.modelFavorites:main": [
+            "[\"openai/gpt-5-mini\",null]"
+          ]
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {}
+    }
+  ],
+  "controls": {
+    "catalogSize": 1000,
+    "initialMountedRows": 9,
+    "offscreenSearch": true,
+    "scrolledMountedRows": 24,
+    "keyboardFocusRetained": true,
+    "independentFavoriteAndProviderRows": [
+      "chat-model-picker-cl-4-option-favorite%3A%5B%22openai%2Fgpt-5-mini%22%2Cnull%5D",
+      "chat-model-picker-cl-4-option-%5B%22openai%2Fgpt-5-mini%22%2Cnull%5D"
+    ],
+    "secondBrowserReadback": true,
+    "reloadSpaceAndRemoval": true,
+    "noModelSelection": true
+  },
+  "errors": [],
+  "limitations": [
+    "Synthetic Gateway transport with real browser UI and real canonical preference workers; not a live authenticated Gateway authorization test.",
+    "Personal-versus-shared product scope remains pending maintainer acceptance.",
+    "Chromium only; native WebKit unavailable because required ICU 74 libraries are absent."
+  ],
+  "build": {
+    "version": "2026.11.1",
+    "commit": "faa1062bccb9546751b74d181e3888359760ec70",
+    "builtAt": "2026-11-07T17:10:34.696Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:08:47.000Z",
+    "branch": "alix/maintain-favorites-20261107",
+    "dirty": false,
+    "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z",
+    "indexSha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60",
+    "entryAssets": [
+      {
+        "path": "/assets/index-BD9KBJCJ.js",
+        "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+      }
+    ],
+    "mode": "Existing normal production UI build served unchanged; no rebuild or identity rewrite"
+  },
+  "stableAcquisition": {
+    "path": "$PREVIOUS_ARTIFACTS/stable-2026.11.1/acquisition.json",
+    "version": "2026.11.1",
+    "tarball": "https://registry.npmjs.org/openclaw/-/openclaw-2026.11.1.tgz",
+    "integrity": "sha512-2pSbt/taBKM/ofPXsiOEmVefgUdVHYRZOmcWNDyx67WUfeGFXqtfqLvtwYOiH4NcLolDSLMUgsno2oYhTVXptw==",
+    "sha256": "611282534d576e12f10b0ac5a1ac0d2825aac360637e92815a56eb71fb5a0301",
+    "bytes": 112927779
+  },
+  "sourceSmokeHistory": {
+    "path": "$PREVIOUS_ARTIFACTS/favorites-smoke-nIrvVV/receipt.json",
+    "sha256": "b272ea2dc7131aaeb585ac079dda9683b6c55bb75052bc5cf0c60558f8339fa2",
+    "head": "5ce2ade8ead2058626929fc931d4a041bec16045",
+    "stage": "smoke",
+    "result": "PASS",
+    "boundary": "Earlier source-server smoke; kept separate from this built run"
+  },
+  "upgrade": {
+    "version": "2026.11.1",
+    "profileModule": "dist/user-profiles-8MUD1kjG.mjs",
+    "preferenceModule": "dist/user-preferences-CGgtRmWh.mjs",
+    "profileId": "bb21f716-f3b1-4ea7-abcf-ef68f06af699",
+    "otherProfileId": "0375d14d-73c6-49e0-834d-e73cf0bd5085",
+    "entries": {
+      "ui.theme": "claw",
+      "ui.themeMode": "light",
+      "ui.railShortcuts": [
+        "route:usage"
+      ],
+      "proof.existingPreference": {
+        "enabled": true,
+        "marker": "created-by-published-stable-2026.11.1"
+      }
+    },
+    "otherEntries": {
+      "ui.theme": "claw",
+      "proof.otherProfile": "untouched"
+    },
+    "writerExited": true,
+    "package": "$STABLE_PACKAGE",
+    "seedSha256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+    "startupOwner": "prepareStartupClientCredentials: production backed-up Doctor maintenance, no manual schema writes",
+    "currentOwnerReadback": "PASS: both released profiles and every original preference remain exact",
+    "afterRemoval": {
+      "new-session.migration.v1": true,
+      "proof.existingPreference": {
+        "enabled": true,
+        "marker": "created-by-published-stable-2026.11.1"
+      },
+      "ui.railShortcuts": [
+        "route:usage"
+      ],
+      "ui.theme": "claw",
+      "ui.themeMode": "light"
+    },
+    "documentedAddedMetadata": {
+      "new-session.migration.v1": true
+    },
+    "otherProfileAfter": {
+      "proof.otherProfile": "untouched",
+      "ui.theme": "claw"
+    },
+    "result": "PASS: both released profiles preserved, only the exact current-owner new-session migration marker added"
+  },
+  "storage": {
+    "stateDir": "$ISOLATED_STATEDIR",
+    "home": "$ISOLATED_HOME",
+    "syntheticProfiles": [
+      "bb21f716-f3b1-4ea7-abcf-ef68f06af699",
+      "0375d14d-73c6-49e0-834d-e73cf0bd5085"
+    ]
+  },
+  "canonicalOwner": {
+    "file": "src/state/user-preferences.ts",
+    "sha256": "805b79f254dde3fc1ab10efa5bcd3e6f1713d9d6cc76e1c58498a38a5be19cbb",
+    "read": "getCanonicalUserPreferences",
+    "write": "setCanonicalUserPreferences",
+    "boundary": "Actual candidate worker-backed canonical preference owner; adapter substitutes Gateway transport only"
+  },
+  "serving": {
+    "baseUrl": "http://127.0.0.1:42595/",
+    "mode": "Normal built ControlUiE2e preview server; existing dist/control-ui, real browser, synthetic Gateway transport",
+    "browserBuildInfo": {
+      "version": "2026.11.1",
+      "commit": "faa1062bccb9546751b74d181e3888359760ec70",
+      "builtAt": "2026-11-07T17:10:34.696Z",
+      "release": false,
+      "commitAt": "2026-11-07T17:08:47.000Z",
+      "branch": "alix/maintain-favorites-20261107",
+      "dirty": false,
+      "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z"
+    }
+  },
+  "browser": {
+    "engine": "Chromium",
+    "version": "152.0.7977.64"
+  },
+  "captures": [
+    {
+      "file": "before.png",
+      "sha256": "7e21b68aba7fdafbd441ac3bd0f48b3d96d4a7338f1ad576fe949782aa0c84e3",
+      "bounds": [
+        {
+          "x": 684.375,
+          "y": 444,
+          "width": 340,
+          "height": 400
+        },
+        {
+          "x": 983.375,
+          "y": 578,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "false",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(94, 94, 94)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "after.png",
+      "sha256": "8362739005f7187cbf8a8a7ce904a97ee6ba895a8521b8100d25536ccc46d7fe",
+      "bounds": [
+        {
+          "x": 684.375,
+          "y": 444,
+          "width": 340,
+          "height": 400
+        },
+        {
+          "x": 983.375,
+          "y": 536,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    }
+  ],
+  "favoriteReadback": {
+    "new-session.migration.v1": true,
+    "proof.existingPreference": {
+      "enabled": true,
+      "marker": "created-by-published-stable-2026.11.1"
+    },
+    "ui.modelFavorites:main": [
+      "[\"openai/gpt-5-mini\",null]"
+    ],
+    "ui.railShortcuts": [
+      "route:usage"
+    ],
+    "ui.theme": "claw",
+    "ui.themeMode": "light"
+  },
+  "result": "PASS",
+  "acceptance": "Released 2026.11.1 two-profile preferences survive real candidate startup; actual inline hearts persist/read/remove through canonical storage across two browser contexts and reload with zero model-selection writes.",
+  "cleanup": "Closed both isolated browsers/source server and canonical workers; removed private state. No production service, account configuration, model call, session message or external channel touched.",
+  "elapsedMs": 80291
+}

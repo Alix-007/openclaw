@@ -1,0 +1,469 @@
+{
+  "at": "2026-11-07T17:17:58.428Z",
+  "stage": "exact-head",
+  "output": "$FIRST_ATTEMPT_ARTIFACTS",
+  "checkout": "$CHECKOUT",
+  "collectorSha256": "ca9463b047e7396e421fd15808b2123e4760f174c659721b2246b4d369c8289d",
+  "head": "faa1062bccb9546751b74d181e3888359760ec70",
+  "headTree": "15977ef769df89575379e35e77344b64654d68a5",
+  "worktreeStatus": "",
+  "comparisonBase": "1de61f3e587c3093e57964f1423ba1ad51551b56",
+  "stagedDiffSha256": "9052d96e7f97ccc62ec97180937cdbbe7b0646ee6e42335a64679d12863f98a2",
+  "originalCollectorSha256": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+  "canonicalVisualChange": "Current canonical 28px IconButton uses 15px outlined row glyph and shared pressed background; not visual parity with the historical 18px filled-heart captures.",
+  "source": {
+    "ui/src/pages/chat/components/chat-model-favorites.ts": {
+      "sha256": "9cfc559f4605e173099576ca98d7711e1b0b5cacf6657951f18171e035c637c4",
+      "indexBlob": "bc7cdd33619c62852da9c0a966b499e3f75a5ea9"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-panel.tsx": {
+      "sha256": "31ec84ee1631a6fcbc38c1377a3c6e2a0a09e88eba48910b37783452ea65573b",
+      "indexBlob": "58cc05773f64f3182a464d29cbd53caef51adbdf"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-options.tsx": {
+      "sha256": "a5bdebd341a3578b0a128f24bd5374406717a4db0d1646388915910a134f4773",
+      "indexBlob": "3b1513141e8985136cea44e84049a2030de84e0d"
+    },
+    "ui/src/pages/chat/components/chat-model-provider-heading.tsx": {
+      "sha256": "545ca85d195d34fa74515f0a08e58701f7c6aea3f156e4992229346bbdb61129",
+      "indexBlob": "3645f1bbaf4c1be1039d5373071789e53e86691f"
+    }
+  },
+  "served": [
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:45233/chat",
+      "status": 200,
+      "sha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:45233/assets/index-BD9KBJCJ.js",
+      "status": 200,
+      "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+    }
+  ],
+  "observations": [
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {}
+    }
+  ],
+  "controls": {},
+  "errors": [],
+  "limitations": [
+    "Synthetic Gateway transport with real browser UI and real canonical preference workers; not a live authenticated Gateway authorization test.",
+    "Personal-versus-shared product scope remains pending maintainer acceptance.",
+    "Chromium only; native WebKit unavailable because required ICU 74 libraries are absent."
+  ],
+  "build": {
+    "version": "2026.11.1",
+    "commit": "faa1062bccb9546751b74d181e3888359760ec70",
+    "builtAt": "2026-11-07T17:10:34.696Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:08:47.000Z",
+    "branch": "alix/maintain-favorites-20261107",
+    "dirty": false,
+    "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z",
+    "indexSha256": "45d1c719ee95c449027eed264fdad813fba00cecd0e04ce887bccabec1618f60",
+    "entryAssets": [
+      {
+        "path": "/assets/index-BD9KBJCJ.js",
+        "sha256": "b2550e73a0778ce82def8e5b13a61097217cb474cf6ffcccf78411fd83bb2696"
+      }
+    ],
+    "mode": "Existing normal production UI build served unchanged; no rebuild or identity rewrite"
+  },
+  "stableAcquisition": {
+    "path": "$PREVIOUS_ARTIFACTS/stable-2026.11.1/acquisition.json",
+    "version": "2026.11.1",
+    "tarball": "https://registry.npmjs.org/openclaw/-/openclaw-2026.11.1.tgz",
+    "integrity": "sha512-2pSbt/taBKM/ofPXsiOEmVefgUdVHYRZOmcWNDyx67WUfeGFXqtfqLvtwYOiH4NcLolDSLMUgsno2oYhTVXptw==",
+    "sha256": "611282534d576e12f10b0ac5a1ac0d2825aac360637e92815a56eb71fb5a0301",
+    "bytes": 112927779
+  },
+  "sourceSmokeHistory": {
+    "path": "$PREVIOUS_ARTIFACTS/favorites-smoke-nIrvVV/receipt.json",
+    "sha256": "b272ea2dc7131aaeb585ac079dda9683b6c55bb75052bc5cf0c60558f8339fa2",
+    "head": "5ce2ade8ead2058626929fc931d4a041bec16045",
+    "stage": "smoke",
+    "result": "PASS",
+    "boundary": "Earlier source-server smoke; kept separate from this built run"
+  },
+  "upgrade": {
+    "version": "2026.11.1",
+    "profileModule": "dist/user-profiles-8MUD1kjG.mjs",
+    "preferenceModule": "dist/user-preferences-CGgtRmWh.mjs",
+    "profileId": "06165791-86b7-4b1e-995a-0c8f88e6b91e",
+    "otherProfileId": "50fece32-362d-4b5f-9b31-9bf32c5e6d3b",
+    "entries": {
+      "ui.theme": "claw",
+      "ui.themeMode": "light",
+      "ui.railShortcuts": [
+        "route:usage"
+      ],
+      "proof.existingPreference": {
+        "enabled": true,
+        "marker": "created-by-published-stable-2026.11.1"
+      }
+    },
+    "otherEntries": {
+      "ui.theme": "claw",
+      "proof.otherProfile": "untouched"
+    },
+    "writerExited": true,
+    "package": "$STABLE_PACKAGE",
+    "seedSha256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+    "startupOwner": "prepareStartupClientCredentials: production backed-up Doctor maintenance, no manual schema writes",
+    "currentOwnerReadback": "PASS: both released profiles and every original preference remain exact"
+  },
+  "storage": {
+    "stateDir": "$FIRST_ISOLATED_STATEDIR",
+    "home": "$FIRST_ISOLATED_HOME",
+    "syntheticProfiles": [
+      "06165791-86b7-4b1e-995a-0c8f88e6b91e",
+      "50fece32-362d-4b5f-9b31-9bf32c5e6d3b"
+    ]
+  },
+  "canonicalOwner": {
+    "file": "src/state/user-preferences.ts",
+    "sha256": "805b79f254dde3fc1ab10efa5bcd3e6f1713d9d6cc76e1c58498a38a5be19cbb",
+    "read": "getCanonicalUserPreferences",
+    "write": "setCanonicalUserPreferences",
+    "boundary": "Actual candidate worker-backed canonical preference owner; adapter substitutes Gateway transport only"
+  },
+  "serving": {
+    "baseUrl": "http://127.0.0.1:45233/",
+    "mode": "Normal built ControlUiE2e preview server; existing dist/control-ui, real browser, synthetic Gateway transport",
+    "browserBuildInfo": {
+      "version": "2026.11.1",
+      "commit": "faa1062bccb9546751b74d181e3888359760ec70",
+      "builtAt": "2026-11-07T17:10:34.696Z",
+      "release": false,
+      "commitAt": "2026-11-07T17:08:47.000Z",
+      "branch": "alix/maintain-favorites-20261107",
+      "dirty": false,
+      "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z"
+    }
+  },
+  "browser": {
+    "engine": "Chromium",
+    "version": "152.0.7977.64"
+  },
+  "result": "BLOCKED",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'16px' !== '15px'\n\n    at screenshot ($TASK_ARTIFACTS/favorites-proof.mjs:120:10)\n    at async <anonymous> ($TASK_ARTIFACTS/favorites-proof.mjs:214:3)",
+  "diagnostic": {
+    "text": "Skip to main content\n0 inbox items\nDO\nDemo Operator\nSessions\nMain\nSkip to message composer\nNo messages yet\nMessage OpenClaw\nDefault\nGPT 5.5\nOpenAI\n999\nGPT 5.5\nDefault\nGPT 5 mini\nWindow Model 0000\nWindow Model 0001\nWindow Model 0002\nWindow Model 0003\nWindow Model 0004\nWindow Model 0005\nWindow Model 0006\nAll models (990)\nAnthropic\n1\nSpeed\nConnected",
+    "requests": [
+      {
+        "id": "1:d7525d7b-cdb7-4f94-b849-aeedd3466c0d",
+        "method": "connect",
+        "params": {
+          "minProtocol": 4,
+          "maxProtocol": 4,
+          "client": {
+            "id": "openclaw-control-ui",
+            "version": "2026.11.1",
+            "buildId": "2026.11.1-faa1062bccb9-2026-11-07T17-10-34.696Z",
+            "platform": "Linux x86_64",
+            "mode": "webchat",
+            "instanceId": "a47cae36-fa3e-4162-966f-55b65dc53a3d",
+            "timeZone": "Asia/Taipei"
+          },
+          "role": "operator",
+          "scopes": [
+            "operator.admin",
+            "operator.read",
+            "operator.write",
+            "operator.approvals",
+            "operator.questions",
+            "operator.pairing"
+          ],
+          "device": {
+            "id": "4a8431ef39189c06513c915bf9aa0711eed37d165346e497d3703e2941ba5774",
+            "publicKey": "-dDjTpAG010Gp222MdAN6tI0qL9APlcoF8CJMNVuPNM",
+            "signature": "oLEI54-3HPX0xUJ2qgPbTGJcJYbFFG49Qn4U1ElFX7gcdS-zYlTd9ngUglSbehYzV6XfJvNcWwlMPG1zzagPCw",
+            "signedAt": 1794071944540,
+            "nonce": "control-ui-e2e-nonce"
+          },
+          "caps": [
+            "agent-kind",
+            "approvals",
+            "task-suggestions",
+            "terminal-offset-seq",
+            "terminal-session-metadata",
+            "terminal-upload-path-style",
+            "tool-events",
+            "chat-only-assistant-text",
+            "chat-queue-status",
+            "hello-health-on-demand",
+            "health-summary",
+            "hello-presence-self",
+            "session-scoped-events",
+            "presence-deltas",
+            "session-row-deltas",
+            "session-event-field-refs",
+            "roster-message-bodies-optional",
+            "inline-widgets",
+            "model-selection-policy",
+            "model-wait-status",
+            "ui-agent-github-settings",
+            "ui-commands",
+            "ultrafast",
+            "usage-refreshing"
+          ],
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "locale": "en"
+        }
+      },
+      {
+        "id": "2:ad3cdee1-3056-45cb-855c-d23bd7467d53",
+        "method": "models.authStatus",
+        "params": {
+          "agentId": "main"
+        }
+      },
+      {
+        "id": "3:5eaf68c3-3927-4e81-a684-04b92669a333",
+        "method": "cron.list",
+        "params": {
+          "agentId": "main",
+          "includeDisabled": true,
+          "includeDeliveryPreviews": false,
+          "limit": 200,
+          "offset": 0,
+          "enabled": "all",
+          "sortBy": "nextRunAtMs",
+          "sortDir": "asc",
+          "compact": true
+        }
+      },
+      {
+        "id": "4:28015177-8ba0-412a-bd5a-96d18d4f4b7a",
+        "method": "cron.status",
+        "params": {}
+      },
+      {
+        "id": "5:a55ee91b-f4e1-4351-9b18-cb227538ba2f",
+        "method": "sessions.subscribe",
+        "params": {}
+      },
+      {
+        "id": "6:55b2c036-68b7-475f-9b5c-a31c999bac5c",
+        "method": "config.get",
+        "params": {}
+      },
+      {
+        "id": "7:ab5435b1-77ea-4714-86f1-5561e4a3462b",
+        "method": "presence.activity",
+        "params": {}
+      },
+      {
+        "id": "8:7bc66c6b-b2e2-4c5a-90be-d1e8f3dbb5f1",
+        "method": "sessions.list",
+        "params": {
+          "rowMode": "sidebar",
+          "source": "sidebar",
+          "includeGlobal": true,
+          "includeUnknown": true,
+          "configuredAgentsOnly": true,
+          "excludeDock": true,
+          "limit": 200,
+          "includeDerivedTitles": true,
+          "includeLastMessage": true,
+          "ownerFirst": true,
+          "agentId": "main"
+        }
+      },
+      {
+        "id": "9:539f6e99-f272-4daa-8453-a55248466f94",
+        "method": "agents.list",
+        "params": {
+          "includeSessionPlacement": true
+        }
+      },
+      {
+        "id": "10:5dba12cd-7784-422e-84a5-f32b60050e8f",
+        "method": "agent.identity.get",
+        "params": {
+          "agentId": "main"
+        }
+      },
+      {
+        "id": "11:47c691bd-4491-4f19-a150-e830822304d7",
+        "method": "sessions.describe",
+        "params": {
+          "key": "agent:main:main"
+        }
+      },
+      {
+        "id": "12:892f22c6-46f6-48e6-bc9a-295ef060fb65",
+        "method": "update.status",
+        "params": {}
+      },
+      {
+        "id": "13:9eb41301-385c-4ed0-8f18-1847b6c220a5",
+        "method": "exec.approval.list",
+        "params": {}
+      },
+      {
+        "id": "14:ae720ac0-c10e-4988-8716-1d401167e012",
+        "method": "plugin.approval.list",
+        "params": {}
+      },
+      {
+        "id": "15:4118dab1-ca79-4994-8886-9daa73f518a1",
+        "method": "openclaw.approval.list",
+        "params": {}
+      },
+      {
+        "id": "16:4a5ee5da-f3aa-4fdb-97f6-11087469642d",
+        "method": "sessions.groups.list",
+        "params": {}
+      },
+      {
+        "id": "17:b37fa0a7-b300-4ad9-9c90-8c14ea98ca65",
+        "method": "sessions.groups.defaults",
+        "params": {}
+      },
+      {
+        "id": "18:076626ce-f737-4ffc-9f4f-d80dd1198a8b",
+        "method": "sessions.messages.subscribe",
+        "params": {
+          "subscriptionId": "e84dd2fa-64ef-4f77-9854-1302a68ffff3",
+          "key": "agent:main:main",
+          "includeApprovals": true,
+          "initialHistory": {
+            "toolResultMaxChars": 2000,
+            "knownState": {},
+            "limit": 80,
+            "maxBytes": 262144
+          }
+        }
+      },
+      {
+        "id": "19:465cf8c1-0ea6-486c-9ffb-b90bdc2d41e7",
+        "method": "question.list",
+        "params": {}
+      },
+      {
+        "id": "20:bd53b063-3f64-433c-9fc9-39bcaeb043a6",
+        "method": "models.list",
+        "params": {
+          "view": "configured",
+          "sessionKey": "agent:main:main",
+          "agentId": "main"
+        }
+      },
+      {
+        "id": "21:98042da7-5c03-4f4d-a574-0a75c089fe72",
+        "method": "session.reactions.list",
+        "params": {
+          "sessionKey": "agent:main:main"
+        }
+      },
+      {
+        "id": "22:b7bef1bb-c376-4157-b8b0-75ebe08748f0",
+        "method": "talk.catalog",
+        "params": {
+          "sessionKey": "agent:main:main"
+        }
+      },
+      {
+        "id": "23:621f9e4c-46f7-4608-ae03-58cb648eb8f0",
+        "method": "talk.config",
+        "params": {}
+      },
+      {
+        "id": "24:4b13d38c-6ead-4fcd-a95d-d97bbb5ff998",
+        "method": "progressCard.get",
+        "params": {
+          "sessionKey": "agent:main:main"
+        }
+      },
+      {
+        "id": "25:60aea6f4-1481-4227-a4c7-d675ee78395b",
+        "method": "sessions.list",
+        "params": {
+          "rowMode": "compact",
+          "source": "chat-pane",
+          "includeGlobal": false,
+          "includeUnknown": false,
+          "configuredAgentsOnly": true,
+          "excludeDock": true,
+          "limit": 10000,
+          "spawnedBy": "agent:main:main",
+          "ifRowsRevision": ""
+        }
+      },
+      {
+        "id": "26:4a77610b-9535-4c1a-a080-355c1131401c",
+        "method": "system.info",
+        "params": {}
+      },
+      {
+        "id": "27:8a0c675d-54b8-4282-9d6a-f51a41aae91c",
+        "method": "sessions.branches.list",
+        "params": {
+          "sessionKey": "agent:main:main"
+        }
+      },
+      {
+        "id": "28:b2c8f184-bf1a-408e-8ab4-f972a936b56a",
+        "method": "sessions.companion.state",
+        "params": {
+          "sessionKey": "agent:main:main",
+          "agentId": "main"
+        }
+      },
+      {
+        "id": "29:f2d8d250-af38-4860-92e1-b0f133053c1e",
+        "method": "users.prefs.get",
+        "params": {}
+      },
+      {
+        "id": "30:75b9c70e-9e76-4850-ae6e-f2b4f7fcef29",
+        "method": "users.prefs.set",
+        "params": {
+          "entries": {
+            "new-session.migration.v1": true
+          },
+          "expectedEntries": {
+            "new-session.migration.v1": null
+          }
+        }
+      },
+      {
+        "id": "31:d6787e31-6559-4ff8-82d2-a83c6f288f42",
+        "method": "users.prefs.get",
+        "params": {
+          "keys": [
+            "ui.modelFavorites:main"
+          ]
+        }
+      }
+    ]
+  },
+  "cleanup": "Closed both isolated browsers/source server and canonical workers; removed private state. No production service, account configuration, model call, session message or external channel touched.",
+  "elapsedMs": 75842
+}

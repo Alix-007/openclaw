@@ -1,0 +1,31 @@
+--- first-attempt/favorites-proof.mjs
++++ qualified/favorites-proof.mjs
+@@ -29,7 +29,8 @@
+   comparisonBase: proofBase,
+   stagedDiffSha256: sha256(git("diff", "--cached", proofBase, "--binary")),
+   originalCollectorSha256: "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+-  canonicalVisualChange: "Current canonical 28px IconButton uses 15px outlined row glyph and shared pressed background; not visual parity with the historical 18px filled-heart captures.",
++  firstAttempt: { receipt: "favorites-exact-head-djeSpK/receipt.json", result: "BLOCKED at unsupported fixed15px glyph assumption before actions", diagnosis: "favorites-canonical-first-native-diagnosis.json", qualification: "Pinned-main composer-surface.css .agent-chat__composer-footer svg intentionally supplies the inherited16px glyph size/stroke2 later in the cascade; assert actual context owner tokens without product edits" },
++  canonicalVisualChange: "Current canonical 28px IconButton uses an outlined row glyph and shared pressed background. Existing composer SVG cascade determines the actual context glyph size (16px in this build); not visual parity with historical 18px filled-heart captures.",
+   source: {}, served: [], observations: [], controls: {}, errors: [],
+   limitations: ["Synthetic Gateway transport with real browser UI and real canonical preference workers; not a live authenticated Gateway authorization test.", "Personal-versus-shared product scope remains pending maintainer acceptance.", "Chromium only; native WebKit unavailable because required ICU 74 libraries are absent."],
+ };
+@@ -111,14 +112,15 @@
+     const icon = button.querySelector("svg");
+     const style = getComputedStyle(button);
+     const glyph = icon && getComputedStyle(icon);
+-    return { owner: button.className, pressed: button.getAttribute("aria-pressed"), disabled: button.disabled, width: style.width, height: style.height, glyphWidth: glyph?.width, glyphHeight: glyph?.height, glyphFill: glyph?.fill, background: style.backgroundColor, color: style.color };
++    return { owner: button.className, pressed: button.getAttribute("aria-pressed"), disabled: button.disabled, width: style.width, height: style.height, glyphWidth: glyph?.width, glyphHeight: glyph?.height, glyphFill: glyph?.fill, glyphStrokeWidth: glyph?.strokeWidth, composerGlyphSize: style.getPropertyValue("--chat-composer-icon-size").trim(), composerGlyphStroke: style.getPropertyValue("--chat-composer-icon-stroke").trim(), rowGlyphSize: style.getPropertyValue("--list-row-icon-size").trim(), background: style.backgroundColor, color: style.color };
+   });
+   assert.ok(canonicalStyle.owner.includes("oc-icon-button--28"));
+   assert.ok(canonicalStyle.owner.includes("oc-icon-button--row-glyph"));
+   assert.equal(canonicalStyle.width, "28px");
+   assert.equal(canonicalStyle.height, "28px");
+-  assert.equal(canonicalStyle.glyphWidth, "15px");
+-  assert.equal(canonicalStyle.glyphHeight, "15px");
++  assert.equal(canonicalStyle.glyphWidth, canonicalStyle.composerGlyphSize);
++  assert.equal(canonicalStyle.glyphHeight, canonicalStyle.composerGlyphSize);
++  assert.equal(Number.parseFloat(canonicalStyle.glyphStrokeWidth), Number.parseFloat(canonicalStyle.composerGlyphStroke));
+   assert.equal(canonicalStyle.glyphFill, "none");
+   (receipt.captures ??= []).push({ file: `${name}.png`, sha256: sha256(png), bounds: settled, canonicalStyle, method: "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context" });
+ }

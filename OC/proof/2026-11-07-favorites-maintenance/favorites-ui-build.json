@@ -1,0 +1,11 @@
+{
+  "head": "faa1062bccb9546751b74d181e3888359760ec70",
+  "command": [
+    "$NODE26",
+    "scripts/ui.js",
+    "build"
+  ],
+  "exitCode": 0,
+  "seconds": 120.328,
+  "sourceCleanAtStart": true
+}
