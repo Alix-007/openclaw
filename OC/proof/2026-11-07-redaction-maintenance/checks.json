@@ -1,0 +1,133 @@
+{
+  "browser-red": {
+    "name": "browser-red",
+    "command": [
+      "node",
+      "scripts/run-vitest.mjs",
+      "run",
+      "--config",
+      "ui/vitest.config.ts",
+      "--project",
+      "browser",
+      "ui/src/pages/chat/components/chat-image-redaction.browser.test.tsx",
+      "-t",
+      "preserves native image preview",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 1,
+    "seconds": 143.035
+  },
+  "browser-final": {
+    "name": "browser-final",
+    "command": [
+      "node",
+      "scripts/run-vitest.mjs",
+      "run",
+      "--config",
+      "ui/vitest.config.ts",
+      "--project",
+      "browser",
+      "ui/src/pages/chat/components/chat-image-redaction.browser.test.tsx",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 20.465
+  },
+  "pure-tests": {
+    "name": "pure-tests",
+    "command": [
+      "node",
+      "scripts/run-vitest.mjs",
+      "run",
+      "--config",
+      "ui/vitest.config.ts",
+      "ui/src/pages/chat/components/chat-image-redaction.test.ts",
+      "--maxWorkers=1"
+    ],
+    "exitCode": 0,
+    "seconds": 13.803
+  },
+  "types-final": {
+    "name": "types-final",
+    "command": [
+      "node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "test/tsconfig/tsconfig.core.test.ui-chat.json",
+      "--incremental"
+    ],
+    "exitCode": 0,
+    "seconds": 33.71
+  },
+  "lint": {
+    "name": "lint",
+    "command": [
+      "node",
+      "scripts/run-oxlint.mjs",
+      "ui/src/pages/chat/components/chat-image-redaction-button.tsx",
+      "ui/src/pages/chat/components/chat-image-redaction.browser.test.tsx"
+    ],
+    "exitCode": 0,
+    "seconds": 320.737
+  },
+  "format-final": {
+    "name": "format-final",
+    "command": [
+      "node",
+      "scripts/run-format.mts",
+      "--check",
+      "ui/src/pages/chat/components/chat-image-redaction-button.tsx",
+      "ui/src/pages/chat/components/chat-image-redaction.browser.test.tsx"
+    ],
+    "exitCode": 0,
+    "seconds": 0.249
+  },
+  "controllers": {
+    "name": "controllers",
+    "command": [
+      "node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-control-ui-controllers.mts",
+      "--base",
+      "81a20f5dfafe084974f0ba1c3c8ea2d9fa308baa"
+    ],
+    "exitCode": 0,
+    "seconds": 19.167
+  },
+  "normal-ui-build": {
+    "head": "7146ffe98e8ab3195028fe651c10ba53d0a0f1eb",
+    "command": [
+      "node",
+      "scripts/ui.js",
+      "build"
+    ],
+    "exitCode": 0,
+    "seconds": 100.681,
+    "sourceCleanAtStart": true
+  },
+  "native-built-proof": {
+    "command": [
+      "node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "PROOF_ROOT/redaction-built-proof.mjs",
+      "CHECKOUT",
+      "OUTPUT"
+    ],
+    "exitCode": 0,
+    "seconds": 13.564410160761327,
+    "scope": "Fourth/final bounded native attempt after root corrected external RTL relative-coordinate expectation; no production/source/build edit."
+  },
+  "test_lines": {
+    "own_new_lf": 312,
+    "browser_lf": 202,
+    "custody_lf": 110,
+    "grant": 312,
+    "shared_scalar_changed": false,
+    "effective_hosted_merge": "9cc82176f10e464c367de13b92ee8f218d3e18b4",
+    "checker_blob": "46f2bfeb97dc41759cfacd90bbc2ba0ad33ad9da",
+    "local_old_head_checker_allocation_aware": false,
+    "fresh_hosted_ci": "pending publication; no PASS asserted"
+  }
+}

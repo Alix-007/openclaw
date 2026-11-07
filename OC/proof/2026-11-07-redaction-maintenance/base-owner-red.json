@@ -1,0 +1,22 @@
+{
+  "base": "81a20f5dfafe084974f0ba1c3c8ea2d9fa308baa",
+  "mode": "Mounted production AttachmentPreview in native Chromium with shipped styles; source runtime, not a built full-application BASE run",
+  "named_cases": [
+    "preserves native image preview and keyboard redaction in ltr",
+    "preserves native image preview and keyboard redaction in rtl"
+  ],
+  "actual_error": "locator.click: Timeout; Redact image button intercepts pointer events on otherwise visible/enabled/stable Open image private.png preview",
+  "preview_success_before": 0,
+  "legal_image_decode": "32x32 orange canvas admitted/decoded before native click",
+  "source_production_unchanged_at_red": true,
+  "screenshots": [
+    "base81-owner-ltr.png",
+    "base81-owner-rtl.png"
+  ],
+  "source_test_entry": "node scripts/run-vitest.mjs run --config ui/vitest.config.ts --project browser ui/src/pages/chat/components/chat-image-redaction.browser.test.tsx -t \"preserves native image preview\" --maxWorkers=1",
+  "seconds": 143.035,
+  "limitations": [
+    "Owner-mounted source baseline images are not matched-composition full-application before/after screenshots.",
+    "The new complete built acceptance collector was run only on current head; earlier maintainer complete Feature BASE/HEAD proof is preserved separately."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "product_head": "7146ffe98e8ab3195028fe651c10ba53d0a0f1eb",
+  "same_normal_build_reused": true,
+  "attempts": [
+    {
+      "exitCode": 1,
+      "seconds": 20.662,
+      "cause": "External nested has-locator repeated composer scope inside thumbnail, so geometry target was not found."
+    },
+    {
+      "exitCode": 1,
+      "seconds": 418.87,
+      "cause": "External screenshot readiness awaited every document image, including unloaded hidden lazy images. Owned Chromium terminated, collector finally closed resources."
+    },
+    {
+      "exitCode": 1,
+      "seconds": 7.432,
+      "cause": "External RTL expectation compared absolute viewport x instead of relative thumbnail coordinate; recorded offsets were already correct30->0."
+    },
+    {
+      "executor": "root",
+      "exitCode": 0,
+      "seconds": 13.564410160761327,
+      "cause": "Corrected external relative-coordinate assertion, retained all product assertions; complete Main and Side chat flows passed."
+    }
+  ],
+  "failed_native_attempt_wall_seconds": 446.964,
+  "all_native_attempt_wall_seconds": 460.5284101607613,
+  "product_edits_between_attempts": 0,
+  "builds_between_attempts": 0,
+  "raw_failed_receipts_retained_privately": true,
+  "work_tokens": null,
+  "usd": null
+}

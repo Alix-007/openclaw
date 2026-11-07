@@ -1,0 +1,277 @@
+{
+  "at": "2026-11-07T17:23:55.700Z",
+  "head": "7146ffe98e8ab3195028fe651c10ba53d0a0f1eb",
+  "tree": "2276ef492dac95c93ac150dd45b21d642e84e3ba",
+  "status": "",
+  "collectorSha256": "e4638a2cb1b8e3a99a2cf0842b1081f426e37244554257f6c717811bdd968685",
+  "source": {
+    "ui/src/pages/chat/components/chat-image-redaction-button.tsx": {
+      "sha256": "02e2167849e41fbe44b0ce9d2dec36931f2bf5d51076ed5709f4203a4c879eb4",
+      "blob": "2e316778e1379559b7d74b925e93cb8389ca028d"
+    },
+    "ui/src/pages/chat/components/chat-image-redaction-dialog.tsx": {
+      "sha256": "40a240c5e1db19b50c96c30865e006c7fdabc693a0c1d95a7fa71b154b2b3b8e",
+      "blob": "5c2f6b4a704ab30b94f9015651403c0ce6bce328"
+    },
+    "ui/src/pages/chat/components/chat-image-redaction.ts": {
+      "sha256": "3bd371ee2a9e895598df209e7c15a9668d008ae079480d2ee09d739b24c80e7a",
+      "blob": "aefd1f47d32dab37e930c738630c60c7a5f734b9"
+    },
+    "ui/src/pages/chat/components/chat-attachment-preview-strip.tsx": {
+      "sha256": "626457334d01cf41838a1d2ff257e2c3120a955e8bd61eac1023536c47c801c8",
+      "blob": "1170af82602f54fd871d35d9b615283000676bc7"
+    }
+  },
+  "served": [
+    {
+      "path": "/assets/index-EKemckJx.js",
+      "status": 200,
+      "sha256": "d406c919ec3551e78c202b4aa3e3451f725166005e5e3c6f7059ae4c7863fc48"
+    },
+    {
+      "path": "/assets/index-EKemckJx.js",
+      "status": 200,
+      "sha256": "d406c919ec3551e78c202b4aa3e3451f725166005e5e3c6f7059ae4c7863fc48"
+    }
+  ],
+  "scenes": [
+    {
+      "surface": "main",
+      "requests": [
+        {
+          "method": "chat.send",
+          "attachments": [
+            {
+              "fileName": "private-redacted.png",
+              "mimeType": "image/png",
+              "sha256": "0d14eb0346f530afb50f64522b44e5d686b19a8983bdbf8ca2c37c4410b9c1ec"
+            },
+            {
+              "fileName": "keep.png",
+              "mimeType": "image/png",
+              "sha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb"
+            }
+          ]
+        }
+      ],
+      "original": {
+        "sha256": "eb317c89b11ac613d7edf1c3e419af96296bebbdaa6f561ece82e98b24d4db50",
+        "width": 32,
+        "height": 32,
+        "center": [
+          255,
+          165,
+          0,
+          255
+        ],
+        "corner": [
+          255,
+          165,
+          0,
+          255
+        ]
+      },
+      "geometry": {
+        "preview": {
+          "x": 507,
+          "y": 847,
+          "width": 54,
+          "height": 54
+        },
+        "redact": {
+          "x": 537,
+          "y": 877,
+          "width": 24,
+          "height": 24
+        },
+        "remove": {
+          "x": 542,
+          "y": 834,
+          "width": 32,
+          "height": 32
+        },
+        "centerTarget": "Open image private.png"
+      },
+      "nativePreview": "PASS: default-center ordinary click opens existing lightbox, Escape closes",
+      "rtlGeometry": {
+        "preview": {
+          "x": 879,
+          "y": 847,
+          "width": 54,
+          "height": 54
+        },
+        "redact": {
+          "x": 879,
+          "y": 877,
+          "width": 24,
+          "height": 24
+        },
+        "remove": {
+          "x": 914,
+          "y": 834,
+          "width": 32,
+          "height": 32
+        },
+        "centerTarget": "Open image private.png"
+      },
+      "rtlControl": "PASS: actual built DOM root direction changed only for geometry/native preview; locale and Gateway config untouched",
+      "undoControl": "PASS: Undo retains editor, clears area, disables empty Apply",
+      "readback": {
+        "sha256": "0d14eb0346f530afb50f64522b44e5d686b19a8983bdbf8ca2c37c4410b9c1ec",
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "corner": [
+          255,
+          165,
+          0,
+          255
+        ],
+        "dimensions": [
+          32,
+          32
+        ],
+        "siblingUnchanged": true
+      },
+      "replacementNativePreview": "PASS",
+      "result": "PASS"
+    },
+    {
+      "surface": "side",
+      "requests": [
+        {
+          "method": "sessions.companion.ask",
+          "attachments": [
+            {
+              "fileName": "private-redacted.png",
+              "mimeType": "image/png",
+              "sha256": "e59c0b951d064f278d5d88bfc844dc047c69e91d03e8e81298e16b6bf21bed4e"
+            },
+            {
+              "fileName": "keep.png",
+              "mimeType": "image/png",
+              "sha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb"
+            }
+          ]
+        }
+      ],
+      "original": {
+        "sha256": "eb317c89b11ac613d7edf1c3e419af96296bebbdaa6f561ece82e98b24d4db50",
+        "width": 32,
+        "height": 32,
+        "center": [
+          255,
+          165,
+          0,
+          255
+        ],
+        "corner": [
+          255,
+          165,
+          0,
+          255
+        ]
+      },
+      "geometry": {
+        "preview": {
+          "x": 986,
+          "y": 845,
+          "width": 54,
+          "height": 54
+        },
+        "redact": {
+          "x": 1016,
+          "y": 875,
+          "width": 24,
+          "height": 24
+        },
+        "remove": {
+          "x": 1021,
+          "y": 832,
+          "width": 32,
+          "height": 32
+        },
+        "centerTarget": "Open image private.png"
+      },
+      "nativePreview": "PASS: default-center ordinary click opens existing lightbox, Escape closes",
+      "rtlGeometry": {
+        "preview": {
+          "x": 400,
+          "y": 845,
+          "width": 54,
+          "height": 54
+        },
+        "redact": {
+          "x": 400,
+          "y": 875,
+          "width": 24,
+          "height": 24
+        },
+        "remove": {
+          "x": 435,
+          "y": 832,
+          "width": 32,
+          "height": 32
+        },
+        "centerTarget": "Open image private.png"
+      },
+      "rtlControl": "PASS: actual built DOM root direction changed only for geometry/native preview; locale and Gateway config untouched",
+      "undoControl": "PASS: Undo retains editor, clears area, disables empty Apply",
+      "readback": {
+        "sha256": "e59c0b951d064f278d5d88bfc844dc047c69e91d03e8e81298e16b6bf21bed4e",
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "corner": [
+          255,
+          165,
+          0,
+          255
+        ],
+        "dimensions": [
+          32,
+          32
+        ],
+        "siblingUnchanged": true
+      },
+      "replacementNativePreview": "PASS",
+      "result": "PASS"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Real built UI in Chromium with canonical synthetic Gateway transport; no live authenticated Gateway, model, channel or external user.",
+    "The shipped image edit/apply and outbound attachment bytes are exercised. Owner-internal release/custody and parked/disabled lifetime rules also have separate focused tests.",
+    "Chromium only; WebKit is not claimed.",
+    "Existing Draft/product placement hold remains."
+  ],
+  "build": {
+    "version": "2026.10.8",
+    "commit": "7146ffe98e8ab3195028fe651c10ba53d0a0f1eb",
+    "builtAt": "2026-11-07T17:05:03.322Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:02:53.000Z",
+    "branch": "alix/maintain-redaction-20261107",
+    "dirty": false,
+    "buildId": "2026.10.8-7146ffe98e8a-2026-11-07T17-05-03.322Z"
+  },
+  "indexSha256": "8106fcfb87d1bebc9e9c69f1dd2d26b86b950edc5b749240d77c5599cfd708f3",
+  "domain": "http://127.0.0.1:<isolated-port>/",
+  "browser": {
+    "engine": "Chromium",
+    "version": "152.0.7977.64"
+  },
+  "result": "PASS",
+  "cleanup": {
+    "contextsClosed": true,
+    "serverClosed": true,
+    "productionTouched": false,
+    "externalMessages": false
+  }
+}
