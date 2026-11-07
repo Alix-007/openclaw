@@ -1,0 +1,153 @@
+{
+  "at": "2026-11-07T17:50:02.284Z",
+  "sourceHead": "b49165d6a27b1f426820c5da818e089202116cf1",
+  "build": {
+    "version": "2026.11.1",
+    "commit": "b49165d6a27b1f426820c5da818e089202116cf1",
+    "builtAt": "2026-11-07T17:48:02.500Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:47:02.000Z",
+    "branch": "alix/fix-markdown-preview-controls-20261106",
+    "dirty": false,
+    "buildId": "2026.11.1-b49165d6a27b-2026-11-07T17-48-02.500Z"
+  },
+  "indexSha256": "9788b23ed3a92bc384432e131a3babaa7ff6233806b08095e29c104702949d35",
+  "collectorSha256": "a0c84a565c2662a8e38edfb07561a809b8d713c430c1dc26be1e4994b5cd92ac",
+  "root": "CHECKOUT",
+  "output": "PROOF_ROOT/markdown-conflict-exact-native-head",
+  "status": "GREEN_COPY_WORKS",
+  "expectation": "green",
+  "expected": "const garden = \"synthetic\";\nconsole.log(garden);\n",
+  "markdown": "```js\nconst garden = \"synthetic\";\nconsole.log(garden);\n```",
+  "sentinel": "native-clipboard-unchanged-control",
+  "errors": [],
+  "served": [
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/index-CE2Nn0iX.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/rolldown-runtime-CNOWq4Kh.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-connection-oEKJDFSp.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-shared-styles-BUt7PtD-.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/chat-english-CYiUdIqI.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/solid-runtime-DiyhtepL.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-shared-DoqbSZeS.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-readiness-solid-Da8MZQD5.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/device-signing-runtime-MkxPIAah.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/deferred-ui-support-oxAcnPH3.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-chat-styles-BJLFzBGC.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/chat-message-media-runtime-BRhP2Bh-.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/virtual-core-runtime-LhyriIY5.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/markdown-runtime-B8xRrfvW.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-chat-DlWhcPcs.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/chat-route-entry-DEoagFWf.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/markdown-highlight-runtime-CExFSa1s.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/markdown-highlight-runtime-JnaomDDD.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/app-shell-idle.runtime-DKbFxMwQ.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-new-styles-cERH1DEF.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/route-controls-runtime-CFZIvbmw.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/control-ui-boot-new-BP7i4GBR.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/new-session-page-entry-yEL9Fk2g.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/creation-composer-render-DlJveEPV.js",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:<isolated-port>/assets/composer-invocation-menus-C30Dgw7c.js",
+      "status": 200
+    }
+  ],
+  "limitations": [
+    "Real normally built UI and native Chromium clipboard; official synthetic Gateway transport supplies saved history and empty cron inventory.",
+    "Preview uses actual ordinary creation form; no automation is saved/run, no external channel/model/production service is invoked.",
+    "Same frozen collector/scenario/control on BASE and HEAD; only expected outcome differs. Earlier source admission remains a separate original receipt. No authenticated live Gateway or physical OS/clipboard compatibility claim."
+  ],
+  "baseUrl": "http://127.0.0.1:<isolated-port>/",
+  "positiveControl": {
+    "label": "Copied",
+    "clipboard": "const garden = \"synthetic\";\nconsole.log(garden);",
+    "codeText": "const garden = \"synthetic\";\nconsole.log(garden);\n"
+  },
+  "normalUiSmoke": "PASS",
+  "preview": {
+    "label": "Copied",
+    "class": "code-block-copy copied",
+    "clipboard": "const garden = \"synthetic\";\nconsole.log(garden);",
+    "text": "const garden = \"synthetic\";\nconsole.log(garden);\n",
+    "draft": "```js\nconst garden = \"synthetic\";\nconsole.log(garden);\n```",
+    "completed": true
+  },
+  "mutations": {
+    "cron.add": 0,
+    "cron.update": 0,
+    "cron.run": 0
+  },
+  "chatSendCount": 0,
+  "cleanup": "Closed both isolated browser pages/context and built server; no automation save/run or chat send; synthetic clipboard fixture only."
+}

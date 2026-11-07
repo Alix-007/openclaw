@@ -1,0 +1,10 @@
+{
+  "head": "b49165d6a27b1f426820c5da818e089202116cf1",
+  "command": [
+    "node",
+    "scripts/ui.js",
+    "build"
+  ],
+  "exitCode": 0,
+  "seconds": 118.414
+}

@@ -1,0 +1,151 @@
+{
+  "status": "FROZEN_ALL_FOCUSED_CHECKS_PASS_WAIT_ROOT_STAGE_MERGE_BUILD",
+  "at": "2026-11-07T17:33:36.537305+00:00",
+  "head": "d17c571c62517594bdf6e091b2b04b0457c46ddb",
+  "integrated_main": "0542dd84ffc5dd2c495fe5f5748f4f57301607e0",
+  "file": {
+    "path": "ui/src/components/markdown-code-blocks.test.ts",
+    "base_lf": 931,
+    "candidate_lf": 930,
+    "net_lf": -1,
+    "candidate_sha256": "ccae3cf0cfef0da5faabcaca04ac3148136078d3736c669b7af35b8efabcc0a0",
+    "candidate_git_blob": "580519f1479e3e2d74711a7da1497f96638015ec",
+    "upstream_new_case_sha256": "0601baa77cc804fb703f31b269bc45b815009adf893a34e2a7aeb228a3f231ad",
+    "ours_previous_sha256": "a9e5ed0b370bf7d92087a07a869560f0903f0da977726a77a31d04078463bece",
+    "main_sha256": "0667b56dc97e7483ec574a7c24b4a9d248d1d5736be37f982f5f261a36639a36"
+  },
+  "resolution": "Exact previous reviewed838LF test plus complete unchanged92LF upstream syntax-cache case inserted before expectText. Both ours helper and theirs case preserved; only conflict delimiters removed and normal separating blank line retained.",
+  "expected_case_count": 39,
+  "previous_case_count": 38,
+  "new_upstream_case_count": 1,
+  "upstream_case_contracts": [
+    "source/language cache key separation",
+    "immutable markup across new DOM owners",
+    "sanitization removes onclick",
+    "plain result cache reuse",
+    "failed result is not cached",
+    "32-result count eviction",
+    "2M-character source/markup eviction",
+    "worker termination and per-visit dispose/root removal"
+  ],
+  "test_audit": "All original case bodies and assertions byte-identical to reviewed d17c. Main new case byte-identical to current main. No test/control removal, timeout/expected change, fixture weakening, allocation or product change.",
+  "production_sha256": "e4ac8c37e90d4a4297f9952d7019f69ecc37c723db7b2d041bb3334feabd1c55",
+  "production_blob": "6769ebb5117ac90778cb46106448b3568d20badc",
+  "check_status": "Fresh current-main matching physical frozen install:39/39 tests, format, typed lint including new upstream cache owner and existing narrow UI tsgo all pass. Each command executed once. Lint wall includes checkout artifact ownership wait; no active processes remain. No product build/native pass claimed.",
+  "work_tokens": null,
+  "usd": null,
+  "checks": {
+    "tests": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "unit",
+        "ui/src/components/markdown-code-blocks.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/markdown-conflict-fs-tests"
+      },
+      "seconds": 18.595,
+      "exitCode": 0,
+      "head_before_merge_commit": "d17c571c62517594bdf6e091b2b04b0457c46ddb",
+      "merging_main": "0542dd84ffc5dd2c495fe5f5748f4f57301607e0",
+      "candidate_test_sha256": "ccae3cf0cfef0da5faabcaca04ac3148136078d3736c669b7af35b8efabcc0a0",
+      "log": "PROOF_ROOT/markdown-conflict-tests.log",
+      "log_sha256": "5a83c8b951017bd908b594bd858d10dd8fa53ff3344cdce54f6674d14d5c2584",
+      "install_receipt": "markdown-html-controls-integrated-install.json",
+      "candidate_state": "resolved working file; root owns staging and final merge commit"
+    },
+    "format": {
+      "command": [
+        "node",
+        "scripts/run-format.mts",
+        "--check",
+        "ui/src/components/markdown-code-blocks.test.ts"
+      ],
+      "cwd": "CHECKOUT",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/markdown-conflict-fs-format"
+      },
+      "seconds": 1.009,
+      "exitCode": 0,
+      "head_before_merge_commit": "d17c571c62517594bdf6e091b2b04b0457c46ddb",
+      "merging_main": "0542dd84ffc5dd2c495fe5f5748f4f57301607e0",
+      "candidate_test_sha256": "ccae3cf0cfef0da5faabcaca04ac3148136078d3736c669b7af35b8efabcc0a0",
+      "log": "PROOF_ROOT/markdown-conflict-format.log",
+      "log_sha256": "5f7bc0a828bdb5bcf70c12f2718fcb8d9425e7516dbf8086b65ed88f3a3a634b",
+      "install_receipt": "markdown-html-controls-integrated-install.json",
+      "candidate_state": "resolved working file; root owns staging and final merge commit"
+    },
+    "types": {
+      "command": [
+        "node",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "CHECKOUT-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "CHECKOUT",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/markdown-conflict-fs-types"
+      },
+      "seconds": 225.449,
+      "exitCode": 0,
+      "head_before_merge_commit": "d17c571c62517594bdf6e091b2b04b0457c46ddb",
+      "merging_main": "0542dd84ffc5dd2c495fe5f5748f4f57301607e0",
+      "candidate_test_sha256": "ccae3cf0cfef0da5faabcaca04ac3148136078d3736c669b7af35b8efabcc0a0",
+      "log": "PROOF_ROOT/markdown-conflict-types.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "install_receipt": "markdown-html-controls-integrated-install.json",
+      "candidate_state": "resolved working file; root owns staging and final merge commit"
+    },
+    "lint": {
+      "command": [
+        "node",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "tsconfig.ui.json",
+        "ui/src/components/solid/markdown-html.tsx",
+        "ui/src/components/markdown-code-blocks.test.ts",
+        "ui/src/components/markdown-code-highlight.ts"
+      ],
+      "cwd": "CHECKOUT",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/markdown-conflict-fs-lint"
+      },
+      "seconds": 273.086,
+      "exitCode": 0,
+      "head_before_merge_commit": "d17c571c62517594bdf6e091b2b04b0457c46ddb",
+      "merging_main": "0542dd84ffc5dd2c495fe5f5748f4f57301607e0",
+      "candidate_test_sha256": "ccae3cf0cfef0da5faabcaca04ac3148136078d3736c669b7af35b8efabcc0a0",
+      "log": "PROOF_ROOT/markdown-conflict-lint.log",
+      "log_sha256": "627b4eb2247abac63c701bf7a165565a3854f50c61540163500dd51406e9d5e1",
+      "install_receipt": "markdown-html-controls-integrated-install.json",
+      "candidate_state": "resolved working file; root owns staging and final merge commit"
+    }
+  },
+  "completed_at": "2026-11-07T17:43:39.275547+00:00",
+  "executed_case_count": 39,
+  "remaining_root_steps": [
+    "Stage only the resolved test and normal merge index, verify reviewed hash; no grant or other edits.",
+    "Run actual staged test-lines checker against current main0542; expected owner test\u22121LF, allocation absent.",
+    "Commit normal merge preserving accepted main history, normal UI build once and rerun known actual built native collector because main runtime changed.",
+    "Update exact head/body proof, independent publication review and one authorized public re-review; no product acceptance inference."
+  ]
+}

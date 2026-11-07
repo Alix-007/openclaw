@@ -1,0 +1,14 @@
+{
+  "head": "b49165d6a27b1f426820c5da818e089202116cf1",
+  "command": [
+    "node",
+    "--import",
+    "./scripts/tsx.mjs",
+    "COLLECTOR_ROOT/markdown-preview-controls-proof.mjs",
+    "CHECKOUT",
+    "PROOF_ROOT/markdown-conflict-exact-native-head",
+    "green"
+  ],
+  "exitCode": 0,
+  "seconds": 7.735
+}

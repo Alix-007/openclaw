@@ -1,0 +1,53 @@
+{
+  "productHead": "b49165d6a27b1f426820c5da818e089202116cf1",
+  "files": [
+    {
+      "path": "markdown-conflict-exact-native.json",
+      "sha256": "97cf61f9bb34790847d7a7df74edf9e2a25ee7626a3cf962334c3c5ef16ab8f7",
+      "bytes": 307,
+      "binary": false
+    },
+    {
+      "path": "markdown-conflict-exact-ui-build.json",
+      "sha256": "daba488291f0a3fea8a03b21d87b52ae78afbca58464564c791f16c199d4ec24",
+      "bytes": 161,
+      "binary": false
+    },
+    {
+      "path": "markdown-conflict-ratchet.json",
+      "sha256": "67b2de90d288d915f9b3f119e32fcc6863eb39b6b915edf88eb89822ba527dab",
+      "bytes": 270,
+      "binary": false
+    },
+    {
+      "path": "markdown-conflict-resolution-handoff.json",
+      "sha256": "ab2989fcecaeb81750cd5ea837e79e6263f71e50bde984639e1b2a45b9bbb6b0",
+      "bytes": 7319,
+      "binary": false
+    },
+    {
+      "path": "markdown-preview-controls-proof.mjs",
+      "sha256": "a0c84a565c2662a8e38edfb07561a809b8d713c430c1dc26be1e4994b5cd92ac",
+      "bytes": 8008,
+      "binary": false
+    },
+    {
+      "path": "positive-chat-copy.png",
+      "sha256": "2c9902a50b30a3bd79d5be51af39f18146f84f6cec3a8f6137421ed6b18f6d8b",
+      "bytes": 34220,
+      "binary": true
+    },
+    {
+      "path": "preview-copy-readback.png",
+      "sha256": "7add627bc3ae7533f17bf679b79cc84b0cf3efe8e40640dac9be04adf40e32a8",
+      "bytes": 76321,
+      "binary": true
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "a25a49769c9f234f707c410d0790e8d80ee1bffc12505cec73126accf1b7df68",
+      "bytes": 5471,
+      "binary": false
+    }
+  ]
+}
