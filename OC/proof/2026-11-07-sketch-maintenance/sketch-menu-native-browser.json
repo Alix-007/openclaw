@@ -1,0 +1,24 @@
+{
+  "command": [
+    "node",
+    "scripts/run-vitest.mjs",
+    "--config",
+    "ui/vitest.config.ts",
+    "--project",
+    "browser",
+    "ui/src/pages/chat/components/chat-sketch-dialog.browser.test.ts",
+    "--maxWorkers=1"
+  ],
+  "cwd": "PROOF_ROOT/sketch",
+  "env": {
+    "OPENCLAW_VITEST_RUNTIME": "node",
+    "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-menu-native-browser"
+  },
+  "seconds": 23.082,
+  "exitCode": 0,
+  "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+  "log": "PROOF_ROOT/sketch-menu-native-browser.log",
+  "log_sha256": "385db0d6f8dff8fc45438e46b66e012d8beceecd64013505f9ef61b58f105298",
+  "install_receipt": "sketch-integrated-install.json",
+  "qualification": "post-merge-own-refreshed-frozen-install"
+}

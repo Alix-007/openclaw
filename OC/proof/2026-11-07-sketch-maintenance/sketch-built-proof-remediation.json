@@ -1,0 +1,233 @@
+{
+  "status": "PASS",
+  "at": "2026-11-07T17:19:01.377208+00:00",
+  "head": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+  "tree": "94a8f00026d9031585eca69335ea79d8eaee0a09",
+  "collector_sha256": "b7571fbe8fbd579ded6bc35d0929012f2f83ce5ede498e7eb73482f957a2b3a0",
+  "receipt": "PROOF_ROOT/sketch-built-CG9wp7/receipt.json",
+  "receipt_sha256": "8d9f2d0ac91e2a450d769a70ddb0073ce701ef1fba8d30ab382c24d5d79b17e5",
+  "run_receipt": "sketch-built-proof-v2-run.json",
+  "wall_seconds": 24.12,
+  "build_reused_without_rebuild": true,
+  "normal_build_parent_receipt_seconds": 130.572,
+  "build_identity": {
+    "version": "2026.11.1",
+    "commit": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+    "builtAt": "2026-11-07T17:05:04.705Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:02:56.000Z",
+    "branch": "alix/maintain-sketch-20261107",
+    "dirty": false,
+    "buildId": "2026.11.1-9ba12e6d8d96-2026-11-07T17-05-04.705Z"
+  },
+  "index_sha256": "ae9e0952870d58583514abf3c610db9b8f1f9bf770bbce9f19befe5665c09d32",
+  "served_asset_observations": 103,
+  "served_unique_asset_paths": 60,
+  "scenes": [
+    {
+      "surface": "main",
+      "controls": {
+        "blankClearCancel": "PASS: no attachment/request, focus restored to Add attachment",
+        "escape": "PASS: native Escape dismisses and restores focus"
+      },
+      "result": "PASS",
+      "menu": [
+        "Camera",
+        "Media",
+        "File",
+        "Draw a sketch",
+        "Skills",
+        "Plugins"
+      ],
+      "menuIds": [
+        "camera",
+        "media",
+        "file",
+        "sketch",
+        "open-skills",
+        "open-connectors"
+      ],
+      "menuPolicy": {
+        "imagesOnly": false,
+        "expectedAttachmentIds": [
+          "camera",
+          "media",
+          "file",
+          "sketch"
+        ]
+      },
+      "request": {
+        "method": "chat.send",
+        "fileName": "sketch.png",
+        "mimeType": "image/png",
+        "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+        "bytes": 9118,
+        "pixels": {
+          "width": 800,
+          "height": 450,
+          "stroke": [
+            224,
+            68,
+            45,
+            255
+          ],
+          "undone": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "background": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      },
+      "assetCount": 48
+    },
+    {
+      "surface": "side",
+      "controls": {
+        "blankClearCancel": "PASS: no attachment/request, focus restored to Add attachment",
+        "escape": "PASS: native Escape dismisses and restores focus"
+      },
+      "result": "PASS",
+      "menu": [
+        "Camera",
+        "Photo",
+        "Draw a sketch"
+      ],
+      "menuIds": [
+        "camera",
+        "photo",
+        "sketch"
+      ],
+      "menuPolicy": {
+        "imagesOnly": true,
+        "expectedAttachmentIds": [
+          "camera",
+          "photo",
+          "sketch"
+        ]
+      },
+      "request": {
+        "method": "sessions.companion.ask",
+        "fileName": "sketch.png",
+        "mimeType": "image/png",
+        "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+        "bytes": 9118,
+        "pixels": {
+          "width": 800,
+          "height": 450,
+          "stroke": [
+            224,
+            68,
+            45,
+            255
+          ],
+          "undone": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "background": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      },
+      "assetCount": 55
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "serverClosed": true,
+    "productionTouched": false,
+    "externalMessages": false
+  },
+  "first_attempt": {
+    "result": "BLOCKED_HARNESS_EXPECTATION",
+    "head": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+    "receipt": "sketch-built-2R3fuX/receipt.json",
+    "receipt_sha256": "6d8e6e1234aeb370ec136a1a0dc524b9d5cb7506f0ac63a858503247eb89d7e9",
+    "log": "sketch-built-proof.log",
+    "collector": "sketch-built-proof-v1-source-expected-menu.mjs",
+    "collector_sha256": "e961a80af8bae22be899351a1d38793779e10ccd6920f3d229e91f6c4d1cb664",
+    "observed": "Main completed all controls and PNG readback. Side actually exposed camera/photo/sketch, which contradicted the harness\u2019s mistaken media/file expectation.",
+    "cause": "Actual ChatSessionRail attachmentProps producer explicitly sets imagesOnly:true at lines184\u2013196; the first harness incorrectly applied main\u2019s full desktop menu to both surfaces.",
+    "correction": "Strict separate expected attachment-ID arrays now assert both presence and exclusion for actual main versus actual Side contracts. No product/assertion relaxation; image-only producer state is not injected."
+  },
+  "boundaries": [
+    "Synthetic Gateway transport; no live authenticated Gateway, model execution, channel or external-user delivery.",
+    "Chromium only. WebKit is not claimed; separate Sessions WebKit attempt was blocked before tests by missing host libraries.",
+    "Retained-menu strict zero-mutation equality and hidden/late Side lifetime have separate focused tests; this built collector does not inject component state or claim those tests as built UI proof.",
+    "No private image-only toggle is manufactured. Main permits media/files; the Side rail producer explicitly sets imagesOnly:true. Their distinct visible menus are asserted, and in-place mode changes have a separate owner test.",
+    "Existing Draft/product acceptance hold remains; technical success does not accept product placement."
+  ],
+  "artifacts": [
+    {
+      "path": "sketch-built-CG9wp7/main-blank.png",
+      "sha256": "38e52a1b6963579113554a151e5c10e0bf8df46c4bcab759d6abccbfbe701e8f",
+      "bytes": 62895
+    },
+    {
+      "path": "sketch-built-CG9wp7/main-drawn.png",
+      "sha256": "13aec04f7df7b1ecabaf2299f2fff2fcefe76539982560cfb438090089b31bab",
+      "bytes": 64843
+    },
+    {
+      "path": "sketch-built-CG9wp7/main-request.json",
+      "sha256": "9bc0051fb30630fd6565e24bf2d9704d87997579d2b39594520b947abd24973d",
+      "bytes": 12696
+    },
+    {
+      "path": "sketch-built-CG9wp7/main-sent-sketch.png",
+      "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+      "bytes": 9118
+    },
+    {
+      "path": "sketch-built-CG9wp7/main-sent.png",
+      "sha256": "7328a511278886822b253d070090743a73da436d950195bf090bd6a38efd0bc9",
+      "bytes": 66499
+    },
+    {
+      "path": "sketch-built-CG9wp7/receipt.json",
+      "sha256": "8d9f2d0ac91e2a450d769a70ddb0073ce701ef1fba8d30ab382c24d5d79b17e5",
+      "bytes": 26539
+    },
+    {
+      "path": "sketch-built-CG9wp7/side-blank.png",
+      "sha256": "e1ba53f885af6b121248ff6f25df42310502fca86a5c3cf24074c7cf2629d651",
+      "bytes": 55694
+    },
+    {
+      "path": "sketch-built-CG9wp7/side-drawn.png",
+      "sha256": "4aad20295e366e13526c34569218141c19dc412b80411536577de76692eaaf08",
+      "bytes": 57548
+    },
+    {
+      "path": "sketch-built-CG9wp7/side-request.json",
+      "sha256": "5c4612ae423fe2451b6f48d73fb4796db3488e6e90f91fab34deb7f866c8e796",
+      "bytes": 12572
+    },
+    {
+      "path": "sketch-built-CG9wp7/side-sent-sketch.png",
+      "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+      "bytes": 9118
+    },
+    {
+      "path": "sketch-built-CG9wp7/side-sent.png",
+      "sha256": "8733c6f266d43c40766fa30a1c243ab9e87e082e609450e65f8d15bf255fe5ba",
+      "bytes": 53971
+    }
+  ],
+  "no_product_git_or_remote_mutation_by_this_lane": true,
+  "work_tokens": null,
+  "usd": null
+}

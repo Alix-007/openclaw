@@ -1,0 +1,299 @@
+{
+  "status": "SOURCE_FROZEN_QUALIFIED_FOCUSED_GREEN_WITH_WEBKIT_ENV_GAP",
+  "at": "2026-11-07T17:00:39.073877+00:00",
+  "original_remote_head": "d399707b5881665a25e9710b861decf84b00ff85",
+  "upstream_accepted_main": "90d24e96bea190397435b7126ebbc824e35d315a",
+  "integrated_head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+  "candidate_index_tree": null,
+  "files": [
+    {
+      "path": "ui/src/pages/chat/components/chat-composer-plus-menu-body.tsx",
+      "sha256": "b226e5eb9bac40c926a21953cc964c97f06c4e41bf3cb572d30224295b341c1f",
+      "git_blob": "1d3cbfef8d9208665c6843acac48f3b1a8b42970",
+      "lf": 277,
+      "head_lf": 258,
+      "delta_lf": 19
+    },
+    {
+      "path": "ui/src/pages/chat/components/chat-composer-attachment-menu.tsx",
+      "sha256": "fe7b1e10aa9ef6cb789a40197f21172534c16043eed7c322c56fcd1d29ced447",
+      "git_blob": "4b0d2e14e1d9df87be07f9b18929a611dfff0a13",
+      "lf": 87,
+      "head_lf": 87,
+      "delta_lf": 0
+    },
+    {
+      "path": "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx",
+      "sha256": "41ad9a74f1dc61667f7266b40399c238379ba45d0b15a45a41a7567eed75d852",
+      "git_blob": "fd0eeca7d161842c2a3f2db5d39bf567cf21635e",
+      "lf": 146,
+      "head_lf": 137,
+      "delta_lf": 9
+    },
+    {
+      "path": "config/test-lines-allocations/alix-ui-sketch-182475.txt",
+      "sha256": "a79ee90f05a2723817b64496811e7f55b37859e2c25f9088692f2f145a9e9887",
+      "git_blob": "4dfd502bbb2e30add6c71c599ea0e37ac4e53b2d",
+      "lf": 2,
+      "head_lf": 2,
+      "delta_lf": 0
+    }
+  ],
+  "working_manifest_sha256": "fd8689c5e03a22a10770c8d6dafc03b9b74675a97bfcc4530e1719467b48be56",
+  "cause": "Maintainer-required live attachments getter made rootItems/composerAttachmentMenuItems track broad props.menu and nested composer props outside the existing rootInputs value equality fence. Unrelated publications replaced rows (12 child-list mutations).",
+  "owner_fix": "Sample canUpload and imagesOnly inside rootInputs; compare them as immutable display signature values; materialize only the resolved render menu in that memo. Narrow attachment-row renderer to the one sampled Boolean it consumes. Keep live getter, event controls reader, preload signal check and sketch/Side lifecycle owner unchanged.",
+  "whole_feature_test_lf_vs_accepted_main": {
+    "baseline": "90d24e96bea190397435b7126ebbc824e35d315a",
+    "files": [
+      {
+        "path": "ui/src/pages/chat/components/chat-attachment-inputs.test.tsx",
+        "base_lf": 256,
+        "candidate_lf": 256,
+        "delta": 0
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx",
+        "base_lf": 137,
+        "candidate_lf": 146,
+        "delta": 9
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-sketch-dialog.browser.test.ts",
+        "base_lf": 0,
+        "candidate_lf": 95,
+        "delta": 95
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-sketch.test.ts",
+        "base_lf": 0,
+        "candidate_lf": 82,
+        "delta": 82
+      }
+    ],
+    "net_delta": 186,
+    "existing_grant_before": 177,
+    "updated_grant": 186,
+    "shared_scalar_changed": false,
+    "upstream_credit_claimed": false,
+    "full_ratchet_execution": "Not run by this lane; root stages final candidate then runs actual checker."
+  },
+  "test_audit": {
+    "existing_strict_mutation_records_assertion": "unchanged expected0",
+    "existing_dom_identity_assertion": "unchanged exactchildren",
+    "new_control": "Existing root case now switches imagesOnly true then false and asserts actual photo/media/file rows both directions.",
+    "no_new_test_file": true,
+    "no_weakened_assertions_or_timeouts_or_mocks": true,
+    "same_unit_test_count": 5,
+    "sketch_unit_controls": "PNG payload, existing attachment preservation, reject cleanup, file/batch limit, disabled/aborted/parked admission remain unchanged.",
+    "sketch_browser_controls": [
+      "click dot and undo",
+      "rejected drawing retained for retry and closes only on destination acceptance",
+      "hidden composer retires drawing and late opening rejected",
+      "closed Side-chat menu remains bound to live rail presentation"
+    ],
+    "lifetime_authority": "readControls, current signal comparison, late-open and attachment acceptance/cancellation paths untouched"
+  },
+  "checks": {
+    "sketch-menu-invalidation-red": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "unit",
+        "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-cache"
+      },
+      "seconds": 16.65,
+      "exitCode": 1,
+      "log": "PROOF_ROOT/sketch-menu-invalidation-red.log",
+      "log_sha256": "a5b9d6b86314609ea32c113c2bbf9fae03dd58f06323e7d82c713b5856d47a5a",
+      "source_head": "d399707b5881665a25e9710b861decf84b00ff85"
+    },
+    "sketch-menu-format": {
+      "command": [
+        "node",
+        "scripts/run-format.mts",
+        "--write",
+        "ui/src/pages/chat/components/chat-composer-plus-menu-body.tsx",
+        "ui/src/pages/chat/components/chat-composer-attachment-menu.tsx",
+        "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx"
+      ],
+      "seconds": 0.644,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-format.log",
+      "log_sha256": "320d4e3c1a00e399f32f719e20edb5ee6f4fd134e0fb8e00ceefa3e8ac14e820"
+    },
+    "sketch-menu-unit-green": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "unit",
+        "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx",
+        "ui/src/pages/chat/components/chat-sketch.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-cache"
+      },
+      "seconds": 17.82,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-unit-green.log",
+      "log_sha256": "844d11642aa6fe23643aa615456fa14c00030ccbf81c3d6fb24b2fbab998b845",
+      "qualification": "UNQUALIFIED_DEPENDENCIES_SUPERSEDED",
+      "qualification_reason": "Execution completed before parent corrected the integrated lockfile-change assessment. It used the pre-merge frozen install and must not be counted as final-head proof. Root refreshing own frozen install; only then rerun focused tests.",
+      "observed_tests": {
+        "files_passed": 2,
+        "tests_passed": 11
+      },
+      "runtime_execution_completed": true
+    },
+    "sketch-menu-unit-qualified-green": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "unit",
+        "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx",
+        "ui/src/pages/chat/components/chat-sketch.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-menu-unit-qualified-green"
+      },
+      "seconds": 18.614,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-unit-qualified-green.log",
+      "log_sha256": "11026a41bc49513ebc9313ebe913e49ede08af63a935310ce0cd83215b4fd6ff",
+      "install_receipt": "sketch-integrated-install.json",
+      "qualification": "post-merge-own-refreshed-frozen-install"
+    },
+    "sketch-menu-native-browser": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "browser",
+        "ui/src/pages/chat/components/chat-sketch-dialog.browser.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-menu-native-browser"
+      },
+      "seconds": 23.082,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-native-browser.log",
+      "log_sha256": "385db0d6f8dff8fc45438e46b66e012d8beceecd64013505f9ef61b58f105298",
+      "install_receipt": "sketch-integrated-install.json",
+      "qualification": "post-merge-own-refreshed-frozen-install"
+    },
+    "sketch-sessions-webkit-qualified": {
+      "command": [
+        "node",
+        "scripts/run-vitest.mjs",
+        "--config",
+        "ui/vitest.config.ts",
+        "--project",
+        "webkit",
+        "ui/src/pages/sessions/view.invalidation.browser.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "env": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "PROOF_ROOT/sketch-vitest-fs-sessions-webkit-qualified",
+        "OPENCLAW_UI_WEBKIT": "1"
+      },
+      "seconds": 10.309,
+      "exitCode": 1,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-sessions-webkit-qualified.log",
+      "log_sha256": "912a663ad696ba02b96247aa8d49fc60645840a217d0ea85507f01d55cbea322",
+      "install_receipt": "sketch-integrated-install.json",
+      "qualification": "BLOCKED_BROWSER_HOST_LIBRARIES",
+      "observed_test_count": 0,
+      "missing_host_libraries": [
+        "libgtk-4.so.1",
+        "libgraphene-1.0.so.0",
+        "libicudata.so.74",
+        "libicui18n.so.74",
+        "libicuuc.so.74",
+        "libevent-2.1.so.7",
+        "libgstcodecparsers-1.0.so.0"
+      ],
+      "no_product_verdict": true
+    },
+    "sketch-menu-lint": {
+      "command": [
+        "node",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "tsconfig.ui.json",
+        "--openclaw-focused-config",
+        "ui/src/pages/chat/components/chat-composer-plus-menu-body.tsx",
+        "ui/src/pages/chat/components/chat-composer-attachment-menu.tsx",
+        "ui/src/pages/chat/components/chat-composer-menu-invalidation.test.tsx"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "seconds": 4.471,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-lint.log",
+      "log_sha256": "8a2ba4aea556c32e85d5e91a21fc287999605cbdcf25ec80f01935ed15c340e9",
+      "install_receipt": "sketch-integrated-install.json"
+    },
+    "sketch-menu-types": {
+      "command": [
+        "node",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "tsconfig.ui.json",
+        "--incremental",
+        "--tsBuildInfoFile",
+        ".artifacts/tsgo-cache/ui.tsbuildinfo"
+      ],
+      "cwd": "PROOF_ROOT/sketch",
+      "seconds": 164.378,
+      "exitCode": 0,
+      "head": "5558d1d2323d370853a3caa6ac235fd63139eff8",
+      "log": "PROOF_ROOT/sketch-menu-types.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "install_receipt": "sketch-integrated-install.json"
+    }
+  },
+  "lint_caveat": "Exit0 with unchanged live selectComposerAttachment(value, () => props.menu) Solid reactivity advisory; no new untrack escape. Do not claim zero warnings.",
+  "native_proof": "PENDING root final clean commit/normal UI build and new R2/sketch-built-proof.mjs. Old maintenance collector was found to use source:true and must not be presented as built proof. Four source-driven real Chromium browser tests remain separate qualified evidence.",
+  "webkit_gap": "Existing WebKit engine executable is cached, but host system libraries are missing. Single launch attempted, zero tests; not a product failure or successful Sessions verification. No new environment installed or retry.",
+  "discarded_attempt": "17.820s unit diagnostic completed before root corrected integration lockfile assessment; explicit UNQUALIFIED_DEPENDENCIES_SUPERSEDED, excluded from final proof. Original d399 RED used its matching install.",
+  "authorization_limits": [
+    "No Git staging/commit/push, remote write, install or build performed by this lane. Root performed both frozen installs and normal upstream integration.",
+    "Product scope/personal/shared discussions and Draft HOLD remain pending, no Ready transition.",
+    "Root independently reviews full PR including preserved maintainer repair and accepted upstream history, then owns final commit/build/main native proof/publication."
+  ],
+  "work_tokens": null,
+  "usd": null,
+  "old_collector_correction": "Reviewer previously described old source collector as normal-built without checking server options. Root caught source:true; new exact-built collector now prepared, not executed."
+}

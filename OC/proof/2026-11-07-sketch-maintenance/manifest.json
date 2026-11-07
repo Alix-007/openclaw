@@ -1,0 +1,102 @@
+{
+  "productHead": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+  "scope": "Actual normal-built Chromium UI + synthetic Gateway transport; main/Side sketch PNG readback. Draft/product hold retained.",
+  "files": [
+    {
+      "path": "main-blank.png",
+      "sha256": "38e52a1b6963579113554a151e5c10e0bf8df46c4bcab759d6abccbfbe701e8f",
+      "bytes": 62895,
+      "binary": true
+    },
+    {
+      "path": "main-drawn.png",
+      "sha256": "13aec04f7df7b1ecabaf2299f2fff2fcefe76539982560cfb438090089b31bab",
+      "bytes": 64843,
+      "binary": true
+    },
+    {
+      "path": "main-request.json",
+      "sha256": "9bc0051fb30630fd6565e24bf2d9704d87997579d2b39594520b947abd24973d",
+      "bytes": 12696,
+      "binary": false
+    },
+    {
+      "path": "main-sent-sketch.png",
+      "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+      "bytes": 9118,
+      "binary": true
+    },
+    {
+      "path": "main-sent.png",
+      "sha256": "7328a511278886822b253d070090743a73da436d950195bf090bd6a38efd0bc9",
+      "bytes": 66499,
+      "binary": true
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "5901d4dd0de36d76ae27331fc5345b045ccc2498b0d5eb120069cbd56a16250c",
+      "bytes": 26549,
+      "binary": false
+    },
+    {
+      "path": "side-blank.png",
+      "sha256": "e1ba53f885af6b121248ff6f25df42310502fca86a5c3cf24074c7cf2629d651",
+      "bytes": 55694,
+      "binary": true
+    },
+    {
+      "path": "side-drawn.png",
+      "sha256": "4aad20295e366e13526c34569218141c19dc412b80411536577de76692eaaf08",
+      "bytes": 57548,
+      "binary": true
+    },
+    {
+      "path": "side-request.json",
+      "sha256": "5c4612ae423fe2451b6f48d73fb4796db3488e6e90f91fab34deb7f866c8e796",
+      "bytes": 12572,
+      "binary": false
+    },
+    {
+      "path": "side-sent-sketch.png",
+      "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+      "bytes": 9118,
+      "binary": true
+    },
+    {
+      "path": "side-sent.png",
+      "sha256": "8733c6f266d43c40766fa30a1c243ab9e87e082e609450e65f8d15bf255fe5ba",
+      "bytes": 53971,
+      "binary": true
+    },
+    {
+      "path": "sketch-built-proof-remediation.json",
+      "sha256": "4cf8c00f1d1c43dbbf6cc69aa1a6520cf5f0953f88fb1bcbf55e39bb71154a59",
+      "bytes": 7743,
+      "binary": false
+    },
+    {
+      "path": "sketch-built-proof.mjs",
+      "sha256": "b7571fbe8fbd579ded6bc35d0929012f2f83ce5ede498e7eb73482f957a2b3a0",
+      "bytes": 14428,
+      "binary": false
+    },
+    {
+      "path": "sketch-menu-native-browser.json",
+      "sha256": "d6609992dafe89ead6d3278237ca4b242f7a05e7f64aad1dfc327aa1c91438ef",
+      "bytes": 758,
+      "binary": false
+    },
+    {
+      "path": "sketch-menu-repair-handoff.json",
+      "sha256": "1371b8deb3e9a4ca51e1997c9bc0fa2b3551650858544237f0daacb312930cb2",
+      "bytes": 13068,
+      "binary": false
+    },
+    {
+      "path": "sketch-ui-build.json",
+      "sha256": "fa3d0f5ec3fb063d07f35acb1b51460d31c63bca95ac96f266e9994a2f661c3b",
+      "bytes": 191,
+      "binary": false
+    }
+  ]
+}

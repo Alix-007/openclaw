@@ -1,0 +1,806 @@
+{
+  "at": "2026-11-07T17:16:35.978Z",
+  "head": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+  "tree": "94a8f00026d9031585eca69335ea79d8eaee0a09",
+  "status": "",
+  "collectorSha256": "b7571fbe8fbd579ded6bc35d0929012f2f83ce5ede498e7eb73482f957a2b3a0",
+  "source": {
+    "ui/src/pages/chat/components/chat-composer-plus-menu-body.tsx": {
+      "sha256": "b226e5eb9bac40c926a21953cc964c97f06c4e41bf3cb572d30224295b341c1f",
+      "blob": "1d3cbfef8d9208665c6843acac48f3b1a8b42970"
+    },
+    "ui/src/pages/chat/components/chat-composer-attachment-menu.tsx": {
+      "sha256": "fe7b1e10aa9ef6cb789a40197f21172534c16043eed7c322c56fcd1d29ced447",
+      "blob": "4b0d2e14e1d9df87be07f9b18929a611dfff0a13"
+    },
+    "ui/src/pages/chat/components/chat-composer-plus-menu-content.tsx": {
+      "sha256": "2da77eda8938d48f62ac0b70cd96d73860b4941f48c23bcf73bc4c1dba9422c2",
+      "blob": "785fd217315c19cbd74c1ce218adf08a9e2ad11d"
+    },
+    "ui/src/pages/chat/components/chat-sketch-dialog.tsx": {
+      "sha256": "4d1aabe704696ad9381c703bca8afcb70ab271ad3130dd7b4cd9cc44b832e591",
+      "blob": "b8454510295b14372d5e9e5870194d50490f2f3e"
+    },
+    "ui/src/pages/chat/components/chat-sketch.ts": {
+      "sha256": "3918ac3adc1232b45ac4c57cbdd77ac18482b268fd69c00c6be9987288d2bda3",
+      "blob": "ce693e99aad281522aae5505c21edad3f57a668c"
+    },
+    "ui/src/pages/chat/components/chat-session-rail.tsx": {
+      "sha256": "6402912e260012559515051cf0e9dec11667116b21409814a1604a9840fda034",
+      "blob": "4c42c51fbe74390928c6bd92644bcbc60ed2b33d"
+    }
+  },
+  "served": [
+    {
+      "surface": "main",
+      "path": "assets/control-ui-connection-BLAWifuG.css",
+      "status": 200,
+      "sha256": "f053e76d586bead989d81f3819f94f37811c72bdc16ed74ce0e24ef19ee48777"
+    },
+    {
+      "surface": "main",
+      "path": "assets/index-Bdoib3cd.js",
+      "status": 200,
+      "sha256": "c179fc2b04869ac6e5c51aceccb880f8d38e2fa544f6bd5e3143f002c7dadbe6"
+    },
+    {
+      "surface": "main",
+      "path": "assets/rolldown-runtime-CNOWq4Kh.js",
+      "status": 200,
+      "sha256": "2d8d100f1a8f491dcf0b1adcd5d5f59a48dfd1683b8123c97785039b0e72e99d"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-connection-odB-K4kW.js",
+      "status": 200,
+      "sha256": "add1008dc5ccb0867922976d227fa87beb3909da9a60981bbb7a70954d3bdf58"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-shared-styles-Cp0P65DT.css",
+      "status": 200,
+      "sha256": "6eec9ad680b91a776bbb17f9d6cc9e70edd9874bc12b2fe944853a56111e9fb5"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-shared-styles-BY6ecwIg.js",
+      "status": 200,
+      "sha256": "155150b66015a2496c932b9930cfe2be6def7c5e1b785c2288335f6e4d6637ed"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-english-GoPOCK5p.js",
+      "status": 200,
+      "sha256": "877ddbb137c404e779fd3073817af87b2ed81d934e0e6730dc86f361f9a121b9"
+    },
+    {
+      "surface": "main",
+      "path": "assets/solid-runtime-BgM6ZmED.js",
+      "status": 200,
+      "sha256": "52d33fda6a2cfe12c7adfbd1031612f16598af81c5c7f7b0e24ab81f076df798"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-shared-CFvj_RvM.js",
+      "status": 200,
+      "sha256": "ed3122814e8f0b28f0e3a3231f07e36abf40a8d64d3b914bf5897e0b1b375bce"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-readiness-solid-DgGbIfGm.js",
+      "status": 200,
+      "sha256": "bf489fb3afffe10e1bc2b1edd0001acbb1a4da302a69a7be1fced1bcbad432a9"
+    },
+    {
+      "surface": "main",
+      "path": "assets/device-signing-runtime-DsBTOfGf.js",
+      "status": 200,
+      "sha256": "f8fad83eaf8c6a469b86a4222d4c15a7268a54f5042c9e2ab6da73c99562195c"
+    },
+    {
+      "surface": "main",
+      "path": "assets/app-shell-idle.runtime-CBUqC9sQ.js",
+      "status": 200,
+      "sha256": "1ec79c1395d4046c3c75294a1aa9211623e7730a1650a454b10c8f17bd4ada85"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-chat-styles-C0w87Vu1.css",
+      "status": 200,
+      "sha256": "b5d883197da50d69a7f3e4bbbb8fc7c9e8933db334b4aafce235ddcda15ecc0a"
+    },
+    {
+      "surface": "main",
+      "path": "assets/deferred-ui-support-BlYHwfv1.js",
+      "status": 200,
+      "sha256": "2ce50e6f957c02e09bb93840c823d8288227c4bf9c65c98d784be51eeac8fd0f"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-message-media-runtime-CtzWLnpt.js",
+      "status": 200,
+      "sha256": "38bee420d52b07c8f098325631a081d50ae2b6fcd1ef5d26e429106432e3e500"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-chat-styles-DOR3T1LV.js",
+      "status": 200,
+      "sha256": "db253cbe8d627e5c55a1fb1fba0e7a87f6bbd54f456a974eb96f4fe5b89f352a"
+    },
+    {
+      "surface": "main",
+      "path": "assets/virtual-core-runtime-LhyriIY5.js",
+      "status": 200,
+      "sha256": "5053223930ef500476d589e17ff0301224509b9ec89b3904ee4b9db6f125522d"
+    },
+    {
+      "surface": "main",
+      "path": "assets/markdown-runtime-D2Jgniz8.js",
+      "status": 200,
+      "sha256": "776f9793d3fdc0aef24b437ca50f664f87c28e61846c3e755f73c43406bae102"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-chat-CHb5Pg1h.js",
+      "status": 200,
+      "sha256": "073542434b527d345a354524bed0fad2d2981ee92f1c87305604447c5fbd31f6"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-route-entry-Du5EuAyt.js",
+      "status": 200,
+      "sha256": "87ace512dfb3a2e5ee33ed5cbea282ccd27dac85bb1ba7dadefe55a6c398e847"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-width-edge-mhfPmEP8.js",
+      "status": 200,
+      "sha256": "04064a17104278b7e8a7fd640e49f180cec75a8910d90aa8402dcbade2881310"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-new-styles-DGwk-qp-.css",
+      "status": 200,
+      "sha256": "e6c9f798f9f128fecb3d038268582f76d7c74db4091b1e1248d15a654e392497"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-new-styles-cERH1DEF.js",
+      "status": 200,
+      "sha256": "36e023f58be2f2108b2cdba667447596b363b6b66b1425c09a06b2d6c639199e"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-plus-menu-content-Bm5OGHi0.js",
+      "status": 200,
+      "sha256": "96d3d818932485f7e73c70b33600d74e0f7ce52c284088f4ab4d58f2c603d817"
+    },
+    {
+      "surface": "main",
+      "path": "assets/switch-690THJBU.js",
+      "status": 200,
+      "sha256": "3ede5ac21125a264fac868fe3c60c835ee1280af9d47ce2db9b2afc4720525cc"
+    },
+    {
+      "surface": "main",
+      "path": "assets/route-controls-runtime-6o5Q6JZX.js",
+      "status": 200,
+      "sha256": "308074c85c15a24cd9300b88c16247911f1b1d77825a141537f474086f03fd85"
+    },
+    {
+      "surface": "main",
+      "path": "assets/composer-invocation-menus-BRogd5fB.js",
+      "status": 200,
+      "sha256": "2644e4db344549acb2ab709226420b0c04b3195b52be3b9d674c05272c61537b"
+    },
+    {
+      "surface": "main",
+      "path": "assets/settings-controls-runtime-sWPgtrEg.js",
+      "status": 200,
+      "sha256": "c14e19bffdfaaa22096db30e5a0a58142ed64b77a76a8360bcaeac420580007e"
+    },
+    {
+      "surface": "main",
+      "path": "assets/en-chat-composer-menu-BICx0HlX.js",
+      "status": 200,
+      "sha256": "17a53c364aa26635631b7798acf2616fadfdcf8a21de4b46b2b9402f7c992f49"
+    },
+    {
+      "surface": "main",
+      "path": "assets/control-ui-boot-new-CFcjbqO1.js",
+      "status": 200,
+      "sha256": "20f1c030e9dfb9344d5c87c0175eef3d751042b302787a94a0d7fce4d0fa2757"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-attachment-menu-Be-ifPca.js",
+      "status": 200,
+      "sha256": "b6c47ffe812fa875e0742779fc71f318d2c657274e7ea338966a771caaf52a36"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-plus-menu-content-CdRaOuhE.js",
+      "status": 200,
+      "sha256": "537f39c79998f6c20a1c57629d584cadd57135377702df3d053f50c9ef270ae6"
+    },
+    {
+      "surface": "main",
+      "path": "assets/menu-runtime-585BhPnE.js",
+      "status": 200,
+      "sha256": "b5e7441042b91da51217a9fb34c455ef198bfbb23cb5abb19d860eae41bc3eae"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-interaction-runtime-2cgk7gK2.js",
+      "status": 200,
+      "sha256": "2bf9ad4f01908e633c8f23ed4fbe29d4d853078814b175bef81352b9eb8d72f6"
+    },
+    {
+      "surface": "main",
+      "path": "assets/new-session-page-entry-BbrQROsw.js",
+      "status": 200,
+      "sha256": "83adcd0525fd7c8f6706613e3f97a54f5d3a0ed3cbfbabc53e384e84baa8a42d"
+    },
+    {
+      "surface": "main",
+      "path": "assets/creation-composer-render-Dk1TXdJK.js",
+      "status": 200,
+      "sha256": "80a77270c66f9bdefc0ddc40f793b5cdbc3a411d18814380ed4332f90ff04569"
+    },
+    {
+      "surface": "main",
+      "path": "assets/annotation-paint-Be17wTtZ.js",
+      "status": 200,
+      "sha256": "77ea5b87ab33e4b71f0c46bf50a57d750f9aee229848b4d828735460ae4d4d12"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-sketch-dialog-CzNApvZA.js",
+      "status": 200,
+      "sha256": "ec23446a8baacecb661379736c7e01e1695f1f2c134064efd5aeddd42d33db12"
+    },
+    {
+      "surface": "main",
+      "path": "assets/tooltip-CUNpFc1u.js",
+      "status": 200,
+      "sha256": "60d5426c88c5a44608b5d5406d012b5e6d48957d046cf07d2bfa56a98c8db1e9"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-attachment-preview-chip-Dm3A6Rjy.js",
+      "status": 200,
+      "sha256": "7ffef6b66ed5f479f14d1f5a32bff83a5cecee8775899739c31d4d06c6d8b526"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-attachment-admission-ref-CAzRmoYV.js",
+      "status": 200,
+      "sha256": "5c4fb6b0fee5ebee78fa01334c3e843bd41bd9211d59713aa393bb44c58ffe67"
+    },
+    {
+      "surface": "main",
+      "path": "assets/canvas-limits-DuPWavzb.js",
+      "status": 200,
+      "sha256": "ae52c5d59eb1d3962787ab636d6f2195b9aba4470d1845c0c15f0861e171a551"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-pasted-text-DM8sYHbf.js",
+      "status": 200,
+      "sha256": "d1df71de2a96dcc60aecdc8c6a22535e7bf6dcd8293c6f2caf9116581163cecf"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-attachment-text-reader-B7vp9fS1.js",
+      "status": 200,
+      "sha256": "11893fff27cedf55257bb51a0f3ee2dbaefa0f436f390705a85dc709faad28e0"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-attachment-preview-strip-BmWEKlqA.js",
+      "status": 200,
+      "sha256": "a088707f0fb298e8e9bfa11cbc8e03e44bbd3c60cf3f185fec9c6e1cd4689c1d"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-queue-sSIdWCga.css",
+      "status": 200,
+      "sha256": "623dcfe97dce89d1e54c2a6e831c4748c16e169cb2be586cba174cec35859e9c"
+    },
+    {
+      "surface": "main",
+      "path": "assets/markdown-streaming-runtime-B2Cgy2nX.js",
+      "status": 200,
+      "sha256": "661b7dd090c3fb95661230522dcadfd02f3fb510c22cda457effc2d4696a0a18"
+    },
+    {
+      "surface": "main",
+      "path": "assets/chat-composer-queue-puIexVEp.js",
+      "status": 200,
+      "sha256": "cc40bf7a82b8740b898b8087545dc2fcb61f9ecb8ec2f1d290fd52a7a987cd0b"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-connection-BLAWifuG.css",
+      "status": 200,
+      "sha256": "f053e76d586bead989d81f3819f94f37811c72bdc16ed74ce0e24ef19ee48777"
+    },
+    {
+      "surface": "side",
+      "path": "assets/index-Bdoib3cd.js",
+      "status": 200,
+      "sha256": "c179fc2b04869ac6e5c51aceccb880f8d38e2fa544f6bd5e3143f002c7dadbe6"
+    },
+    {
+      "surface": "side",
+      "path": "assets/rolldown-runtime-CNOWq4Kh.js",
+      "status": 200,
+      "sha256": "2d8d100f1a8f491dcf0b1adcd5d5f59a48dfd1683b8123c97785039b0e72e99d"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-connection-odB-K4kW.js",
+      "status": 200,
+      "sha256": "add1008dc5ccb0867922976d227fa87beb3909da9a60981bbb7a70954d3bdf58"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-english-GoPOCK5p.js",
+      "status": 200,
+      "sha256": "877ddbb137c404e779fd3073817af87b2ed81d934e0e6730dc86f361f9a121b9"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-shared-styles-BY6ecwIg.js",
+      "status": 200,
+      "sha256": "155150b66015a2496c932b9930cfe2be6def7c5e1b785c2288335f6e4d6637ed"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-shared-styles-Cp0P65DT.css",
+      "status": 200,
+      "sha256": "6eec9ad680b91a776bbb17f9d6cc9e70edd9874bc12b2fe944853a56111e9fb5"
+    },
+    {
+      "surface": "side",
+      "path": "assets/solid-runtime-BgM6ZmED.js",
+      "status": 200,
+      "sha256": "52d33fda6a2cfe12c7adfbd1031612f16598af81c5c7f7b0e24ab81f076df798"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-shared-CFvj_RvM.js",
+      "status": 200,
+      "sha256": "ed3122814e8f0b28f0e3a3231f07e36abf40a8d64d3b914bf5897e0b1b375bce"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-readiness-solid-DgGbIfGm.js",
+      "status": 200,
+      "sha256": "bf489fb3afffe10e1bc2b1edd0001acbb1a4da302a69a7be1fced1bcbad432a9"
+    },
+    {
+      "surface": "side",
+      "path": "assets/device-signing-runtime-DsBTOfGf.js",
+      "status": 200,
+      "sha256": "f8fad83eaf8c6a469b86a4222d4c15a7268a54f5042c9e2ab6da73c99562195c"
+    },
+    {
+      "surface": "side",
+      "path": "assets/app-shell-idle.runtime-CBUqC9sQ.js",
+      "status": 200,
+      "sha256": "1ec79c1395d4046c3c75294a1aa9211623e7730a1650a454b10c8f17bd4ada85"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-chat-styles-C0w87Vu1.css",
+      "status": 200,
+      "sha256": "b5d883197da50d69a7f3e4bbbb8fc7c9e8933db334b4aafce235ddcda15ecc0a"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-chat-styles-DOR3T1LV.js",
+      "status": 200,
+      "sha256": "db253cbe8d627e5c55a1fb1fba0e7a87f6bbd54f456a974eb96f4fe5b89f352a"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-message-media-runtime-CtzWLnpt.js",
+      "status": 200,
+      "sha256": "38bee420d52b07c8f098325631a081d50ae2b6fcd1ef5d26e429106432e3e500"
+    },
+    {
+      "surface": "side",
+      "path": "assets/virtual-core-runtime-LhyriIY5.js",
+      "status": 200,
+      "sha256": "5053223930ef500476d589e17ff0301224509b9ec89b3904ee4b9db6f125522d"
+    },
+    {
+      "surface": "side",
+      "path": "assets/deferred-ui-support-BlYHwfv1.js",
+      "status": 200,
+      "sha256": "2ce50e6f957c02e09bb93840c823d8288227c4bf9c65c98d784be51eeac8fd0f"
+    },
+    {
+      "surface": "side",
+      "path": "assets/markdown-runtime-D2Jgniz8.js",
+      "status": 200,
+      "sha256": "776f9793d3fdc0aef24b437ca50f664f87c28e61846c3e755f73c43406bae102"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-chat-CHb5Pg1h.js",
+      "status": 200,
+      "sha256": "073542434b527d345a354524bed0fad2d2981ee92f1c87305604447c5fbd31f6"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-route-entry-Du5EuAyt.js",
+      "status": 200,
+      "sha256": "87ace512dfb3a2e5ee33ed5cbea282ccd27dac85bb1ba7dadefe55a6c398e847"
+    },
+    {
+      "surface": "side",
+      "path": "assets/tabs-runtime-D9-Uu4bm.js",
+      "status": 200,
+      "sha256": "900735ae29eb06ddf4a9b81cea069cfad3d17d153d0766c5f5487da05ab6e19c"
+    },
+    {
+      "surface": "side",
+      "path": "assets/panel-tab-strip-solid-CmcG4SRj.js",
+      "status": 200,
+      "sha256": "9468dd7871143bf89b5bed787242b7268a9280cd91f8f1f08cac2df00c2fbb42"
+    },
+    {
+      "surface": "side",
+      "path": "assets/navigation-helpers-BjHkUSo1.js",
+      "status": 200,
+      "sha256": "1c23d1547a9b969814b6c0fdc0873f3e4449f8499d11b3477f97c3c5682022c3"
+    },
+    {
+      "surface": "side",
+      "path": "assets/panel-empty-state-CKvuVHGb.js",
+      "status": 200,
+      "sha256": "b29ecbfd3cec2d5c7752c0aca32393a1a24106100aba95ea887545e3541a2629"
+    },
+    {
+      "surface": "side",
+      "path": "assets/board-session-surface-C_OShXnT.js",
+      "status": 200,
+      "sha256": "6174d8d617fdcc63ae39be4e6a973a42f88017ae9924e4c398c849ac22e98e0a"
+    },
+    {
+      "surface": "side",
+      "path": "assets/tabs-runtime-B0MW0F-b.css",
+      "status": 200,
+      "sha256": "385b20e1b25afbd816b37c4eb7b216cae15e00cce6cc0789741ddd498448ae5b"
+    },
+    {
+      "surface": "side",
+      "path": "assets/panel-tab-strip-solid-e_tHhSPo.css",
+      "status": 200,
+      "sha256": "c32d9cfae530f38f1a72b35fbaa7886d3b346149759df8b7c1bd8b50f515f725"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-sidebar-region-Bx4pmeo6.css",
+      "status": 200,
+      "sha256": "7940d83089eec19fdbcb60833cf3603910ae2a20265743306e7fac86b03bb554"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-sidebar-region.runtime-8fp6VRlE.js",
+      "status": 200,
+      "sha256": "e6ccc72b26ba1b076086f39517ea03c113a55b0a97d19d67a273b050407c7eab"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-new-styles-DGwk-qp-.css",
+      "status": 200,
+      "sha256": "e6c9f798f9f128fecb3d038268582f76d7c74db4091b1e1248d15a654e392497"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-session-rail-DWf-tKm9.css",
+      "status": 200,
+      "sha256": "ad327620cb0401a4085868f74918f4c579d8397295c68d642cee45161de029e8"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-new-styles-cERH1DEF.js",
+      "status": 200,
+      "sha256": "36e023f58be2f2108b2cdba667447596b363b6b66b1425c09a06b2d6c639199e"
+    },
+    {
+      "surface": "side",
+      "path": "assets/en-chat-session-optional-CkTHi50C.js",
+      "status": 200,
+      "sha256": "d0f7aa2a4746d7946996920446375971d79b35c48c0420d41fbe7197535631ae"
+    },
+    {
+      "surface": "side",
+      "path": "assets/route-controls-runtime-6o5Q6JZX.js",
+      "status": 200,
+      "sha256": "308074c85c15a24cd9300b88c16247911f1b1d77825a141537f474086f03fd85"
+    },
+    {
+      "surface": "side",
+      "path": "assets/composer-invocation-menus-BRogd5fB.js",
+      "status": 200,
+      "sha256": "2644e4db344549acb2ab709226420b0c04b3195b52be3b9d674c05272c61537b"
+    },
+    {
+      "surface": "side",
+      "path": "assets/control-ui-boot-new-CFcjbqO1.js",
+      "status": 200,
+      "sha256": "20f1c030e9dfb9344d5c87c0175eef3d751042b302787a94a0d7fce4d0fa2757"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-session-rail-E8puI03Q.js",
+      "status": 200,
+      "sha256": "17217c1c1d9ea984444d1be656d44bd9651dec0734d99c42f572df6b036eb721"
+    },
+    {
+      "surface": "side",
+      "path": "assets/switch-690THJBU.js",
+      "status": 200,
+      "sha256": "3ede5ac21125a264fac868fe3c60c835ee1280af9d47ce2db9b2afc4720525cc"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-composer-plus-menu-content-Bm5OGHi0.js",
+      "status": 200,
+      "sha256": "96d3d818932485f7e73c70b33600d74e0f7ce52c284088f4ab4d58f2c603d817"
+    },
+    {
+      "surface": "side",
+      "path": "assets/en-chat-composer-menu-BICx0HlX.js",
+      "status": 200,
+      "sha256": "17a53c364aa26635631b7798acf2616fadfdcf8a21de4b46b2b9402f7c992f49"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-composer-attachment-menu-Be-ifPca.js",
+      "status": 200,
+      "sha256": "b6c47ffe812fa875e0742779fc71f318d2c657274e7ea338966a771caaf52a36"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-composer-plus-menu-content-CdRaOuhE.js",
+      "status": 200,
+      "sha256": "537f39c79998f6c20a1c57629d584cadd57135377702df3d053f50c9ef270ae6"
+    },
+    {
+      "surface": "side",
+      "path": "assets/settings-controls-runtime-sWPgtrEg.js",
+      "status": 200,
+      "sha256": "c14e19bffdfaaa22096db30e5a0a58142ed64b77a76a8360bcaeac420580007e"
+    },
+    {
+      "surface": "side",
+      "path": "assets/menu-runtime-585BhPnE.js",
+      "status": 200,
+      "sha256": "b5e7441042b91da51217a9fb34c455ef198bfbb23cb5abb19d860eae41bc3eae"
+    },
+    {
+      "surface": "side",
+      "path": "assets/annotation-paint-Be17wTtZ.js",
+      "status": 200,
+      "sha256": "77ea5b87ab33e4b71f0c46bf50a57d750f9aee229848b4d828735460ae4d4d12"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-sketch-dialog-CzNApvZA.js",
+      "status": 200,
+      "sha256": "ec23446a8baacecb661379736c7e01e1695f1f2c134064efd5aeddd42d33db12"
+    },
+    {
+      "surface": "side",
+      "path": "assets/new-session-page-entry-BbrQROsw.js",
+      "status": 200,
+      "sha256": "83adcd0525fd7c8f6706613e3f97a54f5d3a0ed3cbfbabc53e384e84baa8a42d"
+    },
+    {
+      "surface": "side",
+      "path": "assets/creation-composer-render-Dk1TXdJK.js",
+      "status": 200,
+      "sha256": "80a77270c66f9bdefc0ddc40f793b5cdbc3a411d18814380ed4332f90ff04569"
+    },
+    {
+      "surface": "side",
+      "path": "assets/tooltip-CUNpFc1u.js",
+      "status": 200,
+      "sha256": "60d5426c88c5a44608b5d5406d012b5e6d48957d046cf07d2bfa56a98c8db1e9"
+    },
+    {
+      "surface": "side",
+      "path": "assets/canvas-limits-DuPWavzb.js",
+      "status": 200,
+      "sha256": "ae52c5d59eb1d3962787ab636d6f2195b9aba4470d1845c0c15f0861e171a551"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-attachment-admission-ref-CAzRmoYV.js",
+      "status": 200,
+      "sha256": "5c4fb6b0fee5ebee78fa01334c3e843bd41bd9211d59713aa393bb44c58ffe67"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-attachment-preview-chip-Dm3A6Rjy.js",
+      "status": 200,
+      "sha256": "7ffef6b66ed5f479f14d1f5a32bff83a5cecee8775899739c31d4d06c6d8b526"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-attachment-preview-strip-BmWEKlqA.js",
+      "status": 200,
+      "sha256": "a088707f0fb298e8e9bfa11cbc8e03e44bbd3c60cf3f185fec9c6e1cd4689c1d"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-pasted-text-DM8sYHbf.js",
+      "status": 200,
+      "sha256": "d1df71de2a96dcc60aecdc8c6a22535e7bf6dcd8293c6f2caf9116581163cecf"
+    },
+    {
+      "surface": "side",
+      "path": "assets/chat-attachment-text-reader-B7vp9fS1.js",
+      "status": 200,
+      "sha256": "11893fff27cedf55257bb51a0f3ee2dbaefa0f436f390705a85dc709faad28e0"
+    }
+  ],
+  "scenes": [
+    {
+      "surface": "main",
+      "controls": {
+        "blankClearCancel": "PASS: no attachment/request, focus restored to Add attachment",
+        "escape": "PASS: native Escape dismisses and restores focus"
+      },
+      "result": "PASS",
+      "menu": [
+        "Camera",
+        "Media",
+        "File",
+        "Draw a sketch",
+        "Skills",
+        "Plugins"
+      ],
+      "menuIds": [
+        "camera",
+        "media",
+        "file",
+        "sketch",
+        "open-skills",
+        "open-connectors"
+      ],
+      "menuPolicy": {
+        "imagesOnly": false,
+        "expectedAttachmentIds": [
+          "camera",
+          "media",
+          "file",
+          "sketch"
+        ]
+      },
+      "request": {
+        "method": "chat.send",
+        "fileName": "sketch.png",
+        "mimeType": "image/png",
+        "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+        "bytes": 9118,
+        "pixels": {
+          "width": 800,
+          "height": 450,
+          "stroke": [
+            224,
+            68,
+            45,
+            255
+          ],
+          "undone": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "background": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      },
+      "assetCount": 48
+    },
+    {
+      "surface": "side",
+      "controls": {
+        "blankClearCancel": "PASS: no attachment/request, focus restored to Add attachment",
+        "escape": "PASS: native Escape dismisses and restores focus"
+      },
+      "result": "PASS",
+      "menu": [
+        "Camera",
+        "Photo",
+        "Draw a sketch"
+      ],
+      "menuIds": [
+        "camera",
+        "photo",
+        "sketch"
+      ],
+      "menuPolicy": {
+        "imagesOnly": true,
+        "expectedAttachmentIds": [
+          "camera",
+          "photo",
+          "sketch"
+        ]
+      },
+      "request": {
+        "method": "sessions.companion.ask",
+        "fileName": "sketch.png",
+        "mimeType": "image/png",
+        "sha256": "37b45d94d593e7cc066282610e4237895f98406b28893fa4a532fedf4ddac79c",
+        "bytes": 9118,
+        "pixels": {
+          "width": 800,
+          "height": 450,
+          "stroke": [
+            224,
+            68,
+            45,
+            255
+          ],
+          "undone": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "background": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      },
+      "assetCount": 55
+    }
+  ],
+  "errors": [],
+  "boundary": "Normal production-built UI in real Chromium -> visible main/Side attachment menu -> native canvas -> attachment payload -> canonical synthetic Gateway request recorder -> independently decoded PNG.",
+  "limitations": [
+    "Synthetic Gateway transport; no live authenticated Gateway, model execution, channel or external-user delivery.",
+    "Chromium only. WebKit is not claimed; separate Sessions WebKit attempt was blocked before tests by missing host libraries.",
+    "Retained-menu strict zero-mutation equality and hidden/late Side lifetime have separate focused tests; this built collector does not inject component state or claim those tests as built UI proof.",
+    "No private image-only toggle is manufactured. Main permits media/files; the Side rail producer explicitly sets imagesOnly:true. Their distinct visible menus are asserted, and in-place mode changes have a separate owner test.",
+    "Existing Draft/product acceptance hold remains; technical success does not accept product placement."
+  ],
+  "build": {
+    "version": "2026.11.1",
+    "commit": "9ba12e6d8d96599bb7c4c8339a34a4f9c4a79de4",
+    "builtAt": "2026-11-07T17:05:04.705Z",
+    "release": false,
+    "commitAt": "2026-11-07T17:02:56.000Z",
+    "branch": "alix/maintain-sketch-20261107",
+    "dirty": false,
+    "buildId": "2026.11.1-9ba12e6d8d96-2026-11-07T17-05-04.705Z"
+  },
+  "indexSha256": "ae9e0952870d58583514abf3c610db9b8f1f9bf770bbce9f19befe5665c09d32",
+  "domain": "http://127.0.0.1:<isolated-port>/",
+  "browser": {
+    "engine": "Chromium",
+    "version": "152.0.7977.64"
+  },
+  "result": "PASS",
+  "cleanup": {
+    "browserClosed": true,
+    "serverClosed": true,
+    "productionTouched": false,
+    "externalMessages": false
+  }
+}
