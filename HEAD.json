@@ -1,0 +1,358 @@
+{
+  "at": "2026-11-08T19:06:42Z",
+  "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+  "buildStamp": {
+    "builtAt": 1794164638099,
+    "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+    "inputsClean": true,
+    "inputSignature": "488ebeedb5d0cf51568cea473d981e3dcf05c4eaf5bea0615708c5e83193f96e"
+  },
+  "collectorSha256": "a82934ade6162533194359649678c15ccd183db40f0d61ca4786a13641de88f6",
+  "expectedMode": "head",
+  "loopbackOptIn": "Existing OPENCLAW_QA_ALLOW_LOCAL_IMAGE_PROVIDER=1 permits only the configured loopback OpenAI image fixture; actual adapter SSRF policy otherwise unchanged",
+  "priorAttempt": "v1 retained at scout-cli-image-base: describe controls/RED succeeded; edit stopped before HTTP because explicit existing QA loopback opt-in was missing",
+  "fixture": {
+    "selected": "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/selected-link/../photo.png",
+    "osReadSha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+    "intendedSha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+    "decoySha256": "b47200f6f0727c21e762f74f2ceb7cd21afda809fc7d71e240a8f54af35562e4"
+  },
+  "cases": [
+    {
+      "label": "model-physical-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--agent",
+        "main",
+        "--model",
+        "image-path/image-path",
+        "--prompt",
+        "Read the synthetic image",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.131,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "model-physical-control",
+          "path": "/v1/chat/completions",
+          "model": "image-path",
+          "headers": {
+            "host": "127.0.0.1:38495",
+            "connection": "keep-alive",
+            "accept": "application/json",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "user-agent": "OpenAI/JS 7.47.0",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Linux",
+            "x-stainless-package-version": "7.47.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v26.12.1",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "370"
+          },
+          "bodySha256": "bf0a6b1fc5f457f9b9a317cdcbe2cbc86989fcd886125d72d89fb1ea08020667",
+          "images": [
+            {
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "e071155e481ebfee88e30d86940af49c51cdf8c903d1c2acf9b20143f36192ae",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "modelReplyReadback": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "model-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--agent",
+        "main",
+        "--model",
+        "image-path/image-path",
+        "--prompt",
+        "Read the synthetic image",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/selected-link/../photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.652,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "model-parent-traversal",
+          "path": "/v1/chat/completions",
+          "model": "image-path",
+          "headers": {
+            "host": "127.0.0.1:38495",
+            "connection": "keep-alive",
+            "accept": "application/json",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "user-agent": "OpenAI/JS 7.47.0",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Linux",
+            "x-stainless-package-version": "7.47.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v26.12.1",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "370"
+          },
+          "bodySha256": "bf0a6b1fc5f457f9b9a317cdcbe2cbc86989fcd886125d72d89fb1ea08020667",
+          "images": [
+            {
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "e071155e481ebfee88e30d86940af49c51cdf8c903d1c2acf9b20143f36192ae",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "modelReplyReadback": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "describe-physical-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "image",
+        "describe",
+        "--agent",
+        "main",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.887,
+      "diskReads": [
+        {
+          "path": "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "aabf1f839ac2245fe77514e250641e5e4ea62cfc3576352b9a4f29625318de23",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "describe-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "image",
+        "describe",
+        "--agent",
+        "main",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/selected-link/../photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.111,
+      "diskReads": [
+        {
+          "path": "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "aabf1f839ac2245fe77514e250641e5e4ea62cfc3576352b9a4f29625318de23",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "describe-many-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "image",
+        "describe-many",
+        "--agent",
+        "main",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/selected-link/../photo.png",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.542,
+      "diskReads": [
+        {
+          "path": "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        },
+        {
+          "path": "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "6b60047c99a8e568ab1b322ce393f6f07b3c3620bb852be7fa83736eac36581b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "edit-physical-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "image",
+        "edit",
+        "--agent",
+        "main",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/physical/photo.png",
+        "--prompt",
+        "Preserve this synthetic image",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--output",
+        "$PROOF_ROOT/scout-cli-image-head-v3/edit-physical-control.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.96,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "edit-physical-control",
+          "path": "/v1/images/edits",
+          "headers": {
+            "host": "127.0.0.1:38495",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-003563953954",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "644"
+          },
+          "bodySha256": "29cca429ab0239200d77637c805e71150a7566387c0ad3a1ce75f226f9d2bed3",
+          "images": [
+            {
+              "filename": "photo.png",
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "a4a4d1bbe912b2f08aa55c225c92425e2aa86709c3f3ed243e9e2734f68ea8a1",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "outputReadbackSHA256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "edit-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/image-physical-inputs/openclaw.mjs",
+        "infer",
+        "image",
+        "edit",
+        "--agent",
+        "main",
+        "--file",
+        "$PROOF_ROOT/scout-cli-image-head-v3/fixtures/selected-link/../photo.png",
+        "--prompt",
+        "Preserve this synthetic image",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--output",
+        "$PROOF_ROOT/scout-cli-image-head-v3/edit-parent-traversal.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.791,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "edit-parent-traversal",
+          "path": "/v1/images/edits",
+          "headers": {
+            "host": "127.0.0.1:38495",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-037877799315",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "644"
+          },
+          "bodySha256": "2ff8e10ecc251e7e3e92fbb5d7b3b7ade29556deb545baa048f7790a2c433f4c",
+          "images": [
+            {
+              "filename": "photo.png",
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "54580202bb943d7a0293ab54d678fb15d2c615b8b5de17475e1131e3415ab7c7",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "outputReadbackSHA256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_INTENDED_BYTES"
+    }
+  ],
+  "boundary": "Normal shipped CLI -> actual path selection/cache and configured local CLI reader; native bundled OpenAI image adapter -> real loopback multipart HTTP recorder -> independently read output PNG; model local simple-completion adapter -> actual HTTP/SSE recorder with decoded image bytes. No substituted product functions, live provider or external channel.",
+  "result": "GREEN_WITH_LEGAL_CONTROLS",
+  "serverErrors": [],
+  "cleanup": {
+    "serverClosed": true,
+    "productionTouched": false,
+    "liveProvider": false,
+    "externalMessages": false,
+    "privateStateRetainedForReadback": "$PROOF_ROOT/scout-cli-image-head-v3"
+  }
+}
