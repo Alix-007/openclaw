@@ -1,0 +1,186 @@
+{
+  "at": "2026-11-08T17:02:26Z",
+  "head": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+  "tree": "5336de328b722148a401dc26ba83fe0738b2b4f5",
+  "buildStamp": {
+    "builtAt": 1794157151335,
+    "head": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+    "inputsClean": true,
+    "inputSignature": "18654346f36c50be20329be869f552ed6316356d721134713e97ca14d3521989"
+  },
+  "collectorSHA256": "9f3273fd18577cea11b0b803105b67d2a890a26d0974d9d05cc0b871a0061b45",
+  "expectation": "red",
+  "entry": "normal openclaw.mjs in its controlling PTY, without no-respawn override",
+  "boundary": "Actual skills verify/--card -> native ClawHub HTTP -> terminal Ctrl-C -> passive HTTP peer and process/PTY readback",
+  "cases": [
+    {
+      "label": "verification-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "skills",
+        "verify",
+        "@demo-owner/weather"
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/skills/weather/verify?ownerHandle=demo-owner",
+          "requestAtMonotonic": 3296960.122047601,
+          "authorizationPresent": false,
+          "bodyReleased": true,
+          "peerClosed": false,
+          "bodyReleasedAtMonotonic": 3296960.122590565
+        }
+      ],
+      "seconds": 4.6586,
+      "exitCode": 0,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "lateResultPresent": null,
+      "output": "{\r\n  \"schema\": \"clawhub.skill.verify.v1\",\r\n  \"ok\": true,\r\n  \"decision\": \"pass\",\r\n  \"reasons\": [],\r\n  \"slug\": \"weather\",\r\n  \"displayName\": \"Synthetic verification completed\",\r\n  \"publisherHandle\": \"demo-owner\",\r\n  \"skill\": {},\r\n  \"publisher\": {},\r\n  \"version\": \"1.0.0\",\r\n  \"card\": {\r\n    \"available\": true,\r\n    \"url\": \"/proof-card\"\r\n  },\r\n  \"artifact\": {},\r\n  \"provenance\": null,\r\n  \"security\": {},\r\n  \"signature\": {},\r\n  \"openclaw\": {\r\n    \"resolution\": {\r\n      \"source\": \"registry\",\r\n      \"selector\": \"latest\",\r\n      \"registry\": \"http://127.0.0.1:34181\"\r\n    }\r\n  }\r\n}\r\n",
+      "interruptToPeerCloseMs": [
+        null
+      ]
+    },
+    {
+      "label": "verification-interrupt",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "skills",
+        "verify",
+        "@demo-owner/weather"
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/skills/weather/verify?ownerHandle=demo-owner",
+          "requestAtMonotonic": 3296963.897385787,
+          "authorizationPresent": false,
+          "bodyReleased": false,
+          "peerClosed": true,
+          "prefixWrittenBytes": 12,
+          "prefixWrittenAtMonotonic": 3296963.897719772,
+          "peerClosedAtMonotonic": 3296965.951597083
+        }
+      ],
+      "seconds": 5.6651,
+      "exitCode": -9,
+      "signalNumber": 9,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": true,
+      "interruptToExitMs": 2035.91,
+      "lateResultPresent": false,
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n",
+      "interruptToPeerCloseMs": [
+        2026.22
+      ],
+      "cooperativeCancellationPassed": false
+    },
+    {
+      "label": "card-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "skills",
+        "verify",
+        "@demo-owner/weather",
+        "--card"
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/skills/weather/verify?ownerHandle=demo-owner",
+          "requestAtMonotonic": 3296969.469575171,
+          "authorizationPresent": false,
+          "bodyReleased": true,
+          "peerClosed": false,
+          "bodyReleasedAtMonotonic": 3296969.469930331
+        },
+        {
+          "method": "GET",
+          "path": "/proof-card",
+          "requestAtMonotonic": 3296969.488368728,
+          "authorizationPresent": false,
+          "bodyReleased": true,
+          "peerClosed": false,
+          "bodyReleasedAtMonotonic": 3296969.489116472
+        }
+      ],
+      "seconds": 3.6011,
+      "exitCode": 0,
+      "signalNumber": null,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "lateResultPresent": null,
+      "output": "\u001b[?25l\u2502\r\n\u001b[?25h\u25c7  \r\n\r\u001b[2K\r\nOpenClaw 2026.11.1 (5fe1403)\r\nI keep secrets like a vault... unless you print them in debug logs again.\r\n\r\n# Synthetic verified card completed\r\n",
+      "interruptToPeerCloseMs": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "card-interrupt",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "skills",
+        "verify",
+        "@demo-owner/weather",
+        "--card"
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/skills/weather/verify?ownerHandle=demo-owner",
+          "requestAtMonotonic": 3296973.042804853,
+          "authorizationPresent": false,
+          "bodyReleased": true,
+          "peerClosed": false,
+          "bodyReleasedAtMonotonic": 3296973.043105156
+        },
+        {
+          "method": "GET",
+          "path": "/proof-card",
+          "requestAtMonotonic": 3296973.061588817,
+          "authorizationPresent": false,
+          "bodyReleased": false,
+          "peerClosed": true,
+          "prefixWrittenBytes": 12,
+          "prefixWrittenAtMonotonic": 3296973.061751097,
+          "peerClosedAtMonotonic": 3296975.117599734
+        }
+      ],
+      "seconds": 5.5545,
+      "exitCode": -9,
+      "signalNumber": 9,
+      "safetyKill": false,
+      "ptyEofDrained": true,
+      "interruptSent": true,
+      "interruptToExitMs": 2031.46,
+      "lateResultPresent": false,
+      "output": "\u001b[?25l\u2502\r\n\u001b[?25h\u25c7  \r\n\r\u001b[2K\r\nOpenClaw 2026.11.1 (5fe1403)\r\nWe ship features faster than Apple ships calculator updates.\r\n\r\n^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n",
+      "interruptToPeerCloseMs": [
+        null,
+        2025.93
+      ],
+      "cooperativeCancellationPassed": false
+    }
+  ],
+  "result": "RED",
+  "expectationMatched": true,
+  "cleanup": {
+    "serverClosed": true,
+    "directCliChildrenWaited": true,
+    "privateSyntheticStateRetained": true,
+    "productionServiceTouched": false,
+    "externalGatewayOrModelOrChannelUsed": false
+  }
+}
