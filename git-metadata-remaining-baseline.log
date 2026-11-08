@@ -1,0 +1,624 @@
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/baseline
+
+[vitest-workers] local cache hit after 8592ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 8a4edc39033e in 8774ms (18868 inputs, 24073 outputs)
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs missing files without force, retires only its registration and retains the original capture
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves changed residual writes before any repair
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves symlink residual writes before any repair
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves directory residual writes before any repair
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a replaced branch ref
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > refuses a live managed consumer before touching the partial checkout
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retains newer writes arriving during reconstruction
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a early-identity race before deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a identity race before deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a registry race before deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a pending race before deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves an ignored file arriving after the last awaited inventory
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves the pending pin when registry custody changes after removal publication
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during admission finalization
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during native finalization
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a checkout that reappears after its original path was absent
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > never executes a repository clean filter while deleting reconstructed source 7190ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=false
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=true
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained split-base before native deletion 3548ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=97f06ba99c54a3690c7…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained worktree-config before native deletion 3569ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=97f06ba99c54a3690c7…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained metadata-mode before native deletion 3611ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=97f06ba99c54a3690c7…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs clean symlink-file checkout representation 3711ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs native Unicode filename representation 3678ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer administrative index after the checkout has already disappeared
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after listed-checkout finalization without recapturing source
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after branch finalization without recapturing source
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after pin finalization without recapturing source
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves lf prompt bytes and stat data after checkout 429ms
+   → expected [ …(4) ] to deeply equal undefined
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves crlf prompt bytes and stat data after checkout 371ms
+   → expected [ …(4) ] to deeply equal undefined
+ ↓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .gitattributes
+ ↓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .codex/config.toml
+ ↓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .CODEX/config.toml
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > selects raw/mixed-case prompts, not unrelated attributes 370ms
+   → expected "vi.fn()" to be called once, but got 0 times
+ ↓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > retains ordinary checkout for linked prompt file .agents/linked.md
+ ↓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > retains ordinary checkout for linked prompt file users/Profile_123/USER.md
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.stateSnapshotOwners
+
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > removes its partial checkout when the prompt consumer rejects preparation 295ms
+   → promise resolved "{ pid: 3518634, …(15) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves lf prompt bytes and stat data after checkout
+AssertionError: expected [ …(4) ] to deeply equal undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      65,
+      71,
+      69,
+      78,
+      84,
+      83,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1855694428,
+    "mtimeMs": 1794164262739.3945,
+    "relative": "AGENTS.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      97,
+      103,
+      101,
+      110,
+      116,
+      115,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      101,
+      120,
+      97,
+      109,
+      112,
+      108,
+      101,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1855694426,
+    "mtimeMs": 1794164262738.3945,
+    "relative": ".agents/skills/example/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      99,
+      111,
+      100,
+      101,
+      120,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      108,
+      111,
+      99,
+      97,
+      108,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1337536013,
+    "mtimeMs": 1794164262739.3945,
+    "relative": ".codex/skills/local/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      117,
+      115,
+      101,
+      114,
+      115,
+      47,
+      80,
+      114,
+      111,
+      102,
+      105,
+      108,
+      101,
+      95,
+      49,
+      50,
+      51,
+      47,
+      85,
+      83,
+      69,
+      82,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 722623426,
+    "mtimeMs": 1794164262740.3945,
+    "relative": "users/Profile_123/USER.md",
+  },
+]
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:113:28
+    111|   });
+    112|   expect(result.code).toBe(0);
+    113|   expect(await snapshot()).toEqual(early);
+       |                            ^
+    114|   expect(await read(destination, "src/main.ts")).toBe(
+    115|     `remaining checkout${eol === "crlf" ? "\r\n" : "\n"}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves crlf prompt bytes and stat data after checkout
+AssertionError: expected [ …(4) ] to deeply equal undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      65,
+      71,
+      69,
+      78,
+      84,
+      83,
+      46,
+      109,
+      100,
+      13,
+      10,
+    ],
+    "ino": 1337536028,
+    "mtimeMs": 1794164263112.4226,
+    "relative": "AGENTS.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      97,
+      103,
+      101,
+      110,
+      116,
+      115,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      101,
+      120,
+      97,
+      109,
+      112,
+      108,
+      101,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1337536026,
+    "mtimeMs": 1794164263112.4226,
+    "relative": ".agents/skills/example/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      99,
+      111,
+      100,
+      101,
+      120,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      108,
+      111,
+      99,
+      97,
+      108,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      13,
+      10,
+    ],
+    "ino": 722505605,
+    "mtimeMs": 1794164263112.4226,
+    "relative": ".codex/skills/local/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      117,
+      115,
+      101,
+      114,
+      115,
+      47,
+      80,
+      114,
+      111,
+      102,
+      105,
+      108,
+      101,
+      95,
+      49,
+      50,
+      51,
+      47,
+      85,
+      83,
+      69,
+      82,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 218274092,
+    "mtimeMs": 1794164263113.4229,
+    "relative": "users/Profile_123/USER.md",
+  },
+]
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:113:28
+    111|   });
+    112|   expect(result.code).toBe(0);
+    113|   expect(await snapshot()).toEqual(early);
+       |                            ^
+    114|   expect(await read(destination, "src/main.ts")).toBe(
+    115|     `remaining checkout${eol === "crlf" ? "\r\n" : "\n"}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > selects raw/mixed-case prompts, not unrelated attributes
+AssertionError: expected "vi.fn()" to be called once, but got 0 times
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:159:19
+    157|     });
+    158|     expect((await create(ready)).code).toBe(0);
+    159|     expect(ready).toHaveBeenCalledOnce();
+       |                   ^
+    160|     expect(await requireGit(destination, ["status", "--porcelain"])).t…
+    161|   },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > removes its partial checkout when the prompt consumer rejects preparation
+AssertionError: promise resolved "{ pid: 3518634, …(15) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "cleanup": "normal",
++   "code": 0,
++   "killIssuedByAbort": undefined,
++   "killed": false,
++   "noOutputTimedOut": false,
++   "outputLimitExceeded": undefined,
++   "pid": 3518634,
++   "preservedStderrLines": undefined,
++   "preservedStdoutLines": undefined,
++   "signal": null,
++   "stderr": "Preparing worktree (new branch 'prompt')
++ ",
++   "stderrTruncatedBytes": undefined,
++   "stdout": "",
++   "stdoutTruncatedBytes": undefined,
++   "termination": "exit",
++   "timeoutMs": 300000,
+  }
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:182:4
+    180|       throw new Error("prompt consumer canceled");
+    181|     }),
+    182|   ).rejects.toThrow("prompt consumer canceled");
+       |    ^
+    183|   await expect(fs.access(destination)).rejects.toMatchObject({ code: "…
+    184|   expect(await git("branch", "--list", "prompt")).toBe("");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > never executes a repository clean filter while deleting reconstructed source
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:464:28
+    462|     await fs.unlink(path.join(record.path, "README.md"));
+    463|     await fs.unlink(path.join(record.path, ".git"));
+    464|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    465|     await expect(fs.stat(marker)).rejects.toMatchObject({ code: "ENOEN…
+    466|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+
+Caused by: CommandExecutionError: git --attr-source=b25982cd2a6d7138df5200b729ad262de32f3a07 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=b25982cd2a6d7138df5200b729ad262de32f3a07
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:237:14
+ ❯ src/agents/worktrees/removal-recovery.ts:444:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:239:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:439:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained split-base before native deletion
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained worktree-config before native deletion
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained metadata-mode before native deletion
+AssertionError: expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=97f06ba99c54a3690c7…'
+
+- Expected
++ Received
+
+- Original Git metadata changed
++ git --attr-source=97f06ba99c54a3690c7d3b538f9e01b142eb9c07 checkout-index --stdin -z failed (exit code 129):
++ unknown option: --attr-source=97f06ba99c54a3690c7d3b538f9e01b142eb9c07
++ usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
++            [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
++            [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
++            [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
++            [--super-prefix=<path>] [--config-env=<name>=<envvar>]
++            <command> [<args>]
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:534:30
+    532|         return result;
+    533|       });
+    534|       await expect(recover()).rejects.toThrow("Original Git metadata c…
+       |                              ^
+    535|       expect(injected).toBe(true);
+    536|       expect(await fs.readFile(target)).toEqual(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs clean symlink-file checkout representation
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:562:28
+    560|     await fs.unlink(filename);
+    561|     await fs.unlink(path.join(record.path, ".git"));
+    562|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    563|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+    564|     expect(await git(repo, "show", `${snapshot}:representation`)).toBe…
+
+Caused by: CommandExecutionError: git --attr-source=927834bb8e3014b05e6e5ee8de51ca23ce6077a5 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=927834bb8e3014b05e6e5ee8de51ca23ce6077a5
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:237:14
+ ❯ src/agents/worktrees/removal-recovery.ts:444:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:239:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:439:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs native Unicode filename representation
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:602:28
+    600|     await fs.unlink(target);
+    601|     await fs.unlink(path.join(record.path, ".git"));
+    602|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    603|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+    604|     expect(await git(repo, "show", `${snapshot}:${directory}/${filenam…
+
+Caused by: CommandExecutionError: git --attr-source=d9ca5e6caa29166242201891e8a7ab6161839e74 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=d9ca5e6caa29166242201891e8a7ab6161839e74
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:237:14
+ ❯ src/agents/worktrees/removal-recovery.ts:444:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:239:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:439:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  10 failed | 27 skipped (37)
+   Start at  02:56:56
+   Duration  47.29s (tests 59%, transform 32%, import 6%, worker 2%, setup 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 55.67s
+[test] FAILED (exit 1)

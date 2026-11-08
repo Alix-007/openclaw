@@ -1,0 +1,68 @@
+{
+  "head": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+  "buildStamp": {
+    "builtAt": 1794157151335,
+    "head": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+    "inputsClean": true,
+    "inputSignature": "18654346f36c50be20329be869f552ed6316356d721134713e97ca14d3521989"
+  },
+  "at": "2026-11-08T17:51:09Z",
+  "collectorSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+  "mode": "base",
+  "cases": [
+    {
+      "label": "ordinary-metadata-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "worktrees",
+        "create",
+        "$PROOF_ROOT/git-metadata-base-v2/ordinary-metadata-control/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "$PROOF_ROOT/git-metadata-base-v2/ordinary-metadata-control/metadata\n",
+      "metadataStillExists": true,
+      "exitCode": 0,
+      "seconds": 6.151,
+      "stdout": "{\n  \"id\": \"f5d06f7a-32e0-4225-bf79-522d8395a03d\",\n  \"name\": \"proof\",\n  \"repoFingerprint\": \"a6c32c004338b973\",\n  \"repoRoot\": \"$PROOF_ROOT/git-metadata-base-v2/ordinary-metadata-control/metadata\",\n  \"path\": \"$PROOF_ROOT/git-metadata-base-v2/ordinary-metadata-control/managed/a6c32c004338b973/proof\",\n  \"branch\": \"openclaw/proof\",\n  \"baseRef\": \"refs/heads/main\",\n  \"ownerKind\": \"manual\",\n  \"createdAt\": 1794160275384,\n  \"lastActiveAt\": 1794160275384\n}\n",
+      "stderr": "[agents/worktrees] worktree base refs/heads/main at 10359af183447934bda38bb10ecb8bd64f1ed667 (commit age 0.0 days; fetch not requested)\n[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={\"reason\":\"attributes-probe-failed\",\"backend\":\"xfs\"} outcome=returned errorDetails={} durationMs=3575 unattributedMs=25 phaseDurationsMs={\"repository\":34,\"mutationWait\":1753,\"allocate\":1754,\"sources\":1065,\"allocationWait\":28,\"reservation\":122,\"leaseRelease\":77,\"diskAdmission\":92,\"base\":10,\"registration\":58,\"registrationMetadata\":8,\"registrationInspect\":34,\"commitPrepare\":66,\"templatePrepare\":169,\"templateRelease\":0,\"checkout\":380,\"provisionInspect\":2,\"provision\":16,\"publication\":52,\"sourceRelease\":0}\n",
+      "markerReadback": "independent native checkout marker\n",
+      "listReadback": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "literal-metadata-space",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/baseline/openclaw.mjs",
+        "worktrees",
+        "create",
+        "$PROOF_ROOT/git-metadata-base-v2/literal-metadata-space/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "$PROOF_ROOT/git-metadata-base-v2/literal-metadata-space/metadata \n",
+      "metadataStillExists": true,
+      "exitCode": 1,
+      "seconds": 2.633,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"cli_error\",\n    \"message\": \"ENOENT: no such file or directory, realpath '$PROOF_ROOT/git-metadata-base-v2/literal-metadata-space/metadata'\"\n  }\n}\n",
+      "stderr": "[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={\"reason\":\"not-requested\"} outcome=threw errorDetails={\"errorClass\":\"Error\",\"errorPhase\":\"repository\"} durationMs=29 unattributedMs=3 phaseDurationsMs={\"repository\":26}\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "RED_LITERAL_METADATA_PATH_LOST"
+    }
+  ],
+  "result": "RED_WITH_LEGAL_CONTROL",
+  "boundary": "Normal shipped CLI worktrees create and list, real native Git separate administrative directory and checkout/file readback; disposable offline state only",
+  "cleanup": {
+    "productionTouched": false,
+    "remoteProviderOrChannelUsed": false,
+    "childProcessesWaited": true,
+    "disposableGitAndStateRetainedForInspection": true
+  }
+}

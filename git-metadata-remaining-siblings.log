@@ -1,0 +1,874 @@
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/worktree-metadata-paths
+
+[vitest-workers] local cache hit after 7877ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 07b97541af31 in 8053ms (18878 inputs, 24086 outputs)
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > coalesces default discovery and refreshes settled refs after their freshness window 1278ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > confirms an unchanged default from origin's advertisement without fetching 1597ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > closes an unused base preparation without allowing later Git effects 86ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, settled) 432ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, uncertain-result) 237ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, uncertain-error) 243ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, uncertain-metadata) 222ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, outcome-unknown) 208ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is revoked (fetch, settled) 485ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is revoked (fetch, uncertain-result) 215ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is revoked (fetch, uncertain-error) 216ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is revoked (fetch, uncertain-metadata) 214ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is revoked (fetch, outcome-unknown) 215ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is active (fetch, uncertain-result) 226ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is active (fetch, failed) 213ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, failed) 211ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (ls-remote, uncertain-result) 178ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (symbolic-ref, uncertain-result) 172ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (remote, cancelled-result) 327ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (update-head, cancelled-result) 451ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (verify, cancelled-result) 428ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (remote, uncertain-result) 137ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (config, cancelled-result) 369ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (config, uncertain-result) 177ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (verify, uncertain-result) 255ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (remote, exit-failure) 136ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (remote, output-limit) 134ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, exit-failure) 241ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, output-limit) 247ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (ls-remote, exit-failure) 188ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (remote, cancelled-before-spawn) 358ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > settles shared default fetching after its owner is aborted (fetch, cancelled-before-spawn) 434ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > bounds a recovering follower without cancelling the replacement owner 389ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (survivors) 440ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (late) 427ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (follower) 554ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (all) 278ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (closed) 429ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > worktree default-base preparation > retains consumer authority while recovering a settled default attempt (budget) 270ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > creates from local HEAD without origin on a branch checkout 4552ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > creates from local HEAD without origin on a detached checkout 4225ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > creates from local HEAD without origin on a inherited origin options checkout 5569ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > retains Git's origin destination from inherited URL 4313ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > retains Git's origin destination from relative URL 4252ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > retains Git's origin destination from legacy 4537ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > retains Git's origin destination from implicit path 4238ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > retains Git's origin destination from implicit rewrite 4328ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > shares one dirty local-default decision across a burst of twenty creates 9622ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > shares a prepared default past fetch settlement 9105ms
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > reports repository updates only while fetching the default base 4951ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/base-ref.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |agents-support| src/agents/worktrees/base-ref.test.ts > managed worktree creation groups > reuses a recent default, then refreshes after its freshness window 6524ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: error: invalid object 100644 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa for 'file' 10ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: loose object aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa is corrupt 5ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: error: object file .git/objects/aa/aaaaaaaa is empty 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: unable to read tree aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: not a tree object 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: unable to read aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: could not fetch aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa from promisor remote 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: Unable to create 'index.lock': File exists 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: fatal: unable to access 'remote': Could not resolve host 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > classifies object-storage evidence without deferring unrelated Git failures: git-write-tree: error building trees 4ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > backs off shared-repository snapshots after a missing-object failure 20569ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (promised) 7402ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (promised-retry) 9943ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (unpromised) 11839ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (checksum) 8514ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (byte-limited) 7205ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > consolidates healthy pack batches independently of missing snapshot objects (index-limited) 6675ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > records an admitted deletion timeout after its caller cancels and loses session authority 4536ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > persists timeout backoff for idle owners across restart and retries only when due or explicitly requested 17022ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > persists timeout backoff for retired owners across restart and retries only when due or explicitly requested 15268ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > persists workspace-size backoff for idle owners across restart and retries only when due or explicitly requested 15539ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > persists workspace-size backoff for retired owners across restart and retries only when due or explicitly requested 13603ms
+[vitest] still running with no output for 30000ms.
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > cannot evict an ancestor of a live checkout and retires idle children individually 31901ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves a live dependent's chained object lookup at the cap 7517ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > refuses a late live owner of unresolved shared metadata before deleting its container 6928ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > rechecks relocated backing metadata after the checkpoint await before purging 6791ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > rechecks relocated backing metadata after the snapshot await before purging 7181ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > rechecks relocated backing metadata after the snapshot with replaced source await before purging 7242ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > rechecks relocated backing metadata after the snapshot with private metadata await before purging 6623ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves an external live checkout backed by source repository in checkout 9211ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves an external live checkout backed by source repository in native administration 6316ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves an external live checkout backed by private Git directory in symlinked native administration 7539ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves an incoming linked source with storage in the victim native administration 5867ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > nested eviction > preserves an incoming linked source with storage in the victim control file 5376ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.pluginStateNamespaceOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sessionStateNotices
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.exec-approvals
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.stateDomainPublication.workspace-state
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-budget.test.ts: retiring openclaw.sessionGroupCatalog
+
+ ✓ |agents-support| src/agents/worktrees/service.removal-budget.test.ts > cleans up active owners without ref mutations when there are no packs 3441ms
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs missing files without force, retires only its registration and retains the original capture 6846ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves changed residual writes before any repair 3644ms
+   → expected [Function] to throw error matching /Changed|Foreign/ but got 'Captured checkout representation is u…'
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves symlink residual writes before any repair 1321ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves directory residual writes before any repair 1166ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a replaced branch ref 1136ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > refuses a live managed consumer before touching the partial checkout 943ms
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retains newer writes arriving during reconstruction 3640ms
+   → expected [Function] to throw error matching /already exists/ but got 'git --attr-source=36ae823fd38f8752d05…'
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a early-identity race before deletion 1525ms
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a identity race before deletion 3818ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-QXH8AV/state/worktrees/downstream-fixture/recovery-original/README.md'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a registry race before deletion 3737ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-EB1FJn/state/worktrees/downstream-fixture/recovery/README.md'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a pending race before deletion 3763ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-FDFey0/state/worktrees/downstream-fixture/recovery/README.md'
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves an ignored file arriving after the last awaited inventory 1582ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves the pending pin when registry custody changes after removal publication 2403ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during admission finalization 3477ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during native finalization 2541ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a checkout that reappears after its original path was absent 1440ms
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > never executes a repository clean filter while deleting reconstructed source 4059ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=false 2753ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=true 1785ms
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained split-base before native deletion 3642ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=36ae823fd38f8752d05…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained worktree-config before native deletion 3770ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=36ae823fd38f8752d05…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained metadata-mode before native deletion 3767ms
+   → expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=36ae823fd38f8752d05…'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs clean symlink-file checkout representation 4299ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs native Unicode filename representation 4109ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer administrative index after the checkout has already disappeared 1269ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after listed-checkout finalization without recapturing source 3469ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after branch finalization without recapturing source 3410ms
+ ✓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after pin finalization without recapturing source 3405ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > purges a fleet checkout with a constant Git process budget despite ambient repository redirects 999ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > defers an expired metadata census before admitting or deleting the checkout 139ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > refuses a purge target redirected through its parent during admission 82ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > recognizes a multi-commit squash, invalidates changed heads, and purges only the claimed checkout 1458ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > rechecks relocated metadata after awaiting worktree.eviction-fence 402ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > rechecks relocated metadata after awaiting worktree.eviction-admit 442ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > rechecks relocated source behind a symlink after awaiting worktree.eviction-admit 403ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > rechecks relocated source private metadata after awaiting worktree.eviction-admit 524ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves its own shared source metadata inside the checkout when the source is available 278ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves its own shared source metadata inside the checkout when the source is renamed 218ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves its own shared source metadata inside the checkout when the source is replaced 337ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves borrowed objects when its recorded source has oversized valid alternates 427ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves borrowed objects when its linked checkout source has oversized valid alternates 550ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > keeps an idle standalone replacement purgeable when no shared source metadata resolves 44ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves its own source relocated inside the checkout during admission (registered=true) 238ms
+ ✓ |agents-support| src/agents/worktrees/eviction.runtime.test.ts > preserves its own source relocated inside the checkout during admission (registered=false) 187ms
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves lf prompt bytes and stat data after checkout 631ms
+   → expected [ …(4) ] to deeply equal undefined
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves crlf prompt bytes and stat data after checkout 551ms
+   → expected [ …(4) ] to deeply equal undefined
+ ✓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .gitattributes 498ms
+ ✓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .codex/config.toml 485ms
+ ✓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > falls back for prompt-changing .CODEX/config.toml 560ms
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > selects raw/mixed-case prompts, not unrelated attributes 548ms
+   → expected "vi.fn()" to be called once, but got 0 times
+ ✓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > retains ordinary checkout for linked prompt file .agents/linked.md 447ms
+ ✓ |agents-support| src/agents/worktrees/checkout.prompt.test.ts > retains ordinary checkout for linked prompt file users/Profile_123/USER.md 441ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/checkout.prompt.test.ts: retiring openclaw.stateSnapshotOwners
+
+ × |agents-support| src/agents/worktrees/checkout.prompt.test.ts > removes its partial checkout when the prompt consumer rejects preparation 417ms
+   → promise resolved "{ pid: 3506839, …(15) }" instead of rejecting
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compresses separately acquired revisions (promisor=false) 13540ms
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compresses separately acquired revisions (promisor=true) 10283ms
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compacts committed loose packs while retaining unpublished temporary packs 675ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves lf prompt bytes and stat data after checkout
+AssertionError: expected [ …(4) ] to deeply equal undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      65,
+      71,
+      69,
+      78,
+      84,
+      83,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1239992736,
+    "mtimeMs": 1794163914489.1372,
+    "relative": "AGENTS.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      97,
+      103,
+      101,
+      110,
+      116,
+      115,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      101,
+      120,
+      97,
+      109,
+      112,
+      108,
+      101,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1239992734,
+    "mtimeMs": 1794163914488.1372,
+    "relative": ".agents/skills/example/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      99,
+      111,
+      100,
+      101,
+      120,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      108,
+      111,
+      99,
+      97,
+      108,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 686333620,
+    "mtimeMs": 1794163914488.1372,
+    "relative": ".codex/skills/local/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      117,
+      115,
+      101,
+      114,
+      115,
+      47,
+      80,
+      114,
+      111,
+      102,
+      105,
+      108,
+      101,
+      95,
+      49,
+      50,
+      51,
+      47,
+      85,
+      83,
+      69,
+      82,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 180495606,
+    "mtimeMs": 1794163914490.1372,
+    "relative": "users/Profile_123/USER.md",
+  },
+]
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:113:28
+    111|   });
+    112|   expect(result.code).toBe(0);
+    113|   expect(await snapshot()).toEqual(early);
+       |                            ^
+    114|   expect(await read(destination, "src/main.ts")).toBe(
+    115|     `remaining checkout${eol === "crlf" ? "\r\n" : "\n"}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > preserves crlf prompt bytes and stat data after checkout
+AssertionError: expected [ …(4) ] to deeply equal undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      65,
+      71,
+      69,
+      78,
+      84,
+      83,
+      46,
+      109,
+      100,
+      13,
+      10,
+    ],
+    "ino": 686333714,
+    "mtimeMs": 1794163915065.1807,
+    "relative": "AGENTS.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      97,
+      103,
+      101,
+      110,
+      116,
+      115,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      101,
+      120,
+      97,
+      109,
+      112,
+      108,
+      101,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 686333702,
+    "mtimeMs": 1794163915064.1807,
+    "relative": ".agents/skills/example/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      46,
+      99,
+      111,
+      100,
+      101,
+      120,
+      47,
+      115,
+      107,
+      105,
+      108,
+      108,
+      115,
+      47,
+      108,
+      111,
+      99,
+      97,
+      108,
+      47,
+      83,
+      75,
+      73,
+      76,
+      76,
+      46,
+      109,
+      100,
+      13,
+      10,
+    ],
+    "ino": 180495602,
+    "mtimeMs": 1794163915065.1807,
+    "relative": ".codex/skills/local/SKILL.md",
+  },
+  {
+    "bytes": Buffer [
+      99,
+      111,
+      109,
+      109,
+      105,
+      116,
+      116,
+      101,
+      100,
+      32,
+      117,
+      115,
+      101,
+      114,
+      115,
+      47,
+      80,
+      114,
+      111,
+      102,
+      105,
+      108,
+      101,
+      95,
+      49,
+      50,
+      51,
+      47,
+      85,
+      83,
+      69,
+      82,
+      46,
+      109,
+      100,
+      10,
+    ],
+    "ino": 1792645370,
+    "mtimeMs": 1794163915066.1807,
+    "relative": "users/Profile_123/USER.md",
+  },
+]
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:113:28
+    111|   });
+    112|   expect(result.code).toBe(0);
+    113|   expect(await snapshot()).toEqual(early);
+       |                            ^
+    114|   expect(await read(destination, "src/main.ts")).toBe(
+    115|     `remaining checkout${eol === "crlf" ? "\r\n" : "\n"}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > selects raw/mixed-case prompts, not unrelated attributes
+AssertionError: expected "vi.fn()" to be called once, but got 0 times
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:159:19
+    157|     });
+    158|     expect((await create(ready)).code).toBe(0);
+    159|     expect(ready).toHaveBeenCalledOnce();
+       |                   ^
+    160|     expect(await requireGit(destination, ["status", "--porcelain"])).t…
+    161|   },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/checkout.prompt.test.ts > removes its partial checkout when the prompt consumer rejects preparation
+AssertionError: promise resolved "{ pid: 3506839, …(15) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "cleanup": "normal",
++   "code": 0,
++   "killIssuedByAbort": undefined,
++   "killed": false,
++   "noOutputTimedOut": false,
++   "outputLimitExceeded": undefined,
++   "pid": 3506839,
++   "preservedStderrLines": undefined,
++   "preservedStdoutLines": undefined,
++   "signal": null,
++   "stderr": "Preparing worktree (new branch 'prompt')
++ ",
++   "stderrTruncatedBytes": undefined,
++   "stdout": "",
++   "stdoutTruncatedBytes": undefined,
++   "termination": "exit",
++   "timeoutMs": 300000,
+  }
+
+ ❯ src/agents/worktrees/checkout.prompt.test.ts:182:4
+    180|       throw new Error("prompt consumer canceled");
+    181|     }),
+    182|   ).rejects.toThrow("prompt consumer canceled");
+       |    ^
+    183|   await expect(fs.access(destination)).rejects.toMatchObject({ code: "…
+    184|   expect(await git("branch", "--list", "prompt")).toBe("");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs missing files without force, retires only its registration and retains the original capture
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:148:28
+    146|       return await run(argv, options);
+    147|     });
+    148|     await expect(recover()).resolves.toMatchObject({
+       |                            ^
+    149|       removed: true,
+    150|       snapshotRef: record.snapshotRef ?? `refs/openclaw/snapshots/${re…
+
+Caused by: CommandExecutionError: git --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:235:14
+ ❯ src/agents/worktrees/removal-recovery.ts:451:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:237:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:446:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves changed residual writes before any repair
+AssertionError: expected [Function] to throw error matching /Changed|Foreign/ but got 'Captured checkout representation is u…'
+
+- Expected:
+/Changed|Foreign/
+
++ Received:
+"Captured checkout representation is unavailable; remaining source and original snapshot preserved"
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:178:30
+    176|       }
+    177|       const before = await fs.lstat(path.join(record.path, "README.md"…
+    178|       await expect(recover()).rejects.toThrow(/Changed|Foreign/);
+       |                              ^
+    179|       expect((await fs.lstat(path.join(record.path, "README.md"))).mod…
+    180|       if (kind === "symlink") {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retains newer writes arriving during reconstruction
+AssertionError: expected [Function] to throw error matching /already exists/ but got 'git --attr-source=36ae823fd38f8752d05…'
+
+- Expected:
+/already exists/
+
++ Received:
+"git --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]"
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:231:28
+    229|       return await run(argv, options);
+    230|     });
+    231|     await expect(recover()).rejects.toThrow(/already exists/);
+       |                            ^
+    232|     expect(await fs.readFile(path.join(record.path, "README.md"), "utf…
+    233|     await pinsPreserved();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a identity race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-QXH8AV/state/worktrees/downstream-fixture/recovery-original/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-QXH8AV/state/worktrees/downstream-fixture/recovery-original/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a registry race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-EB1FJn/state/worktrees/downstream-fixture/recovery/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-EB1FJn/state/worktrees/downstream-fixture/recovery/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a pending race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-FDFey0/state/worktrees/downstream-fixture/recovery/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-oYBTCj/openclaw-removal-recovery-FDFey0/state/worktrees/downstream-fixture/recovery/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > never executes a repository clean filter while deleting reconstructed source
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:464:28
+    462|     await fs.unlink(path.join(record.path, "README.md"));
+    463|     await fs.unlink(path.join(record.path, ".git"));
+    464|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    465|     await expect(fs.stat(marker)).rejects.toMatchObject({ code: "ENOEN…
+    466|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+
+Caused by: CommandExecutionError: git --attr-source=ed5205a3ed0825fd72a904735d63f114df96baff checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=ed5205a3ed0825fd72a904735d63f114df96baff
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:235:14
+ ❯ src/agents/worktrees/removal-recovery.ts:451:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:237:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:446:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained split-base before native deletion
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained worktree-config before native deletion
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained metadata-mode before native deletion
+AssertionError: expected [Function] to throw error including 'Original Git metadata changed' but got 'git --attr-source=36ae823fd38f8752d05…'
+
+- Expected
++ Received
+
+- Original Git metadata changed
++ git --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2 checkout-index --stdin -z failed (exit code 129):
++ unknown option: --attr-source=36ae823fd38f8752d05e2ef868cd037f4a7ed5c2
++ usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
++            [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
++            [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
++            [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
++            [--super-prefix=<path>] [--config-env=<name>=<envvar>]
++            <command> [<args>]
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:534:30
+    532|         return result;
+    533|       });
+    534|       await expect(recover()).rejects.toThrow("Original Git metadata c…
+       |                              ^
+    535|       expect(injected).toBe(true);
+    536|       expect(await fs.readFile(target)).toEqual(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs clean symlink-file checkout representation
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:562:28
+    560|     await fs.unlink(filename);
+    561|     await fs.unlink(path.join(record.path, ".git"));
+    562|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    563|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+    564|     expect(await git(repo, "show", `${snapshot}:representation`)).toBe…
+
+Caused by: CommandExecutionError: git --attr-source=256b51236a2496b4502243076428bf2c41776097 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=256b51236a2496b4502243076428bf2c41776097
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:235:14
+ ❯ src/agents/worktrees/removal-recovery.ts:451:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:237:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:446:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs native Unicode filename representation
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:602:28
+    600|     await fs.unlink(target);
+    601|     await fs.unlink(path.join(record.path, ".git"));
+    602|     await expect(recover()).resolves.toMatchObject({ removed: true });
+       |                            ^
+    603|     await expect(fs.stat(record.path)).rejects.toMatchObject({ code: "…
+    604|     expect(await git(repo, "show", `${snapshot}:${directory}/${filenam…
+
+Caused by: CommandExecutionError: git --attr-source=895f44b363e7f431f3437e6d355af5233b793016 checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=895f44b363e7f431f3437e6d355af5233b793016
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:235:14
+ ❯ src/agents/worktrees/removal-recovery.ts:451:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:237:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:446:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  16 failed | 126 passed (142)
+   Start at  02:44:11
+   Duration  492.93s (tests 91%, transform 7%, import 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 505.85s
+[test] FAILED (exit 1)

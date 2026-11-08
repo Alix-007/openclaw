@@ -1,0 +1,211 @@
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/baseline
+
+[vitest-workers] local cache miss after 8295ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared f6e9edab0884 in 138831ms (18868 inputs, 24073 outputs)
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs missing files without force, retires only its registration and retains the original capture 7226ms
+   → promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves changed residual writes before any repair 3540ms
+   → expected [Function] to throw error matching /Changed|Foreign/ but got 'Captured checkout representation is u…'
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves symlink residual writes before any repair
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves directory residual writes before any repair
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a replaced branch ref
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > refuses a live managed consumer before touching the partial checkout
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retains newer writes arriving during reconstruction 3573ms
+   → expected [Function] to throw error matching /already exists/ but got 'git --attr-source=4e2a8049d6621c2f1cc…'
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a early-identity race before deletion
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a identity race before deletion 3665ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-2mUg49/state/worktrees/downstream-fixture/recovery-original/README.md'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a registry race before deletion 3971ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-g9XzCl/state/worktrees/downstream-fixture/recovery/README.md'
+ × |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a pending race before deletion 3989ms
+   → ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-M4GJlo/state/worktrees/downstream-fixture/recovery/README.md'
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves an ignored file arriving after the last awaited inventory
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves the pending pin when registry custody changes after removal publication
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during admission finalization
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a foreign target when the pin becomes symbolic during native finalization
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a checkout that reappears after its original path was absent
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > never executes a repository clean filter while deleting reconstructed source
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=false
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > recovers a retired missing checkout only if its path stays absent, reappeared=true
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained split-base before native deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained worktree-config before native deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer retained metadata-mode before native deletion
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs clean symlink-file checkout representation
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs native Unicode filename representation
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves a newer administrative index after the checkout has already disappeared
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after listed-checkout finalization without recapturing source
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after branch finalization without recapturing source
+ ↓ |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retries an interruption after pin finalization without recapturing source
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.removal-recovery.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > reconstructs missing files without force, retires only its registration and retains the original capture
+AssertionError: promise rejected "CommandExecutionError: git --attr-source=…" instead of resolving
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:148:28
+    146|       return await run(argv, options);
+    147|     });
+    148|     await expect(recover()).resolves.toMatchObject({
+       |                            ^
+    149|       removed: true,
+    150|       snapshotRef: record.snapshotRef ?? `refs/openclaw/snapshots/${re…
+
+Caused by: CommandExecutionError: git --attr-source=4e2a8049d6621c2f1cc9a0f6c82e4e7820031efa checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=4e2a8049d6621c2f1cc9a0f6c82e4e7820031efa
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+ ❯ createCommandError src/process/command-error.ts:90:17
+ ❯ createGitCommandError src/infra/git-exec.ts:357:17
+ ❯ requireGitCommandOutput src/infra/git-exec.ts:394:39
+ ❯ Object.scopedRequire [as require] src/agents/worktrees/checkout-git-config.ts:237:14
+ ❯ src/agents/worktrees/removal-recovery.ts:444:13
+ ❯ withWorktreeGitConfig src/agents/worktrees/checkout-git-config.ts:239:12
+ ❯ recoverRemovalWithAllocation src/agents/worktrees/removal-recovery.ts:439:9
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > preserves changed residual writes before any repair
+AssertionError: expected [Function] to throw error matching /Changed|Foreign/ but got 'Captured checkout representation is u…'
+
+- Expected:
+/Changed|Foreign/
+
++ Received:
+"Captured checkout representation is unavailable; remaining source and original snapshot preserved"
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:178:30
+    176|       }
+    177|       const before = await fs.lstat(path.join(record.path, "README.md"…
+    178|       await expect(recover()).rejects.toThrow(/Changed|Foreign/);
+       |                              ^
+    179|       expect((await fs.lstat(path.join(record.path, "README.md"))).mod…
+    180|       if (kind === "symlink") {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > retains newer writes arriving during reconstruction
+AssertionError: expected [Function] to throw error matching /already exists/ but got 'git --attr-source=4e2a8049d6621c2f1cc…'
+
+- Expected:
+/already exists/
+
++ Received:
+"git --attr-source=4e2a8049d6621c2f1cc9a0f6c82e4e7820031efa checkout-index --stdin -z failed (exit code 129):
+unknown option: --attr-source=4e2a8049d6621c2f1cc9a0f6c82e4e7820031efa
+usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]"
+
+ ❯ src/agents/worktrees/service.removal-recovery.test.ts:231:28
+    229|       return await run(argv, options);
+    230|     });
+    231|     await expect(recover()).rejects.toThrow(/already exists/);
+       |                            ^
+    232|     expect(await fs.readFile(path.join(record.path, "README.md"), "utf…
+    233|     await pinsPreserved();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a identity race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-2mUg49/state/worktrees/downstream-fixture/recovery-original/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-2mUg49/state/worktrees/downstream-fixture/recovery-original/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a registry race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-g9XzCl/state/worktrees/downstream-fixture/recovery/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-g9XzCl/state/worktrees/downstream-fixture/recovery/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.removal-recovery.test.ts > interrupted ordinary worktree removal recovery > rejects a pending race before deletion
+Error: ENOENT: no such file or directory, open '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-M4GJlo/state/worktrees/downstream-fixture/recovery/README.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '$TEST_TMP/oc-vt-m0hsOO/openclaw-removal-recovery-M4GJlo/state/worktrees/downstream-fixture/recovery/README.md' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 22 skipped (28)
+   Start at  02:52:50
+   Duration  197.60s (transform 82%, tests 13%, worker 2%, import 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 206.15s
+[test] FAILED (exit 1)

@@ -1,0 +1,116 @@
+[vitest-workers] local cache hit after 9217ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 18a4b861bf80 in 9416ms (18878 inputs, 24086 outputs)
+[test] starting test/vitest/vitest.infra.config.ts
+
+ RUN  v5.0.5 $PROOF_ROOT/worktree-metadata-paths
+
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > reuses path normalization and preserves ancestry snapshots across inventory revisions 119ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > prepares unchanged source inventories without rebuilding the full ancestry index 5422ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > preserves an absent origin but does not report failed origin reads as absence 302ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > repairs the live repository before snapshotting and a queued restore 21177ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > rejects a live checkout from a different-origin repository before mutation 5021ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > repairs the live repository before lossless cleanup releases its Git lock 7972ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > canonicalizes managed paths minted below a symlinked state directory 6603ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > reuses, snapshots, and restores recorded paths when the new root is unavailable 13169ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > cleans registered work across roots and preserves unregistered custom-root contents 14472ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > preserves deep custom-root contents during GC, including after a root change 6060ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > preserves symlink custom-root contents during GC, including after a root change 6332ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > uses readable defaults and numbers colliding inferred names 6491ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > numbers inferred names around unmanaged Git and filesystem collisions 5607ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > reuses concurrent inferred names for the same owner 6776ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves a clean checkout when ownerKind=workboard requests another base 7231ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves a dirty checkout when ownerKind=workboard requests another base 6952ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves a dirty checkout when ownerKind=session requests another base 7636ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves a dirty checkout when ownerKind=manual requests another base 7400ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves a dirty checkout when ownerKind=undefined requests another base 7394ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > serializes overlapping numeric suffix families 5847ms
+ × |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves an unborn worktree directly under the worktrees root 99ms
+   → Command failed: git -C $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/repo worktree add --orphan -b orphan-reconcile-0 $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/state/worktrees/direct-unborn
+error: unknown option `orphan'
+usage: git worktree add [-f] [--detach] [--checkout] [--lock [--reason <string>]]
+                        [-b <new-branch>] <path> [<commit-ish>]
+
+    -f, --force           checkout <branch> even if already checked out in other worktree
+    -b <branch>           create a new branch
+    -B <branch>           create or reset a branch
+    -d, --detach          detach HEAD at named commit
+    --checkout            populate the new working tree
+    --lock                keep the new working tree locked
+    --reason <string>     reason for locking
+    -q, --quiet           suppress progress reporting
+    --track               set up tracking mode (see git-branch(1))
+    --guess-remote        try to match the new branch name with a remote-tracking branch
+
+
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves unreadable checkout metadata without blocking later cleanup 6885ms
+ ✓ |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > canonicalizes a symlinked state root before matching registered paths 3583ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > enforces CLI snapshot custody (timestamp) 5874ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > enforces CLI snapshot custody (snapshot OID) 4573ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > enforces CLI snapshot custody (repository identity) 4527ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > retires only the exact CLI snapshot 4780ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves exact-state recovery instead of treating it as a redundant ordinary snapshot 3616ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves a reappeared checkout's Git registration 3895ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves an unknown run consumer 3711ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves missing ledger instead of assuming the Git tree contains all recovery data 3631ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves provisioned ledger instead of assuming the Git tree contains all recovery data 3442ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves pending removal ref custody 3866ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves symbolic snapshot ref custody 3783ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves projection custody and ignored bytes that Git equality cannot cover 3815ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > preserves snapshot content absent from the retained ref 3893ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rejects changed snapshot custody at the Git deletion boundary 4796ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rejects changed retained source custody at the Git deletion boundary 4151ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rejects changed pending removal custody at the Git deletion boundary 4036ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rejects changed retained symref custody at the Git deletion boundary 3945ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rechecks registry lifecycle at the deletion boundary 4072ms
+ ✓ |infra| src/agents/worktrees/service.retire-snapshot.test.ts > Exact removed worktree snapshot retirement > rechecks caller authority at the deletion boundary 3719ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |infra| src/agents/worktrees/service.canonical-paths.test.ts > ManagedWorktreeService canonical paths > allocation and orphan preservation > preserves an unborn worktree directly under the worktrees root
+Error: Command failed: git -C $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/repo worktree add --orphan -b orphan-reconcile-0 $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/state/worktrees/direct-unborn
+error: unknown option `orphan'
+usage: git worktree add [-f] [--detach] [--checkout] [--lock [--reason <string>]]
+                        [-b <new-branch>] <path> [<commit-ish>]
+
+    -f, --force           checkout <branch> even if already checked out in other worktree
+    -b <branch>           create a new branch
+    -B <branch>           create or reset a branch
+    -d, --detach          detach HEAD at named commit
+    --checkout            populate the new working tree
+    --lock                keep the new working tree locked
+    --reason <string>     reason for locking
+    -q, --quiet           suppress progress reporting
+    --track               set up tracking mode (see git-branch(1))
+    --guess-remote        try to match the new branch name with a remote-tracking branch
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 129, killed: false, signal: null, cmd: 'git -C $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/repo worktree add --orphan -b orphan-reconcile-0 $TEST_TMP/oc-vt-mJvxUm/openclaw-worktree-canonical-paths-DrORbA/state/worktrees/direct-unborn', stdout: '', stderr: 'error: unknown option `orphan'
+usage: git worktree add [-f] [--detach] [--checkout] [--lock [--reason <string>]]
+                        [-b <new-branch>] <path> [<commit-ish>]
+
+    -f, --force           checkout <branch> even if already checked out in other worktree
+    -b <branch>           create a new branch
+    -B <branch>           create or reset a branch
+    -d, --detach          detach HEAD at named commit
+    --checkout            populate the new working tree
+    --lock                keep the new working tree locked
+    --reason <string>     reason for locking
+    -q, --quiet           suppress progress reporting
+    --track               set up tracking mode (see git-branch(1))
+    --guess-remote        try to match the new branch name with a remote-tracking branch
+
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 41 passed (42)
+   Start at  02:37:52
+   Duration  270.71s (tests 88%, transform 9%, import 2%, setup 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 288.97s
+[test] FAILED (exit 1)

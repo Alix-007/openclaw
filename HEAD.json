@@ -1,0 +1,70 @@
+{
+  "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+  "buildStamp": {
+    "builtAt": 1794163804463,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "inputsClean": true,
+    "inputSignature": "54491007036df8a6ba3893cd583656b57ce95aeb612dc6ef93718d12e99a977c"
+  },
+  "at": "2026-11-08T18:56:45Z",
+  "collectorSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+  "mode": "head",
+  "cases": [
+    {
+      "label": "ordinary-metadata-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/worktree-metadata-paths/openclaw.mjs",
+        "worktrees",
+        "create",
+        "$PROOF_ROOT/git-metadata-head-v2/ordinary-metadata-control/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "$PROOF_ROOT/git-metadata-head-v2/ordinary-metadata-control/metadata\n",
+      "metadataStillExists": true,
+      "exitCode": 0,
+      "seconds": 9.19,
+      "stdout": "{\n  \"id\": \"038d8ca6-2331-4637-8a02-92a76afd7523\",\n  \"name\": \"proof\",\n  \"repoFingerprint\": \"1f4fdf1ce309b25b\",\n  \"repoRoot\": \"$PROOF_ROOT/git-metadata-head-v2/ordinary-metadata-control/metadata\",\n  \"path\": \"$PROOF_ROOT/git-metadata-head-v2/ordinary-metadata-control/managed/1f4fdf1ce309b25b/proof\",\n  \"branch\": \"openclaw/proof\",\n  \"baseRef\": \"refs/heads/main\",\n  \"ownerKind\": \"manual\",\n  \"createdAt\": 1794164213931,\n  \"lastActiveAt\": 1794164213931\n}\n",
+      "stderr": "[agents/worktrees] worktree base refs/heads/main at a36498a57c0b0da457ed975f59c78fd71b6452b6 (commit age 0.0 days; fetch not requested)\n[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={\"reason\":\"attributes-probe-failed\",\"backend\":\"xfs\"} outcome=returned errorDetails={} durationMs=4142 unattributedMs=35 phaseDurationsMs={\"repository\":37,\"mutationWait\":1764,\"allocate\":1765,\"sources\":1283,\"allocationWait\":29,\"reservation\":142,\"leaseRelease\":91,\"diskAdmission\":149,\"base\":14,\"registration\":72,\"registrationMetadata\":10,\"registrationInspect\":40,\"commitPrepare\":81,\"templatePrepare\":360,\"templateRelease\":0,\"checkout\":627,\"provisionInspect\":3,\"provision\":19,\"publication\":76,\"sourceRelease\":0}\n",
+      "markerReadback": "independent native checkout marker\n",
+      "listReadback": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "literal-metadata-space",
+      "command": [
+        "$NODE26/bin/node",
+        "$PROOF_ROOT/worktree-metadata-paths/openclaw.mjs",
+        "worktrees",
+        "create",
+        "$PROOF_ROOT/git-metadata-head-v2/literal-metadata-space/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "$PROOF_ROOT/git-metadata-head-v2/literal-metadata-space/metadata \n",
+      "metadataStillExists": true,
+      "exitCode": 0,
+      "seconds": 6.506,
+      "stdout": "{\n  \"id\": \"c58a9729-8929-41dd-b824-d451b4068306\",\n  \"name\": \"proof\",\n  \"repoFingerprint\": \"7bf2e2c564e3456f\",\n  \"repoRoot\": \"$PROOF_ROOT/git-metadata-head-v2/literal-metadata-space/metadata \",\n  \"path\": \"$PROOF_ROOT/git-metadata-head-v2/literal-metadata-space/managed/7bf2e2c564e3456f/proof\",\n  \"branch\": \"openclaw/proof\",\n  \"baseRef\": \"refs/heads/main\",\n  \"ownerKind\": \"manual\",\n  \"createdAt\": 1794164224529,\n  \"lastActiveAt\": 1794164224529\n}\n",
+      "stderr": "[agents/worktrees] worktree base refs/heads/main at 003ef1e37430c988b2fb61c55607ef04b9abfc9b (commit age 0.0 days; fetch not requested)\n[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={\"reason\":\"attributes-probe-failed\",\"backend\":\"xfs\"} outcome=returned errorDetails={} durationMs=3632 unattributedMs=29 phaseDurationsMs={\"repository\":54,\"mutationWait\":1811,\"allocate\":1813,\"sources\":1073,\"allocationWait\":34,\"reservation\":133,\"leaseRelease\":37,\"diskAdmission\":86,\"base\":10,\"registration\":54,\"registrationMetadata\":9,\"registrationInspect\":38,\"commitPrepare\":68,\"templatePrepare\":163,\"templateRelease\":0,\"checkout\":376,\"provisionInspect\":3,\"provision\":16,\"publication\":42,\"sourceRelease\":0}\n",
+      "markerReadback": "independent native checkout marker\n",
+      "listReadback": true,
+      "result": "GREEN"
+    }
+  ],
+  "result": "GREEN",
+  "boundary": "Normal shipped CLI worktrees create and list, real native Git separate administrative directory and checkout/file readback; disposable offline state only",
+  "cleanup": {
+    "productionTouched": false,
+    "remoteProviderOrChannelUsed": false,
+    "childProcessesWaited": true,
+    "disposableGitAndStateRetainedForInspection": true
+  }
+}
