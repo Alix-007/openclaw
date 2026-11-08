@@ -1,0 +1,295 @@
+{
+  "startedAt": "2026-11-08T18:42:38.730Z",
+  "head": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+  "build": {
+    "version": "2026.11.1",
+    "commit": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+    "builtAt": "2026-11-08T16:54:49.762Z",
+    "release": false,
+    "commitAt": "2026-11-08T16:28:50.000Z",
+    "branch": null,
+    "dirty": false,
+    "buildId": "2026.11.1-5fe1403b94d7-2026-11-08T16-54-49.762Z"
+  },
+  "indexSha256": "b4b55d704e43160f3a447c2762dc61453c29d46f237913189a90514aacbd5251",
+  "collectorSha256": "6e0dadcdd7a01ae60d1e78bee1995c10e8d8d970bf01dacce1bb746d7e2f600a",
+  "sourceHashes": {
+    "ui/src/pages/skills/library-dialog.tsx": "9dbdf3d6ebb4e9bbfca2de68ca69507e3e33ea1e791fbe0d7f78f9e8087d54e3",
+    "ui/src/pages/skills/library-dialog-content.tsx": "affa0fe404847058c5533b0b6f34181a1cebb2c0aaf5a1699451920933e40b43",
+    "ui/src/pages/skills/library-state.ts": "fc1cf745293a52349bdefacf35ede46c26ec9cfc6431881080c4279bb284f38c"
+  },
+  "status": "RED_SAVED_DURING_NATIVE_COMPOSITION",
+  "errors": [],
+  "limitations": [
+    "Real normally built production UI in native Chromium; official synthetic Gateway supplies skill library fixtures and records only synthetic writes. No real skills/files, external channel, model or production Gateway changed.",
+    "Chromium CDP Input.imeSetComposition creates an actual browser IME composition; Playwright keyboard sends the ordinary Ctrl+Enter shortcut. Event observation records actual isTrusted/isComposing without manufacturing flags or calling product owners.",
+    "This proves Chromium behavior only, not macOS/Windows IME or WebKit platform compatibility."
+  ],
+  "baseUrl": "http://127.0.0.1:45321/",
+  "served": {
+    "indexSha256": "b4b55d704e43160f3a447c2762dc61453c29d46f237913189a90514aacbd5251",
+    "entryPath": "./assets/index-BkNGDhTO.js",
+    "entrySha256": "e5336d50fb64bd3fab56ebbe363a2150342532140ae21407adb23898f0d948d2"
+  },
+  "positiveControl": {
+    "status": "PASS",
+    "request": {
+      "id": "19:ea27b74e-f17a-440f-84ba-d30a31dc85fc",
+      "method": "skills.library.save",
+      "params": {
+        "expectedRevision": null,
+        "slug": "release-notes",
+        "content": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: ",
+        "files": []
+      }
+    },
+    "events": [
+      {
+        "type": "keydown",
+        "key": "Control",
+        "code": "ControlLeft",
+        "keyCode": 17,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "keydown",
+        "key": "Enter",
+        "code": "Enter",
+        "keyCode": 13,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "keyup",
+        "key": "Enter",
+        "code": "Enter",
+        "keyCode": 13,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "keyup",
+        "key": "Control",
+        "code": "ControlLeft",
+        "keyCode": 17,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      }
+    ]
+  },
+  "beforeKey": {
+    "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時",
+    "events": [
+      {
+        "type": "keydown",
+        "key": "End",
+        "code": "End",
+        "keyCode": 35,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "keyup",
+        "key": "End",
+        "code": "End",
+        "keyCode": 35,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "compositionstart",
+        "isTrusted": true,
+        "data": "",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "compositionupdate",
+        "isTrusted": true,
+        "data": "臨時",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "beforeinput",
+        "isComposing": true,
+        "isTrusted": true,
+        "data": "臨時",
+        "inputType": "insertCompositionText",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "input",
+        "isComposing": true,
+        "isTrusted": true,
+        "data": "臨時",
+        "inputType": "insertCompositionText",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      }
+    ]
+  },
+  "afterKey": {
+    "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時",
+    "events": [
+      {
+        "type": "keydown",
+        "key": "End",
+        "code": "End",
+        "keyCode": 35,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "keyup",
+        "key": "End",
+        "code": "End",
+        "keyCode": 35,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": false,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "compositionstart",
+        "isTrusted": true,
+        "data": "",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "compositionupdate",
+        "isTrusted": true,
+        "data": "臨時",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "beforeinput",
+        "isComposing": true,
+        "isTrusted": true,
+        "data": "臨時",
+        "inputType": "insertCompositionText",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: "
+      },
+      {
+        "type": "input",
+        "isComposing": true,
+        "isTrusted": true,
+        "data": "臨時",
+        "inputType": "insertCompositionText",
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      },
+      {
+        "type": "keydown",
+        "key": "Control",
+        "code": "ControlLeft",
+        "keyCode": 17,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      },
+      {
+        "type": "keydown",
+        "key": "Enter",
+        "code": "Enter",
+        "keyCode": 13,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      },
+      {
+        "type": "keyup",
+        "key": "Enter",
+        "code": "Enter",
+        "keyCode": 13,
+        "ctrlKey": true,
+        "metaKey": false,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      },
+      {
+        "type": "keyup",
+        "key": "Control",
+        "code": "ControlLeft",
+        "keyCode": 17,
+        "ctrlKey": false,
+        "metaKey": false,
+        "isComposing": true,
+        "isTrusted": true,
+        "defaultPrevented": false,
+        "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+      }
+    ],
+    "requests": [
+      {
+        "id": "19:58c96cf3-c027-4dfe-b4bc-ff6df63e8a02",
+        "method": "skills.library.save",
+        "params": {
+          "expectedRevision": null,
+          "slug": "release-notes",
+          "content": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時",
+          "files": []
+        }
+      }
+    ],
+    "dialogOpen": true
+  },
+  "actualShortcut": {
+    "type": "keydown",
+    "key": "Enter",
+    "code": "Enter",
+    "keyCode": 13,
+    "ctrlKey": true,
+    "metaKey": false,
+    "isComposing": true,
+    "isTrusted": true,
+    "defaultPrevented": false,
+    "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+  },
+  "cleanupDraft": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時",
+  "finishedAt": "2026-11-08T18:42:47.228Z",
+  "cleanup": "Closed all isolated browser contexts and owned preview server. Premature composing writes on baseline were deferred/rejected; positive controls and final committed save use only the synthetic recorder. No real skill library or Gateway writes."
+}

@@ -1,0 +1,119 @@
+{
+  "head": "07d55fc2edb8afbcd7055cbc8408bc223188dd6d",
+  "base": "5fe1403b94d74f8a933ca50a778e6c9bfdfd7b78",
+  "collector_sha256": "6e0dadcdd7a01ae60d1e78bee1995c10e8d8d970bf01dacce1bb746d7e2f600a",
+  "base_receipt_sha256": "cbe92d7ccf673e31184991017916657b21fc58921c1e4cd73c56534f658cef9a",
+  "head_receipt_sha256": "c0622f647630db63cedfc4d91adbcca4cb194fe6205e3f5b8ad0b3d317a89d5b",
+  "head_build": {
+    "version": "2026.11.1",
+    "commit": "07d55fc2edb8afbcd7055cbc8408bc223188dd6d",
+    "builtAt": "2026-11-08T18:32:29.394Z",
+    "release": false,
+    "commitAt": "2026-11-08T18:22:11.000Z",
+    "branch": "alix/fix-skill-editor-ime-20261109",
+    "dirty": false,
+    "buildId": "2026.11.1-07d55fc2edb8-2026-11-08T18-32-29.394Z"
+  },
+  "head_served": {
+    "indexSha256": "1231efcc997adc72aac987989b804b82ebc1283f8ec2657e9530b02995c00e98",
+    "entryPath": "./assets/index-BkNGDhTO.js",
+    "entrySha256": "e5336d50fb64bd3fab56ebbe363a2150342532140ae21407adb23898f0d948d2"
+  },
+  "baseline_seconds": 10.966,
+  "head_seconds": 10.179,
+  "acceptance": {
+    "basePrematureWrites": 1,
+    "headPrematureWrites": 0,
+    "ordinaryControls": "exactly one correct request and visible published receipt on both BASE and HEAD",
+    "headPostComposition": "actual recorded compositionend then trusted non-composing CtrlEnter, exact authoredfinalcontent, exactlyone save and visible published receipt",
+    "commitObservation": {
+      "method": "CDP Input.insertText",
+      "events": [
+        {
+          "type": "compositionend",
+          "isTrusted": false,
+          "data": "臨時",
+          "defaultPrevented": false,
+          "value": "---\nname: release-notes\ndescription: Draft concise release notes from a reviewed change list.\n---\n\n# release-notes\n\nRead references/checklist.md before beginning.\n\nNative IME acceptance fixture: 臨時"
+        }
+      ],
+      "limitation": "Chromium CDP commit reports compositionend.isTrusted=false; trusted native compositionstart/input/composing shortcut and subsequent non-composing shortcut are separately required. No page-dispatched event or altered flag."
+    }
+  },
+  "assets": [
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-proof-v3.mjs",
+      "sha256": "6e0dadcdd7a01ae60d1e78bee1995c10e8d8d970bf01dacce1bb746d7e2f600a",
+      "bytes": 11663
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-base-v3-1794163356336681832/receipt.json",
+      "sha256": "cbe92d7ccf673e31184991017916657b21fc58921c1e4cd73c56534f658cef9a",
+      "bytes": 13519
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-base-v3-1794163356336681832/after-composing-shortcut.png",
+      "sha256": "bece488979734fb77f126fff317cf53d067be6655df9733cba1bcfd42988bde8",
+      "bytes": 80730
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-head-v3-1794163356337254106/receipt.json",
+      "sha256": "c0622f647630db63cedfc4d91adbcca4cb194fe6205e3f5b8ad0b3d317a89d5b",
+      "bytes": 23151
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-head-v3-1794163356337254106/after-composing-shortcut.png",
+      "sha256": "b82221fc46c283ade235eac07e3a23963f990e3999165ce8a465880e0f4c0343",
+      "bytes": 81882
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-head-v3-1794163356337254106/committed-composition-saved.png",
+      "sha256": "9a47b89785bcacd11cc6f4df3182fa8b8a7f4ef350cd8cde5eb2b7980219b667",
+      "bytes": 95451
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-head-v3-1794163356337254106/ordinary-shortcut-control.png",
+      "sha256": "e66e517980f9a7a29fd0c6eea5e1835f2a8d0c25808d89d0c9a1d06781e93f68",
+      "bytes": 94962
+    },
+    {
+      "source": "$PROOF_ROOT/scout-ui-library-ime-base-v3-1794163356336681832/ordinary-shortcut-control.png",
+      "sha256": "4b55068071d8706af9559eda13925d0e0f8b53b2ef09396095edde2d10b13bf2",
+      "bytes": 94624
+    }
+  ],
+  "visual_inspection": "HEAD after-composing-shortcut and committed-composition-saved visually inspected via view_image; native active text retained and normalpublishedreceipt visible. SyntheticAlice/release-notes only.",
+  "hosting": "Root to upload sanitized inspectable proof to PUBLIC Alix fork orphan asset commit + immutable evidence tag, not product branch. Private guide/Gist not accepted public proof.",
+  "limitations": [
+    "Real normally built production UI in native Chromium; official synthetic Gateway supplies skill library fixtures and records only synthetic writes. No real skills/files, external channel, model or production Gateway changed.",
+    "Chromium CDP Input.imeSetComposition creates an actual browser IME composition; Playwright keyboard sends the ordinary Ctrl+Enter shortcut. Event observation records actual isTrusted/isComposing without manufacturing flags or calling product owners.",
+    "This proves Chromium behavior only, not macOS/Windows IME or WebKit platform compatibility.",
+    "CDP commit compositionend isTrusted=false, recorded honestly; start/input/composing shortcut and ordinary after-commit key are independently trusted.",
+    "Normal UI wrapper exit0; chatbootgzip advisory1266.9>1266.4 also on BASE. Hosted/performance green not claimed.",
+    "No OS-native IME, macOS/Windows/WebKit or liveGatewaypersistence/model/channel proof."
+  ],
+  "failed_prior_attempts": [
+    {
+      "receipt": "$PROOF_ROOT/scout-ui-library-ime-head-v2-1794162946893013158/receipt.json",
+      "reason": "External collector overconstrained CDP compositionend isTrusted; actual fix already suppressed composing save, finalcommitcontrolwaitblocked."
+    },
+    {
+      "receipt": "$PROOF_ROOT/scout-ui-library-ime-commit-diagnostic-1794163153147300198/receipt.json",
+      "reason": "One diagnostic confirmed CDPcommitendflagfalse with text/focusretained, not product failure."
+    }
+  ],
+  "cleanup": "Closed all isolated browser contexts and owned preview server. Premature composing writes on baseline were deferred/rejected; positive controls and final committed save use only the synthetic recorder. No real skill library or Gateway writes.",
+  "affectedBuiltLazyChunks": {
+    "base": {
+      "path": "library-dialog-content-BhyWjTc3.js",
+      "sha256": "10d7bbc01925eddbc6019b01f447412d918654b33d842b6bbb6a5bf48678f954",
+      "bytes": 12405
+    },
+    "head": {
+      "path": "library-dialog-content-dnym_NQ-.js",
+      "sha256": "99ea7ad309d4303112fe4b654044e5979aef6eaadcb5ce6aa93116017cf93dd1",
+      "bytes": 12556
+    },
+    "qualification": "Read-only exact normal-build output hash comparison after completed native proof. Library editor is lazy; unchanged eager index JS is expected. Actual browser UI through shared owner changed RED→GREEN and clean matching built index/served entry ownership guards passed. This supplemental leaf hash is not labeled an independently captured browser network-response hash."
+  }
+}
