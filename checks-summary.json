@@ -1,0 +1,41 @@
+{
+  "productHead": "d7193d9b29bfdf9edd478be1219a57aebc3500d9",
+  "base": "be82aeb77bbc08661080049650679dc602d8d197",
+  "productionLOC": {
+    "added": 4,
+    "removed": 4,
+    "net": 0
+  },
+  "testLOC": 0,
+  "syntax": {
+    "command": "bash -n skills/openai-whisper-api/scripts/transcribe.sh",
+    "exitCode": 0
+  },
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "nativeProof": {
+    "baseCases": 6,
+    "red": 4,
+    "legalControls": 2,
+    "headCases": 6,
+    "headGreen": 6,
+    "headElapsedSeconds": 3.742
+  },
+  "independentReview": {
+    "route": "User-authorized independent agent fallback; not the official autoreview helper",
+    "verdict": "pass",
+    "findings": [],
+    "reviewedFullOwnerSHA256": "44a8ca6b8820ed51d39a4b0f61b1ffe0959c969f3110fc95182a079664ebc93a",
+    "committedBlobMatches": true
+  },
+  "testFileDecision": "The three accepted same-script predecessor patches retained the actual shipped helper and removed standalone Python integration tests. This four-line existing-primitive change retains the native shell/curl wire collector outside the product branch.",
+  "notRun": [
+    "Dependency installation or TypeScript build (interpreted shell-only delta)",
+    "Real paid OpenAI transcription",
+    "Other operating systems/curl distributions",
+    "Diarize speaker rendering / all output-format combinations",
+    "Upstream PR CI before PR creation"
+  ]
+}

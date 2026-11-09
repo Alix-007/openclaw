@@ -1,0 +1,407 @@
+{
+  "head": "be82aeb77bbc08661080049650679dc602d8d197",
+  "scriptSHA256": "0d34a26a71769388f2d3f05021b6c7271a153bd1a4e9124e12e458936e5c1634",
+  "collectorSHA256": "8337b4a596ae7a70dabdceb81074735ddf011a575d44c17209ec48e53690cbc0",
+  "expectation": "red",
+  "entry": "Actual bundled transcribe.sh via bash, normal curl executable, existing OPENAI_BASE_URL loopback compatible-endpoint option",
+  "boundary": "Real multipart HTTP receiver -> response -> output-file readback; synthetic receiver only, no actual OpenAI transcription accuracy/service is claimed",
+  "cases": [
+    {
+      "label": "ordinary-control",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/ordinary-control/input.wav",
+        "--model",
+        "gpt-4o-transcribe",
+        "--language",
+        "en",
+        "--prompt",
+        "ordinary hint",
+        "--out",
+        "$CHECKOUT-base-v3/ordinary-control/transcript.txt"
+      ],
+      "exitCode": 0,
+      "seconds": 0.525,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": true,
+          "parts": [
+            {
+              "name": "file",
+              "filename": "input.wav",
+              "contentType": "application/octet-stream",
+              "text": null,
+              "bodySHA256": "60c0b6c740c791f5d9c1b7d688aa4e6719b93c8f4e7c4b7919ab86ad78b74068"
+            },
+            {
+              "name": "model",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "gpt-4o-transcribe",
+              "bodySHA256": "65c3ce8bf2de62f04e5009515f00e849193f3cecb7b5a545fcdcc46cfa452e95"
+            },
+            {
+              "name": "response_format",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "json",
+              "bodySHA256": "02bd175f329720378ce83dd56a1b6b1f5291a60182d6c54b5e0d1e8d248a267a"
+            },
+            {
+              "name": "language",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "en",
+              "bodySHA256": "dbd3a49d0d906b4ed9216b73330d2fb080ef2f758c12f3885068222e5e17151c"
+            },
+            {
+              "name": "prompt",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "ordinary hint",
+              "bodySHA256": "1854d9cb4dfe104906819b08205f3d3d11ae9753ba097a571ed93d386310b78e"
+            }
+          ],
+          "rawBodySHA256": "dd434292c32b9559222bfd7cd9ff9d9f7da9c3fcc6004f96a7596a920f72f89a",
+          "syntheticPrivateBytesObserved": false
+        }
+      ],
+      "stdout": "$CHECKOUT-base-v3/ordinary-control/transcript.txt\n",
+      "stderr": "",
+      "outputReadback": "synthetic transcription readback",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "model-alias-no-local-file",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/model-alias-no-local-file/input.wav",
+        "--model",
+        "@local/whisper",
+        "--language",
+        "en",
+        "--prompt",
+        "ordinary hint",
+        "--out",
+        "$CHECKOUT-base-v3/model-alias-no-local-file/transcript.txt"
+      ],
+      "exitCode": 26,
+      "seconds": 0.518,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": false,
+          "rawBodySHA256": "886f47dcc24369df9cf4772172871e3475f5840466cabde3f0b0411ad24690ca",
+          "syntheticPrivateBytesObserved": false
+        }
+      ],
+      "stdout": "",
+      "stderr": "curl: (26) read function returned funny value\n",
+      "outputReadback": "original transcript",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "RED_MODEL_ALIAS_OPENED_AS_LOCAL_FILE_BEFORE_HTTP"
+    },
+    {
+      "label": "model-file-marker",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/model-file-marker/input.wav",
+        "--model",
+        "@$CHECKOUT-base-v3/model-file-marker/synthetic-private-field.txt",
+        "--language",
+        "en",
+        "--prompt",
+        "ordinary hint",
+        "--out",
+        "$CHECKOUT-base-v3/model-file-marker/transcript.txt"
+      ],
+      "exitCode": 0,
+      "seconds": 0.519,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": true,
+          "parts": [
+            {
+              "name": "file",
+              "filename": "input.wav",
+              "contentType": "application/octet-stream",
+              "text": null,
+              "bodySHA256": "60c0b6c740c791f5d9c1b7d688aa4e6719b93c8f4e7c4b7919ab86ad78b74068"
+            },
+            {
+              "name": "model",
+              "filename": "synthetic-private-field.txt",
+              "contentType": "text/plain",
+              "text": null,
+              "bodySHA256": "903d10d25a71527bae8b97c8825545f16ae9176c865693d6df9e9b281b99c25a"
+            },
+            {
+              "name": "response_format",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "text",
+              "bodySHA256": "982d9e3eb996f559e633f4d194def3761d909f5a3b647d1a851fead67c32c9d1"
+            },
+            {
+              "name": "language",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "en",
+              "bodySHA256": "dbd3a49d0d906b4ed9216b73330d2fb080ef2f758c12f3885068222e5e17151c"
+            },
+            {
+              "name": "prompt",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "ordinary hint",
+              "bodySHA256": "1854d9cb4dfe104906819b08205f3d3d11ae9753ba097a571ed93d386310b78e"
+            }
+          ],
+          "rawBodySHA256": "62e27fab3901ac81d8d8bdfdc6c3d257e5feeab7e451958f0a177dcf6fe027b6",
+          "syntheticPrivateBytesObserved": true
+        }
+      ],
+      "stdout": "$CHECKOUT-base-v3/model-file-marker/transcript.txt\n",
+      "stderr": "",
+      "outputReadback": "{\"text\":\"synthetic transcription readback\"}",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "RED_TEXT_FIELD_PARSED_AS_CURL_FORM_SYNTAX"
+    },
+    {
+      "label": "language-file-marker",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/language-file-marker/input.wav",
+        "--model",
+        "gpt-4o-transcribe",
+        "--language",
+        "<$CHECKOUT-base-v3/language-file-marker/synthetic-private-field.txt",
+        "--prompt",
+        "ordinary hint",
+        "--out",
+        "$CHECKOUT-base-v3/language-file-marker/transcript.txt"
+      ],
+      "exitCode": 0,
+      "seconds": 0.517,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": true,
+          "parts": [
+            {
+              "name": "file",
+              "filename": "input.wav",
+              "contentType": "application/octet-stream",
+              "text": null,
+              "bodySHA256": "60c0b6c740c791f5d9c1b7d688aa4e6719b93c8f4e7c4b7919ab86ad78b74068"
+            },
+            {
+              "name": "model",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "gpt-4o-transcribe",
+              "bodySHA256": "65c3ce8bf2de62f04e5009515f00e849193f3cecb7b5a545fcdcc46cfa452e95"
+            },
+            {
+              "name": "response_format",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "json",
+              "bodySHA256": "02bd175f329720378ce83dd56a1b6b1f5291a60182d6c54b5e0d1e8d248a267a"
+            },
+            {
+              "name": "language",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "SYNTHETIC_PRIVATE_FIELD_MUST_NOT_BE_UPLOADED",
+              "bodySHA256": "903d10d25a71527bae8b97c8825545f16ae9176c865693d6df9e9b281b99c25a"
+            },
+            {
+              "name": "prompt",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "ordinary hint",
+              "bodySHA256": "1854d9cb4dfe104906819b08205f3d3d11ae9753ba097a571ed93d386310b78e"
+            }
+          ],
+          "rawBodySHA256": "e917112a865a8491d53b696c70159fb992304131241ae666323ce4d295d4b2b3",
+          "syntheticPrivateBytesObserved": true
+        }
+      ],
+      "stdout": "$CHECKOUT-base-v3/language-file-marker/transcript.txt\n",
+      "stderr": "",
+      "outputReadback": "synthetic transcription readback",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "RED_TEXT_FIELD_PARSED_AS_CURL_FORM_SYNTAX"
+    },
+    {
+      "label": "model-form-delimiter",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/model-form-delimiter/input.wav",
+        "--model",
+        "custom;type=application/json",
+        "--language",
+        "en",
+        "--prompt",
+        "ordinary hint",
+        "--out",
+        "$CHECKOUT-base-v3/model-form-delimiter/transcript.txt"
+      ],
+      "exitCode": 0,
+      "seconds": 0.518,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": true,
+          "parts": [
+            {
+              "name": "file",
+              "filename": "input.wav",
+              "contentType": "application/octet-stream",
+              "text": null,
+              "bodySHA256": "60c0b6c740c791f5d9c1b7d688aa4e6719b93c8f4e7c4b7919ab86ad78b74068"
+            },
+            {
+              "name": "model",
+              "filename": null,
+              "contentType": "application/json",
+              "text": "custom",
+              "bodySHA256": "6cdfd271da635d491e37a2b4a1044b306e6e9e039aeadee95bb355efadf8cb33"
+            },
+            {
+              "name": "response_format",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "text",
+              "bodySHA256": "982d9e3eb996f559e633f4d194def3761d909f5a3b647d1a851fead67c32c9d1"
+            },
+            {
+              "name": "language",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "en",
+              "bodySHA256": "dbd3a49d0d906b4ed9216b73330d2fb080ef2f758c12f3885068222e5e17151c"
+            },
+            {
+              "name": "prompt",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "ordinary hint",
+              "bodySHA256": "1854d9cb4dfe104906819b08205f3d3d11ae9753ba097a571ed93d386310b78e"
+            }
+          ],
+          "rawBodySHA256": "97e2a2e84cdc5641831eabb79d4cff28d0979642c73bd80113637b81ce105a72",
+          "syntheticPrivateBytesObserved": false
+        }
+      ],
+      "stdout": "$CHECKOUT-base-v3/model-form-delimiter/transcript.txt\n",
+      "stderr": "",
+      "outputReadback": "{\"text\":\"synthetic transcription readback\"}",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "RED_TEXT_FIELD_PARSED_AS_CURL_FORM_SYNTAX"
+    },
+    {
+      "label": "literal-prompt-control",
+      "command": [
+        "bash",
+        "$BASE_CHECKOUT/skills/openai-whisper-api/scripts/transcribe.sh",
+        "$CHECKOUT-base-v3/literal-prompt-control/input.wav",
+        "--model",
+        "gpt-4o-transcribe",
+        "--language",
+        "en",
+        "--prompt",
+        "@$CHECKOUT-base-v3/literal-prompt-control/nonexistent-literal-prompt",
+        "--out",
+        "$CHECKOUT-base-v3/literal-prompt-control/transcript.txt"
+      ],
+      "exitCode": 0,
+      "seconds": 0.518,
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "complete": true,
+          "parts": [
+            {
+              "name": "file",
+              "filename": "input.wav",
+              "contentType": "application/octet-stream",
+              "text": null,
+              "bodySHA256": "60c0b6c740c791f5d9c1b7d688aa4e6719b93c8f4e7c4b7919ab86ad78b74068"
+            },
+            {
+              "name": "model",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "gpt-4o-transcribe",
+              "bodySHA256": "65c3ce8bf2de62f04e5009515f00e849193f3cecb7b5a545fcdcc46cfa452e95"
+            },
+            {
+              "name": "response_format",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "json",
+              "bodySHA256": "02bd175f329720378ce83dd56a1b6b1f5291a60182d6c54b5e0d1e8d248a267a"
+            },
+            {
+              "name": "language",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "en",
+              "bodySHA256": "dbd3a49d0d906b4ed9216b73330d2fb080ef2f758c12f3885068222e5e17151c"
+            },
+            {
+              "name": "prompt",
+              "filename": null,
+              "contentType": "text/plain",
+              "text": "@$CHECKOUT-base-v3/literal-prompt-control/nonexistent-literal-prompt",
+              "bodySHA256": "fc8c3d2b6f0d0ea1cef966b5916da03bb494ab69482e3f3c0743d98a8568b698"
+            }
+          ],
+          "rawBodySHA256": "58e23fe3b6f983771a9b3581a55839edcbcb93d37e056fdad513ba4a3fb91a21",
+          "syntheticPrivateBytesObserved": false
+        }
+      ],
+      "stdout": "$CHECKOUT-base-v3/literal-prompt-control/transcript.txt\n",
+      "stderr": "",
+      "outputReadback": "synthetic transcription readback",
+      "inputUnchanged": true,
+      "privateFixtureUnchanged": true,
+      "result": "GREEN_CONTROL"
+    }
+  ],
+  "result": "RED_WITH_LEGAL_CONTROLS",
+  "cleanup": {
+    "isolatedFilesOnly": true,
+    "ownedReceiverJoined": true,
+    "noRealProviderOrChannelRequests": true,
+    "syntheticCredentialOnly": true,
+    "fixturesRetained": true
+  },
+  "publication": {
+    "pathRedacted": true,
+    "originalReceiptSHA256": "271cfb65fa2f7c895bd2e77d97d2ef70f25eac6e346e71c038320dfc865225ee",
+    "hashBoundary": "Original script/collector/input/multipart hashes remain original byte hashes; private paths in command, filenames, outputs and text parts have been substituted for publication. Actual published file SHA is in the manifest.",
+    "aliasCaseLabelClarification": "The retained BEFORE_HTTP result identifier means curl26 before a complete multipart request/adapter response. BASE received one incomplete POST; it does NOT mean no HTTP request was emitted."
+  }
+}
