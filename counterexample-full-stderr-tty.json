@@ -1,0 +1,224 @@
+{
+  "head": "be82aeb77bbc08661080049650679dc602d8d197",
+  "buildStamp": {
+    "builtAt": 1794228352917,
+    "head": "be82aeb77bbc08661080049650679dc602d8d197",
+    "inputsClean": true,
+    "inputSignature": "410b811251245b58ceb1b37aa41b17e17e44ddfa8d04b240dfce939d1f83a4e8"
+  },
+  "expectation": "red",
+  "collectorSHA256": "05098c81eaba6763ec7df48154ed415f9e977b2359545909722b73237630534a",
+  "peerSHA256": "5f7e1dcf6076066b2462ac1bfc3c6842e3e46bd55b1e0686bd6469a55cb1e12e",
+  "entry": "Normal openclaw.mjs gateway status in its controlling PTY; actual VINTR byte, no direct signal injection or no-respawn override",
+  "boundary": "Native loopback WebSocket challenge/connect/status read and peer lifecycle; synthetic peer is explicit, no real Gateway/provider/channel is claimed",
+  "cases": [
+    {
+      "label": "connect-control",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/openclaw.mjs",
+        "gateway",
+        "status",
+        "--url",
+        "ws://127.0.0.1:42529",
+        "--token",
+        "synthetic-status-proof-token",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 5.598,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:42529",
+          "at": 83.888757,
+          "observedAt": 3368463.817034611
+        },
+        {
+          "event": "peer-connected",
+          "at": 5453.233483,
+          "observedAt": 3368469.186710749
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:de720850-f5e7-4e06-b5cc-41fdb1cde6bc",
+          "at": 5461.123935,
+          "observedAt": 3368469.193964764
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 5461.424383,
+          "observedAt": 3368469.19407745
+        },
+        {
+          "event": "peer-closed",
+          "at": 5467.569589,
+          "observedAt": 3368469.200383052
+        }
+      ],
+      "rawOutputSHA256": "f85d425a7dbe930a5425b2b95284e8a125369e826388edefa348b470cb698ff9",
+      "configUnchanged": true,
+      "output": "\u001b[?25l│\r\n◒  Checking gateway status\u001b[1G\u001b[J◐  Checking gateway status\u001b[1G\u001b[J◓  Checking gateway status\u001b[1G\u001b[J◑  Checking gateway status\u001b[1G\u001b[J◒  Checking gateway status\u001b[1G\u001b[J◐  Checking gateway status\u001b[1G\u001b[J◓  Checking gateway status\u001b[1G\u001b[J◑  Checking gateway status\u001b[1G\u001b[J\u001b[?25h◇  \r\n\r\u001b[2K{\r\n  \"cli\": {\r\n    \"version\": \"2026.11.1\",\r\n    \"entrypoint\": \"$CHECKOUT/openclaw.mjs\"\r\n  },\r\n  \"logFile\": \"/tmp/openclaw/openclaw-2026-11-09.log\",\r\n  \"service\": {\r\n    \"label\": \"systemd\",\r\n    \"systemdInstallation\": {\r\n      \"kind\": \"none\"\r\n    },\r\n    \"loaded\": false,\r\n    \"loadState\": {\r\n      \"status\": \"not-loaded\"\r\n    },\r\n    \"loadedText\": \"enabled\",\r\n    \"notLoadedText\": \"disabled\",\r\n    \"targetRole\": \"diagnostic-only\",\r\n    \"command\": null,\r\n    \"runtime\": {\r\n      \"status\": \"stopped\",\r\n      \"missingUnit\": true,\r\n      \"systemd\": {\r\n        \"transport\": {\r\n          \"kind\": \"runtime-bus\",\r\n          \"address\": \"unix:path=/run/user/1000/bus\",\r\n          \"runtimeDir\": \"/run/user/1000\"\r\n        }\r\n      }\r\n    },\r\n    \"configAudit\": {\r\n      \"ok\": true,\r\n      \"issues\": []\r\n    }\r\n  },\r\n  \"config\": {\r\n    \"cli\": {\r\n      \"path\": \"$PROOF_ROOT/probe-status-base-v2/connect-control/config.json\",\r\n      \"exists\": true,\r\n      \"valid\": true\r\n    },\r\n    \"daemon\": {\r\n      \"path\": \"$PROOF_ROOT/probe-status-base-v2/connect-control/config.json\",\r\n      \"exists\": true,\r\n      \"valid\": true\r\n    }\r\n  },\r\n  \"gateway\": {\r\n    \"bindMode\": \"loopback\",\r\n    \"bindHost\": \"127.0.0.1\",\r\n    \"port\": 18789,\r\n    \"portSource\": \"env/config\",\r\n    \"probeUrl\": \"ws://127.0.0.1:42529\",\r\n    \"controlUiLinks\": {\r\n      \"httpUrl\": \"http://127.0.0.1:18789/\",\r\n      \"wsUrl\": \"ws://127.0.0.1:18789\"\r\n    },\r\n    \"version\": \"synthetic-status-proof\"\r\n  },\r\n  \"hostDesktop\": {\r\n    \"enabled\": false,\r\n    \"state\": \"disabled\",\r\n    \"port\": 5900\r\n  },\r\n  \"port\": {\r\n    \"port\": 18789,\r\n    \"status\": \"free\",\r\n    \"listeners\": [],\r\n    \"hints\": []\r\n  },\r\n  \"rpc\": {\r\n    \"ok\": true,\r\n    \"kind\": \"connect\",\r\n    \"capability\": \"read_only\",\r\n    \"auth\": {\r\n      \"role\": \"operator\",\r\n      \"scopes\": [\r\n        \"operator.read\"\r\n      ],\r\n      \"capability\": \"read_only\"\r\n    },\r\n    \"server\": {\r\n      \"version\": \"synthetic-status-proof\",\r\n      \"connId\": \"proof-read-only\"\r\n    },\r\n    \"version\": \"synthetic-status-proof\",\r\n    \"url\": \"ws://127.0.0.1:42529\"\r\n  },\r\n  \"extraServices\": []\r\n}\r\n",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "rpc-control",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/openclaw.mjs",
+        "gateway",
+        "status",
+        "--url",
+        "ws://127.0.0.1:42183",
+        "--token",
+        "synthetic-status-proof-token",
+        "--timeout",
+        "30000",
+        "--json",
+        "--require-rpc"
+      ],
+      "exitCode": 0,
+      "seconds": 3.503,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:42183",
+          "at": 68.213331,
+          "observedAt": 3368469.508608085
+        },
+        {
+          "event": "peer-connected",
+          "at": 3429.769166,
+          "observedAt": 3368472.86431534
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:62fa1287-9c58-4a02-ae2f-377c2530002e",
+          "at": 3436.890121,
+          "observedAt": 3368472.871286202
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 3437.132642,
+          "observedAt": 3368472.871450256
+        },
+        {
+          "event": "request",
+          "method": "status",
+          "id": "2:56b0a9de-6447-49df-9f8e-3baca7d54020",
+          "at": 3439.662714,
+          "observedAt": 3368472.874010108
+        },
+        {
+          "event": "response",
+          "method": "status",
+          "at": 3439.864308,
+          "observedAt": 3368472.874229188
+        },
+        {
+          "event": "peer-closed",
+          "at": 3444.335441,
+          "observedAt": 3368472.87867083
+        }
+      ],
+      "rawOutputSHA256": "33571c4f17b877255e8d2cab99a55a3a7cb59d2dbf5a54b4577755f3713f3c93",
+      "configUnchanged": true,
+      "output": "\u001b[?25l│\r\n◒  Checking gateway status\u001b[1G\u001b[J\u001b[?25h◇  \r\n\r\u001b[2K{\r\n  \"cli\": {\r\n    \"version\": \"2026.11.1\",\r\n    \"entrypoint\": \"$CHECKOUT/openclaw.mjs\"\r\n  },\r\n  \"logFile\": \"/tmp/openclaw/openclaw-2026-11-09.log\",\r\n  \"service\": {\r\n    \"label\": \"systemd\",\r\n    \"systemdInstallation\": {\r\n      \"kind\": \"none\"\r\n    },\r\n    \"loaded\": false,\r\n    \"loadState\": {\r\n      \"status\": \"not-loaded\"\r\n    },\r\n    \"loadedText\": \"enabled\",\r\n    \"notLoadedText\": \"disabled\",\r\n    \"targetRole\": \"diagnostic-only\",\r\n    \"command\": null,\r\n    \"runtime\": {\r\n      \"status\": \"stopped\",\r\n      \"missingUnit\": true,\r\n      \"systemd\": {\r\n        \"transport\": {\r\n          \"kind\": \"runtime-bus\",\r\n          \"address\": \"unix:path=/run/user/1000/bus\",\r\n          \"runtimeDir\": \"/run/user/1000\"\r\n        }\r\n      }\r\n    },\r\n    \"configAudit\": {\r\n      \"ok\": true,\r\n      \"issues\": []\r\n    }\r\n  },\r\n  \"config\": {\r\n    \"cli\": {\r\n      \"path\": \"$PROOF_ROOT/probe-status-base-v2/rpc-control/config.json\",\r\n      \"exists\": true,\r\n      \"valid\": true\r\n    },\r\n    \"daemon\": {\r\n      \"path\": \"$PROOF_ROOT/probe-status-base-v2/rpc-control/config.json\",\r\n      \"exists\": true,\r\n      \"valid\": true\r\n    }\r\n  },\r\n  \"gateway\": {\r\n    \"bindMode\": \"loopback\",\r\n    \"bindHost\": \"127.0.0.1\",\r\n    \"port\": 18789,\r\n    \"portSource\": \"env/config\",\r\n    \"probeUrl\": \"ws://127.0.0.1:42183\",\r\n    \"controlUiLinks\": {\r\n      \"httpUrl\": \"http://127.0.0.1:18789/\",\r\n      \"wsUrl\": \"ws://127.0.0.1:18789\"\r\n    },\r\n    \"version\": \"synthetic-status-proof\"\r\n  },\r\n  \"hostDesktop\": {\r\n    \"enabled\": false,\r\n    \"state\": \"disabled\",\r\n    \"port\": 5900\r\n  },\r\n  \"port\": {\r\n    \"port\": 18789,\r\n    \"status\": \"free\",\r\n    \"listeners\": [],\r\n    \"hints\": []\r\n  },\r\n  \"rpc\": {\r\n    \"ok\": true,\r\n    \"kind\": \"read\",\r\n    \"capability\": \"read_only\",\r\n    \"auth\": {\r\n      \"role\": \"operator\",\r\n      \"scopes\": [\r\n        \"operator.read\"\r\n      ],\r\n      \"capability\": \"read_only\"\r\n    },\r\n    \"server\": {\r\n      \"version\": \"synthetic-status-proof\",\r\n      \"connId\": \"proof-read-only\"\r\n    },\r\n    \"version\": \"synthetic-status-proof\",\r\n    \"url\": \"ws://127.0.0.1:42183\"\r\n  },\r\n  \"extraServices\": []\r\n}\r\n",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "connect-interrupt",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/openclaw.mjs",
+        "gateway",
+        "status",
+        "--url",
+        "ws://127.0.0.1:43291",
+        "--token",
+        "synthetic-status-proof-token",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.959,
+      "interruptSent": true,
+      "interruptToExitMs": 45.88,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:43291",
+          "at": 70.567675,
+          "observedAt": 3368473.11996774
+        },
+        {
+          "event": "peer-connected",
+          "at": 3974.662383,
+          "observedAt": 3368477.023839242
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:2c86f12d-e442-4bb9-9609-fef4e970e2ad",
+          "at": 3981.564565,
+          "observedAt": 3368477.030703616
+        },
+        {
+          "event": "read-held",
+          "method": "connect",
+          "at": 3981.634857,
+          "observedAt": 3368477.030713895
+        },
+        {
+          "event": "peer-closed",
+          "at": 4032.897952,
+          "observedAt": 3368477.081995572
+        }
+      ],
+      "rawOutputSHA256": "c7699ef1a7d18a6e1e61930a556a67376273a2369c80d98fb5a3cc4dbcf726b0",
+      "configUnchanged": true,
+      "output": "\u001b[?25l│\r\n◒  Checking gateway status\u001b[1G\u001b[J◐  Checking gateway status\u001b[1G\u001b[J◓  Checking gateway status\u001b[1G\u001b[J◑  Checking gateway status\u001b[1G\u001b[J◒  Checking gateway status\u001b[1G\u001b[J◐  Checking gateway status\u001b[1G\u001b[J◓  Checking gateway status\u001b[1G\u001b[J◑  Checking gateway status\u001b[?25h\u001b[1G\u001b[J◇  Canceled\r\n\u001b[?25h"
+    }
+  ],
+  "result": "BLOCKED_OR_UNEXPECTED",
+  "error": "AssertionError('\\x1b[?25l│\\r\\n◒  Checking gateway status\\x1b[1G\\x1b[J◐  Checking gateway status\\x1b[1G\\x1b[J◓  Checking gateway status\\x1b[1G\\x1b[J◑  Checking gateway status\\x1b[1G\\x1b[J◒  Checking gateway status\\x1b[1G\\x1b[J◐  Checking gateway status\\x1b[1G\\x1b[J◓  Checking gateway status\\x1b[1G\\x1b[J◑  Checking gateway status\\x1b[?25h\\x1b[1G\\x1b[J◇  Canceled\\r\\n\\x1b[?25h')",
+  "cleanup": {
+    "onlyIsolatedTestConfiguration": true,
+    "noRealGatewayServiceMutation": true,
+    "noRemoteProviderOrChannel": true,
+    "ownedPeerAndCLIWaited": true,
+    "fixturesRetained": true
+  },
+  "_publication": {
+    "sourceReceipt": "probe-status-base-v2/receipt.json",
+    "originalReceiptSHA256": "3ff2017e43acfcdd5432d0462b4079162a34527b5d8b61e9463ed05231904282",
+    "pathRedacted": true,
+    "pathAliases": {
+      "$CHECKOUT": "The clean product checkout for the receipt head",
+      "$PROOF_ROOT": "The isolated proof directory",
+      "$NODE26": "The actual Node 26.12.1 executable"
+    },
+    "hashBoundary": "Existing embedded rawOutputSHA256, diagnosticsSHA256 and evidence hashes identify retained original collection bytes. They were not replaced or claimed to match path-redacted strings. Publication file hashes are supplied separately in the public manifest.",
+    "structure": "All original receipt fields, cases, events, stdout and diagnostics are retained. Only private filesystem path strings were substituted; this publication annotation was added."
+  }
+}

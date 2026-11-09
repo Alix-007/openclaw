@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-09T13:37:20.153475+00:00",
+  "route": "user-authorized independent agent fallback; direct P0-P3 assessment; NOT an official autoreview-helper execution",
+  "reviewer": "/root/maintenance_ci_attribution",
+  "independent_of_author": true,
+  "verdict": "pass",
+  "findings": [],
+  "assessment_complete": true,
+  "review_base": "be82aeb77bbc08661080049650679dc602d8d197",
+  "candidate": "complete base -> index -> working tree, including untracked exact 82-LF allocation",
+  "head": "be82aeb77bbc08661080049650679dc602d8d197",
+  "tracked_diff_sha256": "f3eaa619201de0db01dd8494217b044347a91acf649f81460db2177e9a8225cc",
+  "index_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "working_diff_sha256": "f3eaa619201de0db01dd8494217b044347a91acf649f81460db2177e9a8225cc",
+  "untracked": [
+    "config/test-lines-allocations/gateway-status-cancellation.txt"
+  ],
+  "files": [
+    {
+      "path": "src/cli/daemon-cli/probe.reachability.test.ts",
+      "sha256": "9fcf04ef46822744c0496a40f7870519057909e2494ea85c4128449a787c4caf",
+      "base_sha256": "93cb17f538adb90f7199b3b09b86a6e8ff9375896cf12d3ed11d7338de0cc0a0",
+      "current_lf": 296,
+      "base_lf": 253,
+      "delta_lf": 43
+    },
+    {
+      "path": "src/cli/daemon-cli/probe.ts",
+      "sha256": "75f4ebcc96eee48fefd100e8d9aa59aba937332af53c4566c1313646fc34b0a6",
+      "base_sha256": "9733ac14ff50418652ddf323f035a931b28dcff90a2b28e1c3a5f3dee869ba32",
+      "current_lf": 208,
+      "base_lf": 199,
+      "delta_lf": 9
+    },
+    {
+      "path": "src/cli/daemon-cli/status.gather.ts",
+      "sha256": "28fe3bef9d59e9e62a514aa98d6761187b007552b2aee7ca2fd972097d7c6d47",
+      "base_sha256": "229d540ef05d62ba4c282a3e200f9fd1325f6d52d682d35516bbfb90fd069631",
+      "current_lf": 670,
+      "base_lf": 668,
+      "delta_lf": 2
+    },
+    {
+      "path": "src/cli/daemon-cli/status.test.ts",
+      "sha256": "89c62f11069750c9457535e3fdad1e4a3665d5f6e902799704e86eedce4256e6",
+      "base_sha256": "f3ae4c1dd06b16b151bd0a23b7f234de90560cab522e574ddeb8478defb15f34",
+      "current_lf": 253,
+      "base_lf": 214,
+      "delta_lf": 39
+    },
+    {
+      "path": "src/cli/daemon-cli/status.ts",
+      "sha256": "7680a9f2d669dcd35131ad2cf7ebbff5b40c6f41ea43ad199b5f39cda920f865",
+      "base_sha256": "ea344d8ab12d152d561cee3b64f84ebb67d0c69a6496fa5570cfa5d8dc55d10e",
+      "current_lf": 82,
+      "base_lf": 70,
+      "delta_lf": 12
+    },
+    {
+      "path": "config/test-lines-allocations/gateway-status-cancellation.txt",
+      "sha256": "3444e074e25b5d2c8568f16616fce1f726450443d59c29471fd16f14cf57c3a3",
+      "base_sha256": null,
+      "current_lf": 4,
+      "base_lf": 0,
+      "delta_lf": 4
+    }
+  ],
+  "context_hashes": {
+    "src/gateway/probe.ts": "cdb0a1ee11bca48f370d722b30524b28d9a99eba752fbe364479b4020e54b066",
+    "src/gateway/call.ts": "dde8524e3e0710e752d9235dd98d3ef3014e99b4115676d3375bf28963f37d28",
+    "src/shared/async-work-scope.ts": "c778d7a472ef292b5d6a7855a5b42aa01354019c7906f0487a361395e7a10ace",
+    "src/infra/abort-signal.ts": "ab9a24ac4bb3f27d5f60e2f8076bdc8de655edf0bb01933d2a5776d7a16e6b92",
+    "src/cli/daemon-cli/register-service-commands.ts": "55060c9357abaefdf48a7776c1ec922f2d8a083fee0b6de465e8133d170e6b52",
+    "src/cli/route.ts": "5feb127b510c6cb7fab4a2beb25497ca8a88a080af47d100340b492581424d28",
+    "src/commands/health.ts": "3aadacbf3d782307346f810f0a874dfad83a5bd510bf6fcf054d92af10eb762c",
+    "src/commands/doctor-gateway-health.ts": "50b4f24033a737e6e742fb8cd624fa102f9394c31b03ba91e7e0af53c4fd0e91",
+    "src/commands/dashboard.ts": "08e8fc7af5433020142d75eabfe6285250a1976a83b755ef1531bac87516b3a6",
+    "src/cli/gateway-cli/register.ts": "fde6340d2b77ad2754da091be7cbcf3b5ac16e0b735a8a119f2a2c862080c5bf",
+    "src/flows/doctor-health-contributions-final.ts": "26923e565293ef7fe0f04aaa47c24cf6a83174c16977b985a2842fe89aa9e703",
+    "src/commands/triage.ts": "95a3af059ed59bac920d2f4039dd11c2ffc72f67ce640b1c16bd8a01539d7c0f"
+  },
+  "evidence_hashes": {
+    "probe-status-proof-v4.py": "d60006e9f2c0bd183c4a7f2d73a9c05c75c847c44db4ae2b05aeb4da41981a06",
+    "probe-status-peer.mjs": "5f7e1dcf6076066b2462ac1bfc3c6842e3e46bd55b1e0686bd6469a55cb1e12e",
+    "probe-status-base-v4/receipt.json": "27356c79605a0da431e09104921741be4fb3ffa4d5d490e5944950113cfcd29a",
+    "status-cancel-final-owner-tests.json": "b9fd4553f0e5991a056deaf49e2a4a2b0ccf1e2c3a2309c03376dd65c4368265",
+    "status-cancel-final-owner-tests.log": "3bbdce82c4cdf08ce6d222e3225543c7da406953c0229d9af204d654b95f9693",
+    "status-cancel-final-types.json": "109f61d11563c3efe1cce76e690339df138f3c21753dae4c2fbc646ed15b94ed",
+    "status-cancel-final-typed-lint.json": "e7ab23d18629a6094c3c2af165e6364abdb547e72815750d9e5efc82f7d9a9de",
+    "status-cancel-final-format-check.json": "15ab1370d6b7d094a2f1d670392be692ebe722df0720f61aa01fc20574ea3f45",
+    "status-cancel-fixture-attribution.json": "60ff672729efe162bf2bed3e0811e1e1314f0bb4bcd6bd9359cd4a8a7dae2554"
+  },
+  "checks_observed": {
+    "owner_tests": "85 passed; 2 skipped across two shards; explicitly excludes one baseline-reproduced native child reaping fixture, plus existing skip",
+    "types": "PASS 117.196s",
+    "canonical_typed_lint": "PASS 172.654s, normal core tsconfig, no focused syntax-only flag",
+    "format": "PASS 1.157s",
+    "test_ratchet": "PASS after root staged the already-reviewed exact own82-LF allocation; initial unstaged failure retained"
+  },
+  "reasoning": [
+    "Only runDaemonStatus captures the current AsyncWorkScope signal. Shared gather/probe APIs accept an optional explicitly supplied signal; health/Doctor/dashboard/triage/export callers do not gain ambient cancellation.",
+    "The connect probe resolves its abort-shaped result only after native client cleanup; the new post-await throwIfAborted preserves the caller reason instead of serializing aborted connectivity. The required-status RPC aborts via existing callGateway cleanup and emits a fresh AbortError, justifying the existing abort classifier only with an actually aborted supplied signal.",
+    "Status guards output after gather/deep work and runtime-intent projection. It suppresses only exact owned cancellation or a direct error cause; ordinary service failures still use the existing redacted JSON/exit1 path even when interruption happened concurrently.",
+    "No target selection, authentication/scopes/device-identity, timeout defaults, cancellation write rollback, root exit policy, retries or SDK contract changed. Both native Gateway entry aliases reach the same action.",
+    "All original assertions remain. Real socket tests hold actual connect/status requests before abort and require the exact cancellation reason plus peer close. Output tests cover prework/pending/late result and preserve concurrent real-error control. Exact allocation equals43+39=82 LF."
+  ],
+  "native_baseline": {
+    "result": "RED_WITH_LEGAL_CONTROLS",
+    "collector_sha256": "d60006e9f2c0bd183c4a7f2d73a9c05c75c847c44db4ae2b05aeb4da41981a06",
+    "peer_sha256": "5f7e1dcf6076066b2462ac1bfc3c6842e3e46bd55b1e0686bd6469a55cb1e12e",
+    "cases": [
+      {
+        "label": "connect-control",
+        "result": "GREEN_CONTROL",
+        "exitCode": 0,
+        "interruptToExitMs": null,
+        "interruptToPeerCloseMs": null,
+        "lateStatusJSONAfterAcceptedInterrupt": false,
+        "watchdogKill": false
+      },
+      {
+        "label": "rpc-control",
+        "result": "GREEN_CONTROL",
+        "exitCode": 0,
+        "interruptToExitMs": null,
+        "interruptToPeerCloseMs": null,
+        "lateStatusJSONAfterAcceptedInterrupt": false,
+        "watchdogKill": false
+      },
+      {
+        "label": "connect-interrupt",
+        "result": "RED_ACCEPTED_INTERRUPT_DID_NOT_SETTLE_PROMPTLY",
+        "exitCode": 130,
+        "interruptToExitMs": 6315.51,
+        "interruptToPeerCloseMs": 6012.29,
+        "lateStatusJSONAfterAcceptedInterrupt": true,
+        "watchdogKill": false
+      },
+      {
+        "label": "rpc-interrupt",
+        "result": "RED_ACCEPTED_INTERRUPT_DID_NOT_SETTLE_PROMPTLY",
+        "exitCode": 130,
+        "interruptToExitMs": 6140.87,
+        "interruptToPeerCloseMs": 6009.21,
+        "lateStatusJSONAfterAcceptedInterrupt": true,
+        "watchdogKill": false
+      }
+    ]
+  },
+  "limitations": [
+    "Code-review PASS applies only to these six exact working-file hashes; no committed candidate build/native GREEN yet. Root must bind clean committed head and replay the same frozen collector before publication.",
+    "The full-stderr-TTY Clack path is a retained counterexample; native defect is the ordinary stderr-redirection scenario, not a universal hang or an exit-code repair.",
+    "Synthetic loopback WebSocket peer validates actual CLI/client wire behavior and closure; it does not claim a real Gateway service, external channels/providers or every OS lifecycle.",
+    "One real-Gateway test fixture cannot initialize/retire native children on this host; exact baseline failure and unchanged fixture owners are retained. Do not call the full unfiltered suite green."
+  ],
+  "mechanical_staging_delta": {
+    "all_six_source_hashes_unchanged": true,
+    "ratchet_receipt": "status-cancel-test-lines-final.json",
+    "ratchet_receipt_sha256": "877b0b65d9d63b87ae847d22bee2207943835bd5b8e001b8b02ea7966d202246",
+    "exit_code": 0,
+    "elapsed_seconds": 103.037,
+    "current_base_to_candidate_diff_sha256": "3fe1b8ddbf4ad204c6908ebe8bd801b4c9d43a8ade098f3960603a799fb934e8"
+  },
+  "_publication": {
+    "sourceReceipt": "status-cancel-cold-review.json",
+    "originalReceiptSHA256": "17669d0c3c45d05a9143ad564d5684f05fbc80c0041d3c6b60adae60fb1889d8",
+    "pathRedacted": true,
+    "pathAliases": {
+      "$CHECKOUT": "The clean product checkout for the receipt head",
+      "$PROOF_ROOT": "The isolated proof directory",
+      "$NODE26": "The actual Node 26.12.1 executable"
+    },
+    "hashBoundary": "Existing embedded rawOutputSHA256, diagnosticsSHA256 and evidence hashes identify retained original collection bytes. They were not replaced or claimed to match path-redacted strings. Publication file hashes are supplied separately in the public manifest.",
+    "structure": "All original receipt fields, cases, events, stdout and diagnostics are retained. Only private filesystem path strings were substituted; this publication annotation was added."
+  }
+}

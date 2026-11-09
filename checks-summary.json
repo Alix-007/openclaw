@@ -1,0 +1,244 @@
+{
+  "productHead": "86ae8c0bb19f9444ab4ffa1f3d00055ddecf79db",
+  "baseHead": "be82aeb77bbc08661080049650679dc602d8d197",
+  "sourceBinding": {
+    "cleanCommittedHead": true,
+    "rootCommitReceipt": "status-cancel-commit.json",
+    "reviewBlobMatch": true,
+    "sixFileHashes": [
+      {
+        "path": "src/cli/daemon-cli/probe.reachability.test.ts",
+        "sha256": "9fcf04ef46822744c0496a40f7870519057909e2494ea85c4128449a787c4caf",
+        "base_lf": 253,
+        "current_lf": 296,
+        "delta_lf": 43,
+        "kind": "test"
+      },
+      {
+        "path": "src/cli/daemon-cli/probe.ts",
+        "sha256": "75f4ebcc96eee48fefd100e8d9aa59aba937332af53c4566c1313646fc34b0a6",
+        "base_lf": 199,
+        "current_lf": 208,
+        "delta_lf": 9,
+        "kind": "production"
+      },
+      {
+        "path": "src/cli/daemon-cli/status.gather.ts",
+        "sha256": "28fe3bef9d59e9e62a514aa98d6761187b007552b2aee7ca2fd972097d7c6d47",
+        "base_lf": 668,
+        "current_lf": 670,
+        "delta_lf": 2,
+        "kind": "production"
+      },
+      {
+        "path": "src/cli/daemon-cli/status.test.ts",
+        "sha256": "89c62f11069750c9457535e3fdad1e4a3665d5f6e902799704e86eedce4256e6",
+        "base_lf": 214,
+        "current_lf": 253,
+        "delta_lf": 39,
+        "kind": "test"
+      },
+      {
+        "path": "src/cli/daemon-cli/status.ts",
+        "sha256": "7680a9f2d669dcd35131ad2cf7ebbff5b40c6f41ea43ad199b5f39cda920f865",
+        "base_lf": 70,
+        "current_lf": 82,
+        "delta_lf": 12,
+        "kind": "production"
+      },
+      {
+        "path": "config/test-lines-allocations/gateway-status-cancellation.txt",
+        "sha256": "3444e074e25b5d2c8568f16616fce1f726450443d59c29471fd16f14cf57c3a3",
+        "base_lf": 0,
+        "current_lf": 4,
+        "delta_lf": 4,
+        "kind": "test allocation"
+      }
+    ]
+  },
+  "results": {
+    "ownerTests": "85 passed; two not run: one existing platform skip and one explicitly excluded baseline-reproduced real-Gateway fixture. This is not an unfiltered-suite PASS.",
+    "preFixRegressions": "5 intended failures and 2 genuine-error controls PASS before product edits.",
+    "inheritedFixture": "Native child reaping is unavailable; subsequent cleanup identity is unverified. Exact same case and failure signatures reproduced on BASE with unchanged fixture/process owners. Retained fixtures were not deleted.",
+    "ratchet": "PASS after exact own 82 LF allocation: 6597916 test LF; ceiling 6597921; slack 5. Shared scalar unchanged.",
+    "normalBuild": "Normal cliStartup build on clean committed HEAD PASS 271.618s. Both native receipts carry clean matching build stamps.",
+    "independentReview": {
+      "verdict": "pass",
+      "findings": [],
+      "route": "user-authorized independent agent fallback; direct P0-P3 assessment; NOT an official autoreview-helper execution",
+      "commitBinding": "Pre-commit file-hash review; root confirmed all six committed source hashes match. No official autoreview-helper execution is claimed."
+    }
+  },
+  "commandsAndReceipts": {
+    "filtered_owner_tests": {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "src/cli/daemon-cli/probe.test.ts",
+        "src/cli/daemon-cli/status.test.ts",
+        "src/cli/daemon-cli/status.gather.test.ts",
+        "--maxWorkers=1",
+        "--testNamePattern",
+        "^(?!.*accepts a real Gateway auth rejection).*"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 230.39,
+      "log": "$CHECKOUT-final-owner-tests.log",
+      "originalReceipt": "status-cancel-final-owner-tests.json",
+      "originalReceiptSHA256": "b9fd4553f0e5991a056deaf49e2a4a2b0ccf1e2c3a2309c03376dd65c4368265"
+    },
+    "targeted_types": {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../status-cancel-tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 117.196,
+      "log": "$CHECKOUT-final-types.log",
+      "originalReceipt": "status-cancel-final-types.json",
+      "originalReceiptSHA256": "109f61d11563c3efe1cce76e690339df138f3c21753dae4c2fbc646ed15b94ed"
+    },
+    "canonical_typed_lint": {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "config/tsconfig/oxlint.core.json",
+        "src/cli/daemon-cli/probe.ts",
+        "src/cli/daemon-cli/status.gather.ts",
+        "src/cli/daemon-cli/status.ts",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "src/cli/daemon-cli/status.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 172.654,
+      "log": "$CHECKOUT-final-typed-lint.log",
+      "originalReceipt": "status-cancel-final-typed-lint.json",
+      "originalReceiptSHA256": "e7ab23d18629a6094c3c2af165e6364abdb547e72815750d9e5efc82f7d9a9de"
+    },
+    "format": {
+      "command": [
+        "$NODE26",
+        "scripts/run-format.mts",
+        "--check",
+        "src/cli/daemon-cli/probe.ts",
+        "src/cli/daemon-cli/status.gather.ts",
+        "src/cli/daemon-cli/status.ts",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "src/cli/daemon-cli/status.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.157,
+      "log": "$CHECKOUT-final-format-check.log",
+      "originalReceipt": "status-cancel-final-format-check.json",
+      "originalReceiptSHA256": "15ab1370d6b7d094a2f1d670392be692ebe722df0720f61aa01fc20574ea3f45"
+    },
+    "exact_82_lf_staged_allocation_ratchet": {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "be82aeb77bbc08661080049650679dc602d8d197",
+        "--staged"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 103.037,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "3fe1b8ddbf4ad204c6908ebe8bd801b4c9d43a8ade098f3960603a799fb934e8",
+      "originalReceipt": "status-cancel-test-lines-final.json",
+      "originalReceiptSHA256": "877b0b65d9d63b87ae847d22bee2207943835bd5b8e001b8b02ea7966d202246"
+    },
+    "normal_committed_head_cli_startup_build": {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 271.618,
+      "head": "86ae8c0bb19f9444ab4ffa1f3d00055ddecf79db",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalReceipt": "status-cancel-build.json",
+      "originalReceiptSHA256": "e98931d3b90747a2c80340ff7ec818430fb66394da23760b877ace4184c5984e"
+    },
+    "pre_fix_regressions": {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "src/cli/daemon-cli/status.test.ts",
+        "--maxWorkers=1",
+        "--testNamePattern",
+        "cancels a pending check|owned interrupt|renders service-inspection"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 1,
+      "elapsed_seconds": 201.477,
+      "log": "$PROOF_ROOT/status-regressions-red.log",
+      "originalReceipt": "status-regressions-red.json",
+      "originalReceiptSHA256": "e56ad2a099a68ca77dd8df5175c2dd22549f8f0f3cfd5f8ba7ba29b0a4a86dda"
+    },
+    "first_unfiltered_owner_attempt": {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "src/cli/daemon-cli/probe.test.ts",
+        "src/cli/daemon-cli/status.test.ts",
+        "src/cli/daemon-cli/status.gather.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 2,
+      "elapsed_seconds": 168.369,
+      "log": "$PROOF_ROOT/status-owner-green.log",
+      "originalReceipt": "status-owner-green.json",
+      "originalReceiptSHA256": "4a9b0dabea4dd3d79669d3afe48d351681818070667a3f70fbba4436b2522a5e"
+    },
+    "same_existing_fixture_on_base": {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/cli/daemon-cli/probe.reachability.test.ts",
+        "--maxWorkers=1",
+        "--testNamePattern",
+        "accepts a real Gateway auth rejection"
+      ],
+      "cwd": "$PROOF_ROOT/baseline",
+      "exit_code": 2,
+      "elapsed_seconds": 213.811,
+      "log": "$CHECKOUT-inherited-fixture-base.log",
+      "originalReceipt": "status-cancel-inherited-fixture-base.json",
+      "originalReceiptSHA256": "da43534a9a26cb7a92774dc71b1b4fe22deb92df54a92c2801a9b6f7d27f822d"
+    }
+  },
+  "proofFiles": {
+    "status-cancel-inherited-fixture-base.json": {
+      "source": "probe-status-base-v2/receipt.json",
+      "originalSHA256": "3ff2017e43acfcdd5432d0462b4079162a34527b5d8b61e9463ed05231904282"
+    }
+  },
+  "limits": [
+    "No live Gateway service, provider, model or channel is exercised; the peer and token are explicitly synthetic.",
+    "Full-stderr-TTY is an earlier non-reproducing counterexample, not a candidate proof or a universal Ctrl-C hang claim.",
+    "Linux PTY/native Node/WebSocket flow only. Health, Doctor, dashboard, triage and support-export cancellation remain outside this status-only repair.",
+    "No macOS, Windows, SIGTERM or real installed-service lifecycle proof is claimed. PR CI is not inferred from local checks.",
+    "Existing embedded hashes refer to their original captured files; the public manifest hashes the sanitized publication files."
+  ],
+  "workTokens": null,
+  "usd": null
+}

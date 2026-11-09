@@ -1,0 +1,69 @@
+{
+  "baseline": "be82aeb77bbc08661080049650679dc602d8d197",
+  "candidate_base": "be82aeb77bbc08661080049650679dc602d8d197",
+  "case": "Gateway reachability over real sockets > accepts a real Gateway auth rejection as reachable without starting another service",
+  "classification": "inherited local native subprocess fixture setup/cleanup failure, before product probe begins",
+  "matching_signatures": [
+    {
+      "signature": "native child reaping is unavailable",
+      "base": true,
+      "candidate": true
+    },
+    {
+      "signature": "service child cleanup identity lost: native owner closed without kernel descendant extinction",
+      "base": true,
+      "candidate": true
+    }
+  ],
+  "unchanged_fixture_owners": [
+    {
+      "path": "src/gateway/minimal-gateway.test-helpers.ts",
+      "baseline_sha256": "ce130187c55bff72b12743a73fc6bd57fe74e46482e9d096529bee2c56c8f0e1",
+      "candidate_sha256": "ce130187c55bff72b12743a73fc6bd57fe74e46482e9d096529bee2c56c8f0e1",
+      "identical": true
+    },
+    {
+      "path": "src/process/supervisor/service-child-relay-host.ts",
+      "baseline_sha256": "ea6d4593cd85736119989ebe0441435f0fd880eeeba8c9a8327ba87571926558",
+      "candidate_sha256": "ea6d4593cd85736119989ebe0441435f0fd880eeeba8c9a8327ba87571926558",
+      "identical": true
+    },
+    {
+      "path": "src/process/supervisor/service-child-relay-retirement.ts",
+      "baseline_sha256": "0c6bd6cdc2ae199ecdf8c3427b6f49ab32af8513b1d8c75c4806b0e660398696",
+      "candidate_sha256": "0c6bd6cdc2ae199ecdf8c3427b6f49ab32af8513b1d8c75c4806b0e660398696",
+      "identical": true
+    },
+    {
+      "path": "test/helpers/qa-gateway-cleanup.ts",
+      "baseline_sha256": "05e6d772f483b7c664d0625015a4e18cd67d46ac86e84b2325d74ddbd01857b4",
+      "candidate_sha256": "05e6d772f483b7c664d0625015a4e18cd67d46ac86e84b2325d74ddbd01857b4",
+      "identical": true
+    },
+    {
+      "path": "test/helpers/fixture-lifetime.ts",
+      "baseline_sha256": "8756539f1486f0036b2d649cf8fdbe9d647dd6771055399c5dc234621a2795dd",
+      "candidate_sha256": "8756539f1486f0036b2d649cf8fdbe9d647dd6771055399c5dc234621a2795dd",
+      "identical": true
+    }
+  ],
+  "base_command_receipt": "status-cancel-inherited-fixture-base.json",
+  "candidate_first_run_receipt": "status-owner-green.json",
+  "retained_namespaces": [
+    "oc-vt-PWgLDV",
+    "oc-vt-HKO4fc"
+  ],
+  "limits": "No retry, source-level test skip, timeout increase, native helper installation, source assertion weakening or fixture deletion. The separate passing filtered owner run explicitly excludes only this one reproduced inherited case.",
+  "_publication": {
+    "sourceReceipt": "status-cancel-fixture-attribution.json",
+    "originalReceiptSHA256": "60ff672729efe162bf2bed3e0811e1e1314f0bb4bcd6bd9359cd4a8a7dae2554",
+    "pathRedacted": true,
+    "pathAliases": {
+      "$CHECKOUT": "The clean product checkout for the receipt head",
+      "$PROOF_ROOT": "The isolated proof directory",
+      "$NODE26": "The actual Node 26.12.1 executable"
+    },
+    "hashBoundary": "Existing embedded rawOutputSHA256, diagnosticsSHA256 and evidence hashes identify retained original collection bytes. They were not replaced or claimed to match path-redacted strings. Publication file hashes are supplied separately in the public manifest.",
+    "structure": "All original receipt fields, cases, events, stdout and diagnostics are retained. Only private filesystem path strings were substituted; this publication annotation was added."
+  }
+}
