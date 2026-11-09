@@ -1,0 +1,484 @@
+{
+  "productHead": "290a653c200e91627a7abe6b81138e63642a962a",
+  "base": "be82aeb77bbc08661080049650679dc602d8d197",
+  "sourceFiles": [
+    {
+      "path": "ui/src/pages/plugins/settings-editor.tsx",
+      "sha256": "2c8f83fd0538c0ff4eb169fbff0c6806b31d59f9710db4db09a6b3565749806c",
+      "lf": 483,
+      "base_lf": 481,
+      "net_lf": 2
+    },
+    {
+      "path": "ui/src/pages/plugins/settings-editor.browser.test.tsx",
+      "sha256": "19aef6ca4f831372d38b21511cb5e0b544bd2a1dda3c8300ca087477dfe268bc",
+      "lf": 589,
+      "base_lf": 524,
+      "net_lf": 65
+    },
+    {
+      "path": "config/test-lines-allocations/alix-plugin-settings-unicode-20261109.txt",
+      "sha256": "b6a86288a26e332adbf32fe59134858420d03d2f74694d88ff0e21ab46707b91",
+      "lf": 3,
+      "base_lf": 0,
+      "net_lf": 3
+    }
+  ],
+  "scope": {
+    "productionAdded": 4,
+    "productionRemoved": 2,
+    "testAdded": 66,
+    "testRemoved": 1,
+    "testNetLF": 65,
+    "ownTestAllocation": 65,
+    "files": 3
+  },
+  "checks": {
+    "focused_owner_and_handler": {
+      "originalReceiptSha256": "9ecda0c0ae3a3330b01ac7fb076bbb9f5da330a9e212c976542707a8fcae26e9",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "scripts/run-vitest.mjs",
+          "ui/src/pages/plugins/settings-editor.browser.test.tsx",
+          "ui/src/pages/plugins/settings-editor.handlers.test.tsx",
+          "--maxWorkers=1"
+        ],
+        "cwd": "$CHECKOUT",
+        "elapsed_seconds": 32.981,
+        "exit_code": 0,
+        "environment": {
+          "OPENCLAW_VITEST_RUNTIME": "node",
+          "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-green-cache",
+          "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH": "/usr/bin/google-chrome"
+        }
+      }
+    },
+    "typed_lint": {
+      "originalReceiptSha256": "07a050fcc81eaa45eea50e8b42e61085985bd9a1ef5097f73f3e34a6aa1a7837",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "scripts/run-oxlint.mjs",
+          "--tsconfig",
+          "tsconfig.ui.json",
+          "ui/src/pages/plugins/settings-editor.tsx",
+          "ui/src/pages/plugins/settings-editor.browser.test.tsx"
+        ],
+        "cwd": "$CHECKOUT",
+        "elapsed_seconds": 63.923,
+        "exit_code": 0,
+        "environment": {
+          "OPENCLAW_TYPECHECKER": "tsgo",
+          "OPENCLAW_LINT_TOOL": "oxlint"
+        }
+      }
+    },
+    "scoped_ui_types": {
+      "originalReceiptSha256": "1f080ffaf9bcc38fa6af3240f839e2d3ef460411ef09beb99b61ca09c98eff9d",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "scripts/run-tsgo.mjs",
+          "-p",
+          "$CHECKOUT-types.tsconfig.json",
+          "--incremental"
+        ],
+        "cwd": "$CHECKOUT",
+        "elapsed_seconds": 131.518,
+        "exit_code": 0,
+        "environment": {
+          "OPENCLAW_TYPECHECKER": "tsgo"
+        }
+      }
+    },
+    "format": {
+      "originalReceiptSha256": "fc31d7664cbfc6bf294a94ef0d32c1d39cfeb71500415e88d8936f3ffa81d675",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "scripts/run-node-package-bin.mts",
+          "oxfmt",
+          "--write",
+          "ui/src/pages/plugins/settings-editor.tsx",
+          "ui/src/pages/plugins/settings-editor.browser.test.tsx"
+        ],
+        "elapsed_seconds": 0.262,
+        "exit_code": 0
+      }
+    },
+    "test_line_ratchet": {
+      "originalReceiptSha256": "982cf2820c80c2274eb7ce1b7d9d720146811f82a969133d505164af5ff12ede",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/check-test-lines-ratchet.mts",
+          "--base",
+          "be82aeb77bbc08661080049650679dc602d8d197",
+          "--staged"
+        ],
+        "cwd": "$CHECKOUT",
+        "exit_code": 0,
+        "elapsed_seconds": 103.095,
+        "head": "be82aeb77bbc08661080049650679dc602d8d197",
+        "diffSHA256": "1f574c708bf9a1d05ac999a6c377f7d88dc8668a374b35b6c3f1774e31f4fe4b"
+      }
+    },
+    "own_frozen_install": {
+      "originalReceiptSha256": "d204e1124390f782fc4fec82cbd2ffe8fdb0f2e255dbcce6ac6c054af459c0cb",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "$PNPM_JS",
+          "install",
+          "--frozen-lockfile",
+          "--package-import-method=copy"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 17.064
+      }
+    },
+    "normal_ui_asset_build": {
+      "originalReceiptSha256": "c09c1478f592683bc41cbdbc5cf4de3e2b9cb1466412bdd4ca617ce7164be732",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/bundled-plugin-assets.mts",
+          "--phase",
+          "build",
+          "--plugin",
+          "clawrouter",
+          "--plugin",
+          "knowledge",
+          "--plugin",
+          "mcp-relay",
+          "--plugin",
+          "workboard",
+          "--plugin",
+          "x"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 16.066,
+        "head": "290a653c200e91627a7abe6b81138e63642a962a",
+        "tracked_worktree_clean": true
+      }
+    },
+    "normal_ui_asset_copy": {
+      "originalReceiptSha256": "20baa5fd0c82c2e2105af72d4d747a8265b0c536865ebbd23e3e302004e3bd2e",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/bundled-plugin-assets.mts",
+          "--phase",
+          "copy",
+          "--plugin",
+          "clawrouter",
+          "--plugin",
+          "knowledge",
+          "--plugin",
+          "mcp-relay",
+          "--plugin",
+          "workboard",
+          "--plugin",
+          "x"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 2.131,
+        "head": "290a653c200e91627a7abe6b81138e63642a962a",
+        "tracked_worktree_clean": true
+      }
+    },
+    "normal_ui_metadata": {
+      "originalReceiptSha256": "1410442c7d2e3687d07900722481c203c9d50eff0d075d7858e586a4be609a4d",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/copy-bundled-plugin-metadata.mts"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 3.076,
+        "head": "290a653c200e91627a7abe6b81138e63642a962a",
+        "tracked_worktree_clean": true
+      }
+    },
+    "normal_ui_build": {
+      "originalReceiptSha256": "66058cc8995f31084a12537cacc1a805dee23bed2ec45d8666c8f97959df5a1a",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "scripts/ui.js",
+          "build"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 116.509,
+        "head": "290a653c200e91627a7abe6b81138e63642a962a",
+        "tracked_worktree_clean": true
+      }
+    },
+    "head_native_collector": {
+      "originalReceiptSha256": "11d6f202fbf9953f7c1f201fb7c696e914b5b16302ff9653291683e6e0581bf7",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "$CHECKOUT/scripts/tsx.mjs",
+          "$PROOF_ROOT/scout-plugin-unicode-proof.mjs",
+          "$CHECKOUT",
+          "$CHECKOUT-head",
+          "290a653c200e91627a7abe6b81138e63642a962a"
+        ],
+        "cwd": "$CHECKOUT",
+        "exit_code": 0,
+        "elapsed_seconds": 12.14,
+        "output": "$CHECKOUT-head"
+      }
+    },
+    "base_native_collector": {
+      "originalReceiptSha256": "97d420685a56cd48f2f69f72037d549d5e73cd486f7e747739262840e5d659c0",
+      "receipt": {
+        "command": [
+          "$NODE26",
+          "--import",
+          "$PROOF_ROOT/baseline/scripts/tsx.mjs",
+          "$PROOF_ROOT/scout-plugin-unicode-proof.mjs",
+          "$PROOF_ROOT/baseline",
+          "$PROOF_ROOT/scout-plugin-unicode-base-v3-1794230934432009740",
+          "be82aeb77bbc08661080049650679dc602d8d197"
+        ],
+        "cwd": "$PROOF_ROOT/baseline",
+        "elapsed_seconds": 17.881,
+        "exit_code": 0,
+        "output": "$PROOF_ROOT/scout-plugin-unicode-base-v3-1794230934432009740",
+        "log": "$PROOF_ROOT/scout-plugin-unicode-base-v3.log",
+        "at": "2026-11-09T13:29:12.312828+00:00"
+      }
+    }
+  },
+  "focusedTestCount": 22,
+  "focusedTestWallSeconds": 32.981,
+  "focusedTestScope": "19 existing-owner browser cases plus 3 handler sibling cases; more than 30 seconds because both complete owner files run through the official browser/test setup. No full repository suite is claimed.",
+  "scopedUiTypecheckConfig": {
+    "extends": "$CHECKOUT/ui/tsconfig.json",
+    "exclude": [],
+    "compilerOptions": {
+      "noEmit": true,
+      "typeRoots": [
+        "$CHECKOUT/node_modules/@types"
+      ],
+      "tsBuildInfoFile": "$CHECKOUT-types.tsbuildinfo"
+    },
+    "include": [
+      "$CHECKOUT/ui/src/pages/plugins/settings-editor.tsx",
+      "$CHECKOUT/ui/src/pages/plugins/settings-editor.browser.test.tsx",
+      "$CHECKOUT/src/**/*.d.ts",
+      "$CHECKOUT/src/**/*.d.mts",
+      "$CHECKOUT/src/**/*.d.cts",
+      "$CHECKOUT/packages/**/*.d.ts",
+      "$CHECKOUT/packages/**/*.d.mts",
+      "$CHECKOUT/packages/**/*.d.cts",
+      "$CHECKOUT/extensions/**/*.d.ts",
+      "$CHECKOUT/extensions/**/*.d.mts",
+      "$CHECKOUT/extensions/**/*.d.cts",
+      "$CHECKOUT/ui/**/*.d.ts",
+      "$CHECKOUT/ui/**/*.d.mts",
+      "$CHECKOUT/ui/**/*.d.cts"
+    ]
+  },
+  "typecheckReproduction": "The scoped configuration above preserves the original includes and options. Materialize it locally after replacing $CHECKOUT and $PROOF_ROOT with absolute paths before replaying the recorded command. It is not a full-UI typecheck.",
+  "stagedTestRatchet": {
+    "base": "be82aeb77bbc08661080049650679dc602d8d197",
+    "ownNetLF": 65,
+    "exactGrant": 65,
+    "resultLine": "Test lines OK: 6597899; ceiling: 6597904; slack: 5.",
+    "note": "Recorded staged pre-commit check. Global slack is not claimed as this PR allocation; this PR adds its own exact65 grant."
+  },
+  "independentCodeReview": {
+    "originalReceiptSha256": "be835cc7b9c618a8ea7ce324d97b12cafe4434be95a951f143475091ff65f71a",
+    "report": {
+      "at": "2026-11-09T13:47:39.737181+00:00",
+      "verdict": "pass",
+      "status": "scoped-clean",
+      "findings": [],
+      "severity_range": "P0-P3",
+      "independence": {
+        "authored_candidate": false,
+        "route": "User-authorized independent agent fallback; no additional autoreview helper, build or tests launched by this reviewer.",
+        "model_metadata": "Not exposed by this child session; no model usage receipt invented."
+      },
+      "target": {
+        "mode": "local dirty candidate",
+        "base": "be82aeb77bbc08661080049650679dc602d8d197",
+        "head": "be82aeb77bbc08661080049650679dc602d8d197",
+        "files": [
+          {
+            "path": "ui/src/pages/plugins/settings-editor.tsx",
+            "sha256": "2c8f83fd0538c0ff4eb169fbff0c6806b31d59f9710db4db09a6b3565749806c",
+            "base_lf": 481,
+            "candidate_lf": 483,
+            "net_lf": 2
+          },
+          {
+            "path": "ui/src/pages/plugins/settings-editor.browser.test.tsx",
+            "sha256": "19aef6ca4f831372d38b21511cb5e0b544bd2a1dda3c8300ca087477dfe268bc",
+            "base_lf": 524,
+            "candidate_lf": 589,
+            "net_lf": 65
+          },
+          {
+            "path": "config/test-lines-allocations/alix-plugin-settings-unicode-20261109.txt",
+            "sha256": "b6a86288a26e332adbf32fe59134858420d03d2f74694d88ff0e21ab46707b91",
+            "base_lf": 0,
+            "candidate_lf": 3,
+            "net_lf": 3
+          }
+        ],
+        "scope_complete": true,
+        "index_empty": true,
+        "source_hashes_reverified_at_end": true
+      },
+      "context_read": [
+        {
+          "path": "ui/src/pages/plugins/settings-view.tsx",
+          "sha256": "d1a5cf0bc5c32e4d094f1a54f995fc2f4db930f564aa0086d0274969dec68fea"
+        },
+        {
+          "path": "ui/src/pages/plugins/settings-inventory.tsx",
+          "sha256": "2b02e238315bc8c3ddd9268c5bdcf235ab0f3a1999bed971e07e86471db61753"
+        },
+        {
+          "path": "ui/src/pages/plugins/settings-model.ts",
+          "sha256": "088ed679c7e68930ba2f4f7ba12d9b8a3e892250175a18d698b7be1d982e3ba3"
+        },
+        {
+          "path": "ui/src/components/config-form.search.ts",
+          "sha256": "d0896af6786ef016ce9f44a7df6b833030124ee37d9fed768e1ffa99e9b0966c"
+        },
+        {
+          "path": "ui/src/components/config-form.leaf-fields.ts",
+          "sha256": "c4711013823272af99ad57f350da839b4979f5acb0842f5294b9b69a3712b990"
+        },
+        {
+          "path": "src/plugins/manifest-config-groups.ts",
+          "sha256": "28381ff85ebb24ee7e1af310aefbcfb44b389676ca96e119588913725ead1039"
+        },
+        {
+          "path": "packages/gateway-protocol/src/schema/config.ts",
+          "sha256": "02279416619937d6e99a17557eb53f5efec6ce5bbb8f76ed2452282aebaf5d97"
+        },
+        {
+          "path": "src/config/schema.ts",
+          "sha256": "7b1e59846dfde9825d994bb751a4f0f0cc4ca9e6dcb89bbabe391431cdee9c96"
+        }
+      ],
+      "reasoning": [
+        "All four changed expressions are in the same plugin-settings search owner: normalize both the locale-lowercased query and fallback metadata haystack to NFC. Ordinary leaf/path/schema/help search already owns NFC in matchesNodeSearch; dynamic maps keep resolveConfigMapSearch. No generic matcher or competing Greek-casefold owner is changed.",
+        "Canonical plugin manifest groups admit nonempty arbitrary Unicode titles; normalizer trims rather than rewriting their encoding, and config.schema preserves those labels. Flattened ancestor labels are composed by the canonical leaf owner. The caller intentionally replaces two permission labels/help with translated visible copy that generic schema matching does not contain. Both residual comparison branches are covered.",
+        "The patch changes comparison copies only. Input signal, original group/schema/permission labels, field paths, displayed text, config values, credentials, patch/reset/remove callbacks, authority and locale storage remain untouched. NFC retains different accents and compatibility-only distinctions; it is not accent folding or NFKC.",
+        "No new Solid state, effects, owner snapshots, lifecycle handlers, imports or APIs are introduced in production. Existing reactive query accessors/memos continue reading live props/signals, with the same event and rendering ownership.",
+        "Bidirectional browser tests assert actual static row identities, original text and no patch/remove; different-accent/fullwidth and ASCII trim/case controls remain. All existing assertions are retained. Whole test LF growth is exactly65, matching the allocation; production gross+4/-2, net+2. No speculative helper/export, broad refactor, skip or blanket baseline raise."
+      ],
+      "reused_checks": {
+        "browser_and_handler_tests": {
+          "receipt": "plugin-settings-unicode-tests-green.json",
+          "sha256": "9ecda0c0ae3a3330b01ac7fb076bbb9f5da330a9e212c976542707a8fcae26e9",
+          "exit_code": 0,
+          "elapsed_seconds": 32.981
+        },
+        "targeted_types": {
+          "receipt": "plugin-settings-unicode-types.json",
+          "sha256": "1f080ffaf9bcc38fa6af3240f839e2d3ef460411ef09beb99b61ca09c98eff9d",
+          "exit_code": 0,
+          "elapsed_seconds": 131.518
+        },
+        "typed_lint": {
+          "receipt": "plugin-settings-unicode-lint.json",
+          "sha256": "07a050fcc81eaa45eea50e8b42e61085985bd9a1ef5097f73f3e34a6aa1a7837",
+          "exit_code": 0,
+          "elapsed_seconds": 63.923
+        },
+        "format": {
+          "receipt": "plugin-settings-unicode-format.json",
+          "sha256": "fc31d7664cbfc6bf294a94ef0d32c1d39cfeb71500415e88d8936f3ffa81d675",
+          "exit_code": 0,
+          "elapsed_seconds": 0.262
+        }
+      },
+      "native_baseline_evidence": {
+        "receipt": "scout-plugin-unicode-base-v3-1794230934432009740/receipt.json",
+        "sha256": "a0cd0bf165375907cd449e74db42532e1da64f50025696d935d75aafad09bee3",
+        "head": "be82aeb77bbc08661080049650679dc602d8d197",
+        "collector_sha256": "a923f8ba4e06b7fff62b12fc899aee67742280b79c0af4199206f73199921de4",
+        "status": "RED_CANONICAL_METADATA_HIDDEN",
+        "cases": 29,
+        "intended_red": 7,
+        "legal_controls": 22,
+        "controls_all_pass": true,
+        "page_errors": [],
+        "independently_reexecuted": false
+      },
+      "limitations": [
+        "This is complete source/test/allocation code review, not candidate native proof or publication review. Clean committed-head normal UI build and same frozen collector GREEN remain root-owned and pending at review time.",
+        "Author receipts were read, not rerun. Browser/handler tests total22 passed (19 browser,3 handler); platform/native/package/performance/PR CI gates are not inferred.",
+        "Native evidence uses the officially supported synthetic Gateway and native Linux Chromium, not live plugin install, real Gateway/provider, WebKit, macOS/Windows or upgrade proof.",
+        "Publisher still owns final competition/identity/cap checks and exact staged allocation ratchet. No conflict with known related generic-search casefold work was identified in this bounded source review."
+      ],
+      "usage": {
+        "work_tokens": null,
+        "usd": null
+      }
+    },
+    "binding": "Pre-commit independent user-authorized agent fallback, not the official autoreview helper. All three reviewed file hashes match the committed-head working-tree bytes. Its then-pending native/build limitation is historical; exact-head build and replay are in the current receipts."
+  },
+  "native": {
+    "collectorSha256": "a923f8ba4e06b7fff62b12fc899aee67742280b79c0af4199206f73199921de4",
+    "baseOriginalReceiptSha256": "a0cd0bf165375907cd449e74db42532e1da64f50025696d935d75aafad09bee3",
+    "headOriginalReceiptSha256": "206b6bc2fd43a23d6571e4282e30298395f14a397b3783954f732abe1873f425",
+    "casesPerBuild": 29,
+    "baseRed": 7,
+    "baseControlsPass": 22,
+    "headGreen": 29,
+    "sceneFormsAndLocales": [
+      [
+        "NFD",
+        "en-US"
+      ],
+      [
+        "NFC",
+        "en-US"
+      ],
+      [
+        "NFC",
+        "de"
+      ]
+    ],
+    "allRecordedConfigPluginWrites": 0,
+    "browserErrors": [],
+    "headCollectorWallSeconds": 12.14,
+    "screenshots": {
+      "before.png": {
+        "originalScene": "NFD-en-US-group-canonical-mismatch",
+        "sha256": "b3ac8bd5ba46112e9aa9ff720643120ff40cfd41561801fa64fcfe1fd63655b7"
+      },
+      "after.png": {
+        "originalScene": "NFD-en-US-group-canonical-mismatch",
+        "sha256": "5c287155dc7751a30a79810c748f74ba8d9f6351c99ecbe287f66790dee1b4b0"
+      }
+    }
+  },
+  "normalUiBuildBudgetAdvisories": [
+    "- total CSS gzip: 319.1 KiB exceeds 317.5 KiB",
+    "- total CSS raw: 1645.4 KiB exceeds 1636.5 KiB",
+    "- chat boot JS gzip: 1267.4 KiB exceeds 1266.4 KiB",
+    "- new boot JS gzip: 784.6 KiB exceeds 784.4 KiB"
+  ],
+  "budgetAndCiLimits": "Normal UI build exited0 but emitted the retained budget advisories above. No passing aggregate performance budget or upstream PR CI result is claimed, and advisory attribution to BASE has not been established here.",
+  "sanitization": "Command receipts/configuration contain role placeholders instead of private local paths. Original receipt SHA256 values identify original pre-redaction bytes; the public upload manifest hashes the actual published files. No original command argument or environment value was omitted, apart from path substitution."
+}

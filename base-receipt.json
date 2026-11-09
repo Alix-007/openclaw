@@ -1,0 +1,642 @@
+{
+  "startedAt": "2026-11-09T13:28:58.214Z",
+  "head": "be82aeb77bbc08661080049650679dc602d8d197",
+  "build": {
+    "version": "2026.11.1",
+    "commit": "be82aeb77bbc08661080049650679dc602d8d197",
+    "builtAt": "2026-11-09T12:41:57.476Z",
+    "release": false,
+    "commitAt": "2026-11-09T12:34:36.000Z",
+    "branch": null,
+    "dirty": false,
+    "buildId": "2026.11.1-be82aeb77bbc-2026-11-09T12-41-57.476Z"
+  },
+  "indexSha256": "79ec8fde45032b525381cc84257eba93985ad6d35a4e69e2d06626da894b65e5",
+  "collectorSha256": "a923f8ba4e06b7fff62b12fc899aee67742280b79c0af4199206f73199921de4",
+  "sourceHashes": {
+    "ui/src/pages/plugins/settings-editor.tsx": "c16dee9f3d9f7c81036ce25e9e172b7d22df9e9efe79dfcebfbd6b9c45078b23",
+    "ui/src/pages/plugins/settings-view.tsx": "d1a5cf0bc5c32e4d094f1a54f995fc2f4db930f564aa0086d0274969dec68fea",
+    "ui/src/components/config-form.search.ts": "d0896af6786ef016ce9f44a7df6b833030124ee37d9fed768e1ffa99e9b0966c",
+    "src/plugins/manifest-config-groups.ts": "28381ff85ebb24ee7e1af310aefbcfb44b389676ca96e119588913725ead1039"
+  },
+  "status": "RED_CANONICAL_METADATA_HIDDEN",
+  "scenes": [
+    {
+      "form": "NFD",
+      "locale": "en-US",
+      "metadata": {
+        "groupTitle": "Café section",
+        "parentTitle": "Résumé parent",
+        "leafTitle": "Détail",
+        "groupCodePoints": [
+          67,
+          97,
+          102,
+          101,
+          769,
+          32,
+          115,
+          101,
+          99,
+          116,
+          105,
+          111,
+          110
+        ],
+        "parentCodePoints": [
+          82,
+          101,
+          769,
+          115,
+          117,
+          109,
+          101,
+          769,
+          32,
+          112,
+          97,
+          114,
+          101,
+          110,
+          116
+        ]
+      },
+      "sourceJsonSha256": "9d619e436d57bb79a78e3be9c14a9b22186e7db70f7b5d676f4ea321a401594d",
+      "cases": [
+        {
+          "name": "group-same-form-control",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "Café section",
+          "emptyMessage": null
+        },
+        {
+          "name": "group-canonical-mismatch",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Café section",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "ancestor-same-form-control",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "actual": [
+            "storage.path"
+          ],
+          "inputValue": "Résumé parent",
+          "emptyMessage": null
+        },
+        {
+          "name": "ancestor-canonical-mismatch",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Résumé parent",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "leaf-already-canonical-control",
+          "query": "Détail",
+          "expected": [
+            "detail"
+          ],
+          "actual": [
+            "detail"
+          ],
+          "inputValue": "Détail",
+          "emptyMessage": null
+        },
+        {
+          "name": "ascii-control",
+          "query": "  ENABLED  ",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "  ENABLED  ",
+          "emptyMessage": null
+        },
+        {
+          "name": "permission-section-control",
+          "query": "Permissions",
+          "expected": [
+            "hooks.allowConversationAccess"
+          ],
+          "actual": [
+            "hooks.allowConversationAccess"
+          ],
+          "inputValue": "Permissions",
+          "emptyMessage": null
+        },
+        {
+          "name": "different-accent-control",
+          "query": "Cafè section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Cafè section",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "compatibility-only-control",
+          "query": "Ｃａｆé section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Ｃａｆé section",
+          "emptyMessage": "No settings match your search."
+        }
+      ],
+      "initial": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Read conversation context"
+        }
+      ],
+      "final": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Read conversation context"
+        }
+      ],
+      "writeCounts": {
+        "config.set": 0,
+        "config.patch": 0,
+        "config.apply": 0,
+        "plugins.install": 0,
+        "plugins.setEnabled": 0,
+        "plugins.uninstall": 0
+      },
+      "schemaReads": [
+        {
+          "id": "17:e9a4f2f0-3889-47e4-9330-1259cfd43dec",
+          "method": "config.schema",
+          "params": {}
+        }
+      ],
+      "status": "RED_CANONICAL_METADATA_HIDDEN"
+    },
+    {
+      "form": "NFC",
+      "locale": "en-US",
+      "metadata": {
+        "groupTitle": "Café section",
+        "parentTitle": "Résumé parent",
+        "leafTitle": "Détail",
+        "groupCodePoints": [
+          67,
+          97,
+          102,
+          233,
+          32,
+          115,
+          101,
+          99,
+          116,
+          105,
+          111,
+          110
+        ],
+        "parentCodePoints": [
+          82,
+          233,
+          115,
+          117,
+          109,
+          233,
+          32,
+          112,
+          97,
+          114,
+          101,
+          110,
+          116
+        ]
+      },
+      "sourceJsonSha256": "dd41443e40130a5e68ab6de21b718383d4adda1de01f4d7bb64735be2c80873b",
+      "cases": [
+        {
+          "name": "group-same-form-control",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "Café section",
+          "emptyMessage": null
+        },
+        {
+          "name": "group-canonical-mismatch",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Café section",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "ancestor-same-form-control",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "actual": [
+            "storage.path"
+          ],
+          "inputValue": "Résumé parent",
+          "emptyMessage": null
+        },
+        {
+          "name": "ancestor-canonical-mismatch",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Résumé parent",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "leaf-already-canonical-control",
+          "query": "Détail",
+          "expected": [
+            "detail"
+          ],
+          "actual": [
+            "detail"
+          ],
+          "inputValue": "Détail",
+          "emptyMessage": null
+        },
+        {
+          "name": "ascii-control",
+          "query": "  ENABLED  ",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "  ENABLED  ",
+          "emptyMessage": null
+        },
+        {
+          "name": "permission-section-control",
+          "query": "Permissions",
+          "expected": [
+            "hooks.allowConversationAccess"
+          ],
+          "actual": [
+            "hooks.allowConversationAccess"
+          ],
+          "inputValue": "Permissions",
+          "emptyMessage": null
+        },
+        {
+          "name": "different-accent-control",
+          "query": "Cafè section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Cafè section",
+          "emptyMessage": "No settings match your search."
+        },
+        {
+          "name": "compatibility-only-control",
+          "query": "Ｃａｆé section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Ｃａｆé section",
+          "emptyMessage": "No settings match your search."
+        }
+      ],
+      "initial": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Read conversation context"
+        }
+      ],
+      "final": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Read conversation context"
+        }
+      ],
+      "writeCounts": {
+        "config.set": 0,
+        "config.patch": 0,
+        "config.apply": 0,
+        "plugins.install": 0,
+        "plugins.setEnabled": 0,
+        "plugins.uninstall": 0
+      },
+      "schemaReads": [
+        {
+          "id": "17:9ffad5c1-4424-4558-8461-98adaaf47e26",
+          "method": "config.schema",
+          "params": {}
+        }
+      ],
+      "status": "RED_CANONICAL_METADATA_HIDDEN"
+    },
+    {
+      "form": "NFC",
+      "locale": "de",
+      "metadata": {
+        "groupTitle": "Café section",
+        "parentTitle": "Résumé parent",
+        "leafTitle": "Détail",
+        "groupCodePoints": [
+          67,
+          97,
+          102,
+          233,
+          32,
+          115,
+          101,
+          99,
+          116,
+          105,
+          111,
+          110
+        ],
+        "parentCodePoints": [
+          82,
+          233,
+          115,
+          117,
+          109,
+          233,
+          32,
+          112,
+          97,
+          114,
+          101,
+          110,
+          116
+        ]
+      },
+      "sourceJsonSha256": "dd41443e40130a5e68ab6de21b718383d4adda1de01f4d7bb64735be2c80873b",
+      "cases": [
+        {
+          "name": "group-same-form-control",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "Café section",
+          "emptyMessage": null
+        },
+        {
+          "name": "group-canonical-mismatch",
+          "query": "Café section",
+          "expected": [
+            "enabled"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Café section",
+          "emptyMessage": "Keine Einstellungen entsprechen Ihrer Suche."
+        },
+        {
+          "name": "ancestor-same-form-control",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "actual": [
+            "storage.path"
+          ],
+          "inputValue": "Résumé parent",
+          "emptyMessage": null
+        },
+        {
+          "name": "ancestor-canonical-mismatch",
+          "query": "Résumé parent",
+          "expected": [
+            "storage.path"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Résumé parent",
+          "emptyMessage": "Keine Einstellungen entsprechen Ihrer Suche."
+        },
+        {
+          "name": "leaf-already-canonical-control",
+          "query": "Détail",
+          "expected": [
+            "detail"
+          ],
+          "actual": [
+            "detail"
+          ],
+          "inputValue": "Détail",
+          "emptyMessage": null
+        },
+        {
+          "name": "ascii-control",
+          "query": "  ENABLED  ",
+          "expected": [
+            "enabled"
+          ],
+          "actual": [
+            "enabled"
+          ],
+          "inputValue": "  ENABLED  ",
+          "emptyMessage": null
+        },
+        {
+          "name": "permission-section-control",
+          "query": "Berechtigungen",
+          "expected": [
+            "hooks.allowConversationAccess"
+          ],
+          "actual": [
+            "hooks.allowConversationAccess"
+          ],
+          "inputValue": "Berechtigungen",
+          "emptyMessage": null
+        },
+        {
+          "name": "different-accent-control",
+          "query": "Cafè section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Cafè section",
+          "emptyMessage": "Keine Einstellungen entsprechen Ihrer Suche."
+        },
+        {
+          "name": "compatibility-only-control",
+          "query": "Ｃａｆé section",
+          "expected": [],
+          "actual": [],
+          "inputValue": "Ｃａｆé section",
+          "emptyMessage": "Keine Einstellungen entsprechen Ihrer Suche."
+        },
+        {
+          "name": "translated-permission-same-form-control",
+          "query": "Gesprächskontext lesen",
+          "expected": [
+            "hooks.allowConversationAccess"
+          ],
+          "actual": [
+            "hooks.allowConversationAccess"
+          ],
+          "inputValue": "Gesprächskontext lesen",
+          "emptyMessage": null
+        },
+        {
+          "name": "translated-permission-canonical-mismatch",
+          "query": "Gesprächskontext lesen",
+          "expected": [
+            "hooks.allowConversationAccess"
+          ],
+          "gap": true,
+          "actual": [],
+          "inputValue": "Gesprächskontext lesen",
+          "emptyMessage": "Keine Einstellungen entsprechen Ihrer Suche."
+        }
+      ],
+      "initial": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Gesprächskontext lesen"
+        }
+      ],
+      "final": [
+        {
+          "setting": "enabled",
+          "label": "Enabled"
+        },
+        {
+          "setting": "detail",
+          "label": "Détail"
+        },
+        {
+          "setting": "storage.path",
+          "label": "Résumé parent: Directory"
+        },
+        {
+          "setting": "hooks.allowConversationAccess",
+          "label": "Gesprächskontext lesen"
+        }
+      ],
+      "writeCounts": {
+        "config.set": 0,
+        "config.patch": 0,
+        "config.apply": 0,
+        "plugins.install": 0,
+        "plugins.setEnabled": 0,
+        "plugins.uninstall": 0
+      },
+      "schemaReads": [
+        {
+          "id": "17:6d498775-558b-4c57-bb18-d2fb91e74b95",
+          "method": "config.schema",
+          "params": {}
+        }
+      ],
+      "status": "RED_CANONICAL_METADATA_HIDDEN"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Normally built production UI and native Linux Chromium. The official synthetic Gateway supplies schema-valid authored plugin metadata and records reads/writes. This does not prove real plugin installation, a live Gateway, provider runtime, model calls, or other operating systems.",
+    "Source metadata is passed through the canonical authored-group normalizer and validated with the public config.schema response schema. Product filtering and DOM rendering are not mocked."
+  ],
+  "baseUrl": "http://127.0.0.1:45493/",
+  "served": {
+    "indexSha256": "79ec8fde45032b525381cc84257eba93985ad6d35a4e69e2d06626da894b65e5",
+    "entryPath": "./assets/index-vQu6LXkc.js",
+    "entrySha256": "1685fa7359a048e36b11e979b46d9b1f5b7fd1d4faed4082f87846d4deadec96"
+  },
+  "finishedAt": "2026-11-09T13:29:12.215Z",
+  "cleanup": "Closed all owned Chromium contexts and the owned built-UI server. No real files, plugins, providers, channels, model or Gateway changed; no config/plugin write RPCs admitted.",
+  "publication": {
+    "originalReceiptSha256": "a0cd0bf165375907cd449e74db42532e1da64f50025696d935d75aafad09bee3",
+    "redaction": "Checked for private filesystem paths, email addresses and credential assignments. None were present in this receipt; all original fields and values are retained. Only this publication annotation was appended.",
+    "embeddedHashes": "Original sourceJsonSha256, sourceHashes, indexSha256, collectorSha256 and served hashes identify the original collected bytes, not this annotated JSON file. The upload manifest separately hashes the actual public file bytes."
+  }
+}
