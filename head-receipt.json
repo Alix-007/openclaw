@@ -1,0 +1,105 @@
+{
+  "head": "092d85541ea53c98f5eaa29ef3426ea39deb4e21",
+  "buildStamp": {
+    "builtAt": 1794232546882,
+    "head": "092d85541ea53c98f5eaa29ef3426ea39deb4e21",
+    "inputsClean": true,
+    "inputSignature": "f88be2447f70d81a8fb7701845d6dcc697c3f0ba4e1f3ddf0981e32abe216243"
+  },
+  "collectorSHA256": "a21cfb0bb8aeabaa4e4be7b7577bc73923d9e96d0ebbd8093bb70fb90c77cac9",
+  "expectation": "green",
+  "entry": "Normal openclaw.mjs update status --json --timeout <seconds>",
+  "boundary": "Real CLI -> native Git inspection -> actual JSON stdout; default public npm diagnostic remains optional and is not claimed as successful; no running production Gateway/provider/channel",
+  "cases": [
+    {
+      "label": "ordinary-control",
+      "command": [
+        "<NODE_BINARY>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "update",
+        "status",
+        "--json",
+        "--timeout",
+        "30"
+      ],
+      "exitCode": 0,
+      "seconds": 11.487,
+      "watchdogKill": false,
+      "configUnchanged": true,
+      "stdout": "{\n  \"update\": {\n    \"root\": \"<HEAD_CHECKOUT>\",\n    \"installKind\": \"git\",\n    \"packageManager\": \"pnpm\",\n    \"git\": {\n      \"root\": \"<HEAD_CHECKOUT>\",\n      \"sha\": \"092d85541ea53c98f5eaa29ef3426ea39deb4e21\",\n      \"tag\": null,\n      \"branch\": \"alix/fix-update-status-long-timeout-20261109\",\n      \"upstream\": null,\n      \"upstreamSha\": null,\n      \"commitAtMs\": 1794232093000,\n      \"dirty\": false,\n      \"ahead\": null,\n      \"behind\": null,\n      \"fetchOk\": null,\n      \"builtSha\": \"092d85541ea53c98f5eaa29ef3426ea39deb4e21\",\n      \"artifacts\": {\n        \"ready\": false\n      }\n    },\n    \"deps\": {\n      \"manager\": \"pnpm\",\n      \"lockfilePath\": \"<HEAD_CHECKOUT>/pnpm-lock.yaml\",\n      \"markerPath\": \"<HEAD_CHECKOUT>/node_modules/.modules.yaml\",\n      \"status\": \"ok\"\n    },\n    \"registry\": {\n      \"latestVersion\": null,\n      \"tag\": \"dev\",\n      \"error\": \"HTTP 404\"\n    }\n  },\n  \"channel\": {\n    \"value\": \"dev\",\n    \"source\": \"git-branch\",\n    \"label\": \"dev (alix/fix-update-status-long-timeout-20261109)\",\n    \"config\": null\n  },\n  \"availability\": {\n    \"available\": false,\n    \"hasGitUpdate\": false,\n    \"hasRegistryUpdate\": false,\n    \"latestVersion\": null,\n    \"gitBehind\": null\n  },\n  \"recoverySets\": [],\n  \"inspectionErrors\": [\n    {\n      \"section\": \"channels\",\n      \"message\": \"Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\\\nGateway target: ws://127.0.0.1:18789\\\\nSource: local loopback\\\\nConfig: <HEAD_EVIDENCE>/ordinary-control/config.json\\\\nBind: loopback\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "inspectionErrors": [
+        {
+          "section": "channels",
+          "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:18789\\nSource: local loopback\\nConfig: <HEAD_EVIDENCE>/ordinary-control/config.json\\nBind: loopback"
+        }
+      ],
+      "registry": {
+        "latestVersion": null,
+        "tag": "dev",
+        "error": "HTTP 404"
+      },
+      "result": "GREEN_CONTROL",
+      "rawStdoutSHA256": "65c40783f9c6cfb35e139c6f49c76ebd80a54b8951be3590071f95a8491afc53",
+      "publishedStdoutSHA256": "e175e48b1572b40cd5fd22df5ffd0c154271da73891cd063eb66fbf4cd49a734",
+      "rawStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "publishedStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "long-timeout",
+      "command": [
+        "<NODE_BINARY>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "update",
+        "status",
+        "--json",
+        "--timeout",
+        "2147484"
+      ],
+      "exitCode": 0,
+      "seconds": 6.054,
+      "watchdogKill": false,
+      "configUnchanged": true,
+      "stdout": "{\n  \"update\": {\n    \"root\": \"<HEAD_CHECKOUT>\",\n    \"installKind\": \"git\",\n    \"packageManager\": \"pnpm\",\n    \"git\": {\n      \"root\": \"<HEAD_CHECKOUT>\",\n      \"sha\": \"092d85541ea53c98f5eaa29ef3426ea39deb4e21\",\n      \"tag\": null,\n      \"branch\": \"alix/fix-update-status-long-timeout-20261109\",\n      \"upstream\": null,\n      \"upstreamSha\": null,\n      \"commitAtMs\": 1794232093000,\n      \"dirty\": false,\n      \"ahead\": null,\n      \"behind\": null,\n      \"fetchOk\": null,\n      \"builtSha\": \"092d85541ea53c98f5eaa29ef3426ea39deb4e21\",\n      \"artifacts\": {\n        \"ready\": false\n      }\n    },\n    \"deps\": {\n      \"manager\": \"pnpm\",\n      \"lockfilePath\": \"<HEAD_CHECKOUT>/pnpm-lock.yaml\",\n      \"markerPath\": \"<HEAD_CHECKOUT>/node_modules/.modules.yaml\",\n      \"status\": \"ok\"\n    },\n    \"registry\": {\n      \"latestVersion\": null,\n      \"tag\": \"dev\",\n      \"error\": \"HTTP 404\"\n    }\n  },\n  \"channel\": {\n    \"value\": \"dev\",\n    \"source\": \"git-branch\",\n    \"label\": \"dev (alix/fix-update-status-long-timeout-20261109)\",\n    \"config\": null\n  },\n  \"availability\": {\n    \"available\": false,\n    \"hasGitUpdate\": false,\n    \"hasRegistryUpdate\": false,\n    \"latestVersion\": null,\n    \"gitBehind\": null\n  },\n  \"recoverySets\": [],\n  \"inspectionErrors\": [\n    {\n      \"section\": \"channels\",\n      \"message\": \"Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\\\nGateway target: ws://127.0.0.1:18789\\\\nSource: local loopback\\\\nConfig: <HEAD_EVIDENCE>/long-timeout/config.json\\\\nBind: loopback\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "inspectionErrors": [
+        {
+          "section": "channels",
+          "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:18789\\nSource: local loopback\\nConfig: <HEAD_EVIDENCE>/long-timeout/config.json\\nBind: loopback"
+        }
+      ],
+      "registry": {
+        "latestVersion": null,
+        "tag": "dev",
+        "error": "HTTP 404"
+      },
+      "result": "GREEN",
+      "rawStdoutSHA256": "ea725ea9b66f379f23d6f9781177ea345fa9224bdb72d43e71cdb43e4ede5df4",
+      "publishedStdoutSHA256": "159ce6dbce6aabd00d0cb9a50912921048af124982ef16789a53dbc99eac3db4",
+      "rawStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "publishedStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "GREEN",
+  "cleanup": {
+    "ownCLIWaited": true,
+    "isolatedConfigurationOnly": true,
+    "noUpdateOrServiceMutationRequested": true,
+    "fixturesRetained": true
+  },
+  "publicationSanitization": {
+    "transform": "Only task-specific absolute filesystem prefixes and the runtime executable path are replaced by stable role placeholders. Error text, observed status, SHA values, numbers and booleans are retained.",
+    "sourceRawReceiptSHA256": "c7c1c55f48121fabe1841d565218db229d45b82e56a4748927c0e6e21211b29b",
+    "rawOutputHashMeaning": "rawStdoutSHA256/rawStderrSHA256 bind original private stdout.txt/stderr.txt bytes before path replacement. They are NOT hashes of published sanitized text.",
+    "publishedOutputHashMeaning": "publishedStdoutSHA256/publishedStderrSHA256 bind each embedded sanitized UTF-8 stdout/stderr string in this file.",
+    "collector": "The adjacent collector is copied byte-for-byte and its SHA matches both original receipts. It is not path-rewritten.",
+    "placeholderRoles": {
+      "<BASE_CHECKOUT>": "isolated clean baseline checkout",
+      "<HEAD_CHECKOUT>": "isolated clean candidate checkout",
+      "<BASE_EVIDENCE>": "isolated baseline proof output directory",
+      "<HEAD_EVIDENCE>": "isolated candidate proof output directory",
+      "<TASK_EVIDENCE>": "external validation work directory",
+      "<NODE_BINARY>": "actual Node 26.12.1 executable"
+    }
+  }
+}

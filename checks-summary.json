@@ -1,0 +1,163 @@
+{
+  "productHead": "092d85541ea53c98f5eaa29ef3426ea39deb4e21",
+  "baseline": "be82aeb77bbc08661080049650679dc602d8d197",
+  "collectorSHA256": "a21cfb0bb8aeabaa4e4be7b7577bc73923d9e96d0ebbd8093bb70fb90c77cac9",
+  "productionLOC": {
+    "added": 2,
+    "removed": 1
+  },
+  "testLOC": {
+    "added": 21,
+    "removed": 0,
+    "exactAllocation": 21
+  },
+  "changedFileCount": 3,
+  "checks": [
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "scripts/run-vitest.mjs",
+        "src/cli/update-cli/status.deadline.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 169.917,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "c31f0dd7dd6d7276d571a29fdc45816f767ebb566b159c74ec91640898cf0400",
+      "check": "focused-tests",
+      "sourceRawRecordSHA256": "6356aceaab28016ee83633365098be0d88af7dc7d715b7c25f8aaea8fe897e31",
+      "recordPath": "update-timeout-green.json"
+    },
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../update-status-timeout-tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 108.347,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "c31f0dd7dd6d7276d571a29fdc45816f767ebb566b159c74ec91640898cf0400",
+      "check": "semantic-types",
+      "sourceRawRecordSHA256": "d969d9b00bd1e8ecad772f313ad0b1cbd0952f9919fc64df150a65133494cd91",
+      "recordPath": "update-timeout-types.json"
+    },
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "config/tsconfig/oxlint.core.json",
+        "src/cli/update-cli/status.ts",
+        "src/cli/update-cli/status.deadline.test.ts"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 171.26,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "c31f0dd7dd6d7276d571a29fdc45816f767ebb566b159c74ec91640898cf0400",
+      "check": "canonical-typed-lint",
+      "sourceRawRecordSHA256": "6501f4e00f549ea3a7efe145fab127169014eda8333e089191db562035f45fc0",
+      "recordPath": "update-timeout-typed-lint.json"
+    },
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "scripts/run-format.mts",
+        "--write",
+        "src/cli/update-cli/status.ts",
+        "src/cli/update-cli/status.deadline.test.ts"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 0.406,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "c31f0dd7dd6d7276d571a29fdc45816f767ebb566b159c74ec91640898cf0400",
+      "check": "formatter-write",
+      "sourceRawRecordSHA256": "c366aba1716d05629d3f47c9caead0b1ae41d4a7991311417621518039e58c19",
+      "recordPath": "update-timeout-format.json"
+    },
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "be82aeb77bbc08661080049650679dc602d8d197"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 7.846,
+      "head": "be82aeb77bbc08661080049650679dc602d8d197",
+      "diffSHA256": "c93b4baa525b82d07b7408893cf36162dbb628590f3f46e29f4ee71457af22ad",
+      "check": "test-lines-ratchet",
+      "sourceRawRecordSHA256": "dd93ba3394285695c16934d05827df98c234c341e14abcdedf89f04dd60eb0e6",
+      "recordPath": "update-timeout-test-lines-final.json"
+    },
+    {
+      "command": [
+        "<NODE_BINARY>",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "<HEAD_CHECKOUT>",
+      "exit_code": 0,
+      "elapsed_seconds": 296.552,
+      "head": "092d85541ea53c98f5eaa29ef3426ea39deb4e21",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check": "normal-cliStartup-build",
+      "sourceRawRecordSHA256": "0c47c24252e69f891570333d94febb6fa772457b8c368afab20be74da9a7558a",
+      "recordPath": "update-timeout-build.json"
+    }
+  ],
+  "focusedResult": "6 tests passed; preceding BASE regression invocation had 2 fail / 1 control-pass with 3 unselected existing cases. No full-suite claim.",
+  "sourceContinuity": "Tests/types/lint/formatter ran on the reviewed precommit production/test bytes. Root confirms only allocation tracking changed afterward. Each of the three reviewed file SHA256 values matches the final committed blob; final normal cliStartup build and native proof ran at the exact clean product head. Earlier full-diff hashes in original check records are retained, not relabeled as committed-head reruns.",
+  "review": {
+    "verdict": "pass",
+    "findings": [],
+    "route": "user-authorized independent agent fallback; not official autoreview-helper execution",
+    "sourceRawReviewSHA256": "e4d4ef8ead0ece5db814e0464d8f78cc60e6f2eab5f156cbca920f1721ef53ab",
+    "reviewBase": "be82aeb77bbc08661080049650679dc602d8d197",
+    "reviewedFiles": [
+      {
+        "path": "src/cli/update-cli/status.ts",
+        "sha256": "55b6c9451cfd2a44c4d75d1202b9c9721987020874bc1ab1fe84a4d28421bf05",
+        "base_sha256": "ad931e4a299b9177629619192a82672983098805643f85ecad3915ff31c58915",
+        "current_lf": 676,
+        "base_lf": 675,
+        "delta_lf": 1
+      },
+      {
+        "path": "src/cli/update-cli/status.deadline.test.ts",
+        "sha256": "e9861ff25f47968d4bdecc946bf0d4acc2ab6c2bef9487501af9444f80e35fe6",
+        "base_sha256": "fadf8bcf942b0c8ad90dec583dce2d106558a120adcd3e07dc823a56757a6691",
+        "current_lf": 119,
+        "base_lf": 98,
+        "delta_lf": 21
+      },
+      {
+        "path": "config/test-lines-allocations/update-status-safe-timeout.txt",
+        "sha256": "15ae90d3950e033a82e2546ec73e290a6d1a31e4e49f6d4083f4b17f621acd43",
+        "base_sha256": null,
+        "current_lf": 2,
+        "base_lf": 0,
+        "delta_lf": 2
+      }
+    ],
+    "committedBlobsMatchReviewedFiles": true
+  },
+  "limits": [
+    "Formatter record is the actual --write invocation; no new final --check is invented.",
+    "Semantic type checking used the listed targeted external tsconfig; no repository-wide typecheck claim.",
+    "Native status observed optional npm dev registry HTTP404 and absent Gateway channels ECONNREFUSED; neither is claimed successful.",
+    "HEAD Git status projection reports artifacts.ready=false; normal cliStartup build and clean build stamp pass, but a complete package/artifact-readiness build was not run.",
+    "No hosted provider transcription/model/channel test, actual update/install/restart, real production Gateway health, OS matrix, CI completion, multi-day timer waiting or performance claim."
+  ]
+}

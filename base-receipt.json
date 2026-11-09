@@ -1,0 +1,117 @@
+{
+  "head": "be82aeb77bbc08661080049650679dc602d8d197",
+  "buildStamp": {
+    "builtAt": 1794228352917,
+    "head": "be82aeb77bbc08661080049650679dc602d8d197",
+    "inputsClean": true,
+    "inputSignature": "410b811251245b58ceb1b37aa41b17e17e44ddfa8d04b240dfce939d1f83a4e8"
+  },
+  "collectorSHA256": "a21cfb0bb8aeabaa4e4be7b7577bc73923d9e96d0ebbd8093bb70fb90c77cac9",
+  "expectation": "red",
+  "entry": "Normal openclaw.mjs update status --json --timeout <seconds>",
+  "boundary": "Real CLI -> native Git inspection -> actual JSON stdout; default public npm diagnostic remains optional and is not claimed as successful; no running production Gateway/provider/channel",
+  "cases": [
+    {
+      "label": "ordinary-control",
+      "command": [
+        "<NODE_BINARY>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "update",
+        "status",
+        "--json",
+        "--timeout",
+        "30"
+      ],
+      "exitCode": 0,
+      "seconds": 12.33,
+      "watchdogKill": false,
+      "configUnchanged": true,
+      "stdout": "{\n  \"update\": {\n    \"root\": \"<BASE_CHECKOUT>\",\n    \"installKind\": \"git\",\n    \"packageManager\": \"pnpm\",\n    \"git\": {\n      \"root\": \"<BASE_CHECKOUT>\",\n      \"sha\": \"be82aeb77bbc08661080049650679dc602d8d197\",\n      \"tag\": null,\n      \"branch\": \"HEAD\",\n      \"upstream\": null,\n      \"upstreamSha\": null,\n      \"commitAtMs\": 1794227676000,\n      \"dirty\": false,\n      \"ahead\": null,\n      \"behind\": null,\n      \"fetchOk\": null,\n      \"builtSha\": \"be82aeb77bbc08661080049650679dc602d8d197\",\n      \"artifacts\": {\n        \"ready\": true,\n        \"version\": \"2026.11.1\",\n        \"buildId\": \"2026.11.1-be82aeb77bbc-2026-11-09T12-41-57.476Z\"\n      }\n    },\n    \"deps\": {\n      \"manager\": \"pnpm\",\n      \"lockfilePath\": \"<BASE_CHECKOUT>/pnpm-lock.yaml\",\n      \"markerPath\": \"<BASE_CHECKOUT>/node_modules/.modules.yaml\",\n      \"status\": \"ok\"\n    },\n    \"registry\": {\n      \"latestVersion\": null,\n      \"tag\": \"dev\",\n      \"error\": \"HTTP 404\"\n    }\n  },\n  \"channel\": {\n    \"value\": \"dev\",\n    \"source\": \"default\",\n    \"label\": \"dev (default)\",\n    \"config\": null\n  },\n  \"availability\": {\n    \"available\": false,\n    \"hasGitUpdate\": false,\n    \"hasRegistryUpdate\": false,\n    \"latestVersion\": null,\n    \"gitBehind\": null\n  },\n  \"recoverySets\": [],\n  \"inspectionErrors\": [\n    {\n      \"section\": \"channels\",\n      \"message\": \"Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\\\nGateway target: ws://127.0.0.1:18789\\\\nSource: local loopback\\\\nConfig: <BASE_EVIDENCE>/ordinary-control/config.json\\\\nBind: loopback\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "inspectionErrors": [
+        {
+          "section": "channels",
+          "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:18789 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:18789\\nSource: local loopback\\nConfig: <BASE_EVIDENCE>/ordinary-control/config.json\\nBind: loopback"
+        }
+      ],
+      "registry": {
+        "latestVersion": null,
+        "tag": "dev",
+        "error": "HTTP 404"
+      },
+      "result": "GREEN_CONTROL",
+      "rawStdoutSHA256": "f877496da51794d907399699f86b7de63f562bd5735bae335c2e1eb1e3031f48",
+      "publishedStdoutSHA256": "4c594771f262fa4fc98da2cdff88dde1386d4991d1e867614699aac0533d463b",
+      "rawStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "publishedStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "long-timeout",
+      "command": [
+        "<NODE_BINARY>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "update",
+        "status",
+        "--json",
+        "--timeout",
+        "2147484"
+      ],
+      "exitCode": 0,
+      "seconds": 3.653,
+      "watchdogKill": false,
+      "configUnchanged": true,
+      "stdout": "{\n  \"update\": {\n    \"root\": \"<BASE_CHECKOUT>\",\n    \"installKind\": \"unknown\",\n    \"packageManager\": \"unknown\"\n  },\n  \"channel\": {\n    \"value\": \"stable\",\n    \"source\": \"default\",\n    \"label\": \"stable (default)\",\n    \"config\": null\n  },\n  \"availability\": {\n    \"available\": false,\n    \"hasGitUpdate\": false,\n    \"hasRegistryUpdate\": false,\n    \"latestVersion\": null,\n    \"gitBehind\": null\n  },\n  \"migrationWarningsError\": \"Update status timed out after 2147484 seconds\\nUpdate status timed out after 2147484 seconds\",\n  \"runStatusError\": \"Update history inspection unavailable\",\n  \"recoverySetsError\": \"Recovery set inspection unavailable\",\n  \"inspectionErrors\": [\n    {\n      \"section\": \"state database\",\n      \"message\": \"Update status timed out after 2147484 seconds\"\n    },\n    {\n      \"section\": \"installation\",\n      \"message\": \"Update status timed out after 2147484 seconds\"\n    },\n    {\n      \"section\": \"channels\",\n      \"message\": \"Update status timed out after 2147484 seconds\"\n    },\n    {\n      \"section\": \"migration warnings\",\n      \"message\": \"Update status timed out after 2147484 seconds\"\n    },\n    {\n      \"section\": \"migration warnings\",\n      \"message\": \"Update status timed out after 2147484 seconds\"\n    }\n  ]\n}\n",
+      "stderr": "(node:883739) TimeoutOverflowWarning: 2147484000 does not fit into a 32-bit signed integer.\nTimeout duration was set to 1.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+      "inspectionErrors": [
+        {
+          "section": "state database",
+          "message": "Update status timed out after 2147484 seconds"
+        },
+        {
+          "section": "installation",
+          "message": "Update status timed out after 2147484 seconds"
+        },
+        {
+          "section": "channels",
+          "message": "Update status timed out after 2147484 seconds"
+        },
+        {
+          "section": "migration warnings",
+          "message": "Update status timed out after 2147484 seconds"
+        },
+        {
+          "section": "migration warnings",
+          "message": "Update status timed out after 2147484 seconds"
+        }
+      ],
+      "registry": null,
+      "result": "RED_LONG_ALLOWANCE_EXPIRES_IMMEDIATELY",
+      "rawStdoutSHA256": "ae8c442eda2b6a43a2e6e48f64ad0aa9552f17e0bf9b44ad5e16c50ee44cfe28",
+      "publishedStdoutSHA256": "8f29501230dc51416e8fc2336b450745b4fe10c01be76878ccbded302b6585b7",
+      "rawStderrSHA256": "6617093e8acd1291c7a6c601014414abebfdca76206c0a3325142141e6341080",
+      "publishedStderrSHA256": "6617093e8acd1291c7a6c601014414abebfdca76206c0a3325142141e6341080"
+    }
+  ],
+  "result": "RED_WITH_LEGAL_CONTROL",
+  "cleanup": {
+    "ownCLIWaited": true,
+    "isolatedConfigurationOnly": true,
+    "noUpdateOrServiceMutationRequested": true,
+    "fixturesRetained": true
+  },
+  "publicationSanitization": {
+    "transform": "Only task-specific absolute filesystem prefixes and the runtime executable path are replaced by stable role placeholders. Error text, observed status, SHA values, numbers and booleans are retained.",
+    "sourceRawReceiptSHA256": "af84f06b4911bbb25576ab134f9beee7ea3c7d00bc6c54fdae435f0f48423b28",
+    "rawOutputHashMeaning": "rawStdoutSHA256/rawStderrSHA256 bind original private stdout.txt/stderr.txt bytes before path replacement. They are NOT hashes of published sanitized text.",
+    "publishedOutputHashMeaning": "publishedStdoutSHA256/publishedStderrSHA256 bind each embedded sanitized UTF-8 stdout/stderr string in this file.",
+    "collector": "The adjacent collector is copied byte-for-byte and its SHA matches both original receipts. It is not path-rewritten.",
+    "placeholderRoles": {
+      "<BASE_CHECKOUT>": "isolated clean baseline checkout",
+      "<HEAD_CHECKOUT>": "isolated clean candidate checkout",
+      "<BASE_EVIDENCE>": "isolated baseline proof output directory",
+      "<HEAD_EVIDENCE>": "isolated candidate proof output directory",
+      "<TASK_EVIDENCE>": "external validation work directory",
+      "<NODE_BINARY>": "actual Node 26.12.1 executable"
+    }
+  }
+}
