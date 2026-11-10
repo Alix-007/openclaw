@@ -1,0 +1,330 @@
+
+=== health-rpc-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-health-proof",
+  "ts": 1794310329790,
+  "durationMs": 1,
+  "channels": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "heartbeatSeconds": 0,
+  "defaultAgentId": "main",
+  "agents": [],
+  "sessions": {
+    "path": "synthetic",
+    "count": 0,
+    "recent": []
+  }
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45733",
+    "at": 71.094836,
+    "observedAt": 3449935.735947351
+  },
+  {
+    "event": "peer-connected",
+    "at": 2951.258689,
+    "observedAt": 3449938.613615032
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:745c0bbd-d33f-461d-bad7-89f91ff9221c",
+    "at": 2957.705772,
+    "observedAt": 3449938.620027162
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2957.948851,
+    "observedAt": 3449938.620073066
+  },
+  {
+    "event": "request",
+    "method": "health",
+    "id": "2:ab63961d-efa8-4028-bebe-10c55eb24b4b",
+    "at": 2960.087278,
+    "observedAt": 3449938.622270864
+  },
+  {
+    "event": "response",
+    "method": "health",
+    "at": 2960.367228,
+    "observedAt": 3449938.622475617
+  },
+  {
+    "event": "peer-closed",
+    "at": 2964.137517,
+    "observedAt": 3449938.626297286
+  }
+]
+
+peer stderr:
+
+=== gateway-health-rpc-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-health-proof",
+  "ts": 1794310332100,
+  "durationMs": 1,
+  "channels": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "heartbeatSeconds": 0,
+  "defaultAgentId": "main",
+  "agents": [],
+  "sessions": {
+    "path": "synthetic",
+    "count": 0,
+    "recent": []
+  }
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41231",
+    "at": 66.124999,
+    "observedAt": 3449938.789554972
+  },
+  {
+    "event": "peer-connected",
+    "at": 2201.865415,
+    "observedAt": 3449940.922581043
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:9ff8c9c2-3170-4fa3-827f-5002b663aacc",
+    "at": 2208.920021,
+    "observedAt": 3449940.929575225
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2209.175267,
+    "observedAt": 3449940.929640683
+  },
+  {
+    "event": "request",
+    "method": "health",
+    "id": "2:e184bed3-7457-414e-88d2-d07b1dfd93e7",
+    "at": 2211.26502,
+    "observedAt": 3449940.931779803
+  },
+  {
+    "event": "response",
+    "method": "health",
+    "at": 2211.504201,
+    "observedAt": 3449940.931977347
+  },
+  {
+    "event": "peer-closed",
+    "at": 2215.091311,
+    "observedAt": 3449940.935622193
+  }
+]
+
+peer stderr:
+
+=== health-connect-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:46047",
+    "at": 67.754206,
+    "observedAt": 3449941.102506323
+  },
+  {
+    "event": "peer-connected",
+    "at": 2628.752004,
+    "observedAt": 3449943.660528178
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:cd129a3d-5d5c-4e28-b481-d29d7ec30a5e",
+    "at": 2635.485183,
+    "observedAt": 3449943.667128928
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 2635.54641,
+    "observedAt": 3449943.667152703
+  },
+  {
+    "event": "peer-closed",
+    "at": 2665.088793,
+    "observedAt": 3449943.696751998
+  }
+]
+
+peer stderr:
+
+=== health-rpc-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:42465",
+    "at": 74.482463,
+    "observedAt": 3449943.862672322
+  },
+  {
+    "event": "peer-connected",
+    "at": 2608.757458,
+    "observedAt": 3449946.395241652
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5ba41438-508a-4c32-a2d8-5e5a3acfb3bf",
+    "at": 2614.796839,
+    "observedAt": 3449946.400368974
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2615.025363,
+    "observedAt": 3449946.400469569
+  },
+  {
+    "event": "request",
+    "method": "health",
+    "id": "2:547583fe-bf10-4d80-83ca-492145de6a45",
+    "at": 2616.855811,
+    "observedAt": 3449946.402321003
+  },
+  {
+    "event": "read-held",
+    "method": "health",
+    "at": 2616.939838,
+    "observedAt": 3449946.402360833
+  },
+  {
+    "event": "peer-closed",
+    "at": 2638.470687,
+    "observedAt": 3449946.42407507
+  }
+]
+
+peer stderr:
+
+=== gateway-health-connect-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43849",
+    "at": 62.932024,
+    "observedAt": 3449946.575446755
+  },
+  {
+    "event": "peer-connected",
+    "at": 2111.283415,
+    "observedAt": 3449948.621768633
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:3b515a7c-a8ee-4cd4-a932-3dfd7fda272b",
+    "at": 2118.346235,
+    "observedAt": 3449948.628703875
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 2118.427131,
+    "observedAt": 3449948.62873869
+  },
+  {
+    "event": "peer-closed",
+    "at": 2131.80385,
+    "observedAt": 3449948.642158819
+  }
+]
+
+peer stderr:
+
+=== gateway-health-rpc-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44281",
+    "at": 66.088668,
+    "observedAt": 3449948.81865383
+  },
+  {
+    "event": "peer-connected",
+    "at": 2129.625293,
+    "observedAt": 3449950.880136336
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:9db1d779-4c22-4bef-8970-d23c098c1e4a",
+    "at": 2136.827772,
+    "observedAt": 3449950.887230282
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2137.105831,
+    "observedAt": 3449950.887371552
+  },
+  {
+    "event": "request",
+    "method": "health",
+    "id": "2:99a0bbc5-794c-4e95-b35c-769161cfc420",
+    "at": 2140.128526,
+    "observedAt": 3449950.89040215
+  },
+  {
+    "event": "read-held",
+    "method": "health",
+    "at": 2140.222744,
+    "observedAt": 3449950.890468939
+  },
+  {
+    "event": "peer-closed",
+    "at": 2161.123044,
+    "observedAt": 3449950.911470871
+  }
+]
+
+peer stderr:

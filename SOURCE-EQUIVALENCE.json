@@ -1,0 +1,75 @@
+{
+  "lane": "health-cancel",
+  "priorHead": "b5edfddb8e5dd21b9dc951da81cc5e7461c7865e",
+  "productHead": "f5066a64003f67489e862003d647fbf7dc41bf9c",
+  "changedFilesSincePrior": [
+    "config/test-lines-allocations/alix-health-cancel-20261110.txt"
+  ],
+  "unchangedProductionAndTestFiles": [
+    {
+      "path": "src/cli/daemon-cli/diagnostic-readiness.test.ts",
+      "sha256": "90c918fb3edf02446befe21f840544310264c1a3bec59e1b128be5ddbf67252f",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/daemon-cli/diagnostic-readiness.ts",
+      "sha256": "803093e8853b83b0a5a0735fb286047c193b62322868cdbc217d7f50c7c2d88b",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/gateway-cli/health-route.test.ts",
+      "sha256": "89164d894bd1727e39dd3aa838eaffa0f4e173a2db49e6175c9dd613efb49db1",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/gateway-cli/health-route.ts",
+      "sha256": "8222ba933e647355cb9511ca0e52eec88c229b35d5d907aadff8f6be24cf332a",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/gateway-cli/register.option-collisions.test.ts",
+      "sha256": "ada2247c2aae4f2d3d15e7ed3d343ed3ee497417b1d94a193334491284a9710a",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/gateway-cli/register.ts",
+      "sha256": "dda18eb5ab5b4162db24175f539a092e43fe5b8cff0725e77b5e19460a54f2d6",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/program/register.status-health-sessions.test.ts",
+      "sha256": "561efc2682a71a786133d2488e804595691509c42ac925f06e2fb3d9b267ba33",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/program/register.status-health-sessions.ts",
+      "sha256": "cba1ad620330fd4e0b5e8264f9fce7254e742a0d3016692ef5c6c6c91c477508",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/route.test.ts",
+      "sha256": "077846594e1bafb94f91d25475636855ab39af68418b6c89a0a8dbe884a42332",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/cli/route.ts",
+      "sha256": "1f61cd0a6ac056d28b2f5e4bc78e1435acac8f49199dde07960d2c7e1618e51e",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/commands/gateway-diagnostic-readiness.ts",
+      "sha256": "69c01e76c97f1aaea7a9c554ce4cab4f26b0777495a0ec0319f77434ba1c9a43",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/commands/health.test.ts",
+      "sha256": "54b25d63446bcc51a145878e2fe67ec5b7cb6f59a959e1a34f065f23785c3570",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/commands/health.ts",
+      "sha256": "a1fcf8daa3e6fdc681c0ddeeb1a454b634706c90875ba4164ced7ba9b2c1f995",
+      "unchangedFromPriorHead": true
+    }
+  ]
+}
