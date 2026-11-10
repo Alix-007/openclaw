@@ -1,0 +1,81 @@
+{
+  "head": "1229a520832151fc75bb564282eee55b49ad0d47",
+  "buildStamp": {
+    "builtAt": 1794307792896,
+    "head": "1229a520832151fc75bb564282eee55b49ad0d47",
+    "inputsClean": true,
+    "inputSignature": "66530b6134237760894f5b324b5f1b23e16f39aee7ac22a73bfa513ca30ffc3e"
+  },
+  "collectorSHA256": "5e6f2aec86cef3f5d57f90ca77b7923b96811c1acc53753b10fadddd4c5852f9",
+  "sourceHashes": {
+    "src/infra/update-check.ts": "f5013fc80b695e3eb605b19b48940a2800b81e9254191d95de681c91b3b05709",
+    "src/infra/update-install-root.ts": "f5d6dd0395b3eeb402d85aba723becc9aa32b154bec9b6000648d1da64b9b044",
+    "src/infra/git-exec.ts": "d0d68bc8a5d73d358dd94e733ad9a0f2a7ee2910200cae7b05b5e0e857cc20a1",
+    "src/cli/update-cli/shared.ts": "7c9baf92c3b79ab9bce2285533cc2adb5c5fb7a0ca2812dc40f79c06eeaaba68",
+    "src/cli/update-cli/status.ts": "55b6c9451cfd2a44c4d75d1202b9c9721987020874bc1ab1fe84a4d28421bf05"
+  },
+  "expectation": "green",
+  "entry": "Normal openclaw.mjs --profile update-git-root-proof update status --json --timeout 3",
+  "boundary": "Real CLI installation discovery -> real Git --show-toplevel -> canonical update.installKind and actual git SHA in JSON stdout",
+  "checkoutPath": "$CHECKOUT_SPACE",
+  "nativeGitTopLevel": {
+    "command": [
+      "git",
+      "-C",
+      "$CHECKOUT_SPACE",
+      "rev-parse",
+      "--show-toplevel"
+    ],
+    "stdoutHex": "2f6d656469612f7664632f303636383030313437302f776f726b53706163652f636c61772d63616d706169676e2f616c69782d70726f76656e2d66696c6c32302d32303236313131302e757832743330346d2f626173656c696e65200a",
+    "stdoutSHA256": "3b6d39a4cdc9d3697c2b72af662b12a9719669af5f4d0d4c0b22906f1438832a"
+  },
+  "result": "GREEN_REAL_GIT_CHECKOUT_RETAINED",
+  "command": [
+    "$NODE26",
+    "$CHECKOUT_SPACE/openclaw.mjs",
+    "--profile",
+    "update-git-root-proof",
+    "update",
+    "status",
+    "--json",
+    "--timeout",
+    "3"
+  ],
+  "exitCode": 0,
+  "seconds": 9.866,
+  "watchdogKill": false,
+  "configUnchanged": true,
+  "stdoutSHA256": "792809e636ab0d9e51f4ee9469e37e9d42150b583a627a7a08e89af5960f90a6",
+  "stderrSHA256": "40fed0083112ebbcaced99770309fbef1b215aab908282696aa605a88ca84ff7",
+  "stdout": "{\n  \"update\": {\n    \"root\": \"$CHECKOUT_SPACE\",\n    \"installKind\": \"git\",\n    \"packageManager\": \"pnpm\",\n    \"git\": {\n      \"root\": \"$CHECKOUT_SPACE\",\n      \"sha\": \"1229a520832151fc75bb564282eee55b49ad0d47\",\n      \"tag\": null,\n      \"branch\": \"alix/fix-update-git-root-path-20261110\",\n      \"upstream\": null,\n      \"upstreamSha\": null,\n      \"commitAtMs\": 1794307500000,\n      \"dirty\": false,\n      \"ahead\": null,\n      \"behind\": null,\n      \"fetchOk\": null,\n      \"builtSha\": \"1229a520832151fc75bb564282eee55b49ad0d47\",\n      \"artifacts\": {\n        \"ready\": false\n      }\n    },\n    \"deps\": {\n      \"manager\": \"pnpm\",\n      \"lockfilePath\": \"$CHECKOUT_SPACE/pnpm-lock.yaml\",\n      \"markerPath\": \"$CHECKOUT_SPACE/node_modules/.modules.yaml\",\n      \"status\": \"ok\"\n    },\n    \"registry\": {\n      \"latestVersion\": null,\n      \"tag\": \"dev\",\n      \"error\": \"TimeoutError: request timed out\"\n    }\n  },\n  \"channel\": {\n    \"value\": \"dev\",\n    \"source\": \"git-branch\",\n    \"label\": \"dev (alix/fix-update-git-root-path-20261110)\",\n    \"config\": null\n  },\n  \"availability\": {\n    \"available\": false,\n    \"hasGitUpdate\": false,\n    \"hasRegistryUpdate\": false,\n    \"latestVersion\": null,\n    \"gitBehind\": null\n  },\n  \"recoverySets\": [],\n  \"inspectionErrors\": [\n    {\n      \"section\": \"channels\",\n      \"message\": \"Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:56993 (ECONNREFUSED).\\\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\\\nGateway target: ws://127.0.0.1:56993\\\\nSource: local loopback\\\\nConfig: $PROOF_ROOT/update-git-root-head-space/config.json\\\\nBind: loopback\"\n    }\n  ]\n}\n",
+  "stderr": "[fetch-timeout] fetch timeout after 3000ms (elapsed 3001.4968910000007ms) operation=npm-registry-update-check url=https://registry.npmjs.org/openclaw/dev\n",
+  "observation": {
+    "root": "$CHECKOUT_SPACE",
+    "installKind": "git",
+    "gitSha": "1229a520832151fc75bb564282eee55b49ad0d47",
+    "packageManager": "pnpm",
+    "registry": {
+      "latestVersion": null,
+      "tag": "dev",
+      "error": "TimeoutError: request timed out"
+    },
+    "inspectionErrors": [
+      {
+        "section": "channels",
+        "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:56993 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:56993\\nSource: local loopback\\nConfig: $PROOF_ROOT/update-git-root-head-space/config.json\\nBind: loopback"
+      }
+    ]
+  },
+  "limitations": [
+    "No update/install/checkout/service mutation requested; this validates read-only installation classification, not real update completion or updater Git-metadata paths.",
+    "The default public npm registry diagnostic and closed isolated Gateway inspection are separate observations and are not claimed as successful live provider/channel verification.",
+    "Collector uses an actual physical checkout name; symlink aliases alone do not reproduce the path loss.",
+    "No Windows filesystem or live production Gateway proof."
+  ],
+  "cleanup": {
+    "ownCLIWaited": true,
+    "isolatedConfigUnchanged": true,
+    "fixturesRetained": true,
+    "productionChannelsUntouched": true
+  }
+}

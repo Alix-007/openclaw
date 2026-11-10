@@ -1,0 +1,55 @@
+{
+  "update": {
+    "root": "$CHECKOUT_SPACE",
+    "installKind": "git",
+    "packageManager": "pnpm",
+    "git": {
+      "root": "$CHECKOUT_SPACE",
+      "sha": "1229a520832151fc75bb564282eee55b49ad0d47",
+      "tag": null,
+      "branch": "alix/fix-update-git-root-path-20261110",
+      "upstream": null,
+      "upstreamSha": null,
+      "commitAtMs": 1794307500000,
+      "dirty": false,
+      "ahead": null,
+      "behind": null,
+      "fetchOk": null,
+      "builtSha": "1229a520832151fc75bb564282eee55b49ad0d47",
+      "artifacts": {
+        "ready": false
+      }
+    },
+    "deps": {
+      "manager": "pnpm",
+      "lockfilePath": "$CHECKOUT_SPACE/pnpm-lock.yaml",
+      "markerPath": "$CHECKOUT_SPACE/node_modules/.modules.yaml",
+      "status": "ok"
+    },
+    "registry": {
+      "latestVersion": null,
+      "tag": "dev",
+      "error": "TimeoutError: request timed out"
+    }
+  },
+  "channel": {
+    "value": "dev",
+    "source": "git-branch",
+    "label": "dev (alix/fix-update-git-root-path-20261110)",
+    "config": null
+  },
+  "availability": {
+    "available": false,
+    "hasGitUpdate": false,
+    "hasRegistryUpdate": false,
+    "latestVersion": null,
+    "gitBehind": null
+  },
+  "recoverySets": [],
+  "inspectionErrors": [
+    {
+      "section": "channels",
+      "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:56993 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:56993\\nSource: local loopback\\nConfig: $PROOF_ROOT/update-git-root-head-space/config.json\\nBind: loopback"
+    }
+  ]
+}
