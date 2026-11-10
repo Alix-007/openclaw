@@ -1,0 +1,174 @@
+{
+  "productHead": "b5edfddb8e5dd21b9dc951da81cc5e7461c7865e",
+  "baseHead": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+  "checks": [
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/commands/health.test.ts",
+        "src/cli/gateway-cli/health-route.test.ts",
+        "src/cli/gateway-cli/register.option-collisions.test.ts",
+        "src/cli/program/register.status-health-sessions.test.ts",
+        "src/cli/route.test.ts",
+        "src/cli/daemon-cli/diagnostic-readiness.test.ts",
+        "src/cli/daemon-cli/restart-health-deadline.test.ts",
+        "src/cli/gateway-cli/suspend-cli.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 244.465,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "trackedDiffSha256": "d4b5802bbeaa105164af2f3753dc814534ca68c6940763aa426617238b76c185",
+      "environment": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-tests-green-cache",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint"
+      },
+      "logSha256": "2c6434b7c447b9caf3163971544f15a368d2256be04f1aeed0ea1d0b0dda504c"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/commands/health.test.ts",
+        "src/cli/route.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 101.635,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "trackedDiffSha256": "3dca594b35fac71a29c2f576e8cdae42d40563124946920a7b325c814372817c",
+      "environment": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-final-tests-v2-cache",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint"
+      },
+      "logSha256": "34169b0e5175329c9d06115f7284922714b949834bb2fa6d88edd0e64ac0844a"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "$CHECKOUT-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 175.979,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "trackedDiffSha256": "3dca594b35fac71a29c2f576e8cdae42d40563124946920a7b325c814372817c",
+      "environment": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-types-green-cache",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint"
+      },
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "src/cli/daemon-cli/diagnostic-readiness.test.ts",
+        "src/cli/daemon-cli/diagnostic-readiness.ts",
+        "src/cli/gateway-cli/health-route.test.ts",
+        "src/cli/gateway-cli/health-route.ts",
+        "src/cli/gateway-cli/register.option-collisions.test.ts",
+        "src/cli/gateway-cli/register.ts",
+        "src/cli/program/register.status-health-sessions.test.ts",
+        "src/cli/program/register.status-health-sessions.ts",
+        "src/cli/route.test.ts",
+        "src/cli/route.ts",
+        "src/commands/gateway-diagnostic-readiness.ts",
+        "src/commands/health.test.ts",
+        "src/commands/health.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 288.037,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "trackedDiffSha256": "3dca594b35fac71a29c2f576e8cdae42d40563124946920a7b325c814372817c",
+      "environment": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-lint-cache",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint"
+      },
+      "logSha256": "780136817986287aa8e994371b5fb7b95dcbf67745e20485906787c4bfca3bd1"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-node-package-bin.mts",
+        "oxfmt",
+        "--write",
+        "src/cli/daemon-cli/diagnostic-readiness.test.ts",
+        "src/cli/daemon-cli/diagnostic-readiness.ts",
+        "src/cli/gateway-cli/health-route.test.ts",
+        "src/cli/gateway-cli/health-route.ts",
+        "src/cli/gateway-cli/register.option-collisions.test.ts",
+        "src/cli/gateway-cli/register.ts",
+        "src/cli/program/register.status-health-sessions.test.ts",
+        "src/cli/program/register.status-health-sessions.ts",
+        "src/cli/route.test.ts",
+        "src/cli/route.ts",
+        "src/commands/gateway-diagnostic-readiness.ts",
+        "src/commands/health.test.ts",
+        "src/commands/health.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 2.765,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "trackedDiffSha256": "d4b5802bbeaa105164af2f3753dc814534ca68c6940763aa426617238b76c185",
+      "environment": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$CHECKOUT-format-cache",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint"
+      },
+      "logSha256": "81d8b6931378682d493f7f41607e6191fe6709df10357a2b52be0b2401758b18"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "baccc7e152916c7f4a48596b5cb544c12264ac54",
+        "--staged"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 111.734,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "19ca6f285692483a727766711157c7d93956af136295a39e4190e64e47b5c207"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 263.875,
+      "head": "b5edfddb8e5dd21b9dc951da81cc5e7461c7865e",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "totalOriginalFocusedTests": 222,
+  "finalChangedTestReplayCount": 81,
+  "reuse": "Full8suite222pass author run predates two mechanical test fixture/type corrections. The two changed suites were re-run together with81pass; remaining6suite input unchanged. Normal committed-head native acceptance is fresh. Canonical lint/types checked final candidate bytes.",
+  "failedAttempt": "First cold final replay timed out in an unchanged existing models-list route case while canonical worker preparation took147.358s, beyond that case120s. One same-source replay with the completed generation passed. This is disclosed as environment/preparation attribution, not a code fix or a reason to widen timeouts.",
+  "notTested": "Native proof exercises route-first JSON only with a compatible synthetic loopback WebSocket Gateway peer; Commander text/auth fallback live transport, real Gateway services, hosted providers/channels and other OS are not claimed."
+}
