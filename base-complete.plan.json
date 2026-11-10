@@ -1,0 +1,60 @@
+{
+  "format": "knowledge-source-plan-v1",
+  "source": {
+    "provider": "fixture",
+    "key": "fixture:overlap"
+  },
+  "current": {
+    "coverage": {
+      "start": "2026-11-02T00:00:00.000Z",
+      "end": "2026-11-03T00:00:00.000Z",
+      "completeness": "complete"
+    },
+    "observed_at": "2026-11-06T00:00:00.000Z",
+    "item_count": 2
+  },
+  "previous": [
+    {
+      "index": 0,
+      "coverage": {
+        "start": "2026-11-01T00:00:00.000Z",
+        "end": "2026-11-04T00:00:00.000Z",
+        "completeness": "complete"
+      },
+      "observed_at": "2026-11-05T00:00:00.000Z",
+      "item_count": 7
+    }
+  ],
+  "coverage": {
+    "covered": [
+      {
+        "start": "2026-11-02T00:00:00.000Z",
+        "end": "2026-11-03T00:00:00.000Z"
+      }
+    ],
+    "uncovered": []
+  },
+  "summary": {
+    "added": 1,
+    "changed": 0,
+    "deleted": 2,
+    "unchanged": 1,
+    "unresolved_missing": 1
+  },
+  "items": {
+    "added": [
+      "added"
+    ],
+    "changed": [],
+    "deleted": [
+      "at-start",
+      "inside-window"
+    ],
+    "unchanged": [
+      "retained"
+    ],
+    "unresolved_missing": [
+      "undated"
+    ]
+  }
+}

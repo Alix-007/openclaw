@@ -1,0 +1,7 @@
+{"id": "before-window", "occurred_at": "2026-11-01T23:59:59.999999999Z", "payload": {"text": "synthetic before-window"}}
+{"id": "at-start", "occurred_at": "2026-11-02T00:00:00.000000000Z", "payload": {"text": "synthetic at-start"}}
+{"id": "inside-window", "occurred_at": "2026-11-02T12:00:00Z", "payload": {"text": "synthetic inside-window"}}
+{"id": "at-end", "occurred_at": "2026-11-03T00:00:00.000000000Z", "payload": {"text": "synthetic at-end"}}
+{"id": "after-window", "occurred_at": "2026-11-03T00:00:00.000000001Z", "payload": {"text": "synthetic after-window"}}
+{"id": "undated", "payload": {"text": "synthetic undated"}}
+{"id": "retained", "occurred_at": "2026-11-02T13:00:00Z", "payload": {"text": "synthetic retained"}}
