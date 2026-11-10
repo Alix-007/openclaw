@@ -1,0 +1,268 @@
+{
+  "at": "2026-11-10T15:41:12.783519+00:00",
+  "head": "b1f20dd846dba7a0923c5f1b4566660793b1f081",
+  "tracked_status": "",
+  "source_sha256": "6c4dd2ca5b90cdd442ba4134dc41c6530714d6324f785cd2d51fde7a5de6e630",
+  "collector_sha256": "879e0417bade1a502c7340bd5618e3a6f11496c7dc0ed896dd3fd3a87779bbfa",
+  "node_version": "v26.12.1",
+  "node_sha256": "08f12d42fb304468e8ee86247fe686aae5b225836ea65e9d6566c11ae6ba2e8e",
+  "commands": [
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "snapshot",
+        "--provider",
+        "fixture",
+        "--source-key",
+        "fixture:overlap",
+        "--coverage-start",
+        "2026-11-01T00:00:00Z",
+        "--coverage-end",
+        "2026-11-04T00:00:00Z",
+        "--observed-at",
+        "2026-11-05T00:00:00Z",
+        "--completeness",
+        "complete",
+        "--input",
+        "$HEAD_OUT/prior.jsonl",
+        "--output",
+        "$HEAD_OUT/prior.manifest.jsonl.gz"
+      ],
+      "exit": 0,
+      "stdout": "{\"format\":\"knowledge-source-manifest-v1\",\"source\":{\"provider\":\"fixture\",\"key\":\"fixture:overlap\"},\"coverage\":{\"start\":\"2026-11-01T00:00:00.000Z\",\"end\":\"2026-11-04T00:00:00.000Z\",\"completeness\":\"complete\"},\"observed_at\":\"2026-11-05T00:00:00.000Z\",\"item_count\":7,\"manifest_sha256\":\"3ec0e4a64f84ae0eecdb7c03644c4e192b69448449acdb6cf3f466cac20ac505\",\"output\":\"$HEAD_OUT/prior.manifest.jsonl.gz\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "snapshot",
+        "--provider",
+        "fixture",
+        "--source-key",
+        "fixture:overlap",
+        "--coverage-start",
+        "2026-11-02T00:00:00Z",
+        "--coverage-end",
+        "2026-11-03T00:00:00Z",
+        "--observed-at",
+        "2026-11-06T00:00:00Z",
+        "--completeness",
+        "partial",
+        "--input",
+        "$HEAD_OUT/partial.jsonl",
+        "--output",
+        "$HEAD_OUT/partial.manifest.jsonl.gz"
+      ],
+      "exit": 0,
+      "stdout": "{\"format\":\"knowledge-source-manifest-v1\",\"source\":{\"provider\":\"fixture\",\"key\":\"fixture:overlap\"},\"coverage\":{\"start\":\"2026-11-02T00:00:00.000Z\",\"end\":\"2026-11-03T00:00:00.000Z\",\"completeness\":\"partial\"},\"observed_at\":\"2026-11-06T00:00:00.000Z\",\"item_count\":2,\"manifest_sha256\":\"ad3b3391ea36ddb0508e6e19c7f9b7d83fbb73a29b542b68a6a2558f6b8121ed\",\"output\":\"$HEAD_OUT/partial.manifest.jsonl.gz\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "plan",
+        "--current",
+        "$HEAD_OUT/partial.manifest.jsonl.gz",
+        "--previous",
+        "$HEAD_OUT/prior.manifest.jsonl.gz",
+        "--output",
+        "$HEAD_OUT/partial.plan.json"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "snapshot",
+        "--provider",
+        "fixture",
+        "--source-key",
+        "fixture:overlap",
+        "--coverage-start",
+        "2026-11-02T00:00:00Z",
+        "--coverage-end",
+        "2026-11-03T00:00:00Z",
+        "--observed-at",
+        "2026-11-06T00:00:00Z",
+        "--completeness",
+        "unknown",
+        "--input",
+        "$HEAD_OUT/unknown.jsonl",
+        "--output",
+        "$HEAD_OUT/unknown.manifest.jsonl.gz"
+      ],
+      "exit": 0,
+      "stdout": "{\"format\":\"knowledge-source-manifest-v1\",\"source\":{\"provider\":\"fixture\",\"key\":\"fixture:overlap\"},\"coverage\":{\"start\":\"2026-11-02T00:00:00.000Z\",\"end\":\"2026-11-03T00:00:00.000Z\",\"completeness\":\"unknown\"},\"observed_at\":\"2026-11-06T00:00:00.000Z\",\"item_count\":2,\"manifest_sha256\":\"bd63ea94f1d5210637036c64ea8edd593629731e4f6a575f79dc35bd2043abd7\",\"output\":\"$HEAD_OUT/unknown.manifest.jsonl.gz\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "plan",
+        "--current",
+        "$HEAD_OUT/unknown.manifest.jsonl.gz",
+        "--previous",
+        "$HEAD_OUT/prior.manifest.jsonl.gz",
+        "--output",
+        "$HEAD_OUT/unknown.plan.json"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "snapshot",
+        "--provider",
+        "fixture",
+        "--source-key",
+        "fixture:overlap",
+        "--coverage-start",
+        "2026-11-02T00:00:00Z",
+        "--coverage-end",
+        "2026-11-03T00:00:00Z",
+        "--observed-at",
+        "2026-11-06T00:00:00Z",
+        "--completeness",
+        "complete",
+        "--input",
+        "$HEAD_OUT/complete.jsonl",
+        "--output",
+        "$HEAD_OUT/complete.manifest.jsonl.gz"
+      ],
+      "exit": 0,
+      "stdout": "{\"format\":\"knowledge-source-manifest-v1\",\"source\":{\"provider\":\"fixture\",\"key\":\"fixture:overlap\"},\"coverage\":{\"start\":\"2026-11-02T00:00:00.000Z\",\"end\":\"2026-11-03T00:00:00.000Z\",\"completeness\":\"complete\"},\"observed_at\":\"2026-11-06T00:00:00.000Z\",\"item_count\":2,\"manifest_sha256\":\"af26e3ffae5e2ea55fc295df2e21241551dbccb47282f9a02de8b7bd7ca68413\",\"output\":\"$HEAD_OUT/complete.manifest.jsonl.gz\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "$NODE",
+        "$CHECKOUT/extensions/knowledge/skills/knowledge-source-ingest/scripts/source-manifest.mjs",
+        "plan",
+        "--current",
+        "$HEAD_OUT/complete.manifest.jsonl.gz",
+        "--previous",
+        "$HEAD_OUT/prior.manifest.jsonl.gz",
+        "--output",
+        "$HEAD_OUT/complete.plan.json"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "comparisons": {
+    "partial": {
+      "expected": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "unchanged": [
+          "retained"
+        ],
+        "deleted": [],
+        "unresolved_missing": [
+          "at-start",
+          "inside-window",
+          "undated"
+        ]
+      },
+      "actual": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "deleted": [],
+        "unchanged": [
+          "retained"
+        ],
+        "unresolved_missing": [
+          "at-start",
+          "inside-window",
+          "undated"
+        ]
+      },
+      "pass": true
+    },
+    "unknown": {
+      "expected": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "unchanged": [
+          "retained"
+        ],
+        "deleted": [],
+        "unresolved_missing": [
+          "at-start",
+          "inside-window",
+          "undated"
+        ]
+      },
+      "actual": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "deleted": [],
+        "unchanged": [
+          "retained"
+        ],
+        "unresolved_missing": [
+          "at-start",
+          "inside-window",
+          "undated"
+        ]
+      },
+      "pass": true
+    },
+    "complete": {
+      "expected": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "unchanged": [
+          "retained"
+        ],
+        "deleted": [
+          "at-start",
+          "inside-window"
+        ],
+        "unresolved_missing": [
+          "undated"
+        ]
+      },
+      "actual": {
+        "added": [
+          "added"
+        ],
+        "changed": [],
+        "deleted": [
+          "at-start",
+          "inside-window"
+        ],
+        "unchanged": [
+          "retained"
+        ],
+        "unresolved_missing": [
+          "undated"
+        ]
+      },
+      "pass": true
+    }
+  },
+  "scratch_remaining": [],
+  "pass": true
+}
