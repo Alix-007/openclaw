@@ -1,0 +1,38 @@
+{
+  "update": {
+    "root": "$CHECKOUT_SPACE",
+    "installKind": "package",
+    "packageManager": "unknown",
+    "deps": {
+      "manager": "unknown",
+      "lockfilePath": null,
+      "markerPath": null,
+      "status": "unknown",
+      "reason": "unknown package manager"
+    },
+    "registry": {
+      "latestVersion": "2026.11.2",
+      "tag": "latest"
+    }
+  },
+  "channel": {
+    "value": "stable",
+    "source": "default",
+    "label": "stable (default)",
+    "config": null
+  },
+  "availability": {
+    "available": false,
+    "hasGitUpdate": false,
+    "hasRegistryUpdate": false,
+    "latestVersion": null,
+    "gitBehind": null
+  },
+  "recoverySets": [],
+  "inspectionErrors": [
+    {
+      "section": "channels",
+      "message": "Channel inspection unavailable: Gateway not reachable at ws://127.0.0.1:60819 (ECONNREFUSED).\\nStart it with `openclaw gateway run` or check `openclaw gateway status`.\\nGateway target: ws://127.0.0.1:60819\\nSource: local loopback\\nConfig: $PROOF_ROOT/update-git-root-base-space/config.json\\nBind: loopback"
+    }
+  ]
+}

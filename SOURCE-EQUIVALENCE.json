@@ -1,0 +1,20 @@
+{
+  "lane": "update-git-root",
+  "priorHead": "1229a520832151fc75bb564282eee55b49ad0d47",
+  "productHead": "f56e2bc9ad0faf3acffa753a97a23a1f686c82c2",
+  "changedFilesSincePrior": [
+    "config/test-lines-allocations/update-literal-git-root.txt"
+  ],
+  "unchangedProductionAndTestFiles": [
+    {
+      "path": "src/infra/update-check-install-kind.test.ts",
+      "sha256": "f5507782f087ad17a3dc2cddabd030b3f01b83635c9359e883a7a23312e0741f",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/infra/update-check.ts",
+      "sha256": "f5013fc80b695e3eb605b19b48940a2800b81e9254191d95de681c91b3b05709",
+      "unchangedFromPriorHead": true
+    }
+  ]
+}

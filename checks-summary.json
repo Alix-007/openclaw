@@ -1,0 +1,106 @@
+{
+  "productHead": "f56e2bc9ad0faf3acffa753a97a23a1f686c82c2",
+  "baseHead": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+  "checks": [
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/infra/update-check-install-kind.test.ts",
+        "src/infra/update-check-status.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 170.272,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "1d5243363bf22e7d9f7ec45b31c6b90eec155a602af0c22a2aaed1ee981405e8"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "config/tsconfig/oxlint.core.json",
+        "src/infra/update-check.ts",
+        "src/infra/update-check-install-kind.test.ts"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 30.885,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "1d5243363bf22e7d9f7ec45b31c6b90eec155a602af0c22a2aaed1ee981405e8"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../update-git-root-types.tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 79.78,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "1d5243363bf22e7d9f7ec45b31c6b90eec155a602af0c22a2aaed1ee981405e8"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-format.mts",
+        "--check",
+        "src/infra/update-check.ts",
+        "src/infra/update-check-install-kind.test.ts"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 0.355,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "37e440f4289c6c09f88547634e148c31cc22e882262fc4f21139c95b657b0736"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "437b1993291d43620fd3fb1b073312141e983d79",
+        "--no-merge-base",
+        "--staged"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 102.66,
+      "productHead": "f56e2bc9ad0faf3acffa753a97a23a1f686c82c2",
+      "ciFrozenBase": "437b1993291d43620fd3fb1b073312141e983d79",
+      "integrationTree": "b2b006054c19742f63bdd95f34234f7c186129a6",
+      "checkerBlob": "46f2bfeb97dc41759cfacd90bbc2ba0ad33ad9da",
+      "indexFile": "$PROOF_ROOT/update-git-root-ci-context-ratchet.index",
+      "boundary": "Canonical staged-index checker on real Git merge-tree of exact product HEAD and actual CI frozen main parent. Own product worktree/index unchanged. This is an integration accounting check, not native behavior proof.",
+      "productTrackedCleanAfter": true,
+      "logSHA256": "f71598929ff30215e9a6b2e30dd36ffd29269c0eab4efc00d71f479972cb9413"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "$CHECKOUT_SPACE",
+      "exit_code": 0,
+      "elapsed_seconds": 242.0,
+      "head": "f56e2bc9ad0faf3acffa753a97a23a1f686c82c2",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "testCount": 27,
+  "testCost": "170.272s official wrapper including133.272s canonical compiled-worker preparation; no broad test run or timeout increase",
+  "reuse": "Final production/test file hashes remain identical to author-pass.json; final ratchet includes only the explicit exact own+inherited debt allocation. Clean committed head cliStartup build and native readback are fresh.",
+  "nativeBoundary": "Normal openclaw.mjs -> actual git subprocess -> installKind/git.sha JSON readback; never calls update/install/restart.",
+  "limitations": "Registry diagnostic failures and isolated closed Gateway remain visible in raw results. No hosted provider/channel/Windows/update-completion claim."
+}
