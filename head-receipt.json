@@ -1,0 +1,248 @@
+{
+  "status": "MATCHES_EXPORT_CONTROL",
+  "base_head": "43de61602252038fc6b40a16cb4ec859dd9083ca",
+  "subject_script": "/proof/subject/model_usage.py",
+  "subject_sha256": "e130f320a40d8e2faee6315bb34d6395da4fdc3c7cb67decbaba86db0284b406",
+  "collector_sha256": "299afe5852ea4a6a3bf01c9d5a154942530640fe430f31e570d68461c52b10ff",
+  "binary": "/proof/codexbar/CodexBarCLI",
+  "binary_sha256": "c1723f529badf182e0d87328aa2f9204f9c635c94948308a868ccf8fa5e6b180",
+  "upstream_release": "v0.84.0",
+  "upstream_source_commit": "5bebf9a05e68059eae11d5031c7239f1aa1d49ef",
+  "run_dir": "/proof/out/head-revision-final",
+  "child_environment": {
+    "HOME": "/proof/out/head-revision-final/home",
+    "XDG_CONFIG_HOME": "/proof/out/head-revision-final/home/.config",
+    "XDG_CACHE_HOME": "/proof/out/head-revision-final/home/.cache",
+    "XDG_DATA_HOME": "/proof/out/head-revision-final/home/.local/share",
+    "CODEXBAR_CONFIG": "/proof/out/head-revision-final/home/.config/codexbar/config.json",
+    "CLAUDE_CONFIG_DIR": "/proof/out/head-revision-final/home/.claude",
+    "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/proof/out/head-revision-final/home/.claude",
+    "TMPDIR": "/proof/out/head-revision-final/tmp",
+    "TMP": "/proof/out/head-revision-final/tmp",
+    "TEMP": "/proof/out/head-revision-final/tmp",
+    "PATH": "/proof/out/head-revision-final/bin:/usr/bin:/bin",
+    "TZ": "UTC",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "fixture_log": "/proof/out/head-revision-final/home/.claude/projects/proof/session.jsonl",
+  "fixture_sha256": "49cc32eb43b775ac359b341a8eeeae51eb80793a0c0519b4e0a09b64cd1cdcdf",
+  "fixture_rows": [
+    {
+      "type": "assistant",
+      "timestamp": "2026-11-10T00:00:00Z",
+      "sessionId": "proof-session",
+      "requestId": "proof-request-recent",
+      "isSidechain": false,
+      "message": {
+        "id": "proof-message-recent",
+        "model": "claude-sonnet-4-20250514",
+        "usage": {
+          "input_tokens": 1000,
+          "output_tokens": 100,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        }
+      }
+    },
+    {
+      "type": "assistant",
+      "timestamp": "2026-09-26T00:00:00Z",
+      "sessionId": "proof-session",
+      "requestId": "proof-request-old",
+      "isSidechain": false,
+      "message": {
+        "id": "proof-message-old",
+        "model": "claude-sonnet-4-20250514",
+        "usage": {
+          "input_tokens": 1000,
+          "output_tokens": 100,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0
+        }
+      }
+    }
+  ],
+  "today_utc": "2026-11-10",
+  "old_day_utc": "2026-09-26",
+  "commands": [
+    {
+      "name": "version",
+      "command": [
+        "/proof/out/head-revision-final/bin/codexbar",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "CodexBar 0.84.0\n",
+      "stderr": "",
+      "elapsed_seconds": 0.10038787312805653
+    },
+    {
+      "name": "cost-help",
+      "command": [
+        "/proof/out/head-revision-final/bin/codexbar",
+        "cost",
+        "--help"
+      ],
+      "exit": 0,
+      "stdout": "CodexBar 0.84.0\n\nUsage:\n  codexbar cost [--format text|json]\n               [--json]\n               [--json-only]\n               [--json-output] [--log-level <trace|verbose|debug|info|warning|error|critical>] [-v|--verbose]\n               [--provider codex|openai|azure-openai|claude|clinepass|cursor|opencode|opencodego|alibaba-coding-plan|alibaba-token-plan|qwen-cloud|factory|fireworks|gemini|antigravity|copilot|devin|zai|minimax|manus|kimi|kilo|kiro|vertexai|augment|jetbrains|moonshot|amp|t3chat|langdock|ollama|synthetic|openrouter|elevenlabs|warp|windsurf|zed|perplexity|mimo|doubao|sakana|abacusai|mistral|deepseek|deepinfra|codebuff|venice|commandcode|qoder|stepfun|bedrock|grok|groqcloud|llmproxy|litellm|bifrost|aixy|deepgram|soniox|poe|chutes|neuralwatt|helmcode|clawrouter|longcat|sub2api|wayfinder|zenmux|aiand|zoommate|xai|xapi|notion|ibmbob|nous|muse|coderabbit|replicate|huggingface|raycast|pi|v0|typesafe|hyper|gitkraken|futureagi|devpass|atlascloud|vercel|llmman|xkiro|museai|lithosai|workbuddy|tavily|linkup|tinyapi|exa|cosmic|aerostack|sailresearch|sofya|fal|flora|parallel|claudeplatform|munito|traecn|chatbox|abliteration|opendesign|siliconflow|tripo|both|all]\n               [--no-color] [--pretty] [--refresh] [--breakdown] [--provider-native-only]\n               [--period month-to-date|all] [--days <days>] [--group-by project|session]\n               [--remote <ssh-host> | --summary-only]\n               [--identified-only [--identified-end <unix-ms>]]\n\nDescription:\n  Print local token cost usage from Claude/Codex native logs plus supported pi and OMP sessions.\n  Antigravity token history is read locally, with API-price estimates for known models; Muse Code remains\n  token-only.\n  Local readers need no web or provider CLI access; Cursor uses its authenticated dashboard API.\n  Use --refresh to bypass cached scan results.\n  Use --breakdown with Claude text output to show daily and model details.\n  Experimental: use --provider-native-only to exclude pi and OMP session mirrors.\n  Use --provider codex --remote <host> for separate local and SSH-host summaries.\n  --summary-only emits versioned Codex JSON totals without account or session details.\n  --identified-only requires --provider codex and JSON. It exports strong native request identities\n  over one UTC window (30 days by default); legacy and unidentified usage are excluded.\n  Repeat --remote to deduplicate exports from several SSH hosts using the same millisecond window.\n  Every host needs schema 2 support. Combined API-price estimates use the collector\u2019s pricing snapshot;\n  unknown prices remain null with unpricedRequestCount. Pricing disagreements retain tokens, unpriced;\n  timestamp/token conflicts exclude requests. Failed hosts retain successful sources and exit nonzero.\n  Source rows include local/ssh origin and collection time; failed rows omit that time.\n  These modes accept --days 1...365, not --period, --summary-only, grouping or breakdown.\n\nExamples:\n  codexbar cost\n  codexbar cost --provider codex --group-by project\n  codexbar cost --provider codex --group-by session\n  codexbar cost --provider claude --format json --pretty\n  codexbar cost --provider antigravity --format json\n  codexbar cost --provider muse --format json\n  codexbar cost --provider codex --remote build-host --format json\n  codexbar cost --provider codex --identified-only --format json --remote build-a --remote build-b\n",
+      "stderr": "",
+      "elapsed_seconds": 0.024600571021437645
+    },
+    {
+      "name": "skill-live-60",
+      "command": [
+        "/proof-python/bin/python3.11",
+        "/proof/subject/model_usage.py",
+        "--provider",
+        "claude",
+        "--mode",
+        "all",
+        "--days",
+        "60",
+        "--format",
+        "json"
+      ],
+      "exit": 0,
+      "stdout": "{\"provider\": \"claude\", \"mode\": \"all\", \"models\": [{\"model\": \"claude-sonnet-4-20250514\", \"totalCostUSD\": 0.009000000000000001}]}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.4528813762590289
+    },
+    {
+      "name": "codexbar-default",
+      "command": [
+        "/proof/out/head-revision-final/bin/codexbar",
+        "cost",
+        "--provider",
+        "claude",
+        "--format",
+        "json"
+      ],
+      "exit": 0,
+      "stdout": "[{\"historyDays\":30,\"provider\":\"claude\",\"coverage\":{\"unpriced\":0,\"priced\":1,\"unmetered\":0,\"estimated\":0},\"last30DaysTokens\":1100,\"last30DaysCostUSD\":0.0045000000000000005,\"projects\":[],\"currencyCode\":\"USD\",\"sessionTokens\":1100,\"source\":\"local\",\"updatedAt\":\"2026-11-10T16:47:26Z\",\"reportingPeriod\":\"rolling:30\",\"historyCoverageIsEstablished\":true,\"sessionCostUSD\":0.0045000000000000005,\"historyLabel\":\"Last 30 days\",\"daily\":[{\"outputTokens\":100,\"date\":\"2026-11-10\",\"totalTokens\":1100,\"cacheReadTokens\":0,\"cacheCreationTokens\":0,\"modelsUsed\":[\"claude-sonnet-4-20250514\"],\"totalCost\":0.0045000000000000005,\"inputTokens\":1000,\"modelBreakdowns\":[{\"cost\":0.0045000000000000005,\"totalTokens\":1100,\"modelName\":\"claude-sonnet-4-20250514\"}]}],\"totals\":{\"totalCost\":0.0045000000000000005,\"inputTokens\":1000,\"cacheCreationTokens\":0,\"cacheReadTokens\":0,\"provenance\":\"listPriceEstimate\",\"totalTokens\":1100,\"outputTokens\":100,\"coverage\":{\"unpriced\":0,\"priced\":1,\"unmetered\":0,\"estimated\":0}},\"provenance\":\"listPriceEstimate\"}]\n",
+      "stderr": "",
+      "elapsed_seconds": 0.061849390622228384
+    },
+    {
+      "name": "codexbar-60",
+      "command": [
+        "/proof/out/head-revision-final/bin/codexbar",
+        "cost",
+        "--provider",
+        "claude",
+        "--format",
+        "json",
+        "--days",
+        "60",
+        "--refresh"
+      ],
+      "exit": 0,
+      "stdout": "[{\"sessionTokens\":1100,\"sessionCostUSD\":0.0045000000000000005,\"reportingPeriod\":\"rolling:60\",\"historyLabel\":\"Last 60 days\",\"currencyCode\":\"USD\",\"provider\":\"claude\",\"source\":\"local\",\"last30DaysTokens\":1100,\"provenance\":\"listPriceEstimate\",\"historyCoverageIsEstablished\":true,\"last30DaysCostUSD\":0.0045000000000000005,\"projects\":[],\"totals\":{\"totalTokens\":2200,\"provenance\":\"listPriceEstimate\",\"outputTokens\":200,\"cacheCreationTokens\":0,\"inputTokens\":2000,\"coverage\":{\"priced\":2,\"estimated\":0,\"unmetered\":0,\"unpriced\":0},\"cacheReadTokens\":0,\"totalCost\":0.009000000000000001},\"coverage\":{\"priced\":2,\"estimated\":0,\"unmetered\":0,\"unpriced\":0},\"historyDays\":60,\"updatedAt\":\"2026-11-10T16:47:26Z\",\"daily\":[{\"modelBreakdowns\":[{\"modelName\":\"claude-sonnet-4-20250514\",\"totalTokens\":1100,\"cost\":0.0045000000000000005}],\"cacheCreationTokens\":0,\"cacheReadTokens\":0,\"totalCost\":0.0045000000000000005,\"totalTokens\":1100,\"modelsUsed\":[\"claude-sonnet-4-20250514\"],\"inputTokens\":1000,\"outputTokens\":100,\"date\":\"2026-09-26\"},{\"modelBreakdowns\":[{\"modelName\":\"claude-sonnet-4-20250514\",\"totalTokens\":1100,\"cost\":0.0045000000000000005}],\"cacheCreationTokens\":0,\"cacheReadTokens\":0,\"totalCost\":0.0045000000000000005,\"totalTokens\":1100,\"modelsUsed\":[\"claude-sonnet-4-20250514\"],\"inputTokens\":1000,\"outputTokens\":100,\"date\":\"2026-11-10\"}]}]\n",
+      "stderr": "",
+      "elapsed_seconds": 0.06795709393918514
+    },
+    {
+      "name": "skill-export-60",
+      "command": [
+        "/proof-python/bin/python3.11",
+        "/proof/subject/model_usage.py",
+        "--provider",
+        "claude",
+        "--mode",
+        "all",
+        "--days",
+        "60",
+        "--format",
+        "json",
+        "--input",
+        "/proof/out/head-revision-final/export-60.json"
+      ],
+      "exit": 0,
+      "stdout": "{\"provider\": \"claude\", \"mode\": \"all\", \"models\": [{\"model\": \"claude-sonnet-4-20250514\", \"totalCostUSD\": 0.009000000000000001}]}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.3486785409040749
+    },
+    {
+      "name": "skill-stdin-60",
+      "command": [
+        "/proof-python/bin/python3.11",
+        "/proof/subject/model_usage.py",
+        "--provider",
+        "claude",
+        "--mode",
+        "all",
+        "--days",
+        "60",
+        "--format",
+        "json",
+        "--input",
+        "-"
+      ],
+      "exit": 0,
+      "stdout": "{\"provider\": \"claude\", \"mode\": \"all\", \"models\": [{\"model\": \"claude-sonnet-4-20250514\", \"totalCostUSD\": 0.009000000000000001}]}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.344996124971658
+    },
+    {
+      "name": "skill-default",
+      "command": [
+        "/proof-python/bin/python3.11",
+        "/proof/subject/model_usage.py",
+        "--provider",
+        "claude",
+        "--mode",
+        "all",
+        "--format",
+        "json"
+      ],
+      "exit": 0,
+      "stdout": "{\"provider\": \"claude\", \"mode\": \"all\", \"models\": [{\"model\": \"claude-sonnet-4-20250514\", \"totalCostUSD\": 0.0045000000000000005}]}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.3862885688431561
+    },
+    {
+      "name": "skill-one-day",
+      "command": [
+        "/proof-python/bin/python3.11",
+        "/proof/subject/model_usage.py",
+        "--provider",
+        "claude",
+        "--mode",
+        "all",
+        "--days",
+        "1",
+        "--format",
+        "json"
+      ],
+      "exit": 0,
+      "stdout": "{\"provider\": \"claude\", \"mode\": \"all\", \"models\": [{\"model\": \"claude-sonnet-4-20250514\", \"totalCostUSD\": 0.0045000000000000005}]}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.39013475785031915
+    }
+  ],
+  "comparison": {
+    "default_dates": [
+      "2026-11-10"
+    ],
+    "wide_dates": [
+      "2026-09-26",
+      "2026-11-10"
+    ],
+    "live_skill_cost": 0.009000000000000001,
+    "export_control_cost": 0.009000000000000001,
+    "old_record_read_by_real_binary": true,
+    "no_days_default_preserved": true,
+    "one_day_control_pass": true,
+    "file_and_stdin_no_codexbar_controls_pass": true
+  },
+  "owned_home_files": [
+    ".cache/CodexBar/cost-usage/claude-v6.json",
+    ".cache/CodexBar/cost-usage/claude-v6.json.fragments/14f3d4ffa0ff44e63ff8862ebeaa38ef07f9a7b811d4a53af5462c53dc255210.json",
+    ".cache/CodexBar/cost-usage/claude-v6.json.fragments/lock",
+    ".cache/CodexBar/cost-usage/claude-v6.report-memo.json",
+    ".cache/CodexBar/cost-usage/claude-v6.report-memo.json.fragments/bb54a5f56a814a50652a8b6e16f50bc0cf5f48eca9619618611cfff20e57ff0a.json",
+    ".cache/CodexBar/cost-usage/claude-v6.report-memo.json.fragments/lock",
+    ".cache/CodexBar/cost-usage/pi-sessions-v9.json",
+    ".claude/projects/proof/session.jsonl"
+  ]
+}
