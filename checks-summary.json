@@ -1,0 +1,93 @@
+{
+  "productHead": "525701a12747675d4f25bbf90582fba9f92858b3",
+  "checks": [
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "run",
+        "--config",
+        "test/vitest/vitest.unit.config.ts",
+        "src/skills/loading/sherpa-onnx-tts-bin.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 10.077,
+      "head": "94aec113ef5cc2d8afa26d69c11c3a038fd96f51",
+      "diffSHA256": "d386388c10782ed17bd2547e3560f6398bb02213b4b1b1f9027aeae0f364794b"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../sherpa-types-tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 93.788,
+      "head": "94aec113ef5cc2d8afa26d69c11c3a038fd96f51",
+      "diffSHA256": "d386388c10782ed17bd2547e3560f6398bb02213b4b1b1f9027aeae0f364794b"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "config/tsconfig/oxlint.core.json",
+        "src/skills/loading/sherpa-onnx-tts-bin.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 40.032,
+      "head": "94aec113ef5cc2d8afa26d69c11c3a038fd96f51",
+      "diffSHA256": "d386388c10782ed17bd2547e3560f6398bb02213b4b1b1f9027aeae0f364794b"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-node-package-bin.mts",
+        "oxfmt",
+        "--write",
+        "src/skills/loading/sherpa-onnx-tts-bin.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 0.54,
+      "head": "94aec113ef5cc2d8afa26d69c11c3a038fd96f51",
+      "diffSHA256": "bf6f0a1aca52ee02c6df7e1eaceb51a15f15f87f3b08bd6e7043692cb55e2d90"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "baccc7e152916c7f4a48596b5cb544c12264ac54",
+        "--staged"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 111.15,
+      "head": "94aec113ef5cc2d8afa26d69c11c3a038fd96f51",
+      "diffSHA256": "d386388c10782ed17bd2547e3560f6398bb02213b4b1b1f9027aeae0f364794b"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--check",
+        "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 0.06,
+      "head": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+      "diffSHA256": "b13d33d1cc6b47e581e60bcbfe1c4e0ab55e51d1b6672c5639afcd3f376b275d"
+    }
+  ],
+  "reuse": "Checks ran against the final candidate source bytes before commit. Native proof was freshly run after the normal commit hook with a clean committed checkout.",
+  "regressionBase": "Unchanged BASE: 2 intended path failures and 1 original usage control pass; see retained baseline observation.",
+  "testAudit": "# Sherpa directory regression audit\n\nProtected boundary: documented runtime/model directory flags/environment -> actual bundled wrapper -> native executable argv. The existing suite adds two POSIX-only source rows with a shell recorder, retaining model auto-discovery, valid output path and intentional spoken-text trimming. The recorder is only unit regression; real official engine WAV proof is distinct. No new product test seam or helper export. Original usage regression remains cross-platform.\n\nCurrent-main full-native proof isolated runtime and model directory failures. Initial wider 13-cell candidate successfully fixed both directories but revealed native Sherpa itself trims explicit model/token/data argv. Those three production edits were reverted before publication. The final claim and seven-cell frozen native collector cover only wrapper-owned directory handling (four path probes + three controls), preserving the downstream-native selector behavior; failure evidence is retained. The change neither promises nor introduces support for trailing whitespace in native filename selectors. No cloud/provider/audio quality claim.\n"
+}
