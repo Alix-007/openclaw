@@ -1,0 +1,111 @@
+{
+  "productHead": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+  "baseHead": "baccc7e152916c7f4a48596b5cb544c12264ac54",
+  "redaction": "Public text replaces only private filesystem prefixes with $CHECKOUT/$NODE26/$PROOF_ROOT. Embedded raw capture hashes describe original unredacted local bytes. Each public file has its own independently recomputed hash below. Binary synthetic WAV bytes are unchanged.",
+  "captures": [
+    {
+      "kind": "base",
+      "localReceiptSHA256": "b51826736da9fc81acbb26cb4872b90aeaca1e951632b3d30219cce6c7758d5d",
+      "publicReceipt": "base-receipt.json",
+      "collectorSHA256": "5f4052c76126f3d707c58a68cd93b3f484036c7b9cbb0a4ea6ab39fa74dbdaf6"
+    },
+    {
+      "kind": "head",
+      "localReceiptSHA256": "d57671d5a32a3255125d4ea41d54747faa1d0cd1a98bcca465861fc2adbe6a7b",
+      "publicReceipt": "head-receipt.json",
+      "collectorSHA256": "5f4052c76126f3d707c58a68cd93b3f484036c7b9cbb0a4ea6ab39fa74dbdaf6"
+    }
+  ],
+  "files": [
+    {
+      "name": "CI-CONTEXT.md",
+      "bytes": 1794,
+      "sha256": "bbb22d9cc26a75a7e684c334a555530711e2dcc1356204ba0b72997ccb089c58"
+    },
+    {
+      "name": "README.md",
+      "bytes": 2954,
+      "sha256": "1cbbede4ab1be315a42870dd605e7668dfa2a71bcd3dbc65e41d08797f13cc27"
+    },
+    {
+      "name": "REPLAY.md",
+      "bytes": 7028,
+      "sha256": "73936314e337f26a092ff953175bd17c779a16cc20680178f3f55e04bbed1ad2"
+    },
+    {
+      "name": "SOURCE-EQUIVALENCE.json",
+      "bytes": 683,
+      "sha256": "b6b3aa84f6fe5a9ae2f247ecf85d56a2b434f4c3321287a2a13b6954fff73fdf"
+    },
+    {
+      "name": "base-ordinary-flags-control.wav",
+      "bytes": 66092,
+      "sha256": "7373e8205617a89f1bf852ac4bc001d006cf44e7e9f4e495379f52356db5d4fe"
+    },
+    {
+      "name": "base-receipt.json",
+      "bytes": 18078,
+      "sha256": "3ed9ceac83e8661e30c08b9a8b929f9ac03aeeb2a36b5c56fe85297c0e4b8276"
+    },
+    {
+      "name": "base-streams.txt",
+      "bytes": 4461,
+      "sha256": "4acc579d23379e6f3dfe0c3054550b4ada89a2ebf497cd6c18d68dc5c6dd8025"
+    },
+    {
+      "name": "checks-summary.json",
+      "bytes": 4674,
+      "sha256": "87112704ef9e71fa31179ae7a5da670f07233387226e8aa31d616ac9314bcb37"
+    },
+    {
+      "name": "head-literal-output-path-control.wav",
+      "bytes": 69964,
+      "sha256": "663d99629d4bf63616cde4b090ac6acfb382ab2fa83c5b498fe5bb0e7579d1c9"
+    },
+    {
+      "name": "head-model-dir-env-trailing-space.wav",
+      "bytes": 66988,
+      "sha256": "16473594e5618d0c7d0ce55af0ac9b642afe615306f682b9353678b9e053cfa6"
+    },
+    {
+      "name": "head-model-dir-flags-trailing-space.wav",
+      "bytes": 68140,
+      "sha256": "e065d70c45b2774dc07f83cd7aa1d742da368929eca650232188448a2ee25e55"
+    },
+    {
+      "name": "head-ordinary-env-control.wav",
+      "bytes": 68652,
+      "sha256": "c844f42a27c080adf667b329e41e6285ba530e206ebf4a1a9b94d00ce8c8f140"
+    },
+    {
+      "name": "head-ordinary-flags-control.wav",
+      "bytes": 73772,
+      "sha256": "4017cf0f61596f1a27e63bd381909ef788d4f01e31674990139e0d0d03d221d2"
+    },
+    {
+      "name": "head-receipt.json",
+      "bytes": 21257,
+      "sha256": "1f2f92053a6f6c5ecf4f60ee81ec792ca744efff8ba06b9947287a0679d03820"
+    },
+    {
+      "name": "head-runtime-dir-env-trailing-space.wav",
+      "bytes": 65068,
+      "sha256": "64eb8d270106429cf697f3d9ac02c81e34e88e32709c51fede80c8e401f9483f"
+    },
+    {
+      "name": "head-runtime-dir-flags-trailing-space.wav",
+      "bytes": 62508,
+      "sha256": "1965bbea46711163eb84342697f891da19a60c542e4417c47e34479e1255ab41"
+    },
+    {
+      "name": "head-streams.txt",
+      "bytes": 6503,
+      "sha256": "7dbf5f23e106a1123ca3fa27f33626d0d6e774707c00bf6d1469c20b0c7faf3d"
+    },
+    {
+      "name": "sherpa-native-path-proof.py",
+      "bytes": 14252,
+      "sha256": "5f4052c76126f3d707c58a68cd93b3f484036c7b9cbb0a4ea6ab39fa74dbdaf6"
+    }
+  ]
+}

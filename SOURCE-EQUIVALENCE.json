@@ -1,0 +1,20 @@
+{
+  "lane": "sherpa",
+  "priorHead": "525701a12747675d4f25bbf90582fba9f92858b3",
+  "productHead": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+  "changedFilesSincePrior": [
+    "config/test-lines-allocations/sherpa-literal-resource-paths.txt"
+  ],
+  "unchangedProductionAndTestFiles": [
+    {
+      "path": "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+      "sha256": "ea090f5b0bfb5c69fbcfac444acaada162200bffabdf236785379e856ecaaaed",
+      "unchangedFromPriorHead": true
+    },
+    {
+      "path": "src/skills/loading/sherpa-onnx-tts-bin.test.ts",
+      "sha256": "85b9578ca1d1b784393d4d31ef8dcfbf843af91737da0ee54fe1db3d188f6878",
+      "unchangedFromPriorHead": true
+    }
+  ]
+}

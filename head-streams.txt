@@ -1,0 +1,91 @@
+
+=== ordinary-flags-control ===
+stdout:
+sample=36864, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/ordinary-flags-control.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.294 s
+Audio duration: 1.672 s
+Real-time factor (RTF): 1.294/1.672 = 0.774
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/ordinary-flags-control.wav successfully!
+
+=== ordinary-env-control ===
+stdout:
+sample=34304, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/ordinary-env-control.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.267 s
+Audio duration: 1.556 s
+Real-time factor (RTF): 1.267/1.556 = 0.814
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/ordinary-env-control.wav successfully!
+
+=== runtime-dir-flags-trailing-space ===
+stdout:
+sample=31232, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 '$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared /bin/sherpa-onnx-offline-tts' --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/runtime-dir-flags-trailing-space.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.403 s
+Audio duration: 1.416 s
+Real-time factor (RTF): 1.403/1.416 = 0.991
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/runtime-dir-flags-trailing-space.wav successfully!
+
+=== runtime-dir-env-trailing-space ===
+stdout:
+sample=32512, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 '$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared /bin/sherpa-onnx-offline-tts' --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/runtime-dir-env-trailing-space.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.160 s
+Audio duration: 1.474 s
+Real-time factor (RTF): 1.160/1.474 = 0.787
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/runtime-dir-env-trailing-space.wav successfully!
+
+=== model-dir-flags-trailing-space ===
+stdout:
+sample=34048, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts '--vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /en_US-lessac-high.onnx' '--vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /tokens.txt' '--vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /espeak-ng-data' --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/model-dir-flags-trailing-space.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.257 s
+Audio duration: 1.544 s
+Real-time factor (RTF): 1.257/1.544 = 0.814
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/model-dir-flags-trailing-space.wav successfully!
+
+=== model-dir-env-trailing-space ===
+stdout:
+sample=33472, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts '--vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /en_US-lessac-high.onnx' '--vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /tokens.txt' '--vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /espeak-ng-data' --output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/model-dir-env-trailing-space.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.501 s
+Audio duration: 1.518 s
+Real-time factor (RTF): 1.501/1.518 = 0.989
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/model-dir-env-trailing-space.wav successfully!
+
+=== literal-output-path-control ===
+stdout:
+sample=34960, progress=1.000000
+stderr:
+/home/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data '--output-filename=$PROOF_ROOT/native-sherpa/head-directory-v4/literal-output-path-control .wav' 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.516 s
+Audio duration: 1.585 s
+Real-time factor (RTF): 1.516/1.585 = 0.956
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $PROOF_ROOT/native-sherpa/head-directory-v4/literal-output-path-control .wav successfully!
