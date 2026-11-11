@@ -1,0 +1,18 @@
+{
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "scope": "Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.",
+  "records": [
+    {
+      "file": "src/gateway/server-methods/agents-files.test.ts",
+      "baselineSHA256": "f07e83ce3839a203b22bfd7a24b2139d715a2f96a11435174ed0c46907fd0133",
+      "currentSHA256": "ab88972c8238151a56de646a185b6dc36143db773bb3414ccf91bc8e788a47d5",
+      "callFingerprints": [],
+      "closedFactories": [],
+      "unchangedFactories": true
+    }
+  ],
+  "ledgerSHA256": "37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3",
+  "ledgerUnchanged": true,
+  "result": "PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"
+}
