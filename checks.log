@@ -1,0 +1,18 @@
+
+--- clawhub-main-final-types ---
+
+--- clawhub-main-final-lint ---
+[dist artifacts] waiting for checkout ownership: CHECKOUT/.artifacts/dist-artifacts.lock
+[plugin-sdk boundary dts] fresh; skipping
+
+--- clawhub-main-final-format ---
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 21ms on 1 files using 16 threads.
+
+--- clawhub-main-ratchet ---
+Test lines OK: 6657843; ceiling: 6657844; slack: 1.
+
+--- clawhub-main-linecap ---
+Line-cap ratchet OK: 1 changed source files; no new violations or over-cap growth.

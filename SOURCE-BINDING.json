@@ -1,0 +1,31 @@
+{
+  "head": "25884b584b384e233dea1336dc5d0007bd26981f",
+  "tree": "6be6a1aa3e46bcca7bb6b1d48ee8c584a0d0bd21",
+  "base": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+  "originalHead": "d928e37739e672f7802475db462856b4740d495b",
+  "sourcePins": {
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+    "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+  },
+  "scopedMainDiffSHA256": "87cc32043af5ef4f86123664f81f026f701c6c004147782bb5824c20968e160f",
+  "normalMainIntegrationDiffSHA256": "92a089ff5addb097f1c093ccdbf9ae2c6053a8153a8db54c0b302a03be486f58",
+  "numstat": {
+    "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": [
+      2,
+      0
+    ],
+    "src/cli/plugins-search-command.clawhub.e2e.test.ts": [
+      10,
+      3
+    ]
+  },
+  "productionChanges": 0,
+  "netTestLF": 7,
+  "ownAllocation": 7,
+  "originalAssertionsRetained": 10,
+  "additionalRequestAssertions": 2,
+  "testDeadlineMs": 30000,
+  "reviewBinding": "Independent root review of exact staged tree; normal merge commit has that tree",
+  "gateBinding": "Executed before merge commit on exact final file SHA; no post-commit test rerun claimed",
+  "redaction": "Original private receipt/log SHA checked before path replacement; MANIFEST binds public redacted bytes"
+}

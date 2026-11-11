@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "findings": [],
+  "reviewer": "root independent of author",
+  "main": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+  "files": [
+    {
+      "path": "src/cli/plugins-search-command.clawhub.e2e.test.ts",
+      "sha256": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c"
+    },
+    {
+      "path": "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt",
+      "sha256": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+    }
+  ],
+  "testAssertions": "all10old retained plus exact total2and unorderedfamilymembership controls; no weakened30second timeout",
+  "rationale": "Retains terminalerror singleattempt contract across main RetryAfter0 improvement; no false claim main still slow.",
+  "stagedTree": "6be6a1aa3e46bcca7bb6b1d48ee8c584a0d0bd21"
+}

@@ -1,0 +1,14 @@
+{
+  "plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+  "main-plugins-search-command.clawhub.e2e.test.ts": "b06051e6271c17f36611d4ae7c15618cfafebede5d99e9dba8738cd6111fb4e9",
+  "test-lines-allocation.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf",
+  "source.diff": "87cc32043af5ef4f86123664f81f026f701c6c004147782bb5824c20968e160f",
+  "SOURCE-BINDING.json": "6f6efa7bf9cbd77bfe43b41cf63d68a4007e6bf9a514c0afc9642907dc2fb5ef",
+  "final-focused.json": "11768b76e4eafe1b8639eecfca4e7a6092a0ac5882bbeb4d977d084665451076",
+  "final-focused.log": "a5dd0532c27a2f63453f5fbb249dc5ed0697bea6eb779f8c2cac0da68263eebc",
+  "checks.json": "024ba1fb78092958358f6b547362dc3f323896076d86d940ecb5ed534f4691b4",
+  "checks.log": "db1251d058b6dbeaabdfba9c870a99f6e8f43dcf6b0814094d453d1936570533",
+  "independent-review.json": "a4d69aa4071383263d8505d7e6e1f9e248ce19c933660213a3d31275c867ecfb",
+  "EVIDENCE.md": "0f08b682cd1cec45425baa684225d7c1cec04d677f0cc5d948d54095777528a3",
+  "README.md": "0b4183d37d4e91ef53166cb997ebe2ee45c1a6c04477ec67ffca70a389baccb2"
+}

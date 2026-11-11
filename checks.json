@@ -1,0 +1,177 @@
+{
+  "clawhub-main-final-focused": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-vitest.mjs",
+        "run",
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 196.897,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "sourceBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "sourceAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "logSHA256": "eef0a4495ab274e67534b6b1501daa5d220c5708ba2d30d15fadea78b4e2bb29",
+      "environmentOverrides": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "TASK/clawhub-main-final-focused-cache",
+        "OPENCLAW_E2E_USE_PREBUILT_DIST": "1"
+      }
+    },
+    "originalReceiptSHA256": "a55fa70859435b5bd656c2542aa7d8a9fe2c2d5337933626691cbd677bf00d47",
+    "originalLogSHA256": "eef0a4495ab274e67534b6b1501daa5d220c5708ba2d30d15fadea78b4e2bb29"
+  },
+  "clawhub-main-final-types": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "TASK/clawhub-main-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 55.864,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "sourceBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "sourceAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "environmentOverrides": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "TASK/clawhub-main-final-types-cache"
+      }
+    },
+    "originalReceiptSHA256": "0f22ad8ab4d2540d38c3233d93be75d20266f122830a4c63347ad292da7e0d42",
+    "originalLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "clawhub-main-final-lint": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-oxlint.mjs",
+        "--tsconfig",
+        "test/tsconfig/tsconfig.core.test.config-cli.json",
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 116.879,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "sourceBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "sourceAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "logSHA256": "0135354a3b8fac75ed693da6be04753ebcef3dc07b70691e8e95d875ab478752",
+      "environmentOverrides": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "TASK/clawhub-main-final-lint-cache"
+      }
+    },
+    "originalReceiptSHA256": "60a845a431c6968b88b100cec081aed5d6e909b9acf77dfd35a4fcaa23c31a48",
+    "originalLogSHA256": "0135354a3b8fac75ed693da6be04753ebcef3dc07b70691e8e95d875ab478752"
+  },
+  "clawhub-main-final-format": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "oxfmt",
+        "--check",
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 0.605,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "sourceBefore": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "sourceAfter": {
+        "src/cli/plugins-search-command.clawhub.e2e.test.ts": "d0c34ab5624a15337ac611ad9bf5475b1395214fd0f26f74634da25077388f0c",
+        "config/test-lines-allocations/alix-clawhub-search-fixture-20261106.txt": "4a6052f38ef9dfeb8d8bfa7b5581dce709c71c6d19a86f03d36cb9cfbab077cf"
+      },
+      "logSHA256": "4539b632d0b20fd641f2f50ccce936d2b3fc57471c1c9bd37fe1344936703365",
+      "environmentOverrides": {
+        "OPENCLAW_VITEST_RUNTIME": "node",
+        "OPENCLAW_TYPECHECKER": "tsgo",
+        "OPENCLAW_LINT_TOOL": "oxlint",
+        "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "TASK/clawhub-main-final-format-cache"
+      }
+    },
+    "originalReceiptSHA256": "247b94646653b0a0168888dbae5a29f675dfc441aba5805c5f6f5caaffe1c606",
+    "originalLogSHA256": "4539b632d0b20fd641f2f50ccce936d2b3fc57471c1c9bd37fe1344936703365"
+  },
+  "clawhub-main-ratchet": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "aab88e31bf5a64012a699139e19af193fa9a69c7",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 31.306,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "diffSHA256": "92a089ff5addb097f1c093ccdbf9ae2c6053a8153a8db54c0b302a03be486f58",
+      "logSHA256": "5c75e7fe625a5d3cd3d18e1f502281f84237a7ff6bebf0c218e37a7f81266d9a"
+    },
+    "originalReceiptSHA256": "a3f5e9344ee4abc32d7ad3e83ddb63a29b417550a3beac96fc95a4f557a4d477",
+    "originalLogSHA256": "5c75e7fe625a5d3cd3d18e1f502281f84237a7ff6bebf0c218e37a7f81266d9a"
+  },
+  "clawhub-main-linecap": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-line-cap-ratchet.mts",
+        "--base",
+        "aab88e31bf5a64012a699139e19af193fa9a69c7",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.067,
+      "head": "d928e37739e672f7802475db462856b4740d495b",
+      "diffSHA256": "92a089ff5addb097f1c093ccdbf9ae2c6053a8153a8db54c0b302a03be486f58",
+      "logSHA256": "1b9796830ca61c706679512ffb12de7e61d619a99207b80bc73fa713330e19f0"
+    },
+    "originalReceiptSHA256": "34bc7b74959ca32ea5e95936a612dee2397653ae12efde31921e37c55b3dbf4c",
+    "originalLogSHA256": "1b9796830ca61c706679512ffb12de7e61d619a99207b80bc73fa713330e19f0"
+  }
+}
