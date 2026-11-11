@@ -1,0 +1,21 @@
+{
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "head": "85ad3d9763ee5b9e81f844ba2db48760788cd068",
+  "scope": "Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.",
+  "records": [
+    {
+      "file": "src/commands/sessions-tail.test.ts",
+      "baselineSHA256": "9bb7f06c5af841d8ef8aaab4e282e29d8f2f64d905d0a763abc2ffbf1bbaff0c",
+      "currentSHA256": "9e2645cba2bf25ad67f1ec7fd71acea81c23f096d62afbe717f2bd50798562f9",
+      "callFingerprints": [
+        "0f0be31e3220d5fa22aa46c20babd4525afd6209c497855473c0db9911898ee8",
+        "39b339bd497f6bb5c95a627a43e045304be80402d07ab50b90f16903edda7861"
+      ],
+      "closedFactories": [],
+      "unchangedFactories": true
+    }
+  ],
+  "ledgerSHA256": "37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3",
+  "ledgerUnchanged": true,
+  "result": "PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"
+}

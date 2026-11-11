@@ -1,0 +1,494 @@
+{
+  "head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "buildStamp": {
+    "builtAt": 1794368748213,
+    "head": "83872e599d5720c0bc97d313283a2bc245046699",
+    "inputsClean": true,
+    "inputSignature": "18e6930e144ad2f0a01d4b5add7dbaa7f10ee5f9574f77b2dcf38eb75073ac45"
+  },
+  "expectation": "red",
+  "collectorSHA256": "d871e72bb3c5759a2180b940043f1afed5eb6e38bc1f38e059faa9f9055ed4f2",
+  "fixtureSHA256": "4e653197156364d2420f1a31c2779c9aee4faf13e335ad7805d59b5242abd128",
+  "normalEntry": "<BASE_CHECKOUT>/openclaw.mjs",
+  "scope": "Normal registered sessions tail entry. Canonical source fixture writers create legal isolated SQLite data only; no Gateway, channel, provider, host credentials or real sessions. Output-close is an actual closed OS pipe. Signals are actual process-group SIGINT/SIGTERM.",
+  "configSHA256Before": "278c701dfd8ec97d0e0970a8226e26e3247e0340bac6df59ae06b4488c578a2f",
+  "cases": [
+    {
+      "label": "continue-term",
+      "kind": "SIGTERM",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--store",
+        "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+        "--session-key",
+        "agent:main:tail-proof-continue-term",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "finiteControl": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-continue-term",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:16:33Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-term-1 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      },
+      "pid": 209149,
+      "snapshots": [
+        {
+          "stage": "started",
+          "processes": [
+            {
+              "pid": 209149,
+              "ppid": 206655,
+              "processGroup": 209149,
+              "state": "R",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-continue-term --tail 1 --follow"
+            }
+          ]
+        },
+        {
+          "stage": "initialRecord",
+          "processes": [
+            {
+              "pid": 209149,
+              "ppid": 206655,
+              "processGroup": 209149,
+              "state": "S",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-continue-term --tail 1 --follow"
+            },
+            {
+              "pid": 209156,
+              "ppid": 209149,
+              "processGroup": 209156,
+              "state": "S",
+              "commandLine": "openclaw"
+            }
+          ]
+        },
+        {
+          "stage": "afterSignalBeforeCleanup",
+          "processes": []
+        }
+      ],
+      "result": "GREEN_CONTINUING_FOLLOW_AND_SIGNAL_CONTROL",
+      "secondAppendAcknowledgedAtMonotonic": 3510212.588112268,
+      "secondAppendFixtureReceipt": {
+        "protocol": "sessions-tail-native-fixture-v1",
+        "event": "appended",
+        "requestId": "2",
+        "seq": 2,
+        "marker": "synthetic-continue-term-2",
+        "sessionId": "tail-proof-session-continue-term",
+        "committedAtWallMs": 1794370603756,
+        "observedAtMonotonic": 3510212.588112268
+      },
+      "secondRecordObserved": true,
+      "signalSentAtMonotonic": 3510213.560769183,
+      "signalToExitMs": 114.38,
+      "naturalExitCode": 143,
+      "naturalStateRecordedBeforeCleanup": true,
+      "harnessCleanup": {
+        "before": [],
+        "signals": [],
+        "after": [],
+        "exitCodeAfterCleanup": 143,
+        "usedSIGKILL": false
+      },
+      "observedStdout": "04:16:33Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-term-1 ok\n04:16:43Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-term-2 ok\n",
+      "diagnostics": "",
+      "configSHA256After": "278c701dfd8ec97d0e0970a8226e26e3247e0340bac6df59ae06b4488c578a2f",
+      "configUnchanged": true,
+      "nativeSecondEventReadback": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-continue-term",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:16:43Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-term-2 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      }
+    },
+    {
+      "label": "continue-int",
+      "kind": "SIGINT",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--store",
+        "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+        "--session-key",
+        "agent:main:tail-proof-continue-int",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "finiteControl": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-continue-int",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:16:48Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-int-1 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      },
+      "pid": 209763,
+      "snapshots": [
+        {
+          "stage": "started",
+          "processes": [
+            {
+              "pid": 209763,
+              "ppid": 206655,
+              "processGroup": 209763,
+              "state": "R",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-continue-int --tail 1 --follow"
+            }
+          ]
+        },
+        {
+          "stage": "initialRecord",
+          "processes": [
+            {
+              "pid": 209763,
+              "ppid": 206655,
+              "processGroup": 209763,
+              "state": "S",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-continue-int --tail 1 --follow"
+            },
+            {
+              "pid": 209789,
+              "ppid": 209763,
+              "processGroup": 209789,
+              "state": "S",
+              "commandLine": "openclaw"
+            }
+          ]
+        },
+        {
+          "stage": "afterSignalBeforeCleanup",
+          "processes": []
+        }
+      ],
+      "result": "GREEN_CONTINUING_FOLLOW_AND_SIGNAL_CONTROL",
+      "secondAppendAcknowledgedAtMonotonic": 3510224.2363583,
+      "secondAppendFixtureReceipt": {
+        "protocol": "sessions-tail-native-fixture-v1",
+        "event": "appended",
+        "requestId": "4",
+        "seq": 2,
+        "marker": "synthetic-continue-int-2",
+        "sessionId": "tail-proof-session-continue-int",
+        "committedAtWallMs": 1794370615404,
+        "observedAtMonotonic": 3510224.2363583
+      },
+      "secondRecordObserved": true,
+      "signalSentAtMonotonic": 3510225.21355759,
+      "signalToExitMs": 114.04,
+      "naturalExitCode": 130,
+      "naturalStateRecordedBeforeCleanup": true,
+      "harnessCleanup": {
+        "before": [],
+        "signals": [],
+        "after": [],
+        "exitCodeAfterCleanup": 130,
+        "usedSIGKILL": false
+      },
+      "observedStdout": "04:16:48Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-int-1 ok\n04:16:55Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-int-2 ok\n",
+      "diagnostics": "",
+      "configSHA256After": "278c701dfd8ec97d0e0970a8226e26e3247e0340bac6df59ae06b4488c578a2f",
+      "configUnchanged": true,
+      "nativeSecondEventReadback": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-continue-int",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:16:55Z tool.result      agent:main:tail-proof-continu\u2026 synthetic-continue-int-2 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      }
+    },
+    {
+      "label": "closed-consumer",
+      "kind": "CLOSED_PIPE",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--store",
+        "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+        "--session-key",
+        "agent:main:tail-proof-closed-consumer",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "finiteControl": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-closed-consumer",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:16:59Z tool.result      agent:main:tail-proof-closed-\u2026 synthetic-closed-consumer-1 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      },
+      "pid": 210335,
+      "snapshots": [
+        {
+          "stage": "started",
+          "processes": [
+            {
+              "pid": 210335,
+              "ppid": 206655,
+              "processGroup": 210335,
+              "state": "R",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-closed-consumer --tail 1 --follow"
+            }
+          ]
+        },
+        {
+          "stage": "initialRecord",
+          "processes": [
+            {
+              "pid": 210335,
+              "ppid": 206655,
+              "processGroup": 210335,
+              "state": "S",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-closed-consumer --tail 1 --follow"
+            },
+            {
+              "pid": 210342,
+              "ppid": 210335,
+              "processGroup": 210342,
+              "state": "S",
+              "commandLine": "openclaw"
+            }
+          ]
+        },
+        {
+          "stage": "decisionBeforeHarnessCleanup",
+          "processes": [
+            {
+              "pid": 210335,
+              "ppid": 206655,
+              "processGroup": 210335,
+              "state": "S",
+              "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-closed-consumer --tail 1 --follow"
+            },
+            {
+              "pid": 210342,
+              "ppid": 210335,
+              "processGroup": 210342,
+              "state": "S",
+              "commandLine": "openclaw"
+            }
+          ]
+        }
+      ],
+      "result": "RED_PRODUCER_LIVES_AFTER_CLOSED_PIPE_AND_COMMITTED_NEW_EVENT",
+      "consumerClosedAtMonotonic": 3510235.731130936,
+      "secondAppendAcknowledgedAtMonotonic": 3510235.734105718,
+      "secondAppendFixtureReceipt": {
+        "protocol": "sessions-tail-native-fixture-v1",
+        "event": "appended",
+        "requestId": "6",
+        "seq": 2,
+        "marker": "synthetic-closed-consumer-2",
+        "sessionId": "tail-proof-session-closed-consumer",
+        "committedAtWallMs": 1794370626902,
+        "observedAtMonotonic": 3510235.734105718
+      },
+      "postSecondAppendObservationMs": 6000.22,
+      "naturalExitCode": null,
+      "outputCloseSettledNaturally": false,
+      "naturalStateRecordedBeforeCleanup": true,
+      "harnessCleanup": {
+        "before": [
+          {
+            "pid": 210335,
+            "ppid": 206655,
+            "processGroup": 210335,
+            "state": "S",
+            "commandLine": "<NODE26> <BASE_CHECKOUT>/openclaw.mjs sessions tail --store <BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite --session-key agent:main:tail-proof-closed-consumer --tail 1 --follow"
+          },
+          {
+            "pid": 210342,
+            "ppid": 210335,
+            "processGroup": 210342,
+            "state": "S",
+            "commandLine": "openclaw"
+          }
+        ],
+        "signals": [
+          {
+            "processGroup": 210335,
+            "signal": "SIGTERM"
+          },
+          {
+            "pid": 210342,
+            "signal": "SIGTERM"
+          }
+        ],
+        "after": [],
+        "exitCodeAfterCleanup": -15,
+        "usedSIGKILL": false
+      },
+      "observedStdout": "04:16:59Z tool.result      agent:main:tail-proof-closed-\u2026 synthetic-closed-consumer-1 ok\n",
+      "diagnostics": "",
+      "configSHA256After": "278c701dfd8ec97d0e0970a8226e26e3247e0340bac6df59ae06b4488c578a2f",
+      "configUnchanged": true,
+      "nativeSecondEventReadback": {
+        "command": [
+          "<NODE26>",
+          "<BASE_CHECKOUT>/openclaw.mjs",
+          "sessions",
+          "tail",
+          "--store",
+          "<BASE_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite",
+          "--session-key",
+          "agent:main:tail-proof-closed-consumer",
+          "--tail",
+          "1"
+        ],
+        "exitCode": 0,
+        "stdout": "04:17:06Z tool.result      agent:main:tail-proof-closed-\u2026 synthetic-closed-consumer-2 ok\n",
+        "stderr": "",
+        "markerReadBack": true
+      }
+    }
+  ],
+  "fixtureEvents": [
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "ready",
+      "pid": 206732,
+      "observedAtMonotonic": 3510182.77938888
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "1",
+      "seq": 1,
+      "marker": "synthetic-continue-term-1",
+      "sessionId": "tail-proof-session-continue-term",
+      "committedAtWallMs": 1794370593541,
+      "observedAtMonotonic": 3510202.373262962
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "2",
+      "seq": 2,
+      "marker": "synthetic-continue-term-2",
+      "sessionId": "tail-proof-session-continue-term",
+      "committedAtWallMs": 1794370603756,
+      "observedAtMonotonic": 3510212.588112268
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "3",
+      "seq": 1,
+      "marker": "synthetic-continue-int-1",
+      "sessionId": "tail-proof-session-continue-int",
+      "committedAtWallMs": 1794370608368,
+      "observedAtMonotonic": 3510217.200307348
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "4",
+      "seq": 2,
+      "marker": "synthetic-continue-int-2",
+      "sessionId": "tail-proof-session-continue-int",
+      "committedAtWallMs": 1794370615404,
+      "observedAtMonotonic": 3510224.2363583
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "5",
+      "seq": 1,
+      "marker": "synthetic-closed-consumer-1",
+      "sessionId": "tail-proof-session-closed-consumer",
+      "committedAtWallMs": 1794370619987,
+      "observedAtMonotonic": 3510228.819271372
+    },
+    {
+      "protocol": "sessions-tail-native-fixture-v1",
+      "event": "appended",
+      "requestId": "6",
+      "seq": 2,
+      "marker": "synthetic-closed-consumer-2",
+      "sessionId": "tail-proof-session-closed-consumer",
+      "committedAtWallMs": 1794370626902,
+      "observedAtMonotonic": 3510235.734105718
+    }
+  ],
+  "result": "RED_WITH_CONTINUING_AND_FINITE_CONTROLS",
+  "fixtureCleanup": {
+    "before": [],
+    "signals": [],
+    "after": [],
+    "exitCodeAfterCleanup": 0,
+    "usedSIGKILL": false
+  },
+  "configSHA256After": "278c701dfd8ec97d0e0970a8226e26e3247e0340bac6df59ae06b4488c578a2f",
+  "configUnchanged": true,
+  "trackedInputsStillClean": true,
+  "collectorUnchanged": true,
+  "fixtureUnchanged": true
+}

@@ -1,0 +1,12 @@
+{
+  "collect.py": "d871e72bb3c5759a2180b940043f1afed5eb6e38bc1f38e059faa9f9055ed4f2",
+  "collect.mts": "4e653197156364d2420f1a31c2779c9aee4faf13e335ad7805d59b5242abd128",
+  "base-receipt.json": "21783647f69dc8e64538d739307041d3574093e84779c5cd7ce7d0ae8bd632a6",
+  "base-streams.txt": "5b38e7f892451e4fdf96b94b76de96b94b1d211c6fba1eb50e84248bf781d848",
+  "head-receipt.json": "c4ff168907d093428f5e7a26e323a98d5926c08574b029464a795db095c3fffa",
+  "head-streams.txt": "3fd79424df3347beb3d155bf7cecea5fa558950e7b8902c90f0be02ecbc1d362",
+  "independent-review.md": "9a6e835e78971c09bfa43047cec9b6685971643a6f9ba71abffc4925d3dc75af",
+  "checks.json": "12596bf463419d9886b16eca1ec895009ae12d6c8693365409277278902a0b33",
+  "changed-mock-factories.json": "966d6013c18767ea82ab034d915d2e40acb3894584815ad0effadc3e183c6f7b",
+  "EVIDENCE.md": "def315c04fadbee1813b874ba2324f7996bf27d85e20d07d274dcfc4f3a86b31"
+}

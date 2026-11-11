@@ -1,0 +1,50 @@
+CASE continue-term
+finite.stdout:
+04:16:33Z tool.result      agent:main:tail-proof-continu… synthetic-continue-term-1 ok
+
+finite.stderr:
+
+stdout.raw:
+04:16:33Z tool.result      agent:main:tail-proof-continu… synthetic-continue-term-1 ok
+04:16:43Z tool.result      agent:main:tail-proof-continu… synthetic-continue-term-2 ok
+
+diagnostics.log:
+
+second-readback.stdout:
+04:16:43Z tool.result      agent:main:tail-proof-continu… synthetic-continue-term-2 ok
+
+second-readback.stderr:
+
+CASE continue-int
+finite.stdout:
+04:16:48Z tool.result      agent:main:tail-proof-continu… synthetic-continue-int-1 ok
+
+finite.stderr:
+
+stdout.raw:
+04:16:48Z tool.result      agent:main:tail-proof-continu… synthetic-continue-int-1 ok
+04:16:55Z tool.result      agent:main:tail-proof-continu… synthetic-continue-int-2 ok
+
+diagnostics.log:
+
+second-readback.stdout:
+04:16:55Z tool.result      agent:main:tail-proof-continu… synthetic-continue-int-2 ok
+
+second-readback.stderr:
+
+CASE closed-consumer
+finite.stdout:
+04:16:59Z tool.result      agent:main:tail-proof-closed-… synthetic-closed-consumer-1 ok
+
+finite.stderr:
+
+stdout.raw:
+04:16:59Z tool.result      agent:main:tail-proof-closed-… synthetic-closed-consumer-1 ok
+
+diagnostics.log:
+
+second-readback.stdout:
+04:17:06Z tool.result      agent:main:tail-proof-closed-… synthetic-closed-consumer-2 ok
+
+second-readback.stderr:
+
