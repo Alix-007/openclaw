@@ -1,0 +1,3 @@
+[openclaw] Staging pinned Bun fork openclaw-v1.4.4-20261026-191755ec11-webkit-b82bc917e9 (one-time download)…
+[openclaw] could not stage the pinned fork: Command failed: /bin/bash $CHECKOUT/scripts/stage-openclaw-bun.sh $OWNED_TOOL_CACHE linux x64; using oxfmt.
+Finished in 84ms on 2 files using 16 threads.

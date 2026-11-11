@@ -1,0 +1,17 @@
+{
+  "main": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+  "publishedHead": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+  "worktree": "$CHECKOUT",
+  "files": [
+    {
+      "path": "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+      "sha256": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30"
+    },
+    {
+      "path": "ui/src/pages/chat/components/chat-model-provider-heading.tsx",
+      "sha256": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873"
+    }
+  ],
+  "resolution": "Retained exactly3 extracted-heading conflict hunks and ported all3 main provider-auth lookup/native badge edits to canonical extracted owner; other138-file incoming delta preserved",
+  "tests": "Current main adds native auth preferences/picker regressions; running same existing full focused sources"
+}

@@ -1,0 +1,1874 @@
+{
+  "metrics": {
+    "schemaVersion": 2,
+    "document": {
+      "rawBytes": 58881,
+      "gzipBytes": 14008
+    },
+    "startup": {
+      "js": {
+        "requests": 3,
+        "rawBytes": 288284,
+        "gzipBytes": 91973,
+        "brotliBytes": 81729,
+        "servedGzipBytes": 92556,
+        "servedBrotliBytes": 82366
+      },
+      "css": {
+        "requests": 1,
+        "rawBytes": 227833,
+        "gzipBytes": 39213,
+        "brotliBytes": 33724,
+        "servedGzipBytes": 39421,
+        "servedBrotliBytes": 33953
+      },
+      "assets": [
+        {
+          "file": "assets/control-ui-connection-DbIr4TNa.js",
+          "type": "js",
+          "rawBytes": 287278,
+          "servedGzipBytes": 91914,
+          "servedBrotliBytes": 81782,
+          "gzipBytes": 91343,
+          "brotliBytes": 81188
+        },
+        {
+          "file": "assets/control-ui-connection-ZAyXoKPe.css",
+          "type": "css",
+          "rawBytes": 227833,
+          "servedGzipBytes": 39421,
+          "servedBrotliBytes": 33953,
+          "gzipBytes": 39213,
+          "brotliBytes": 33724
+        },
+        {
+          "file": "assets/index-CdSCLEWn.js",
+          "type": "js",
+          "rawBytes": 189,
+          "servedGzipBytes": 165,
+          "servedBrotliBytes": 156,
+          "gzipBytes": 153,
+          "brotliBytes": 113
+        },
+        {
+          "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+          "type": "js",
+          "rawBytes": 817,
+          "servedGzipBytes": 477,
+          "servedBrotliBytes": 428,
+          "gzipBytes": 477,
+          "brotliBytes": 428
+        }
+      ]
+    },
+    "routeBoot": {
+      "chat": {
+        "js": {
+          "requests": 20,
+          "rawBytes": 4202340,
+          "gzipBytes": 1303396,
+          "brotliBytes": 1111666,
+          "servedGzipBytes": 1310842,
+          "servedBrotliBytes": 1118842
+        },
+        "css": {
+          "requests": 3,
+          "rawBytes": 820626,
+          "gzipBytes": 133753,
+          "brotliBytes": 113711,
+          "servedGzipBytes": 133961,
+          "servedBrotliBytes": 113940
+        },
+        "assets": [
+          {
+            "file": "assets/app-sidebar-online-DkX92nPa.js",
+            "type": "js",
+            "rawBytes": 6019,
+            "servedGzipBytes": 2422,
+            "servedBrotliBytes": 2160,
+            "gzipBytes": 2407,
+            "brotliBytes": 2147
+          },
+          {
+            "file": "assets/chat-english-ZYT98AKU.js",
+            "type": "js",
+            "rawBytes": 3362,
+            "servedGzipBytes": 1345,
+            "servedBrotliBytes": 1159,
+            "gzipBytes": 1328,
+            "brotliBytes": 1136
+          },
+          {
+            "file": "assets/chat-interaction-runtime-BvsfFkx2.js",
+            "type": "js",
+            "rawBytes": 46102,
+            "servedGzipBytes": 15048,
+            "servedBrotliBytes": 13872,
+            "gzipBytes": 14731,
+            "brotliBytes": 13561
+          },
+          {
+            "file": "assets/chat-live-events-runtime-Cwso7t10.js",
+            "type": "js",
+            "rawBytes": 26815,
+            "servedGzipBytes": 8981,
+            "servedBrotliBytes": 8340,
+            "gzipBytes": 8942,
+            "brotliBytes": 8305
+          },
+          {
+            "file": "assets/chat-message-media-runtime-DaW3IBa6.js",
+            "type": "js",
+            "rawBytes": 25641,
+            "servedGzipBytes": 9059,
+            "servedBrotliBytes": 8394,
+            "gzipBytes": 9016,
+            "brotliBytes": 8349
+          },
+          {
+            "file": "assets/chat-route-entry-T6R2dGK9.js",
+            "type": "js",
+            "rawBytes": 425,
+            "servedGzipBytes": 288,
+            "servedBrotliBytes": 249,
+            "gzipBytes": 256,
+            "brotliBytes": 242
+          },
+          {
+            "file": "assets/composer-invocation-menus-Bt7UKCZA.js",
+            "type": "js",
+            "rawBytes": 23971,
+            "servedGzipBytes": 8053,
+            "servedBrotliBytes": 7347,
+            "gzipBytes": 8028,
+            "brotliBytes": 7339
+          },
+          {
+            "file": "assets/control-ui-boot-chat-BhzMAIp0.js",
+            "type": "js",
+            "rawBytes": 925627,
+            "servedGzipBytes": 264386,
+            "servedBrotliBytes": 222220,
+            "gzipBytes": 262712,
+            "brotliBytes": 220960
+          },
+          {
+            "file": "assets/control-ui-boot-chat-styles-CBkcx_7K.js",
+            "type": "js",
+            "rawBytes": 520389,
+            "servedGzipBytes": 163085,
+            "servedBrotliBytes": 139281,
+            "gzipBytes": 162785,
+            "brotliBytes": 138797
+          },
+          {
+            "file": "assets/control-ui-boot-chat-styles-oJ9DiwLJ.css",
+            "type": "css",
+            "rawBytes": 244976,
+            "servedGzipBytes": 39758,
+            "servedBrotliBytes": 33913,
+            "gzipBytes": 39758,
+            "brotliBytes": 33913
+          },
+          {
+            "file": "assets/control-ui-boot-shared-C10Xr6F8.js",
+            "type": "js",
+            "rawBytes": 1835701,
+            "servedGzipBytes": 568950,
+            "servedBrotliBytes": 472337,
+            "gzipBytes": 565252,
+            "brotliBytes": 468542
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CCPDhTEa.js",
+            "type": "js",
+            "rawBytes": 1790,
+            "servedGzipBytes": 563,
+            "servedBrotliBytes": 454,
+            "gzipBytes": 550,
+            "brotliBytes": 436
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+            "type": "css",
+            "rawBytes": 347817,
+            "servedGzipBytes": 54782,
+            "servedBrotliBytes": 46074,
+            "gzipBytes": 54782,
+            "brotliBytes": 46074
+          },
+          {
+            "file": "assets/control-ui-connection-DbIr4TNa.js",
+            "type": "js",
+            "rawBytes": 287278,
+            "servedGzipBytes": 91914,
+            "servedBrotliBytes": 81782,
+            "gzipBytes": 91343,
+            "brotliBytes": 81188
+          },
+          {
+            "file": "assets/control-ui-connection-ZAyXoKPe.css",
+            "type": "css",
+            "rawBytes": 227833,
+            "servedGzipBytes": 39421,
+            "servedBrotliBytes": 33953,
+            "gzipBytes": 39213,
+            "brotliBytes": 33724
+          },
+          {
+            "file": "assets/deferred-ui-support-9SILWdbR.js",
+            "type": "js",
+            "rawBytes": 107491,
+            "servedGzipBytes": 35285,
+            "servedBrotliBytes": 31653,
+            "gzipBytes": 34847,
+            "brotliBytes": 31260
+          },
+          {
+            "file": "assets/device-signing-runtime-BpXSPAUl.js",
+            "type": "js",
+            "rawBytes": 7286,
+            "servedGzipBytes": 3613,
+            "servedBrotliBytes": 3246,
+            "gzipBytes": 3597,
+            "brotliBytes": 3236
+          },
+          {
+            "file": "assets/index-CdSCLEWn.js",
+            "type": "js",
+            "rawBytes": 189,
+            "servedGzipBytes": 165,
+            "servedBrotliBytes": 156,
+            "gzipBytes": 153,
+            "brotliBytes": 113
+          },
+          {
+            "file": "assets/markdown-runtime-4muwpY-a.js",
+            "type": "js",
+            "rawBytes": 215576,
+            "servedGzipBytes": 80677,
+            "servedBrotliBytes": 73049,
+            "gzipBytes": 80505,
+            "brotliBytes": 72941
+          },
+          {
+            "file": "assets/markdown-streaming-runtime-Bcwym6WA.js",
+            "type": "js",
+            "rawBytes": 28260,
+            "servedGzipBytes": 10223,
+            "servedBrotliBytes": 9514,
+            "gzipBytes": 10195,
+            "brotliBytes": 9455
+          },
+          {
+            "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+            "type": "js",
+            "rawBytes": 817,
+            "servedGzipBytes": 477,
+            "servedBrotliBytes": 428,
+            "gzipBytes": 477,
+            "brotliBytes": 428
+          },
+          {
+            "file": "assets/solid-runtime-Z8dQNUTv.js",
+            "type": "js",
+            "rawBytes": 113896,
+            "servedGzipBytes": 39152,
+            "servedBrotliBytes": 36499,
+            "gzipBytes": 39134,
+            "brotliBytes": 36553
+          },
+          {
+            "file": "assets/virtual-core-runtime-LhyriIY5.js",
+            "type": "js",
+            "rawBytes": 25705,
+            "servedGzipBytes": 7156,
+            "servedBrotliBytes": 6702,
+            "gzipBytes": 7138,
+            "brotliBytes": 6678
+          }
+        ]
+      },
+      "new": {
+        "js": {
+          "requests": 15,
+          "rawBytes": 2618380,
+          "gzipBytes": 804486,
+          "brotliBytes": 683284,
+          "servedGzipBytes": 809451,
+          "servedBrotliBytes": 688304
+        },
+        "css": {
+          "requests": 3,
+          "rawBytes": 605304,
+          "gzipBytes": 99535,
+          "brotliBytes": 84853,
+          "servedGzipBytes": 99743,
+          "servedBrotliBytes": 85082
+        },
+        "assets": [
+          {
+            "file": "assets/app-sidebar-online-DkX92nPa.js",
+            "type": "js",
+            "rawBytes": 6019,
+            "servedGzipBytes": 2422,
+            "servedBrotliBytes": 2160,
+            "gzipBytes": 2407,
+            "brotliBytes": 2147
+          },
+          {
+            "file": "assets/chat-english-ZYT98AKU.js",
+            "type": "js",
+            "rawBytes": 3362,
+            "servedGzipBytes": 1345,
+            "servedBrotliBytes": 1159,
+            "gzipBytes": 1328,
+            "brotliBytes": 1136
+          },
+          {
+            "file": "assets/composer-invocation-menus-Bt7UKCZA.js",
+            "type": "js",
+            "rawBytes": 23971,
+            "servedGzipBytes": 8053,
+            "servedBrotliBytes": 7347,
+            "gzipBytes": 8028,
+            "brotliBytes": 7339
+          },
+          {
+            "file": "assets/control-ui-boot-new-CKa8rumj.js",
+            "type": "js",
+            "rawBytes": 294989,
+            "servedGzipBytes": 78349,
+            "servedBrotliBytes": 69426,
+            "gzipBytes": 77867,
+            "brotliBytes": 68955
+          },
+          {
+            "file": "assets/control-ui-boot-new-styles--kbMMzvD.js",
+            "type": "js",
+            "rawBytes": 250,
+            "servedGzipBytes": 189,
+            "servedBrotliBytes": 156,
+            "gzipBytes": 173,
+            "brotliBytes": 142
+          },
+          {
+            "file": "assets/control-ui-boot-new-styles-BqRdap7E.css",
+            "type": "css",
+            "rawBytes": 29654,
+            "servedGzipBytes": 5540,
+            "servedBrotliBytes": 5055,
+            "gzipBytes": 5540,
+            "brotliBytes": 5055
+          },
+          {
+            "file": "assets/control-ui-boot-shared-C10Xr6F8.js",
+            "type": "js",
+            "rawBytes": 1835701,
+            "servedGzipBytes": 568950,
+            "servedBrotliBytes": 472337,
+            "gzipBytes": 565252,
+            "brotliBytes": 468542
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CCPDhTEa.js",
+            "type": "js",
+            "rawBytes": 1790,
+            "servedGzipBytes": 563,
+            "servedBrotliBytes": 454,
+            "gzipBytes": 550,
+            "brotliBytes": 436
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+            "type": "css",
+            "rawBytes": 347817,
+            "servedGzipBytes": 54782,
+            "servedBrotliBytes": 46074,
+            "gzipBytes": 54782,
+            "brotliBytes": 46074
+          },
+          {
+            "file": "assets/control-ui-connection-DbIr4TNa.js",
+            "type": "js",
+            "rawBytes": 287278,
+            "servedGzipBytes": 91914,
+            "servedBrotliBytes": 81782,
+            "gzipBytes": 91343,
+            "brotliBytes": 81188
+          },
+          {
+            "file": "assets/control-ui-connection-ZAyXoKPe.css",
+            "type": "css",
+            "rawBytes": 227833,
+            "servedGzipBytes": 39421,
+            "servedBrotliBytes": 33953,
+            "gzipBytes": 39213,
+            "brotliBytes": 33724
+          },
+          {
+            "file": "assets/device-signing-runtime-BpXSPAUl.js",
+            "type": "js",
+            "rawBytes": 7286,
+            "servedGzipBytes": 3613,
+            "servedBrotliBytes": 3246,
+            "gzipBytes": 3597,
+            "brotliBytes": 3236
+          },
+          {
+            "file": "assets/index-CdSCLEWn.js",
+            "type": "js",
+            "rawBytes": 189,
+            "servedGzipBytes": 165,
+            "servedBrotliBytes": 156,
+            "gzipBytes": 153,
+            "brotliBytes": 113
+          },
+          {
+            "file": "assets/new-session-page-entry-BN7SOcta.js",
+            "type": "js",
+            "rawBytes": 241,
+            "servedGzipBytes": 210,
+            "servedBrotliBytes": 191,
+            "gzipBytes": 185,
+            "brotliBytes": 156
+          },
+          {
+            "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+            "type": "js",
+            "rawBytes": 817,
+            "servedGzipBytes": 477,
+            "servedBrotliBytes": 428,
+            "gzipBytes": 477,
+            "brotliBytes": 428
+          },
+          {
+            "file": "assets/route-controls-runtime-5shNDXfO.js",
+            "type": "js",
+            "rawBytes": 34308,
+            "servedGzipBytes": 11270,
+            "servedBrotliBytes": 10366,
+            "gzipBytes": 11251,
+            "brotliBytes": 10355
+          },
+          {
+            "file": "assets/session-placement-startup.runtime-CL8iijh3.js",
+            "type": "js",
+            "rawBytes": 8283,
+            "servedGzipBytes": 2779,
+            "servedBrotliBytes": 2597,
+            "gzipBytes": 2741,
+            "brotliBytes": 2558
+          },
+          {
+            "file": "assets/solid-runtime-Z8dQNUTv.js",
+            "type": "js",
+            "rawBytes": 113896,
+            "servedGzipBytes": 39152,
+            "servedBrotliBytes": 36499,
+            "gzipBytes": 39134,
+            "brotliBytes": 36553
+          }
+        ]
+      }
+    },
+    "total": {
+      "js": {
+        "requests": 2702,
+        "rawBytes": 40605156,
+        "gzipBytes": 18129113,
+        "brotliBytes": 17189484,
+        "servedGzipBytes": 18151102,
+        "servedBrotliBytes": 17209913
+      },
+      "css": {
+        "requests": 122,
+        "rawBytes": 1686681,
+        "gzipBytes": 326942,
+        "brotliBytes": 287619,
+        "servedGzipBytes": 327192,
+        "servedBrotliBytes": 287899
+      }
+    },
+    "largest": {
+      "js": {
+        "file": "assets/control-ui-boot-shared-C10Xr6F8.js",
+        "type": "js",
+        "rawBytes": 1835701,
+        "servedGzipBytes": 568950,
+        "servedBrotliBytes": 472337,
+        "gzipBytes": 565252,
+        "brotliBytes": 468542
+      },
+      "css": {
+        "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+        "type": "css",
+        "rawBytes": 347817,
+        "servedGzipBytes": 54782,
+        "servedBrotliBytes": 46074,
+        "gzipBytes": 54782,
+        "brotliBytes": 46074
+      }
+    },
+    "mermaidRenderer": [
+      {
+        "file": "assets/pele.min-Dk-6HECD.js",
+        "type": "js",
+        "rawBytes": 706477,
+        "servedGzipBytes": 247580,
+        "servedBrotliBytes": 207521,
+        "gzipBytes": 247575,
+        "brotliBytes": 207686
+      }
+    ],
+    "localeCatalogs": [
+      {
+        "file": "assets/ar-glUXpKnS.js",
+        "type": "js",
+        "rawBytes": 67329,
+        "servedGzipBytes": 17231,
+        "servedBrotliBytes": 15363,
+        "gzipBytes": 17180,
+        "brotliBytes": 15295
+      },
+      {
+        "file": "assets/ca-D9JHv873.js",
+        "type": "js",
+        "rawBytes": 57442,
+        "servedGzipBytes": 16305,
+        "servedBrotliBytes": 15397,
+        "gzipBytes": 16255,
+        "brotliBytes": 15354
+      },
+      {
+        "file": "assets/de-Cmk8oLV-.js",
+        "type": "js",
+        "rawBytes": 58169,
+        "servedGzipBytes": 16690,
+        "servedBrotliBytes": 15885,
+        "gzipBytes": 16635,
+        "brotliBytes": 15827
+      },
+      {
+        "file": "assets/es-CNiBxoU5.js",
+        "type": "js",
+        "rawBytes": 56606,
+        "servedGzipBytes": 16147,
+        "servedBrotliBytes": 15014,
+        "gzipBytes": 16093,
+        "brotliBytes": 14957
+      },
+      {
+        "file": "assets/fa-Bj04aoiX.js",
+        "type": "js",
+        "rawBytes": 70695,
+        "servedGzipBytes": 17259,
+        "servedBrotliBytes": 15607,
+        "gzipBytes": 17200,
+        "brotliBytes": 15563
+      },
+      {
+        "file": "assets/fr-DC4epSrT.js",
+        "type": "js",
+        "rawBytes": 58788,
+        "servedGzipBytes": 16524,
+        "servedBrotliBytes": 15573,
+        "gzipBytes": 16479,
+        "brotliBytes": 15519
+      },
+      {
+        "file": "assets/hi-D1__-qnz.js",
+        "type": "js",
+        "rawBytes": 89996,
+        "servedGzipBytes": 18656,
+        "servedBrotliBytes": 16692,
+        "gzipBytes": 18574,
+        "brotliBytes": 16647
+      },
+      {
+        "file": "assets/id-DO9fQcrz.js",
+        "type": "js",
+        "rawBytes": 52838,
+        "servedGzipBytes": 15084,
+        "servedBrotliBytes": 14296,
+        "gzipBytes": 15036,
+        "brotliBytes": 14216
+      },
+      {
+        "file": "assets/it-D8as0fh7.js",
+        "type": "js",
+        "rawBytes": 56462,
+        "servedGzipBytes": 16009,
+        "servedBrotliBytes": 15101,
+        "gzipBytes": 15956,
+        "brotliBytes": 15040
+      },
+      {
+        "file": "assets/ja-JP-BR8ENEBB.js",
+        "type": "js",
+        "rawBytes": 64973,
+        "servedGzipBytes": 17239,
+        "servedBrotliBytes": 15614,
+        "gzipBytes": 17183,
+        "brotliBytes": 15583
+      },
+      {
+        "file": "assets/ko-DUI5TRv4.js",
+        "type": "js",
+        "rawBytes": 58322,
+        "servedGzipBytes": 16329,
+        "servedBrotliBytes": 14916,
+        "gzipBytes": 16269,
+        "brotliBytes": 14900
+      },
+      {
+        "file": "assets/locale-config-hints-ar-B2-guHYP.js",
+        "type": "js",
+        "rawBytes": 509330,
+        "servedGzipBytes": 119090,
+        "servedBrotliBytes": 99517,
+        "gzipBytes": 119086,
+        "brotliBytes": 99462
+      },
+      {
+        "file": "assets/locale-config-hints-ca-CWj7Mz4f.js",
+        "type": "js",
+        "rawBytes": 410895,
+        "servedGzipBytes": 110633,
+        "servedBrotliBytes": 96464,
+        "gzipBytes": 110625,
+        "brotliBytes": 96542
+      },
+      {
+        "file": "assets/locale-config-hints-de-CdDO3F9s.js",
+        "type": "js",
+        "rawBytes": 404888,
+        "servedGzipBytes": 115955,
+        "servedBrotliBytes": 101812,
+        "gzipBytes": 115949,
+        "brotliBytes": 101856
+      },
+      {
+        "file": "assets/locale-config-hints-es-CcG8KxbK.js",
+        "type": "js",
+        "rawBytes": 414129,
+        "servedGzipBytes": 110135,
+        "servedBrotliBytes": 95765,
+        "gzipBytes": 110127,
+        "brotliBytes": 95778
+      },
+      {
+        "file": "assets/locale-config-hints-fa-Cs0Gf7eH.js",
+        "type": "js",
+        "rawBytes": 552719,
+        "servedGzipBytes": 120112,
+        "servedBrotliBytes": 99806,
+        "gzipBytes": 120106,
+        "brotliBytes": 99831
+      },
+      {
+        "file": "assets/locale-config-hints-fr-Bgoi0j49.js",
+        "type": "js",
+        "rawBytes": 431186,
+        "servedGzipBytes": 113384,
+        "servedBrotliBytes": 98301,
+        "gzipBytes": 113463,
+        "brotliBytes": 98317
+      },
+      {
+        "file": "assets/locale-config-hints-hi-DzfERWh0.js",
+        "type": "js",
+        "rawBytes": 726525,
+        "servedGzipBytes": 127523,
+        "servedBrotliBytes": 103459,
+        "gzipBytes": 127516,
+        "brotliBytes": 103474
+      },
+      {
+        "file": "assets/locale-config-hints-id-BzFS8ri1.js",
+        "type": "js",
+        "rawBytes": 365195,
+        "servedGzipBytes": 101601,
+        "servedBrotliBytes": 90138,
+        "gzipBytes": 101593,
+        "brotliBytes": 90083
+      },
+      {
+        "file": "assets/locale-config-hints-it-f_MvM3Aq.js",
+        "type": "js",
+        "rawBytes": 407859,
+        "servedGzipBytes": 109844,
+        "servedBrotliBytes": 96508,
+        "gzipBytes": 109836,
+        "brotliBytes": 96478
+      },
+      {
+        "file": "assets/locale-config-hints-ja-JP-Dvtwugke.js",
+        "type": "js",
+        "rawBytes": 464538,
+        "servedGzipBytes": 116390,
+        "servedBrotliBytes": 97281,
+        "gzipBytes": 116384,
+        "brotliBytes": 97324
+      },
+      {
+        "file": "assets/locale-config-hints-ko-BBaHGL37.js",
+        "type": "js",
+        "rawBytes": 402359,
+        "servedGzipBytes": 107730,
+        "servedBrotliBytes": 92446,
+        "gzipBytes": 107723,
+        "brotliBytes": 92403
+      },
+      {
+        "file": "assets/locale-config-hints-nl-oOwFkiLY.js",
+        "type": "js",
+        "rawBytes": 387080,
+        "servedGzipBytes": 109652,
+        "servedBrotliBytes": 97018,
+        "gzipBytes": 109645,
+        "brotliBytes": 96930
+      },
+      {
+        "file": "assets/locale-config-hints-pl-_tpk4Ewy.js",
+        "type": "js",
+        "rawBytes": 405780,
+        "servedGzipBytes": 116333,
+        "servedBrotliBytes": 101270,
+        "gzipBytes": 116326,
+        "brotliBytes": 101293
+      },
+      {
+        "file": "assets/locale-config-hints-pt-BR-8SsZDBko.js",
+        "type": "js",
+        "rawBytes": 395787,
+        "servedGzipBytes": 107554,
+        "servedBrotliBytes": 94306,
+        "gzipBytes": 107544,
+        "brotliBytes": 94222
+      },
+      {
+        "file": "assets/locale-config-hints-ru-BiXL0Jpu.js",
+        "type": "js",
+        "rawBytes": 617474,
+        "servedGzipBytes": 131749,
+        "servedBrotliBytes": 105175,
+        "gzipBytes": 131735,
+        "brotliBytes": 105194
+      },
+      {
+        "file": "assets/locale-config-hints-sv-54IO_1nU.js",
+        "type": "js",
+        "rawBytes": 380419,
+        "servedGzipBytes": 107225,
+        "servedBrotliBytes": 95173,
+        "gzipBytes": 107218,
+        "brotliBytes": 95087
+      },
+      {
+        "file": "assets/locale-config-hints-th-CymlDU4x.js",
+        "type": "js",
+        "rawBytes": 780481,
+        "servedGzipBytes": 127541,
+        "servedBrotliBytes": 102113,
+        "gzipBytes": 127256,
+        "brotliBytes": 102093
+      },
+      {
+        "file": "assets/locale-config-hints-tr-BthkYJxY.js",
+        "type": "js",
+        "rawBytes": 400781,
+        "servedGzipBytes": 111015,
+        "servedBrotliBytes": 97646,
+        "gzipBytes": 111010,
+        "brotliBytes": 97606
+      },
+      {
+        "file": "assets/locale-config-hints-uk-CsJh1oZw.js",
+        "type": "js",
+        "rawBytes": 610377,
+        "servedGzipBytes": 130108,
+        "servedBrotliBytes": 104568,
+        "gzipBytes": 130103,
+        "brotliBytes": 104548
+      },
+      {
+        "file": "assets/locale-config-hints-vi-DMCH7qFR.js",
+        "type": "js",
+        "rawBytes": 454047,
+        "servedGzipBytes": 109016,
+        "servedBrotliBytes": 94503,
+        "gzipBytes": 109009,
+        "brotliBytes": 94509
+      },
+      {
+        "file": "assets/locale-config-hints-zh-CN-BOmFn3ov.js",
+        "type": "js",
+        "rawBytes": 328356,
+        "servedGzipBytes": 104677,
+        "servedBrotliBytes": 90307,
+        "gzipBytes": 104671,
+        "brotliBytes": 90278
+      },
+      {
+        "file": "assets/locale-config-hints-zh-TW-rON0z1Xp.js",
+        "type": "js",
+        "rawBytes": 334565,
+        "servedGzipBytes": 105876,
+        "servedBrotliBytes": 91421,
+        "gzipBytes": 105868,
+        "brotliBytes": 91380
+      },
+      {
+        "file": "assets/nl-Djq4oJXm.js",
+        "type": "js",
+        "rawBytes": 55235,
+        "servedGzipBytes": 16023,
+        "servedBrotliBytes": 15205,
+        "gzipBytes": 15976,
+        "brotliBytes": 15156
+      },
+      {
+        "file": "assets/pl-CBk84Z1L.js",
+        "type": "js",
+        "rawBytes": 56531,
+        "servedGzipBytes": 16891,
+        "servedBrotliBytes": 16044,
+        "gzipBytes": 16842,
+        "brotliBytes": 15960
+      },
+      {
+        "file": "assets/pt-BR-CSspNTIV.js",
+        "type": "js",
+        "rawBytes": 56211,
+        "servedGzipBytes": 15911,
+        "servedBrotliBytes": 14949,
+        "gzipBytes": 15869,
+        "brotliBytes": 14903
+      },
+      {
+        "file": "assets/ru-CkPxh3DZ.js",
+        "type": "js",
+        "rawBytes": 77910,
+        "servedGzipBytes": 19033,
+        "servedBrotliBytes": 16835,
+        "gzipBytes": 18959,
+        "brotliBytes": 16785
+      },
+      {
+        "file": "assets/sv-BmmER5Ec.js",
+        "type": "js",
+        "rawBytes": 54765,
+        "servedGzipBytes": 15842,
+        "servedBrotliBytes": 14932,
+        "gzipBytes": 15790,
+        "brotliBytes": 14901
+      },
+      {
+        "file": "assets/th-Cv1oeDZC.js",
+        "type": "js",
+        "rawBytes": 92852,
+        "servedGzipBytes": 18279,
+        "servedBrotliBytes": 16574,
+        "gzipBytes": 18232,
+        "brotliBytes": 16463
+      },
+      {
+        "file": "assets/tr-CMCz4KCr.js",
+        "type": "js",
+        "rawBytes": 56063,
+        "servedGzipBytes": 16218,
+        "servedBrotliBytes": 15228,
+        "gzipBytes": 16170,
+        "brotliBytes": 15188
+      },
+      {
+        "file": "assets/uk-B2L0QNjM.js",
+        "type": "js",
+        "rawBytes": 77032,
+        "servedGzipBytes": 18801,
+        "servedBrotliBytes": 16803,
+        "gzipBytes": 18742,
+        "brotliBytes": 16764
+      },
+      {
+        "file": "assets/vi-Dqc3o7Jf.js",
+        "type": "js",
+        "rawBytes": 61764,
+        "servedGzipBytes": 16442,
+        "servedBrotliBytes": 15381,
+        "gzipBytes": 16381,
+        "brotliBytes": 15332
+      },
+      {
+        "file": "assets/zh-CN-C43ICAPW.js",
+        "type": "js",
+        "rawBytes": 50161,
+        "servedGzipBytes": 15933,
+        "servedBrotliBytes": 14053,
+        "gzipBytes": 15887,
+        "brotliBytes": 13988
+      },
+      {
+        "file": "assets/zh-TW-DwrnekuQ.js",
+        "type": "js",
+        "rawBytes": 51372,
+        "servedGzipBytes": 16075,
+        "servedBrotliBytes": 14340,
+        "gzipBytes": 16025,
+        "brotliBytes": 14299
+      }
+    ]
+  },
+  "baseMetrics": {
+    "schemaVersion": 2,
+    "document": {
+      "rawBytes": 58851,
+      "gzipBytes": 13975
+    },
+    "startup": {
+      "js": {
+        "requests": 3,
+        "rawBytes": 288284,
+        "gzipBytes": 91973,
+        "brotliBytes": 81729,
+        "servedGzipBytes": 92539,
+        "servedBrotliBytes": 82354
+      },
+      "css": {
+        "requests": 1,
+        "rawBytes": 227833,
+        "gzipBytes": 39213,
+        "brotliBytes": 33724,
+        "servedGzipBytes": 39421,
+        "servedBrotliBytes": 33953
+      },
+      "assets": [
+        {
+          "file": "assets/control-ui-connection-BhW7_Kan.js",
+          "type": "js",
+          "rawBytes": 287278,
+          "servedGzipBytes": 91897,
+          "servedBrotliBytes": 81763,
+          "gzipBytes": 91343,
+          "brotliBytes": 81188
+        },
+        {
+          "file": "assets/control-ui-connection-ZAyXoKPe.css",
+          "type": "css",
+          "rawBytes": 227833,
+          "servedGzipBytes": 39421,
+          "servedBrotliBytes": 33953,
+          "gzipBytes": 39213,
+          "brotliBytes": 33724
+        },
+        {
+          "file": "assets/index-Cik0eCcN.js",
+          "type": "js",
+          "rawBytes": 189,
+          "servedGzipBytes": 165,
+          "servedBrotliBytes": 163,
+          "gzipBytes": 153,
+          "brotliBytes": 113
+        },
+        {
+          "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+          "type": "js",
+          "rawBytes": 817,
+          "servedGzipBytes": 477,
+          "servedBrotliBytes": 428,
+          "gzipBytes": 477,
+          "brotliBytes": 428
+        }
+      ]
+    },
+    "routeBoot": {
+      "chat": {
+        "js": {
+          "requests": 20,
+          "rawBytes": 4202336,
+          "gzipBytes": 1303389,
+          "brotliBytes": 1112024,
+          "servedGzipBytes": 1310530,
+          "servedBrotliBytes": 1118703
+        },
+        "css": {
+          "requests": 3,
+          "rawBytes": 820626,
+          "gzipBytes": 133753,
+          "brotliBytes": 113711,
+          "servedGzipBytes": 133961,
+          "servedBrotliBytes": 113940
+        },
+        "assets": [
+          {
+            "file": "assets/app-sidebar-online-DbdpVuiP.js",
+            "type": "js",
+            "rawBytes": 6019,
+            "servedGzipBytes": 2421,
+            "servedBrotliBytes": 2163,
+            "gzipBytes": 2407,
+            "brotliBytes": 2147
+          },
+          {
+            "file": "assets/chat-english-2L_btPPf.js",
+            "type": "js",
+            "rawBytes": 3362,
+            "servedGzipBytes": 1343,
+            "servedBrotliBytes": 1161,
+            "gzipBytes": 1328,
+            "brotliBytes": 1136
+          },
+          {
+            "file": "assets/chat-interaction-runtime-Cqnr0OVJ.js",
+            "type": "js",
+            "rawBytes": 46102,
+            "servedGzipBytes": 15044,
+            "servedBrotliBytes": 13908,
+            "gzipBytes": 14731,
+            "brotliBytes": 13561
+          },
+          {
+            "file": "assets/chat-live-events-runtime-BiPTSuhL.js",
+            "type": "js",
+            "rawBytes": 26815,
+            "servedGzipBytes": 8978,
+            "servedBrotliBytes": 8347,
+            "gzipBytes": 8942,
+            "brotliBytes": 8305
+          },
+          {
+            "file": "assets/chat-message-media-runtime-CkH0Yen3.js",
+            "type": "js",
+            "rawBytes": 25641,
+            "servedGzipBytes": 9057,
+            "servedBrotliBytes": 8373,
+            "gzipBytes": 9016,
+            "brotliBytes": 8349
+          },
+          {
+            "file": "assets/chat-route-entry-5_mR__-Z.js",
+            "type": "js",
+            "rawBytes": 425,
+            "servedGzipBytes": 283,
+            "servedBrotliBytes": 247,
+            "gzipBytes": 256,
+            "brotliBytes": 242
+          },
+          {
+            "file": "assets/composer-invocation-menus-CVRJamzD.js",
+            "type": "js",
+            "rawBytes": 23971,
+            "servedGzipBytes": 8053,
+            "servedBrotliBytes": 7348,
+            "gzipBytes": 8028,
+            "brotliBytes": 7339
+          },
+          {
+            "file": "assets/control-ui-boot-chat-styles-oJ9DiwLJ.css",
+            "type": "css",
+            "rawBytes": 244976,
+            "servedGzipBytes": 39758,
+            "servedBrotliBytes": 33913,
+            "gzipBytes": 39758,
+            "brotliBytes": 33913
+          },
+          {
+            "file": "assets/control-ui-boot-chat-styles-tsgjnjfy.js",
+            "type": "js",
+            "rawBytes": 520389,
+            "servedGzipBytes": 163116,
+            "servedBrotliBytes": 139342,
+            "gzipBytes": 162785,
+            "brotliBytes": 138797
+          },
+          {
+            "file": "assets/control-ui-boot-chat-tottgFiB.js",
+            "type": "js",
+            "rawBytes": 925627,
+            "servedGzipBytes": 264106,
+            "servedBrotliBytes": 222276,
+            "gzipBytes": 262712,
+            "brotliBytes": 220960
+          },
+          {
+            "file": "assets/control-ui-boot-shared-C16S-WhG.js",
+            "type": "js",
+            "rawBytes": 1835697,
+            "servedGzipBytes": 568970,
+            "servedBrotliBytes": 472008,
+            "gzipBytes": 565245,
+            "brotliBytes": 468900
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CbBFH4KA.js",
+            "type": "js",
+            "rawBytes": 1790,
+            "servedGzipBytes": 565,
+            "servedBrotliBytes": 455,
+            "gzipBytes": 550,
+            "brotliBytes": 436
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+            "type": "css",
+            "rawBytes": 347817,
+            "servedGzipBytes": 54782,
+            "servedBrotliBytes": 46074,
+            "gzipBytes": 54782,
+            "brotliBytes": 46074
+          },
+          {
+            "file": "assets/control-ui-connection-BhW7_Kan.js",
+            "type": "js",
+            "rawBytes": 287278,
+            "servedGzipBytes": 91897,
+            "servedBrotliBytes": 81763,
+            "gzipBytes": 91343,
+            "brotliBytes": 81188
+          },
+          {
+            "file": "assets/control-ui-connection-ZAyXoKPe.css",
+            "type": "css",
+            "rawBytes": 227833,
+            "servedGzipBytes": 39421,
+            "servedBrotliBytes": 33953,
+            "gzipBytes": 39213,
+            "brotliBytes": 33724
+          },
+          {
+            "file": "assets/deferred-ui-support-MQ8F7hty.js",
+            "type": "js",
+            "rawBytes": 107491,
+            "servedGzipBytes": 35256,
+            "servedBrotliBytes": 31646,
+            "gzipBytes": 34847,
+            "brotliBytes": 31260
+          },
+          {
+            "file": "assets/device-signing-runtime-CjPKdLYy.js",
+            "type": "js",
+            "rawBytes": 7286,
+            "servedGzipBytes": 3612,
+            "servedBrotliBytes": 3250,
+            "gzipBytes": 3597,
+            "brotliBytes": 3236
+          },
+          {
+            "file": "assets/index-Cik0eCcN.js",
+            "type": "js",
+            "rawBytes": 189,
+            "servedGzipBytes": 165,
+            "servedBrotliBytes": 163,
+            "gzipBytes": 153,
+            "brotliBytes": 113
+          },
+          {
+            "file": "assets/markdown-runtime-CIjvL9EH.js",
+            "type": "js",
+            "rawBytes": 215576,
+            "servedGzipBytes": 80657,
+            "servedBrotliBytes": 73065,
+            "gzipBytes": 80505,
+            "brotliBytes": 72941
+          },
+          {
+            "file": "assets/markdown-streaming-runtime-Bb5cr974.js",
+            "type": "js",
+            "rawBytes": 28260,
+            "servedGzipBytes": 10223,
+            "servedBrotliBytes": 9517,
+            "gzipBytes": 10195,
+            "brotliBytes": 9455
+          },
+          {
+            "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+            "type": "js",
+            "rawBytes": 817,
+            "servedGzipBytes": 477,
+            "servedBrotliBytes": 428,
+            "gzipBytes": 477,
+            "brotliBytes": 428
+          },
+          {
+            "file": "assets/solid-runtime-DResk_1u.js",
+            "type": "js",
+            "rawBytes": 113896,
+            "servedGzipBytes": 39151,
+            "servedBrotliBytes": 36541,
+            "gzipBytes": 39134,
+            "brotliBytes": 36553
+          },
+          {
+            "file": "assets/virtual-core-runtime-LhyriIY5.js",
+            "type": "js",
+            "rawBytes": 25705,
+            "servedGzipBytes": 7156,
+            "servedBrotliBytes": 6702,
+            "gzipBytes": 7138,
+            "brotliBytes": 6678
+          }
+        ]
+      },
+      "new": {
+        "js": {
+          "requests": 15,
+          "rawBytes": 2618376,
+          "gzipBytes": 804479,
+          "brotliBytes": 683642,
+          "servedGzipBytes": 809451,
+          "servedBrotliBytes": 687925
+        },
+        "css": {
+          "requests": 3,
+          "rawBytes": 605304,
+          "gzipBytes": 99535,
+          "brotliBytes": 84853,
+          "servedGzipBytes": 99743,
+          "servedBrotliBytes": 85082
+        },
+        "assets": [
+          {
+            "file": "assets/app-sidebar-online-DbdpVuiP.js",
+            "type": "js",
+            "rawBytes": 6019,
+            "servedGzipBytes": 2421,
+            "servedBrotliBytes": 2163,
+            "gzipBytes": 2407,
+            "brotliBytes": 2147
+          },
+          {
+            "file": "assets/chat-english-2L_btPPf.js",
+            "type": "js",
+            "rawBytes": 3362,
+            "servedGzipBytes": 1343,
+            "servedBrotliBytes": 1161,
+            "gzipBytes": 1328,
+            "brotliBytes": 1136
+          },
+          {
+            "file": "assets/composer-invocation-menus-CVRJamzD.js",
+            "type": "js",
+            "rawBytes": 23971,
+            "servedGzipBytes": 8053,
+            "servedBrotliBytes": 7348,
+            "gzipBytes": 8028,
+            "brotliBytes": 7339
+          },
+          {
+            "file": "assets/control-ui-boot-new-BmWKKeQJ.js",
+            "type": "js",
+            "rawBytes": 294989,
+            "servedGzipBytes": 78345,
+            "servedBrotliBytes": 69327,
+            "gzipBytes": 77867,
+            "brotliBytes": 68955
+          },
+          {
+            "file": "assets/control-ui-boot-new-styles--kbMMzvD.js",
+            "type": "js",
+            "rawBytes": 250,
+            "servedGzipBytes": 189,
+            "servedBrotliBytes": 156,
+            "gzipBytes": 173,
+            "brotliBytes": 142
+          },
+          {
+            "file": "assets/control-ui-boot-new-styles-BqRdap7E.css",
+            "type": "css",
+            "rawBytes": 29654,
+            "servedGzipBytes": 5540,
+            "servedBrotliBytes": 5055,
+            "gzipBytes": 5540,
+            "brotliBytes": 5055
+          },
+          {
+            "file": "assets/control-ui-boot-shared-C16S-WhG.js",
+            "type": "js",
+            "rawBytes": 1835697,
+            "servedGzipBytes": 568970,
+            "servedBrotliBytes": 472008,
+            "gzipBytes": 565245,
+            "brotliBytes": 468900
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CbBFH4KA.js",
+            "type": "js",
+            "rawBytes": 1790,
+            "servedGzipBytes": 565,
+            "servedBrotliBytes": 455,
+            "gzipBytes": 550,
+            "brotliBytes": 436
+          },
+          {
+            "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+            "type": "css",
+            "rawBytes": 347817,
+            "servedGzipBytes": 54782,
+            "servedBrotliBytes": 46074,
+            "gzipBytes": 54782,
+            "brotliBytes": 46074
+          },
+          {
+            "file": "assets/control-ui-connection-BhW7_Kan.js",
+            "type": "js",
+            "rawBytes": 287278,
+            "servedGzipBytes": 91897,
+            "servedBrotliBytes": 81763,
+            "gzipBytes": 91343,
+            "brotliBytes": 81188
+          },
+          {
+            "file": "assets/control-ui-connection-ZAyXoKPe.css",
+            "type": "css",
+            "rawBytes": 227833,
+            "servedGzipBytes": 39421,
+            "servedBrotliBytes": 33953,
+            "gzipBytes": 39213,
+            "brotliBytes": 33724
+          },
+          {
+            "file": "assets/device-signing-runtime-CjPKdLYy.js",
+            "type": "js",
+            "rawBytes": 7286,
+            "servedGzipBytes": 3612,
+            "servedBrotliBytes": 3250,
+            "gzipBytes": 3597,
+            "brotliBytes": 3236
+          },
+          {
+            "file": "assets/index-Cik0eCcN.js",
+            "type": "js",
+            "rawBytes": 189,
+            "servedGzipBytes": 165,
+            "servedBrotliBytes": 163,
+            "gzipBytes": 153,
+            "brotliBytes": 113
+          },
+          {
+            "file": "assets/new-session-page-entry-CTrCuapQ.js",
+            "type": "js",
+            "rawBytes": 241,
+            "servedGzipBytes": 210,
+            "servedBrotliBytes": 187,
+            "gzipBytes": 185,
+            "brotliBytes": 156
+          },
+          {
+            "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+            "type": "js",
+            "rawBytes": 817,
+            "servedGzipBytes": 477,
+            "servedBrotliBytes": 428,
+            "gzipBytes": 477,
+            "brotliBytes": 428
+          },
+          {
+            "file": "assets/route-controls-runtime-uU1cKU2K.js",
+            "type": "js",
+            "rawBytes": 34308,
+            "servedGzipBytes": 11271,
+            "servedBrotliBytes": 10368,
+            "gzipBytes": 11251,
+            "brotliBytes": 10355
+          },
+          {
+            "file": "assets/session-placement-startup.runtime-DkWH5Jbq.js",
+            "type": "js",
+            "rawBytes": 8283,
+            "servedGzipBytes": 2782,
+            "servedBrotliBytes": 2607,
+            "gzipBytes": 2741,
+            "brotliBytes": 2558
+          },
+          {
+            "file": "assets/solid-runtime-DResk_1u.js",
+            "type": "js",
+            "rawBytes": 113896,
+            "servedGzipBytes": 39151,
+            "servedBrotliBytes": 36541,
+            "gzipBytes": 39134,
+            "brotliBytes": 36553
+          }
+        ]
+      }
+    },
+    "total": {
+      "js": {
+        "requests": 2702,
+        "rawBytes": 40599001,
+        "gzipBytes": 18127061,
+        "brotliBytes": 17187883,
+        "servedGzipBytes": 18148559,
+        "servedBrotliBytes": 17207899
+      },
+      "css": {
+        "requests": 122,
+        "rawBytes": 1686681,
+        "gzipBytes": 326942,
+        "brotliBytes": 287619,
+        "servedGzipBytes": 327192,
+        "servedBrotliBytes": 287899
+      }
+    },
+    "largest": {
+      "js": {
+        "file": "assets/control-ui-boot-shared-C16S-WhG.js",
+        "type": "js",
+        "rawBytes": 1835697,
+        "servedGzipBytes": 568970,
+        "servedBrotliBytes": 472008,
+        "gzipBytes": 565245,
+        "brotliBytes": 468900
+      },
+      "css": {
+        "file": "assets/control-ui-boot-shared-styles-CwgTCB2w.css",
+        "type": "css",
+        "rawBytes": 347817,
+        "servedGzipBytes": 54782,
+        "servedBrotliBytes": 46074,
+        "gzipBytes": 54782,
+        "brotliBytes": 46074
+      }
+    },
+    "mermaidRenderer": [
+      {
+        "file": "assets/pele.min-Dk-6HECD.js",
+        "type": "js",
+        "rawBytes": 706477,
+        "servedGzipBytes": 247580,
+        "servedBrotliBytes": 207521,
+        "gzipBytes": 247575,
+        "brotliBytes": 207686
+      }
+    ],
+    "localeCatalogs": [
+      {
+        "file": "assets/ar-B-nL402t.js",
+        "type": "js",
+        "rawBytes": 67329,
+        "servedGzipBytes": 17232,
+        "servedBrotliBytes": 15378,
+        "gzipBytes": 17180,
+        "brotliBytes": 15295
+      },
+      {
+        "file": "assets/ca-4Jw0_vnr.js",
+        "type": "js",
+        "rawBytes": 57442,
+        "servedGzipBytes": 16310,
+        "servedBrotliBytes": 15404,
+        "gzipBytes": 16255,
+        "brotliBytes": 15354
+      },
+      {
+        "file": "assets/de-B0gxeelm.js",
+        "type": "js",
+        "rawBytes": 58169,
+        "servedGzipBytes": 16690,
+        "servedBrotliBytes": 15874,
+        "gzipBytes": 16635,
+        "brotliBytes": 15827
+      },
+      {
+        "file": "assets/es-DGBlOc1F.js",
+        "type": "js",
+        "rawBytes": 56606,
+        "servedGzipBytes": 16148,
+        "servedBrotliBytes": 15010,
+        "gzipBytes": 16093,
+        "brotliBytes": 14957
+      },
+      {
+        "file": "assets/fa-DOEi8FFo.js",
+        "type": "js",
+        "rawBytes": 70695,
+        "servedGzipBytes": 17259,
+        "servedBrotliBytes": 15604,
+        "gzipBytes": 17200,
+        "brotliBytes": 15563
+      },
+      {
+        "file": "assets/fr-zZRfSmiI.js",
+        "type": "js",
+        "rawBytes": 58788,
+        "servedGzipBytes": 16526,
+        "servedBrotliBytes": 15560,
+        "gzipBytes": 16479,
+        "brotliBytes": 15519
+      },
+      {
+        "file": "assets/hi-Dwc8CTjN.js",
+        "type": "js",
+        "rawBytes": 89996,
+        "servedGzipBytes": 18656,
+        "servedBrotliBytes": 16694,
+        "gzipBytes": 18574,
+        "brotliBytes": 16647
+      },
+      {
+        "file": "assets/id-J3R1Ne5I.js",
+        "type": "js",
+        "rawBytes": 52838,
+        "servedGzipBytes": 15086,
+        "servedBrotliBytes": 14268,
+        "gzipBytes": 15036,
+        "brotliBytes": 14216
+      },
+      {
+        "file": "assets/it-C8UoP97e.js",
+        "type": "js",
+        "rawBytes": 56462,
+        "servedGzipBytes": 16011,
+        "servedBrotliBytes": 15142,
+        "gzipBytes": 15956,
+        "brotliBytes": 15040
+      },
+      {
+        "file": "assets/ja-JP-CmKt5DZl.js",
+        "type": "js",
+        "rawBytes": 64973,
+        "servedGzipBytes": 17239,
+        "servedBrotliBytes": 15624,
+        "gzipBytes": 17183,
+        "brotliBytes": 15583
+      },
+      {
+        "file": "assets/ko-t65G2EgF.js",
+        "type": "js",
+        "rawBytes": 58322,
+        "servedGzipBytes": 16323,
+        "servedBrotliBytes": 14911,
+        "gzipBytes": 16269,
+        "brotliBytes": 14900
+      },
+      {
+        "file": "assets/locale-config-hints-ar-B2-guHYP.js",
+        "type": "js",
+        "rawBytes": 509330,
+        "servedGzipBytes": 119090,
+        "servedBrotliBytes": 99517,
+        "gzipBytes": 119086,
+        "brotliBytes": 99462
+      },
+      {
+        "file": "assets/locale-config-hints-ca-CWj7Mz4f.js",
+        "type": "js",
+        "rawBytes": 410895,
+        "servedGzipBytes": 110633,
+        "servedBrotliBytes": 96464,
+        "gzipBytes": 110625,
+        "brotliBytes": 96542
+      },
+      {
+        "file": "assets/locale-config-hints-de-CdDO3F9s.js",
+        "type": "js",
+        "rawBytes": 404888,
+        "servedGzipBytes": 115955,
+        "servedBrotliBytes": 101812,
+        "gzipBytes": 115949,
+        "brotliBytes": 101856
+      },
+      {
+        "file": "assets/locale-config-hints-es-CcG8KxbK.js",
+        "type": "js",
+        "rawBytes": 414129,
+        "servedGzipBytes": 110135,
+        "servedBrotliBytes": 95765,
+        "gzipBytes": 110127,
+        "brotliBytes": 95778
+      },
+      {
+        "file": "assets/locale-config-hints-fa-Cs0Gf7eH.js",
+        "type": "js",
+        "rawBytes": 552719,
+        "servedGzipBytes": 120112,
+        "servedBrotliBytes": 99806,
+        "gzipBytes": 120106,
+        "brotliBytes": 99831
+      },
+      {
+        "file": "assets/locale-config-hints-fr-Bgoi0j49.js",
+        "type": "js",
+        "rawBytes": 431186,
+        "servedGzipBytes": 113384,
+        "servedBrotliBytes": 98301,
+        "gzipBytes": 113463,
+        "brotliBytes": 98317
+      },
+      {
+        "file": "assets/locale-config-hints-hi-DzfERWh0.js",
+        "type": "js",
+        "rawBytes": 726525,
+        "servedGzipBytes": 127523,
+        "servedBrotliBytes": 103459,
+        "gzipBytes": 127516,
+        "brotliBytes": 103474
+      },
+      {
+        "file": "assets/locale-config-hints-id-BzFS8ri1.js",
+        "type": "js",
+        "rawBytes": 365195,
+        "servedGzipBytes": 101601,
+        "servedBrotliBytes": 90138,
+        "gzipBytes": 101593,
+        "brotliBytes": 90083
+      },
+      {
+        "file": "assets/locale-config-hints-it-f_MvM3Aq.js",
+        "type": "js",
+        "rawBytes": 407859,
+        "servedGzipBytes": 109844,
+        "servedBrotliBytes": 96508,
+        "gzipBytes": 109836,
+        "brotliBytes": 96478
+      },
+      {
+        "file": "assets/locale-config-hints-ja-JP-Dvtwugke.js",
+        "type": "js",
+        "rawBytes": 464538,
+        "servedGzipBytes": 116390,
+        "servedBrotliBytes": 97281,
+        "gzipBytes": 116384,
+        "brotliBytes": 97324
+      },
+      {
+        "file": "assets/locale-config-hints-ko-BBaHGL37.js",
+        "type": "js",
+        "rawBytes": 402359,
+        "servedGzipBytes": 107730,
+        "servedBrotliBytes": 92446,
+        "gzipBytes": 107723,
+        "brotliBytes": 92403
+      },
+      {
+        "file": "assets/locale-config-hints-nl-oOwFkiLY.js",
+        "type": "js",
+        "rawBytes": 387080,
+        "servedGzipBytes": 109652,
+        "servedBrotliBytes": 97018,
+        "gzipBytes": 109645,
+        "brotliBytes": 96930
+      },
+      {
+        "file": "assets/locale-config-hints-pl-_tpk4Ewy.js",
+        "type": "js",
+        "rawBytes": 405780,
+        "servedGzipBytes": 116333,
+        "servedBrotliBytes": 101270,
+        "gzipBytes": 116326,
+        "brotliBytes": 101293
+      },
+      {
+        "file": "assets/locale-config-hints-pt-BR-8SsZDBko.js",
+        "type": "js",
+        "rawBytes": 395787,
+        "servedGzipBytes": 107554,
+        "servedBrotliBytes": 94306,
+        "gzipBytes": 107544,
+        "brotliBytes": 94222
+      },
+      {
+        "file": "assets/locale-config-hints-ru-BiXL0Jpu.js",
+        "type": "js",
+        "rawBytes": 617474,
+        "servedGzipBytes": 131749,
+        "servedBrotliBytes": 105175,
+        "gzipBytes": 131735,
+        "brotliBytes": 105194
+      },
+      {
+        "file": "assets/locale-config-hints-sv-54IO_1nU.js",
+        "type": "js",
+        "rawBytes": 380419,
+        "servedGzipBytes": 107225,
+        "servedBrotliBytes": 95173,
+        "gzipBytes": 107218,
+        "brotliBytes": 95087
+      },
+      {
+        "file": "assets/locale-config-hints-th-CymlDU4x.js",
+        "type": "js",
+        "rawBytes": 780481,
+        "servedGzipBytes": 127541,
+        "servedBrotliBytes": 102113,
+        "gzipBytes": 127256,
+        "brotliBytes": 102093
+      },
+      {
+        "file": "assets/locale-config-hints-tr-BthkYJxY.js",
+        "type": "js",
+        "rawBytes": 400781,
+        "servedGzipBytes": 111015,
+        "servedBrotliBytes": 97646,
+        "gzipBytes": 111010,
+        "brotliBytes": 97606
+      },
+      {
+        "file": "assets/locale-config-hints-uk-CsJh1oZw.js",
+        "type": "js",
+        "rawBytes": 610377,
+        "servedGzipBytes": 130108,
+        "servedBrotliBytes": 104568,
+        "gzipBytes": 130103,
+        "brotliBytes": 104548
+      },
+      {
+        "file": "assets/locale-config-hints-vi-DMCH7qFR.js",
+        "type": "js",
+        "rawBytes": 454047,
+        "servedGzipBytes": 109016,
+        "servedBrotliBytes": 94503,
+        "gzipBytes": 109009,
+        "brotliBytes": 94509
+      },
+      {
+        "file": "assets/locale-config-hints-zh-CN-BOmFn3ov.js",
+        "type": "js",
+        "rawBytes": 328356,
+        "servedGzipBytes": 104677,
+        "servedBrotliBytes": 90307,
+        "gzipBytes": 104671,
+        "brotliBytes": 90278
+      },
+      {
+        "file": "assets/locale-config-hints-zh-TW-rON0z1Xp.js",
+        "type": "js",
+        "rawBytes": 334565,
+        "servedGzipBytes": 105876,
+        "servedBrotliBytes": 91421,
+        "gzipBytes": 105868,
+        "brotliBytes": 91380
+      },
+      {
+        "file": "assets/nl-B4erasJ6.js",
+        "type": "js",
+        "rawBytes": 55235,
+        "servedGzipBytes": 16025,
+        "servedBrotliBytes": 15215,
+        "gzipBytes": 15976,
+        "brotliBytes": 15156
+      },
+      {
+        "file": "assets/pl-D9W0XtHk.js",
+        "type": "js",
+        "rawBytes": 56531,
+        "servedGzipBytes": 16890,
+        "servedBrotliBytes": 16016,
+        "gzipBytes": 16842,
+        "brotliBytes": 15960
+      },
+      {
+        "file": "assets/pt-BR-DJiOA1c_.js",
+        "type": "js",
+        "rawBytes": 56211,
+        "servedGzipBytes": 15913,
+        "servedBrotliBytes": 14935,
+        "gzipBytes": 15869,
+        "brotliBytes": 14903
+      },
+      {
+        "file": "assets/ru-CVJ9sQub.js",
+        "type": "js",
+        "rawBytes": 77910,
+        "servedGzipBytes": 19033,
+        "servedBrotliBytes": 16836,
+        "gzipBytes": 18959,
+        "brotliBytes": 16785
+      },
+      {
+        "file": "assets/sv-D_5MYV4l.js",
+        "type": "js",
+        "rawBytes": 54765,
+        "servedGzipBytes": 15844,
+        "servedBrotliBytes": 14931,
+        "gzipBytes": 15790,
+        "brotliBytes": 14901
+      },
+      {
+        "file": "assets/th-pb2URKZR.js",
+        "type": "js",
+        "rawBytes": 92852,
+        "servedGzipBytes": 18279,
+        "servedBrotliBytes": 16536,
+        "gzipBytes": 18232,
+        "brotliBytes": 16463
+      },
+      {
+        "file": "assets/tr-BA8YmCq2.js",
+        "type": "js",
+        "rawBytes": 56063,
+        "servedGzipBytes": 16213,
+        "servedBrotliBytes": 15219,
+        "gzipBytes": 16170,
+        "brotliBytes": 15188
+      },
+      {
+        "file": "assets/uk-CjGtFGio.js",
+        "type": "js",
+        "rawBytes": 77032,
+        "servedGzipBytes": 18799,
+        "servedBrotliBytes": 16774,
+        "gzipBytes": 18742,
+        "brotliBytes": 16764
+      },
+      {
+        "file": "assets/vi-BAYtW0W1.js",
+        "type": "js",
+        "rawBytes": 61764,
+        "servedGzipBytes": 16433,
+        "servedBrotliBytes": 15358,
+        "gzipBytes": 16381,
+        "brotliBytes": 15332
+      },
+      {
+        "file": "assets/zh-CN-zfvvtJos.js",
+        "type": "js",
+        "rawBytes": 50161,
+        "servedGzipBytes": 15936,
+        "servedBrotliBytes": 14049,
+        "gzipBytes": 15887,
+        "brotliBytes": 13988
+      },
+      {
+        "file": "assets/zh-TW-CCTc6QyJ.js",
+        "type": "js",
+        "rawBytes": 51372,
+        "servedGzipBytes": 16078,
+        "servedBrotliBytes": 14426,
+        "gzipBytes": 16025,
+        "brotliBytes": 14299
+      }
+    ]
+  },
+  "budgets": {
+    "documentGzipBytes": 14026,
+    "startupJsRequests": 7,
+    "chatBootJsRequests": 20,
+    "newBootJsRequests": 17,
+    "chatBootCssRequests": 3,
+    "newBootCssRequests": 3,
+    "chatBootJsGzipBytes": 1303711,
+    "newBootJsGzipBytes": 805886,
+    "startupCssRequests": 1,
+    "startupJsGzipBytes": 325131,
+    "startupCssGzipBytes": 51200,
+    "largestJsGzipBytes": 567011,
+    "largestCssGzipBytes": 58315,
+    "totalCssGzipBytes": 326575,
+    "totalCssRawBytes": 1682231
+  },
+  "startupBudgetBaseline": {
+    "startupJsGzipBytes": 91561,
+    "reason": "PR #195865 (L310): warm cached-page reveal latch in startup boot owners; lead byte exception",
+    "updatedAt": "2026-11-09"
+  },
+  "startupJsTolerance": 512,
+  "startupJsBuildVariance": 64,
+  "violations": [],
+  "warnings": [
+    "total CSS gzip is 367 B over its fixed ceiling (326942 > 326575 B)",
+    "total CSS raw is 4450 B over its fixed ceiling (1686681 > 1682231 B)"
+  ],
+  "report": "Control UI performance:\n  measurement: generated asset hashes normalized for budgets; served sizes retain sidecars with identity fallback; Node v26.12.1\n  document: 58881 B raw, 14008 B gzip (limit: 14026 B)\n  startup JS: 3 requests, 89.8 KiB gzip (91973 B), 79.8 KiB br normalized; served 92556 B gzip, 82366 B br, 288284 B raw (limits: 7 requests, 90.0 KiB gzip / 92137 B)\n  startup JS gzip vs baseline: 91973 B (baseline 91561 B + growth allowance 512 B = growth limit 92073 B; build-variance allowance 64 B; enforcement limit 92137 B; max committed baseline 325131 B)\n  startup CSS: 1 request, 38.3 KiB gzip (39213 B), 32.9 KiB br normalized; served 39421 B gzip, 33953 B br, 227833 B raw (limits: 1 request, advisory target 46080 B, hard ceiling 51200 B; headroom 11987 B)\n  largest ordinary JS: assets/control-ui-boot-shared-C10Xr6F8.js, 552.0 KiB gzip (limit: 553.7 KiB)\n  largest CSS: assets/control-ui-boot-shared-styles-CwgTCB2w.css, 54782 B gzip (hard ceiling 58315 B; headroom 3533 B)\n  all JS: 2702 requests, 17704.2 KiB gzip (18129113 B), 16786.6 KiB br normalized; served 18151102 B gzip, 17209913 B br, 40605156 B raw\n  all CSS: 122 requests, 319.3 KiB gzip (326942 B), 280.9 KiB br normalized; served 327192 B gzip, 287899 B br, 1686681 B raw (fixed ceilings: 326575 B gzip, 1682231 B raw)\n  route boot accounting: initial-entry assets plus measured immediate dynamic imports; existing initial-entry limits unchanged\n  chat boot JS: 20 requests, 1272.8 KiB gzip (1303396 B), 1085.6 KiB br normalized; served 1310842 B gzip, 1118842 B br, 4202340 B raw (1211423 B beyond initial-entry JS; limits: 20 requests, 1303711 B gzip)\n  chat boot CSS: 3 requests, 130.6 KiB gzip (133753 B), 111.0 KiB br normalized; served 133961 B gzip, 113940 B br, 820626 B raw (2 beyond initial-entry CSS; limit: 3 requests)\n  chat boot JS gzip vs base: 1303389 B -> 1303396 B (+7 B); requests 20 -> 20\n  chat boot CSS gzip vs base: 133753 B -> 133753 B (+0 B); requests 3 -> 3\n  new boot JS: 15 requests, 785.6 KiB gzip (804486 B), 667.3 KiB br normalized; served 809451 B gzip, 688304 B br, 2618380 B raw (712513 B beyond initial-entry JS; limits: 17 requests, 805886 B gzip)\n  new boot CSS: 3 requests, 97.2 KiB gzip (99535 B), 82.9 KiB br normalized; served 99743 B gzip, 85082 B br, 605304 B raw (2 beyond initial-entry CSS; limit: 3 requests)\n  new boot JS gzip vs base: 804479 B -> 804486 B (+7 B); requests 15 -> 15\n  new boot CSS gzip vs base: 99535 B -> 99535 B (+0 B); requests 3 -> 3\n  startup JS gzip vs base: 91973 B -> 91973 B (+0 B); requests 3 -> 3\n  startup CSS gzip vs base: 39213 B -> 39213 B (+0 B; growth up to 1535 B allowed)\n  total CSS gzip vs base: 326942 B -> 326942 B (+0 B; fixed ceiling 326575 B)\n  total CSS raw vs base: 1686681 B -> 1686681 B (+0 B; fixed ceiling 1682231 B)\n  warning: total CSS gzip is 367 B over its fixed ceiling (326942 > 326575 B)\n  warning: total CSS raw is 4450 B over its fixed ceiling (1686681 > 1682231 B)\n  isolated Mermaid JS: 1 request, 241.8 KiB gzip (247575 B), 202.8 KiB br normalized; served 247580 B gzip, 207521 B br, 706477 B raw (limits: 1 deferred asset, 256.0 KiB gzip; forbidden at startup)\n  locale catalog JS: 44 requests, 2813.0 KiB gzip (2880526 B), 2425.1 KiB br normalized; served 2882064 B gzip, 2484799 B br, 11566286 B raw (largest pair: ru, 147.2 KiB gzip; limits: 1 base + 1 config-hint asset per locale, 300.0 KiB combined; forbidden at startup)\n    ar: 136266 B gzip (base 17180 B + config hints 119086 B; cap 307200 B; headroom 170934 B)\n    ca: 126880 B gzip (base 16255 B + config hints 110625 B; cap 307200 B; headroom 180320 B)\n    de: 132584 B gzip (base 16635 B + config hints 115949 B; cap 307200 B; headroom 174616 B)\n    es: 126220 B gzip (base 16093 B + config hints 110127 B; cap 307200 B; headroom 180980 B)\n    fa: 137306 B gzip (base 17200 B + config hints 120106 B; cap 307200 B; headroom 169894 B)\n    fr: 129942 B gzip (base 16479 B + config hints 113463 B; cap 307200 B; headroom 177258 B)\n    hi: 146090 B gzip (base 18574 B + config hints 127516 B; cap 307200 B; headroom 161110 B)\n    id: 116629 B gzip (base 15036 B + config hints 101593 B; cap 307200 B; headroom 190571 B)\n    it: 125792 B gzip (base 15956 B + config hints 109836 B; cap 307200 B; headroom 181408 B)\n    ja-JP: 133567 B gzip (base 17183 B + config hints 116384 B; cap 307200 B; headroom 173633 B)\n    ko: 123992 B gzip (base 16269 B + config hints 107723 B; cap 307200 B; headroom 183208 B)\n    nl: 125621 B gzip (base 15976 B + config hints 109645 B; cap 307200 B; headroom 181579 B)\n    pl: 133168 B gzip (base 16842 B + config hints 116326 B; cap 307200 B; headroom 174032 B)\n    pt-BR: 123413 B gzip (base 15869 B + config hints 107544 B; cap 307200 B; headroom 183787 B)\n    ru: 150694 B gzip (base 18959 B + config hints 131735 B; cap 307200 B; headroom 156506 B)\n    sv: 123008 B gzip (base 15790 B + config hints 107218 B; cap 307200 B; headroom 184192 B)\n    th: 145488 B gzip (base 18232 B + config hints 127256 B; cap 307200 B; headroom 161712 B)\n    tr: 127180 B gzip (base 16170 B + config hints 111010 B; cap 307200 B; headroom 180020 B)\n    uk: 148845 B gzip (base 18742 B + config hints 130103 B; cap 307200 B; headroom 158355 B)\n    vi: 125390 B gzip (base 16381 B + config hints 109009 B; cap 307200 B; headroom 181810 B)\n    zh-CN: 120558 B gzip (base 15887 B + config hints 104671 B; cap 307200 B; headroom 186642 B)\n    zh-TW: 121893 B gzip (base 16025 B + config hints 105868 B; cap 307200 B; headroom 185307 B)"
+}

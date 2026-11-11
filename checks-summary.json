@@ -1,0 +1,132 @@
+{
+  "favorites-latest-focused": {
+    "command": [
+      "$NODE26",
+      "scripts/run-vitest.mjs",
+      "ui/src/pages/chat/components/chat-model-favorites.test.tsx",
+      "ui/src/pages/chat/components/chat-model-picker.test.tsx",
+      "ui/src/pages/chat/components/chat-model-preferences.test.tsx",
+      "ui/src/i18n/lib/english-catalog.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 19.96,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "fdcea929a4d2e1be890c49653a2f48eae0d94e4b252750d17c8f29d59ebb39a5"
+  },
+  "favorites-latest-types": {
+    "command": [
+      "$NODE26",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "tsconfig.ui.json",
+      "--incremental",
+      "--tsBuildInfoFile",
+      "$ARTIFACTS/favorites-ui-types.tsbuildinfo"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 140.152,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "favorites-latest-lint": {
+    "command": [
+      "$NODE26",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "tsconfig.ui.json",
+      "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+      "ui/src/pages/chat/components/chat-model-provider-heading.tsx"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 184.16,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "2291588a1cc44f4fca2833a01e2b423ee44b374cc438ac66b53b02c169185893"
+  },
+  "favorites-latest-format": {
+    "command": [
+      "$NODE26",
+      "scripts/run-format.mts",
+      "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+      "ui/src/pages/chat/components/chat-model-provider-heading.tsx"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 0.549,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "4f6ae278dff75d8a9370fe3c504470224dc51b0f150407b7589c6cd4405a133f"
+  },
+  "favorites-latest-ratchet": {
+    "command": [
+      "$NODE26",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+      "--no-merge-base"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 31.533,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "03aafa3f8478b85ff1f77d40a942df87829c7a1a9d9a67eb488904686b051068"
+  },
+  "favorites-latest-linecap-corrected": {
+    "command": [
+      "$NODE26",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+      "--no-merge-base"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 1.125,
+    "head": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "diffSHA256": "a8c00cad65cac59faf7b66ebea188b916d8fc56d4a485010a6755f42dade184a",
+    "logSHA256": "b0510bd3a32f5c1f747a428de5a1ec1fc002286fac3db8c6cc774880104556e1"
+  },
+  "favorites-latest-build": {
+    "command": [
+      "$NODE26",
+      "scripts/ui.js",
+      "build"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 111.876,
+    "head": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "ec1fc2eae767881d51e4ce1bc36c8f2938a1a97f4cbc98795fc3674abab8e19a"
+  },
+  "favorites-latest-performance": {
+    "command": [
+      "$NODE26",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-control-ui-performance.mts",
+      "--base-dist",
+      "$ARTIFACTS/ui-main/dist/control-ui",
+      "--dist",
+      "$CHECKOUT/dist/control-ui",
+      "--json"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 74.853,
+    "head": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "0715db7f943cbceeb029e82d032a54ae6aa8e2dd8fb8307e28cac02969fd5042"
+  }
+}

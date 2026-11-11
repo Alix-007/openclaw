@@ -1,0 +1,26 @@
+[
+  {
+    "receipt": "favorites-final-native.json",
+    "exit_code": 1,
+    "logSHA256": "89b1588eb93cfcf49ec4495691550f6605e428c86ea21ca84d2b43af536d1bf9",
+    "classification": "Historical local task collector/setup failure, not current product failure and excluded from final acceptance"
+  },
+  {
+    "receipt": "favorites-final-native-v2.json",
+    "exit_code": 1,
+    "logSHA256": "86db2aeef6b55b65f0a79cb7c243a223069db0990e6139ace8c76342501fbd30",
+    "classification": "Historical local task collector/setup failure, not current product failure and excluded from final acceptance"
+  },
+  {
+    "receipt": "favorites-final-native-v3.json",
+    "exit_code": 1,
+    "logSHA256": "3b84467d4c00605d50d4369c7b164076c85d3365f471c9cf9ffec1cd72b8fd9d",
+    "classification": "Historical local task collector/setup failure, not current product failure and excluded from final acceptance"
+  },
+  {
+    "receipt": "favorites-final-native-v4.json",
+    "exit_code": 1,
+    "logSHA256": "91b1e695a5122e6a18610d3e9f2a2862cc5941a6b7d7b85406052a0e7ec80c3d",
+    "classification": "Historical local task collector/setup failure, not current product failure and excluded from final acceptance"
+  }
+]

@@ -1,0 +1,66 @@
+[test] starting test/vitest/vitest.ui.config.ts
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 $CHECKOUT
+
+(node:1841273) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > edits model, reasoning, and speed preferences while sending 420ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > edits model, reasoning, and speed preferences while preparing 52ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > edits model, reasoning, and speed preferences while streaming 46ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retains offline guards during an active response 40ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retains missing backend guards during an active response 42ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retains model switch guards during an active response 51ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retains write denied guards during an active response 37ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retires and restores an unavailable context-window control with its access guard 53ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > refreshes context choices when a replaced session has unchanged model facts 52ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > updates model selection against a retained and replaced catalog 73ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > refreshes provider account labels when the locale changes without new props 2043ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > refreshes a retained session model when the containing frame changes 44ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > refreshes saved and effective speed on a retained target when the frame changes 38ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > keeps known effort visible but disabled until the same connection returns 37ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > does not expose effort without an admitted catalog snapshot: {"hasSnapshot":false,"initialized":false,"status":"offline"} 33ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > does not expose effort without an admitted catalog snapshot: {"hasSnapshot":false,"retired":true,"status":"offline"} 33ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > does not invent reasoning options for an offline non-reasoning model 37ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > retains the Access selection without borrowing entitlement from another runtime or a retired catalog 109ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > keeps a selected saved api_key account ahead of native Claude metadata 36ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-preferences.test.tsx > keeps a selected saved oauth account ahead of native Claude metadata 36ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > offers independent inline hearts on favorite and provider copies with distinct row identities 77ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > returns focus to search when removing the last focused favorite copy 59ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > allows favoriting an unavailable model without enabling selection 71ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > saves and removes a favorite without selecting its model, then restores it on reopen 96ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > identifies same-model favorites by their execution runtime 140ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > keeps provider authentication and settings after favoriting its only model 102ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > shows a conflicting write and reconciles the authoritative favorites 73ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > retires pending favorites on viewer changes 51ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > retires pending favorites on connection changes 50ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > retires pending favorites on agent changes 67ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > restores the heart after a rejected write and retries a failed preference read 128ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > does not write favorites without operator write access 28ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > refreshes an alias viewer when its canonical profile preferences change 50ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > switches agent favorites without changing catalog availability or runtime identity 54ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > keeps authenticated favorite controls bounded and searchable for a thousand models 106ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > restores inline favorite controls after a temporary identity change 33ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-favorites.test.tsx > restores inline favorite controls after a temporary model lock change 39ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > forgets disclosure for removed providers 51ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > keeps the selection in a bounded catalog (default=false, inherited=false) 42ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > keeps the selection in a bounded catalog (default=true, inherited=false) 33ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > keeps the selection in a bounded catalog (default=true, inherited=true) 30ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > drops the All models row once expanded so the rest continue the group (rest disabled=false) 30ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > drops the All models row once expanded so the rest continue the group (rest disabled=true) 30ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > groups Anthropic refs pinned to Claude CLI under Claude CLI 43ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > keeps search live while targets load, then ranks model, target, and account choices 72ms
+ ✓ |ui| ui/src/pages/chat/components/chat-model-picker.test.tsx > keeps unconfigured unknown provider trigger icons unchanged 6ms
+ ✓ |ui| ui/src/i18n/lib/english-catalog.test.ts > registers shared session copy before optional copy while preserving namespace identities 13ms
+ ✓ |ui| ui/src/i18n/lib/english-catalog.test.ts > invalidates public t for lazy kindWebsite fallback without replacing active translations 119ms
+ ✓ |ui| ui/src/i18n/lib/english-catalog.test.ts > invalidates public t for lazy websiteOpen fallback without replacing active translations 1ms
+ ✓ |ui| ui/src/i18n/lib/english-catalog.test.ts > invalidates public t for lazy appLoading fallback without replacing active translations 2ms
+
+ Test Files  4 passed (4)
+      Tests  50 passed (50)
+   Start at  21:55:01
+   Duration  14.49s (tests 39%, worker 33%, environment 15%, transform 7%, import 5%, setup 2%)
+
+[test] passed 1 Vitest shard in 18.78s

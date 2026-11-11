@@ -1,0 +1,39 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (../scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+`output.codeSplitting.groups[1].name` is a function. Set `output.codeSplitting.groups[1].debugName` so the bundler timing report can identify this group.
+(node:1826930) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "$ARTIFACTS/ui-main/packages/media-core/src/mime.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "$ARTIFACTS/ui-main/packages/media-core/src/file-name.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/app/control-ui-environment-presentation.runtime.ts is dynamically imported by src/app/bootstrap-theme.ts, src/app/config.ts but also statically imported by src/app/control-ui-favicon-artwork.runtime.ts, src/app/control-ui-favicon-status.runtime.ts, src/pages/config/view-tab-icon.tsx, dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 1024 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/app/server-prefs-reconcile.ts is dynamically imported by src/app/app-shell-gateway.ts but also statically imported by src/app/bootstrap.ts, src/app/server-prefs-drain.ts, src/app/server-prefs-write-batch.ts, src/pages/config/config-page-preferences.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/components/sidebar-attention.tsx is dynamically imported by src/app/navigation-surface-view.tsx, src/pages/custodian/custodian-page.tsx but also statically imported by src/components/app-sidebar-owner.tsx, src/components/app-sidebar-render.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/components/sidebar-snapshot-data.ts is dynamically imported by src/pages/chat/session-snapshot-database.ts, src/pages/chat/session-snapshot-prewarm.ts but also statically imported by src/components/sidebar-snapshot-model.ts, src/components/sidebar-snapshot.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/components/app-sidebar-session-narration.ts is dynamically imported by src/components/app-sidebar-owner.tsx but also statically imported by src/pages/chat/subagents-panel-data.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/session-snapshot-store.ts is dynamically imported by src/pages/chat/chat-snapshot-prewarm.ts, src/pages/chat/route-loader-short-cache.ts, src/pages/chat/session-snapshot-prewarm.ts but also statically imported by src/components/sidebar-snapshot.ts, src/pages/chat/chat-page-state.ts, src/pages/chat/chat-pane-runtime-view.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/lib/chat/outbox-store-projection.ts is dynamically imported by src/app/app-host.tsx but also statically imported by src/lib/chat/outbox-attention.ts, src/pages/chat/chat-outbox-drain.ts, src/pages/chat/chat-outbox-owner.ts, src/pages/chat/chat-outbox-resume.ts, src/pages/chat/chat-outbox-scopes.ts, ..., dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/lib/chat/composer-draft-store.runtime.ts is dynamically imported by src/lib/chat/outbox-store-projection.ts, src/pages/chat/chat-outbox-recovery.tsx, src/pages/chat/chat-session-companion-comments.ts, src/pages/chat/components/chat-async-question-draft.ts, src/pages/chat/durable-composer-persistence.ts, ... but also statically imported by src/lib/chat/composer-draft-retirement.runtime.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/components/chat-divider.tsx is dynamically imported by src/pages/chat/components/chat-transcript-rows.ts but also statically imported by src/pages/chat/components/chat-notice-view.tsx, src/pages/chat/components/chat-system-events.tsx, src/pages/custodian/custodian-surface.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/components/chat-permission-card.tsx is dynamically imported by src/pages/chat/components/chat-divider.tsx but also statically imported by src/pages/chat/components/chat-message-bubble-tools.tsx, src/pages/chat/components/chat-tool-cards.solid.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/chat-outbox-drain.ts is dynamically imported by src/pages/chat/chat-outbox-resume.ts, src/pages/chat/chat-send-actions.ts but also statically imported by src/pages/chat/chat-send-delivery.runtime.ts, src/pages/chat/chat-send-delivery.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/chat-send-queue-state.ts is dynamically imported by src/pages/chat/initial-turn-handoff-admission.ts but also statically imported by src/pages/chat/chat-send-delivery.runtime.ts, src/pages/chat/chat-send-delivery.ts, src/pages/chat/chat-send-queue-runtime.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/pages/chat/chat-send-actions.ts is dynamically imported by src/pages/chat/initial-turn-handoff-admission.ts but also statically imported by src/pages/chat/chat-live-events.runtime.ts, src/pages/chat/chat-pane-context.ts, src/pages/chat/chat-pane-lifecycle.ts, src/pages/chat/chat-pane-render.ts, src/pages/chat/chat-pane-retained-presentation.ts, ..., dynamic import will not move module into another chunk.
+

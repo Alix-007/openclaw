@@ -1,0 +1,303 @@
+{
+  "reviewKind": "Independent GPT6.1Sol adversarial fallback static review; not official helper result",
+  "reviewedAt": "2026-11-11T13:55:36.018772+00:00",
+  "status": "STATIC_PASS_FINAL_EVIDENCE_PENDING",
+  "verdict": "STATIC_PASS",
+  "finalPass": false,
+  "scope": {
+    "base": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+    "publishedHead": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "observedHead": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "mergePending": true,
+    "stagedTree": null,
+    "binding": "Pending d962 main merge; independent nine exact working SHA256 pins. Panel index still unmerged; no staged-tree/clean-head pass claimed. Locale now tracked in published parent.",
+    "nineFileBindingSHA256": "fd68ce0e9e618a7fa2a7d1b04c91fa1ccbe809ccce64c1e3ba66d1b0419b4c29",
+    "trackedMainScopedDiffSHA256": "c8a7c3c3e7aae4b32a0d3e12c06420ae3ed9edae27add0e21fb3f211dc7cfe3f",
+    "newUntrackedCatalogSHA256": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5",
+    "files": [
+      {
+        "path": "scripts/lib/control-ui-i18n-catalog.ts",
+        "sha256": "6c746fdda93a2de8c681ceca398d9b91dab50d7afc6141d8417a209c803809d5",
+        "workingBlob": "7e2a48290c789e0fa6ad8649155f2eedffbe78f7",
+        "bytes": 32475,
+        "LF": 709,
+        "equalsMain": false,
+        "mainLF": 706
+      },
+      {
+        "path": "ui/src/components/icon-data.ts",
+        "sha256": "b469fd098bf4d709805ad50087937f695b23e64095d09c78045ef8f77a7bcd24",
+        "workingBlob": "71e5883674135ee3033081ca53cc0cf28f30e17d",
+        "bytes": 25834,
+        "LF": 612,
+        "equalsMain": true,
+        "mainLF": 612
+      },
+      {
+        "path": "ui/src/i18n/locales/en-model-controls.ts",
+        "sha256": "77da85ff72ec0cde145f829ba2bf33cc87ec8f365607eb5d83f2c89c0aa2be4a",
+        "workingBlob": "292e55bd594954ba198cc43d99c264f8f84761dd",
+        "bytes": 8335,
+        "LF": 176,
+        "equalsMain": true,
+        "mainLF": 176
+      },
+      {
+        "path": "ui/src/i18n/locales/en-model-favorites.ts",
+        "sha256": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5",
+        "workingBlob": "7e840bc5611b0320f02e398cac48f5252264c6e0",
+        "bytes": 561,
+        "LF": 21,
+        "equalsMain": false,
+        "mainLF": null
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-favorites.ts",
+        "sha256": "b947acc2f9decc82a26fc3c0b432f1e5ccf972c860dde2a0566f6b4f3a7ce9b7",
+        "workingBlob": "c4372e176b71450b5554e70c31465f4c54f5b98e",
+        "bytes": 6315,
+        "LF": 174,
+        "equalsMain": false,
+        "mainLF": null
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker-options.tsx",
+        "sha256": "cb42edff5b6b2ccccb86f3b3f9bb9a1708caa50d18031bd3a96550b49cff2ee2",
+        "workingBlob": "6b6bb25d2593825f9587f11d10caf10bd938073c",
+        "bytes": 14150,
+        "LF": 371,
+        "equalsMain": false,
+        "mainLF": 317
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+        "sha256": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30",
+        "workingBlob": "cdc8c41be5aaa6d81f3baf4b71d6bbef21a44179",
+        "bytes": 28588,
+        "LF": 706,
+        "equalsMain": false,
+        "mainLF": 712
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-provider-heading.tsx",
+        "sha256": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873",
+        "workingBlob": "99ccd615f0e320a90ae3e42049d36aff36a71774",
+        "bytes": 5239,
+        "LF": 140,
+        "equalsMain": false,
+        "mainLF": null
+      },
+      {
+        "path": "ui/src/styles/chat/composer.css",
+        "sha256": "8528c9f61c6bf3201992ef4c6fa5b4e920df5f7f3573e24b444b8338b1aaa10e",
+        "workingBlob": "b7967cd113adf45e12fd4569b12dc56ee46a6d63",
+        "bytes": 96707,
+        "LF": 3868,
+        "equalsMain": true,
+        "mainLF": 3868
+      }
+    ],
+    "nineFileBindingEncoding": "UTF8 concatenation of path + SPACE + SHA256 + LF in listed order"
+  },
+  "assessment": [
+    "Reviewed complete favorites state/picker options/panel/provider-heading owners, native IconButton/CSS/virtualizer/search owner contracts, preference cache/request authority, lazy English registration/composition and exact changes against both integrated main and prior faa1062.",
+    "Main agentRuntimeId is preserved in both pure search keywords and DOM keyword attributes; option runtime identity, selection and disabled/setup policy remain. Favorite row presentation key is prefixed independently of persisted model/runtime membership key; target/account and provider metadata are retained.",
+    "Personal-versus-shared preference semantics are unchanged: existing users.prefs owner, self-profile and agent key, expectedEntries CAS, live connection/generation/profile/method checks, async stale-result suppression and owner event invalidation remain. No new RPC or schema. This is source preservation, not approval of the pending product decision or live Gateway auth proof.",
+    "Focus moves from an activated heart to search before saving disables controls; Enter/Space propagation isolation and separate select/toggle handlers remain. Identity/model lock restoration, current-scope failure/conflict presentation and duplicate-row identity remain.",
+    "New en-model-favorites.ts has exactly five unchanged English strings under chat.modelFavorites. Object.assign(en.chat,catalog.chat) adds only that subtree, preserving core chat/modelControls objects. Synchronous registerEnglishCatalog calls occur at each lazy consumer; canonical host adds import/source hash/composition entry. No host catalog runtime import or foreign locale/memory change.",
+    "icon-data.ts, en-model-controls.ts and composer.css match integrated main byte-for-byte. One shared lazy favorite SVG preserves the original 24-unit path and native IconButton CSS stroke/box/state policy. The corrected wrapper and wrapped button no longer publish the inherited rank custom property; both flex children therefore use ordinary DOM order. Separate target-option rank style remains.",
+    "All nine handoff SHA256/working blobs matched; current tests are byte-identical to prior published head. Each supplied focused/types/lint/format/style/controller/i18n receipt and actual log digest matched; 48tests/4files pass. Generic check diff hashes omit the explicitly pinned new file; this limitation is retained.",
+    "No new tests or guards run by this reviewer. Existing unit/keyboard tests preserve distinct read/write scope/conflict/failure/identity/authorization/runtime/virtualization contracts. Final native layout/performance and exact committed HEAD remain pending.",
+    "Narrow rebind: all other eight SHA256 pins unchanged. Every production ChatModelPickerOption is rendered through panel ModelOption/renderRow; search matches supply ordered layout rows, createModelPickerWindow owns row keys/index/start, and absolute virtual row transforms preserve filtered/unfiltered ordering independently of removed child CSS order. No nonvirtual production caller was found. No remaining P0\u2013P3 static finding.",
+    "Final formatter-only rebind: collapsing the styleless wrapper opening tag to one line is the only changed byte range. Expanding it reproduces prior corrected options SHA25664ea474\u2026. Other eight files unchanged. Resolved P2 history retained; static PASS remains valid. Strengthened collector assertions inspected, not executed or labeled passing.",
+    "Latest d962/b286 merge narrow review STATIC PASS: panel exactly preserves published extracted-heading structure; shared heading receives exactly removal of canonical auth import, direct get(props.provider), and subscription||native circleUser icon. Exact main auth producers/selected saved API/OAuth regressions and native-only/native+API sibling e2e source retained. Prior eight-pin unchanged statement is historical; current incoming main additionally changes en-model-controls, which equals d962 byte-for-byte. Other seven reviewed source pins (including rank-fixed options) remain unchanged. No remaining P0\u2013P3 finding in this merge resolution."
+  ],
+  "gatesInspected": [
+    "favorites-docs-list.json",
+    "favorites-focused-final.json",
+    "favorites-types.json",
+    "favorites-lint.json",
+    "favorites-format-final.json",
+    "favorites-stylelint.json",
+    "favorites-controllers.json",
+    "favorites-i18n-baseline.json",
+    "favorites-i18n-verify.json"
+  ],
+  "pending": [
+    "Root final merged-snapshot focused/types/lint/format/ratchet and required gates; previous receipts remain prior-snapshot evidence",
+    "Root normal clean merge commit/build, current native collector with8directional layout captures and applicable canonical performance binding",
+    "Human personal-versus-shared product decision remains pending; no approval claimed"
+  ],
+  "operations": "Read-only file/Git inspection and requested task-only reports. No product/index/Git/public mutation, test, build, auth, API or delegation.",
+  "staticPass": true,
+  "resolvedFindings": [
+    {
+      "priority": "P2",
+      "title": "Reset wrapped model-button CSS order before using a flex row",
+      "path": "ui/src/pages/chat/components/chat-model-picker-options.tsx",
+      "line": 192,
+      "scenario": "Open any provider with at least two visible options, or search yielding two or more visible results.",
+      "evidence": [
+        "The new wrapper adds native row class; ui/src/styles/layout.css3984 defines display:flex.",
+        "The wrapped selection button retains --chat-model-rank:rank() and composer.css2587 computes order from that variable.",
+        "chat-model-picker-search-view.ts93 assigns rank0,1,2,... for matched rows even with an empty query.",
+        "The sibling IconButton heart has no order declaration and remains0. The flex algorithm places the rank1+ selection button after the heart, whereas the rank0 row retains DOM order.",
+        "Both wrapper and wrapped button currently publish the rank variable; deleting only the button value would still inherit the positive rank from the wrapper."
+      ],
+      "impact": "Heart placement becomes inconsistent: trailing for the first match, leading for later matches, reversing the intended model-then-favorite ordering in LTR and RTL. Existing hitbox-nonoverlap proof can pass while this remains wrong.",
+      "smallestOwnerRepair": "Let virtualizer/search facts own row ordering and ensure both children of the wrapper share ordinary DOM order. Remove obsolete rank CSS variable from both wrapper and wrapped model button, or equivalently scope a reset at that owner; retain data-rank, keys, virtualizer ordering, and separate target-option behavior.",
+      "status": "RESOLVED: root removed both rank CSS properties; exact original bytes reconstructed by restoring precisely those two attributes"
+    }
+  ],
+  "findings": [],
+  "deltaVerification": {
+    "changedFiles": [
+      [
+        "ui/src/pages/chat/components/chat-model-picker-options.tsx",
+        "72a8dcf953afeabad8193c281cb56fd0f50a86fd321b734a46696f7f50d0436f",
+        "64ea474df0f23ba22729640d6dbd23e9facd85306a43577806c9bb0bc76e8cb9"
+      ]
+    ],
+    "restoredOriginalSHA256": "72a8dcf953afeabad8193c281cb56fd0f50a86fd321b734a46696f7f50d0436f",
+    "onlySemanticChange": "Removed --chat-model-rank inline style from wrapper and wrapped model button. Target option style/data rank/search/virtualizer untouched.",
+    "handoffNote": "Original author handoff still contains old options hash at read time; this report independently binds current corrected source."
+  },
+  "formatOnlyRebind": {
+    "previousOptionsSHA256": "64ea474df0f23ba22729640d6dbd23e9facd85306a43577806c9bb0bc76e8cb9",
+    "finalOptionsSHA256": "cb42edff5b6b2ccccb86f3b3f9bb9a1708caa50d18031bd3a96550b49cff2ee2",
+    "restoringMultilineOpeningTagReproducesPreviousSHA256": true,
+    "otherEightHashesUnchanged": true,
+    "semanticChange": false
+  },
+  "nativeCollectorInspection": {
+    "path": "$ARTIFACTS/favorites-proof-current.mjs",
+    "sha256": "40f077a8e5d51715abec8e2cf359bbd048fa0b2c34567017c7ff5029a459bce7",
+    "status": "ASSERTIONS_INSPECTED_NOT_RUN",
+    "controls": "Provider-group GPT mini row, rank>0,1280/400px,LTR/RTL,unfiltered/GPT filter; directional trailing+nonoverlap,8captures. Native and UI build evidence pending."
+  },
+  "reviewHistoryBeforeLatestMerge": {
+    "base": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "publishedHead": "faa1062bccb9546751b74d181e3888359760ec70",
+    "observedHead": "faa1062bccb9546751b74d181e3888359760ec70",
+    "mergePending": true,
+    "stagedTree": null,
+    "binding": "Unmerged index; nine exact working SHA256 pins include untracked locale source. No staged-tree pass claimed.",
+    "nineFileBindingSHA256": "3f01cd2f5a06b8a91fccd5cb636ae2f458fc04764a9ef29a6d936fa8e7f5e461",
+    "trackedMainScopedDiffSHA256": "4611495ecffb1918fc52dc9bef69786d9ac360d2f5c736a86c669cd0513c6f17",
+    "newUntrackedCatalogSHA256": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5",
+    "nineFileBindingEncoding": "UTF8 concatenation of path + SPACE + SHA256 + LF in listed order",
+    "filePins": [
+      {
+        "path": "scripts/lib/control-ui-i18n-catalog.ts",
+        "sha256": "6c746fdda93a2de8c681ceca398d9b91dab50d7afc6141d8417a209c803809d5"
+      },
+      {
+        "path": "ui/src/components/icon-data.ts",
+        "sha256": "b469fd098bf4d709805ad50087937f695b23e64095d09c78045ef8f77a7bcd24"
+      },
+      {
+        "path": "ui/src/i18n/locales/en-model-controls.ts",
+        "sha256": "8c1a81b0b24b926255151134d997e46d70ba64f0c819d4a430385d5150fbdf1c"
+      },
+      {
+        "path": "ui/src/i18n/locales/en-model-favorites.ts",
+        "sha256": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-favorites.ts",
+        "sha256": "b947acc2f9decc82a26fc3c0b432f1e5ccf972c860dde2a0566f6b4f3a7ce9b7"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker-options.tsx",
+        "sha256": "cb42edff5b6b2ccccb86f3b3f9bb9a1708caa50d18031bd3a96550b49cff2ee2"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+        "sha256": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-provider-heading.tsx",
+        "sha256": "1d321cb7f7d92e961a694625928f787d03b4ea743e2958344e3f6fa99a220f38"
+      },
+      {
+        "path": "ui/src/styles/chat/composer.css",
+        "sha256": "8528c9f61c6bf3201992ef4c6fa5b4e920df5f7f3573e24b444b8338b1aaa10e"
+      }
+    ]
+  },
+  "latestMergeResolutionReview": {
+    "at": "2026-11-11T13:55:36.018772+00:00",
+    "main": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+    "publishedParent": "b286afe32ac8ad1aa942de0f9220a1bc069f31fd",
+    "status": "STATIC_PASS_FINAL_EVIDENCE_PENDING",
+    "findingCount": 0,
+    "authoredResolutionPins": [
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker-panel.tsx",
+        "sha256": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-provider-heading.tsx",
+        "sha256": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873"
+      }
+    ],
+    "changesSincePreviousNinePins": [
+      {
+        "path": "ui/src/i18n/locales/en-model-controls.ts",
+        "previousSHA256": "8c1a81b0b24b926255151134d997e46d70ba64f0c819d4a430385d5150fbdf1c",
+        "currentSHA256": "77da85ff72ec0cde145f829ba2bf33cc87ec8f365607eb5d83f2c89c0aa2be4a"
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-provider-heading.tsx",
+        "previousSHA256": "1d321cb7f7d92e961a694625928f787d03b4ea743e2958344e3f6fa99a220f38",
+        "currentSHA256": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873"
+      }
+    ],
+    "panelEqualsPublishedParent": true,
+    "headingEqualsParentPlusExactlyThreeMainEdits": true,
+    "preservedMainOwnersAndTests": [
+      {
+        "path": "ui/src/pages/chat/components/chat-model-picker.test.tsx",
+        "sha256": "0c63cb66fb009f1630a5ba737f52f7e39078d628efa56120a4a0ee6fd4cc8f55",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-preferences.test.tsx",
+        "sha256": "d3f44f838b3559e168c6611109cf1c53085666ebb0f0303e025ac1bb1d1163c0",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/e2e/chat-claude-native-auth.e2e.test.ts",
+        "sha256": "84281a26528efb1a57a2214a00cc13c250a5e424e831d81930dc959327534b94",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/lib/model-auth.ts",
+        "sha256": "08fdcb36ff6132ea16479c3cbee3f51d6c101e5a5539dfe9cfa1677a2489f99f",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/lib/model-provider-auth-label.ts",
+        "sha256": "d456acc8d1ff8f155fb833e56b7f12f110169a20f1f0cd3332b42161bc289fa0",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/pages/chat/components/chat-model-controls.tsx",
+        "sha256": "5f9ba4d06b4b6a6220abf644cbb726f243e8056edaa69b4010ed8e99754b9d96",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/lib/model-auth.test.ts",
+        "sha256": "898753a8d48f96d195c3f5a0e4eec321e86e48bb142ec099220eb561792ec76f",
+        "equalsMain": true
+      },
+      {
+        "path": "ui/src/lib/model-provider-auth-label.test.ts",
+        "sha256": "ade64bfa646618a12329148f214bceca9125044d2a1e1b093a33046bbb809e08",
+        "equalsMain": true
+      }
+    ],
+    "favoritesTestsAndAllocationEqualPublishedParent": true,
+    "decisionSurface": "Direct provider key consumes authoritative providerAuth map. Claude CLI native billing remains separate from direct Anthropic API. Selected saved API/OAuth accounts retain main owner precedence and same metadata/icon semantics. Favorites synthetic group does not invent auth decisions. No new RPC/write/config/identity policy."
+  }
+}

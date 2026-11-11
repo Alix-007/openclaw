@@ -1,0 +1,16 @@
+{
+  "head": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+  "tree": "dfe0460631c42eb257fbdf9a019b5a2ea4e6251e",
+  "main": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+  "files": {
+    "scripts/lib/control-ui-i18n-catalog.ts": "6c746fdda93a2de8c681ceca398d9b91dab50d7afc6141d8417a209c803809d5",
+    "ui/src/components/icon-data.ts": "b469fd098bf4d709805ad50087937f695b23e64095d09c78045ef8f77a7bcd24",
+    "ui/src/i18n/locales/en-model-controls.ts": "77da85ff72ec0cde145f829ba2bf33cc87ec8f365607eb5d83f2c89c0aa2be4a",
+    "ui/src/i18n/locales/en-model-favorites.ts": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5",
+    "ui/src/pages/chat/components/chat-model-favorites.ts": "b947acc2f9decc82a26fc3c0b432f1e5ccf972c860dde2a0566f6b4f3a7ce9b7",
+    "ui/src/pages/chat/components/chat-model-picker-options.tsx": "cb42edff5b6b2ccccb86f3b3f9bb9a1708caa50d18031bd3a96550b49cff2ee2",
+    "ui/src/pages/chat/components/chat-model-picker-panel.tsx": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30",
+    "ui/src/pages/chat/components/chat-model-provider-heading.tsx": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873",
+    "ui/src/styles/chat/composer.css": "8528c9f61c6bf3201992ef4c6fa5b4e920df5f7f3573e24b444b8338b1aaa10e"
+  }
+}

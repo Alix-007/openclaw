@@ -1,0 +1,6 @@
+control-ui-i18n: raw-copy: baseline entries=62
+control-ui-i18n: source: keys=12197 literal_references=10608 template_prefix_references=353
+control-ui-i18n: plugin=memory-core keys=67 locales=22 unused_translations=286
+control-ui-i18n: plugin=nostr keys=61 locales=22 unused_translations=0
+control-ui-i18n: plugin=whatsapp keys=24 locales=22 unused_translations=0
+control-ui-i18n: plugin=workboard keys=381 locales=22 unused_translations=1180

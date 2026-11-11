@@ -1,0 +1,18 @@
+{
+  "command": [
+    "$NODE26",
+    "--import",
+    "./scripts/tsx.mjs",
+    "$ARTIFACTS/favorites-proof-current.mjs",
+    "$CHECKOUT",
+    "$ARTIFACTS",
+    "exact-head",
+    "$STABLE_PACKAGE"
+  ],
+  "cwd": "$CHECKOUT",
+  "exit_code": 0,
+  "elapsed_seconds": 82.954,
+  "head": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+  "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "logSHA256": "09249e9ee78b00db6ace5ac3c95870f4373b0e84bfea60b7ed3303121e9ed297"
+}

@@ -1,0 +1,64 @@
+{
+  "classification": "Prior passing checks retained as historical supporting evidence, not new exact-head executions. Shared composer CSS/icon and en-model-controls equal latest main. Latest focused/types/lint/format/ratchet/linecap rerun on final resolved source. Catalog/favorite English and favorite/picker option pins unchanged from prior inspected snapshot; extracted heading carries exactly three current-main auth edits.",
+  "checks": {
+    "favorites-stylelint": {
+      "command": [
+        "$NODE26",
+        "node_modules/stylelint/bin/stylelint.mjs",
+        "--config",
+        "config/stylelint.config.mjs",
+        "ui/src/styles/chat/composer.css"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 2.438,
+      "head": "faa1062bccb9546751b74d181e3888359760ec70",
+      "diffSHA256": "a680ba1387fdea4b9118c1ed4dd1e77a6c9959379d4cfb11615e1683a1e886f8",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "favorites-controllers": {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-control-ui-controllers.mts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 29.475,
+      "head": "faa1062bccb9546751b74d181e3888359760ec70",
+      "diffSHA256": "a680ba1387fdea4b9118c1ed4dd1e77a6c9959379d4cfb11615e1683a1e886f8",
+      "logSHA256": "01f25eb8e75cb7f36ab70f946eaee971d26d0ff7caf17b56e172865e4f1f0c08"
+    },
+    "favorites-i18n-baseline": {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/control-ui-i18n-verify.ts",
+        "baseline"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 14.989,
+      "head": "faa1062bccb9546751b74d181e3888359760ec70",
+      "diffSHA256": "a680ba1387fdea4b9118c1ed4dd1e77a6c9959379d4cfb11615e1683a1e886f8",
+      "logSHA256": "9ac570b6cbb0167332caa14fba0269d303929c461b714f53409bcac19d5c73e8"
+    },
+    "favorites-i18n-verify": {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/control-ui-i18n-verify.ts",
+        "verify"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 15.25,
+      "head": "faa1062bccb9546751b74d181e3888359760ec70",
+      "diffSHA256": "a680ba1387fdea4b9118c1ed4dd1e77a6c9959379d4cfb11615e1683a1e886f8",
+      "logSHA256": "9ac570b6cbb0167332caa14fba0269d303929c461b714f53409bcac19d5c73e8"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+[control-ui-e2e] retained proof: $ARTIFACTS/favorites-exact-head-j12Rqg
+{"result":"PASS","output":"$ARTIFACTS/favorites-exact-head-j12Rqg","acceptance":"Released 2026.11.1 two-profile preferences survive real candidate startup; actual inline hearts persist/read/remove through canonical storage across two browser contexts and reload with zero model-selection writes."}

@@ -1,0 +1,55 @@
+{
+  "command": [
+    "$NODE26",
+    "scripts/ui.js",
+    "build"
+  ],
+  "cwd": "$ARTIFACTS/ui-main",
+  "head": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+  "exit_code": 0,
+  "exitCodeBinding": "The original wrapper entered build_metadata only inside its result.returncode==0 branch; the preserved traceback occurred in that post-success branch. Actual build log and clean embedded final stamp confirm output.",
+  "elapsed_seconds": null,
+  "timingLimitation": "Wrapper failed before persisting computed outer wall; do not infer it from Vite internal duration",
+  "viteBuildLogLines": [
+    "\u2713 built in 57.19s"
+  ],
+  "sourceBefore": {
+    "package.json": "fcbce0188d5acf176fe6a65c90cafdd85e5b6f4a8283d8080a2e8ef34ed22c4e",
+    "pnpm-lock.yaml": "38ebd93ac7db7584fb2a4dcf7a400512d19ca24c8c530201c90831ee374a694b",
+    "pnpm-workspace.yaml": "1c46e28921f794b8504f29352298536ab28b15e41f6040943ea30738edb90fe3",
+    "ui/package.json": "d0aa7613ba81fcb3777a7a5919a3d77e677b2297188a0ee00b8e0c2111b1c6cc",
+    "scripts/ui.mts": "444e2e47550a482afd53e46d713577f05a89adb0a3e0fef8e8cec0456a9f0e93",
+    "scripts/check-control-ui-performance.mts": "bdf95be61f999d60750ac14f4676c2db1deb5e80715eb0d7e8d1b9759fc4564a",
+    "ui/config/control-ui-asset-compression.ts": "3ca123afdd71016876222dac90db94218ffe847e205076aaac959cdc2635057b",
+    "config/control-ui-startup-budget-baseline.json": "6f6dc865df72f48a97099b2c421cf5a4b49eea5b40c41544d97e20a8a389ff5c"
+  },
+  "sourceAfter": {
+    "package.json": "fcbce0188d5acf176fe6a65c90cafdd85e5b6f4a8283d8080a2e8ef34ed22c4e",
+    "pnpm-lock.yaml": "38ebd93ac7db7584fb2a4dcf7a400512d19ca24c8c530201c90831ee374a694b",
+    "pnpm-workspace.yaml": "1c46e28921f794b8504f29352298536ab28b15e41f6040943ea30738edb90fe3",
+    "ui/package.json": "d0aa7613ba81fcb3777a7a5919a3d77e677b2297188a0ee00b8e0c2111b1c6cc",
+    "scripts/ui.mts": "444e2e47550a482afd53e46d713577f05a89adb0a3e0fef8e8cec0456a9f0e93",
+    "scripts/check-control-ui-performance.mts": "bdf95be61f999d60750ac14f4676c2db1deb5e80715eb0d7e8d1b9759fc4564a",
+    "ui/config/control-ui-asset-compression.ts": "3ca123afdd71016876222dac90db94218ffe847e205076aaac959cdc2635057b",
+    "config/control-ui-startup-budget-baseline.json": "6f6dc865df72f48a97099b2c421cf5a4b49eea5b40c41544d97e20a8a389ff5c"
+  },
+  "statusAfter": "",
+  "sourceUnchanged": true,
+  "stdout": "ui-latest-main-build.log",
+  "stdoutSHA256": "392b7fba15f5bd33193b46e41cf477a8c9c50e804a3d785df0b1ed569366c441",
+  "stderr": "ui-latest-main-build.stderr.log",
+  "stderrSHA256": "ee032410a0261591dec51461d088831dfdaf49d522ff7b8f57c3150ee7dd2ba7",
+  "build": {
+    "version": "2026.11.3",
+    "commit": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+    "builtAt": "2026-11-11T13:49:31.013Z",
+    "release": false,
+    "commitAt": "2026-11-11T13:40:05.000Z",
+    "branch": null,
+    "dirty": false,
+    "buildId": "2026.11.3-d9628f56e8fb-2026-11-11T13-49-31.013Z"
+  },
+  "indexSHA256": "c649802b5746d828140837a3739524b947ef7dae5f58a4ec945eaf18cc4a524e",
+  "dependencies": "Existing task-owned physical frozen copies; manifests unchanged, no reinstall",
+  "receiptRecovery": "Wrapper failed after canonical UI command completed exit0: initial stamp parser looked for wrong script id, then attempted .get on a generated JSON array. Actual index build stamp is now parsed directly. No product failure, build rerun or outer-wall timing reconstruction claimed."
+}

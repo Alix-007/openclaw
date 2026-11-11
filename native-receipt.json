@@ -1,0 +1,1218 @@
+{
+  "at": "2026-11-11T14:04:23.972Z",
+  "stage": "exact-head",
+  "output": "$ARTIFACTS/favorites-exact-head-j12Rqg",
+  "checkout": "$CHECKOUT",
+  "collectorSha256": "ab032ce610c3e0b5779885cf8134ab1c33821b37476f56c1acbe6e4f4d9b389a",
+  "head": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+  "headTree": "dfe0460631c42eb257fbdf9a019b5a2ea4e6251e",
+  "worktreeStatus": "",
+  "comparisonBase": "d9628f56e8fbd82fbcc98f7eb6318909ca72a7a8",
+  "stagedDiffSha256": "236bdd83656afadf924c930285a4fc9b33dda3c7348f92ee65495879fb3585e3",
+  "originalCollectorSha256": "1638d3bda3b915f7b2ce62299b51ebd48c3370465ff89afc486c7660047f6733",
+  "firstAttempt": {
+    "receipt": "favorites-exact-head-djeSpK/receipt.json",
+    "result": "BLOCKED at unsupported fixed15px glyph assumption before actions",
+    "diagnosis": "favorites-canonical-first-native-diagnosis.json",
+    "qualification": "Pinned-main composer-surface.css .agent-chat__composer-footer svg intentionally supplies the inherited16px glyph size/stroke2 later in the cascade; assert actual context owner tokens without product edits"
+  },
+  "canonicalVisualChange": "Current canonical 28px IconButton uses an outlined row glyph and shared pressed background. Existing composer SVG cascade determines the actual context glyph size (16px in this build); not visual parity with historical 18px filled-heart captures.",
+  "source": {
+    "ui/src/pages/chat/components/chat-model-favorites.ts": {
+      "sha256": "b947acc2f9decc82a26fc3c0b432f1e5ccf972c860dde2a0566f6b4f3a7ce9b7",
+      "workingBlob": "c4372e176b71450b5554e70c31465f4c54f5b98e",
+      "indexBlob": "c4372e176b71450b5554e70c31465f4c54f5b98e"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-panel.tsx": {
+      "sha256": "68b7079971f58156734b5cd20466281c654396a61c8f8a0ed12e2ca969bacd30",
+      "workingBlob": "cdc8c41be5aaa6d81f3baf4b71d6bbef21a44179",
+      "indexBlob": "cdc8c41be5aaa6d81f3baf4b71d6bbef21a44179"
+    },
+    "ui/src/pages/chat/components/chat-model-picker-options.tsx": {
+      "sha256": "cb42edff5b6b2ccccb86f3b3f9bb9a1708caa50d18031bd3a96550b49cff2ee2",
+      "workingBlob": "6b6bb25d2593825f9587f11d10caf10bd938073c",
+      "indexBlob": "6b6bb25d2593825f9587f11d10caf10bd938073c"
+    },
+    "ui/src/pages/chat/components/chat-model-provider-heading.tsx": {
+      "sha256": "73b2c1c8ce91e90365d1b82205f568966af9534526596deb37bb353a1a6a9873",
+      "workingBlob": "99ccd615f0e320a90ae3e42049d36aff36a71774",
+      "indexBlob": "99ccd615f0e320a90ae3e42049d36aff36a71774"
+    },
+    "ui/src/i18n/locales/en-model-favorites.ts": {
+      "sha256": "a8b7e582c173ee39736f6c73b110a2e063d1dcb19e8261368fa572f5dfb984e5",
+      "workingBlob": "7e840bc5611b0320f02e398cac48f5252264c6e0",
+      "indexBlob": "7e840bc5611b0320f02e398cac48f5252264c6e0"
+    },
+    "ui/src/i18n/locales/en-model-controls.ts": {
+      "sha256": "77da85ff72ec0cde145f829ba2bf33cc87ec8f365607eb5d83f2c89c0aa2be4a",
+      "workingBlob": "292e55bd594954ba198cc43d99c264f8f84761dd",
+      "indexBlob": "292e55bd594954ba198cc43d99c264f8f84761dd"
+    },
+    "ui/src/components/icon-data.ts": {
+      "sha256": "b469fd098bf4d709805ad50087937f695b23e64095d09c78045ef8f77a7bcd24",
+      "workingBlob": "71e5883674135ee3033081ca53cc0cf28f30e17d",
+      "indexBlob": "71e5883674135ee3033081ca53cc0cf28f30e17d"
+    },
+    "ui/src/styles/chat/composer.css": {
+      "sha256": "8528c9f61c6bf3201992ef4c6fa5b4e920df5f7f3573e24b444b8338b1aaa10e",
+      "workingBlob": "b7967cd113adf45e12fd4569b12dc56ee46a6d63",
+      "indexBlob": "b7967cd113adf45e12fd4569b12dc56ee46a6d63"
+    },
+    "scripts/lib/control-ui-i18n-catalog.ts": {
+      "sha256": "6c746fdda93a2de8c681ceca398d9b91dab50d7afc6141d8417a209c803809d5",
+      "workingBlob": "7e2a48290c789e0fa6ad8649155f2eedffbe78f7",
+      "indexBlob": "7e2a48290c789e0fa6ad8649155f2eedffbe78f7"
+    }
+  },
+  "served": [
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:37107/chat",
+      "status": 200,
+      "sha256": "79c4d98802a86548c14b22b9a0a1e5bd36fe394ba2ec7552eec307cd407f3bc8"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:37107/assets/index-CdSCLEWn.js",
+      "status": 200,
+      "sha256": "2791a78cdc8574d61b9f181e4cf511eb91dd94ed22ff94a4d8742a2acfe759fa"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:37107/chat",
+      "status": 200,
+      "sha256": "79c4d98802a86548c14b22b9a0a1e5bd36fe394ba2ec7552eec307cd407f3bc8"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:37107/assets/index-CdSCLEWn.js",
+      "status": 200,
+      "sha256": "2791a78cdc8574d61b9f181e4cf511eb91dd94ed22ff94a4d8742a2acfe759fa"
+    },
+    {
+      "kind": "built-index",
+      "url": "http://127.0.0.1:37107/chat/main",
+      "status": 200,
+      "sha256": "79c4d98802a86548c14b22b9a0a1e5bd36fe394ba2ec7552eec307cd407f3bc8"
+    },
+    {
+      "kind": "built-entry",
+      "url": "http://127.0.0.1:37107/chat/assets/index-CdSCLEWn.js",
+      "status": 200,
+      "sha256": "2791a78cdc8574d61b9f181e4cf511eb91dd94ed22ff94a4d8742a2acfe759fa"
+    }
+  ],
+  "observations": [
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.theme",
+          "ui.themeMode",
+          "ui.accent",
+          "ui.fontUi",
+          "ui.fontChat",
+          "ui.background",
+          "ui.tabIcon",
+          "ui.railShortcuts",
+          "ui.personalSessionGroups"
+        ]
+      },
+      "entries": {
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {}
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "new-session.migration.v1": true
+        },
+        "expectedEntries": {
+          "new-session.migration.v1": null
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "ui.modelFavorites:main": [
+            "[\"openai/gpt-5-mini\",null]"
+          ]
+        },
+        "expectedEntries": {
+          "ui.modelFavorites:main": null
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.theme",
+          "ui.themeMode",
+          "ui.accent",
+          "ui.fontUi",
+          "ui.fontChat",
+          "ui.background",
+          "ui.tabIcon",
+          "ui.railShortcuts",
+          "ui.personalSessionGroups"
+        ]
+      },
+      "entries": {
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "new-session.migration.v1": true,
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ],
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {},
+      "entries": {
+        "new-session.migration.v1": true,
+        "proof.existingPreference": {
+          "enabled": true,
+          "marker": "created-by-published-stable-2026.11.1"
+        },
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ],
+        "ui.railShortcuts": [
+          "route:usage"
+        ],
+        "ui.theme": "claw",
+        "ui.themeMode": "light"
+      }
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {
+        "ui.modelFavorites:main": [
+          "[\"openai/gpt-5-mini\",null]"
+        ]
+      }
+    },
+    {
+      "method": "users.prefs.set",
+      "params": {
+        "entries": {
+          "ui.modelFavorites:main": null
+        },
+        "expectedEntries": {
+          "ui.modelFavorites:main": [
+            "[\"openai/gpt-5-mini\",null]"
+          ]
+        }
+      },
+      "result": "ok"
+    },
+    {
+      "method": "users.prefs.get",
+      "params": {
+        "keys": [
+          "ui.modelFavorites:main"
+        ]
+      },
+      "entries": {}
+    }
+  ],
+  "controls": {
+    "catalogSize": 1000,
+    "initialMountedRows": 9,
+    "offscreenSearch": true,
+    "scrolledMountedRows": 24,
+    "keyboardFocusRetained": true,
+    "independentFavoriteAndProviderRows": [
+      "chat-model-picker-cl-4-option-favorite%3A%5B%22openai%2Fgpt-5-mini%22%2Cnull%5D",
+      "chat-model-picker-cl-4-option-%5B%22openai%2Fgpt-5-mini%22%2Cnull%5D"
+    ],
+    "layout": [
+      {
+        "width": 1280,
+        "direction": "ltr",
+        "query": "",
+        "row": {
+          "x": 591.375,
+          "y": 647,
+          "width": 426,
+          "height": 40,
+          "right": 1017.375,
+          "bottom": 687
+        },
+        "button": {
+          "x": 591.375,
+          "y": 647,
+          "width": 386,
+          "height": 40,
+          "right": 977.375,
+          "bottom": 687
+        },
+        "heart": {
+          "x": 989.375,
+          "y": 653,
+          "width": 28,
+          "height": 28,
+          "right": 1017.375,
+          "bottom": 681
+        },
+        "name": {
+          "x": 626.375,
+          "y": 656.921875,
+          "width": 312,
+          "height": 20.140625,
+          "right": 938.375,
+          "bottom": 677.0625
+        },
+        "menu": {
+          "x": 584.375,
+          "y": 443,
+          "width": 440,
+          "height": 400,
+          "right": 1024.375,
+          "bottom": 843
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 440,
+        "menuScroll": 440,
+        "heartPressed": "true",
+        "mounted": 12,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 1280,
+        "direction": "ltr",
+        "query": "GPT",
+        "row": {
+          "x": 591.375,
+          "y": 794,
+          "width": 426,
+          "height": 40,
+          "right": 1017.375,
+          "bottom": 834
+        },
+        "button": {
+          "x": 591.375,
+          "y": 794,
+          "width": 386,
+          "height": 40,
+          "right": 977.375,
+          "bottom": 834
+        },
+        "heart": {
+          "x": 989.375,
+          "y": 800,
+          "width": 28,
+          "height": 28,
+          "right": 1017.375,
+          "bottom": 828
+        },
+        "name": {
+          "x": 626.375,
+          "y": 803.921875,
+          "width": 312,
+          "height": 20.140625,
+          "right": 938.375,
+          "bottom": 824.0625
+        },
+        "menu": {
+          "x": 584.375,
+          "y": 658,
+          "width": 440,
+          "height": 185,
+          "right": 1024.375,
+          "bottom": 843
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 440,
+        "menuScroll": 440,
+        "heartPressed": "true",
+        "mounted": 3,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 400,
+        "direction": "ltr",
+        "query": "",
+        "row": {
+          "x": 23,
+          "y": 602,
+          "width": 354,
+          "height": 40,
+          "right": 377,
+          "bottom": 642
+        },
+        "button": {
+          "x": 23,
+          "y": 602,
+          "width": 314,
+          "height": 40,
+          "right": 337,
+          "bottom": 642
+        },
+        "heart": {
+          "x": 349,
+          "y": 608,
+          "width": 28,
+          "height": 28,
+          "right": 377,
+          "bottom": 636
+        },
+        "name": {
+          "x": 58,
+          "y": 611.921875,
+          "width": 240,
+          "height": 20.140625,
+          "right": 298,
+          "bottom": 632.0625
+        },
+        "menu": {
+          "x": 16,
+          "y": 374,
+          "width": 368,
+          "height": 420,
+          "right": 384,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 368,
+        "menuScroll": 368,
+        "heartPressed": "true",
+        "mounted": 12,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 400,
+        "direction": "ltr",
+        "query": "GPT",
+        "row": {
+          "x": 23,
+          "y": 745,
+          "width": 354,
+          "height": 40,
+          "right": 377,
+          "bottom": 785
+        },
+        "button": {
+          "x": 23,
+          "y": 745,
+          "width": 314,
+          "height": 40,
+          "right": 337,
+          "bottom": 785
+        },
+        "heart": {
+          "x": 349,
+          "y": 751,
+          "width": 28,
+          "height": 28,
+          "right": 377,
+          "bottom": 779
+        },
+        "name": {
+          "x": 58,
+          "y": 754.921875,
+          "width": 240,
+          "height": 20.140625,
+          "right": 298,
+          "bottom": 775.0625
+        },
+        "menu": {
+          "x": 16,
+          "y": 609,
+          "width": 368,
+          "height": 185,
+          "right": 384,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 368,
+        "menuScroll": 368,
+        "heartPressed": "true",
+        "mounted": 3,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 400,
+        "direction": "rtl",
+        "query": "",
+        "row": {
+          "x": 23,
+          "y": 602,
+          "width": 354,
+          "height": 40,
+          "right": 377,
+          "bottom": 642
+        },
+        "button": {
+          "x": 63,
+          "y": 602,
+          "width": 314,
+          "height": 40,
+          "right": 377,
+          "bottom": 642
+        },
+        "heart": {
+          "x": 23,
+          "y": 608,
+          "width": 28,
+          "height": 28,
+          "right": 51,
+          "bottom": 636
+        },
+        "name": {
+          "x": 102,
+          "y": 611.921875,
+          "width": 240,
+          "height": 20.140625,
+          "right": 342,
+          "bottom": 632.0625
+        },
+        "menu": {
+          "x": 16,
+          "y": 374,
+          "width": 368,
+          "height": 420,
+          "right": 384,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 368,
+        "menuScroll": 368,
+        "heartPressed": "true",
+        "mounted": 12,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 400,
+        "direction": "rtl",
+        "query": "GPT",
+        "row": {
+          "x": 23,
+          "y": 745,
+          "width": 354,
+          "height": 40,
+          "right": 377,
+          "bottom": 785
+        },
+        "button": {
+          "x": 63,
+          "y": 745,
+          "width": 314,
+          "height": 40,
+          "right": 377,
+          "bottom": 785
+        },
+        "heart": {
+          "x": 23,
+          "y": 751,
+          "width": 28,
+          "height": 28,
+          "right": 51,
+          "bottom": 779
+        },
+        "name": {
+          "x": 102,
+          "y": 754.921875,
+          "width": 240,
+          "height": 20.140625,
+          "right": 342,
+          "bottom": 775.0625
+        },
+        "menu": {
+          "x": 16,
+          "y": 609,
+          "width": 368,
+          "height": 185,
+          "right": 384,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 368,
+        "menuScroll": 368,
+        "heartPressed": "true",
+        "mounted": 3,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 1280,
+        "direction": "rtl",
+        "query": "",
+        "row": {
+          "x": 108,
+          "y": 598,
+          "width": 426,
+          "height": 40,
+          "right": 534,
+          "bottom": 638
+        },
+        "button": {
+          "x": 148,
+          "y": 598,
+          "width": 386,
+          "height": 40,
+          "right": 534,
+          "bottom": 638
+        },
+        "heart": {
+          "x": 108,
+          "y": 604,
+          "width": 28,
+          "height": 28,
+          "right": 136,
+          "bottom": 632
+        },
+        "name": {
+          "x": 187,
+          "y": 607.921875,
+          "width": 312,
+          "height": 20.140625,
+          "right": 499,
+          "bottom": 628.0625
+        },
+        "menu": {
+          "x": 101,
+          "y": 394,
+          "width": 440,
+          "height": 400,
+          "right": 541,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 440,
+        "menuScroll": 440,
+        "heartPressed": "true",
+        "mounted": 12,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      },
+      {
+        "width": 1280,
+        "direction": "rtl",
+        "query": "GPT",
+        "row": {
+          "x": 108,
+          "y": 745,
+          "width": 426,
+          "height": 40,
+          "right": 534,
+          "bottom": 785
+        },
+        "button": {
+          "x": 148,
+          "y": 745,
+          "width": 386,
+          "height": 40,
+          "right": 534,
+          "bottom": 785
+        },
+        "heart": {
+          "x": 108,
+          "y": 751,
+          "width": 28,
+          "height": 28,
+          "right": 136,
+          "bottom": 779
+        },
+        "name": {
+          "x": 187,
+          "y": 754.921875,
+          "width": 312,
+          "height": 20.140625,
+          "right": 499,
+          "bottom": 775.0625
+        },
+        "menu": {
+          "x": 101,
+          "y": 609,
+          "width": 440,
+          "height": 185,
+          "right": 541,
+          "bottom": 794
+        },
+        "rank": 2,
+        "clippedLabel": true,
+        "menuClient": 440,
+        "menuScroll": 440,
+        "heartPressed": "true",
+        "mounted": 3,
+        "directionBoundary": "Native document dir fixture, CSS layout only; not a translated-locale selection claim"
+      }
+    ],
+    "secondBrowserReadback": true,
+    "reloadSpaceAndRemoval": true,
+    "noModelSelection": true
+  },
+  "errors": [],
+  "limitations": [
+    "Synthetic Gateway transport with real browser UI and real canonical preference workers; not a live authenticated Gateway authorization test.",
+    "Personal-versus-shared product scope remains pending maintainer acceptance.",
+    "Chromium only; native WebKit unavailable because required ICU 74 libraries are absent."
+  ],
+  "build": {
+    "version": "2026.11.3",
+    "commit": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+    "builtAt": "2026-11-11T14:01:06.522Z",
+    "release": false,
+    "commitAt": "2026-11-11T13:59:48.000Z",
+    "branch": "alix/maintain-favorites-20261107",
+    "dirty": false,
+    "buildId": "2026.11.3-9cb5530928b7-2026-11-11T14-01-06.522Z",
+    "indexSha256": "79c4d98802a86548c14b22b9a0a1e5bd36fe394ba2ec7552eec307cd407f3bc8",
+    "entryAssets": [
+      {
+        "path": "/assets/index-CdSCLEWn.js",
+        "sha256": "2791a78cdc8574d61b9f181e4cf511eb91dd94ed22ff94a4d8742a2acfe759fa"
+      }
+    ],
+    "mode": "Existing normal production UI build served unchanged; no rebuild or identity rewrite"
+  },
+  "stableAcquisition": {
+    "path": "$TASK_RESOURCE",
+    "version": "2026.11.1",
+    "tarball": "https://registry.npmjs.org/openclaw/-/openclaw-2026.11.1.tgz",
+    "integrity": "sha512-2pSbt/taBKM/ofPXsiOEmVefgUdVHYRZOmcWNDyx67WUfeGFXqtfqLvtwYOiH4NcLolDSLMUgsno2oYhTVXptw==",
+    "sha256": "611282534d576e12f10b0ac5a1ac0d2825aac360637e92815a56eb71fb5a0301",
+    "bytes": 112927779
+  },
+  "upgrade": {
+    "version": "2026.11.1",
+    "profileModule": "dist/user-profiles-8MUD1kjG.mjs",
+    "preferenceModule": "dist/user-preferences-CGgtRmWh.mjs",
+    "profileId": "562bcb85-0160-40f4-9c3b-6cea7fa242df",
+    "otherProfileId": "0c8ffbc8-650a-4b37-8d2c-6c75a089e2a3",
+    "entries": {
+      "ui.theme": "claw",
+      "ui.themeMode": "light",
+      "ui.railShortcuts": [
+        "route:usage"
+      ],
+      "proof.existingPreference": {
+        "enabled": true,
+        "marker": "created-by-published-stable-2026.11.1"
+      }
+    },
+    "otherEntries": {
+      "ui.theme": "claw",
+      "proof.otherProfile": "untouched"
+    },
+    "writerExited": true,
+    "package": "$STABLE_PACKAGE",
+    "seedSha256": "b8545c626564582496f1a9be8e936dd3d078122dea766eda99d83e331531b270",
+    "startupOwner": "prepareStartupClientCredentials: production backed-up Doctor maintenance, no manual schema writes",
+    "currentOwnerReadback": "PASS: both released profiles and every original preference remain exact",
+    "afterRemoval": {
+      "new-session.migration.v1": true,
+      "proof.existingPreference": {
+        "enabled": true,
+        "marker": "created-by-published-stable-2026.11.1"
+      },
+      "ui.railShortcuts": [
+        "route:usage"
+      ],
+      "ui.theme": "claw",
+      "ui.themeMode": "light"
+    },
+    "documentedAddedMetadata": {
+      "new-session.migration.v1": true
+    },
+    "otherProfileAfter": {
+      "proof.otherProfile": "untouched",
+      "ui.theme": "claw"
+    },
+    "result": "PASS: both released profiles preserved, only the exact current-owner new-session migration marker added"
+  },
+  "storage": {
+    "stateDir": "$ISOLATED_STATEDIR",
+    "home": "$ISOLATED_HOME",
+    "syntheticProfiles": [
+      "562bcb85-0160-40f4-9c3b-6cea7fa242df",
+      "0c8ffbc8-650a-4b37-8d2c-6c75a089e2a3"
+    ]
+  },
+  "canonicalOwner": {
+    "file": "src/state/user-preferences.ts",
+    "sha256": "805b79f254dde3fc1ab10efa5bcd3e6f1713d9d6cc76e1c58498a38a5be19cbb",
+    "read": "getCanonicalUserPreferences",
+    "write": "setCanonicalUserPreferences",
+    "boundary": "Actual candidate worker-backed canonical preference owner; adapter substitutes Gateway transport only"
+  },
+  "serving": {
+    "baseUrl": "http://127.0.0.1:37107/",
+    "mode": "Normal built ControlUiE2e preview server; existing dist/control-ui, real browser, synthetic Gateway transport",
+    "browserBuildInfo": {
+      "version": "2026.11.3",
+      "commit": "9cb5530928b732fa72f65015bd7187fb26566bd4",
+      "builtAt": "2026-11-11T14:01:06.522Z",
+      "release": false,
+      "commitAt": "2026-11-11T13:59:48.000Z",
+      "branch": "alix/maintain-favorites-20261107",
+      "dirty": false,
+      "buildId": "2026.11.3-9cb5530928b7-2026-11-11T14-01-06.522Z"
+    }
+  },
+  "browser": {
+    "engine": "Chromium",
+    "version": "152.0.7977.64"
+  },
+  "captures": [
+    {
+      "file": "before.png",
+      "sha256": "03339ed4149bfd359f9cb6527491db74781879e3396e40bcfd0b4a4a73e31c59",
+      "bounds": [
+        {
+          "x": 584.375,
+          "y": 443,
+          "width": 440,
+          "height": 400
+        },
+        {
+          "x": 989.375,
+          "y": 577,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "false",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(94, 94, 94)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "after.png",
+      "sha256": "a93a00e388e8f23b4c6a6b9cd9f881381349402b86db41c1fb2ea08ea63bfd71",
+      "bounds": [
+        {
+          "x": 584.375,
+          "y": 443,
+          "width": 440,
+          "height": 400
+        },
+        {
+          "x": 989.375,
+          "y": 535,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-1280-ltr.png",
+      "sha256": "41354028f92935cd8a5a20ef081947dfc73c844a65819ee6e361ebe9a85caf6c",
+      "bounds": [
+        {
+          "x": 584.375,
+          "y": 443,
+          "width": 440,
+          "height": 400
+        },
+        {
+          "x": 989.375,
+          "y": 535,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-1280-ltr-filtered.png",
+      "sha256": "b41ea39c2a7bb15bd90b9f8f039070e6c90738225d643c97497b4d203444709f",
+      "bounds": [
+        {
+          "x": 584.375,
+          "y": 658,
+          "width": 440,
+          "height": 185
+        },
+        {
+          "x": 989.375,
+          "y": 716,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-400-ltr.png",
+      "sha256": "b9f854f8bec141a349c4ad2a9c79f8943e8067dae3e1789fad61d4d8bd2339b7",
+      "bounds": [
+        {
+          "x": 16,
+          "y": 374,
+          "width": 368,
+          "height": 420
+        },
+        {
+          "x": 349,
+          "y": 478,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "18px",
+        "glyphHeight": "18px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "18px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-400-ltr-filtered.png",
+      "sha256": "08b27c257a4158dc5c97caa6078de3e845e10aed28551eb8f70b3459c9f466e2",
+      "bounds": [
+        {
+          "x": 16,
+          "y": 609,
+          "width": 368,
+          "height": 185
+        },
+        {
+          "x": 349,
+          "y": 667,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "18px",
+        "glyphHeight": "18px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "18px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-400-rtl.png",
+      "sha256": "bd7bf56a10fe347c69d0dcfc9b3bd08312c32166cff986bb0f900ef4295b7f17",
+      "bounds": [
+        {
+          "x": 16,
+          "y": 374,
+          "width": 368,
+          "height": 420
+        },
+        {
+          "x": 23,
+          "y": 478,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "18px",
+        "glyphHeight": "18px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "18px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-400-rtl-filtered.png",
+      "sha256": "56e0afdf0466b3284080a145469d801c12be364837fcae0829bf9c5bf2a8a075",
+      "bounds": [
+        {
+          "x": 16,
+          "y": 609,
+          "width": 368,
+          "height": 185
+        },
+        {
+          "x": 23,
+          "y": 667,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "18px",
+        "glyphHeight": "18px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "18px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-1280-rtl.png",
+      "sha256": "98aa6145a35ebc7cf6d0ad0aeacae34dedb16da6e39dd25f978d818d7be40a7f",
+      "bounds": [
+        {
+          "x": 101,
+          "y": 394,
+          "width": 440,
+          "height": 400
+        },
+        {
+          "x": 108,
+          "y": 486,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    },
+    {
+      "file": "layout-1280-rtl-filtered.png",
+      "sha256": "5315b14651a23797f1b711d5ec91430988efd0b5da7d4564b35a8d2e0b778091",
+      "bounds": [
+        {
+          "x": 101,
+          "y": 609,
+          "width": 440,
+          "height": 185
+        },
+        {
+          "x": 108,
+          "y": 667,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "canonicalStyle": {
+        "owner": "oc-icon-button oc-icon-button--28 oc-icon-button--row-glyph chat-controls__model-favorite",
+        "pressed": "true",
+        "disabled": false,
+        "width": "28px",
+        "height": "28px",
+        "glyphWidth": "16px",
+        "glyphHeight": "16px",
+        "glyphFill": "none",
+        "glyphStrokeWidth": "2px",
+        "composerGlyphSize": "16px",
+        "composerGlyphStroke": "2",
+        "rowGlyphSize": "15px",
+        "background": "color(srgb 0.207843 0.207843 0.207843 / 0.06)",
+        "color": "rgb(32, 32, 32)"
+      },
+      "method": "Standalone Playwright native viewport capture after visible semantic controls, settled fonts/two-frame geometry; no fake Vitest context"
+    }
+  ],
+  "favoriteReadback": {
+    "new-session.migration.v1": true,
+    "proof.existingPreference": {
+      "enabled": true,
+      "marker": "created-by-published-stable-2026.11.1"
+    },
+    "ui.modelFavorites:main": [
+      "[\"openai/gpt-5-mini\",null]"
+    ],
+    "ui.railShortcuts": [
+      "route:usage"
+    ],
+    "ui.theme": "claw",
+    "ui.themeMode": "light"
+  },
+  "result": "PASS",
+  "acceptance": "Released 2026.11.1 two-profile preferences survive real candidate startup; actual inline hearts persist/read/remove through canonical storage across two browser contexts and reload with zero model-selection writes.",
+  "cleanup": "Closed both isolated browsers/source server and canonical workers; removed private state. No production service, account configuration, model call, session message or external channel touched.",
+  "elapsedMs": 80561
+}

@@ -1,0 +1,19 @@
+Control UI createEffect ratchet OK: 77 files, 86 grandfathered createEffect calls.
+Control UI untrack ratchet OK: 23 files, 26 grandfathered untrack calls.
+Control UI addEventListener ratchet OK: 14 files, 15 grandfathered addEventListener calls.
+Control UI querySelector ratchet OK: 23 files, 47 grandfathered querySelector calls.
+Control UI flush ratchet OK: 0 files, 0 grandfathered flush calls.
+Control UI getOwner ratchet OK: 5 files, 6 grandfathered getOwner calls.
+Control UI runWithOwner ratchet OK: 9 files, 10 grandfathered runWithOwner calls.
+Control UI onCleanup ratchet OK: 44 files, 50 grandfathered onCleanup calls.
+Control UI manualImport ratchet OK: 49 files, 56 grandfathered manualImport calls.
+Plugin UI createEffect ratchet OK: 10 files, 10 grandfathered createEffect calls.
+Plugin UI untrack ratchet OK: 2 files, 2 grandfathered untrack calls.
+Plugin UI addEventListener ratchet OK: 4 files, 13 grandfathered addEventListener calls.
+Plugin UI querySelector ratchet OK: 0 files, 0 grandfathered querySelector calls.
+Plugin UI flush ratchet OK: 0 files, 0 grandfathered flush calls.
+Plugin UI getOwner ratchet OK: 1 files, 1 grandfathered getOwner calls.
+Plugin UI runWithOwner ratchet OK: 1 files, 1 grandfathered runWithOwner calls.
+Plugin UI onCleanup ratchet OK: 3 files, 3 grandfathered onCleanup calls.
+Plugin UI manualImport ratchet OK: 1 files, 1 grandfathered manualImport calls.
+Control UI controller guard OK.
