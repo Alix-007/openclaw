@@ -1,0 +1,42 @@
+{
+  "review": "Independent adversarial fallback source review; not official autoreview",
+  "verdict": "PASS_SOURCE_REVIEW",
+  "base": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "reviewedAt": "2026-11-11T18:00:17.921215+00:00",
+  "diffSHA256": "16bd72d16e588b387aaaff7f9b5f3645822a020941d36e253c7667b55ad2cb16",
+  "diffCommand": [
+    "git",
+    "diff",
+    "--full-index",
+    "c324818cbf86074f34578d07f381b0d2835955a1"
+  ],
+  "fileSHA256": {
+    "src/cli/secrets-cli.ts": "2f478994945e5c8089467ca01685daaf275efc8d31dde63557f4e70e3bf7d462",
+    "src/cli/secrets-cli-output.ts": "ecc00f4c004dd01426798169a59174999005d1af265d29c9deaeb5d016d6993f",
+    "src/cli/secrets-cli.test.ts": "3ab94c03320530305095392a595d966514f2d300181b17e83c3afe588a536e54",
+    "config/test-lines-allocations/secrets-audit-cancellation.txt": "90e191cdeebd321668bbbfee1fae0cb61429f898dd11060901fa8b787ac41418"
+  },
+  "findings": [],
+  "assessments": {
+    "completeOwnerCut": "Audit captures existing root async-work signal once. Private formatter checks before admission, before JSON success and before failure rendering; outer action checks before human summary/exit and suppresses cancellation rejection. Existing CommandProcessScope bridges cancellation into canonical provider runner, rejects later spawn admission and joins retained child/cleanup settlement.",
+    "callersAndWriters": "Five formatter call sites: reload/audit/configure/apply/secret-store wrapper. Only audit passes new optional signal. Other calls, defaults, writer receipts and resolver policy unchanged. No public resolver/API expansion.",
+    "simplification": "Uses existing process/root lifecycle owners; no new scope implementation/manager/timer/global policy/module. JSON fence belongs in formatter, human fence at action output boundary.",
+    "tests": "Six human/JSON pre-abort/late-success/late-failure cells, real child cancellation under mocked audit callback, admitted apply result under closing read scope, audit row in existing ordinary JSON-error table. Distinct boundaries; no production test seam. Net83LF matches allocation; shared baseline unchanged. Added units not separately run against BASE production.",
+    "proofFidelity": "BASE normal built CLI executes actual synthetic SecretRef provider: success/error/no-allow-exec controls pass; pending SIGINT/SIGTERM audit exits by supervisor SIGKILL around2.05s with provider alive; collector cleanup follows observation. Raw terminal/provider/config hashes and frozen collector/checker pins independently verified.",
+    "checkEvidence": "Existing receipt/log hashes checked, no reruns:75tests/3files246.273s, targeted type135.2s, format/mocks/linecap/test-ratchet pass. Diff check passed. Applicable root/maintainer/testing/test-audit/pr-simplify instructions verified identical to previously read Cron guidance."
+  },
+  "materialUnverified": [
+    "Candidate clean commit/build/native GREEN pending; source verdict is not executable acceptance.",
+    "Final lint was preparing canonical SDK boundary dependencies; no completed final lint result claimed.",
+    "Native checker prohibits status/ok/audit-summary/failure documents after interruption, not arbitrary-byte output; unit tests also guard JSON/human late publication.",
+    "Collector observes direct synthetic provider PID survival/cleanup, not arbitrary provider grandchildren or every process-group descendant.",
+    "Native cells cover JSON/Linux/local synthetic executable only, not external providers/credentials or Windows; human late output and admitted writer reporting have source/unit coverage.",
+    "Process scope closes provider admission but does not make all file/database scan awaits cancellation-aware; early local preparation responsiveness is not established."
+  ],
+  "proofSHA256": {
+    "collector": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+    "checker": "02360d4737b67e8dd2f836a27232a899d0bdb555964421359ef927f72bafd329",
+    "BASEreceipt": "81e8cb67488c5033f87e316ccc6a999aae93516df5d184aeb2a8a450c0597491"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "atUnix": 1794420887.6188326,
+  "rows": [
+    {
+      "case": "success",
+      "providerPids": [
+        2526621
+      ],
+      "providerGoneAtFinalReadback": true,
+      "configStillUnchanged": true,
+      "eventsSHA256": "0ce619af186e236c68a0fdbe3d2e546b8d314e759bef1219376de0483cc37820"
+    },
+    {
+      "case": "error",
+      "providerPids": [
+        2526861
+      ],
+      "providerGoneAtFinalReadback": true,
+      "configStillUnchanged": true,
+      "eventsSHA256": "67f43840037f749bc6ce841209f9adb9c1614358500148233b0a160909bfde99"
+    },
+    {
+      "case": "no-allow-exec",
+      "providerPids": [],
+      "providerGoneAtFinalReadback": true,
+      "configStillUnchanged": true,
+      "eventsSHA256": null
+    },
+    {
+      "case": "pending-int",
+      "providerPids": [
+        2527358
+      ],
+      "providerGoneAtFinalReadback": true,
+      "configStillUnchanged": true,
+      "eventsSHA256": "43528506c07d9ae87504ce76ca054c1571332a72a2126c2df7904bf67e9b76f5"
+    },
+    {
+      "case": "pending-term",
+      "providerPids": [
+        2527601
+      ],
+      "providerGoneAtFinalReadback": true,
+      "configStillUnchanged": true,
+      "eventsSHA256": "17588710a1cab5b1ba0b516e255707d0a0533755fa24b1a6169be85dedd975bc"
+    }
+  ],
+  "note": "Separate final observation only; no collector-owned provider termination occurred in HEAD cases."
+}

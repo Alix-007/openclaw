@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "status": "unresolved",
+  "resolution": {
+    "refsChecked": 1,
+    "skippedExecRefs": 0,
+    "resolvabilityComplete": true
+  },
+  "filesScanned": [
+    "<HEAD_OUTPUT>/error/state/openclaw.json"
+  ],
+  "summary": {
+    "plaintextCount": 0,
+    "unresolvedRefCount": 1,
+    "shadowedRefCount": 0,
+    "storeResidueCount": 0,
+    "legacyResidueCount": 0
+  },
+  "findings": [
+    {
+      "code": "REF_UNRESOLVED",
+      "severity": "error",
+      "file": "<HEAD_OUTPUT>/error/state/openclaw.json",
+      "jsonPath": "models.providers.openai.apiKey",
+      "message": "Failed to resolve exec:fixture:synthetic (Exec provider \"fixture\" exited with code 7.).",
+      "provider": "openai"
+    }
+  ]
+}
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m

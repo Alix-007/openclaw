@@ -1,0 +1,49 @@
+{
+  "atUnix": 1794418533.5624297,
+  "rows": [
+    {
+      "case": "success",
+      "eventsSHA256": "bab9590e1ef4fc41697fad35f588dd9fdaf3194157cdf2957e24271db28b91fb",
+      "providerPids": [
+        2401886
+      ],
+      "providerGoneAfterCollectorCleanup": true,
+      "configStillUnchanged": true
+    },
+    {
+      "case": "error",
+      "eventsSHA256": "a5ade31f03f4afebfe80bb283ff9efbc029cecb5ded4ebc33e6d09cfd14b9b16",
+      "providerPids": [
+        2402277
+      ],
+      "providerGoneAfterCollectorCleanup": true,
+      "configStillUnchanged": true
+    },
+    {
+      "case": "no-allow-exec",
+      "eventsSHA256": null,
+      "providerPids": [],
+      "providerGoneAfterCollectorCleanup": true,
+      "configStillUnchanged": true
+    },
+    {
+      "case": "pending-int",
+      "eventsSHA256": "ef1d7502fa7025ea35f35f16b163d866025669505fb2c78db7e75190fd3e8613",
+      "providerPids": [
+        2402977
+      ],
+      "providerGoneAfterCollectorCleanup": true,
+      "configStillUnchanged": true
+    },
+    {
+      "case": "pending-term",
+      "eventsSHA256": "99f1018f3ad8c677c4715680e1caf38194b339af1dff81137b617a32c9c01db2",
+      "providerPids": [
+        2403308
+      ],
+      "providerGoneAfterCollectorCleanup": true,
+      "configStillUnchanged": true
+    }
+  ],
+  "note": "Readback after, separate from raw exit-time observation; pending provider SIGTERM was collector cleanup after launcher SIGKILL, not product cancellation."
+}

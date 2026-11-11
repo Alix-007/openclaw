@@ -1,0 +1,100 @@
+{
+  "review": "Independent adversarial fallback source review; not official autoreview",
+  "verdict": "PASS",
+  "base": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+  "reviewedAt": "2026-11-11T18:16:51.940795+00:00",
+  "diffSHA256": "58935a03e11567c54c31131830fda4aa0c4e6198d3b51f5117fc1693744c38d6",
+  "diffCommand": [
+    "git",
+    "diff",
+    "--full-index",
+    "c324818cbf86074f34578d07f381b0d2835955a1",
+    "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828"
+  ],
+  "fileSHA256": {
+    "src/cli/secrets-cli.ts": "2f478994945e5c8089467ca01685daaf275efc8d31dde63557f4e70e3bf7d462",
+    "src/cli/secrets-cli-output.ts": "ecc00f4c004dd01426798169a59174999005d1af265d29c9deaeb5d016d6993f",
+    "src/cli/secrets-cli.test.ts": "3ab94c03320530305095392a595d966514f2d300181b17e83c3afe588a536e54",
+    "config/test-lines-allocations/secrets-audit-cancellation.txt": "90e191cdeebd321668bbbfee1fae0cb61429f898dd11060901fa8b787ac41418"
+  },
+  "findings": [],
+  "assessments": {
+    "completeOwnerCut": "Audit captures existing root async-work signal once. Private formatter checks before admission, before JSON success and before failure rendering; outer action checks before human summary/exit and suppresses cancellation rejection. Existing CommandProcessScope bridges cancellation into canonical provider runner, rejects later spawn admission and joins retained child/cleanup settlement.",
+    "callersAndWriters": "Five formatter call sites: reload/audit/configure/apply/secret-store wrapper. Only audit passes new optional signal. Other calls, defaults, writer receipts and resolver policy unchanged. No public resolver/API expansion.",
+    "simplification": "Uses existing process/root lifecycle owners; no new scope implementation/manager/timer/global policy/module. JSON fence belongs in formatter, human fence at action output boundary.",
+    "tests": "Six human/JSON pre-abort/late-success/late-failure cells, real child cancellation under mocked audit callback, admitted apply result under closing read scope, audit row in existing ordinary JSON-error table. Distinct boundaries; no production test seam. Net83LF matches allocation; shared baseline unchanged. Added units not separately run against BASE production.",
+    "proofFidelity": "BASE normal built CLI executes actual synthetic SecretRef provider: success/error/no-allow-exec controls pass; pending SIGINT/SIGTERM audit exits by supervisor SIGKILL around2.05s with provider alive; collector cleanup follows observation. Raw terminal/provider/config hashes and frozen collector/checker pins independently verified.",
+    "checkEvidence": "Existing receipt/log hashes checked, no reruns:75tests/3files246.273s, targeted type135.2s, format/mocks/linecap/test-ratchet pass. Diff check passed. Applicable root/maintainer/testing/test-audit/pr-simplify instructions verified identical to previously read Cron guidance."
+  },
+  "materialUnverified": [
+    "Native checker excludes specified audit/failure documents rather than enforcing arbitrary-byte silence; actual merged PTY reset sequences remain present.",
+    "Collector establishes direct synthetic provider absence at CLI exit, not arbitrary descendant extinction or every process-group member.",
+    "Native cells cover JSON/Linux/local synthetic exec only; no real credentials/external provider/network or Windows proof. Human late output and admitted writer reporting have source/unit coverage.",
+    "Process scope cancels provider command work and closes child admission; not every file/database scan await becomes cancellation-aware, and early local preparation responsiveness is outside proof.",
+    "Added unit regressions were not separately run against BASE production; real native BASE RED supplies defect reproduction. Broad CI/full release build is outside focused/qaRuntime evidence."
+  ],
+  "proofSHA256": {
+    "collector": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+    "checker": "02360d4737b67e8dd2f836a27232a899d0bdb555964421359ef927f72bafd329",
+    "BASEreceipt": "81e8cb67488c5033f87e316ccc6a999aae93516df5d184aeb2a8a450c0597491"
+  },
+  "priorSourceReview": {
+    "verdict": "PASS_SOURCE_REVIEW",
+    "diffSHA256": "16bd72d16e588b387aaaff7f9b5f3645822a020941d36e253c7667b55ad2cb16",
+    "reviewedAt": "2026-11-11T18:00:17.921215+00:00"
+  },
+  "tree": "a1ce7d84437cf42d8e734121c1c18485f549820a",
+  "committedBlobIds": {
+    "src/cli/secrets-cli.ts": "ffbb947d4f59eb48b9af1c673db029de052c4ef7",
+    "src/cli/secrets-cli-output.ts": "7d61651cfff12fbf4f02aff09cc21e156b0bd561",
+    "src/cli/secrets-cli.test.ts": "94979f88607ec453a0f6aacc9df300c2e845bef5",
+    "config/test-lines-allocations/secrets-audit-cancellation.txt": "0c3828fe0602478a24ec48d2412babaaae383b67"
+  },
+  "finalSourceBinding": "Exact clean HEAD verified; all four file hashes including83LFallocation equal source review pins. Production/helper/callers/writer defaults unchanged since review.",
+  "nativeVerification": {
+    "receipt": "secrets-audit-native-head-145768c/receipt.json",
+    "receiptSHA256": "434d7655136e8d3691cd4c1ed2ef664854ff413dff4af587961b241214bc4bbd",
+    "checkerResult": "secrets-native-head-oracle.json",
+    "checkerResultSHA256": "68dca37cc69d50c083007aea6de8bf5c3b594bfc60ea28fe36f19c47c0a0a6bb",
+    "result": "5 PASS with unchanged frozen collector and separate checker hashes matching BASE",
+    "interrupts": [
+      {
+        "signal": "SIGINT",
+        "exitCode": 130,
+        "interruptToExitSeconds": 0.58
+      },
+      {
+        "signal": "SIGTERM",
+        "exitCode": 143,
+        "interruptToExitSeconds": 0.547
+      }
+    ],
+    "providerObservation": "One protocol request per pending cell; provider SIGTERM event recorded; direct synthetic provider absent at CLI exit; no harness watchdog/post-observation cleanup. Arbitrary descendants are not proven.",
+    "controls": "success0/clean+one resolved ref; provider error2/unresolved+code7 finding; no-allow-exec0/skipped1 and no provider request/PID",
+    "outputObservation": "Actual merged PTY captures contain root cleanup notice, optional ^C echo and terminal reset sequences; no audit result/failure payload. Frozen checker tests selected late-document strings rather than arbitrary-byte silence.",
+    "independentlyChecked": "All5 saved raw terminal/config/provider hashes and observed event arrays; exact receipt HEAD/buildstamp equals clean built HEAD. BASE pins match same frozen collector; separate checker hash unchanged."
+  },
+  "checksVerification": {
+    "method": "Existing final passing receipts/log SHA256 verified; no reruns; old failed lint setup is retained separately and not counted as pass.",
+    "focused": {
+      "files": 3,
+      "tests": 75,
+      "wallSeconds": 246.273,
+      "exit_code": 0
+    },
+    "types": "targeted tsgo exit0/135.2s",
+    "lint": "secrets-lint-v2 typed oxlint explicit tsconfig exit0/56.553s",
+    "format": "exit0",
+    "mocks": "exit0",
+    "testLineRatchet": "exit0",
+    "linecap": "exit0",
+    "qaRuntimeBuild": {
+      "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+      "exit_code": 0,
+      "wallSeconds": 263.278
+    },
+    "diffCheck": "passed",
+    "inputBinding": "All reviewed production/test/allocation bytes equal exact clean committed blobs, so valid source-bound precommit checks retained."
+  }
+}

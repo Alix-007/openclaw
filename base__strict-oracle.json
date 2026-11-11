@@ -1,0 +1,27 @@
+{
+  "expected": "red",
+  "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "cells": [
+    {
+      "case": "success",
+      "result": "PASS"
+    },
+    {
+      "case": "error",
+      "result": "PASS"
+    },
+    {
+      "case": "no-allow-exec",
+      "result": "PASS"
+    },
+    {
+      "case": "pending-int",
+      "result": "RED"
+    },
+    {
+      "case": "pending-term",
+      "result": "RED"
+    }
+  ],
+  "result": "EXPECTED_BASE_RED_WITH_CONTROLS"
+}

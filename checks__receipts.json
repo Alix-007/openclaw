@@ -1,0 +1,131 @@
+{
+  "secrets-focused-v2": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-vitest.mjs",
+      "src/cli/secrets-cli.test.ts",
+      "src/cli/secrets-store-cli.test.ts",
+      "src/secrets/audit.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 246.273,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "9ae1a6418bd1424f5b2f8a296686b1a352ca61bb2cb7f70bb5af851fbece4bbc"
+  },
+  "secrets-types-v2": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../secrets-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 135.2,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "secrets-lint-v2": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../secrets-types.tsconfig.json",
+      "src/cli/secrets-cli.ts",
+      "src/cli/secrets-cli-output.ts",
+      "src/cli/secrets-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 56.553,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "21623378f328868133b192729fc5e509757c6e092f5813164e0f17318c2164d1",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "secrets-ratchet": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 35.554,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "fd02cae5c335b8a1c77a7472b581f6ad58080e49c43fd025451b977e9c6c30a0"
+  },
+  "secrets-linecap": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 2.054,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "796a20208352e70127fa5544a2f07aaeab373fe05b37cdd43eb638eab8743c1f"
+  },
+  "secrets-mocks": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-secrets-mocks.mts",
+      "src/cli/secrets-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.847,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "ced09b46b2c26376e9114b560bc33369cf8a6ff2bc9ab248cb85a4313264bb6b"
+  },
+  "secrets-format-check": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/secrets-cli.ts",
+      "src/cli/secrets-cli-output.ts",
+      "src/cli/secrets-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.625,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "522510d744e15aa4f98471e237b398c83fca66dc1cdc3b05760b5e71e2356857",
+    "logSHA256": "7c5c6d9ed56c320d27c033377bf08a342ae23e108d7ea4b03a294a0f23169731"
+  },
+  "secrets-native-qa-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 263.278,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "badce7abd79ec79319931c78eb4bbfa6a51e163d23a5d5d44181e5f653ff130a"
+  }
+}

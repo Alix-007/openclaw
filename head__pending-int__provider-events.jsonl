@@ -1,0 +1,2 @@
+{"kind": "request", "time": 3560442.739503589, "pid": 2527358, "ppid": 2527145, "ids": ["synthetic"], "protocolVersion": 1}
+{"kind": "signal", "time": 3560442.748774816, "pid": 2527358, "ppid": 2527145, "signal": 15}

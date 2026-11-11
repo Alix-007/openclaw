@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "status": "clean",
+  "resolution": {
+    "refsChecked": 0,
+    "skippedExecRefs": 1,
+    "resolvabilityComplete": false
+  },
+  "filesScanned": [
+    "<BASE_OUTPUT>/no-allow-exec/state/openclaw.json"
+  ],
+  "summary": {
+    "plaintextCount": 0,
+    "unresolvedRefCount": 0,
+    "shadowedRefCount": 0,
+    "storeResidueCount": 0,
+    "legacyResidueCount": 0
+  },
+  "findings": []
+}

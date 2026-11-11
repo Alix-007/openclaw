@@ -1,0 +1,196 @@
+{
+  "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "buildStamp": {
+    "builtAt": 1794415755133,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "inputsClean": true,
+    "inputSignature": "7e8cc49507c95310b36f107aee887e6d19dffb6d5a6d84dd0ea238141675b2c4"
+  },
+  "trackedCleanBefore": true,
+  "trackedCleanAfter": true,
+  "collectorSHA256": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+  "rows": [
+    {
+      "case": "success",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 11.247,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        2401886
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3557842.087959494,
+          "pid": 2401886,
+          "ppid": 2401246,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        },
+        {
+          "kind": "response",
+          "time": 3557842.089394696,
+          "pid": 2401886,
+          "ppid": 2401246
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "b09f263caea6b6a5762d804b058be59b7deb45c24fd9f672c97c686f3d59a73e",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "69986f7dbe76e1db2fed60009244b1af0d0505685f9110d49bd146a90e58c850",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"clean\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 1,\r\n    \"skippedExecRefs\": 0,\r\n    \"resolvabilityComplete\": true\r\n  },\r\n  \"filesScanned\": [\r\n    \"<BASE_OUTPUT>/success/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 0,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": []\r\n}\r\n",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "error",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 2,
+      "elapsedSeconds": 6.136,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        2402277
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3557848.34804684,
+          "pid": 2402277,
+          "ppid": 2401932,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "55c5d6ec2252dabd69efd0156a090f3a7522f40f68fff0d903668f93498adfb6",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "54f3363d39bcff9c592420e7ca6e444c1fd8210c46f0262630393bd4f7b6f754",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"unresolved\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 1,\r\n    \"skippedExecRefs\": 0,\r\n    \"resolvabilityComplete\": true\r\n  },\r\n  \"filesScanned\": [\r\n    \"<BASE_OUTPUT>/error/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 1,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": [\r\n    {\r\n      \"code\": \"REF_UNRESOLVED\",\r\n      \"severity\": \"error\",\r\n      \"file\": \"<BASE_OUTPUT>/error/state/openclaw.json\",\r\n      \"jsonPath\": \"models.providers.openai.apiKey\",\r\n      \"message\": \"Failed to resolve exec:fixture:synthetic (Exec provider \\\"fixture\\\" exited with code 7.).\",\r\n      \"provider\": \"openai\"\r\n    }\r\n  ]\r\n}\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "no-allow-exec",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 6.864,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [],
+      "configUnchanged": true,
+      "configSHA256": "0b406cd61fa972cb51c84ec1f8aaec627efd98e27dae5b9d5ddf83771494c58b",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "8f7a0b17807f5bd7466df8008d0616dab65ace3bcd557c2adee3c78b9f9208cc",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"clean\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 0,\r\n    \"skippedExecRefs\": 1,\r\n    \"resolvabilityComplete\": false\r\n  },\r\n  \"filesScanned\": [\r\n    \"<BASE_OUTPUT>/no-allow-exec/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 0,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": []\r\n}\r\n",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "pending-int",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": -9,
+      "elapsedSeconds": 7.192,
+      "interruptToExitSeconds": 2.049,
+      "harnessWatchdog": false,
+      "providerPids": [
+        2402977
+      ],
+      "providerAliveAtCliExit": [
+        2402977
+      ],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3557861.313422552,
+          "pid": 2402977,
+          "ppid": 2402717,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "45347111cb11dbabf1b3f745019eb2a3502a748fd7077ec028ddb9fb75abdb38",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n",
+      "harnessPostObservationCleanup": true
+    },
+    {
+      "case": "pending-term",
+      "command": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": -9,
+      "elapsedSeconds": 7.165,
+      "interruptToExitSeconds": 2.056,
+      "harnessWatchdog": false,
+      "providerPids": [
+        2403308
+      ],
+      "providerAliveAtCliExit": [
+        2403308
+      ],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3557868.618580508,
+          "pid": 2403308,
+          "ppid": 2403093,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "47e1f598130b1a5164a639ec6a54c8ae8ae2491613375006ddb84a305a918d09",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "dc9736e102eef454e38e6428baa462cdd6158bbc8701f42aae90bb077fa3cdd3",
+      "output": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\r\n",
+      "harnessPostObservationCleanup": true
+    }
+  ],
+  "limits": "Normal public CLI with synthetic local exec provider only; no real credentials/provider/network requests. Provider cleanup after recorded exit is collector-owned."
+}

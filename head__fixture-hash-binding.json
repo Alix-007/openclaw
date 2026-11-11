@@ -1,0 +1,32 @@
+[
+  {
+    "case": "success",
+    "terminalSHA256": "3ad8f9a352f25b34bb66e0247ab412d15eb415a07fc461037b193c4bc4b871fb",
+    "configSHA256": "01e7a652b15b3c23c1e0db870eb63ce939545ac74dd4369997a0deb286d6f20c",
+    "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4"
+  },
+  {
+    "case": "error",
+    "terminalSHA256": "8546d8f3ac117ee1b4fff352364a927f67a4bf47a501865398b1b798a4df9b8a",
+    "configSHA256": "ae88d00765c844eb36bb438bce847fdd280eb2a2991f266569e86f8a14ebe447",
+    "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4"
+  },
+  {
+    "case": "no-allow-exec",
+    "terminalSHA256": "08a2f25a18852df0a519a2d1de1c4264ff007a96163fb0d6a46b8dc993055d0a",
+    "configSHA256": "0ea9cd1761d5300544e28c1a68ccf890b38e250fa73c698ee8ec66415a503603",
+    "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4"
+  },
+  {
+    "case": "pending-int",
+    "terminalSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+    "configSHA256": "d267d28784b366343dbe6c61cbd351a3da2720aff641dd14f58dc87634881222",
+    "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4"
+  },
+  {
+    "case": "pending-term",
+    "terminalSHA256": "46f82b88f4352c55d60dab2cc982f570baf078356828318cec10ee47df714424",
+    "configSHA256": "e7e92576048776929a6485c9fa381042996e0fa59cf2c9639e4099269d3f635a",
+    "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4"
+  }
+]

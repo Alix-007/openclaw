@@ -1,0 +1,32 @@
+{
+  "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+  "base": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "files": [
+    {
+      "path": "src/cli/secrets-cli.ts",
+      "sha256": "2f478994945e5c8089467ca01685daaf275efc8d31dde63557f4e70e3bf7d462",
+      "gitBlob": "ffbb947d4f59eb48b9af1c673db029de052c4ef7"
+    },
+    {
+      "path": "src/cli/secrets-cli-output.ts",
+      "sha256": "ecc00f4c004dd01426798169a59174999005d1af265d29c9deaeb5d016d6993f",
+      "gitBlob": "7d61651cfff12fbf4f02aff09cc21e156b0bd561"
+    },
+    {
+      "path": "src/cli/secrets-cli.test.ts",
+      "sha256": "3ab94c03320530305095392a595d966514f2d300181b17e83c3afe588a536e54",
+      "gitBlob": "94979f88607ec453a0f6aacc9df300c2e845bef5"
+    },
+    {
+      "path": "config/test-lines-allocations/secrets-audit-cancellation.txt",
+      "sha256": "90e191cdeebd321668bbbfee1fae0cb61429f898dd11060901fa8b787ac41418",
+      "gitBlob": "0c3828fe0602478a24ec48d2412babaaae383b67"
+    }
+  ],
+  "explanation": "Independent precommit source review pins these exact file bytes. Gate receipt inputs match this normal clean commit. Final independent review verifies exact HEAD, all final gates and paired native observations with no findings.",
+  "currentIndependentSourceReview": "PASS",
+  "finalIndependentEvidenceReview": "PASS",
+  "finalReviewedHead": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+  "finalReviewOriginalSHA256": "4358f03046796af456b0dc71e6aba58b20c49f4f99d39d8ceaa77e9459798ab2",
+  "finalReviewPublicPath": "review__final-independent-review.json"
+}
