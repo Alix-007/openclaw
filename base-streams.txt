@@ -1,0 +1,1204 @@
+
+--- models-list-connect-control/terminal.raw ---
+{
+  "count": 1,
+  "models": [
+    {
+      "key": "catalog-proof/sample",
+      "name": "Sample model",
+      "input": "text",
+      "contextWindow": 128000,
+      "local": true,
+      "available": true,
+      "tags": []
+    }
+  ]
+}
+
+--- models-list-connect-control/diagnostics.log ---
+
+--- models-list-connect-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:37311",
+    "at": 69.921305,
+    "observedAt": 3527290.485691778
+  },
+  {
+    "event": "peer-connected",
+    "at": 4725.167236,
+    "observedAt": 3527295.138696625
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e2eccdac-c992-4df5-8b1f-089bd6a94d0c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "a5881cb6-59a5-48b6-a340-407d936bd3da"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4733.383463,
+    "observedAt": 3527295.146881572
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4733.630863,
+    "observedAt": 3527295.146938197
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:ab377ac5-3174-47b3-9f6b-5ca21c0d47d0",
+    "params": {
+      "view": "default",
+      "includeDetails": true
+    },
+    "at": 4736.419372,
+    "observedAt": 3527295.149829299
+  },
+  {
+    "event": "response",
+    "method": "models.list",
+    "at": 4736.661271,
+    "observedAt": 3527295.149937328
+  },
+  {
+    "event": "peer-closed",
+    "at": 4741.419811,
+    "observedAt": 3527295.154689595
+  }
+]
+
+--- models-list-connect-control/peer.stderr ---
+
+--- models-list-rpc-control/terminal.raw ---
+{
+  "count": 1,
+  "models": [
+    {
+      "key": "catalog-proof/sample",
+      "name": "Sample model",
+      "input": "text",
+      "contextWindow": 128000,
+      "local": true,
+      "available": true,
+      "tags": []
+    }
+  ]
+}
+
+--- models-list-rpc-control/diagnostics.log ---
+
+--- models-list-rpc-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:46409",
+    "at": 63.939076,
+    "observedAt": 3527295.417443457
+  },
+  {
+    "event": "peer-connected",
+    "at": 4604.334351,
+    "observedAt": 3527299.955503452
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:dc59488b-641e-4cba-b903-e00394e321ee",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "59239bd0-a715-4ba0-a3d1-9f210a1dab83"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4611.091431,
+    "observedAt": 3527299.961669662
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4611.339935,
+    "observedAt": 3527299.961689941
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:bf0cb6d6-43db-4d60-8800-62be8c618fba",
+    "params": {
+      "view": "default",
+      "includeDetails": true
+    },
+    "at": 4613.53145,
+    "observedAt": 3527299.963553603
+  },
+  {
+    "event": "response",
+    "method": "models.list",
+    "at": 4613.752612,
+    "observedAt": 3527299.963706833
+  },
+  {
+    "event": "peer-closed",
+    "at": 4618.071416,
+    "observedAt": 3527299.968133486
+  }
+]
+
+--- models-list-rpc-control/peer.stderr ---
+
+--- models-list-connect-sigint-interrupt/terminal.raw ---
+^C
+--- models-list-connect-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- models-list-connect-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41305",
+    "at": 76.127185,
+    "observedAt": 3527300.229757123
+  },
+  {
+    "event": "peer-connected",
+    "at": 4553.915989,
+    "observedAt": 3527304.704329587
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:a5907340-9cdc-4c53-b3d3-944fadb7ce2b",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "8fbbe4c6-84fd-4765-b3e3-6e4277be87cb"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4562.29168,
+    "observedAt": 3527304.712664743
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 4562.374555,
+    "observedAt": 3527304.712695169
+  },
+  {
+    "event": "peer-closed",
+    "at": 6647.255393,
+    "observedAt": 3527306.797579669
+  }
+]
+
+--- models-list-connect-sigint-interrupt/peer.stderr ---
+
+--- models-list-rpc-sigint-interrupt/terminal.raw ---
+^C
+--- models-list-rpc-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- models-list-rpc-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41545",
+    "at": 70.470883,
+    "observedAt": 3527306.916454577
+  },
+  {
+    "event": "peer-connected",
+    "at": 4618.533494,
+    "observedAt": 3527311.462259785
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:ee7ec80a-f8af-4726-b459-f6577d6461b2",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "64417246-8c7b-42e1-9f94-5405cbb45ed3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4625.906683,
+    "observedAt": 3527311.469522825
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4626.123558,
+    "observedAt": 3527311.469574793
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:d54318c5-0808-4916-9757-b36d76af278c",
+    "params": {
+      "view": "default",
+      "includeDetails": true
+    },
+    "at": 4628.343222,
+    "observedAt": 3527311.471867745
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 4628.445592,
+    "observedAt": 3527311.471893893
+  },
+  {
+    "event": "peer-closed",
+    "at": 6695.953628,
+    "observedAt": 3527313.539564522
+  }
+]
+
+--- models-list-rpc-sigint-interrupt/peer.stderr ---
+
+--- models-list-connect-sigterm-interrupt/terminal.raw ---
+
+--- models-list-connect-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- models-list-connect-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41875",
+    "at": 70.074938,
+    "observedAt": 3527313.669949167
+  },
+  {
+    "event": "peer-connected",
+    "at": 4751.854306,
+    "observedAt": 3527318.349080163
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:2bbff73d-f621-4896-8a2c-b633882816bb",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "49bd0e3e-3304-4ebf-b20f-0526f2af04af"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4759.387278,
+    "observedAt": 3527318.356587337
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 4759.45647,
+    "observedAt": 3527318.356600041
+  },
+  {
+    "event": "peer-closed",
+    "at": 6849.918596,
+    "observedAt": 3527320.447039954
+  }
+]
+
+--- models-list-connect-sigterm-interrupt/peer.stderr ---
+
+--- models-list-rpc-sigterm-interrupt/terminal.raw ---
+
+--- models-list-rpc-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- models-list-rpc-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:36169",
+    "at": 64.813831,
+    "observedAt": 3527320.571715932
+  },
+  {
+    "event": "peer-connected",
+    "at": 4336.490743,
+    "observedAt": 3527324.840738696
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:0df46a34-c199-4358-a0c9-a4e21370face",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "33fee38a-d429-4da4-ab6d-baac8f3251b9"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4344.123867,
+    "observedAt": 3527324.848304819
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4344.339923,
+    "observedAt": 3527324.848365698
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:2610b12c-4a32-4057-bd58-57cffda34ae9",
+    "params": {
+      "view": "default",
+      "includeDetails": true
+    },
+    "at": 4346.322917,
+    "observedAt": 3527324.850390477
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 4346.40282,
+    "observedAt": 3527324.8504158
+  },
+  {
+    "event": "peer-closed",
+    "at": 6427.438025,
+    "observedAt": 3527326.931620358
+  }
+]
+
+--- models-list-rpc-sigterm-interrupt/peer.stderr ---
+
+--- models-status-rpc-control/terminal.raw ---
+{
+  "configPath": "<BASE_OUTPUT>/models-status-rpc-control/config.json",
+  "agentDir": "<BASE_OUTPUT>/models-status-rpc-control/state/agents/main/agent",
+  "defaultModel": "openai/gpt-6-astra",
+  "resolvedDefault": "openai/gpt-6-astra",
+  "fallbacks": [],
+  "imageModel": null,
+  "imageFallbacks": [],
+  "utilityModel": {
+    "ref": null,
+    "source": "none"
+  },
+  "utilityFallbacks": [],
+  "aliases": {},
+  "allowed": [],
+  "auth": {
+    "storePath": "<BASE_OUTPUT>/models-status-rpc-control/state/agents/main/agent/openclaw-agent.sqlite",
+    "shellEnvFallback": {
+      "enabled": false,
+      "appliedKeys": []
+    },
+    "providersWithOAuth": [],
+    "missingProvidersInUse": [],
+    "modelRouteIssues": [
+      {
+        "kind": "indeterminate",
+        "provider": "openai",
+        "model": "gpt-6-astra",
+        "message": "Auth readiness could not be confirmed for openai/gpt-6-astra."
+      }
+    ],
+    "runtimeAuthRoutes": [],
+    "providers": [],
+    "unusableProfiles": [],
+    "oauth": {
+      "warnAfterMs": 86400000,
+      "profiles": [],
+      "providers": []
+    }
+  }
+}
+
+--- models-status-rpc-control/diagnostics.log ---
+(node:1020734) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: resolveAuthStorePathForDisplay is deprecated; use provider/profile identifiers for displays (there is no public async database-path replacement) instead. The legacy contract remains supported during its deprecation period. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+--- models-status-rpc-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40627",
+    "at": 69.063887,
+    "observedAt": 3527327.05723377
+  },
+  {
+    "event": "peer-connected",
+    "at": 4809.036419,
+    "observedAt": 3527331.794995461
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:31387e03-27b2-42fb-ad56-53625dcbbb73",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "ba01b2fd-607c-4f12-9448-57e8abc0c62e"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4815.685726,
+    "observedAt": 3527331.801595918
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4815.925959,
+    "observedAt": 3527331.801650066
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:d6cb0bba-9ee3-4828-ad52-ef1556288fa3",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true,
+      "agentId": "main"
+    },
+    "at": 4817.928293,
+    "observedAt": 3527331.803822581
+  },
+  {
+    "event": "response",
+    "method": "models.list",
+    "at": 4818.232711,
+    "observedAt": 3527331.803964035
+  },
+  {
+    "event": "peer-closed",
+    "at": 4822.280162,
+    "observedAt": 3527331.808056728
+  }
+]
+
+--- models-status-rpc-control/peer.stderr ---
+
+--- models-status-rpc-sigint-interrupt/terminal.raw ---
+^C
+--- models-status-rpc-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- models-status-rpc-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:39523",
+    "at": 70.654077,
+    "observedAt": 3527332.702875887
+  },
+  {
+    "event": "peer-connected",
+    "at": 4708.703496,
+    "observedAt": 3527337.337505879
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:14a6a2f0-cff4-4979-a5f3-e7c86f4aaa2a",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "18a9c552-f09f-48fa-94fa-e84afe98b9fe"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4715.793945,
+    "observedAt": 3527337.344626915
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4716.048687,
+    "observedAt": 3527337.34465535
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:1d7c0b1d-ba16-4fa9-a5f5-c036d1d3cbfe",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true,
+      "agentId": "main"
+    },
+    "at": 4718.595006,
+    "observedAt": 3527337.347234824
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 4718.665699,
+    "observedAt": 3527337.347253213
+  },
+  {
+    "event": "peer-closed",
+    "at": 6790.036693,
+    "observedAt": 3527339.418753575
+  }
+]
+
+--- models-status-rpc-sigint-interrupt/peer.stderr ---
+
+--- models-status-rpc-sigterm-interrupt/terminal.raw ---
+
+--- models-status-rpc-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- models-status-rpc-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:37843",
+    "at": 69.138433,
+    "observedAt": 3527339.547950866
+  },
+  {
+    "event": "peer-connected",
+    "at": 4621.175843,
+    "observedAt": 3527344.097778972
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:300ab16c-e554-4c58-8576-4819c1b81522",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "15336ab6-55bf-4417-9736-7c2be46317b2"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4627.780438,
+    "observedAt": 3527344.104243762
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4628.026104,
+    "observedAt": 3527344.104524242
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:17259ee9-fabe-40c1-a496-42e833b7d5e4",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true,
+      "agentId": "main"
+    },
+    "at": 4630.236629,
+    "observedAt": 3527344.106760852
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 4630.309278,
+    "observedAt": 3527344.106767623
+  },
+  {
+    "event": "peer-closed",
+    "at": 6693.234233,
+    "observedAt": 3527346.16971003
+  }
+]
+
+--- models-status-rpc-sigterm-interrupt/peer.stderr ---
+
+--- models-refresh-rpc-control/terminal.raw ---
+{
+  "count": 1,
+  "models": [
+    {
+      "key": "catalog-proof/sample",
+      "name": "Sample model",
+      "input": "text",
+      "contextWindow": 128000,
+      "local": true,
+      "available": true,
+      "tags": []
+    }
+  ]
+}
+
+--- models-refresh-rpc-control/diagnostics.log ---
+
+--- models-refresh-rpc-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44907",
+    "at": 71.180294,
+    "observedAt": 3527346.297957984
+  },
+  {
+    "event": "peer-connected",
+    "at": 4659.715749,
+    "observedAt": 3527350.884102081
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:b81133d7-8c86-4d31-817a-b2777bf7a0cf",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "1c4cfc43-cce3-4f00-a384-c89c4b917147"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4667.465493,
+    "observedAt": 3527350.891757053
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4667.701611,
+    "observedAt": 3527350.891785519
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:1018e916-8725-492c-bfd4-9d2336f59ea6",
+    "params": {
+      "view": "default",
+      "includeDetails": true,
+      "refresh": true
+    },
+    "at": 4669.791277,
+    "observedAt": 3527350.89410011
+  },
+  {
+    "event": "response",
+    "method": "models.list",
+    "at": 4670.093267,
+    "observedAt": 3527350.894191462
+  },
+  {
+    "event": "peer-closed",
+    "at": 4673.818765,
+    "observedAt": 3527350.897960485
+  }
+]
+
+--- models-refresh-rpc-control/peer.stderr ---
+
+--- models-refresh-rpc-sigint-interrupt/terminal.raw ---
+^C{
+  "count": 1,
+  "models": [
+    {
+      "key": "catalog-proof/sample",
+      "name": "Sample model",
+      "input": "text",
+      "contextWindow": 128000,
+      "local": true,
+      "available": true,
+      "tags": []
+    }
+  ]
+}
+
+--- models-refresh-rpc-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- models-refresh-rpc-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:37205",
+    "at": 64.571386,
+    "observedAt": 3527351.157135718
+  },
+  {
+    "event": "peer-connected",
+    "at": 4541.72183,
+    "observedAt": 3527355.632005818
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:51aebbb9-8f00-41df-9bae-b7207bb7b753",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "4d32ffb4-0df9-4f89-af4b-c19e8620d102"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4549.17712,
+    "observedAt": 3527355.639358679
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4549.455433,
+    "observedAt": 3527355.639506463
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:d8c8b279-3f68-46e0-9d1e-3e2ce6616aa0",
+    "params": {
+      "view": "default",
+      "includeDetails": true,
+      "refresh": true
+    },
+    "at": 4551.559004,
+    "observedAt": 3527355.64164468
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 4551.632572,
+    "observedAt": 3527355.641659985
+  },
+  {
+    "event": "held-response-released",
+    "method": "models.list",
+    "at": 5153.131577,
+    "observedAt": 3527356.243321452
+  },
+  {
+    "event": "peer-closed",
+    "at": 5158.243283,
+    "observedAt": 3527356.248333294
+  }
+]
+
+--- models-refresh-rpc-sigint-interrupt/peer.stderr ---
+
+--- doctor-model-reference-rpc-control/terminal.raw ---
+{"schemaVersion":1,"ok":true,"checksRun":1,"checksSkipped":75,"findings":[],"recoveryCopies":{"scope":"local","measurement":"logical","incomplete":false,"incompleteReasons":[],"total":{"count":0,"logicalBytes":0,"retirable":{"count":0,"logicalBytes":0},"protected":{"count":0,"logicalBytes":0},"unmanifestedOrOrphan":{"count":0,"logicalBytes":0}},"byKind":{"updateCaptures":{"count":0,"logicalBytes":0,"retirable":{"count":0,"logicalBytes":0},"protected":{"count":0,"logicalBytes":0},"unmanifestedOrOrphan":{"count":0,"logicalBytes":0}},"doctorCaptures":{"count":0,"logicalBytes":0,"retirable":{"count":0,"logicalBytes":0},"protected":{"count":0,"logicalBytes":0},"unmanifestedOrOrphan":{"count":0,"logicalBytes":0}},"migrationOriginals":{"count":0,"logicalBytes":0,"retirable":{"count":0,"logicalBytes":0},"protected":{"count":0,"logicalBytes":0},"unmanifestedOrOrphan":{"count":0,"logicalBytes":0}}}}}
+
+--- doctor-model-reference-rpc-control/diagnostics.log ---
+
+--- doctor-model-reference-rpc-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43449",
+    "at": 65.90648,
+    "observedAt": 3527356.507170572
+  },
+  {
+    "event": "peer-connected",
+    "at": 4220.050611,
+    "observedAt": 3527360.65879053
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4fe3178b-5f7d-43f1-9cef-50a219a7edda",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "52590c59-c3ca-48de-aa91-9b3ff55dca07"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 4226.838062,
+    "observedAt": 3527360.665475011
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 4227.054836,
+    "observedAt": 3527360.665606647
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:b4798202-5a34-4eb1-9208-eae274801191",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true
+    },
+    "at": 4229.245424,
+    "observedAt": 3527360.66810078
+  },
+  {
+    "event": "response",
+    "method": "models.list",
+    "at": 4229.487196,
+    "observedAt": 3527360.668109625
+  },
+  {
+    "event": "peer-closed",
+    "at": 4233.629093,
+    "observedAt": 3527360.672294491
+  }
+]
+
+--- doctor-model-reference-rpc-control/peer.stderr ---
+
+--- doctor-model-reference-rpc-sigint-interrupt/terminal.raw ---
+^C
+--- doctor-model-reference-rpc-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- doctor-model-reference-rpc-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33905",
+    "at": 85.846416,
+    "observedAt": 3527361.592691639
+  },
+  {
+    "event": "peer-connected",
+    "at": 3575.379824,
+    "observedAt": 3527365.080226221
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:b63dbfe9-1780-4ccb-8efd-75cad4885ca2",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "f6f7868b-c8c8-4e4e-a0d9-c236e5cccc7e"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 3582.057178,
+    "observedAt": 3527365.086682532
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 3582.288929,
+    "observedAt": 3527365.0867078
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:e07ca37a-71ec-4890-bd6a-0fcdee6e5cc2",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true
+    },
+    "at": 3584.305585,
+    "observedAt": 3527365.088868891
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 3584.440795,
+    "observedAt": 3527365.088884389
+  },
+  {
+    "event": "peer-closed",
+    "at": 5661.889767,
+    "observedAt": 3527367.166516322
+  }
+]
+
+--- doctor-model-reference-rpc-sigint-interrupt/peer.stderr ---
+
+--- doctor-model-reference-rpc-sigterm-interrupt/terminal.raw ---
+
+--- doctor-model-reference-rpc-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- doctor-model-reference-rpc-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44597",
+    "at": 64.792071,
+    "observedAt": 3527367.294741139
+  },
+  {
+    "event": "peer-connected",
+    "at": 3547.907591,
+    "observedAt": 3527370.776488114
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:27211bf4-73ce-494c-a0dd-7acdaeae9e8c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "gateway-client",
+        "displayName": "gateway:models.list",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "backend",
+        "instanceId": "d390eade-d1f5-45ea-b8b0-6131806c6692"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "at": 3554.516056,
+    "observedAt": 3527370.782249808
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 3554.865057,
+    "observedAt": 3527370.782826649
+  },
+  {
+    "event": "request",
+    "method": "models.list",
+    "id": "2:6416c9e0-ffd1-4a65-9e51-36595dd90a4b",
+    "params": {
+      "view": "all",
+      "includeDetails": true,
+      "includeDefaultModels": true,
+      "preparedOnly": true
+    },
+    "at": 3556.813384,
+    "observedAt": 3527370.784369504
+  },
+  {
+    "event": "read-held",
+    "method": "models.list",
+    "at": 3556.9292,
+    "observedAt": 3527370.78440626
+  },
+  {
+    "event": "peer-closed",
+    "at": 5632.889778,
+    "observedAt": 3527372.8605567
+  }
+]
+
+--- doctor-model-reference-rpc-sigterm-interrupt/peer.stderr ---

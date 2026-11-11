@@ -1,0 +1,135 @@
+{
+  "models-catalog-focused": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-vitest.mjs",
+      "src/commands/models/list.prepared-catalog.test.ts",
+      "src/commands/models/list.status.test.ts",
+      "src/flows/doctor-model-reference-check.test.ts",
+      "src/flows/doctor-lint-flow.test.ts",
+      "src/commands/doctor-lint.snapshot-cleanup.test.ts",
+      "src/cli/program/register.maintenance.test.ts",
+      "src/cli/route.test.ts",
+      "src/cli/capability-cli/model.auth-status.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 163.534,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "00860687b178c48874826964627e9498da9476ee0ecd282ce8073bcb33fdbb40"
+  },
+  "models-catalog-types": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../models-catalog-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 120.717,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "models-catalog-lint": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "src/cli/program/register.maintenance.test.ts",
+      "src/cli/program/register.maintenance.ts",
+      "src/commands/doctor-lint-runner.ts",
+      "src/commands/models/catalog-warnings.ts",
+      "src/commands/models/list.list-command.ts",
+      "src/commands/models/list.prepared-catalog.test.ts",
+      "src/commands/models/list.status-command.ts",
+      "src/commands/models/list.types.ts",
+      "src/flows/doctor-lint-flow.test.ts",
+      "src/flows/doctor-lint-flow.ts",
+      "src/flows/doctor-model-reference-check.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 342.672,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "fa3afbbf3d500950ee11c375daea8ae09be1a9d12c1f5afc7c38f0c608f73f12"
+  },
+  "models-catalog-ratchet": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--staged",
+      "--base",
+      "83872e599d5720c0bc97d313283a2bc245046699"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 117.539,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "20fe2d18a33db4fe84a6aedca0a94dda26356c42bdc34f54de47b3c09d634a0d"
+  },
+  "models-catalog-format-check": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/program/register.maintenance.test.ts",
+      "src/cli/program/register.maintenance.ts",
+      "src/commands/doctor-lint-runner.ts",
+      "src/commands/models/catalog-warnings.ts",
+      "src/commands/models/list.list-command.ts",
+      "src/commands/models/list.prepared-catalog.test.ts",
+      "src/commands/models/list.status-command.ts",
+      "src/commands/models/list.types.ts",
+      "src/flows/doctor-lint-flow.test.ts",
+      "src/flows/doctor-lint-flow.ts",
+      "src/flows/doctor-model-reference-check.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.3,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "04da19f1012b6d774f35e1614680301e70272e783dcfb991af0eae6cbbefdf76"
+  },
+  "models-catalog-changed-mocks": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-changed-mocks.mts",
+      "src/cli/program/register.maintenance.test.ts",
+      "src/commands/models/list.prepared-catalog.test.ts",
+      "src/flows/doctor-lint-flow.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.904,
+    "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+    "diffSHA256": "eabeda95ffaccee20412b56fb4d09e534e389d7de49e6e3370ab31fd8fcac08a",
+    "logSHA256": "01748c6e3d00ef2a1f0cfa2de361e23d61cbfe91ad53f5c4e5d7bd0213203fd8"
+  },
+  "models-catalog-native-cli-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 262.563,
+    "head": "38a03aa8f497a9647bbcf87c00c325bd49305be8",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "5b6ccfd32d778d35af57163dc50c1d0c42c1d3c671aefef41688373659613111"
+  }
+}

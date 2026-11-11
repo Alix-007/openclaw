@@ -1,0 +1,42 @@
+{
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "head": "296cc6107520683f26ca94d4a51bc0b77d878ecb",
+  "scope": "Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.",
+  "records": [
+    {
+      "file": "src/cli/program/register.maintenance.test.ts",
+      "baselineSHA256": "744bdf4568810fc894ea94f6262083e687b36a50fe2d4d3143ab155b19e08c66",
+      "currentSHA256": "7b0d61bf9f38505ae805541a1234873ae29ee9c8d87fb8b482b2d3ce8f80a6e6",
+      "callFingerprints": [
+        "d1dae37ed12ec211fcc8dc8214a599bcead212b1d9743ce38e8299ac5bd1d03b",
+        "b870111fe48d73429cae4dd725e44e964ce26bd11876cc47c778f587c7bec6a4",
+        "ca461d4bf6bec75e44b605f4ba13d1a7238e36dbf1f68f3b8cc2b6e59877a108",
+        "fabf142f9573244043107f0b2e4908d7d201d904a47319bb4c56fdace6053476",
+        "200939682f72ffe4693593cd94617febf34776653c76f2a73fe3ec05fe339543",
+        "cf1087bbd103fb577ec8f5ec0c7ee4e3ed8d00de7253503ece12d45a8f294988",
+        "821d06e0a78b33309ec678cd51364dfec7b5edf0c6af4f2c63545cd2fef805c1"
+      ],
+      "closedFactories": [],
+      "unchangedFactories": true
+    },
+    {
+      "file": "src/commands/models/list.prepared-catalog.test.ts",
+      "baselineSHA256": "19c9d98ae9876d7f9d3e66e3690633c55cecfe19ca8de75b00f381af45ef3e19",
+      "currentSHA256": "c36a0256e7662451ff8e352d2a7b5a9c5c885b8a20a123cf8aaef19a0f2e3efb",
+      "callFingerprints": [],
+      "closedFactories": [],
+      "unchangedFactories": true
+    },
+    {
+      "file": "src/flows/doctor-lint-flow.test.ts",
+      "baselineSHA256": "59a89df31fce2321d0f95f4230a352d75d8168ca3477ee5727917985d7dc857b",
+      "currentSHA256": "55ccbc029d55183c4d3aa924f3c2ff8e7aa69a535e7c33c205a2295bbb0c08fd",
+      "callFingerprints": [],
+      "closedFactories": [],
+      "unchangedFactories": true
+    }
+  ],
+  "ledgerSHA256": "37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3",
+  "ledgerUnchanged": true,
+  "result": "PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"
+}

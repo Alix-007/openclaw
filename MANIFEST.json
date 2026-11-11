@@ -1,0 +1,12 @@
+{
+  "models-catalog-cancel-proof-v4.py": "1ca902758c242f0a8146ece44e5a91dd7908a268e8ad7f6662f3f26f704a4da8",
+  "models-catalog-cancel-proof-v4.mjs": "86f3bdb05b79415dcb3d800510d1dbe6ded327d2d40764878faaae4750c2e294",
+  "base-receipt.json": "1a29ea55d3dc114998da86adc275363fd1a9ea166fc331f19fe8fcbc5bfef47c",
+  "base-streams.txt": "0511060dbbc789d503e20173b3cbe9a6b3406c391ce41af89d6ea04ea6911155",
+  "head-receipt.json": "bb05cbfd9dac190439d8411acf1f3cd208adb1905b480998132dd2a007daf3d6",
+  "head-streams.txt": "e53efab5a6be721a5deccd9e3175af58e00b971dc6cc799e9281db2821f1fc45",
+  "independent-review.md": "ce1d4278c32516b53e5c4eeeb638ae025c8a02676ebfe35c1928364c3619ef68",
+  "checks.json": "ec56336bc8238ebe25f78e007002f14f7252eea2a6b7e971ef6bfc1574fd943b",
+  "changed-mock-factories.json": "82c031d6255b977544bdde33cd06440074ced666f314d442417dbdcb541ee9db",
+  "EVIDENCE.md": "50d077c86a575f00a8194232139394f3ec2b82a86909ab2ecfffb5498e48b5bb"
+}
