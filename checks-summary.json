@@ -1,0 +1,107 @@
+{
+  "productHead": "b19cbda9c01278b35058792153f160b028d2ea25",
+  "baseHead": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+  "checks": [
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/commands/channels.status.command-flow.test.ts",
+        "src/commands/channels.status.external-env.test.ts",
+        "src/commands/channels.config-only-status-output.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 44.988,
+      "head": "7084eae26a138442308e2039d5b76e7077626c7b",
+      "diffSHA256": "55118b3a710d7c1accc295b1b5cf603e55fa40f1f3b0f3583c3bc3e240b32b3d",
+      "logSHA256": "da62cc6e3d5be4850952485106f2e139b6f0039e17da52c248e16418712c9230"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--staged",
+        "--base",
+        "13329595bed6e1f032f124620ca51b1ce13aa6c9"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 128.243,
+      "head": "7084eae26a138442308e2039d5b76e7077626c7b",
+      "diffSHA256": "55118b3a710d7c1accc295b1b5cf603e55fa40f1f3b0f3583c3bc3e240b32b3d",
+      "logSHA256": "031f868d034c22a99d2a692452ef6573ffff4c61676f7afe715c885f4d0f6901"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "$CHECKOUT-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 52.299,
+      "head": "7084eae26a138442308e2039d5b76e7077626c7b",
+      "diffSHA256": "55118b3a710d7c1accc295b1b5cf603e55fa40f1f3b0f3583c3bc3e240b32b3d",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "src/commands/channels/status.ts",
+        "src/commands/channels/status.runtime.ts",
+        "src/commands/channels.status.command-flow.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 105.358,
+      "head": "7084eae26a138442308e2039d5b76e7077626c7b",
+      "diffSHA256": "55118b3a710d7c1accc295b1b5cf603e55fa40f1f3b0f3583c3bc3e240b32b3d",
+      "logSHA256": "0f1ece4564bf29e3ab3517ef0df6d13c1118a14b7ee985d98adbec5c99d5026f"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 239.485,
+      "head": "b19cbda9c01278b35058792153f160b028d2ea25",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logSHA256": "4c4ad654698b39f20fd73dc2d5f9fc42467b2456806335749babd2489f2c1483"
+    }
+  ],
+  "focusedTests": 14,
+  "baseOwnerRegression": "One intended cancellation-during-fallback failure, nine controls pass on BASE using identical final test bytes.",
+  "reuse": "All three affected suites pass14 tests. Native PTY cases own actual connect/RPC interruption; the unique unit regression owns no late fallback publication. Same-owner fixture/filter duplication is consolidated with every original assertion retained, net minus5 testLF and no allocation. Production bytes are unchanged from the first independently reviewed native-GREEN commit.",
+  "coldPreparation": "Initial BASE and each changed-input HEAD run waited for a canonical compiled-worker generation (131624/161473/159778ms), crossing the first fallback case120s limit and contaminating its next mock. One identical-source replay after each completed generation passed or produced the four intended BASE failures. These timeouts are not claimed as qualifying RED or a product repair. No timeout/assertion/worker guard was weakened.",
+  "oracleCorrection": "Collector v1 incorrectly classified the canonical {ok:false,error:{type:cli_error,message:CLI stopping (SIGINT)}} abort envelope as late status. Independent review confirmed the classifier defect. Frozen v2 explicitly recognizes and requires that exact envelope while retaining all lifetime/no-status/fallback checks; it was rerun on both actual clean BASE and HEAD. Product source is unchanged.",
+  "testBudget": {
+    "base": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+    "previousQualifiedCheck": "channels-status-ratchet.json",
+    "actualMainTestLF": 6643133,
+    "mainEffectiveCeiling": 6643126,
+    "inheritedDebt": 7,
+    "ownRegressionLF": -5,
+    "ownAllocation": 0,
+    "sharedBaselineUnchanged": true,
+    "unrelatedDebtCredited": false,
+    "allocationRemoved": true,
+    "currentTotalTestLF": 6643128,
+    "currentEffectiveCeiling": 6643126,
+    "canonicalCheckPass": true,
+    "reason": "Canonical non-pruning guard succeeds because this PR reduces test LF, despite inherited global excess. No scalar or unrelated debt credit changes.",
+    "check": "channels-status-consolidated-ratchet.json"
+  },
+  "limitations": "Native proof is route-first JSON over a compatible synthetic loopback WebSocket peer. No real Gateway service, hosted provider/channel, other OS or newly interruptible secret/plugin internals is claimed. Ordinary auth/unreachable fallback is covered by focused tests."
+}

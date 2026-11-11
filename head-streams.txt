@@ -1,0 +1,239 @@
+
+=== channels-status-connect-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-channels-status-proof",
+  "ts": 1794365183712,
+  "durationMs": 1,
+  "channelAccounts": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "warnings": []
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44579",
+    "at": 77.648037,
+    "observedAt": 3504789.91418863
+  },
+  {
+    "event": "peer-connected",
+    "at": 2700.316575,
+    "observedAt": 3504792.534436223
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:2f220406-9e06-4665-b219-4ddeb7ab7f2b",
+    "at": 2707.528988,
+    "observedAt": 3504792.541510371
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2707.931352,
+    "observedAt": 3504792.541753892
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:6abed9a7-35d6-495c-8801-491f9ff2295a",
+    "at": 2709.999902,
+    "observedAt": 3504792.543986475
+  },
+  {
+    "event": "response",
+    "method": "channels.status",
+    "at": 2710.412943,
+    "observedAt": 3504792.544265259
+  },
+  {
+    "event": "peer-closed",
+    "at": 2715.748413,
+    "observedAt": 3504792.549681181
+  }
+]
+
+peer stderr:
+
+=== channels-status-rpc-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-channels-status-proof",
+  "ts": 1794365186319,
+  "durationMs": 1,
+  "channelAccounts": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "warnings": []
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34473",
+    "at": 73.334474,
+    "observedAt": 3504792.728266069
+  },
+  {
+    "event": "peer-connected",
+    "at": 2490.370321,
+    "observedAt": 3504795.142597191
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:ff23f1a0-11b4-4eff-b4ba-e0fcf16e1813",
+    "at": 2496.714014,
+    "observedAt": 3504795.148772782
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2496.94431,
+    "observedAt": 3504795.148927092
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:0973a227-4f03-4ec3-9d86-05936ac37077",
+    "at": 2498.931795,
+    "observedAt": 3504795.150948097
+  },
+  {
+    "event": "response",
+    "method": "channels.status",
+    "at": 2499.150992,
+    "observedAt": 3504795.151121294
+  },
+  {
+    "event": "peer-closed",
+    "at": 2502.700144,
+    "observedAt": 3504795.154717078
+  }
+]
+
+peer stderr:
+
+=== channels-status-connect-interrupt ===
+terminal:
+^C{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "CLI stopping (SIGINT)"
+  }
+}
+
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43655",
+    "at": 75.523113,
+    "observedAt": 3504795.317447677
+  },
+  {
+    "event": "peer-connected",
+    "at": 2688.176391,
+    "observedAt": 3504797.928031219
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:ff637933-4300-4db3-ab10-7441f56996b1",
+    "at": 2694.795956,
+    "observedAt": 3504797.934468653
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 2694.85687,
+    "observedAt": 3504797.934489524
+  },
+  {
+    "event": "peer-closed",
+    "at": 2722.479816,
+    "observedAt": 3504797.962269892
+  }
+]
+
+peer stderr:
+
+=== channels-status-rpc-interrupt ===
+terminal:
+^C{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "CLI stopping (SIGINT)"
+  }
+}
+
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:39353",
+    "at": 65.6705,
+    "observedAt": 3504798.180444311
+  },
+  {
+    "event": "peer-connected",
+    "at": 2659.77138,
+    "observedAt": 3504800.772560761
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4b89d7ba-2d1d-4d66-b87e-3a1c088a7cdf",
+    "at": 2666.958413,
+    "observedAt": 3504800.779554503
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2667.202313,
+    "observedAt": 3504800.779589208
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:16248884-15f9-4b7b-9e42-b8b4739c92ba",
+    "at": 2669.270068,
+    "observedAt": 3504800.781729333
+  },
+  {
+    "event": "read-held",
+    "method": "channels.status",
+    "at": 2669.34998,
+    "observedAt": 3504800.781742049
+  },
+  {
+    "event": "peer-closed",
+    "at": 2703.52189,
+    "observedAt": 3504800.816173445
+  }
+]
+
+peer stderr:

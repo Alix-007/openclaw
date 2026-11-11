@@ -1,0 +1,58 @@
+{
+  "productHead": "b19cbda9c01278b35058792153f160b028d2ea25",
+  "baseHead": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+  "captures": [
+    {
+      "kind": "base",
+      "originalReceiptSHA256": "10ecd6dc73b1f096d118923fa4142632083ba04f7016961468026da7134a6355",
+      "publicReceipt": "base-receipt.json"
+    },
+    {
+      "kind": "head",
+      "originalReceiptSHA256": "3b3dd1dfb7e63f6c2df9dc46f26417baa3e019a3385681f7b774b97506b9abb5",
+      "publicReceipt": "head-receipt.json"
+    }
+  ],
+  "files": [
+    {
+      "name": "README.md",
+      "bytes": 3538,
+      "sha256": "1127703abeeaf4e8545d1639646958b5d780f47b2b6aec7c696993fadce5fcd8"
+    },
+    {
+      "name": "base-receipt.json",
+      "bytes": 10752,
+      "sha256": "4be8604a5c50c87f1f930fe3f3efa7c150b22703fb26b77e25d5a4dde3aec6fc"
+    },
+    {
+      "name": "base-streams.txt",
+      "bytes": 4258,
+      "sha256": "e579fad5b011e9b97e835c25feb411999a71b0a5e3316487b3fd3156aef655d7"
+    },
+    {
+      "name": "channels-cancel-proof-v2.py",
+      "bytes": 7933,
+      "sha256": "f27e499f7524d101c311e6f229ccddeb572a99b3c0b868bc8fc5fe4e010ebb47"
+    },
+    {
+      "name": "channels-cancel-proof.mjs",
+      "bytes": 2187,
+      "sha256": "115c1f3fe719500debf4884b5c3019159814c7fdec7f5934144593294abbf82d"
+    },
+    {
+      "name": "checks-summary.json",
+      "bytes": 5275,
+      "sha256": "7743f3ce0065cc51b7e7551151dc2db5e86438e3e9e7c275ecc88333a333649f"
+    },
+    {
+      "name": "head-receipt.json",
+      "bytes": 10923,
+      "sha256": "9f96dce93d031dd855a0d85865102eb02a3a0ab3d0fe615fd5bf654e350671b0"
+    },
+    {
+      "name": "head-streams.txt",
+      "bytes": 4627,
+      "sha256": "274ccc937e676b7f60ec41799e18a0b8b7314832d3b629dcc022cb1bbcf366de"
+    }
+  ]
+}
