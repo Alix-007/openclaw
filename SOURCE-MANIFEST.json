@@ -1,0 +1,11 @@
+{
+  "head": "7cb916c4b9c40f75f7040b88b5ff2137e7aa6942",
+  "tree": "3d1814ca4356baf352e212872bbaa7bfaa883219",
+  "integratedMain": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+  "files": {
+    "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+    "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+    "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+  },
+  "checkBinding": "Precommit gate receipts match committed source bytes or exact original-head\u2192merge diff; native collector binds clean committed HEAD before/after."
+}

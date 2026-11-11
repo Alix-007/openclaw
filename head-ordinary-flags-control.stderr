@@ -1,0 +1,8 @@
+$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$TASK/sherpa-native-head-7cb916c/ordinary-flags-control.wav 'OpenClaw path proof.' 
+
+Number of threads: 1
+Elapsed seconds: 1.368 s
+Audio duration: 1.649 s
+Real-time factor (RTF): 1.368/1.649 = 0.830
+The text is: OpenClaw path proof.. Speaker ID: 0
+Saved to $TASK/sherpa-native-head-7cb916c/ordinary-flags-control.wav successfully!

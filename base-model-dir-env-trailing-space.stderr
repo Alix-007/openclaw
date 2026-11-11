@@ -1,0 +1,7 @@
+Model directory is missing required files. Set SHERPA_ONNX_MODEL_FILE, SHERPA_ONNX_TOKENS_FILE, SHERPA_ONNX_DATA_DIR or pass --model-file/--tokens-file/--data-dir.
+
+Usage: sherpa-onnx-tts [--runtime-dir <dir>] [--model-dir <dir>] [--model-file <file>] [--tokens-file <file>] [--data-dir <dir>] [--output <file>] "text"
+
+Required env (or flags):
+  SHERPA_ONNX_RUNTIME_DIR
+  SHERPA_ONNX_MODEL_DIR

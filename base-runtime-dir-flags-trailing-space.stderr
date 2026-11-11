@@ -1,0 +1,7 @@
+TTS binary not found: $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts
+
+Usage: sherpa-onnx-tts [--runtime-dir <dir>] [--model-dir <dir>] [--model-file <file>] [--tokens-file <file>] [--data-dir <dir>] [--output <file>] "text"
+
+Required env (or flags):
+  SHERPA_ONNX_RUNTIME_DIR
+  SHERPA_ONNX_MODEL_DIR

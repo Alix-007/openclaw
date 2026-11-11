@@ -1,0 +1,398 @@
+{
+  "started_at": "2026-11-11T12:41:20.625575+00:00",
+  "expect": "green",
+  "status": "GREEN",
+  "verdict": "PASS",
+  "source_root": "$CHECKOUT",
+  "collector_sha256": "5f4052c76126f3d707c58a68cd93b3f484036c7b9cbb0a4ea6ab39fa74dbdaf6",
+  "node": "$NODE26",
+  "contract": {
+    "id": "wrapper-runtime-and-model-directories-v3",
+    "path_probes": 4,
+    "controls": 3,
+    "covered": [
+      "runtime-dir via flags/env",
+      "model-dir via flags/env"
+    ],
+    "excluded": "Trailing whitespace on explicit model-file, tokens-file and data-dir values is trimmed by the native Sherpa parser even when the wrapper forwards it. These six historical failed HEAD scenes remain retained, not relabeled PASS. No workaround or fix for them is claimed."
+  },
+  "proof_boundary": "clean exact-head bundled Node wrapper -> official native sherpa-onnx-offline-tts -> WAV file -> Python PCM readback; offline synthetic text only",
+  "text": "OpenClaw path proof.",
+  "resources": {
+    "runtime": {
+      "archive": "sherpa-onnx-v1.13.8-linux-x64-shared.tar.bz2",
+      "bytes": 28156791,
+      "sha256": "c0bdb7907d3a74bba1d55d22bf4d9fa75586cf1530614ebe88a27b9118e015c4",
+      "expected_sha256": "c0bdb7907d3a74bba1d55d22bf4d9fa75586cf1530614ebe88a27b9118e015c4",
+      "digest_matches": true,
+      "directory": "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared"
+    },
+    "model": {
+      "archive": "vits-piper-en_US-lessac-high.tar.bz2",
+      "bytes": 115545841,
+      "sha256": "8619d204c7005866fe4f420181dfa79622af6a6222389f0b0818d2af31e0db0e",
+      "expected_sha256": "8619d204c7005866fe4f420181dfa79622af6a6222389f0b0818d2af31e0db0e",
+      "digest_matches": true,
+      "directory": "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high"
+    }
+  },
+  "cases": [
+    {
+      "name": "ordinary-flags-control",
+      "style": "flags",
+      "padded_input": null,
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--runtime-dir",
+        "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared",
+        "--model-dir",
+        "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/ordinary-flags-control.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {},
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": null,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 4.5602,
+      "stdout_file": "ordinary-flags-control.stdout",
+      "stdout_sha256": "963b0f555c368a5f6545287917b312e981d825a6df600720a49dcefd127abb66",
+      "stderr_file": "ordinary-flags-control.stderr",
+      "stderr_sha256": "b7fe73889c8ab2ed9892c7456e83f0bf595d123a0d4929b7dca0e0753ddddf55",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$TASK/sherpa-native-head-7cb916c/ordinary-flags-control.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.368 s\nAudio duration: 1.649 s\nReal-time factor (RTF): 1.368/1.649 = 0.830\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/ordinary-flags-control.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 72748,
+        "sha256": "f536e5d5f4eb59597ad4ddb70deebf09beab435ea6455805c3b111674abffc2d",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 36352,
+        "duration_seconds": 1.6486167800453515,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "ordinary-env-control",
+      "style": "env",
+      "padded_input": null,
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/ordinary-env-control.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {
+        "SHERPA_ONNX_RUNTIME_DIR": "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared",
+        "SHERPA_ONNX_MODEL_DIR": "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high"
+      },
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": null,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.5067,
+      "stdout_file": "ordinary-env-control.stdout",
+      "stdout_sha256": "ba0b9cabf20f9381284cc62ba0dafc0e038c78c55e1a7ffc88c906efcc3b735b",
+      "stderr_file": "ordinary-env-control.stderr",
+      "stderr_sha256": "3627bed7e64e4dc60464149467f198834a8ea7f5026249b64ff6a29138252a4d",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$TASK/sherpa-native-head-7cb916c/ordinary-env-control.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.103 s\nAudio duration: 1.440 s\nReal-time factor (RTF): 1.103/1.440 = 0.766\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/ordinary-env-control.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 63532,
+        "sha256": "ea23dc3915759dc490d250c9f1de41b0943401037e70396def2937ff02e8d435",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 31744,
+        "duration_seconds": 1.4396371882086167,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "runtime-dir-flags-trailing-space",
+      "style": "flags",
+      "padded_input": "runtime-dir",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--runtime-dir",
+        "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared ",
+        "--model-dir",
+        "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/runtime-dir-flags-trailing-space.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {},
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.4348,
+      "stdout_file": "runtime-dir-flags-trailing-space.stdout",
+      "stdout_sha256": "22874593c3a59999dfed1ad37bd802a840206e4f7f4f93cebf627dec20e4a0b7",
+      "stderr_file": "runtime-dir-flags-trailing-space.stderr",
+      "stderr_sha256": "2489cbefb363280989d2c74c205a8fecf75f23cc25555713874bf28df9e5b132",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 '$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared /bin/sherpa-onnx-offline-tts' --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$TASK/sherpa-native-head-7cb916c/runtime-dir-flags-trailing-space.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.195 s\nAudio duration: 1.544 s\nReal-time factor (RTF): 1.195/1.544 = 0.774\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/runtime-dir-flags-trailing-space.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 68140,
+        "sha256": "4118c683b1d9113ce5e85473efc54e10ae5a46c2bfef1095d0217b02dd52813d",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 34048,
+        "duration_seconds": 1.5441269841269842,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "runtime-dir-env-trailing-space",
+      "style": "env",
+      "padded_input": "runtime-dir",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/runtime-dir-env-trailing-space.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {
+        "SHERPA_ONNX_RUNTIME_DIR": "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared ",
+        "SHERPA_ONNX_MODEL_DIR": "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high"
+      },
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.478,
+      "stdout_file": "runtime-dir-env-trailing-space.stdout",
+      "stdout_sha256": "05360d2dc0a8766b8720ea94ab682b25cc1ac6384b03e5074ff09739504591a9",
+      "stderr_file": "runtime-dir-env-trailing-space.stderr",
+      "stderr_sha256": "ab5370763bc1d5c734857685719a1e6d8f7068e87170f5066e0d9378ee73f435",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 '$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared /bin/sherpa-onnx-offline-tts' --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data --output-filename=$TASK/sherpa-native-head-7cb916c/runtime-dir-env-trailing-space.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.163 s\nAudio duration: 1.509 s\nReal-time factor (RTF): 1.163/1.509 = 0.771\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/runtime-dir-env-trailing-space.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 66604,
+        "sha256": "ae6a015214cbcd304a29b8310fa9ba62e38f2f9010a149d3ac4f3ceb002da6a3",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 33280,
+        "duration_seconds": 1.509297052154195,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "model-dir-flags-trailing-space",
+      "style": "flags",
+      "padded_input": "model-dir",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--runtime-dir",
+        "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared",
+        "--model-dir",
+        "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high ",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/model-dir-flags-trailing-space.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {},
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.4459,
+      "stdout_file": "model-dir-flags-trailing-space.stdout",
+      "stdout_sha256": "2e10e4543c7691e77bf5c81a08dabbff0326e4c704086773d296e8760b329488",
+      "stderr_file": "model-dir-flags-trailing-space.stderr",
+      "stderr_sha256": "04ae23a0ede30ff11906a706128a0c494cd8e004f6d87ab885d2c7f7f76cc2cd",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts '--vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /en_US-lessac-high.onnx' '--vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /tokens.txt' '--vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /espeak-ng-data' --output-filename=$TASK/sherpa-native-head-7cb916c/model-dir-flags-trailing-space.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.140 s\nAudio duration: 1.533 s\nReal-time factor (RTF): 1.140/1.533 = 0.744\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/model-dir-flags-trailing-space.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 67628,
+        "sha256": "d5240cd19ff6da5a9aaa02657f656f88c150783aac365f86f8e6ed48c79dd48f",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 33792,
+        "duration_seconds": 1.5325170068027212,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "model-dir-env-trailing-space",
+      "style": "env",
+      "padded_input": "model-dir",
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/model-dir-env-trailing-space.wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {
+        "SHERPA_ONNX_RUNTIME_DIR": "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared",
+        "SHERPA_ONNX_MODEL_DIR": "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high "
+      },
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.3428,
+      "stdout_file": "model-dir-env-trailing-space.stdout",
+      "stdout_sha256": "286335103b85980066d0d0f8ed01d0cdfde9a4c7affbd94e67cdd1ae493f6962",
+      "stderr_file": "model-dir-env-trailing-space.stderr",
+      "stderr_sha256": "e7abd74f305baeaed25f6479dfb38236dbb91c541e9a1f270f4e83357e2b53b1",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts '--vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /en_US-lessac-high.onnx' '--vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /tokens.txt' '--vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high /espeak-ng-data' --output-filename=$TASK/sherpa-native-head-7cb916c/model-dir-env-trailing-space.wav 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.128 s\nAudio duration: 1.474 s\nReal-time factor (RTF): 1.128/1.474 = 0.765\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/model-dir-env-trailing-space.wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 65068,
+        "sha256": "f0af72bacc66cd22ff467f03db45f75555a52c62e3f7222cb5f350437c0b9d84",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 32512,
+        "duration_seconds": 1.474467120181406,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    },
+    {
+      "name": "literal-output-path-control",
+      "style": "flags",
+      "padded_input": null,
+      "command": [
+        "$NODE26",
+        "$CHECKOUT/skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+        "--runtime-dir",
+        "$PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared",
+        "--model-dir",
+        "$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high",
+        "--output",
+        "$TASK/sherpa-native-head-7cb916c/literal-output-path-control .wav",
+        "OpenClaw path proof."
+      ],
+      "selected_env": {},
+      "path_exists_before_call": true,
+      "trimmed_neighbor_exists": null,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.4912,
+      "stdout_file": "literal-output-path-control.stdout",
+      "stdout_sha256": "22874593c3a59999dfed1ad37bd802a840206e4f7f4f93cebf627dec20e4a0b7",
+      "stderr_file": "literal-output-path-control.stderr",
+      "stderr_sha256": "c65252f23bc8d633e49c08f1b8449f18850bcc90363d8b2621dd5e76f631a93f",
+      "stderr_tail": "$UPSTREAM_BUILD/sherpa-onnx/sherpa-onnx/csrc/parse-options.cc:Read:374 $PROOF_ROOT/native-sherpa/runtime/sherpa-onnx-v1.13.8-linux-x64-shared/bin/sherpa-onnx-offline-tts --vits-model=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/en_US-lessac-high.onnx --vits-tokens=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/tokens.txt --vits-data-dir=$PROOF_ROOT/native-sherpa/model/vits-piper-en_US-lessac-high/espeak-ng-data '--output-filename=$TASK/sherpa-native-head-7cb916c/literal-output-path-control .wav' 'OpenClaw path proof.' \n\nNumber of threads: 1\nElapsed seconds: 1.211 s\nAudio duration: 1.544 s\nReal-time factor (RTF): 1.211/1.544 = 0.784\nThe text is: OpenClaw path proof.. Speaker ID: 0\nSaved to $TASK/sherpa-native-head-7cb916c/literal-output-path-control .wav successfully!\n",
+      "wave": {
+        "exists": true,
+        "bytes": 68140,
+        "sha256": "2cfe51ee66bb8390f9c6e88f59dc4611109a758efb8e3433f6b682f402daae7f",
+        "riff": "RIFF",
+        "channels": 1,
+        "sample_width": 2,
+        "sample_rate": 22050,
+        "frames": 34048,
+        "duration_seconds": 1.5441269841269842,
+        "contains_nonzero_pcm": true,
+        "valid_pcm_wave": true
+      },
+      "acceptance": true,
+      "expected_path_failure": false
+    }
+  ],
+  "source_before": {
+    "head": "7cb916c4b9c40f75f7040b88b5ff2137e7aa6942",
+    "tree": "3d1814ca4356baf352e212872bbaa7bfaa883219",
+    "tracked_clean": true,
+    "untracked_files_excluded": true,
+    "files": {
+      "package.json": {
+        "git_blob": "ab22a883c1d11281efd32dd2b8374374f584d167",
+        "sha256": "fcbce0188d5acf176fe6a65c90cafdd85e5b6f4a8283d8080a2e8ef34ed22c4e",
+        "bytes": 155785,
+        "matches_head": true
+      },
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": {
+        "git_blob": "a963c3f7e9d8dccf1cf3b25aa120c3852f8bcfa8",
+        "sha256": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+        "bytes": 5024,
+        "matches_head": true
+      },
+      "skills/sherpa-onnx-tts/SKILL.md": {
+        "git_blob": "9df14cdebc00bc9753ab5dbe9d64a0dc2fb023d9",
+        "sha256": "65ebbb672898bdee4416197b51e54e97d3d934bb4e4507d4a2de5e89db9f8ce5",
+        "bytes": 4033,
+        "matches_head": true
+      }
+    }
+  },
+  "product_head": "7cb916c4b9c40f75f7040b88b5ff2137e7aa6942",
+  "product_tree": "3d1814ca4356baf352e212872bbaa7bfaa883219",
+  "node_version": "v26.12.1",
+  "source_after": {
+    "head": "7cb916c4b9c40f75f7040b88b5ff2137e7aa6942",
+    "tree": "3d1814ca4356baf352e212872bbaa7bfaa883219",
+    "tracked_clean": true,
+    "untracked_files_excluded": true,
+    "files": {
+      "package.json": {
+        "git_blob": "ab22a883c1d11281efd32dd2b8374374f584d167",
+        "sha256": "fcbce0188d5acf176fe6a65c90cafdd85e5b6f4a8283d8080a2e8ef34ed22c4e",
+        "bytes": 155785,
+        "matches_head": true
+      },
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": {
+        "git_blob": "a963c3f7e9d8dccf1cf3b25aa120c3852f8bcfa8",
+        "sha256": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+        "bytes": 5024,
+        "matches_head": true
+      },
+      "skills/sherpa-onnx-tts/SKILL.md": {
+        "git_blob": "9df14cdebc00bc9753ab5dbe9d64a0dc2fb023d9",
+        "sha256": "65ebbb672898bdee4416197b51e54e97d3d934bb4e4507d4a2de5e89db9f8ce5",
+        "bytes": 4033,
+        "matches_head": true
+      }
+    }
+  },
+  "summary": {
+    "total": 7,
+    "controls": 3,
+    "passing_controls": 3,
+    "path_probes": 4,
+    "specific_path_failures": 0,
+    "successful_path_probes": 4,
+    "native_elapsed_seconds_sum": 25.2596
+  },
+  "finished_at": "2026-11-11T12:41:48.256791+00:00",
+  "cleanup": "Temporarily renamed resource entries restored in finally blocks; exclusive resource lock released. Isolated logs and WAVs intentionally retained. No product source, Git refs/index/worktree, production configuration, channel, account or system installation changed."
+}

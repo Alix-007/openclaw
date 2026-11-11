@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "main": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+  "originalHead": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+  "mainScopedDiffSHA256": "e86e52a7f896163f42b85a9a148fe9df090e1f8b65d7658b002739fa49830e1e",
+  "findings": [],
+  "source": [
+    "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+    "src/skills/loading/sherpa-onnx-tts-bin.test.ts",
+    "config/test-lines-allocations/sherpa-literal-resource-paths.txt"
+  ],
+  "assessment": "Original literal directory behavior retained with main invalid-option parsing and all3 usage controls.",
+  "stagedTree": "3d1814ca4356baf352e212872bbaa7bfaa883219",
+  "reviewedFiles": [
+    {
+      "path": "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts",
+      "sha256": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f"
+    },
+    {
+      "path": "src/skills/loading/sherpa-onnx-tts-bin.test.ts",
+      "sha256": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1"
+    },
+    {
+      "path": "config/test-lines-allocations/sherpa-literal-resource-paths.txt",
+      "sha256": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "sherpa-main-focused": {
+    "command": [
+      "$NODE26",
+      "scripts/run-vitest.mjs",
+      "run",
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 13.277,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "sourceBefore": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "sourceAfter": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "logSHA256": "5fdd4a203a8220809358f1fd1f78743bfdb2f66e4d55fa5e7a8fc17bed368998",
+    "environmentOverrides": {
+      "OPENCLAW_VITEST_RUNTIME": "node",
+      "OPENCLAW_TYPECHECKER": "tsgo",
+      "OPENCLAW_LINT_TOOL": "oxlint",
+      "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$TASK/sherpa-main-focused-cache"
+    }
+  },
+  "sherpa-main-types": {
+    "command": [
+      "$NODE26",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$TASK/sherpa-main-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 409.21,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "sourceBefore": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "sourceAfter": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "logSHA256": "2ce9c489db26de002a97e8203b7dc11b7bccfd57531039e8be1863db6e3da491",
+    "environmentOverrides": {
+      "OPENCLAW_VITEST_RUNTIME": "node",
+      "OPENCLAW_TYPECHECKER": "tsgo",
+      "OPENCLAW_LINT_TOOL": "oxlint",
+      "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$TASK/sherpa-main-types-cache"
+    }
+  },
+  "sherpa-main-lint": {
+    "command": [
+      "$NODE26",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "test/tsconfig/tsconfig.core.test.shard.json",
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 356.572,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "sourceBefore": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "sourceAfter": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "logSHA256": "5c707c24d0946c5f868983482ab216a4bd37275f5f146eac5d174f327eacbbf0",
+    "environmentOverrides": {
+      "OPENCLAW_VITEST_RUNTIME": "node",
+      "OPENCLAW_TYPECHECKER": "tsgo",
+      "OPENCLAW_LINT_TOOL": "oxlint",
+      "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$TASK/sherpa-main-lint-cache"
+    }
+  },
+  "sherpa-main-final-format": {
+    "command": [
+      "$NODE26",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 0.632,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "mergeHead": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "sourceBefore": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "sourceAfter": {
+      "src/skills/loading/sherpa-onnx-tts-bin.test.ts": "8046375628e4463c65a1d31e6373956fff7d958542d9124b52a8361d6c551af1",
+      "skills/sherpa-onnx-tts/bin/sherpa-onnx-tts": "e509586a88f628518fce1c6453c7047c745893d6ca8e9aa98e6d17530991283f",
+      "config/test-lines-allocations/sherpa-literal-resource-paths.txt": "50884b37a4ca4968e5c2e16ec37edd85099e523c715d935d06045db014f2b8ff"
+    },
+    "logSHA256": "535425b38df48e64f36668e6d51511284f6f604a22d551b9c895d969d9a6433f",
+    "environmentOverrides": {
+      "OPENCLAW_VITEST_RUNTIME": "node",
+      "OPENCLAW_TYPECHECKER": "tsgo",
+      "OPENCLAW_LINT_TOOL": "oxlint",
+      "OPENCLAW_VITEST_FS_MODULE_CACHE_PATH": "$TASK/sherpa-main-final-format-cache"
+    }
+  },
+  "sherpa-main-qualified-linecap": {
+    "command": [
+      "$NODE26",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "--no-merge-base"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 1.13,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "diffSHA256": "4b2a0bf9265fb3285eba6a9087ae73e80b4b075fa8bb3670f60eb6f7ce9b665f",
+    "logSHA256": "1b9796830ca61c706679512ffb12de7e61d619a99207b80bc73fa713330e19f0"
+  },
+  "sherpa-main-qualified-ratchet": {
+    "command": [
+      "$NODE26",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "aab88e31bf5a64012a699139e19af193fa9a69c7",
+      "--no-merge-base"
+    ],
+    "cwd": "$CHECKOUT",
+    "exit_code": 0,
+    "elapsed_seconds": 30.802,
+    "head": "b7b0870632bff32b6577d8c5c214a1a40b81341b",
+    "diffSHA256": "4b2a0bf9265fb3285eba6a9087ae73e80b4b075fa8bb3670f60eb6f7ce9b665f",
+    "logSHA256": "b2319083905a392867ca4e6cdb479abfff8cc292f7a55c80a8cebfc62d5eafb4"
+  }
+}

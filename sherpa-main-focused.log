@@ -1,0 +1,16 @@
+[test] starting test/vitest/vitest.unit.config.ts
+
+ RUN  v5.0.5 $CHECKOUT
+
+ ✓ |unit| src/skills/loading/sherpa-onnx-tts-bin.test.ts > skills/sherpa-onnx-tts bin script > preserves literal runtime and model directories from flags 318ms
+ ✓ |unit| src/skills/loading/sherpa-onnx-tts-bin.test.ts > skills/sherpa-onnx-tts bin script > preserves literal runtime and model directories from env 76ms
+ ✓ |unit| src/skills/loading/sherpa-onnx-tts-bin.test.ts > skills/sherpa-onnx-tts bin script > loads as ESM and exits with usage for [] 77ms
+ ✓ |unit| src/skills/loading/sherpa-onnx-tts-bin.test.ts > skills/sherpa-onnx-tts bin script > loads as ESM and exits with usage for ["--output","","hi"] 68ms
+ ✓ |unit| src/skills/loading/sherpa-onnx-tts-bin.test.ts > skills/sherpa-onnx-tts bin script > loads as ESM and exits with usage for ["--output","--model-dir","/tmp/model","hi"] 87ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  20:22:44
+   Duration  7.20s (worker 54%, transform 28%, tests 10%, setup 8%)
+
+[test] passed 1 Vitest shard in 12.09s
