@@ -1,0 +1,28 @@
+{
+  "head": "72394c794052d0efe3783c61f3a287e971039fe4",
+  "nativeReceiptSHA256": "5ec8190b3c7e8ee9f070fe29e145ffba1182289a271d457cee7a6b9c8e2f976c",
+  "classifiedRefusals": [
+    {
+      "case": "malformed-get-dirty-save",
+      "method": "agents.files.get",
+      "exit": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"gateway_request_error\",\n    \"code\": \"INVALID_REQUEST\",\n    \"message\": \"Agent document \\\"AGENTS.md\\\" must be valid UTF-8. The original file was preserved. Convert it to UTF-8 before retrying.\",\n    \"retryable\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "case": "cached-raw-hash-checked-save",
+      "method": "agents.files.set",
+      "exit": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"gateway_request_error\",\n    \"code\": \"INVALID_REQUEST\",\n    \"message\": \"Agent document \\\"AGENTS.md\\\" must be valid UTF-8. The original file was preserved. Convert it to UTF-8 before retrying.\",\n    \"retryable\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "case": "identity-update-malformed-preread",
+      "method": "agents.update",
+      "exit": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"gateway_request_error\",\n    \"code\": \"INVALID_REQUEST\",\n    \"message\": \"Agent document \\\"IDENTITY.md\\\" must be valid UTF-8. The original file was preserved. Convert it to UTF-8 before retrying.\",\n    \"retryable\": false\n  }\n}\n",
+      "stderr": ""
+    }
+  ],
+  "result": "PASS_3_CLASSIFIED_ACTIONABLE_REAL_RPC_REFUSALS"
+}

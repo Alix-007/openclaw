@@ -1,0 +1,407 @@
+{
+  "expected": "red",
+  "expected_head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "collector_sha256": "defc653fcb34afc7ba09b144b4e332e5fb3629900f4657143d596e922aabb795",
+  "binding_before": {
+    "head": "83872e599d5720c0bc97d313283a2bc245046699",
+    "tracked_status": "",
+    "build_stamp": {
+      "version": "2026.11.3",
+      "commit": "83872e599d5720c0bc97d313283a2bc245046699",
+      "builtAt": "2026-11-11T03:41:35.250Z",
+      "buildId": "2026.11.3-83872e599d57-2026-11-11T03-41-35.250Z"
+    },
+    "file_sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "c4ef1d151d21b0636808662d1797b3c3aa998c2aa86518a9078e1837ab1970dc",
+      "src/gateway/server-methods/agents-files.ts": "fee7bc9f40273e2516b74571f45cab74e867938689be44238cd8bfadf6de9fb7"
+    },
+    "pass": true
+  },
+  "environment": {
+    "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+    "HOME": "<BASE_OUTPUT>/home",
+    "USERPROFILE": "<BASE_OUTPUT>/home",
+    "XDG_CONFIG_HOME": "<BASE_OUTPUT>/xdg-config",
+    "XDG_CACHE_HOME": "<BASE_OUTPUT>/xdg-cache",
+    "XDG_DATA_HOME": "<BASE_OUTPUT>/xdg-data",
+    "XDG_STATE_HOME": "<BASE_OUTPUT>/xdg-state",
+    "TMPDIR": "<BASE_OUTPUT>/tmp",
+    "TMP": "<BASE_OUTPUT>/tmp",
+    "TEMP": "<BASE_OUTPUT>/tmp",
+    "OPENCLAW_CONFIG_PATH": "<BASE_OUTPUT>/openclaw.json",
+    "OPENCLAW_STATE_DIR": "<BASE_OUTPUT>/state",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "NO_COLOR": "1",
+    "TERM": "dumb"
+  },
+  "environment_policy": "Explicit allowlist; no parent environment copied",
+  "isolation_limit": "HOME/XDG/tmp/state/config are task-owned. This is not an OS filesystem or network sandbox; product package/dependency reads are expected.",
+  "runs": [
+    {
+      "case": "malformed-get-dirty-save",
+      "method": "agents.files.get",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.get",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 38,\n    \"updatedAtMs\": 1794371612578,\n    \"hash\": \"bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd\",\n    \"content\": \"# Instructions\\nKeep caf� terminology.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 3.18263979209587
+    },
+    {
+      "case": "malformed-get-dirty-save",
+      "method": "agents.files.set",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md",
+        "content": "# Instructions\nKeep caf� terminology.\n\nAdditional ordinary instruction.\n",
+        "expectedHash": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd",
+        "expectedWorkspace": "<BASE_OUTPUT>/workspace"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.set",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\", \"content\": \"# Instructions\\nKeep caf� terminology.\\n\\nAdditional ordinary instruction.\\n\", \"expectedHash\": \"bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd\", \"expectedWorkspace\": \"<BASE_OUTPUT>/workspace\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 74,\n    \"updatedAtMs\": 1794371619304,\n    \"hash\": \"2a365d6b49e3d4990b24c9034f842d67589865ce799249e2b3f175d6d9cd1beb\",\n    \"content\": \"# Instructions\\nKeep caf� terminology.\\n\\nAdditional ordinary instruction.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 3.7118047340773046
+    },
+    {
+      "case": "cached-raw-hash-checked-save",
+      "method": "agents.files.set",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md",
+        "content": "# Instructions\nKeep caf� terminology.\n\nCached ordinary instruction.\n",
+        "expectedHash": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd",
+        "expectedWorkspace": "<BASE_OUTPUT>/workspace"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.set",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\", \"content\": \"# Instructions\\nKeep caf� terminology.\\n\\nCached ordinary instruction.\\n\", \"expectedHash\": \"bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd\", \"expectedWorkspace\": \"<BASE_OUTPUT>/workspace\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 70,\n    \"updatedAtMs\": 1794371621732,\n    \"hash\": \"0d4f4c948cbce2899b955489e91c883cfce1e1023cfb01ee72b8a1df7073c29d\",\n    \"content\": \"# Instructions\\nKeep caf� terminology.\\n\\nCached ordinary instruction.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 2.375824878923595
+    },
+    {
+      "case": "valid-unicode-bom-literal-replacement",
+      "method": "agents.files.get",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.get",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 53,\n    \"updatedAtMs\": 1794371621850,\n    \"hash\": \"e7fa232405aab09d9b23b2f59b4a2c55f61fca37a26c8f21553ad986958336ad\",\n    \"content\": \"﻿# Instructions\\n模型 😀 café and literal �.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 2.539040954783559
+    },
+    {
+      "case": "valid-unicode-bom-literal-replacement",
+      "method": "agents.files.set",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md",
+        "content": "﻿# Instructions\n模型 😀 café and literal �.\n\n追加 instruction.\n",
+        "expectedHash": "e7fa232405aab09d9b23b2f59b4a2c55f61fca37a26c8f21553ad986958336ad",
+        "expectedWorkspace": "<BASE_OUTPUT>/workspace"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.set",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\", \"content\": \"﻿# Instructions\\n模型 😀 café and literal �.\\n\\n追加 instruction.\\n\", \"expectedHash\": \"e7fa232405aab09d9b23b2f59b4a2c55f61fca37a26c8f21553ad986958336ad\", \"expectedWorkspace\": \"<BASE_OUTPUT>/workspace\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 74,\n    \"updatedAtMs\": 1794371626526,\n    \"hash\": \"1220cc5cbe0abbc6341adcf0e698859dc4151e840a2c538b379aeffb8bba2ebc\",\n    \"content\": \"﻿# Instructions\\n模型 😀 café and literal �.\\n\\n追加 instruction.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 2.2294536540284753
+    },
+    {
+      "case": "intentional-blind-set",
+      "method": "agents.files.set",
+      "params": {
+        "agentId": "main",
+        "name": "AGENTS.md",
+        "content": "# Explicit replacement\n合法 Unicode 😀.\n"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.files.set",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"AGENTS.md\", \"content\": \"# Explicit replacement\\n合法 Unicode 😀.\\n\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"agentId\": \"main\",\n  \"workspace\": \"<BASE_OUTPUT>/workspace\",\n  \"file\": {\n    \"name\": \"AGENTS.md\",\n    \"path\": \"<BASE_OUTPUT>/workspace/AGENTS.md\",\n    \"missing\": false,\n    \"size\": 44,\n    \"updatedAtMs\": 1794371628691,\n    \"hash\": \"7aafd761ffcc6db6fa6aaf179185d0c11da7cdc6d3aa4f06e48509f0bcbc0f73\",\n    \"content\": \"# Explicit replacement\\n合法 Unicode 😀.\\n\"\n  }\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 2.1625055610202253
+    },
+    {
+      "case": "identity-update-malformed-preread",
+      "method": "agents.update",
+      "params": {
+        "agentId": "main",
+        "name": "New"
+      },
+      "argv": [
+        "<NODE26>",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "gateway",
+        "call",
+        "agents.update",
+        "--url",
+        "ws://127.0.0.1:40391",
+        "--token",
+        "<SYNTHETIC_LOCAL_GATEWAY_TOKEN>",
+        "--params",
+        "{\"agentId\": \"main\", \"name\": \"New\"}",
+        "--json",
+        "--timeout",
+        "10000"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"agentId\": \"main\"\n}\n",
+      "stderr": "",
+      "elapsed_seconds": 2.8726637568324804
+    }
+  ],
+  "fixture_actions": [
+    {
+      "case": "malformed-get-dirty-save",
+      "action": "explicit task-fixture reset",
+      "path": "<BASE_OUTPUT>/workspace/AGENTS.md",
+      "hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd"
+    },
+    {
+      "case": "cached-raw-hash-checked-save",
+      "action": "explicit task-fixture reset",
+      "path": "<BASE_OUTPUT>/workspace/AGENTS.md",
+      "hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd"
+    },
+    {
+      "case": "valid-unicode-bom-literal-replacement",
+      "action": "explicit task-fixture reset",
+      "path": "<BASE_OUTPUT>/workspace/AGENTS.md",
+      "hex": "efbbbf2320496e737472756374696f6e730ae6a8a1e59e8b20f09f988020636166c3a920616e64206c69746572616c20efbfbd2e0a",
+      "sha256": "e7fa232405aab09d9b23b2f59b4a2c55f61fca37a26c8f21553ad986958336ad"
+    },
+    {
+      "case": "intentional-blind-set",
+      "action": "explicit task-fixture reset",
+      "path": "<BASE_OUTPUT>/workspace/AGENTS.md",
+      "hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd"
+    },
+    {
+      "case": "identity-update-malformed-preread",
+      "action": "explicit task-fixture reset",
+      "path": "<BASE_OUTPUT>/workspace/IDENTITY.md",
+      "hex": "23204964656e746974790a2d204e616d653a204f6c640a2d20566962653a20636166e90a",
+      "sha256": "403809c45b2b5be8cd1d52202e74b7dfa1241d969ac9504720fa35175f992fc4"
+    }
+  ],
+  "cases": [
+    {
+      "name": "malformed-get-dirty-save",
+      "before_hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "after_hex": "2320496e737472756374696f6e730a4b65657020636166efbfbd207465726d696e6f6c6f67792e0a0a4164646974696f6e616c206f7264696e61727920696e737472756374696f6e2e0a",
+      "before_sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd",
+      "after_sha256": "2a365d6b49e3d4990b24c9034f842d67589865ce799249e2b3f175d6d9cd1beb",
+      "bytes_preserved": false,
+      "config_sha256_before": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "config_sha256_after": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "observed_red": true,
+      "observed_green": false,
+      "pass": true
+    },
+    {
+      "name": "cached-raw-hash-checked-save",
+      "before_hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "after_hex": "2320496e737472756374696f6e730a4b65657020636166efbfbd207465726d696e6f6c6f67792e0a0a436163686564206f7264696e61727920696e737472756374696f6e2e0a",
+      "before_sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd",
+      "after_sha256": "0d4f4c948cbce2899b955489e91c883cfce1e1023cfb01ee72b8a1df7073c29d",
+      "bytes_preserved": false,
+      "config_sha256_before": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "config_sha256_after": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "observed_red": true,
+      "observed_green": false,
+      "pass": true,
+      "cached_token_origin": "Exact original bytes; equivalent to old reader raw CAS hash; no source helper invoked"
+    },
+    {
+      "name": "valid-unicode-bom-literal-replacement",
+      "before_hex": "efbbbf2320496e737472756374696f6e730ae6a8a1e59e8b20f09f988020636166c3a920616e64206c69746572616c20efbfbd2e0a",
+      "after_hex": "efbbbf2320496e737472756374696f6e730ae6a8a1e59e8b20f09f988020636166c3a920616e64206c69746572616c20efbfbd2e0a0ae8bfbde58aa020696e737472756374696f6e2e0a",
+      "before_sha256": "e7fa232405aab09d9b23b2f59b4a2c55f61fca37a26c8f21553ad986958336ad",
+      "after_sha256": "1220cc5cbe0abbc6341adcf0e698859dc4151e840a2c538b379aeffb8bba2ebc",
+      "bytes_preserved": false,
+      "config_sha256_before": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "config_sha256_after": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "observed_red": true,
+      "observed_green": true,
+      "pass": true,
+      "exact_expected_after_hex": "efbbbf2320496e737472756374696f6e730ae6a8a1e59e8b20f09f988020636166c3a920616e64206c69746572616c20efbfbd2e0a0ae8bfbde58aa020696e737472756374696f6e2e0a",
+      "control": true
+    },
+    {
+      "name": "intentional-blind-set",
+      "before_hex": "2320496e737472756374696f6e730a4b65657020636166e9207465726d696e6f6c6f67792e0a",
+      "after_hex": "23204578706c69636974207265706c6163656d656e740ae59088e6b39520556e69636f646520f09f98802e0a",
+      "before_sha256": "bdff6f98a9b8947a167e527890131cf8570f2d0ec2cd11e4b812be71918917bd",
+      "after_sha256": "7aafd761ffcc6db6fa6aaf179185d0c11da7cdc6d3aa4f06e48509f0bcbc0f73",
+      "bytes_preserved": false,
+      "config_sha256_before": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "config_sha256_after": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "observed_red": true,
+      "observed_green": true,
+      "pass": true,
+      "control": true,
+      "precondition": "No expectedHash; intentional full replacement remains supported"
+    },
+    {
+      "name": "identity-update-malformed-preread",
+      "before_hex": "23204964656e746974790a2d204e616d653a204f6c640a2d20566962653a20636166e90a",
+      "after_hex": "23204964656e746974790a2d204e616d653a204e65770a2d20566962653a20636166efbfbd0a",
+      "before_sha256": "403809c45b2b5be8cd1d52202e74b7dfa1241d969ac9504720fa35175f992fc4",
+      "after_sha256": "9c0692ae06ee75e81d5993ae7dd89529d5379c0920be1c0ca286a18e16f96d4d",
+      "bytes_preserved": false,
+      "config_sha256_before": "603f4753d2a3faf42a467357db468384317c91e19d79fc3ee751b19014dc24eb",
+      "config_sha256_after": "edd2ca31f62e2559c734bcd03220360c29660f11e8c69e24a668b189f9d4a265",
+      "observed_red": true,
+      "observed_green": false,
+      "pass": true,
+      "config_mutation_scope": "This RPC may update task-owned config on RED; no model/provider or external config is supplied"
+    }
+  ],
+  "fixture_cleanup": "Retained for review; no fixture deletion is claimed",
+  "port": 40391,
+  "gateway_argv": [
+    "<NODE26>",
+    "<BASE_CHECKOUT>/openclaw.mjs",
+    "gateway",
+    "run",
+    "--port",
+    "40391",
+    "--bind",
+    "loopback"
+  ],
+  "owned_process": {
+    "pid": 257092,
+    "process_group": 257092,
+    "new_session": true
+  },
+  "process_cleanup": {
+    "scope": "Only the process group created by this collector; fixtures retained",
+    "sent": [
+      "SIGTERM"
+    ],
+    "leader_exit": -15,
+    "owned_process_group_absent": true
+  },
+  "binding_after": {
+    "head": "83872e599d5720c0bc97d313283a2bc245046699",
+    "tracked_status": "",
+    "build_stamp": {
+      "version": "2026.11.3",
+      "commit": "83872e599d5720c0bc97d313283a2bc245046699",
+      "builtAt": "2026-11-11T03:41:35.250Z",
+      "buildId": "2026.11.3-83872e599d57-2026-11-11T03-41-35.250Z"
+    },
+    "file_sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "c4ef1d151d21b0636808662d1797b3c3aa998c2aa86518a9078e1837ab1970dc",
+      "src/gateway/server-methods/agents-files.ts": "fee7bc9f40273e2516b74571f45cab74e867938689be44238cd8bfadf6de9fb7"
+    },
+    "pass": true
+  },
+  "config_final_sha256": "edd2ca31f62e2559c734bcd03220360c29660f11e8c69e24a668b189f9d4a265",
+  "elapsed_seconds": 39.56098580779508,
+  "pass": true
+}
