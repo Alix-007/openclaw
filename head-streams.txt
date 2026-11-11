@@ -1,0 +1,3955 @@
+
+--- nodes-status-connect-control/terminal.raw ---
+{
+  "ts": 1794392748920,
+  "nodes": [
+    {
+      "nodeId": "synthetic-node-1",
+      "displayName": "Synthetic proof node",
+      "platform": "linux",
+      "paired": true,
+      "connected": true,
+      "caps": [],
+      "commands": []
+    }
+  ]
+}
+
+--- nodes-status-connect-control/diagnostics.log ---
+
+--- nodes-status-connect-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43579",
+    "at": 64.341825,
+    "observedAt": 3532354.576265027
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3232.864336,
+    "observedAt": 3532357.742722959
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:87d697fc-4623-4758-b8a0-24f18df9a797",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "55ef7e7e-dea0-4638-9eb3-6651ee2d360c"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3239.577019,
+    "observedAt": 3532357.74932929
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3239.838904,
+    "observedAt": 3532357.749353208
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:4c88003d-3188-4b8a-8934-fdf99f521d61",
+    "params": {},
+    "connectionId": 1,
+    "at": 3242.125516,
+    "observedAt": 3532357.751689403
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3242.331317,
+    "observedAt": 3532357.751836001
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3246.423487,
+    "observedAt": 3532357.755986781
+  }
+]
+
+--- nodes-status-connect-control/peer.stderr ---
+
+--- nodes-status-connect-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-status-connect-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-status-connect-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41447",
+    "at": 68.910814,
+    "observedAt": 3532357.992766583
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3101.495061,
+    "observedAt": 3532361.022956886
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:2f9dda1a-b88a-4bc3-b916-7c89854f20f5",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b26d2575-c632-4ac1-b069-908f7a3c204b"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3107.290446,
+    "observedAt": 3532361.028646967
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3107.349347,
+    "observedAt": 3532361.028687556
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3169.643282,
+    "observedAt": 3532361.091006394
+  }
+]
+
+--- nodes-status-connect-sigint-interrupt/peer.stderr ---
+
+--- nodes-status-connect-sigterm-interrupt/terminal.raw ---
+
+--- nodes-status-connect-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-status-connect-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45749",
+    "at": 67.301192,
+    "observedAt": 3532361.318756565
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3097.583517,
+    "observedAt": 3532364.346947082
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:f4564e6f-48ab-49e0-92f7-ec790bca59b6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b7f30f85-fcb6-4629-8bf2-41a66f1b1e0a"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3103.944119,
+    "observedAt": 3532364.353178045
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3104.009429,
+    "observedAt": 3532364.353194958
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3160.415575,
+    "observedAt": 3532364.409744497
+  }
+]
+
+--- nodes-status-connect-sigterm-interrupt/peer.stderr ---
+
+--- nodes-status-node.list-control/terminal.raw ---
+{
+  "ts": 1794392758919,
+  "nodes": [
+    {
+      "nodeId": "synthetic-node-1",
+      "displayName": "Synthetic proof node",
+      "platform": "linux",
+      "paired": true,
+      "connected": true,
+      "caps": [],
+      "commands": []
+    }
+  ]
+}
+
+--- nodes-status-node.list-control/diagnostics.log ---
+
+--- nodes-status-node.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:37305",
+    "at": 70.602588,
+    "observedAt": 3532364.640395026
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3174.277375,
+    "observedAt": 3532367.742046359
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:500e9e2c-feef-4700-84f4-e327f6acc70f",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "f2689ec9-1867-42da-b75a-606c997503a4"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3181.067596,
+    "observedAt": 3532367.748765171
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3181.303862,
+    "observedAt": 3532367.748825656
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:ba51395d-0357-44b3-890a-3118f1386744",
+    "params": {},
+    "connectionId": 1,
+    "at": 3183.324751,
+    "observedAt": 3532367.750983965
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3183.576063,
+    "observedAt": 3532367.751097207
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3187.311456,
+    "observedAt": 3532367.754859478
+  }
+]
+
+--- nodes-status-node.list-control/peer.stderr ---
+
+--- nodes-status-node.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-status-node.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-status-node.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33395",
+    "at": 63.83377,
+    "observedAt": 3532367.976510193
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3458.392082,
+    "observedAt": 3532371.368769128
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:28c51b5c-6d93-4363-aa41-d29e4afc5e52",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "f8fb4e0a-02df-4a90-81de-2ad78c5ff78f"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3466.026321,
+    "observedAt": 3532371.376361132
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3466.417709,
+    "observedAt": 3532371.376533016
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:39d3bde1-f668-419e-8b52-a8d5ce400669",
+    "params": {},
+    "connectionId": 1,
+    "at": 3468.745532,
+    "observedAt": 3532371.378933818
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3468.923864,
+    "observedAt": 3532371.378986501
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3529.513246,
+    "observedAt": 3532371.439779078
+  }
+]
+
+--- nodes-status-node.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-status-node.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-status-node.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-status-node.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44785",
+    "at": 65.26791,
+    "observedAt": 3532371.675050012
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3139.889311,
+    "observedAt": 3532374.746640791
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:c4ce7246-eeda-49d6-a00a-0efa33a85cc6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "edb92638-9f5e-45c3-bc76-3cd6f91c8807"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3146.918119,
+    "observedAt": 3532374.753620352
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3147.163067,
+    "observedAt": 3532374.753687426
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:5ebf1511-af53-4f98-b5d2-794150249fff",
+    "params": {},
+    "connectionId": 1,
+    "at": 3149.375024,
+    "observedAt": 3532374.755969784
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3149.497058,
+    "observedAt": 3532374.756027086
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3182.123721,
+    "observedAt": 3532374.788784985
+  }
+]
+
+--- nodes-status-node.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-list-node.pair.list-control/terminal.raw ---
+{
+  "pending": [
+    {
+      "requestId": "synthetic-request-1",
+      "nodeId": "synthetic-pending-node-1",
+      "displayName": "Synthetic pending node",
+      "platform": "linux",
+      "ts": 1794392766191
+    }
+  ],
+  "paired": [
+    {
+      "nodeId": "synthetic-node-1",
+      "displayName": "Synthetic proof node",
+      "platform": "linux",
+      "paired": true,
+      "connected": true,
+      "caps": [],
+      "commands": []
+    }
+  ]
+}
+
+--- nodes-list-node.pair.list-control/diagnostics.log ---
+
+--- nodes-list-node.pair.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33237",
+    "at": 68.644853,
+    "observedAt": 3532375.031279402
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2240.552628,
+    "observedAt": 3532377.198841361
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5596431c-3b53-47ec-b3c5-7fcd3a5c447c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a0c28e34-c4ba-4399-a58d-cadf669ac18b"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2247.508117,
+    "observedAt": 3532377.205726422
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2247.747497,
+    "observedAt": 3532377.2058446
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:d74b7e57-10f4-48b4-9240-1efd649a9823",
+    "params": {},
+    "connectionId": 1,
+    "at": 2249.741303,
+    "observedAt": 3532377.207830836
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2250.019573,
+    "observedAt": 3532377.208066421
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2253.778701,
+    "observedAt": 3532377.211859369
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3173.190832,
+    "observedAt": 3532378.132064513
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:820d997b-6b51-4cc6-b355-b9c38d154547",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "7c8aa2e4-9248-45b1-8b81-3f90fea7e13d"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3174.581125,
+    "observedAt": 3532378.132728515
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3174.738891,
+    "observedAt": 3532378.132759091
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:bf25af60-642a-459d-be53-81cd80f8a5f3",
+    "params": {},
+    "connectionId": 2,
+    "at": 3175.559047,
+    "observedAt": 3532378.133600293
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3175.722857,
+    "observedAt": 3532378.133740546
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3176.992423,
+    "observedAt": 3532378.135046918
+  }
+]
+
+--- nodes-list-node.pair.list-control/peer.stderr ---
+
+--- nodes-list-node.pair.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-list-node.pair.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-list-node.pair.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40409",
+    "at": 68.366448,
+    "observedAt": 3532378.385649629
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2197.001615,
+    "observedAt": 3532380.510877196
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:61f78a3c-26fa-4767-9ffd-207ca52c7587",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "895a5919-97b6-4de9-8f8e-b352f01debf4"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2203.680284,
+    "observedAt": 3532380.517439294
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2203.916954,
+    "observedAt": 3532380.517528428
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:5b63e26e-4d5f-41d2-8d1a-c023838eb844",
+    "params": {},
+    "connectionId": 1,
+    "at": 2205.897484,
+    "observedAt": 3532380.519638223
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2205.971989,
+    "observedAt": 3532380.519650997
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2254.572766,
+    "observedAt": 3532380.56830519
+  }
+]
+
+--- nodes-list-node.pair.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-list-node.pair.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-list-node.pair.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-list-node.pair.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34981",
+    "at": 69.688286,
+    "observedAt": 3532380.760132919
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2372.030714,
+    "observedAt": 3532383.060433164
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:d1237214-50c9-4a5b-9d0b-5f75c31c2df1",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b0d8aee6-3e2b-475b-b0bc-2a6935be97c3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2379.008749,
+    "observedAt": 3532383.067342501
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2379.234617,
+    "observedAt": 3532383.067403102
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:43053b75-9011-4a69-838a-e1d1ce977f17",
+    "params": {},
+    "connectionId": 1,
+    "at": 2381.179807,
+    "observedAt": 3532383.069480065
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2381.245417,
+    "observedAt": 3532383.069498517
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2433.055224,
+    "observedAt": 3532383.121447096
+  }
+]
+
+--- nodes-list-node.pair.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-list-enrichment-node.list-control/terminal.raw ---
+{
+  "pending": [
+    {
+      "requestId": "synthetic-request-1",
+      "nodeId": "synthetic-pending-node-1",
+      "displayName": "Synthetic pending node",
+      "platform": "linux",
+      "ts": 1794392774470
+    }
+  ],
+  "paired": [
+    {
+      "nodeId": "synthetic-node-1",
+      "displayName": "Synthetic proof node",
+      "platform": "linux",
+      "paired": true,
+      "connected": true,
+      "caps": [],
+      "commands": []
+    }
+  ]
+}
+
+--- nodes-list-enrichment-node.list-control/diagnostics.log ---
+
+--- nodes-list-enrichment-node.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43793",
+    "at": 63.289737,
+    "observedAt": 3532383.307940634
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2252.243321,
+    "observedAt": 3532385.494850251
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:63f12495-f9fa-4639-90be-661aa1d4b74c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "e204a939-3ae6-4277-b214-bf6417915429"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2260.386877,
+    "observedAt": 3532385.502985728
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2260.672227,
+    "observedAt": 3532385.503044324
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:ea8c72ce-9065-4c69-8e2b-3432b80822bf",
+    "params": {},
+    "connectionId": 1,
+    "at": 2263.378852,
+    "observedAt": 3532385.505849675
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2263.643995,
+    "observedAt": 3532385.506033847
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2267.887407,
+    "observedAt": 3532385.510328124
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3180.033483,
+    "observedAt": 3532386.422641616
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:21c7499e-57a3-4dc9-ac7f-c7a2f0373b83",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "e4237a98-5df9-46f8-9975-101a13f7ea71"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3181.090153,
+    "observedAt": 3532386.423573514
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3181.24488,
+    "observedAt": 3532386.423623186
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:42a0c219-b745-4176-b161-fbd45e850694",
+    "params": {},
+    "connectionId": 2,
+    "at": 3181.860483,
+    "observedAt": 3532386.424266498
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3182.042066,
+    "observedAt": 3532386.424432487
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3183.30087,
+    "observedAt": 3532386.425721186
+  }
+]
+
+--- nodes-list-enrichment-node.list-control/peer.stderr ---
+
+--- nodes-list-enrichment-node.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-list-enrichment-node.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-list-enrichment-node.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:35183",
+    "at": 64.991329,
+    "observedAt": 3532386.658665178
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2165.334976,
+    "observedAt": 3532388.757215341
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:ce7da870-a259-4516-8a53-9f4d3c5629f6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "47f281fb-7e5f-4e88-85ae-f29d233fe6da"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2172.114075,
+    "observedAt": 3532388.763680182
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2172.375427,
+    "observedAt": 3532388.763788173
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:d907c986-8d3f-468d-80fc-e85a4a2d5dfa",
+    "params": {},
+    "connectionId": 1,
+    "at": 2174.445784,
+    "observedAt": 3532388.766124212
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2174.662627,
+    "observedAt": 3532388.766139399
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2178.922784,
+    "observedAt": 3532388.770355393
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3088.925722,
+    "observedAt": 3532389.680431924
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:7867208a-9300-4293-92a3-823955a90dc6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a7819bcc-365b-4f47-a5d3-7e0ec07a7170"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3089.950596,
+    "observedAt": 3532389.681333256
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3090.095069,
+    "observedAt": 3532389.681446962
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:6ab9d3fc-d34c-4e74-aa58-c497a06a8b67",
+    "params": {},
+    "connectionId": 2,
+    "at": 3090.909273,
+    "observedAt": 3532389.682300262
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3090.954605,
+    "observedAt": 3532389.682333202
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3121.761472,
+    "observedAt": 3532389.713254327
+  }
+]
+
+--- nodes-list-enrichment-node.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-list-enrichment-node.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-list-enrichment-node.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-list-enrichment-node.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:42501",
+    "at": 73.008723,
+    "observedAt": 3532389.947113381
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2279.892652,
+    "observedAt": 3532392.151968924
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4a48b670-2825-46e3-b50a-9d6216b82ee6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "65052436-2ff3-4b7b-beab-548bd80a1387"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2286.877459,
+    "observedAt": 3532392.15870913
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2287.095521,
+    "observedAt": 3532392.158798004
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:aaa7cbc8-3ba4-44e7-8172-d4f890b9c77c",
+    "params": {},
+    "connectionId": 1,
+    "at": 2289.216275,
+    "observedAt": 3532392.161051766
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2289.473784,
+    "observedAt": 3532392.161188028
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2293.28045,
+    "observedAt": 3532392.165018219
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3202.226581,
+    "observedAt": 3532393.074107863
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:3c2ff7a6-370d-4da2-9a56-47f7e7c7f5f0",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "6a831c94-bad6-440e-b32a-a8e845943248"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3203.549804,
+    "observedAt": 3532393.075506151
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3203.865186,
+    "observedAt": 3532393.075591276
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:6d054f95-3a33-45c5-8301-3080671df804",
+    "params": {},
+    "connectionId": 2,
+    "at": 3204.517816,
+    "observedAt": 3532393.076279929
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3204.611769,
+    "observedAt": 3532393.076311593
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3248.889844,
+    "observedAt": 3532393.120772568
+  }
+]
+
+--- nodes-list-enrichment-node.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-list-filtered-node.list-control/terminal.raw ---
+{
+  "pending": [
+    {
+      "requestId": "synthetic-request-1",
+      "nodeId": "synthetic-pending-node-1",
+      "displayName": "Synthetic pending node",
+      "platform": "linux",
+      "ts": 1794392784513
+    }
+  ],
+  "paired": [
+    {
+      "nodeId": "synthetic-node-1",
+      "displayName": "Synthetic proof node",
+      "platform": "linux",
+      "paired": true,
+      "connected": true,
+      "caps": [],
+      "commands": []
+    }
+  ]
+}
+
+--- nodes-list-filtered-node.list-control/diagnostics.log ---
+
+--- nodes-list-filtered-node.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43443",
+    "at": 63.504808,
+    "observedAt": 3532393.351720522
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2356.223823,
+    "observedAt": 3532395.642044183
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:d35d110b-02c8-4136-b0d1-099106b2cc1f",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "82cc5268-f4c2-434c-9173-6a2cb3c4f492"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2363.077165,
+    "observedAt": 3532395.648753761
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2363.356278,
+    "observedAt": 3532395.648934191
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:54802acf-c5ba-4e77-9cda-318f6d43aeb1",
+    "params": {},
+    "connectionId": 1,
+    "at": 2365.585883,
+    "observedAt": 3532395.651188399
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2365.864311,
+    "observedAt": 3532395.651421576
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2370.042344,
+    "observedAt": 3532395.65562361
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3337.25602,
+    "observedAt": 3532396.622972278
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:abb71970-7468-4559-9e79-6faac3f8dc1e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "76ac147f-2cc5-4398-95ed-8d5c46427fc4"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3338.514819,
+    "observedAt": 3532396.624114925
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3338.679975,
+    "observedAt": 3532396.624279459
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:e33c8cc5-8a81-411b-8c64-e7428525b0f3",
+    "params": {},
+    "connectionId": 2,
+    "at": 3339.311955,
+    "observedAt": 3532396.624886064
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3339.505535,
+    "observedAt": 3532396.625040283
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3340.501062,
+    "observedAt": 3532396.626068756
+  }
+]
+
+--- nodes-list-filtered-node.list-control/peer.stderr ---
+
+--- nodes-list-filtered-node.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-list-filtered-node.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-list-filtered-node.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:38747",
+    "at": 70.085369,
+    "observedAt": 3532396.863555628
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2441.840271,
+    "observedAt": 3532399.233362981
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:48aed965-2415-4146-a5ac-feb21e2fc211",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "411662bc-5e9c-45e1-bbc6-7096240118f2"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2449.890999,
+    "observedAt": 3532399.241307087
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2450.151616,
+    "observedAt": 3532399.241376769
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:af38b425-11c1-4a9d-a61e-5c8c66787df7",
+    "params": {},
+    "connectionId": 1,
+    "at": 2452.367745,
+    "observedAt": 3532399.2436532
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2452.5982,
+    "observedAt": 3532399.243825446
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2456.623462,
+    "observedAt": 3532399.247989767
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3412.060829,
+    "observedAt": 3532400.203540259
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:1cd68ec4-762a-4fa9-9632-e9b3aa108328",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "5a111e9f-b9b6-4e6a-ab76-8a3290ef71cd"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3413.274237,
+    "observedAt": 3532400.204682214
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3413.424359,
+    "observedAt": 3532400.204699949
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:336ea3ae-0ddd-4789-8432-4903e9c2ae3c",
+    "params": {},
+    "connectionId": 2,
+    "at": 3414.353659,
+    "observedAt": 3532400.205587564
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3414.402139,
+    "observedAt": 3532400.205596633
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3460.799127,
+    "observedAt": 3532400.25221549
+  }
+]
+
+--- nodes-list-filtered-node.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-list-filtered-node.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-list-filtered-node.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-list-filtered-node.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33841",
+    "at": 68.50126,
+    "observedAt": 3532400.505013787
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2242.786429,
+    "observedAt": 3532402.677174047
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4ed2775e-aecd-4d0d-96b1-c3ccf670e03b",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "f013d11f-3baa-4ece-a8af-116af018ab49"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2249.891729,
+    "observedAt": 3532402.684237763
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2250.173195,
+    "observedAt": 3532402.684277865
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:8efd3c77-443c-4217-9dff-9f2ed1d4c45e",
+    "params": {},
+    "connectionId": 1,
+    "at": 2252.296404,
+    "observedAt": 3532402.686475956
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2252.51704,
+    "observedAt": 3532402.686643461
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2256.225722,
+    "observedAt": 3532402.690395987
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3190.373583,
+    "observedAt": 3532403.624628192
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:0b6caeea-0d99-4521-a1b3-f61cddd6d142",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "915ec3fe-2263-4404-be3c-8916ce31dd87"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3191.54701,
+    "observedAt": 3532403.625709131
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3191.720768,
+    "observedAt": 3532403.625829399
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:ec5d4845-9660-4a5c-b863-e348554c48a9",
+    "params": {},
+    "connectionId": 2,
+    "at": 3192.367205,
+    "observedAt": 3532403.626493691
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3192.430601,
+    "observedAt": 3532403.626568967
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3255.889806,
+    "observedAt": 3532403.690138934
+  }
+]
+
+--- nodes-list-filtered-node.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-pending-node.pair.list-control/terminal.raw ---
+[
+  {
+    "requestId": "synthetic-request-1",
+    "nodeId": "synthetic-pending-node-1",
+    "displayName": "Synthetic pending node",
+    "platform": "linux",
+    "ts": 1794392795082
+  }
+]
+
+--- nodes-pending-node.pair.list-control/diagnostics.log ---
+
+--- nodes-pending-node.pair.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41827",
+    "at": 69.203606,
+    "observedAt": 3532403.922792303
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2655.932427,
+    "observedAt": 3532406.505150999
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:b9205f32-16c0-4242-8b73-ce0f18c79c08",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "6b896853-c6f6-41af-adf8-bfb46dfc2176"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2662.506401,
+    "observedAt": 3532406.511669375
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2662.731563,
+    "observedAt": 3532406.511686325
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:7746315e-1933-4204-90c9-244f87edefcf",
+    "params": {},
+    "connectionId": 1,
+    "at": 2665.041486,
+    "observedAt": 3532406.514128988
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2665.245726,
+    "observedAt": 3532406.514230822
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2669.281388,
+    "observedAt": 3532406.51831849
+  }
+]
+
+--- nodes-pending-node.pair.list-control/peer.stderr ---
+
+--- nodes-pending-node.pair.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-pending-node.pair.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-pending-node.pair.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:39947",
+    "at": 68.829153,
+    "observedAt": 3532406.716403166
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2586.043071,
+    "observedAt": 3532409.231014397
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:978c919c-3d35-4da6-8885-de0c6c21b98c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "53bd3775-cc28-4b86-ad10-371829103d05"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2592.648235,
+    "observedAt": 3532409.237566043
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2592.898933,
+    "observedAt": 3532409.237601778
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:686e26b1-7490-4779-9814-f944f15beee4",
+    "params": {},
+    "connectionId": 1,
+    "at": 2594.925496,
+    "observedAt": 3532409.239760124
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2595.002937,
+    "observedAt": 3532409.239773686
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2640.319429,
+    "observedAt": 3532409.285125851
+  }
+]
+
+--- nodes-pending-node.pair.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-pending-node.pair.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-pending-node.pair.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-pending-node.pair.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34943",
+    "at": 63.984522,
+    "observedAt": 3532409.474862163
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2590.176289,
+    "observedAt": 3532411.998883442
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:44812ae3-ccc2-4350-af87-170b2ab2db85",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b2f55a56-9ec4-4f5d-99d0-e1a26522a1b0"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2596.554885,
+    "observedAt": 3532412.00514946
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2596.76604,
+    "observedAt": 3532412.005237229
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:fc86e3ef-d87b-42da-a988-eba383367925",
+    "params": {},
+    "connectionId": 1,
+    "at": 2598.820845,
+    "observedAt": 3532412.007328611
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 1,
+    "at": 2598.88936,
+    "observedAt": 3532412.007349452
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2635.093969,
+    "observedAt": 3532412.043719869
+  }
+]
+
+--- nodes-pending-node.pair.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-describe-lookup-node.list-control/terminal.raw ---
+{
+  "ts": 1794392806598,
+  "nodeId": "synthetic-node-1",
+  "displayName": "Synthetic proof node",
+  "platform": "linux",
+  "paired": true,
+  "connected": true,
+  "caps": [],
+  "commands": []
+}
+
+--- nodes-describe-lookup-node.list-control/diagnostics.log ---
+
+--- nodes-describe-lookup-node.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40465",
+    "at": 81.107538,
+    "observedAt": 3532412.24568987
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3232.020632,
+    "observedAt": 3532415.394262282
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:b18083f5-c92a-4a8c-a4b3-bf178f0bdb7e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "ddfbfa7f-6370-4895-9bcb-8da32af4dc53"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3243.43035,
+    "observedAt": 3532415.405666892
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3243.80328,
+    "observedAt": 3532415.405834868
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:96346855-a651-4a37-89a0-17a16fa85bcc",
+    "params": {},
+    "connectionId": 1,
+    "at": 3247.104088,
+    "observedAt": 3532415.409183938
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3247.334658,
+    "observedAt": 3532415.409352851
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3252.83353,
+    "observedAt": 3532415.415056615
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3265.03401,
+    "observedAt": 3532415.427186679
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:3c1d5043-89ad-48ba-a2eb-e46809d655fb",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "952108d9-0787-4f70-bd33-a545fae3eb20"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3266.439033,
+    "observedAt": 3532415.428503647
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3266.612684,
+    "observedAt": 3532415.428624827
+  },
+  {
+    "event": "request",
+    "method": "node.describe",
+    "id": "2:900b39fe-73a8-4333-9846-758acee12057",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 3267.550709,
+    "observedAt": 3532415.429568434
+  },
+  {
+    "event": "response",
+    "method": "node.describe",
+    "connectionId": 2,
+    "at": 3267.708247,
+    "observedAt": 3532415.429716259
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3269.13953,
+    "observedAt": 3532415.431253636
+  }
+]
+
+--- nodes-describe-lookup-node.list-control/peer.stderr ---
+
+--- nodes-describe-lookup-node.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-describe-lookup-node.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-describe-lookup-node.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:38639",
+    "at": 73.846376,
+    "observedAt": 3532415.6953101
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3261.023382,
+    "observedAt": 3532418.880248435
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4a822e26-566f-4c14-8c81-c7e19c75e2d5",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a8299b68-1b8b-4fc8-a6ce-7b0575b552de"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3272.139601,
+    "observedAt": 3532418.891232477
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3272.416861,
+    "observedAt": 3532418.891320898
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:415e6271-0788-4bdd-90c0-8e696c2fd085",
+    "params": {},
+    "connectionId": 1,
+    "at": 3275.802642,
+    "observedAt": 3532418.89479696
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3275.899284,
+    "observedAt": 3532418.89481789
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3316.893219,
+    "observedAt": 3532418.935958704
+  }
+]
+
+--- nodes-describe-lookup-node.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-describe-lookup-node.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-describe-lookup-node.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-describe-lookup-node.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:38363",
+    "at": 82.474925,
+    "observedAt": 3532419.189054931
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3204.507305,
+    "observedAt": 3532422.308792592
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:cdf49b42-bf77-42e0-9445-7c08c720f95a",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "afb21f25-288a-4ceb-9fde-70bf34800a1a"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3211.026786,
+    "observedAt": 3532422.315272288
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3211.31159,
+    "observedAt": 3532422.315316347
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:74ab5582-61e3-47ad-9c5b-d28d19386ad7",
+    "params": {},
+    "connectionId": 1,
+    "at": 3213.541505,
+    "observedAt": 3532422.317867422
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3213.634336,
+    "observedAt": 3532422.317877905
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3273.240346,
+    "observedAt": 3532422.377401526
+  }
+]
+
+--- nodes-describe-lookup-node.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-describe-node.describe-control/terminal.raw ---
+{
+  "ts": 1794392816902,
+  "nodeId": "synthetic-node-1",
+  "displayName": "Synthetic proof node",
+  "platform": "linux",
+  "paired": true,
+  "connected": true,
+  "caps": [],
+  "commands": []
+}
+
+--- nodes-describe-node.describe-control/diagnostics.log ---
+
+--- nodes-describe-node.describe-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43571",
+    "at": 79.52611,
+    "observedAt": 3532422.628918592
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3162.017845,
+    "observedAt": 3532425.709424547
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:0c7ad213-0de8-4112-9aec-517cfbd4fa6e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "80d40b71-d249-4087-8daf-637cfc5e46f4"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3168.917609,
+    "observedAt": 3532425.716256578
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3169.202294,
+    "observedAt": 3532425.716631063
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:10945e0b-a831-47e2-9d82-0326f592c4a5",
+    "params": {},
+    "connectionId": 1,
+    "at": 3171.294034,
+    "observedAt": 3532425.718514963
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3171.532982,
+    "observedAt": 3532425.718701054
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3175.704473,
+    "observedAt": 3532425.722974458
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3184.405932,
+    "observedAt": 3532425.731626051
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:f70dcba2-1d35-44e6-8374-ae7628e473cc",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "bc693838-5d18-43a9-82b4-d612543cbb64"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3185.478643,
+    "observedAt": 3532425.73269345
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3185.636205,
+    "observedAt": 3532425.732791818
+  },
+  {
+    "event": "request",
+    "method": "node.describe",
+    "id": "2:0019498c-c14c-4f2a-b3c6-ecb16c36dacc",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 3186.292123,
+    "observedAt": 3532425.733631262
+  },
+  {
+    "event": "response",
+    "method": "node.describe",
+    "connectionId": 2,
+    "at": 3186.463474,
+    "observedAt": 3532425.733653734
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3187.400682,
+    "observedAt": 3532425.734589832
+  }
+]
+
+--- nodes-describe-node.describe-control/peer.stderr ---
+
+--- nodes-describe-node.describe-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-describe-node.describe-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-describe-node.describe-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45547",
+    "at": 69.460677,
+    "observedAt": 3532425.989440922
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3468.81412,
+    "observedAt": 3532429.387470914
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:77e2d2cd-f818-4423-8cd9-2ed410ebe66e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "cb623950-d414-4005-8019-5fb1547c4dc9"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3477.845254,
+    "observedAt": 3532429.396479867
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3478.252249,
+    "observedAt": 3532429.396618279
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:97a8d5d7-0c38-41a5-b4b2-0079dcf02028",
+    "params": {},
+    "connectionId": 1,
+    "at": 3480.904191,
+    "observedAt": 3532429.39941899
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3481.338003,
+    "observedAt": 3532429.399734122
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3486.984235,
+    "observedAt": 3532429.405518879
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3497.0807,
+    "observedAt": 3532429.41557756
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5e202097-da26-4cd1-bf11-86c53f31f97a",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "fbaf3ac3-78ee-4bc6-abce-1b2518ffd4e7"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3498.423706,
+    "observedAt": 3532429.416925671
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3498.631701,
+    "observedAt": 3532429.416961912
+  },
+  {
+    "event": "request",
+    "method": "node.describe",
+    "id": "2:66b650a5-67d0-481f-ace0-0a4e03181aee",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 3499.407039,
+    "observedAt": 3532429.417809751
+  },
+  {
+    "event": "read-held",
+    "method": "node.describe",
+    "connectionId": 2,
+    "at": 3499.46057,
+    "observedAt": 3532429.417841236
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3550.041865,
+    "observedAt": 3532429.468500236
+  }
+]
+
+--- nodes-describe-node.describe-sigint-interrupt/peer.stderr ---
+
+--- nodes-describe-node.describe-sigterm-interrupt/terminal.raw ---
+
+--- nodes-describe-node.describe-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-describe-node.describe-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44065",
+    "at": 70.390616,
+    "observedAt": 3532429.727271157
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3292.286204,
+    "observedAt": 3532432.947349977
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5c986658-251b-48aa-830d-767602e9e910",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "328c7bde-a1cc-4164-b3e8-637dfb545eef"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3298.815964,
+    "observedAt": 3532432.953490008
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3299.132556,
+    "observedAt": 3532432.953653295
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:5543e610-b6c5-46f8-96a0-aa488ec4ffd5",
+    "params": {},
+    "connectionId": 1,
+    "at": 3301.026639,
+    "observedAt": 3532432.95558393
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3301.255257,
+    "observedAt": 3532432.955776692
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3305.438669,
+    "observedAt": 3532432.960009745
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3313.800044,
+    "observedAt": 3532432.968369452
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:f151f261-d8a1-415f-8d7b-ff05ffad81fe",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "5f7c93af-4fa5-4883-9da8-908bca966bf3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3314.813423,
+    "observedAt": 3532432.969395706
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3315.043305,
+    "observedAt": 3532432.969567126
+  },
+  {
+    "event": "request",
+    "method": "node.describe",
+    "id": "2:71ab494f-ddd3-4386-b5b1-7a0075665370",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 3315.608137,
+    "observedAt": 3532432.970174251
+  },
+  {
+    "event": "read-held",
+    "method": "node.describe",
+    "connectionId": 2,
+    "at": 3315.656733,
+    "observedAt": 3532432.970193048
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3366.247217,
+    "observedAt": 3532433.020932243
+  }
+]
+
+--- nodes-describe-node.describe-sigterm-interrupt/peer.stderr ---
+
+--- nodes-describe-legacy-node.pair.list-control/terminal.raw ---
+{
+  "ts": 1794392827555,
+  "nodeId": "synthetic-node-1",
+  "displayName": "Synthetic proof node",
+  "platform": "linux",
+  "paired": true,
+  "connected": true,
+  "caps": [],
+  "commands": []
+}
+
+--- nodes-describe-legacy-node.pair.list-control/diagnostics.log ---
+
+--- nodes-describe-legacy-node.pair.list-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43763",
+    "at": 68.969566,
+    "observedAt": 3532433.271088078
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3148.311665,
+    "observedAt": 3532436.349196958
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:6736799f-28a6-45d6-b9ed-c33f71f46f1d",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "6323e084-b95b-4516-a475-434d5cdf36a4"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3155.435056,
+    "observedAt": 3532436.355777286
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3155.672359,
+    "observedAt": 3532436.355788807
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:596aaf12-ce09-4874-b79f-bd4953abb0ce",
+    "params": {},
+    "connectionId": 1,
+    "at": 3157.554191,
+    "observedAt": 3532436.357320926
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3157.760672,
+    "observedAt": 3532436.357470493
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3162.432937,
+    "observedAt": 3532436.362236098
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3167.493497,
+    "observedAt": 3532436.367249658
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:385a70ab-45dc-4a0b-9d74-2a58fa396634",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "113f14d4-c8dd-4f9b-82ee-3181f1f831f6"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3168.345487,
+    "observedAt": 3532436.368081389
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3168.499381,
+    "observedAt": 3532436.368194725
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:26c5b8df-1cc4-4a01-9dad-64562efd25bc",
+    "params": {},
+    "connectionId": 2,
+    "at": 3169.374225,
+    "observedAt": 3532436.369447138
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3169.501626,
+    "observedAt": 3532436.369455057
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3170.517171,
+    "observedAt": 3532436.370240366
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 3,
+    "at": 3174.91868,
+    "observedAt": 3532436.374692648
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:eeb125b8-bdc2-4748-9ece-a8ab7a7c4f5b",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "751c4a5d-ead4-441c-9f55-698fb75cdd31"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 3,
+    "at": 3175.703162,
+    "observedAt": 3532436.375477126
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 3,
+    "at": 3175.845704,
+    "observedAt": 3532436.375555103
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:2e7a8844-7a96-4533-a987-f1ef93cf1a52",
+    "params": {},
+    "connectionId": 3,
+    "at": 3176.312937,
+    "observedAt": 3532436.3760373
+  },
+  {
+    "event": "response",
+    "method": "node.pair.list",
+    "connectionId": 3,
+    "at": 3176.442629,
+    "observedAt": 3532436.376141846
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 3,
+    "at": 3177.570562,
+    "observedAt": 3532436.377313122
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 4,
+    "at": 3185.686046,
+    "observedAt": 3532436.385445936
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:2f7b7215-1a8a-420f-aab5-566511742532",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "7219dc7a-3e67-404f-ae8e-de0d8653a471"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 4,
+    "at": 3186.398227,
+    "observedAt": 3532436.386154579
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 4,
+    "at": 3186.502754,
+    "observedAt": 3532436.386183638
+  },
+  {
+    "event": "request",
+    "method": "node.describe",
+    "id": "2:8a55e3d8-fee3-4ef9-bda0-ec4e0a52605b",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 4,
+    "at": 3186.883384,
+    "observedAt": 3532436.386600236
+  },
+  {
+    "event": "response",
+    "method": "node.describe",
+    "connectionId": 4,
+    "at": 3186.989141,
+    "observedAt": 3532436.386823671
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 4,
+    "at": 3187.68944,
+    "observedAt": 3532436.387407644
+  }
+]
+
+--- nodes-describe-legacy-node.pair.list-control/peer.stderr ---
+
+--- nodes-describe-legacy-node.pair.list-sigint-interrupt/terminal.raw ---
+^C
+--- nodes-describe-legacy-node.pair.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-describe-legacy-node.pair.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43445",
+    "at": 89.593768,
+    "observedAt": 3532436.650827902
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3107.487579,
+    "observedAt": 3532439.666597086
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:20fee2b8-ac0a-4365-8742-1c3c86d045e7",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "2c2247d5-cbd5-4379-8604-d3506ff487f6"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3114.762296,
+    "observedAt": 3532439.67380027
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3115.165188,
+    "observedAt": 3532439.674060432
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:d4f80f02-35cf-4d31-8a45-695081bc3ebc",
+    "params": {},
+    "connectionId": 1,
+    "at": 3117.307508,
+    "observedAt": 3532439.676216275
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3117.665805,
+    "observedAt": 3532439.676554561
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3123.481596,
+    "observedAt": 3532439.682431621
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3128.898922,
+    "observedAt": 3532439.687978544
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:a5b7c476-8fc6-4fde-8562-8749124e0930",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "3953bffe-b596-4436-88dc-688a46a5be35"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3130.057165,
+    "observedAt": 3532439.689066146
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3130.352601,
+    "observedAt": 3532439.689198935
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:04912223-52f0-4ca6-a6b0-66174f9239b4",
+    "params": {},
+    "connectionId": 2,
+    "at": 3131.038406,
+    "observedAt": 3532439.689906643
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3131.315408,
+    "observedAt": 3532439.690161362
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3132.650955,
+    "observedAt": 3532439.691557267
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 3,
+    "at": 3137.543373,
+    "observedAt": 3532439.696519591
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:57133fa6-d87f-433f-a41b-0083ab66ad36",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "052aa749-af59-4f54-b818-6436251d7f2f"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 3,
+    "at": 3138.390383,
+    "observedAt": 3532439.697316305
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 3,
+    "at": 3138.611533,
+    "observedAt": 3532439.697454117
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:73db0601-d8d5-4ebb-9bec-a6f87a8a1285",
+    "params": {},
+    "connectionId": 3,
+    "at": 3139.161209,
+    "observedAt": 3532439.698026024
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 3,
+    "at": 3139.222858,
+    "observedAt": 3532439.698050895
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 3,
+    "at": 3181.047795,
+    "observedAt": 3532439.740012832
+  }
+]
+
+--- nodes-describe-legacy-node.pair.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-describe-legacy-node.pair.list-sigterm-interrupt/terminal.raw ---
+
+--- nodes-describe-legacy-node.pair.list-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- nodes-describe-legacy-node.pair.list-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40339",
+    "at": 68.750843,
+    "observedAt": 3532440.002130716
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 3316.39967,
+    "observedAt": 3532443.247617427
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:ae1bac4d-4081-4b60-83ad-4e0dca30149d",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "7ee312cf-902e-48d5-96f8-4126878807c3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 3323.091319,
+    "observedAt": 3532443.254233553
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 3323.344918,
+    "observedAt": 3532443.254281236
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:2754d397-0dcd-40d6-9511-3ae48a05ad6a",
+    "params": {},
+    "connectionId": 1,
+    "at": 3325.483151,
+    "observedAt": 3532443.256497546
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3325.700648,
+    "observedAt": 3532443.256668102
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3330.202846,
+    "observedAt": 3532443.261192782
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3334.017871,
+    "observedAt": 3532443.265002678
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:6add559e-b2a0-4071-882c-8d065851c191",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "bde7effe-9fcd-49fc-8440-dc433c860fbb"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3335.091034,
+    "observedAt": 3532443.266090687
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3335.28385,
+    "observedAt": 3532443.266241863
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:2b056391-2d67-4849-a403-29528c2a34d2",
+    "params": {},
+    "connectionId": 2,
+    "at": 3335.869201,
+    "observedAt": 3532443.266839061
+  },
+  {
+    "event": "legacy-unknown-method",
+    "method": "node.list",
+    "connectionId": 2,
+    "at": 3336.041771,
+    "observedAt": 3532443.2669809
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3337.091387,
+    "observedAt": 3532443.268057604
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 3,
+    "at": 3341.54192,
+    "observedAt": 3532443.272525279
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:9830de1c-4422-481e-9a05-ece2100d1e4f",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "3957a290-8e61-4cd0-a140-a22fa9ea59aa"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 3,
+    "at": 3342.343067,
+    "observedAt": 3532443.273333033
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 3,
+    "at": 3342.472596,
+    "observedAt": 3532443.273391437
+  },
+  {
+    "event": "request",
+    "method": "node.pair.list",
+    "id": "2:8b92eeea-2359-41ad-b272-80d458c91c5e",
+    "params": {},
+    "connectionId": 3,
+    "at": 3342.953671,
+    "observedAt": 3532443.273965305
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.list",
+    "connectionId": 3,
+    "at": 3342.987316,
+    "observedAt": 3532443.273988882
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 3,
+    "at": 3406.968015,
+    "observedAt": 3532443.338039296
+  }
+]
+
+--- nodes-describe-legacy-node.pair.list-sigterm-interrupt/peer.stderr ---
+
+--- nodes-remove-node.pair.remove-control/terminal.raw ---
+{
+  "nodeId": "synthetic-node-1"
+}
+
+--- nodes-remove-node.pair.remove-control/diagnostics.log ---
+
+--- nodes-remove-node.pair.remove-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40541",
+    "at": 70.621942,
+    "observedAt": 3532443.584298729
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2678.821459,
+    "observedAt": 3532446.190030711
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:51a68fdd-1a0b-486a-b201-a197645c06c7",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "59a68c99-1309-48c8-9766-f47752f25a7f"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2686.041619,
+    "observedAt": 3532446.197179237
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2686.357464,
+    "observedAt": 3532446.19721775
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:89ccca3a-4cf5-4236-a046-04cce7d0cb36",
+    "params": {},
+    "connectionId": 1,
+    "at": 2688.327152,
+    "observedAt": 3532446.199196176
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 2688.607166,
+    "observedAt": 3532446.199444975
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2692.374174,
+    "observedAt": 3532446.203231873
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2698.2978,
+    "observedAt": 3532446.20918588
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:b4d66afb-d75f-493e-b239-2eb04f7ec2cb",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "c06751f6-17b2-4ca5-b510-6281232d274d"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2699.285994,
+    "observedAt": 3532446.210117614
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2699.457204,
+    "observedAt": 3532446.210257004
+  },
+  {
+    "event": "request",
+    "method": "node.pair.remove",
+    "id": "2:83fe0dd3-6619-448e-a7d7-a107d449475f",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 2700.374752,
+    "observedAt": 3532446.211184761
+  },
+  {
+    "event": "response",
+    "method": "node.pair.remove",
+    "connectionId": 2,
+    "at": 2700.509481,
+    "observedAt": 3532446.21129915
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 2701.417498,
+    "observedAt": 3532446.212224165
+  }
+]
+
+--- nodes-remove-node.pair.remove-control/peer.stderr ---
+
+--- nodes-remove-node.list-sigint-interrupt/terminal.raw ---
+^C{
+  "nodeId": "synthetic-node-1"
+}
+
+--- nodes-remove-node.list-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-remove-node.list-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:36913",
+    "at": 68.596741,
+    "observedAt": 3532446.411960674
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2546.209539,
+    "observedAt": 3532448.887540975
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:82aad01a-41b9-4635-83ff-facc7bb527ee",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "5420432a-58d3-4ada-a2da-abc7d2d72792"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2552.631703,
+    "observedAt": 3532448.894033604
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2552.916638,
+    "observedAt": 3532448.894054626
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:99569c51-3627-4b98-bb4c-656e9159d580",
+    "params": {},
+    "connectionId": 1,
+    "at": 2555.119077,
+    "observedAt": 3532448.896360535
+  },
+  {
+    "event": "read-held",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 2555.1968,
+    "observedAt": 3532448.896368003
+  },
+  {
+    "event": "held-response-released",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 3156.582458,
+    "observedAt": 3532449.497871504
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3161.81382,
+    "observedAt": 3532449.503059168
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3168.518366,
+    "observedAt": 3532449.50971911
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:a1d1ae6f-9b03-4d4d-8415-bd983457fae1",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "747a87d4-3b93-40ae-8ee3-3645ac503f24"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3169.864434,
+    "observedAt": 3532449.511123433
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3170.092954,
+    "observedAt": 3532449.511215254
+  },
+  {
+    "event": "request",
+    "method": "node.pair.remove",
+    "id": "2:c52302cd-53b4-45ee-ade4-96cf23a9b636",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 3170.780123,
+    "observedAt": 3532449.511926782
+  },
+  {
+    "event": "response",
+    "method": "node.pair.remove",
+    "connectionId": 2,
+    "at": 3170.941433,
+    "observedAt": 3532449.512045338
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3172.135399,
+    "observedAt": 3532449.513244644
+  }
+]
+
+--- nodes-remove-node.list-sigint-interrupt/peer.stderr ---
+
+--- nodes-remove-node.pair.remove-sigint-interrupt/terminal.raw ---
+^C{
+  "nodeId": "synthetic-node-1"
+}
+
+--- nodes-remove-node.pair.remove-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- nodes-remove-node.pair.remove-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:36815",
+    "at": 62.750914,
+    "observedAt": 3532449.732918569
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2638.016999,
+    "observedAt": 3532452.306293299
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:bf74fb1d-9d8c-4108-9e12-fb81784fac96",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "624c1011-e836-4428-be04-3904a6b14f8a"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2644.751012,
+    "observedAt": 3532452.312969977
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2645.009463,
+    "observedAt": 3532452.313006881
+  },
+  {
+    "event": "request",
+    "method": "node.list",
+    "id": "2:19612df8-22e9-4779-95b6-0f72c7882ecc",
+    "params": {},
+    "connectionId": 1,
+    "at": 2647.107452,
+    "observedAt": 3532452.315187645
+  },
+  {
+    "event": "response",
+    "method": "node.list",
+    "connectionId": 1,
+    "at": 2647.318647,
+    "observedAt": 3532452.315329054
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2651.081103,
+    "observedAt": 3532452.319167659
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2656.841685,
+    "observedAt": 3532452.324965685
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:cdd161d8-f312-4610-85b3-ee0aa242298b",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "c091115b-92db-4a13-9000-a14c11b0b7f3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.pairing"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2657.731174,
+    "observedAt": 3532452.326004082
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2657.863801,
+    "observedAt": 3532452.326011833
+  },
+  {
+    "event": "request",
+    "method": "node.pair.remove",
+    "id": "2:bddb98e3-b117-4103-ab48-4d276b84ac66",
+    "params": {
+      "nodeId": "synthetic-node-1"
+    },
+    "connectionId": 2,
+    "at": 2658.482857,
+    "observedAt": 3532452.326624159
+  },
+  {
+    "event": "read-held",
+    "method": "node.pair.remove",
+    "connectionId": 2,
+    "at": 2658.520073,
+    "observedAt": 3532452.326635357
+  },
+  {
+    "event": "held-response-released",
+    "method": "node.pair.remove",
+    "connectionId": 2,
+    "at": 3259.585466,
+    "observedAt": 3532452.928665722
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3261.331902,
+    "observedAt": 3532452.929387952
+  }
+]
+
+--- nodes-remove-node.pair.remove-sigint-interrupt/peer.stderr ---

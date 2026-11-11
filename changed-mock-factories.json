@@ -1,0 +1,31 @@
+{
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "scope": "Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.",
+  "records": [
+    {
+      "file": "src/cli/nodes-cli.coverage.test.ts",
+      "baselineSHA256": "fb48973eb6e70e6e4fb33828104ebdbe0a0521a44b122fbd744bb04fdb80caff",
+      "currentSHA256": "614ba8c1275a144914bad15d1b6c7f23b17dbb581f40e9ec12da58a0fa14c3f0",
+      "callFingerprints": [
+        "1baa55b67394488dc551c57a57bbf5e59d752cf66d436995a7f891a0b2910d30",
+        "707eb7cad897b644991eff3c64ad9dd66afcbfb51b0914aa9bb46b004bda7ed0"
+      ],
+      "closedFactories": [],
+      "unchangedFactories": true
+    },
+    {
+      "file": "src/cli/nodes-cli/rpc.test.ts",
+      "baselineSHA256": "21a987c7d460e79a6f6b17027681cc7218d639de36cd5be8f3660908aa8c3ba3",
+      "currentSHA256": "b7a1a2065f745b1fb91f40f48e5bf5cae8d31521ed4edba44ca0ace1f118d5ea",
+      "callFingerprints": [
+        "3b0ef4e65afe31ce3921c5ff36bae4af3aef5873fa222c6d326340e12a305cd3"
+      ],
+      "closedFactories": [],
+      "unchangedFactories": true
+    }
+  ],
+  "ledgerSHA256": "37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3",
+  "ledgerUnchanged": true,
+  "result": "PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"
+}

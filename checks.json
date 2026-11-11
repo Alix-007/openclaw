@@ -1,0 +1,441 @@
+{
+  "head": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+  "tree": "348cfc980b6439adb8c9c5a886fda2d4ee46893f",
+  "fullDiffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+  "sourceDiffBeforeAllocationSHA256": "b3582ad26d04b91ffa30a634a83f78e08d9a98fbd40e8f4fc7a1d4d70381793d",
+  "sourceFiles": [
+    {
+      "path": "src/cli/nodes-cli/cli-utils.ts",
+      "sha256": "770bab52b0915cd6ed07b48565634f4f2b600f861f70242c91c2fa9ace8d9b74"
+    },
+    {
+      "path": "src/cli/nodes-cli/rpc.ts",
+      "sha256": "505da7b5192698c75ed477b1665391cc563b8730cefaa01a449418484992611e"
+    },
+    {
+      "path": "src/cli/nodes-cli/register.status.ts",
+      "sha256": "3dbbbaf4a7a372ea6efb6eefd5fc034c1627e6d90afd86b4a4d39024c3000ed2"
+    },
+    {
+      "path": "src/cli/nodes-cli/register.pairing.ts",
+      "sha256": "095d16317fee0b69c5ce49f9c9d3b3fcdec6638cc612408781f66344d095c14c"
+    },
+    {
+      "path": "src/cli/nodes-cli/rpc.test.ts",
+      "sha256": "b7a1a2065f745b1fb91f40f48e5bf5cae8d31521ed4edba44ca0ace1f118d5ea"
+    },
+    {
+      "path": "src/cli/nodes-cli.coverage.test.ts",
+      "sha256": "614ba8c1275a144914bad15d1b6c7f23b17dbb581f40e9ec12da58a0fa14c3f0"
+    },
+    {
+      "path": "config/test-lines-allocations/nodes-inventory-read-cancellation.txt",
+      "sha256": "4e0565e0cc3dd2fee4faf74c22ed7d3310b63e78fc744bcf9bf7189379214310"
+    }
+  ],
+  "buildStamp": {
+    "builtAt": 1794392733087,
+    "head": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+    "inputsClean": true,
+    "inputSignature": "df6032db3ef9cd2e378ed34975f2dbccc280f3049551bbe9c3a20d5a34777b16"
+  },
+  "buildInfo": {
+    "version": "2026.11.3",
+    "commit": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+    "builtAt": "2026-11-11T10:21:18.235Z",
+    "buildId": "2026.11.3-3a52fcc1cc1e-2026-11-11T10-21-18.235Z"
+  },
+  "gates": {
+    "focused": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "scripts/run-vitest.mjs",
+          "run",
+          "src/cli/nodes-cli.coverage.test.ts",
+          "src/cli/nodes-cli/rpc.test.ts",
+          "src/cli/nodes-cli/rpc.transport-timeout.test.ts",
+          "src/cli/nodes-cli/register.status.test.ts",
+          "src/cli/nodes-cli/register.camera.test.ts",
+          "src/cli/nodes-cli/register.location.test.ts",
+          "src/cli/nodes-cli/register.media-duration.test.ts",
+          "src/cli/nodes-cli/pairing-render.test.ts",
+          "src/cli/nodes-cli.plugin-registration.test.ts",
+          "--maxWorkers=1"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 19.876,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "b3582ad26d04b91ffa30a634a83f78e08d9a98fbd40e8f4fc7a1d4d70381793d",
+        "logSHA256": "8eabecaf76543be6d96d7d37ca82d0106d309ded0add2dab4b4dd195152cb0dd"
+      },
+      "log": "[test] starting test/vitest/vitest.unit-fast.config.ts\n\n RUN  v5.0.5 <HEAD_CHECKOUT>\n\n \u2713 |unit-fast| src/cli/nodes-cli/pairing-render.test.ts > cli/nodes-cli/pairing-render > renders pending rows parsed from malformed scalars without throwing 5ms\n \u2713 |unit-fast| src/cli/nodes-cli/pairing-render.test.ts > cli/nodes-cli/pairing-render > keeps a valid pending label after normalization 2ms\n \u2713 |unit-fast| src/cli/nodes-cli/pairing-render.test.ts > cli/nodes-cli/pairing-render > shows recorded and legacy approval requirements 1ms\n \u2713 |unit-fast| src/cli/nodes-cli/pairing-render.test.ts > cli/nodes-cli/pairing-render > keeps untrusted scope text safe in a narrow terminal 2ms\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  18:08:51\n   Duration  1.84s (transform 87%, import 8%, setup 4%, tests 1%, worker 1%)\n\n[test] starting test/vitest/vitest.cli.config.ts\n\n RUN  v5.0.5 <HEAD_CHECKOUT>\n\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > escapes node mutation confirmations without changing request or JSON values 268ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > escapes node mutation failure diagnostics 11ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > explains unknown nodes approve request ids with the current pending requests 31ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > explains when a nodes approve request disappears after the preflight 8ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > preserves approval scopes for [\"operator.write\",\"operator.write\"] and [\"system.run\"] 7ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > preserves approval scopes for [\"operator.pairing\"] and [\"system.run\"] 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > preserves approval scopes for \"malformed\" and [\"canvas.present\"] 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > preserves approval scopes for undefined and [] 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > still approves when the pairing preflight is unavailable 7ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > explains unknown nodes reject request ids without leaking connection credentials 9ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid list input once before calling the gateway 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid status input once before calling the gateway 11ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid invoke input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid invoke input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid invoke input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid invoke input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid invoke input once before calling the gateway 9ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid rename input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid push input once before calling the gateway 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid notify input once before calling the gateway 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > reports invalid camera clip input once before calling the gateway 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > forwards notification priority with the default system delivery 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > keeps the gateway transport alive beyond a shorter explicit gateway timeout 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > disables the gateway request deadline for an unbounded node invocation 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > invokes location.get with params 7ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes location get --node mac-1 --invoke-timeout 6s 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes camera snap --node mac-1 --invoke-timeout 20s 8ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes camera clip --node mac-1 --invoke-timeout 90s 14ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes screen record --node mac-1 --invoke-timeout 120s 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes screen record --node mac-1 --fps 10fps 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > rejects invalid numeric option before calling the gateway for nodes screen record --node mac-1 --fps 0 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes status [] during node.list 9ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes pending [] during node.pair.list 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes list [] during node.pair.list 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes list [] during node.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes list [\"--connected\"] during node.list 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes describe [\"--node\",\"mac-1\"] during node.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: false) > quietly cancels nodes describe [\"--node\",\"mac-1\"] during node.describe 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes status [] during node.list 4ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes pending [] during node.pair.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes list [] during node.pair.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes list [] during node.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes list [\"--connected\"] during node.list 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes describe [\"--node\",\"mac-1\"] during node.list 6ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > inventory reads (JSON: true) > quietly cancels nodes describe [\"--node\",\"mac-1\"] during node.describe 4ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > does not start an inventory read after the invocation is interrupted 4ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes approve receipts when interrupted during preparation or admission 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes reject receipts when interrupted during preparation or admission 4ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes remove receipts when interrupted during preparation or admission 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes rename receipts when interrupted during preparation or admission 5ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes invoke receipts when interrupted during preparation or admission 12ms\n \u2713 |cli| src/cli/nodes-cli.coverage.test.ts > nodes-cli coverage > retains nodes push receipts when interrupted during preparation or admission 6ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > rejects blank --facing \"   \" before invoking the node 8ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > forwards normalized --facing both 9ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > forwards normalized --facing  FRONT  7ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > makes one facing-less request and forwards deviceId when --facing is omitted 8ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > forwards explicit --quality and --delay-ms values in RPC params 7ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > does not publish the front camera when the back camera returns malformed image data 9ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > does not publish the front camera when the back camera returns an unsafe image extension 8ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > does not activate the back camera after the front returns an unsafe extension 7ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > rejects invalid --quality 7ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > rejects invalid --delay-ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > lists legacy Windows cameras (JSON: false) 9ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > lists legacy Windows cameras (JSON: true) 6ms\n \u2713 |cli| src/cli/nodes-cli/register.camera.test.ts > nodes camera snap CLI option forwarding > strips node-reported control characters from the camera list table 7ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > uses paired records when an older Gateway rejects the exact node.list method 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > preserves an authorization rejection without consulting stale paired nodes 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > preserves malformed request retry metadata without consulting stale paired nodes 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > keeps diagnostics on the same exact missing-method contract 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > rejects explicit blank --timeout before transport 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > does not retry diagnostics authentication after the read is interrupted 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node inventory resolution > keeps cancellation through the older Gateway node-resolution fallback 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node invoke envelope > preserves caller-owned invoke fields and params identity 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node invoke envelope > retains undefined params while generating an idempotency key 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node numeric option parsing > parses optional positive integer values 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node numeric option parsing > parses optional non-negative integer values 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.test.ts > node numeric option parsing > parses optional finite number values 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"0\" before node lookup 10ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"0ms\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"0s\" before node lookup 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"0.4ms\" before node lookup 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"-1\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"-1s\" before node lookup 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"nope\" before node lookup 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"\" before node lookup 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"  \" before node lookup 8ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > rejects invalid --duration \"9007199254740992ms\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration undefined as 3000 ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration 10s as 10000 ms 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration 5000 as 5000 ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration 1m as 60000 ms 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration 0.5ms as 1 ms 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes camera clip duration > forwards --duration 1s500ms as 1500 ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"0\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"0ms\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"0s\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"0.4ms\" before node lookup 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"-1\" before node lookup 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"-1s\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"nope\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"\" before node lookup 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"  \" before node lookup 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > rejects invalid --duration \"9007199254740992ms\" before node lookup 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration undefined as 10000 ms 15ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration 10s as 10000 ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration 5000 as 5000 ms 7ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration 1m as 60000 ms 5ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration 0.5ms as 1 ms 6ms\n \u2713 |cli| src/cli/nodes-cli/register.media-duration.test.ts > nodes screen record duration > forwards --duration 1s500ms as 1500 ms 5ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes status rendering > renders connected details and preserves JSON 22ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes status rendering > renders last known details and preserves JSON 7ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes status rendering > renders memory only details and preserves JSON 6ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes status rendering > renders unavailable details and preserves JSON 5ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes describe rendering > renders connected details and preserves JSON 7ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes describe rendering > renders last known details and preserves JSON 6ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes describe rendering > renders memory only details and preserves JSON 6ms\n \u2713 |cli| src/cli/nodes-cli/register.status.test.ts > nodes describe rendering > renders unavailable details and preserves JSON 5ms\n \u2713 |cli| src/cli/nodes-cli.plugin-registration.test.ts > registerNodesCli plugin registration > skips plugin CLI/runtime registration for built-in nodes subcommands 8ms\n \u2713 |cli| src/cli/nodes-cli.plugin-registration.test.ts > registerNodesCli plugin registration > lazily registers nodes [ 'canvas', 'snapshot', '--json' ] with stderr routing=true 5ms\n \u2713 |cli| src/cli/nodes-cli.plugin-registration.test.ts > registerNodesCli plugin registration > lazily registers nodes [] with stderr routing=false 6ms\n \u2713 |cli| src/cli/nodes-cli.plugin-registration.test.ts > registerNodesCli plugin registration > lazily registers nodes [ 'canvas', '--', '--json' ] with stderr routing=false 5ms\n \u2713 |cli| src/cli/nodes-cli.plugin-registration.test.ts > registerNodesCli plugin registration > documents current pairing and system.which command syntax 12ms\n \u2713 |cli| src/cli/nodes-cli/register.location.test.ts > nodes location get validation > rejects unsupported accuracy values before resolving or invoking a node 6ms\n \u2713 |cli| src/cli/nodes-cli/register.location.test.ts > nodes location get validation > normalizes and forwards supported accuracy values 6ms\n \u2713 |cli| src/cli/nodes-cli/register.location.test.ts > nodes location get validation > rejects explicit blank --location-timeout \"\" before resolving or invoking a node 5ms\n \u2713 |cli| src/cli/nodes-cli/register.location.test.ts > nodes location get validation > rejects explicit blank --location-timeout \" \\t \" before resolving or invoking a node 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.transport-timeout.test.ts > node RPC transport timeouts > callNodesGatewayCli forwards opts.timeout as the transport timeoutMs 6ms\n \u2713 |cli| src/cli/nodes-cli/rpc.transport-timeout.test.ts > node RPC transport timeouts > callNodesGatewayCli rejects invalid opts.timeout instead of forwarding NaN 5ms\n \u2713 |cli| src/cli/nodes-cli/rpc.transport-timeout.test.ts > node RPC transport timeouts > callNodePairApprovalGatewayCli rejects invalid opts.timeout instead of forwarding NaN 5ms\n\n Test Files  8 passed (8)\n      Tests  129 passed (129)\n   Start at  18:08:55\n   Duration  10.44s (transform 36%, worker 34%, tests 12%, setup 10%, import 8%)\n\n[test] passed 2 Vitest shards in 18.83s\n"
+    },
+    "types": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "scripts/run-tsgo.mjs",
+          "-p",
+          "../nodes-read-types.tsconfig.json",
+          "--incremental"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 103.186,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "b3582ad26d04b91ffa30a634a83f78e08d9a98fbd40e8f4fc7a1d4d70381793d",
+        "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "log": ""
+    },
+    "lint": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "scripts/run-oxlint.mjs",
+          "--tsconfig",
+          "../nodes-read-types.tsconfig.json",
+          "src/cli/nodes-cli/cli-utils.ts",
+          "src/cli/nodes-cli/rpc.ts",
+          "src/cli/nodes-cli/register.status.ts",
+          "src/cli/nodes-cli/register.pairing.ts",
+          "src/cli/nodes-cli/rpc.test.ts",
+          "src/cli/nodes-cli.coverage.test.ts"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 380.698,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "b3582ad26d04b91ffa30a634a83f78e08d9a98fbd40e8f4fc7a1d4d70381793d",
+        "logSHA256": "d7d6548b26760c98addfab92f1c856b1122b546eaab2d5a98620a57356091c58"
+      },
+      "log": "[dist artifacts] waiting for checkout ownership: <HEAD_CHECKOUT>/.artifacts/dist-artifacts.lock\n[plugin-sdk boundary dts] emitted 14287 files\n"
+    },
+    "format": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "scripts/run-format.mts",
+          "--check",
+          "src/cli/nodes-cli/cli-utils.ts",
+          "src/cli/nodes-cli/rpc.ts",
+          "src/cli/nodes-cli/register.status.ts",
+          "src/cli/nodes-cli/register.pairing.ts",
+          "src/cli/nodes-cli/rpc.test.ts",
+          "src/cli/nodes-cli.coverage.test.ts"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 1.013,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "b3582ad26d04b91ffa30a634a83f78e08d9a98fbd40e8f4fc7a1d4d70381793d",
+        "logSHA256": "923e4b8319d658da075596f40ea897780cd236890934cfe999dfd7c5d077d69e"
+      },
+      "log": "Checking formatting...\n\nAll matched files use the correct format.\nFinished in 149ms on 6 files using 16 threads.\n"
+    },
+    "ratchet": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/check-test-lines-ratchet.mts",
+          "--staged",
+          "--base",
+          "83872e599d5720c0bc97d313283a2bc245046699"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 117.754,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+        "logSHA256": "fb9b8875013738fee2d2f457d59499d0c36bae02916a5be816987bd996ed9801"
+      },
+      "log": "Test lines OK: 6645233; ceiling: 6645252; slack: 19.\n"
+    },
+    "mocks": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "--import",
+          "./scripts/tsx.mjs",
+          "../check-changed-mocks.mts",
+          "src/cli/nodes-cli.coverage.test.ts",
+          "src/cli/nodes-cli/rpc.test.ts"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 0.778,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+        "logSHA256": "14bd19972fcdc001c70b1855262575ec81c623bce064645c22d93110640a8678"
+      },
+      "log": "{\"base\":\"83872e599d5720c0bc97d313283a2bc245046699\",\"head\":\"83872e599d5720c0bc97d313283a2bc245046699\",\"scope\":\"Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.\",\"records\":[{\"file\":\"src/cli/nodes-cli.coverage.test.ts\",\"baselineSHA256\":\"fb48973eb6e70e6e4fb33828104ebdbe0a0521a44b122fbd744bb04fdb80caff\",\"currentSHA256\":\"614ba8c1275a144914bad15d1b6c7f23b17dbb581f40e9ec12da58a0fa14c3f0\",\"callFingerprints\":[\"1baa55b67394488dc551c57a57bbf5e59d752cf66d436995a7f891a0b2910d30\",\"707eb7cad897b644991eff3c64ad9dd66afcbfb51b0914aa9bb46b004bda7ed0\"],\"closedFactories\":[],\"unchangedFactories\":true},{\"file\":\"src/cli/nodes-cli/rpc.test.ts\",\"baselineSHA256\":\"21a987c7d460e79a6f6b17027681cc7218d639de36cd5be8f3660908aa8c3ba3\",\"currentSHA256\":\"b7a1a2065f745b1fb91f40f48e5bf5cae8d31521ed4edba44ca0ace1f118d5ea\",\"callFingerprints\":[\"3b0ef4e65afe31ce3921c5ff36bae4af3aef5873fa222c6d326340e12a305cd3\"],\"closedFactories\":[],\"unchangedFactories\":true}],\"ledgerSHA256\":\"37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3\",\"ledgerUnchanged\":true,\"result\":\"PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES\"}\n"
+    },
+    "linecap": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/check-line-cap-ratchet.mts",
+          "--staged",
+          "--base",
+          "83872e599d5720c0bc97d313283a2bc245046699"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 1.089,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+        "logSHA256": "3fce9a569ef86c1d00ac3f27c29857e786209d8b6b7038bc36ea31e3be5e6fa9"
+      },
+      "log": "Line-cap ratchet OK: 6 changed source files; no new violations or over-cap growth.\n"
+    },
+    "build": {
+      "receipt": {
+        "command": [
+          "<NODE26>",
+          "--import",
+          "./scripts/tsx.mjs",
+          "scripts/build-all.mts",
+          "cliStartup"
+        ],
+        "cwd": "<HEAD_CHECKOUT>",
+        "exit_code": 0,
+        "elapsed_seconds": 268.128,
+        "head": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+        "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logSHA256": "710b4fcd622f97085e168f4c0fbf4e2c5dcdb24a037e16677c4b0eeee249d4f4"
+      },
+      "log": "[build-all] runtime:scripts:check\n[build-all] runtime:scripts:check done in 6.72s\n[build-all] tsdown\n[tsdown-build] invocation 1/2 finished in 2.8s\n[tsdown-build] still running pid=1262418; no output for 30s\nnode_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js (68254:28) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n       \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js:68254:29 \u001b[38;5;246m]\u001b[0m\n       \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m68254 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mv\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249ml\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m$\u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m      \u2502\u001b[0m                             \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m      \u2502\u001b[0m                               \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m      \u2502\u001b[0m \n \u001b[38;5;240m      \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js (68261:28) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n       \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js:68261:29 \u001b[38;5;246m]\u001b[0m\n       \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m68261 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mv\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249ml\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m$\u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m      \u2502\u001b[0m                             \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m      \u2502\u001b[0m                               \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m      \u2502\u001b[0m \n \u001b[38;5;240m      \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nextensions/browser/src/browser/page-function-runtime.ts (13:31) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n    \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m extensions/browser/src/browser/page-function-runtime.ts:13:32 \u001b[38;5;246m]\u001b[0m\n    \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m13 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m:\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mk\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mw\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m\"\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m\"\u001b[0m\u001b[38;5;249m;\u001b[0m\u001b[38;5;249m\\\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m$\u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249m.\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m   \u2502\u001b[0m                                \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m   \u2502\u001b[0m                                  \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m   \u2502\u001b[0m \n \u001b[38;5;240m   \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2400:30) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n      \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2400:31 \u001b[38;5;246m]\u001b[0m\n      \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m2400 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mA\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mM\u001b[0m\u001b[38;5;249m_\u001b[0m\u001b[38;5;249mC\u001b[0m\u001b[38;5;249mO\u001b[0m\u001b[38;5;249mN\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mT\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249m[\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m]\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m     \u2502\u001b[0m                               \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m     \u2502\u001b[0m                                 \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m     \u2502\u001b[0m \n \u001b[38;5;240m     \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2423:32) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n      \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2423:33 \u001b[38;5;246m]\u001b[0m\n      \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m2423 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249ml\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mE\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249m[\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m]\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m     \u2502\u001b[0m                                 \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m     \u2502\u001b[0m                                   \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m     \u2502\u001b[0m \n \u001b[38;5;240m     \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/@acemir+cssom@0.9.32/node_modules/@acemir/cssom/lib/errorUtils.js (31:8) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n    \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/@acemir+cssom@0.9.32/node_modules/@acemir/cssom/lib/errorUtils.js:31:9 \u001b[38;5;246m]\u001b[0m\n    \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m31 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mT\u001b[0m\u001b[38;5;249my\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m   \u2502\u001b[0m            \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m   \u2502\u001b[0m              \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m   \u2502\u001b[0m \n \u001b[38;5;240m   \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2400:30) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n      \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2400:31 \u001b[38;5;246m]\u001b[0m\n      \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m2400 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mA\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mM\u001b[0m\u001b[38;5;249m_\u001b[0m\u001b[38;5;249mC\u001b[0m\u001b[38;5;249mO\u001b[0m\u001b[38;5;249mN\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mT\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249m[\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m]\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m     \u2502\u001b[0m                               \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m     \u2502\u001b[0m                                 \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m     \u2502\u001b[0m \n \u001b[38;5;240m     \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nnode_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2423:32) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n      \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2423:33 \u001b[38;5;246m]\u001b[0m\n      \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m2423 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249ml\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mE\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249m[\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m]\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m     \u2502\u001b[0m                                 \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m     \u2502\u001b[0m                                   \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m     \u2502\u001b[0m \n \u001b[38;5;240m     \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\nextensions/browser/src/browser/page-function-runtime.ts (13:31) \u001b[33m[EVAL] \u001b[0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.\n    \u001b[38;5;246m\u256d\u001b[0m\u001b[38;5;246m\u2500\u001b[0m\u001b[38;5;246m[\u001b[0m extensions/browser/src/browser/page-function-runtime.ts:13:32 \u001b[38;5;246m]\u001b[0m\n    \u001b[38;5;246m\u2502\u001b[0m\n \u001b[38;5;246m13 \u2502\u001b[0m \u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249md\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m:\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mk\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mw\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m=\u001b[0m\u001b[38;5;249m \u001b[0meval\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m\"\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m\"\u001b[0m\u001b[38;5;249m;\u001b[0m\u001b[38;5;249m\\\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249m(\u001b[0m\u001b[38;5;249m$\u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249ms\u001b[0m\u001b[38;5;249m.\u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249mS\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mu\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m`\u001b[0m\u001b[38;5;249m)\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m   \u2502\u001b[0m                                \u2500\u2500\u252c\u2500  \n \u001b[38;5;240m   \u2502\u001b[0m                                  \u2570\u2500\u2500\u2500 Use of direct `eval` here.\n \u001b[38;5;240m   \u2502\u001b[0m \n \u001b[38;5;240m   \u2502\u001b[0m \u001b[38;5;115mHelp\u001b[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval\n\u001b[38;5;246m\u2500\u2500\u2500\u2500\u256f\u001b[0m\n\n[tsdown-build] invocation 2/2 finished in 148.0s\n[build-all] tsdown done in 2m 43.1s\n[build-all] external-plugins:local-dist\n[plugin-npm-runtime-build] build assets diffs: node --import tsx ../../scripts/build-diffs-viewer-runtime.mts curated\n[plugin-npm-runtime-build] build assets diffs-language-pack: node --import tsx ../../scripts/build-diffs-viewer-runtime.mts full\n[plugin-npm-runtime-build] build assets discord: node --import ../../scripts/tsx.mjs ../../scripts/build-discord-activity-sdk.mts\n[plugin-npm-runtime-build] build assets nostr: cd ../.. && node --import ./scripts/tsx.mjs scripts/build-plugin-control-ui.mts extensions/nostr\n(node:1269915) ExperimentalWarning: WASI is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n[plugin-npm-runtime-build] build assets whatsapp: cd ../.. && node --import ./scripts/tsx.mjs scripts/build-plugin-control-ui.mts extensions/whatsapp\n(node:1270275) ExperimentalWarning: WASI is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n[external-plugin-local-dist] built 102 plugins in 30465ms\n[build-all] external-plugins:local-dist done in 31.3s\n[build-all] check-cli-bootstrap-imports\nagents/identity-file.worker.js: 201 evaluated modules (budget 220)\nextensions/codex/catalog-page.worker.js: 67 evaluated modules (budget 100)\nCLI bootstrap import guard passed.\n[build-all] check-cli-bootstrap-imports done in 17.2s\n[build-all] runtime-postbuild\n[plugin-control-plane-loads] verified 56 built modules with native require and checked doctor closures\nruntime-postbuild: 14 phases completed in 11495ms (slowest: built plugin control-plane loads 5080ms)\n[build-all] runtime-postbuild done in 13.3s\n[build-all] build-stamp\n[build-all] build-stamp done in 255ms\n[build-all] runtime-postbuild-stamp\n[build-all] runtime-postbuild-stamp done in 225ms\n[build-all] write-cli-startup-metadata\n[build-all] write-cli-startup-metadata done in 11.4s\n[build-all] phase timings: total 4m 3.5s; slowest tsdown 2m 43.1s; external-plugins:local-dist 31.3s; check-cli-bootstrap-imports 17.2s; runtime-postbuild 13.3s; write-cli-startup-metadata 11.4s; runtime:scripts:check 6.72s; build-stamp 255ms; runtime-postbuild-stamp 225ms\n"
+    }
+  },
+  "independentReview": {
+    "reviewKind": "Independent GPT6.1Sol adversarial fallback review; not an official helper result",
+    "phase": "FINAL_REVIEW_COMPLETE",
+    "verdict": "PASS_NO_VERIFIED_P0_P3_FINDINGS",
+    "base": "83872e599d5720c0bc97d313283a2bc245046699",
+    "stagedTree": "348cfc980b6439adb8c9c5a886fda2d4ee46893f",
+    "diffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+    "files": [
+      {
+        "path": "src/cli/nodes-cli/cli-utils.ts",
+        "sha256": "770bab52b0915cd6ed07b48565634f4f2b600f861f70242c91c2fa9ace8d9b74"
+      },
+      {
+        "path": "src/cli/nodes-cli/rpc.ts",
+        "sha256": "505da7b5192698c75ed477b1665391cc563b8730cefaa01a449418484992611e"
+      },
+      {
+        "path": "src/cli/nodes-cli/register.status.ts",
+        "sha256": "3dbbbaf4a7a372ea6efb6eefd5fc034c1627e6d90afd86b4a4d39024c3000ed2"
+      },
+      {
+        "path": "src/cli/nodes-cli/register.pairing.ts",
+        "sha256": "095d16317fee0b69c5ce49f9c9d3b3fcdec6638cc612408781f66344d095c14c"
+      },
+      {
+        "path": "src/cli/nodes-cli/rpc.test.ts",
+        "sha256": "b7a1a2065f745b1fb91f40f48e5bf5cae8d31521ed4edba44ca0ace1f118d5ea"
+      },
+      {
+        "path": "src/cli/nodes-cli.coverage.test.ts",
+        "sha256": "614ba8c1275a144914bad15d1b6c7f23b17dbb581f40e9ec12da58a0fa14c3f0"
+      },
+      {
+        "path": "config/test-lines-allocations/nodes-inventory-read-cancellation.txt",
+        "sha256": "4e0565e0cc3dd2fee4faf74c22ed7d3310b63e78fc744bcf9bf7189379214310"
+      }
+    ],
+    "findings": [],
+    "scopeVerification": "Final clean HEAD/tree/full BASE diff and all seven committed file bytes independently match static reviewed handoff. No product/source delta after static review.",
+    "ownerAndCallers": [
+      "Read complete RPC, CLI error owner, status/list/describe and pairing entry owners; traced normal nodes registration and complete lightweight route catalog. No nodes fast route bypasses registration.",
+      "Only status/list/pending/describe capture invocation signal. Shared RPC takes explicit optional signal and preserves timeout, auth, client identity and shared-state policy. SDK runNodesCommand export and all no-signal defaults remain unchanged.",
+      "Authentication retries and exact typed unknown-method fallback forward the same signal; post-settlement finally guard preserves original abort reason and prevents later fallback or output. Optional list enrichment rethrows owned cancellation before warning/fallback.",
+      "Remove/rename/invoke/push and approval/rejection preparation and admitted responses retain custody. Approval-specific helper, exec-approvals resolver, media and Canvas callers keep their existing defaults.",
+      "Read wrapper silences only an AbortError while its captured invocation signal is aborted. Canonical CLI signal-exit owner creates exactly that DOMException; unrelated failures retain existing error formatter and exit behavior."
+    ],
+    "testAudit": {
+      "result": "STATIC_PASS",
+      "cases": "14 read output cases cover JSON and text over seven RPC stages; one pre-abort case; six mutation receipt controls; two RPC tests protect auth retry and legacy fallback cancellation. Existing scenarios and assertions remain.",
+      "ownerBoundary": "Real Commander registration and real AsyncWorkScope with existing RPC mocks; native BASE/HEAD remains primary transport and exit proof. No new production seam, sleeps, timeout increase, module mock factory or shared baseline change.",
+      "testNetLF": 109,
+      "allocation": "Dedicated own allocation exactly equals 75 + 34 net test LF.",
+      "simplify": "Four existing production owners plus one narrow read wrapper; explicit signal avoids changing SDK/shared mutation policy. No verified P0-P3 simplification defect."
+    },
+    "baseNative": {
+      "receipt": "nodes-read-cancel-v3-base-83872/receipt.json",
+      "SHA256": "ba186beae69e49709ad394397be1e55097b4c4f9846d5230e840f1e39a42632d",
+      "collectorSHA256": "4b8c1597ef9e12bab3cce820e325781e03097b168ad483d169a3b08eaef96ea9",
+      "peerSHA256": "14f3c888cb8f5bbb19246e532ec5192c29d6788fd531023eed09d1f3d9bfc0b3",
+      "result": "RED_WITH_LEGAL_CONTROLS",
+      "cases": 30,
+      "verification": "Read frozen collector/peer and receipt; independently matched all 30 stdout/diagnostic artifact hashes and lifecycle fields. Eighteen read interrupts remain pending until launcher escalation around 2.05-2.08 seconds; ten normal controls and two interrupted mutation receipt controls pass. Withheld connection IDs prevent earlier auth-connection closure from satisfying held-RPC proof. Quiet cancellation contract excludes JSON/errors/banners.",
+      "limits": "Synthetic protocol peer; no actual Gateway storage effect or provider claim."
+    },
+    "reportedWorkerChecks": "All eight supplied focused/types/lint/format/linecap/test-line/mock/build receipts independently checked for exit0, actual log SHA256 and source equivalence to final HEAD. Focused9files133tests pass; checks were inspected, not executed by reviewer.",
+    "finalPass": true,
+    "operations": "Read-only file/Git inspection and task-only review report writes. No product/Git mutation, test/build/auth/API or delegation.",
+    "head": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+    "finalEvidence": {
+      "head": "3a52fcc1cc1e07b96986b9224922f202250a3174",
+      "tree": "348cfc980b6439adb8c9c5a886fda2d4ee46893f",
+      "fullBASEdiffSHA256": "f68ff92e971391dcc5331cb532115376bdb5a09acf76149c53f7c5caa8f95b9d",
+      "trackedClean": true,
+      "native": {
+        "receipt": "nodes-read-cancel-v3-head-3a52fcc/receipt.json",
+        "receiptSHA256": "c33e661ae285828dbde533472c0168540a8e0c0d5703d812144d6fca8441fc34",
+        "result": "GREEN",
+        "cases": 30,
+        "quietReadInterrupts": 18,
+        "normalControls": 10,
+        "admittedWriteControls": 2,
+        "naturalReadExitCodes": [
+          130,
+          143
+        ],
+        "readExitRangeMs": [
+          98.79,
+          159.68
+        ],
+        "readHeldPeerCloseRangeMs": [
+          28.99,
+          41.96
+        ],
+        "writeReceiptExitMs": [
+          697.1,
+          672.68
+        ],
+        "collectorSHA256": "4b8c1597ef9e12bab3cce820e325781e03097b168ad483d169a3b08eaef96ea9",
+        "peerSHA256": "14f3c888cb8f5bbb19246e532ec5192c29d6788fd531023eed09d1f3d9bfc0b3",
+        "verification": "Both30-case BASE/HEAD receipts and all60 raw terminal/diagnostic files, exact decoded content, peer-event JSON and empty peer stderr independently verified. All60 initial config bytes reconstructed and equal final bytes. Interrupt offsets/tail SHA/text and strict quiet output verified; read output contains no JSON/result/error/banner. Held connection IDs correlate actual canceled socket closure before cleanup. Ten normal method sequences and two write sequences/receipt bytes verified on each side; write controls delay and release held response. No watchdog, all EOF drained, no connected peer or owned processes before harness cleanup. Independent /proc scan confirms all60 CLI process groups absent. Exact clean cliStartup build stamp equals native receipt."
+      },
+      "checks": {
+        "focused-final": {
+          "receipt": "nodes-read-focused-final.json",
+          "exitCode": 0,
+          "seconds": 19.876,
+          "logSHA256": "8eabecaf76543be6d96d7d37ca82d0106d309ded0add2dab4b4dd195152cb0dd",
+          "sourceEquivalence": "Final six source/test files matched; untracked own allocation at check time excluded from diff digest"
+        },
+        "types": {
+          "receipt": "nodes-read-types.json",
+          "exitCode": 0,
+          "seconds": 103.186,
+          "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceEquivalence": "Final six source/test files matched; untracked own allocation at check time excluded from diff digest"
+        },
+        "lint": {
+          "receipt": "nodes-read-lint.json",
+          "exitCode": 0,
+          "seconds": 380.698,
+          "logSHA256": "d7d6548b26760c98addfab92f1c856b1122b546eaab2d5a98620a57356091c58",
+          "sourceEquivalence": "Final six source/test files matched; untracked own allocation at check time excluded from diff digest"
+        },
+        "format-check": {
+          "receipt": "nodes-read-format-check.json",
+          "exitCode": 0,
+          "seconds": 1.013,
+          "logSHA256": "923e4b8319d658da075596f40ea897780cd236890934cfe999dfd7c5d077d69e",
+          "sourceEquivalence": "Final six source/test files matched; untracked own allocation at check time excluded from diff digest"
+        },
+        "linecap": {
+          "receipt": "nodes-read-linecap.json",
+          "exitCode": 0,
+          "seconds": 1.089,
+          "logSHA256": "3fce9a569ef86c1d00ac3f27c29857e786209d8b6b7038bc36ea31e3be5e6fa9",
+          "sourceEquivalence": "Final full BASE diff matched"
+        },
+        "ratchet": {
+          "receipt": "nodes-read-ratchet.json",
+          "exitCode": 0,
+          "seconds": 117.754,
+          "logSHA256": "fb9b8875013738fee2d2f457d59499d0c36bae02916a5be816987bd996ed9801",
+          "sourceEquivalence": "Final full BASE diff matched"
+        },
+        "changed-mocks": {
+          "receipt": "nodes-read-changed-mocks.json",
+          "exitCode": 0,
+          "seconds": 0.778,
+          "logSHA256": "14bd19972fcdc001c70b1855262575ec81c623bce064645c22d93110640a8678",
+          "sourceEquivalence": "Final full BASE diff matched"
+        },
+        "native-cli-build": {
+          "receipt": "nodes-read-native-cli-build.json",
+          "exitCode": 0,
+          "seconds": 268.128,
+          "logSHA256": "710b4fcd622f97085e168f4c0fbf4e2c5dcdb24a037e16677c4b0eeee249d4f4",
+          "sourceEquivalence": "Exact final HEAD clean build"
+        }
+      },
+      "focusedTests": {
+        "files": 9,
+        "testsPassed": 133
+      },
+      "testNetLF": 109,
+      "buildSeconds": 268.128,
+      "limits": [
+        "Synthetic compatible protocol peer; no actual Gateway storage/effect or provider claim.",
+        "Changed-source factory/ledger audit passed; full repository mock guard and broad CI remain publication/CI scope.",
+        "Independent fallback review, not official helper, publication, landing or broad CI approval."
+      ]
+    }
+  },
+  "numstat": [
+    [
+      "2",
+      "0",
+      "config/test-lines-allocations/nodes-inventory-read-cancellation.txt"
+    ],
+    [
+      "75",
+      "0",
+      "src/cli/nodes-cli.coverage.test.ts"
+    ],
+    [
+      "20",
+      "0",
+      "src/cli/nodes-cli/cli-utils.ts"
+    ],
+    [
+      "8",
+      "3",
+      "src/cli/nodes-cli/register.pairing.ts"
+    ],
+    [
+      "23",
+      "14",
+      "src/cli/nodes-cli/register.status.ts"
+    ],
+    [
+      "34",
+      "0",
+      "src/cli/nodes-cli/rpc.test.ts"
+    ],
+    [
+      "40",
+      "23",
+      "src/cli/nodes-cli/rpc.ts"
+    ]
+  ],
+  "testSummary": {
+    "passed": 133,
+    "files": [
+      "src/cli/nodes-cli.coverage.test.ts",
+      "src/cli/nodes-cli/rpc.test.ts",
+      "src/cli/nodes-cli/rpc.transport-timeout.test.ts",
+      "src/cli/nodes-cli/register.status.test.ts",
+      "src/cli/nodes-cli/register.camera.test.ts",
+      "src/cli/nodes-cli/register.location.test.ts",
+      "src/cli/nodes-cli/register.media-duration.test.ts",
+      "src/cli/nodes-cli/pairing-render.test.ts",
+      "src/cli/nodes-cli.plugin-registration.test.ts"
+    ],
+    "seconds": 19.876,
+    "ownLFGrant": 109
+  }
+}
