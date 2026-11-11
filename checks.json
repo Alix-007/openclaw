@@ -1,0 +1,109 @@
+{
+  "types": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "<MAINTENANCE_TASK>/memory-retry-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 112.396,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "021d359c982de1e44b318bd7e2e388b2f7dd9b23f180aea5a482f7cf73ef3313"
+  },
+  "lint": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 105.244,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "0c4a30c29ff0575f6291bede4035ddb371f432825259459949d16807530565d6"
+  },
+  "format": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.559,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "5de47948deea1a056953fe65cbbbcdd40b6005e9bbe6f5b3822921d431c73645"
+  },
+  "ratchet": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "83872e599d5720c0bc97d313283a2bc245046699",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 16.977,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "e31347851d8f92e70cb1484810dc676436ba33caf763ee380f2139286fb0abfc"
+  },
+  "changed-mocks": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "<MAINTENANCE_TASK>/check-memory-retry-mocks.mts",
+      "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.776,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "300628dbe3330e7b9c88d0fbc59a8e85b2cebed39b6c08cf5d14ba3beb204f80"
+  },
+  "linecap": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "83872e599d5720c0bc97d313283a2bc245046699",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 1.779,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "logSHA256": "3fce9a569ef86c1d00ac3f27c29857e786209d8b6b7038bc36ea31e3be5e6fa9"
+  },
+  "native-cli-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 252.235,
+    "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "e28d0f56672b466f54b3ea42016c1f69482bf027ee5223ef0fda6bc1cf71b6d9"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+  "tree": "6c4ba630e8696b7a12268264834c832d70066858",
+  "files": [
+    {
+      "path": "config/test-lines-allocations/memory-deep-probe-cancellation.txt",
+      "sha256": "826b6832e45ba17d625debc95ae8554e148550b00c05b47fa8f7be1c555bc83c"
+    },
+    {
+      "path": "extensions/memory-core/src/cli-status.runtime.ts",
+      "sha256": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts",
+      "sha256": "7610f019d280ae93d877702ef33c755231c4c30ba3bcb9f5a5aa84d23906c398"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.ts",
+      "sha256": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-lifecycle.ts",
+      "sha256": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+      "sha256": "32bb9737885ffa890aa722e3e5861350433d9dcb3da811e1f2c118939caf3cb3"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/paused-deadline.ts",
+      "sha256": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28"
+    }
+  ],
+  "review_binding": {
+    "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "tree": "6c4ba630e8696b7a12268264834c832d70066858",
+    "prior_full_review_head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "repair_diff_sha256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+    "production_unchanged": true,
+    "all_original_test_bodies_and_assertions_unchanged": true,
+    "route": "Prior independent full review plus root independent two-file maintenance delta review; not a new full helper review."
+  },
+  "build_info": {
+    "version": "2026.11.3",
+    "commit": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "builtAt": "2026-11-11T12:06:32.190Z",
+    "buildId": "2026.11.3-fd9cbc54365d-2026-11-11T12-06-32.190Z"
+  },
+  "build_stamp": {
+    "builtAt": 1794399042722,
+    "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "inputsClean": true,
+    "inputSignature": "cfcd73058700f69184b70b235f386cad08731d0542199c31f5c5a8a50f9781fc"
+  }
+}

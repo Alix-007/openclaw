@@ -1,0 +1,395 @@
+
+--- response-200-control/terminal.raw ---
+[
+  {
+    "agentId": "main",
+    "status": {
+      "backend": "builtin",
+      "files": 0,
+      "chunks": 0,
+      "dirty": true,
+      "workspaceDir": "<BASE_NATIVE_OUTPUT>/response-200-control/workspace",
+      "dbPath": "<BASE_NATIVE_OUTPUT>/response-200-control/state/agents/main/agent/openclaw-agent.sqlite",
+      "storage": {
+        "databaseBytes": 0,
+        "walBytes": 0,
+        "reusableBytes": 0,
+        "embeddingCacheBytes": 0,
+        "embeddingCacheEntries": 0
+      },
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "requestedProvider": "openai",
+      "sources": [
+        "memory",
+        "sessions"
+      ],
+      "extraPaths": [],
+      "sourceCounts": [
+        {
+          "source": "memory",
+          "files": 0,
+          "chunks": 0,
+          "chunkBytes": 0,
+          "dirty": true,
+          "eligible": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "files": 0,
+          "chunks": 0,
+          "chunkBytes": 0,
+          "eligible": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "cache": {
+        "enabled": true,
+        "entries": 0,
+        "maxEntries": 50000
+      },
+      "fts": {
+        "enabled": true,
+        "available": false
+      },
+      "vector": {
+        "enabled": true,
+        "index": {
+          "state": "empty"
+        },
+        "storeAvailable": false,
+        "semanticAvailable": false,
+        "available": false,
+        "loadError": "Memory search database unavailable: database-missing"
+      },
+      "batch": {
+        "enabled": false,
+        "failures": 0,
+        "limit": 2,
+        "wait": true,
+        "concurrency": 2,
+        "pollIntervalMs": 2000,
+        "timeoutMs": 3600000
+      },
+      "custom": {
+        "searchMode": "hybrid",
+        "providerState": {
+          "mode": "active",
+          "providerId": "openai"
+        },
+        "indexIdentity": {
+          "status": "missing",
+          "reason": "index metadata is missing",
+          "code": "metadata_missing",
+          "owner": "openclaw"
+        },
+        "automaticRebuildNotice": {
+          "sequence": 0,
+          "warning": ""
+        }
+      }
+    },
+    "embeddingProbe": {
+      "ok": true
+    },
+    "scan": {
+      "sources": [
+        {
+          "source": "memory",
+          "totalFiles": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "totalFiles": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "totalFiles": 1,
+      "issues": [
+        "no eligible session transcripts found"
+      ]
+    },
+    "audit": {
+      "storePath": "plugin-state:memory-core/short-term-recall/919efd20bea2145da6d31a6c5b7d4f0dbd9c95d66ae5beab9dfd5cb40f9320bc",
+      "lockPath": "plugin-state:memory-core/short-term-locks/919efd20bea2145da6d31a6c5b7d4f0dbd9c95d66ae5beab9dfd5cb40f9320bc",
+      "exists": false,
+      "entryCount": 0,
+      "promotedCount": 0,
+      "spacedEntryCount": 0,
+      "conceptTaggedEntryCount": 0,
+      "invalidEntryCount": 0,
+      "danglingEntryCount": 0,
+      "issues": []
+    },
+    "dreamingAudit": {
+      "sessionCorpusDir": "<BASE_NATIVE_OUTPUT>/response-200-control/workspace/memory/.dreams/session-corpus",
+      "sessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusLineCount": 0,
+      "sessionIngestionPath": "<BASE_NATIVE_OUTPUT>/response-200-control/workspace/memory/.dreams/session-ingestion.json",
+      "sessionIngestionExists": false,
+      "issues": []
+    }
+  }
+]
+
+--- response-200-control/diagnostics.log ---
+17:04:20 [memory] sqlite-vec unavailable: Memory search database unavailable: database-missing
+
+--- response-200-control/http-events.json ---
+[
+  {
+    "event": "request",
+    "at": 3527469.40259763,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "ping"
+      ]
+    },
+    "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "response",
+    "at": 3527469.402997101,
+    "status": 200,
+    "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+  }
+]
+
+--- response-401-control/terminal.raw ---
+[
+  {
+    "agentId": "main",
+    "status": {
+      "backend": "builtin",
+      "files": 0,
+      "chunks": 0,
+      "dirty": true,
+      "workspaceDir": "<BASE_NATIVE_OUTPUT>/response-401-control/workspace",
+      "dbPath": "<BASE_NATIVE_OUTPUT>/response-401-control/state/agents/main/agent/openclaw-agent.sqlite",
+      "storage": {
+        "databaseBytes": 0,
+        "walBytes": 0,
+        "reusableBytes": 0,
+        "embeddingCacheBytes": 0,
+        "embeddingCacheEntries": 0
+      },
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "requestedProvider": "openai",
+      "sources": [
+        "memory",
+        "sessions"
+      ],
+      "extraPaths": [],
+      "sourceCounts": [
+        {
+          "source": "memory",
+          "files": 0,
+          "chunks": 0,
+          "chunkBytes": 0,
+          "dirty": true,
+          "eligible": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "files": 0,
+          "chunks": 0,
+          "chunkBytes": 0,
+          "eligible": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "cache": {
+        "enabled": true,
+        "entries": 0,
+        "maxEntries": 50000
+      },
+      "fts": {
+        "enabled": true,
+        "available": false
+      },
+      "vector": {
+        "enabled": true,
+        "index": {
+          "state": "empty"
+        },
+        "storeAvailable": false,
+        "semanticAvailable": false,
+        "available": false,
+        "loadError": "Memory search database unavailable: database-missing"
+      },
+      "batch": {
+        "enabled": false,
+        "failures": 0,
+        "limit": 2,
+        "wait": true,
+        "concurrency": 2,
+        "pollIntervalMs": 2000,
+        "timeoutMs": 3600000
+      },
+      "custom": {
+        "searchMode": "hybrid",
+        "providerState": {
+          "mode": "active",
+          "providerId": "openai"
+        },
+        "indexIdentity": {
+          "status": "missing",
+          "reason": "index metadata is missing",
+          "code": "metadata_missing",
+          "owner": "openclaw"
+        },
+        "automaticRebuildNotice": {
+          "sequence": 0,
+          "warning": ""
+        }
+      }
+    },
+    "embeddingProbe": {
+      "ok": false,
+      "error": "openai embeddings failed (model: text-embedding-3-small, batch size: 1) (401): synthetic fixture authorization rejection [type=invalid_request_error, code=invalid_authentication]"
+    },
+    "scan": {
+      "sources": [
+        {
+          "source": "memory",
+          "totalFiles": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "totalFiles": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "totalFiles": 1,
+      "issues": [
+        "no eligible session transcripts found"
+      ]
+    },
+    "audit": {
+      "storePath": "plugin-state:memory-core/short-term-recall/0179f97ce04e08650c2fdcfb1d0de37bf7e49ada34e5c726b4bcb2f442cdc857",
+      "lockPath": "plugin-state:memory-core/short-term-locks/0179f97ce04e08650c2fdcfb1d0de37bf7e49ada34e5c726b4bcb2f442cdc857",
+      "exists": false,
+      "entryCount": 0,
+      "promotedCount": 0,
+      "spacedEntryCount": 0,
+      "conceptTaggedEntryCount": 0,
+      "invalidEntryCount": 0,
+      "danglingEntryCount": 0,
+      "issues": []
+    },
+    "dreamingAudit": {
+      "sessionCorpusDir": "<BASE_NATIVE_OUTPUT>/response-401-control/workspace/memory/.dreams/session-corpus",
+      "sessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusLineCount": 0,
+      "sessionIngestionPath": "<BASE_NATIVE_OUTPUT>/response-401-control/workspace/memory/.dreams/session-ingestion.json",
+      "sessionIngestionExists": false,
+      "issues": []
+    }
+  }
+]
+
+--- response-401-control/diagnostics.log ---
+17:04:28 [memory] sqlite-vec unavailable: Memory search database unavailable: database-missing
+
+--- response-401-control/http-events.json ---
+[
+  {
+    "event": "request",
+    "at": 3527477.465661585,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "ping"
+      ]
+    },
+    "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "response",
+    "at": 3527477.465971645,
+    "status": 401,
+    "body_sha256": "421175b5d3df04da30b0e02195f4720a9b753495ad6dfbb5ca2510ab2a740958"
+  }
+]
+
+--- pending-sigint/terminal.raw ---
+^C
+--- pending-sigint/diagnostics.log ---
+17:04:36 [memory] sqlite-vec unavailable: Memory search database unavailable: database-missing
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- pending-sigint/http-events.json ---
+[
+  {
+    "event": "request",
+    "at": 3527485.862226401,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "ping"
+      ]
+    },
+    "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "peer-closed",
+    "at": 3527487.962978209
+  }
+]
+
+--- pending-sigterm/terminal.raw ---
+
+--- pending-sigterm/diagnostics.log ---
+17:04:46 [memory] sqlite-vec unavailable: Memory search database unavailable: database-missing
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- pending-sigterm/http-events.json ---
+[
+  {
+    "event": "request",
+    "at": 3527495.866752703,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "ping"
+      ]
+    },
+    "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "peer-closed",
+    "at": 3527497.969065065
+  }
+]

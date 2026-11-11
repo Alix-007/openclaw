@@ -1,0 +1,9 @@
+{
+  "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+  "tree": "6c4ba630e8696b7a12268264834c832d70066858",
+  "prior_full_review_head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "repair_diff_sha256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+  "production_unchanged": true,
+  "all_original_test_bodies_and_assertions_unchanged": true,
+  "route": "Prior independent full review plus root independent two-file maintenance delta review; not a new full helper review."
+}

@@ -1,0 +1,194 @@
+
+--- admitted-index-sigint-control/terminal.raw ---
+^C[
+  {
+    "agentId": "main",
+    "status": {
+      "backend": "builtin",
+      "files": 1,
+      "chunks": 1,
+      "dirty": false,
+      "workspaceDir": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace",
+      "dbPath": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/state/agents/main/agent/openclaw-agent.sqlite",
+      "storage": {
+        "databaseBytes": 4096,
+        "walBytes": 1005312,
+        "reusableBytes": 0,
+        "embeddingCacheBytes": 24,
+        "embeddingCacheEntries": 1
+      },
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "requestedProvider": "openai",
+      "sources": [
+        "memory",
+        "sessions"
+      ],
+      "extraPaths": [],
+      "sourceCounts": [
+        {
+          "source": "memory",
+          "files": 1,
+          "chunks": 1,
+          "chunkBytes": 80,
+          "dirty": true,
+          "eligible": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "files": 0,
+          "chunks": 0,
+          "chunkBytes": 0,
+          "eligible": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "cache": {
+        "enabled": true,
+        "entries": 1,
+        "maxEntries": 50000
+      },
+      "fts": {
+        "enabled": true,
+        "available": true
+      },
+      "vector": {
+        "enabled": true,
+        "index": {
+          "state": "complete"
+        },
+        "storeAvailable": true,
+        "extensionPath": "<HEAD_CHECKOUT>/node_modules/.pnpm/sqlite-vec-linux-x64@0.1.9/node_modules/sqlite-vec-linux-x64/vec0.so",
+        "dims": 3
+      },
+      "batch": {
+        "enabled": false,
+        "failures": 0,
+        "limit": 2,
+        "wait": true,
+        "concurrency": 2,
+        "pollIntervalMs": 2000,
+        "timeoutMs": 3600000
+      },
+      "custom": {
+        "searchMode": "hybrid",
+        "providerState": {
+          "mode": "active",
+          "providerId": "openai"
+        },
+        "indexIdentity": {
+          "status": "valid"
+        },
+        "automaticRebuildNotice": {
+          "sequence": 0,
+          "warning": ""
+        }
+      }
+    },
+    "embeddingProbe": {
+      "ok": true
+    },
+    "scan": {
+      "sources": [
+        {
+          "source": "memory",
+          "totalFiles": 1,
+          "issues": []
+        },
+        {
+          "source": "sessions",
+          "totalFiles": 0,
+          "issues": [
+            "no eligible session transcripts found"
+          ]
+        }
+      ],
+      "totalFiles": 1,
+      "issues": [
+        "no eligible session transcripts found"
+      ]
+    },
+    "audit": {
+      "storePath": "plugin-state:memory-core/short-term-recall/0574734a11f3574dd0e4c0553c928053040ad65ffb6f22d48d42db1dd89f1bc4",
+      "lockPath": "plugin-state:memory-core/short-term-locks/0574734a11f3574dd0e4c0553c928053040ad65ffb6f22d48d42db1dd89f1bc4",
+      "exists": false,
+      "entryCount": 0,
+      "promotedCount": 0,
+      "spacedEntryCount": 0,
+      "conceptTaggedEntryCount": 0,
+      "invalidEntryCount": 0,
+      "danglingEntryCount": 0,
+      "issues": []
+    },
+    "dreamingAudit": {
+      "sessionCorpusDir": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace/memory/.dreams/session-corpus",
+      "sessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusFileCount": 0,
+      "suspiciousSessionCorpusLineCount": 0,
+      "sessionIngestionPath": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace/memory/.dreams/session-ingestion.json",
+      "sessionIngestionExists": false,
+      "issues": []
+    }
+  }
+]
+
+--- admitted-index-sigint-control/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+[state/agent-db] agent database clean-close receipt: written; agent=main
+
+--- admitted-index-sigint-control/http-events.json ---
+[
+  {
+    "event": "request",
+    "at": 3538697.393946651,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "ping"
+      ]
+    },
+    "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "response",
+    "at": 3538697.394452112,
+    "status": 200,
+    "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+  },
+  {
+    "event": "request",
+    "at": 3538699.872476521,
+    "method": "POST",
+    "path": "/v1/embeddings",
+    "body": {
+      "dimensions": 3,
+      "model": "text-embedding-3-small",
+      "input": [
+        "# Isolated memory\nOrdinary synthetic diagnostic corpus.\n"
+      ]
+    },
+    "body_sha256": "4cb79e0e8493bd8f976e5addd1d10d0775b1c95dcee31234c41787f85b1cad02",
+    "synthetic_auth_matches": true
+  },
+  {
+    "event": "admitted-document-request-held",
+    "at": 3538699.872502467
+  },
+  {
+    "event": "admitted-document-response-released",
+    "at": 3538700.161838153
+  },
+  {
+    "event": "response",
+    "at": 3538700.162211901,
+    "status": 200,
+    "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+  }
+]

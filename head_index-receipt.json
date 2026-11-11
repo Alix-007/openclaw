@@ -1,0 +1,329 @@
+{
+  "collector_sha256": "4e4731cf5a0994949bff596a54c43ab26cdc3b222670ef054d2ef7b111655862",
+  "expect": "green",
+  "binding_before": {
+    "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "tracked_status": "",
+    "build_info": {
+      "version": "2026.11.3",
+      "commit": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+      "builtAt": "2026-11-11T12:06:32.190Z",
+      "buildId": "2026.11.3-fd9cbc54365d-2026-11-11T12-06-32.190Z"
+    },
+    "build_stamp": {
+      "builtAt": 1794399042722,
+      "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+      "inputsClean": true,
+      "inputSignature": "cfcd73058700f69184b70b235f386cad08731d0542199c31f5c5a8a50f9781fc"
+    },
+    "sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "node-runtime-recovery.mjs": "6b4de18b5980c14f74cbc7d85457c8293ee6dca558415090809840c644b58433",
+      "gateway-shutdown-budget.mjs": "509f6760528c1212c180c2961a16eaf3f56658a488a35aab238751350067bd1a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "a6d514b215f99334b3a583c9c9f7c6d74b5f2822ef3230798a0d24c3631bb1c2",
+      "dist/.buildstamp": "91044bcdaab6dd4808a248bca3da992d39fbe6d8a38615edca4f7f32e2941fcb",
+      "extensions/memory-core/src/cli-status.runtime.ts": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5",
+      "extensions/memory-core/src/cli-runtime-common.ts": "9d66534da413ab3d6889f45f83884880085dd8e978ff07b2e118397b46a75082",
+      "extensions/memory-core/src/memory/manager-provider-lifecycle.ts": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46",
+      "extensions/memory-core/src/memory/manager-embedding-ops.ts": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e",
+      "extensions/memory-core/src/memory/paused-deadline.ts": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28",
+      "packages/memory-host-sdk/src/host/search-manager.types.ts": "fff2cddc642da0fea42df28d1243e0bd7f5872504c134f5a8a14363e8311d2a9"
+    },
+    "pass": true
+  },
+  "cases": [
+    {
+      "label": "admitted-index-sigint-control",
+      "mode": "SIGINT",
+      "argv": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "memory",
+        "status",
+        "--index",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "environment": {
+        "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+        "HOME": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/home",
+        "USERPROFILE": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/home",
+        "XDG_CONFIG_HOME": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/xdg-config",
+        "XDG_CACHE_HOME": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/xdg-cache",
+        "XDG_DATA_HOME": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/xdg-data",
+        "XDG_STATE_HOME": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/xdg-state",
+        "TMPDIR": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/tmp",
+        "TMP": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/tmp",
+        "TEMP": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/tmp",
+        "OPENCLAW_CONFIG_PATH": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/openclaw.json",
+        "OPENCLAW_STATE_DIR": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/state",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "TERM": "xterm-256color"
+      },
+      "config_sha256_before": "9d50b6d13b99cad54be0a46f0b3130720e9c3acd416819cf0f3dbd32cfaed7dd",
+      "config_sha256_after": "9d50b6d13b99cad54be0a46f0b3130720e9c3acd416819cf0f3dbd32cfaed7dd",
+      "config_unchanged": true,
+      "corpus_unchanged": true,
+      "pid": 1553113,
+      "process_group": 1553113,
+      "owned_processes_at_interrupt": [
+        {
+          "pid": "1553113",
+          "ppid": "1553056",
+          "pgid": "1553113",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "1553125",
+          "ppid": "1553113",
+          "pgid": "1553113",
+          "stat": "Sl+"
+        }
+      ],
+      "owned_processes_before_harness_cleanup": [],
+      "request_seen": true,
+      "signal_sent": true,
+      "interrupt_acknowledged": true,
+      "exit_code": 130,
+      "elapsed_seconds": 13.098226119298488,
+      "interrupt_to_exit_ms": 806.0889560729265,
+      "interrupt_to_http_close_ms": null,
+      "http_closed_before_harness_cleanup": false,
+      "harness_watchdog_kill": false,
+      "pty_eof_drained": true,
+      "success_status_json_published": true,
+      "json_payload": [
+        {
+          "agentId": "main",
+          "status": {
+            "backend": "builtin",
+            "files": 1,
+            "chunks": 1,
+            "dirty": false,
+            "workspaceDir": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace",
+            "dbPath": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/state/agents/main/agent/openclaw-agent.sqlite",
+            "storage": {
+              "databaseBytes": 4096,
+              "walBytes": 1005312,
+              "reusableBytes": 0,
+              "embeddingCacheBytes": 24,
+              "embeddingCacheEntries": 1
+            },
+            "provider": "openai",
+            "model": "text-embedding-3-small",
+            "requestedProvider": "openai",
+            "sources": [
+              "memory",
+              "sessions"
+            ],
+            "extraPaths": [],
+            "sourceCounts": [
+              {
+                "source": "memory",
+                "files": 1,
+                "chunks": 1,
+                "chunkBytes": 80,
+                "dirty": true,
+                "eligible": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "files": 0,
+                "chunks": 0,
+                "chunkBytes": 0,
+                "eligible": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "cache": {
+              "enabled": true,
+              "entries": 1,
+              "maxEntries": 50000
+            },
+            "fts": {
+              "enabled": true,
+              "available": true
+            },
+            "vector": {
+              "enabled": true,
+              "index": {
+                "state": "complete"
+              },
+              "storeAvailable": true,
+              "extensionPath": "<HEAD_CHECKOUT>/node_modules/.pnpm/sqlite-vec-linux-x64@0.1.9/node_modules/sqlite-vec-linux-x64/vec0.so",
+              "dims": 3
+            },
+            "batch": {
+              "enabled": false,
+              "failures": 0,
+              "limit": 2,
+              "wait": true,
+              "concurrency": 2,
+              "pollIntervalMs": 2000,
+              "timeoutMs": 3600000
+            },
+            "custom": {
+              "searchMode": "hybrid",
+              "providerState": {
+                "mode": "active",
+                "providerId": "openai"
+              },
+              "indexIdentity": {
+                "status": "valid"
+              },
+              "automaticRebuildNotice": {
+                "sequence": 0,
+                "warning": ""
+              }
+            }
+          },
+          "embeddingProbe": {
+            "ok": true
+          },
+          "scan": {
+            "sources": [
+              {
+                "source": "memory",
+                "totalFiles": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "totalFiles": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "totalFiles": 1,
+            "issues": [
+              "no eligible session transcripts found"
+            ]
+          },
+          "audit": {
+            "storePath": "plugin-state:memory-core/short-term-recall/0574734a11f3574dd0e4c0553c928053040ad65ffb6f22d48d42db1dd89f1bc4",
+            "lockPath": "plugin-state:memory-core/short-term-locks/0574734a11f3574dd0e4c0553c928053040ad65ffb6f22d48d42db1dd89f1bc4",
+            "exists": false,
+            "entryCount": 0,
+            "promotedCount": 0,
+            "spacedEntryCount": 0,
+            "conceptTaggedEntryCount": 0,
+            "invalidEntryCount": 0,
+            "danglingEntryCount": 0,
+            "issues": []
+          },
+          "dreamingAudit": {
+            "sessionCorpusDir": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace/memory/.dreams/session-corpus",
+            "sessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusLineCount": 0,
+            "sessionIngestionPath": "<HEAD_INDEX_OUTPUT>/admitted-index-sigint-control/workspace/memory/.dreams/session-ingestion.json",
+            "sessionIngestionExists": false,
+            "issues": []
+          }
+        }
+      ],
+      "events": [
+        {
+          "event": "request",
+          "at": 3538697.393946651,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "ping"
+            ]
+          },
+          "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "response",
+          "at": 3538697.394452112,
+          "status": 200,
+          "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+        },
+        {
+          "event": "request",
+          "at": 3538699.872476521,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "# Isolated memory\nOrdinary synthetic diagnostic corpus.\n"
+            ]
+          },
+          "body_sha256": "4cb79e0e8493bd8f976e5addd1d10d0775b1c95dcee31234c41787f85b1cad02",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "admitted-document-request-held",
+          "at": 3538699.872502467
+        },
+        {
+          "event": "admitted-document-response-released",
+          "at": 3538700.161838153
+        },
+        {
+          "event": "response",
+          "at": 3538700.162211901,
+          "status": 200,
+          "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+        }
+      ],
+      "error": null,
+      "terminal_sha256": "687a6fcdb580493d1399d5b0e21674a9d2de9e5deb1e552d743665ccf41d5dae",
+      "diagnostics_sha256": "16d4e32ed1705c13f13ad759f8bf3606c8aad77b72dc43dce19be7e242704626",
+      "result": "GREEN_ADMITTED_INDEX_PUBLICATION_AND_STATUS_RECEIPT"
+    }
+  ],
+  "scope": "Normal memory status --index CLI through Memory Core and bundled OpenAI plugin to synthetic compatible loopback HTTP. Real OS PTY/pipe/socket and actual product HTTP transport; no actual OpenAI/Ollama provider service, semantic-quality, inference, Gateway, or real memory claim. Isolated synthetic indexing is intentional only in this custody control.",
+  "isolation": "Allowlisted environment, task-owned HOME/USERPROFILE/XDG/tmp/config/state/workspace. Not an OS filesystem/network sandbox. Product/dependency reads expected.",
+  "fixture_cleanup": "Retained; owned children and server sockets waited/closed.",
+  "result": "GREEN_INDEX_CUSTODY_CONTROL",
+  "binding_after": {
+    "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+    "tracked_status": "",
+    "build_info": {
+      "version": "2026.11.3",
+      "commit": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+      "builtAt": "2026-11-11T12:06:32.190Z",
+      "buildId": "2026.11.3-fd9cbc54365d-2026-11-11T12-06-32.190Z"
+    },
+    "build_stamp": {
+      "builtAt": 1794399042722,
+      "head": "fd9cbc54365d5ce591828d36ef559203c78b4d0a",
+      "inputsClean": true,
+      "inputSignature": "cfcd73058700f69184b70b235f386cad08731d0542199c31f5c5a8a50f9781fc"
+    },
+    "sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "node-runtime-recovery.mjs": "6b4de18b5980c14f74cbc7d85457c8293ee6dca558415090809840c644b58433",
+      "gateway-shutdown-budget.mjs": "509f6760528c1212c180c2961a16eaf3f56658a488a35aab238751350067bd1a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "a6d514b215f99334b3a583c9c9f7c6d74b5f2822ef3230798a0d24c3631bb1c2",
+      "dist/.buildstamp": "91044bcdaab6dd4808a248bca3da992d39fbe6d8a38615edca4f7f32e2941fcb",
+      "extensions/memory-core/src/cli-status.runtime.ts": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5",
+      "extensions/memory-core/src/cli-runtime-common.ts": "9d66534da413ab3d6889f45f83884880085dd8e978ff07b2e118397b46a75082",
+      "extensions/memory-core/src/memory/manager-provider-lifecycle.ts": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46",
+      "extensions/memory-core/src/memory/manager-embedding-ops.ts": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e",
+      "extensions/memory-core/src/memory/paused-deadline.ts": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28",
+      "packages/memory-host-sdk/src/host/search-manager.types.ts": "fff2cddc642da0fea42df28d1243e0bd7f5872504c134f5a8a14363e8311d2a9"
+    },
+    "pass": true
+  },
+  "pass": true
+}

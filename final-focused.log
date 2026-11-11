@@ -1,0 +1,65 @@
+[test] starting test/vitest/vitest.extension-database-workers.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache hit after 9008ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared f829f62072fb in 9213ms (18965 inputs, 29631 outputs)
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for local/hf:ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf 37ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for ollama/embeddinggemma:latest 7ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for ollama/embeddinggemma-2:270m 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for lmstudio/text-embedding-embeddinggemma-300m 5ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for openai-compatible/google/embeddinggemma-300m 13ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for local//models/EmbeddingGemma-300m.Q8_0.gguf 5ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for openai-compatible/nomic-embed-text 37ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for openai-compatible/other/embeddinggemmax 11ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for gemini/gemini-embedding-2 11ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for local/embeddinggemma 8ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory model input formatting > formats query and document inputs for ollama/embeddinggemma 8ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding query retry cancellation > waits for an already-active readiness phase before arming its query deadline 15ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding query retry cancellation > cancels provider backoff immediately without sending a second request 18ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding query retry cancellation > never starts a provider request for an already-cancelled search 8ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding query retry cancellation > reaches caller fallback within the memory_search deadline after a hinted 429 29ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding query retry cancellation > retries provider success that arrives after each embedding deadline 10ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (text) > recovers a watchdog timeout through smaller requests in input order 7ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (text) > splits a provider row-cap error without retrying oversized requests 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (text) > splits an aggregate-token rejection recursively until every batch fits 31ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (text) > does not retry or split {"error":{"code":"InvalidParameter","message":"The parameter input specified in the request is not valid. Request id: fixture-000597000","param":"input"}} 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (text) > does not retry or split batch size is invalid, it should not be larger than 10 5ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (structured) > recovers a watchdog timeout through smaller requests in input order 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (structured) > splits a provider row-cap error without retrying oversized requests 5ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (structured) > splits an aggregate-token rejection recursively until every batch fits 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (structured) > does not retry or split {"error":{"code":"InvalidParameter","message":"The parameter input specified in the request is not valid. Request id: fixture-000597000","param":"input"}} 4ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts > memory embedding batch retry boundary (structured) > does not retry or split batch size is invalid, it should not be larger than 10 4ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > keeps an active FTS-only generation stable while fallback activates 5080ms
+(node:1509149) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: MemorySearchManager.status is deprecated; use MemorySearchManager.statusAsync instead. The legacy contract remains supported during its deprecation period. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > waits for admitted provider users before retirement 4908ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > uses the leased provider runtime after retirement starts 3915ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > waits for an admitted search before manager teardown 4663ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > waits for an admitted vector probe before manager teardown 2835ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > fails closed when fallback initialization fails for an explicit provider 5078ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > retries the optional primary after fallback initialization fails 5181ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > fails closed and retries a required primary after a null fallback result 5307ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > retries an optional primary after a null fallback result 4905ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts > memory index > keeps concurrent optional searches in FTS mode when shared fallback fails 4530ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 60000 ms, override=undefined, pause=false, cancel=false 1568ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe local: 300000 ms, override=undefined, pause=false, cancel=false 30ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 90000 ms, override=90000, pause=false, cancel=false 23ms
+(node:1512202) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: MemorySearchManager.status is deprecated; use MemorySearchManager.statusAsync instead. The legacy contract remains supported during its deprecation period. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 60000 ms, override=undefined, pause=true, cancel=false 26ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe local: 300000 ms, override=undefined, pause=false, cancel=true 29ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > keeps another caller alive during cancelled initialization 30ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > keeps another caller alive during cancelled probe 20ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/paused-deadline.test.ts > createPausedDeadline > does not treat a wall-clock jump as an expired embedding pause budget 50ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/paused-deadline.test.ts > createPausedDeadline > keeps remaining embedding budget when pause accounting sees a wall-clock jump 7ms
+
+ Test Files  4 passed (4)
+      Tests  45 passed (45)
+   Start at  19:55:56
+   Duration  99.38s (tests 54%, transform 24%, import 17%, setup 4%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 107.06s

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "<NODE26>",
+    "scripts/run-vitest.mjs",
+    "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+    "extensions/memory-core/src/memory/paused-deadline.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts",
+    "--maxWorkers=1"
+  ],
+  "cwd": "<HEAD_CHECKOUT>",
+  "exit_code": 0,
+  "elapsed_seconds": 108.08,
+  "head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "diffSHA256": "4ac676d60e7c1d3a5686eaa1c7c7bdf9be358dd534410d3aa81a10ce004a6e04",
+  "logSHA256": "4a6e5294e3e5a90d84d990a00303391776d8637dcfd65a35b865af51b907611f"
+}

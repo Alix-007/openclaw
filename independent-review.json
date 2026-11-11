@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "route": "Independent root delta review of worker-authored two-file repair",
+  "reviewedHead": "493066f11544c2c52c0ddb397912eb409331173b",
+  "findings": [],
+  "files": {
+    "config/test-lines-allocations/memory-deep-probe-cancellation.txt": {
+      "sha256": "826b6832e45ba17d625debc95ae8554e148550b00c05b47fa8f7be1c555bc83c",
+      "headSHA256": "89e56b272669de11431602f3c77e560ecf6c61512fa8db5ac0006606e88d5282"
+    },
+    "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts": {
+      "sha256": "7610f019d280ae93d877702ef33c755231c4c30ba3bcb9f5a5aa84d23906c398",
+      "headSHA256": "0eb8d8d3914b2fb60726e499e79a61c60eec8e294324b8e384ad756b3a3d9576"
+    }
+  },
+  "productionUnchanged": true,
+  "allOriginalTestBodiesAndAssertionsUnchanged": true,
+  "tests": 45,
+  "checksVerified": [
+    "focused",
+    "types",
+    "lint",
+    "format",
+    "linecap",
+    "testLineRatchet",
+    "changedMocks"
+  ]
+}

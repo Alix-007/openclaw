@@ -1,0 +1,13 @@
+{
+  "passed": 45,
+  "files": [
+    "extensions/memory-core/src/memory/manager-embedding-ops.retry.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+    "extensions/memory-core/src/memory/paused-deadline.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-lifecycle-leases.test.ts"
+  ],
+  "seconds": 108.08,
+  "source_diff_sha256": "ba1d332b49a929043c3374a0821f9c47871d96217b5b4c222ae27f0eba7f6192",
+  "failure_history": [],
+  "note": "One final four-file all-green focused command for the maintenance delta; prior full-review production is unchanged."
+}

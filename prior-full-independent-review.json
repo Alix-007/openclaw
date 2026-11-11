@@ -1,0 +1,434 @@
+{
+  "review_channel": "Independent GPT-6.1 Sol agent review, explicitly authorized fallback; not official autoreview helper execution",
+  "status": "PASS",
+  "findings": [],
+  "severity_range": "P0-P3",
+  "reviewed_at_utc": "2026-11-11T09:27:17.478730+00:00",
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "base_tree": "ea73c51b7e21312b2ff676513a4c3d33223c4897",
+  "candidate_staged_tree": "c87f4739191d7a6d9c068d89317d0d27cadd32ae",
+  "candidate_head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "diff": {
+    "default_git_diff_cached_base_sha256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46",
+    "full_index_git_diff_cached_base_sha256": "53149ee3c4e4b4866732cd0cb8c90cda9a801a9cf4ede60c7ce1c52685e27556",
+    "handoff_default_diff_hash_matches": true,
+    "staged_and_working_equivalent": true,
+    "staged_tree_and_working_equivalent": true
+  },
+  "files": [
+    {
+      "path": "config/test-lines-allocations/memory-deep-probe-cancellation.txt",
+      "sha256": "89e56b272669de11431602f3c77e560ecf6c61512fa8db5ac0006606e88d5282"
+    },
+    {
+      "path": "extensions/memory-core/src/cli-status.runtime.ts",
+      "sha256": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.ts",
+      "sha256": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-lifecycle.ts",
+      "sha256": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+      "sha256": "32bb9737885ffa890aa722e3e5861350433d9dcb3da811e1f2c118939caf3cb3"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/paused-deadline.ts",
+      "sha256": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28"
+    }
+  ],
+  "source_hashes_all_match": true,
+  "full_owner_review": {
+    "producer_scope": "Public availability captures ambient signal once per invocation. Shared providerInitPromise/fallback initialization is awaited without attaching caller cancellation. Checks after each awaited initialization/adoption prevent starting a query after withdrawal. Completed-result cache has no shared producer promise.",
+    "cancellation_path": "Optional private probe signal composes with existing per-call watchdog via runEmbeddingOperationWithTimeout; bundled OpenAI provider/remote HTTP already forwards it to guarded fetch and releases sockets. Helper catches rethrow caller cancellation before local degradation; public catch rethrows it before cache update. Watchdog timeout remains an ordinary probe failure and retains existing cache/degrade behavior.",
+    "concurrent_callers": "One cancelled query receives only its own composed signal; surviving query is independent. Shared construction can finish without either cancellation being added to its input. Survivor success can populate the cache. No global cancellation or provider retirement added.",
+    "internal_siblings": "Bootstrap recovery and primary-provider recovery keep two-argument helper calls (undefined optionalsignal). Query/batch/index embeddings, provider budgets/defaults, lifecycle close ordering, SDK public interface and registered-manager forwarding Proxy are unchanged. Only public availability invocation gains ambient read cancellation.",
+    "CLI_output": "Readonly status (!index&&!fix) captures ambientsignal. Rejecting cancelled probe exits deep callback; postprobe check prevents secondary semantic probe on a resolved-after-abort result. withMemoryCommand catch suppresses only when read signal aborted; ordinary errors propagate. Final cfg/signal check suppresses all late aggregate output. Index/fix exclude quiet path, so admitted mutation receipts/errors retain their owners.",
+    "cleanup": "withManager finally awaits manager.close; manager withManagerOperation finally decrements active operation before idle waiters/close. Transport cancellation is joined through existing awaited provider operation; no race-only cancellation wrapper introduced.",
+    "real_consumers": "CLI deep/--index preflight and Gateway doctor are the only direct public availability callers; only implementation is MemoryProviderLifecycle. Registered manager Proxy forwards methods/receiver. Existing generic provider transports consume signal; provider that ignores cancellation is outside demonstrated native transport scope."
+  },
+  "test_audit": {
+    "added_test_net_LF": 68,
+    "allocation": 68,
+    "changed_existing_owners": [
+      "extensions/memory-core/src/memory/manager-provider-probe.test.ts"
+    ],
+    "CLI_tests": "Restored byte-identical BASE; only new redundant CLI cases removed, no prior scenario/assertion weakened. Actual formatter/quiet behavior remains mandatory strict frozen V3 native proof.",
+    "provider_regression": "Original watchdog/local/override/readiness controls retained; seven final provider-probe cases cover caller signal/localhealth/cache/sharedinit/independentconcurrency.",
+    "final_focused": {
+      "passed": 111,
+      "files": 5,
+      "elapsed_seconds": 154.192,
+      "exit_code": 0,
+      "receipt": "memory-deep-focused.json",
+      "log_sha256": "7124ede052b132e51320b9094230bd6db41440b9ec947df39c541c25c397fa67",
+      "binding": "Precommit exact final default diff ae517f66...; final committed tree/source hashes identical.",
+      "reuse": "No reuse claim; this is one final all-green five-file command."
+    },
+    "checks": "Final recorded focused/types/lint/budget/format/linecap/mocks/normalbuild receipts and their log hashes verified read-only; no checks rerun by reviewer."
+  },
+  "proof_gate": {
+    "BASE": "Frozen strict V3 real CLI four-cell RED_WITH_LEGAL_CONTROLS;200/401 correctclassification, INT/TERM normal launcherSIGKILL,no harnesswatchdog; prior admitted-index custody BASEcontrolGREEN. Reviewed these retained observations during admission.",
+    "collector_sha256": "1298edc6862b2ce2f19b14ed0a8bf92ed8101c9d58ec032a4800677619c96fd8",
+    "index_collector_sha256": "4e4731cf5a0994949bff596a54c43ab26cdc3b222670ef054d2ef7b111655862",
+    "candidate_HEAD": "PASS on exact committed HEAD493066f11544c2c52c0ddb397912eb409331173b; strict V3 four-cell and unchanged admitted-index custody controls verified against original raw streams/HTTP events/config/corpus/process records.",
+    "required_release_controls": [
+      "Same frozen V3:200/401 controls+INT/TERM natural130/143 under1500ms, HTTPcloseunder1500ms, quiet stdout/stderr afterACK, no genericunavailable/cli_error/statusJSON, no watchdog/process leftovers, unchangedconfig/corpus.",
+      "Same frozen admitted-index custody control: admitted indexing completes/publishes, final statusJSON, natural130 without watchdog.",
+      "Normal required focused tests/types/lint/format/test-budget/hook gates supplied by root; no independent execution claimed."
+    ]
+  },
+  "scope_necessity": "Four production files (existing timeout owner policy move), one existing test file and exact68 own test LF grant. No new public interface/config/default policy or unrelated extraction.",
+  "line_cap": "Conservative nonblank/non-line-comment upperbounds lifecycle692/status569 under700; ops existing grandfathered suppression unchanged. Canonical lint remains root check, not rerun.",
+  "limitations": [
+    "Transport proof scope is isolated LinuxNode26 normalCLI+compatible loopbackHTTP; no real OpenAI/Ollama/provider/semantic-quality claim.",
+    "Latest admission refresh pinned8830ff6d and completeAlix17/Leon20 footprints have no sameowner overlap; open192433 authdiagnostics touches lifecycle catch but is semantically disjoint and must be reconciled if merged concurrently.",
+    "No product/Git/public writes, tests/build/install or delegation performed. Only these task-owned review reports written.",
+    "Publication byte-readback and final PR prose have not yet been generated/reviewed; this PASS certifies exact-head product/check/native evidence, not a future uploaded body."
+  ],
+  "delta_review": {
+    "at_utc": "2026-11-11T09:33:31.566849+00:00",
+    "previous_tree": "19ccf840142ab62de3c2868aac7be46517a0f5e3",
+    "corrected_tree": "5e6f33e8e6ed6b85d68e1b5124ae78cea9f122a2",
+    "only_change": "manager-provider-probe.test.ts: fixture.createConfig() -> fixture.createConfig({})",
+    "fixture_contract": "Existing manager-index.test-support.ts:357 requires params: ManagerIndexFixtureConfig; it dereferences params to prepare ordinary defaults. Passing {} obeys canonical fixture contract.",
+    "missed_in_original_review": "Reviewer missed the required argument; original first-run setup failures and original reviewed snapshot remain preserved under memory-deep-pre-fixture-arg-fix. No claim original tests passed.",
+    "semantic_assessment": "Test setup repaired; assertions, gates, scenario scope, production bytes, allocation109 and net test LF109 unchanged. No weaker assertions or new fixture behavior.",
+    "findings": [],
+    "status": "PASS_CODE_PROOF_PENDING",
+    "verification": "All6 handoff fileSHA match correctedtree; staged/index/working equivalence verified read-only. Root replays only affected7 probe cases; reviewer ran no checks."
+  },
+  "tuple_arity_delta": {
+    "at_utc": "2026-11-11T09:41:25.609936+00:00",
+    "previous_tree": "5e6f33e8e6ed6b85d68e1b5124ae78cea9f122a2",
+    "corrected_tree": "c3daea14a298db53ac19e62834fc94aaa05fff1f",
+    "only_change": "Four existing watchdog/readiness table rows gain explicit fifth cancel=false argument; previously four-item tuples conflicted with five-argument table callback.",
+    "review_assessment": "Explicit false preserves original !cancel behavior and table assertions/LF. No production, cast, weaker assertion, timeout or allocation change. This additional missed test typing defect is recorded, not presented as previous typecheck success.",
+    "findings": [],
+    "binding": "All handoff file hashes match and stagedtree==working tree.",
+    "named_lazy_owner_risk": {
+      "inspected": [
+        "src/plugins/cli-callback-binding.ts",
+        "src/plugins/cli-registry-loader.ts",
+        "src/plugins/plugin-instance.ts",
+        "src/cli/run-main.ts",
+        "src/cli/local-state-owner.ts",
+        "src/cli/plugin-invocation-resources.ts",
+        "extensions/memory-core/src/cli.ts",
+        "extensions/memory-core/src/cli-status.runtime.ts"
+      ],
+      "static_assessment": "runMain invokes Commander within resources.run/work.track. Bound plugin action enters instance.run but the read captures getAsyncWorkSignal inside runMemoryStatus before withMemoryCommand/manager cleanup. That lexical signal is reused in the rejected-read catch and final output guard, rather than re-looking up ambient owner after lazy plugin cleanup/context unwinding. Public manager similarly captures once at invocation. Local-state owner calls runLocal and later cleanup without a post-success assertCurrent that would synthesize a new cancellation error after quiet return.",
+      "limit": "This proves appropriate capture placement by source inspection, not that a particular lazy native invocation inherited the expected raw signal. Frozen V3 exactHEAD INT/TERM plus strict postACK silence remains required and cannot be replaced by unit scope tests or static PASS."
+    },
+    "status": "PASS_CODE_PROOF_PENDING"
+  },
+  "final_fixture_lint_delta": {
+    "reviewed_at_utc": "2026-11-11T09:52:28.676264+00:00",
+    "prior_tree": "c3daea14a298db53ac19e62834fc94aaa05fff1f",
+    "tree": "cacf6c6276605ed174254718fc6f1c4bb5e98392",
+    "scope": "Only manager-provider-probe.test.ts",
+    "changes": "Move each known Error to lexical fixture scope, reject that exact Error in abort listeners, and omit default void type arguments on three createDeferred calls.",
+    "assessment": "Same Error object is passed to scope.beginClose and checked by toBe(failure); rejection identity/assertions remain. Abort listeners still require actual provider signal abort. Moving failure declaration preserves109netLF and generic omission preserves void deferred mechanics. Production/all other five files unchanged. No cast, suppression, assertion weakening, new real wait or timeout.",
+    "binding": "All6 handoff hashes/defaultdiff/stagedtree-working equivalence verified.",
+    "findings": [],
+    "status": "PASS_CODE_PROOF_PENDING",
+    "checks": "Root reports types and affected7 tests passed before equivalent lint mechanics; reviewer did not execute/relabel checks. Required lint and exactHEAD V3/index native still root-owned pending."
+  },
+  "timeout_policy_extraction_delta": {
+    "previous_tree": "cacf6c6276605ed174254718fc6f1c4bb5e98392",
+    "reviewed_tree": "73dbee82175664fa1ff8de3cb1e1605ccb831316",
+    "linecap_trigger": "Root reports canonical no-growth line cap, so original grandfather suppression alone did not permit growth. Earlier review preflight did not establish this; actual failure retained.",
+    "clean_parts": "cli.test.ts restored byte-identical BASE, deleting only newly added cases. Existing test scenarios/assertions untouched. Grant now68 matching single probe-file growth. Four production-file scope coherent; no issue with placement in existing deadline owner.",
+    "blocking_finding": {
+      "severity": "P2",
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.ts",
+      "line": 268,
+      "title": "Preserve existing runtime default when extracting timeout policy",
+      "trigger": "Call embedBatchWithRetry(inputs) with no semantic generation while manager.providerRuntime has inlineBatchTimeoutMs; generation?.runtime is undefined. Existing cache-ops calls batch helper with an optional generation. Also query helper can receive providerOverride with runtimeundefined; primary recovery can pass candidate runtimeundefined to private probe.",
+      "behavior_before": "Old private method third parameter defaults to this.providerRuntime, including explicit undefined; resolves its positive runtime timeout override.",
+      "behavior_after": "New standalone resolver receives undefined directly; selects generic remote/local timeout, silently changing timeout behavior outside cancellation scope.",
+      "minimal_repair": "At all three migrated calls, explicitly preserve old runtime fallback: resolveMemoryEmbeddingTimeout(kind,provider,runtimeExpression ?? this.providerRuntime). Runtime type excludes null, so ?? matches admitted typed-domain old undefined fallback. No new module/interface or extraction needed.",
+      "proof": "Static language/default-argument equivalence, not a native test claim. Helper body/constants otherwise match exactly."
+    },
+    "remaining": "Root applies only explicit runtime fallback at three calls; rebind static before commit, then final checks/native."
+  },
+  "resolved_findings": [
+    {
+      "severity": "P2",
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.ts",
+      "line": 268,
+      "title": "Preserve existing runtime default when extracting timeout policy",
+      "trigger": "Call embedBatchWithRetry(inputs) with no semantic generation while manager.providerRuntime has inlineBatchTimeoutMs; generation?.runtime is undefined. Existing cache-ops calls batch helper with an optional generation. Also query helper can receive providerOverride with runtimeundefined; primary recovery can pass candidate runtimeundefined to private probe.",
+      "behavior_before": "Old private method third parameter defaults to this.providerRuntime, including explicit undefined; resolves its positive runtime timeout override.",
+      "behavior_after": "New standalone resolver receives undefined directly; selects generic remote/local timeout, silently changing timeout behavior outside cancellation scope.",
+      "minimal_repair": "At all three migrated calls, explicitly preserve old runtime fallback: resolveMemoryEmbeddingTimeout(kind,provider,runtimeExpression ?? this.providerRuntime). Runtime type excludes null, so ?? matches admitted typed-domain old undefined fallback. No new module/interface or extraction needed.",
+      "proof": "Static language/default-argument equivalence, not a native test claim. Helper body/constants otherwise match exactly.",
+      "resolution": "All three migrated calls explicitly restore runtimeExpression ?? this.providerRuntime; typed runtime excludes null. Verified only this correction/formatting changed."
+    }
+  ],
+  "timeout_policy_resolution": {
+    "at_utc": "2026-11-11T10:34:36.055397+00:00",
+    "tree": "c87f4739191d7a6d9c068d89317d0d27cadd32ae",
+    "body_and_constants": "Stateless resolver body normalized whitespace-equal to BASE, complete EMBEDDING_TIMEOUTS_MS constant byte-equal. Query remote60s/local300s; batch remote120s/local600s and positive runtime override resolver unchanged.",
+    "three_calls": "Batch generation?.runtime, private probe runtime, retry query runtime all explicitly coalesce with this.providerRuntime. This restores previous JS default-parameter behavior over typed runtime union (no null).",
+    "resolved": "PriorP2 is fixed; no actionable P0-P3 findings remain.",
+    "proof_gate": "STATICPASS only; normalcommit/build/frozenV3+indexHEAD pending."
+  },
+  "head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "reviewed_head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "product_sha": "493066f11544c2c52c0ddb397912eb409331173b",
+  "final_release_review": {
+    "reviewed_at_utc": "2026-11-11T10:49:57.318209+00:00",
+    "status": "PASS",
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "tree": "c87f4739191d7a6d9c068d89317d0d27cadd32ae",
+    "source_equivalence": "All six handoff fileSHA match committed worktree; clean fullGitstatus, tree and BASE\u2192HEAD default/fullindexdiff match last independent static review.",
+    "checks": {
+      "focused": {
+        "receipt": "memory-deep-focused.json",
+        "receipt_sha256": "74a6cc17e6f412b9a9bac49620b81505b232903e4cbe3b8d2030654a7150a3ec",
+        "log_sha256": "7124ede052b132e51320b9094230bd6db41440b9ec947df39c541c25c397fa67",
+        "elapsed_seconds": 154.192,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "types": {
+        "receipt": "memory-deep-types.json",
+        "receipt_sha256": "c80985b876062a6bcda673cb430cec077f17be6079418066978cd528c24029f2",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsed_seconds": 27.755,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "lint": {
+        "receipt": "memory-deep-lint.json",
+        "receipt_sha256": "dd14c21f2e7defcd4fa2f572a6a73e1e7ba6dfc72f7897030559520badbc90a3",
+        "log_sha256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187",
+        "elapsed_seconds": 82.556,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "ratchet": {
+        "receipt": "memory-deep-ratchet.json",
+        "receipt_sha256": "869723fb8c6e693e87f89dc868145c205f7a6a72b0d5ac6e030f9b32762d56ac",
+        "log_sha256": "04be85c0c57e4dfc37ea0e68682430ea1898330b0dd974a1b94693aa36df17a9",
+        "elapsed_seconds": 113.328,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "format-check": {
+        "receipt": "memory-deep-format-check.json",
+        "receipt_sha256": "55c78cd4ecd4a018e6a6ff868542acc716506520b34be949752cb019f0652fbc",
+        "log_sha256": "91a44c5341549d48f5d33c3a61205bd8e164aed4d0fcca5821fa0ba3dcf2f38e",
+        "elapsed_seconds": 0.44,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "linecap": {
+        "receipt": "memory-deep-linecap.json",
+        "receipt_sha256": "1d4c4108e6960e62ec6618b65d31871ab2da2449dff2ebe56966e1e482a721b0",
+        "log_sha256": "e46e649c0b64744408798afffabe11c53c854c99b4b7307fb07d065726fc7915",
+        "elapsed_seconds": 1.305,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "changed-mocks": {
+        "receipt": "memory-deep-changed-mocks.json",
+        "receipt_sha256": "544ded569cef0b434b35dd5eaa6f09bd9ef9b6384b2e7944461a502da10cb03b",
+        "log_sha256": "118cb23b6afb75e5f602e107456a2fd690521f3ea65040d0333684698d058dbf",
+        "elapsed_seconds": 0.622,
+        "exit_code": 0,
+        "head": "83872e599d5720c0bc97d313283a2bc245046699",
+        "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46"
+      },
+      "native-cli-build": {
+        "receipt": "memory-deep-native-cli-build.json",
+        "receipt_sha256": "9059c34b079a6c48c76ba537ec5167b216d022737995332721383adacafeb2ff",
+        "log_sha256": "fcb4a32d0883c5935d7c5a2530bbc968ddbdf41c6205721cfe4b928b24534977",
+        "elapsed_seconds": 269.268,
+        "exit_code": 0,
+        "head": "493066f11544c2c52c0ddb397912eb409331173b",
+        "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "paired_proofs": [
+      {
+        "folder": "native-base-v3",
+        "receipt_sha256": "d9038498576c9713cb4cd3dbed3b47407c7c7936264d28581219d20ded67f789",
+        "result": "RED_WITH_LEGAL_CONTROLS",
+        "collector_sha256": "1298edc6862b2ce2f19b14ed0a8bf92ed8101c9d58ec032a4800677619c96fd8",
+        "cases": [
+          {
+            "label": "response-200-control",
+            "result": "LEGAL_RESPONSE_CONTROL",
+            "exit_code": 0,
+            "elapsed_seconds": 7.7225242257118225,
+            "interrupt_to_exit_ms": null,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "response-401-control",
+            "result": "LEGAL_RESPONSE_CONTROL",
+            "exit_code": 0,
+            "elapsed_seconds": 7.834792842622846,
+            "interrupt_to_exit_ms": null,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "pending-sigint",
+            "result": "RED_ACKNOWLEDGED_BUT_LAUNCHER_SIGKILL",
+            "exit_code": -9,
+            "elapsed_seconds": 10.015940950252116,
+            "interrupt_to_exit_ms": 2091.1996164359152,
+            "interrupt_to_http_close_ms": 2079.1820171289146,
+            "quiet_after_ack": true,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "pending-sigterm",
+            "result": "RED_ACKNOWLEDGED_BUT_LAUNCHER_SIGKILL",
+            "exit_code": -9,
+            "elapsed_seconds": 9.623467653989792,
+            "interrupt_to_exit_ms": 2091.97514411062,
+            "interrupt_to_http_close_ms": 2081.7593801766634,
+            "quiet_after_ack": true,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          }
+        ]
+      },
+      {
+        "folder": "native-head-v3-493066f",
+        "receipt_sha256": "e99f7a75140bf9d0d106bb933cec572c7c28ba71dd82ff5a504ca603a36cbd19",
+        "result": "GREEN",
+        "collector_sha256": "1298edc6862b2ce2f19b14ed0a8bf92ed8101c9d58ec032a4800677619c96fd8",
+        "cases": [
+          {
+            "label": "response-200-control",
+            "result": "LEGAL_RESPONSE_CONTROL",
+            "exit_code": 0,
+            "elapsed_seconds": 8.192335010040551,
+            "interrupt_to_exit_ms": null,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "response-401-control",
+            "result": "LEGAL_RESPONSE_CONTROL",
+            "exit_code": 0,
+            "elapsed_seconds": 8.311947994865477,
+            "interrupt_to_exit_ms": null,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "pending-sigint",
+            "result": "GREEN_CANCELLED_AND_JOINED",
+            "exit_code": 130,
+            "elapsed_seconds": 7.797077613417059,
+            "interrupt_to_exit_ms": 237.32721526175737,
+            "interrupt_to_http_close_ms": 27.21619699150324,
+            "quiet_after_ack": true,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          },
+          {
+            "label": "pending-sigterm",
+            "result": "GREEN_CANCELLED_AND_JOINED",
+            "exit_code": 143,
+            "elapsed_seconds": 7.947521972004324,
+            "interrupt_to_exit_ms": 256.07003504410386,
+            "interrupt_to_http_close_ms": 27.824577875435352,
+            "quiet_after_ack": true,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          }
+        ]
+      },
+      {
+        "folder": "native-index-custody-base",
+        "receipt_sha256": "b133ee2f08440eaa71098841cc3786d60fa7072fdba9ba667014390d613706da",
+        "result": "GREEN_INDEX_CUSTODY_CONTROL",
+        "collector_sha256": "4e4731cf5a0994949bff596a54c43ab26cdc3b222670ef054d2ef7b111655862",
+        "cases": [
+          {
+            "label": "admitted-index-sigint-control",
+            "result": "GREEN_ADMITTED_INDEX_PUBLICATION_AND_STATUS_RECEIPT",
+            "exit_code": 130,
+            "elapsed_seconds": 13.33159570209682,
+            "interrupt_to_exit_ms": 808.0612919293344,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          }
+        ]
+      },
+      {
+        "folder": "native-index-custody-head-493066f",
+        "receipt_sha256": "0058693ebc9dbf29169ab936459cae98953e998b33d30f6852c74e79a6f5ab22",
+        "result": "GREEN_INDEX_CUSTODY_CONTROL",
+        "collector_sha256": "4e4731cf5a0994949bff596a54c43ab26cdc3b222670ef054d2ef7b111655862",
+        "cases": [
+          {
+            "label": "admitted-index-sigint-control",
+            "result": "GREEN_ADMITTED_INDEX_PUBLICATION_AND_STATUS_RECEIPT",
+            "exit_code": 130,
+            "elapsed_seconds": 12.92011700430885,
+            "interrupt_to_exit_ms": 836.1410810612142,
+            "interrupt_to_http_close_ms": null,
+            "quiet_after_ack": null,
+            "harness_watchdog_kill": false,
+            "config_unchanged": true,
+            "corpus_unchanged": true,
+            "owned_processes_before_harness_cleanup": []
+          }
+        ]
+      }
+    ],
+    "original_readback": "All original terminal.raw/diagnostics.log hashes and HTTPevents equality checked; actual config bytes match pre/postSHA; corpusbytes equal exact frozenfixture; clean/buildinfo/buildstamp/head beforeafter match; allownedprocessgroups empty beforefixturecleanup. No synthetichelperentry substituted.",
+    "observed_native": "HEAD INT130/237.327ms, HTTP27.216ms; TERM143/256.070ms, HTTP27.825ms; no lateJSON/genericbanner/unavailableoutput afterACK. BASElauncherSIGKILL2091ms. No harnesswatchdog.200/401 controls each return their expected readinessclassification exit0.",
+    "index_custody": "BothBASE/HEAD retain held-document request throughINT, release response, publish1file/1chunk and finalstatusJSON; HEADnatural130/836.141ms. Read-only Node26DatabaseSync confirmed one canonicalmemory_index_chunks row in both taskownedSQLiteDBs. PythonhostSQLite was too old to parse STRICT schema; its read-only attempt failed, then installedNode26read-onlyreadback succeeded. No productwrites.",
+    "boundaries": "Real normalbuiltCLI/OSPTY/signals/productHTTP/SQLite; compatibleloopbackresponses/vectors are synthetic. No actual OpenAI/Ollama/provider/semanticquality claim.",
+    "prior_history": "Fixtureargument/tuplearity/lintmechanics/linecap failures and resolvedP2 runtime-default extraction finding retained. Prior110/117reuse claims withdrawn afterCLItests restoredBASE. Final111/5/154.192 evidence supersedes earlier finaltime161.116."
+  }
+}
