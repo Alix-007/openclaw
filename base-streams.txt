@@ -1,0 +1,2712 @@
+
+--- cron-status-connect-control/terminal.raw ---
+{
+  "enabled": true,
+  "storage": "synthetic",
+  "jobs": 1
+}
+
+--- cron-status-connect-control/diagnostics.log ---
+
+--- cron-status-connect-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34595",
+    "at": 69.68192,
+    "observedAt": 3555508.613279737
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2483.220416,
+    "observedAt": 3555511.024811372
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:fd9af6a3-c126-4fd6-9454-4650eb089102",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "809aaf39-a7ab-469f-85d6-c20a09108184"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2490.459639,
+    "observedAt": 3555511.03198605
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2490.709409,
+    "observedAt": 3555511.032063247
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:12945a97-67c5-4698-8e74-ad18330b5cb9",
+    "params": {},
+    "connectionId": 1,
+    "at": 2492.578544,
+    "observedAt": 3555511.03406881
+  },
+  {
+    "event": "response",
+    "method": "cron.status",
+    "connectionId": 1,
+    "at": 2492.792929,
+    "observedAt": 3555511.034141478
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2496.415136,
+    "observedAt": 3555511.037781227
+  }
+]
+
+--- cron-status-connect-control/peer.stderr ---
+
+--- cron-status-connect-sigint-interrupt/terminal.raw ---
+^C
+--- cron-status-connect-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-status-connect-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34811",
+    "at": 71.867037,
+    "observedAt": 3555511.249041328
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2411.832385,
+    "observedAt": 3555513.586779731
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:706c6c11-0cbe-4212-a562-14717be51421",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "ff711a1a-228c-4b5a-90e5-01a770936530"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2419.86829,
+    "observedAt": 3555513.594785112
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2419.944627,
+    "observedAt": 3555513.594813869
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4493.049971,
+    "observedAt": 3555515.667949739
+  }
+]
+
+--- cron-status-connect-sigint-interrupt/peer.stderr ---
+
+--- cron-status-connect-sigterm-interrupt/terminal.raw ---
+
+--- cron-status-connect-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-status-connect-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:46427",
+    "at": 75.172941,
+    "observedAt": 3555515.801246809
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2215.499776,
+    "observedAt": 3555517.939417998
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e8a03883-d7ea-4690-a634-4d2231e10e85",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b4f1df84-0378-4aab-82aa-ac75f5a8e5e0"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2222.145343,
+    "observedAt": 3555517.94598856
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2222.227075,
+    "observedAt": 3555517.946009834
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4277.724015,
+    "observedAt": 3555520.001524249
+  }
+]
+
+--- cron-status-connect-sigterm-interrupt/peer.stderr ---
+
+--- cron-status-cron.status-control/terminal.raw ---
+{
+  "enabled": true,
+  "storage": "synthetic",
+  "jobs": 1
+}
+
+--- cron-status-cron.status-control/diagnostics.log ---
+
+--- cron-status-cron.status-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33351",
+    "at": 77.365686,
+    "observedAt": 3555520.134425575
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2268.561185,
+    "observedAt": 3555522.324179525
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:aa96354d-dffb-48fd-9286-45dafb9512f3",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a6c256a4-5694-4387-9464-e4bab3619a78"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2276.407559,
+    "observedAt": 3555522.331538749
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2276.712932,
+    "observedAt": 3555522.331568435
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:f1175bb7-d619-48ca-85e1-6d4e072e79ca",
+    "params": {},
+    "connectionId": 1,
+    "at": 2278.928204,
+    "observedAt": 3555522.333856565
+  },
+  {
+    "event": "response",
+    "method": "cron.status",
+    "connectionId": 1,
+    "at": 2279.183665,
+    "observedAt": 3555522.334061255
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2283.493877,
+    "observedAt": 3555522.33843779
+  }
+]
+
+--- cron-status-cron.status-control/peer.stderr ---
+
+--- cron-status-cron.status-sigint-interrupt/terminal.raw ---
+^C
+--- cron-status-cron.status-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-status-cron.status-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45005",
+    "at": 67.008,
+    "observedAt": 3555522.550182627
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2223.370741,
+    "observedAt": 3555524.704135156
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:a7a7fc3f-d67e-4c23-a58c-9fcdf5f51933",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "15d905e0-ba89-4d06-aae3-ac9c7c29cccc"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2230.587941,
+    "observedAt": 3555524.711264382
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2230.944146,
+    "observedAt": 3555524.711462115
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:913f6354-1065-48f3-8c4f-98f1fecd9616",
+    "params": {},
+    "connectionId": 1,
+    "at": 2232.984799,
+    "observedAt": 3555524.713616985
+  },
+  {
+    "event": "read-held",
+    "method": "cron.status",
+    "connectionId": 1,
+    "at": 2233.079286,
+    "observedAt": 3555524.713627245
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4300.775888,
+    "observedAt": 3555526.781382907
+  }
+]
+
+--- cron-status-cron.status-sigint-interrupt/peer.stderr ---
+
+--- cron-status-cron.status-sigterm-interrupt/terminal.raw ---
+
+--- cron-status-cron.status-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-status-cron.status-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45157",
+    "at": 63.665267,
+    "observedAt": 3555526.900283898
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2312.350326,
+    "observedAt": 3555529.147273942
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e56fcfbc-9d7f-4e84-a67f-557660229ada",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "9f32bd67-ab93-4db0-bbcf-c6e1664b743b"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2320.174031,
+    "observedAt": 3555529.154552847
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2320.51468,
+    "observedAt": 3555529.154684926
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:181527ee-4c6e-4ed3-a34b-d7dd15514d12",
+    "params": {},
+    "connectionId": 1,
+    "at": 2322.801813,
+    "observedAt": 3555529.157168564
+  },
+  {
+    "event": "read-held",
+    "method": "cron.status",
+    "connectionId": 1,
+    "at": 2322.870221,
+    "observedAt": 3555529.15718033
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4389.290807,
+    "observedAt": 3555531.223588726
+  }
+]
+
+--- cron-status-cron.status-sigterm-interrupt/peer.stderr ---
+
+--- cron-get-cron.get-control/terminal.raw ---
+{
+  "id": "synthetic-job-1",
+  "name": "Synthetic cron proof",
+  "enabled": true,
+  "createdAtMs": 1,
+  "updatedAtMs": 1,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 60000
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Synthetic proof only"
+  },
+  "state": {}
+}
+
+--- cron-get-cron.get-control/diagnostics.log ---
+
+--- cron-get-cron.get-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44147",
+    "at": 84.9986,
+    "observedAt": 3555531.372196407
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2339.773989,
+    "observedAt": 3555533.62471019
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:28752941-2f28-495e-9d8e-7d718e3d15dd",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "4de5a836-e5ac-42d2-839d-7503e74d4d69"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2348.16514,
+    "observedAt": 3555533.633173805
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2348.624302,
+    "observedAt": 3555533.633336029
+  },
+  {
+    "event": "request",
+    "method": "cron.get",
+    "id": "2:d3ed8338-53d8-4ea3-89d2-ad7bb5ff8c2c",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2351.351615,
+    "observedAt": 3555533.63615289
+  },
+  {
+    "event": "response",
+    "method": "cron.get",
+    "connectionId": 1,
+    "at": 2351.862324,
+    "observedAt": 3555533.63659856
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2357.329931,
+    "observedAt": 3555533.642122614
+  }
+]
+
+--- cron-get-cron.get-control/peer.stderr ---
+
+--- cron-get-cron.get-sigint-interrupt/terminal.raw ---
+^C
+--- cron-get-cron.get-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-get-cron.get-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34635",
+    "at": 74.659698,
+    "observedAt": 3555533.859194012
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2405.784986,
+    "observedAt": 3555536.187046182
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:66ac2a76-2f55-4877-aad5-ce47d64c6c1d",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "1ca012b5-23ab-4faf-bdd6-df9edb737b6e"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2413.227973,
+    "observedAt": 3555536.194470947
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2413.516942,
+    "observedAt": 3555536.194528232
+  },
+  {
+    "event": "request",
+    "method": "cron.get",
+    "id": "2:f7ab15d4-7031-4622-adf0-c5e5dd3aad6b",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2415.574845,
+    "observedAt": 3555536.196857718
+  },
+  {
+    "event": "read-held",
+    "method": "cron.get",
+    "connectionId": 1,
+    "at": 2415.644713,
+    "observedAt": 3555536.19686587
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4479.021378,
+    "observedAt": 3555538.260202132
+  }
+]
+
+--- cron-get-cron.get-sigint-interrupt/peer.stderr ---
+
+--- cron-get-cron.get-sigterm-interrupt/terminal.raw ---
+
+--- cron-get-cron.get-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-get-cron.get-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:33461",
+    "at": 72.894414,
+    "observedAt": 3555538.403199579
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2363.905968,
+    "observedAt": 3555540.691823412
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:6473ffee-af75-48c9-b180-d552fb584ba6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "718978bd-0dce-4b66-9120-3ab4f4e0de29"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2371.278927,
+    "observedAt": 3555540.699117233
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2371.63398,
+    "observedAt": 3555540.699298657
+  },
+  {
+    "event": "request",
+    "method": "cron.get",
+    "id": "2:71af58a2-b2a8-4766-a5e7-3a2c463f9f93",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2373.510464,
+    "observedAt": 3555540.701242437
+  },
+  {
+    "event": "read-held",
+    "method": "cron.get",
+    "connectionId": 1,
+    "at": 2373.623538,
+    "observedAt": 3555540.701264287
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4449.025281,
+    "observedAt": 3555542.776847579
+  }
+]
+
+--- cron-get-cron.get-sigterm-interrupt/peer.stderr ---
+
+--- cron-runs-cron.runs-control/terminal.raw ---
+{
+  "entries": [
+    {
+      "jobId": "synthetic-job-1",
+      "runId": "synthetic-run-1",
+      "status": "ok",
+      "ts": 1
+    }
+  ],
+  "total": 1,
+  "offset": 0,
+  "limit": 50,
+  "hasMore": false
+}
+
+--- cron-runs-cron.runs-control/diagnostics.log ---
+
+--- cron-runs-cron.runs-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40549",
+    "at": 65.146414,
+    "observedAt": 3555542.908745686
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2288.190204,
+    "observedAt": 3555545.124545123
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:381e585e-ead6-469c-a9fc-ed36ecdd769d",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "f4e31336-39fa-4710-bf58-b7deb1740047"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2295.004668,
+    "observedAt": 3555545.131383381
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2295.297428,
+    "observedAt": 3555545.13140384
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:302cb5cd-cfba-414c-86f3-c4ee2fe69d3b",
+    "params": {
+      "id": "synthetic-job-1",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2297.253221,
+    "observedAt": 3555545.133493932
+  },
+  {
+    "event": "response",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2297.485006,
+    "observedAt": 3555545.13362452
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2301.214349,
+    "observedAt": 3555545.137399722
+  }
+]
+
+--- cron-runs-cron.runs-control/peer.stderr ---
+
+--- cron-runs-cron.runs-sigint-interrupt/terminal.raw ---
+^C
+--- cron-runs-cron.runs-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-runs-cron.runs-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:46425",
+    "at": 75.997083,
+    "observedAt": 3555545.386408349
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2365.243175,
+    "observedAt": 3555547.672755257
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:dd176b61-5153-45dc-9ac0-6d15760e241e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "97450ef7-1481-418e-89f1-528286d28cdd"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2372.155825,
+    "observedAt": 3555547.679605985
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2372.411435,
+    "observedAt": 3555547.679644607
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:5ffc1d90-709c-4eca-beb3-88eac609b56d",
+    "params": {
+      "id": "synthetic-job-1",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2374.412064,
+    "observedAt": 3555547.68169727
+  },
+  {
+    "event": "read-held",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2374.489572,
+    "observedAt": 3555547.681709633
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4428.082745,
+    "observedAt": 3555549.73547058
+  }
+]
+
+--- cron-runs-cron.runs-sigint-interrupt/peer.stderr ---
+
+--- cron-runs-cron.runs-sigterm-interrupt/terminal.raw ---
+
+--- cron-runs-cron.runs-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-runs-cron.runs-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:45611",
+    "at": 71.543918,
+    "observedAt": 3555549.873915044
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2288.6023,
+    "observedAt": 3555552.088937397
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:63b2a839-2ee2-4012-904d-1ddcf33ac4cd",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "908335ed-8291-45ab-9c6f-069f41ffc9e3"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2295.867664,
+    "observedAt": 3555552.096155532
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2296.166523,
+    "observedAt": 3555552.096230215
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:80cbe64b-8fd3-42b6-88e1-d4562ddd2400",
+    "params": {
+      "id": "synthetic-job-1",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2298.175033,
+    "observedAt": 3555552.098514646
+  },
+  {
+    "event": "read-held",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2298.25929,
+    "observedAt": 3555552.098523545
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4360.105318,
+    "observedAt": 3555554.160341725
+  }
+]
+
+--- cron-runs-cron.runs-sigterm-interrupt/peer.stderr ---
+
+--- automations-runs-all-cron.runs-control/terminal.raw ---
+{
+  "entries": [
+    {
+      "jobId": "synthetic-job-1",
+      "runId": "synthetic-run-1",
+      "status": "ok",
+      "ts": 1
+    }
+  ],
+  "total": 1,
+  "offset": 0,
+  "limit": 50,
+  "hasMore": false
+}
+
+--- automations-runs-all-cron.runs-control/diagnostics.log ---
+
+--- automations-runs-all-cron.runs-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41655",
+    "at": 71.340553,
+    "observedAt": 3555554.290915429
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2193.103163,
+    "observedAt": 3555556.410248371
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4a39482d-0da3-4f54-9abf-5d1a9c9530c4",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a5d21a87-e409-4019-9e62-745eb81ee5b8"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2199.680478,
+    "observedAt": 3555556.416645417
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2199.930018,
+    "observedAt": 3555556.416759759
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:4f7a3729-c63e-47ab-abca-ef4ca9c79732",
+    "params": {
+      "scope": "all",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2201.860467,
+    "observedAt": 3555556.418702743
+  },
+  {
+    "event": "response",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2202.069676,
+    "observedAt": 3555556.418890922
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2205.645031,
+    "observedAt": 3555556.422502796
+  }
+]
+
+--- automations-runs-all-cron.runs-control/peer.stderr ---
+
+--- automations-runs-all-cron.runs-sigint-interrupt/terminal.raw ---
+^C
+--- automations-runs-all-cron.runs-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- automations-runs-all-cron.runs-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34651",
+    "at": 71.71341,
+    "observedAt": 3555556.619696919
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2276.642445,
+    "observedAt": 3555558.818398471
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e6cff56f-4d67-4e85-9a9a-b7d99790cda0",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "2413c440-abd1-40b4-b78b-69263c6aa1db"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2283.314531,
+    "observedAt": 3555558.824971616
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2283.552003,
+    "observedAt": 3555558.825013196
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:73a0c21f-0ae4-4cb3-bbad-eed474b3846e",
+    "params": {
+      "scope": "all",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2285.642196,
+    "observedAt": 3555558.827221628
+  },
+  {
+    "event": "read-held",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2285.773363,
+    "observedAt": 3555558.827258332
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4361.847522,
+    "observedAt": 3555560.903461302
+  }
+]
+
+--- automations-runs-all-cron.runs-sigint-interrupt/peer.stderr ---
+
+--- automations-runs-all-cron.runs-sigterm-interrupt/terminal.raw ---
+
+--- automations-runs-all-cron.runs-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- automations-runs-all-cron.runs-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:39167",
+    "at": 66.910459,
+    "observedAt": 3555561.029628111
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2305.114103,
+    "observedAt": 3555563.26530603
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:f93cf92b-8a37-43bb-b867-c02eaaef26b9",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "ffc3a2e0-4128-44a4-8fe7-e489e34de55e"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2312.364531,
+    "observedAt": 3555563.272489604
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2312.611664,
+    "observedAt": 3555563.272567766
+  },
+  {
+    "event": "request",
+    "method": "cron.runs",
+    "id": "2:a8b9fd62-e38d-4b7d-970a-02630489530e",
+    "params": {
+      "scope": "all",
+      "limit": 50
+    },
+    "connectionId": 1,
+    "at": 2315.682865,
+    "observedAt": 3555563.275706637
+  },
+  {
+    "event": "read-held",
+    "method": "cron.runs",
+    "connectionId": 1,
+    "at": 2315.798389,
+    "observedAt": 3555563.275720939
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4386.451365,
+    "observedAt": 3555565.346582935
+  }
+]
+
+--- automations-runs-all-cron.runs-sigterm-interrupt/peer.stderr ---
+
+--- cron-scratch-json-cron.scratch.get-control/terminal.raw ---
+{
+  "ok": true,
+  "scratch": {
+    "jobId": "synthetic-job-1",
+    "content": "synthetic scratch content\n",
+    "revision": 3,
+    "updatedAtMs": 1
+  },
+  "currentRevision": 3,
+  "maxBytes": 262144
+}
+
+--- cron-scratch-json-cron.scratch.get-control/diagnostics.log ---
+
+--- cron-scratch-json-cron.scratch.get-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:39567",
+    "at": 72.61115,
+    "observedAt": 3555565.488646831
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2359.263954,
+    "observedAt": 3555567.773385058
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:0f5ecd7b-365d-41ff-a93c-a463b4550f68",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "293fef50-2cef-45f2-a613-86d5c0e75623"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2366.124786,
+    "observedAt": 3555567.779357222
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2366.355061,
+    "observedAt": 3555567.779431507
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:b88673cb-3ce4-4311-bcc5-9518aff5818d",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2368.427615,
+    "observedAt": 3555567.781636712
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2368.632249,
+    "observedAt": 3555567.781728689
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2372.735031,
+    "observedAt": 3555567.785876599
+  }
+]
+
+--- cron-scratch-json-cron.scratch.get-control/peer.stderr ---
+
+--- cron-scratch-json-cron.scratch.get-sigint-interrupt/terminal.raw ---
+^C
+--- cron-scratch-json-cron.scratch.get-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-scratch-json-cron.scratch.get-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40217",
+    "at": 58.615513,
+    "observedAt": 3555567.988176864
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2205.65192,
+    "observedAt": 3555570.132184869
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:daf2d8b3-a2a4-47e9-89ab-b62e94e33e7f",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "bca5dcb1-2658-46c1-9b6a-a2d13ebfb8b0"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2212.245171,
+    "observedAt": 3555570.138678322
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2212.491004,
+    "observedAt": 3555570.13875092
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:03608f11-5d35-4016-bfaf-da7a6389abea",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2214.395024,
+    "observedAt": 3555570.140723115
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2214.448615,
+    "observedAt": 3555570.140762063
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4286.576173,
+    "observedAt": 3555572.213015869
+  }
+]
+
+--- cron-scratch-json-cron.scratch.get-sigint-interrupt/peer.stderr ---
+
+--- cron-scratch-json-cron.scratch.get-sigterm-interrupt/terminal.raw ---
+
+--- cron-scratch-json-cron.scratch.get-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-scratch-json-cron.scratch.get-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40141",
+    "at": 67.857674,
+    "observedAt": 3555572.334325039
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2297.165569,
+    "observedAt": 3555574.560631376
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:c5509132-fc73-49db-a512-3bb2f1bf46c4",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "1c813ec6-4b03-4e2d-8968-4bcc3c6926e2"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2303.973818,
+    "observedAt": 3555574.567447972
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2304.220174,
+    "observedAt": 3555574.567473118
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:064289fc-1596-4e93-95c2-edfa63f4462d",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2306.258467,
+    "observedAt": 3555574.569525326
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2306.327978,
+    "observedAt": 3555574.569546982
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4366.616941,
+    "observedAt": 3555576.630034361
+  }
+]
+
+--- cron-scratch-json-cron.scratch.get-sigterm-interrupt/peer.stderr ---
+
+--- cron-scratch-text-cron.scratch.get-control/terminal.raw ---
+synthetic scratch content
+
+--- cron-scratch-text-cron.scratch.get-control/diagnostics.log ---
+
+--- cron-scratch-text-cron.scratch.get-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:41129",
+    "at": 68.13347,
+    "observedAt": 3555576.760577777
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2287.246308,
+    "observedAt": 3555578.977539452
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:c34c5d0d-a2ea-447d-894c-c0e8f381e0c0",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b6a6cb9c-c555-4c60-878d-ce934147e5f8"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2294.430239,
+    "observedAt": 3555578.984763196
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2294.695298,
+    "observedAt": 3555578.984790959
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:e7a53d56-90a9-4815-b6f9-8cbd00c37d70",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2296.656212,
+    "observedAt": 3555578.986758761
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2296.877738,
+    "observedAt": 3555578.986927901
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2300.781021,
+    "observedAt": 3555578.990973087
+  }
+]
+
+--- cron-scratch-text-cron.scratch.get-control/peer.stderr ---
+
+--- cron-scratch-text-cron.scratch.get-sigint-interrupt/terminal.raw ---
+^C
+--- cron-scratch-text-cron.scratch.get-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- cron-scratch-text-cron.scratch.get-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:44055",
+    "at": 65.134015,
+    "observedAt": 3555579.198161721
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2301.119426,
+    "observedAt": 3555581.432383033
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:69bf4824-4a05-4720-abde-3ffa645734b5",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "89c88442-42a5-492c-8877-f57bfe36fbd8"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2308.544095,
+    "observedAt": 3555581.439007786
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2308.877388,
+    "observedAt": 3555581.439124273
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:d265d3fc-195e-46a1-9e43-3ecaa9fde594",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2311.04954,
+    "observedAt": 3555581.441572362
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2311.124165,
+    "observedAt": 3555581.44159277
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4396.654666,
+    "observedAt": 3555583.527033972
+  }
+]
+
+--- cron-scratch-text-cron.scratch.get-sigint-interrupt/peer.stderr ---
+
+--- cron-scratch-text-cron.scratch.get-sigterm-interrupt/terminal.raw ---
+
+--- cron-scratch-text-cron.scratch.get-sigterm-interrupt/diagnostics.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- cron-scratch-text-cron.scratch.get-sigterm-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40933",
+    "at": 74.570548,
+    "observedAt": 3555583.661795979
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2214.709392,
+    "observedAt": 3555585.799763837
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:87fa134a-4f3b-4939-be70-b51d1b7f0dc3",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "4cfb3db9-1fcd-417d-82f4-42fe0f91072d"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2221.281765,
+    "observedAt": 3555585.806270332
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2221.51974,
+    "observedAt": 3555585.806338154
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:62f3dfbd-a8e6-4189-8799-595ca2833e8c",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2223.446728,
+    "observedAt": 3555585.808299241
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2223.516296,
+    "observedAt": 3555585.808334462
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 4271.376402,
+    "observedAt": 3555587.856550802
+  }
+]
+
+--- cron-scratch-text-cron.scratch.get-sigterm-interrupt/peer.stderr ---
+
+--- writer-enable-cron.update-control/terminal.raw ---
+{
+  "id": "synthetic-job-1",
+  "name": "Synthetic cron proof",
+  "enabled": true,
+  "createdAtMs": 1,
+  "updatedAtMs": 1,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 60000
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Synthetic proof only"
+  },
+  "state": {}
+}
+
+--- writer-enable-cron.update-control/diagnostics.log ---
+
+--- writer-enable-cron.update-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:32843",
+    "at": 65.677874,
+    "observedAt": 3555587.997649849
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2258.339638,
+    "observedAt": 3555590.187961849
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:8cd69d8f-f5ea-404a-999a-9def777e8e26",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "ac7caae0-6767-4f79-94ca-b268290084ee"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2266.282501,
+    "observedAt": 3555590.19571692
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2266.677737,
+    "observedAt": 3555590.195936268
+  },
+  {
+    "event": "request",
+    "method": "cron.update",
+    "id": "2:25cb3ac9-39f8-4a03-9f9e-65edc16e3c20",
+    "params": {
+      "id": "synthetic-job-1",
+      "patch": {
+        "enabled": true
+      }
+    },
+    "connectionId": 1,
+    "at": 2269.200219,
+    "observedAt": 3555590.198618586
+  },
+  {
+    "event": "response",
+    "method": "cron.update",
+    "connectionId": 1,
+    "at": 2269.600673,
+    "observedAt": 3555590.198862825
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2275.489472,
+    "observedAt": 3555590.204845112
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2282.43326,
+    "observedAt": 3555590.211831165
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:317b76a9-fd53-487f-baa1-5eff021553a3",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "69cba1fe-d4af-4cf0-98bb-ce2d1d898370"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2283.690259,
+    "observedAt": 3555590.213015855
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2284.014201,
+    "observedAt": 3555590.213328887
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:729c6451-5d89-40ee-bd84-5e343ea7e40a",
+    "params": {},
+    "connectionId": 2,
+    "at": 2284.67114,
+    "observedAt": 3555590.213940828
+  },
+  {
+    "event": "response",
+    "method": "cron.status",
+    "connectionId": 2,
+    "at": 2285.012629,
+    "observedAt": 3555590.214368242
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 2286.391119,
+    "observedAt": 3555590.215673588
+  }
+]
+
+--- writer-enable-cron.update-control/peer.stderr ---
+
+--- writer-enable-cron.update-sigint-interrupt/terminal.raw ---
+^C{
+  "id": "synthetic-job-1",
+  "name": "Synthetic cron proof",
+  "enabled": true,
+  "createdAtMs": 1,
+  "updatedAtMs": 1,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 60000
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Synthetic proof only"
+  },
+  "state": {}
+}
+
+--- writer-enable-cron.update-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- writer-enable-cron.update-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:35935",
+    "at": 71.920365,
+    "observedAt": 3555590.439481717
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2291.746714,
+    "observedAt": 3555592.65716423
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:0bffc852-f187-49db-9e8d-08e777e84e52",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "4b6d3d46-067b-4594-8b86-0f377e3bb00c"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2298.550549,
+    "observedAt": 3555592.663763635
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2298.7803,
+    "observedAt": 3555592.663844202
+  },
+  {
+    "event": "request",
+    "method": "cron.update",
+    "id": "2:ea5ded3e-9404-43af-8aae-f17849618d0b",
+    "params": {
+      "id": "synthetic-job-1",
+      "patch": {
+        "enabled": true
+      }
+    },
+    "connectionId": 1,
+    "at": 2300.621322,
+    "observedAt": 3555592.665707285
+  },
+  {
+    "event": "read-held",
+    "method": "cron.update",
+    "connectionId": 1,
+    "at": 2300.69477,
+    "observedAt": 3555592.665734229
+  },
+  {
+    "event": "held-response-released",
+    "method": "cron.update",
+    "connectionId": 1,
+    "at": 2902.320312,
+    "observedAt": 3555593.26758934
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2908.157192,
+    "observedAt": 3555593.273392379
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2919.556301,
+    "observedAt": 3555593.284750904
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:a53203c6-8ed9-4044-9d06-f31013e3245c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "09d27cc0-5484-4358-bdd2-e188420da8ca"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2920.538969,
+    "observedAt": 3555593.285660253
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2920.690121,
+    "observedAt": 3555593.285870275
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:09226c49-4669-4db0-a9b2-7fd9e9f939e0",
+    "params": {},
+    "connectionId": 2,
+    "at": 2921.317452,
+    "observedAt": 3555593.286394782
+  },
+  {
+    "event": "response",
+    "method": "cron.status",
+    "connectionId": 2,
+    "at": 2921.469299,
+    "observedAt": 3555593.286655191
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 2922.331884,
+    "observedAt": 3555593.287415475
+  }
+]
+
+--- writer-enable-cron.update-sigint-interrupt/peer.stderr ---
+
+--- writer-scratch-cron.scratch.set-control/terminal.raw ---
+{
+  "ok": true,
+  "scratch": null,
+  "currentRevision": 4,
+  "maxBytes": 262144
+}
+
+--- writer-scratch-cron.scratch.set-control/diagnostics.log ---
+
+--- writer-scratch-cron.scratch.set-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:42271",
+    "at": 68.548789,
+    "observedAt": 3555593.513468632
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2227.375687,
+    "observedAt": 3555595.669853309
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5aaee6b8-7f1a-4d83-ae7f-079cb4f46bd1",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "aa916188-c648-4e70-8dad-edba369cd8da"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2234.347026,
+    "observedAt": 3555595.676744981
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2234.613833,
+    "observedAt": 3555595.676831906
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:988cb3a0-98d6-4210-ad63-7314d8e81295",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2236.58984,
+    "observedAt": 3555595.678877099
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2236.802891,
+    "observedAt": 3555595.679035056
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2240.617839,
+    "observedAt": 3555595.682918112
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2246.827657,
+    "observedAt": 3555595.689135821
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:2254b383-0631-43e3-b7eb-fb51f37c069e",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b046a370-576b-4d9d-85e6-3af1581c7858"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2247.806668,
+    "observedAt": 3555595.690089759
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2247.971745,
+    "observedAt": 3555595.69018277
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.set",
+    "id": "2:cb46b5d0-49f6-4224-b7d2-9a8597eff4a7",
+    "params": {
+      "id": "synthetic-job-1",
+      "content": "synthetic replacement",
+      "expectedRevision": 3
+    },
+    "connectionId": 2,
+    "at": 2248.56203,
+    "observedAt": 3555595.690796316
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.set",
+    "connectionId": 2,
+    "at": 2248.714671,
+    "observedAt": 3555595.690941534
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 2249.578093,
+    "observedAt": 3555595.691815316
+  }
+]
+
+--- writer-scratch-cron.scratch.set-control/peer.stderr ---
+
+--- writer-scratch-cron.scratch.get-sigint-interrupt/terminal.raw ---
+^C{
+  "ok": true,
+  "scratch": null,
+  "currentRevision": 4,
+  "maxBytes": 262144
+}
+
+--- writer-scratch-cron.scratch.get-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- writer-scratch-cron.scratch.get-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:40871",
+    "at": 67.394043,
+    "observedAt": 3555595.906153719
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2453.587256,
+    "observedAt": 3555598.288881049
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e567ef5f-8c9c-4e18-941f-6b4203b2620c",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "982d1dd1-3470-4227-adfa-845e60c923ed"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2460.379972,
+    "observedAt": 3555598.295569003
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2460.631035,
+    "observedAt": 3555598.295591205
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:bcf867e7-918c-4e3b-8450-e23fec501505",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2462.593463,
+    "observedAt": 3555598.297682577
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2462.677034,
+    "observedAt": 3555598.297693839
+  },
+  {
+    "event": "held-response-released",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 3064.086405,
+    "observedAt": 3555598.89924067
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 3069.235179,
+    "observedAt": 3555598.904289569
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 3076.249605,
+    "observedAt": 3555598.911288177
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:646a9059-7563-4e58-9ad3-e94f1b94b6a6",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "ca1bcb79-4eea-4a27-a0f9-e3fdbd97bdc1"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 2,
+    "at": 3077.337589,
+    "observedAt": 3555598.91232188
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 3077.488607,
+    "observedAt": 3555598.912439106
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.set",
+    "id": "2:9c87d2f4-9b83-4541-8035-588c01bc3440",
+    "params": {
+      "id": "synthetic-job-1",
+      "content": "synthetic replacement",
+      "expectedRevision": 3
+    },
+    "connectionId": 2,
+    "at": 3078.438708,
+    "observedAt": 3555598.91342563
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.set",
+    "connectionId": 2,
+    "at": 3078.584168,
+    "observedAt": 3555598.913533975
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 3079.692469,
+    "observedAt": 3555598.914668497
+  }
+]
+
+--- writer-scratch-cron.scratch.get-sigint-interrupt/peer.stderr ---
+
+--- writer-scratch-cron.scratch.set-sigint-interrupt/terminal.raw ---
+^C{
+  "ok": true,
+  "scratch": null,
+  "currentRevision": 4,
+  "maxBytes": 262144
+}
+
+--- writer-scratch-cron.scratch.set-sigint-interrupt/diagnostics.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- writer-scratch-cron.scratch.set-sigint-interrupt/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:43049",
+    "at": 66.396421,
+    "observedAt": 3555599.124139307
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2298.871479,
+    "observedAt": 3555601.354503447
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:4107f646-fc2f-4c40-acb5-1495e072eab9",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "4022f2a0-dc1e-4513-be5a-478d27718b84"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2306.144682,
+    "observedAt": 3555601.361670693
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2306.385351,
+    "observedAt": 3555601.361706423
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.get",
+    "id": "2:85bca981-eda6-4277-b223-8ee59f55bb3f",
+    "params": {
+      "id": "synthetic-job-1"
+    },
+    "connectionId": 1,
+    "at": 2308.451443,
+    "observedAt": 3555601.363872104
+  },
+  {
+    "event": "response",
+    "method": "cron.scratch.get",
+    "connectionId": 1,
+    "at": 2308.654174,
+    "observedAt": 3555601.364036066
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2312.705745,
+    "observedAt": 3555601.368106354
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 2,
+    "at": 2318.812384,
+    "observedAt": 3555601.374218385
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:bcb80d20-8551-4844-9db4-2d06eb1b13f2",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "df9f895f-644f-4b31-a8a9-ada475e1008e"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ]
+    },
+    "connectionId": 2,
+    "at": 2319.733226,
+    "observedAt": 3555601.375149945
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 2,
+    "at": 2319.953432,
+    "observedAt": 3555601.375315953
+  },
+  {
+    "event": "request",
+    "method": "cron.scratch.set",
+    "id": "2:4fda89a1-dc84-420b-9349-0196cc977aaa",
+    "params": {
+      "id": "synthetic-job-1",
+      "content": "synthetic replacement",
+      "expectedRevision": 3
+    },
+    "connectionId": 2,
+    "at": 2320.522631,
+    "observedAt": 3555601.37593602
+  },
+  {
+    "event": "read-held",
+    "method": "cron.scratch.set",
+    "connectionId": 2,
+    "at": 2320.563002,
+    "observedAt": 3555601.375957702
+  },
+  {
+    "event": "held-response-released",
+    "method": "cron.scratch.set",
+    "connectionId": 2,
+    "at": 2921.229625,
+    "observedAt": 3555601.976723226
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 2,
+    "at": 2923.159607,
+    "observedAt": 3555601.978583729
+  }
+]
+
+--- writer-scratch-cron.scratch.set-sigint-interrupt/peer.stderr ---
+
+--- cron-status-error-cron.status-control/terminal.raw ---
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "synthetic cron read failure"
+  }
+}
+
+--- cron-status-error-cron.status-control/diagnostics.log ---
+synthetic cron read failure
+
+--- cron-status-error-cron.status-control/peer-events.json ---
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:38433",
+    "at": 85.638317,
+    "observedAt": 3555602.221336853
+  },
+  {
+    "event": "peer-connected",
+    "connectionId": 1,
+    "at": 2329.328668,
+    "observedAt": 3555604.462702408
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:58798a14-1bb2-4d17-a2d0-c9d167c0db79",
+    "params": {
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "b6a75f8c-77cb-4339-b309-f0cb47693de9"
+      },
+      "caps": [
+        "ultrafast"
+      ],
+      "auth": {
+        "token": "synthetic-cron-proof-token"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.read"
+      ]
+    },
+    "connectionId": 1,
+    "at": 2336.549745,
+    "observedAt": 3555604.469816971
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "connectionId": 1,
+    "at": 2336.767807,
+    "observedAt": 3555604.469938429
+  },
+  {
+    "event": "request",
+    "method": "cron.status",
+    "id": "2:23380d36-3f47-4fc5-bffe-8ac2499505bf",
+    "params": {},
+    "connectionId": 1,
+    "at": 2339.013724,
+    "observedAt": 3555604.472209784
+  },
+  {
+    "event": "response",
+    "method": "cron.status",
+    "connectionId": 1,
+    "at": 2339.218105,
+    "observedAt": 3555604.472375526
+  },
+  {
+    "event": "peer-closed",
+    "connectionId": 1,
+    "at": 2343.271301,
+    "observedAt": 3555604.476499408
+  }
+]
+
+--- cron-status-error-cron.status-control/peer.stderr ---

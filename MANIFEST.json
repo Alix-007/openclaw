@@ -1,0 +1,12 @@
+{
+  "cron-read-cancel-proof-v1.py": "712d1f8a2a634a802940ba9ccc9423d05146d64982d9821f9c5d87f9d23df843",
+  "cron-read-cancel-proof-v1.mjs": "7078137c44a5ecb1b8eb26712af8a02fbe20e6c5bdb63063af41d0af3d5b06ca",
+  "base-receipt.json": "f7ad8e3b3062471b0204a0b99a092c8fd5364594f70e07d5c5a7592ed704762f",
+  "base-streams.txt": "d410b85eec6777a1245bd92a487f5812ca0329b8aeab5136c09c7031e92a42b6",
+  "head-receipt.json": "b93921b12c3ea3b5728c036f2400be5b3fd3b081d9e01a14af627a0d18c1469f",
+  "head-streams.txt": "7fa3b5010eb6db0c9ba643f395a2737793587785ac0d02d4950d13fe047c43af",
+  "checks.json": "54a04df3e55b974508662a979b13b7cb79387d06c7fb868e272a226bd5efaa3b",
+  "focused-tests.log": "c1c68cb40a6c06ce0195480055721349ab85e858f1db9b11975da909f44f0be3",
+  "independent-review.md": "374e59bddaf2c078927b8b4826b037dc5e01857ae1762d36a109900f83568ca1",
+  "EVIDENCE.md": "968eca872ba829eb666eb75f4889ee260e6631dea8ae6e150bc91168299a48b9"
+}

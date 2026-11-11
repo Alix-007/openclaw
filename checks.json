@@ -1,0 +1,134 @@
+{
+  "cron-focused": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-vitest.mjs",
+      "src/cli/cron-cli.test.ts",
+      "src/cli/cron-cli/trigger-options.test.ts",
+      "src/cli/cron-cli/shared.cause-display.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 83.555,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "e00bd4792725cb1c58471a1740fff00fdaeca2243dc8aa93bd91498c11ed02bb",
+    "logSHA256": "574d730a3cdef88d93ae7fea96efc4db3c79a267e1ee703d6ee42d301dc54222"
+  },
+  "cron-types": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../cron-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 93.398,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "08c0d4a7e0a948a21c090240f3851c40ea7d7cd6036e6a54788315747bd51565",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cron-lint": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../cron-types.tsconfig.json",
+      "src/cli/cron-cli.test.ts",
+      "src/cli/cron-cli/register.cron-add.ts",
+      "src/cli/cron-cli/register.cron-simple.ts",
+      "src/cli/cron-cli/register.cron-scratch.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 278.16,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "08c0d4a7e0a948a21c090240f3851c40ea7d7cd6036e6a54788315747bd51565",
+    "logSHA256": "d26522bf37b4cd2f1e0e5a651077630905d6e3a41d56204654f4194d57f52090"
+  },
+  "cron-ratchet": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 18.714,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "08c0d4a7e0a948a21c090240f3851c40ea7d7cd6036e6a54788315747bd51565",
+    "logSHA256": "cd982874f47e4801cd58efb62dc76f0beb631fd5b153276ffb7d1a5ae813c4fd"
+  },
+  "cron-linecap": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 1.387,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "08c0d4a7e0a948a21c090240f3851c40ea7d7cd6036e6a54788315747bd51565",
+    "logSHA256": "2d498a93919b1e1f0f3b47aea0566e8ae5e6321619d0cb58005e0627508487b0"
+  },
+  "cron-format-check": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/cron-cli.test.ts",
+      "src/cli/cron-cli/register.cron-add.ts",
+      "src/cli/cron-cli/register.cron-simple.ts",
+      "src/cli/cron-cli/register.cron-scratch.ts",
+      "docs/cli/cron.md"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.945,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "08c0d4a7e0a948a21c090240f3851c40ea7d7cd6036e6a54788315747bd51565",
+    "logSHA256": "fc0abd21147945b023a45e217d5c4299fc1ea5f94ca1be566819beaa8409a98b"
+  },
+  "cron-mocks": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-cron-mocks.mts",
+      "src/cli/cron-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.721,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "e00bd4792725cb1c58471a1740fff00fdaeca2243dc8aa93bd91498c11ed02bb",
+    "logSHA256": "d8585b78322aa2d87d6f297b1c23f1b0f1b47b4d227a205901014c3951d13491"
+  },
+  "cron-native-qa-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 274.482,
+    "head": "1ea4cc3557bb7022a2d6c6546264f1227e8dc862",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "60b26233c5d60a369879112c4f65ad3142e75d50ef39b7021d4bbca430b74ad5"
+  }
+}

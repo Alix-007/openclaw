@@ -1,0 +1,247 @@
+[test] starting test/vitest/vitest.unit-fast.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache hit after 8369ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 4a38ce4030cb in 8560ms (19001 inputs, 24441 outputs)
+ ✓ |unit-fast| src/cli/cron-cli/shared.cause-display.test.ts > printCronJson run display > adds cause and readable timestamps without changing raw run fields 17ms
+ ✓ |unit-fast| src/cli/cron-cli/shared.cause-display.test.ts > printCronJson run display > omits ISO mirrors when numeric timestamps are absent 1ms
+ ✓ |unit-fast| src/cli/cron-cli/shared.cause-display.test.ts > printCronJson run display > leaves non-run-log entries untouched 0ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:10:01
+   Duration  25.09s (transform 89%, import 10%)
+
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { enable: true, json: true } without loading the old job 159ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'clear-display-name': true } without loading the old job 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'clear-model': true } without loading the old job 13ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'clear-thinking': true } without loading the old job 16ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { name: 'Renamed' } without loading the old job 12ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { session: '<redacted len=4>', message: 'resume' } without loading the old job 1279ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'best-effort-deliver': true } without loading the old job 10ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'clear-to': true } without loading the old job 10ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { cron: '0 5 * * *', tz: 'UTC', …(1) } without loading the old job 20ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { message: 'new', …(2) } without loading the old job 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'failure-alert-cooldown': '0' } without loading the old job 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'failure-alert-cooldown': '1h30m' } without loading the old job 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > patches { 'failure-alert-channel': '', …(2) } without loading the old job 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --display-name and its clear flag 14ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --agent and its clear flag 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --session-key and its clear flag 34ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --model and its clear flag 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --thinking and its clear flag 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects simultaneous --thread-id and its clear flag 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { tools: '', 'clear-tools': true, …(1) } before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'trigger-script': '', …(1) } before Gateway access 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { script: ' ', 'pacing-min': '30m' } before Gateway access 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { command: '', name: 'Renamed' } before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'system-event': 'hello', …(1) } before Gateway access 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'timeout-seconds': '12', …(1) } before Gateway access 14ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'pacing-min': '30m', …(1) } before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { …(2) } before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { webhook: 'not-a-url' } before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { session: '<redacted len=4>', …(2) } before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'on-exit-cwd': '/repo' } before Gateway access 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'on-exit': './watch.sh', every: '5m' } before Gateway access 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects { 'stream-batch-ms': '100', tz: 'UTC' } before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > preserves cron JSON validation errors 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > preserves automations JSON validation errors 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > preserves trigger.once and the exact script path when replacing the body (#119916) 12ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > validates trigger files before reading an existing job 13ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > reuses one versioned snapshot for pacing and tool edits 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > falls back to paginated cron.list for a Gateway without cron.get 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(2) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 10ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', '--tz', …(1) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(2) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(2) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', '--idle-only', …(1) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(3) ] 9ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(2) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(4) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(3) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(2) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(3) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(4) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(1) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(1) ] 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(5) ] 11ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(12) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(6) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(8) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', …(4) ] 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'add', '--name', 'fixture', …(6) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > rejects [ 'edit', 'job-1', '--cron', …(5) ] 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates --command-cwd with cwd --every,1m,--command,pwd 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates --on-exit-cwd with cwd --on-exit,pwd,--message,run 4ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates --stream-cwd with cwd --stream-command,["node","events.mjs"],--message,run 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates --stream-cwd with cwd --stream-command,["node","events.mjs"],--message,run 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > preserves the maximum-safe topic id on add 10ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > preserves the maximum-safe topic id on edit 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates enabled ordinary policies 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates disabled ordinary policies 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates main-session owner delivery 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > creates unflagged main-session delivery default 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits cron timezone without stale stagger (#9… 6ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits command policy-only edit 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits system event policy-only edit 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits main-session owner target 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits main-session direct policy 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits partial active window 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits cleared ordinary policies 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits enabled scratch/reasoning policies 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits disabled scratch/reasoning policies 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits announce destination replaced by owner 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits disabled delivery destination replaced … 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits webhook destination replaced by owner 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits explicit recipient replaces owner 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits escaped command whitespace 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits escaped on-exit whitespace 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits command cwd whitespace 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits stream line mode clears match, preserve… 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits stream cwd cleared 13ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > edits stream match replaced 9ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > rejects malformed UTF-8 for Trigger script from files and stdin 11ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > rejects malformed UTF-8 for Script payload from files and stdin 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > rejects malformed UTF-8 for Cron scratch from files and stdin 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > preserves exact scratch BOM, Unicode and CRLF while scripts retain trimming 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > reads the exact trigger path on add 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > rejects an explicitly blank trigger script before adding a job 10ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > reads the exact payload path and budgets on add 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > reads the exact payload path and budgets on edit 9ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > rejects script creation with a generic timeout 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/cron-cli/trigger-options.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/cron-cli/trigger-options.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/cron-cli/trigger-options.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/cron-cli/trigger-options.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > sends pacing bounds on add 7ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > maps --clear-trigger to a nullable edit patch 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron trigger CLI options > maps --clear-pacing to a nullable edit patch 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > rejects non-decimal revision 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > rejects revision conflict without retry 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > rejects Gateway failure before invalid revision 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > rejects Gateway failure before reading file 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > rejects Gateway failure before oversized input 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > uses the read revision for an implicit CAS write and prints JSON 5ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > writes at explicit revision 0 without a read 8ms
+ ✓ |cli| src/cli/cron-cli/trigger-options.test.ts > cron scratch > writes at explicit revision 42 without a read 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > resolves Gateway options with leaf overrides 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > returns run exit status for {"enqueued":true} 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > returns run exit status for {"ran":false} 9ms
+ ✓ |cli| src/cli/cron-cli.test.ts > waits for stored failed completion 13ms
+ ✓ |cli| src/cli/cron-cli.test.ts > reduces each history RPC timeout after the system clock jumps backward 37ms
+ ✓ |cli| src/cli/cron-cli.test.ts > bounds oversized poll intervals by the wait timeout 19ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'run', 'job-1', '--wait' ] during sleep 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'run', 'job-1', '--wait' ] during request 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'run', 'job-1', '--wait' ] during completion 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'list' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'show', 'job-1' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'status' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'status' ] during completion 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'status' ] during failure 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'status' ] during preabort 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'get', 'job-1' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'get', 'job-1' ] during completion 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'get', 'job-1' ] during failure 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'get', 'job-1' ] during preabort 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'runs', 'job-1' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'runs', 'job-1' ] during completion 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'runs', 'job-1' ] during failure 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'runs', 'job-1' ] during preabort 14ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'scratch', 'job-1', '--json' ] during request 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'scratch', 'job-1', '--json' ] during completion 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'scratch', 'job-1', '--json' ] during failure 13ms
+ ✓ |cli| src/cli/cron-cli.test.ts > cancels [ 'cron', 'scratch', 'job-1', '--json' ] during preabort 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > preserves canonical lookup errors for rm 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > preserves canonical lookup errors for scratch 4ms
+ ✓ |cli| src/cli/cron-cli.test.ts > preserves canonical lookup errors for runs 4ms
+ ✓ |cli| src/cli/cron-cli.test.ts > composes run-history IDs, Gateway options, filters, and JSON output 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > lists jobs with normalized agent filter 5ms
+ ✓ |cli| src/cli/cron-cli.test.ts > paginates cron show lookups 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > renders cron show without state (missing payload: false) 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > renders cron show without state (missing payload: true) 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > keeps the ambiguous cron show name error when a matching row has no schedule 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > creates a configured agent job from a positional cron schedule and prompt 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > keeps the default-agent warning off JSON stdout and preserves an empty tool grant 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > creates a one-shot webhook system event with an explicit keep policy 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > creates exact system events with a tool allowlist 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > keeps invalid add target/payload guidance in JSON mode before RPC 15ms
+ ✓ |cli| src/cli/cron-cli.test.ts > accepts a positional every interval without delivery 11ms
+ ✓ |cli| src/cli/cron-cli.test.ts > add uses the Gateway shell 11ms
+ ✓ |cli| src/cli/cron-cli.test.ts > edit uses the Gateway shell 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > requires a Gateway platform (undefined) 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > requires a Gateway platform ({}) 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > creates stream schedules from exact argv flags 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > updates configured agent payload fields 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > sets agent routing 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > clears agent routing 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > retargets Telegram delivery without replacing the payload 14ms
+ ✓ |cli| src/cli/cron-cli.test.ts > disables delivery 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > sets webhook delivery 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > implies announcement when enabling best-effort on a message edit 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > patches failure-alert settings 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > disables failure alerts 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > converts to a zoned one-shot with keep-after-run 12ms
+ ✓ |cli| src/cli/cron-cli.test.ts > normalizes offset one-shot creation independently of timezone 14ms
+ ✓ |cli| src/cli/cron-cli.test.ts > replaces a cron expression and stagger while retaining its timezone 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > merges stream replacement metadata [ '--stream-match', '^updated:' ] 15ms
+ ✓ |cli| src/cli/cron-cli.test.ts > merges stream replacement metadata [ '--stream-mode', 'match' ] 9ms
+ ✓ |cli| src/cli/cron-cli.test.ts > applies exact mode without replacing the cron expression 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects exact mode for stored non-cron schedules 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--message","hello","--script","   "] before Gateway access 11ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--message","hello","--webhook","not-a-url"] before Gateway access 9ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","create","0 2 * * *","    code\n","--name","job","--message","code"] before Gateway access 9ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","Positional","--system-event","tick"] before Gateway access 9ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--message","hello","--webhook","https://example.invalid/cron","--to","channel:C123"] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--message","hello","--command","echo ok"] before Gateway access 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--session","main","--system-event","tick","--thread-id","42"] before Gateway access 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--message","hello","--thread-id","topic-42"] before Gateway access 10ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","list","--agent","   "] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","runs","--id","job-1","--run-id","   "] before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","runs","job-1","--id","job-2"] before Gateway access 8ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","show","   "] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","run","job-1","--wait","--poll-interval","0ms"] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--cron","* * * * *","--system-event","tick","--stagger","1m","--exact"] before Gateway access 6ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--every","10m","--stagger","30s","--system-event","tick"] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--every","10m","--tz","UTC","--system-event","tick"] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","add","--name","job","--at","2027-09-04T24:00:00","--tz","America/Santiago","--message","hello"] before Gateway access 11ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","edit","job-1","--webhook","https://example.invalid/cron","--announce"] before Gateway access 7ms
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","edit","job-1","--failure-alert-after","3x"] before Gateway access 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.pluginStateNamespaceOwner
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/cli/cron-cli.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+
+ ✓ |cli| src/cli/cron-cli.test.ts > rejects ["cron","edit","job-1","--failure-alert-include-skipped","--failure-alert-exclude-skipped"] before Gateway access 8ms
+
+ Test Files  2 passed (2)
+      Tests  196 passed (196)
+   Start at  01:10:29
+   Duration  46.04s (transform 75%, import 11%, tests 7%, worker 6%, setup 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 2 Vitest shards in 82.53s
