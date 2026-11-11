@@ -1,0 +1,51 @@
+{
+  "head": "1d09cf0e2f370f5d4d82b6ca79c1fecf50449d52",
+  "base": "c324818cbf86074f34578d07f381b0d2835955a1",
+  "result": "PASS",
+  "configBytesReconstructedAndEqual": 28,
+  "rawOutputHashesVerified": 28,
+  "controls": [
+    {
+      "label": "users-list-json-connect-control",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "users-list-json-users.list-control",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "users-list-text-users.list-control",
+      "rawStdoutIdentical": false,
+      "profileLineRetained": true
+    },
+    {
+      "label": "writer-link-users.linkEmail-control",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "writer-link-users.linkEmail-sigint-interrupt",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "writer-merge-users.merge-control",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "writer-merge-users.merge-sigint-interrupt",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    },
+    {
+      "label": "users-list-error-users.list-control",
+      "rawStdoutIdentical": true,
+      "profileLineRetained": null
+    }
+  ],
+  "headAll14Passed": true,
+  "humanControlLimit": "Only exact final profile row is asserted; normal startup banner/version/commit can vary. No arbitrary-prefix-output claim."
+}

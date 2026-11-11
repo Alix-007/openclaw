@@ -1,0 +1,129 @@
+{
+  "users-focused-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-vitest.mjs",
+      "src/cli/users-cli.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 9.203,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "c647ad07f760d88ce56ea29713c35961b05b10a85f23ef65cbada6a2f18f18c1",
+    "logSHA256": "a2bf6850a331b3f60b5f95dadb081a315e49a9171b33f36a47bf189adbec295e"
+  },
+  "users-types-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../users-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 17.975,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "c647ad07f760d88ce56ea29713c35961b05b10a85f23ef65cbada6a2f18f18c1",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "users-lint-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../users-types.tsconfig.json",
+      "src/cli/users-cli.ts",
+      "src/cli/users-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 71.13,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "c647ad07f760d88ce56ea29713c35961b05b10a85f23ef65cbada6a2f18f18c1",
+    "logSHA256": "bc6a0860355ab418f8f8fbf1fe595005211b29d81f9328ca3304727943fb68c9"
+  },
+  "users-ratchet": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 33.683,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "93d9ada001122b3e2626e097d14ba2c713989be2e7832da94c525da1c497994f",
+    "logSHA256": "860d519aef5b2ea3d3ccd41eb2df0f6aa2df6041974a6b8c014e894c8e4ce091"
+  },
+  "users-linecap": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "c324818cbf86074f34578d07f381b0d2835955a1",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 1.069,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "d8bb84b8c4fbca109105d23aec6bb0c4b19efdd64674a5742153afe5a62f957c",
+    "logSHA256": "4ffb0319cec8e4ddeff751071959bd20e7cd46d6ab22eca278904dbfdd5937fa"
+  },
+  "users-format-check": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/users-cli.ts",
+      "src/cli/users-cli.test.ts",
+      "docs/cli/users.md",
+      "config/test-lines-allocations/users-read-cancellation.txt"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.588,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "c647ad07f760d88ce56ea29713c35961b05b10a85f23ef65cbada6a2f18f18c1",
+    "logSHA256": "1e81c88ba819b6f244fa6aec3f156f9aeb9acd39510b657356b6812d0f3debbe"
+  },
+  "users-changed-mocks-final": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-cron-mocks.mts",
+      "src/cli/users-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.788,
+    "head": "c324818cbf86074f34578d07f381b0d2835955a1",
+    "diffSHA256": "c647ad07f760d88ce56ea29713c35961b05b10a85f23ef65cbada6a2f18f18c1",
+    "logSHA256": "c981e551968d8bc8b60abfc450fef7a4ddaead5d51a845c17a6f8bcd1d93fbd2"
+  },
+  "users-native-qa-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 278.35,
+    "head": "1d09cf0e2f370f5d4d82b6ca79c1fecf50449d52",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "e9600d2c338ed676cb6f84840ea415d15fb0544ffc042bf7466493b7be2660ea"
+  }
+}

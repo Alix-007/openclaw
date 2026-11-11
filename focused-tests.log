@@ -1,0 +1,21 @@
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/users-cli.test.ts > routes ["link-email","Ada@example.com","--to","p-1"] with scoped authority and sanitized output 105ms
+ ✓ |cli| src/cli/users-cli.test.ts > routes ["list"] with scoped authority and sanitized output 5ms
+ ✓ |cli| src/cli/users-cli.test.ts > routes ["merge","p-retired\nforged","--into","p-survivor"] with scoped authority and sanitized output 5ms
+ ✓ |cli| src/cli/users-cli.test.ts > prints the complete link-email result as JSON 8ms
+ ✓ |cli| src/cli/users-cli.test.ts > prints the complete merge result as JSON 5ms
+ ✓ |cli| src/cli/users-cli.test.ts > settles an interrupted users list during request without publishing late output 20ms
+ ✓ |cli| src/cli/users-cli.test.ts > settles an interrupted users list during completion without publishing late output 7ms
+ ✓ |cli| src/cli/users-cli.test.ts > settles an interrupted users list during failure without publishing late output 6ms
+ ✓ |cli| src/cli/users-cli.test.ts > settles an interrupted users list during preabort without publishing late output 7ms
+ ✓ |cli| src/cli/users-cli.test.ts > preserves an ordinary users list failure 6ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  01:44:31
+   Duration  3.05s (worker 64%, transform 15%, setup 12%, tests 8%, import 1%)
+
+[test] passed 1 Vitest shard in 8.10s

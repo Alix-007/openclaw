@@ -1,0 +1,13 @@
+{
+  "users-read-cancel-proof-v2.py": "ccbb3909fcc3fe6abc2bdf79ffde50f8f1c8ebee2e75c494489c882feb659f6c",
+  "users-read-cancel-proof-v2.mjs": "d3c5f5a6b7b6d112023b3821fbaf55c3dac9d4fa04582d2ea12be50200a3cc99",
+  "base-receipt.json": "e2154358e8004515e6eef17558251afeb80bcb00c628638a3d7f5df4fa2f1ace",
+  "base-streams.txt": "95779845c3c51e54e37b8fd3327b4f59227a8ae33552ca3f140959358616a312",
+  "head-receipt.json": "b3d7429fb0a86400f9b28c900a983dd80cff9c3dabccecc79c37188c35a585c4",
+  "head-streams.txt": "c6084ade4ac812390825789274690eca2e5849c4571b571847fbe7fdad54c726",
+  "checks.json": "3d5f4e55b8dbc81d26ce3a25c5048c5f8db55ca46d305a44723c5f8931ba857c",
+  "focused-tests.log": "b423b0be6dffdaf96ee1bd736b021cab757ebde6a781dd0a0f972c61690fce32",
+  "independent-review.md": "aecf7f49edb193a9b5f75605183f2853087337d2521577a5c76ef0be8621dece",
+  "native-readback.json": "8da43983599054a2bb93cf0f2a311053dc8575ac68d58dbb5524a35cf0c50eec",
+  "EVIDENCE.md": "c73c80faecf058e3d3fabbf9589ce29b1349bc64b08fbe1ce56959793a2400ae"
+}
