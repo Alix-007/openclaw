@@ -1,0 +1,221 @@
+
+=== channels-status-connect-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-channels-status-proof",
+  "ts": 1794362356924,
+  "durationMs": 1,
+  "channelAccounts": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "warnings": []
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:34883",
+    "at": 65.723548,
+    "observedAt": 3501963.25810851
+  },
+  {
+    "event": "peer-connected",
+    "at": 2553.066691,
+    "observedAt": 3501965.743435559
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:5a8421d0-ef1e-4b99-8e29-5b6cde924998",
+    "at": 2562.886689,
+    "observedAt": 3501965.753036149
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2563.191102,
+    "observedAt": 3501965.753156229
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:dac3ed4c-c118-4a13-bff8-3544f5c142f0",
+    "at": 2565.346306,
+    "observedAt": 3501965.755400492
+  },
+  {
+    "event": "response",
+    "method": "channels.status",
+    "at": 2565.569032,
+    "observedAt": 3501965.755571768
+  },
+  {
+    "event": "peer-closed",
+    "at": 2569.674554,
+    "observedAt": 3501965.759699674
+  }
+]
+
+peer stderr:
+
+=== channels-status-rpc-control ===
+terminal:
+{
+  "ok": true,
+  "proofMarker": "synthetic-channels-status-proof",
+  "ts": 1794362359561,
+  "durationMs": 1,
+  "channelAccounts": {},
+  "channelOrder": [],
+  "channelLabels": {},
+  "warnings": []
+}
+
+stderr:
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:37849",
+    "at": 73.053411,
+    "observedAt": 3501965.940688542
+  },
+  {
+    "event": "peer-connected",
+    "at": 2519.875322,
+    "observedAt": 3501968.384813846
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:e5475501-f77a-47d1-b7d3-26dfd3a21f12",
+    "at": 2526.057926,
+    "observedAt": 3501968.390843445
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2526.269059,
+    "observedAt": 3501968.390961301
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:e387ae48-0027-4f0d-b457-0d608dc2ae42",
+    "at": 2528.294326,
+    "observedAt": 3501968.393097409
+  },
+  {
+    "event": "response",
+    "method": "channels.status",
+    "at": 2528.497853,
+    "observedAt": 3501968.393191712
+  },
+  {
+    "event": "peer-closed",
+    "at": 2532.636424,
+    "observedAt": 3501968.397377094
+  }
+]
+
+peer stderr:
+
+=== channels-status-connect-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:46359",
+    "at": 76.695414,
+    "observedAt": 3501968.563805339
+  },
+  {
+    "event": "peer-connected",
+    "at": 2553.76094,
+    "observedAt": 3501971.038861833
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:d76a5836-9d88-4205-85ba-1228d8ef5fa9",
+    "at": 2560.215334,
+    "observedAt": 3501971.045044853
+  },
+  {
+    "event": "read-held",
+    "method": "connect",
+    "at": 2560.280388,
+    "observedAt": 3501971.045059965
+  },
+  {
+    "event": "peer-closed",
+    "at": 4590.904183,
+    "observedAt": 3501973.075619911
+  }
+]
+
+peer stderr:
+
+=== channels-status-rpc-interrupt ===
+terminal:
+^C
+stderr:
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+peer events:
+[
+  {
+    "event": "listening",
+    "url": "ws://127.0.0.1:38713",
+    "at": 67.384125,
+    "observedAt": 3501973.167402119
+  },
+  {
+    "event": "peer-connected",
+    "at": 2530.39613,
+    "observedAt": 3501975.628310613
+  },
+  {
+    "event": "request",
+    "method": "connect",
+    "id": "1:89d3cc00-3560-40f1-b5c6-3c714dcdbc1e",
+    "at": 2536.59476,
+    "observedAt": 3501975.634293098
+  },
+  {
+    "event": "response",
+    "method": "connect",
+    "at": 2536.803444,
+    "observedAt": 3501975.634401133
+  },
+  {
+    "event": "request",
+    "method": "channels.status",
+    "id": "2:e132cb8e-f5b0-41fc-a6f8-f140cb9bda26",
+    "at": 2538.731429,
+    "observedAt": 3501975.636341648
+  },
+  {
+    "event": "read-held",
+    "method": "channels.status",
+    "at": 2538.814138,
+    "observedAt": 3501975.636386055
+  },
+  {
+    "event": "peer-closed",
+    "at": 4579.71394,
+    "observedAt": 3501977.677500274
+  }
+]
+
+peer stderr:

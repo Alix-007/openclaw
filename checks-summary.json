@@ -1,0 +1,98 @@
+{
+  "productHead": "7084eae26a138442308e2039d5b76e7077626c7b",
+  "baseHead": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+  "checks": [
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/commands/channels.status.command-flow.test.ts",
+        "src/commands/channels.status.external-env.test.ts",
+        "src/commands/channels.config-only-status-output.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 39.967,
+      "head": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+      "diffSHA256": "b24bb02d58212edd86ab7144e6147b870abd5b223d5eec728e44749723a2ce09",
+      "logSHA256": "dd9b301802ce6ae0c793f98eb3bf1fd606efdf58bc78f8f517b8614dbf10ef1b"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-vitest.mjs",
+        "src/commands/channels.status.command-flow.test.ts",
+        "--maxWorkers=1"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 33.423,
+      "head": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+      "diffSHA256": "df7275b927c33aa91925ec07a12041ac5dd4b28d28b3ea83a917944493e7c29f",
+      "logSHA256": "9f32fb1e006caa1fa90c40655aba20d9a75a1411ea6b23c9f18f017e701022c6"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "$CHECKOUT-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 120.463,
+      "head": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+      "diffSHA256": "df7275b927c33aa91925ec07a12041ac5dd4b28d28b3ea83a917944493e7c29f",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "scripts/run-oxlint.mjs",
+        "src/commands/channels/status.ts",
+        "src/commands/channels/status.runtime.ts",
+        "src/commands/channels.status.command-flow.test.ts"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 189.612,
+      "head": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+      "diffSHA256": "df7275b927c33aa91925ec07a12041ac5dd4b28d28b3ea83a917944493e7c29f",
+      "logSHA256": "0f1ece4564bf29e3ab3517ef0df6d13c1118a14b7ee985d98adbec5c99d5026f"
+    },
+    {
+      "command": [
+        "$NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/build-all.mts",
+        "cliStartup"
+      ],
+      "cwd": "$CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 257.388,
+      "head": "7084eae26a138442308e2039d5b76e7077626c7b",
+      "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logSHA256": "93125010c3ab66779909d4178a9d45749affc3db965cf9d74af18b5eb9592723"
+    }
+  ],
+  "focusedTests": 17,
+  "finalMechanicalTestReplay": 13,
+  "reuse": "All three affected suites pass17 tests. After brace-only lint corrections, the one changed suite passes13 tests again; two sibling files and production bytes are unchanged.",
+  "coldPreparation": "Initial BASE and each changed-input HEAD run waited for a canonical compiled-worker generation (131624/161473/159778ms), crossing the first fallback case120s limit and contaminating its next mock. One identical-source replay after each completed generation passed or produced the four intended BASE failures. These timeouts are not claimed as qualifying RED or a product repair. No timeout/assertion/worker guard was weakened.",
+  "oracleCorrection": "Collector v1 incorrectly classified the canonical {ok:false,error:{type:cli_error,message:CLI stopping (SIGINT)}} abort envelope as late status. Independent review confirmed the classifier defect. Frozen v2 explicitly recognizes and requires that exact envelope while retaining all lifetime/no-status/fallback checks; it was rerun on both actual clean BASE and HEAD. Product source is unchanged.",
+  "testBudget": {
+    "base": "13329595bed6e1f032f124620ca51b1ce13aa6c9",
+    "previousQualifiedCheck": "channels-status-ratchet.json",
+    "actualMainTestLF": 6643133,
+    "mainEffectiveCeiling": 6643126,
+    "inheritedDebt": 7,
+    "ownRegressionLF": 42,
+    "ownAllocation": 42,
+    "sharedBaselineUnchanged": true,
+    "unrelatedDebtCredited": false
+  },
+  "limitations": "Native proof is route-first JSON over a compatible synthetic loopback WebSocket peer. No real Gateway service, hosted provider/channel, other OS or newly interruptible secret/plugin internals is claimed. Ordinary auth/unreachable fallback is covered by focused tests."
+}
