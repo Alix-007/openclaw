@@ -1,0 +1,55 @@
+{
+  "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+  "tree": "38e1854e7d70ffa53441562bb602dd81541d4819",
+  "beforeSource": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+  "mainUsedForLocalCiViewOnly": "aab88e31bf5a64012a699139e19af193fa9a69c7",
+  "files": [
+    {
+      "path": "ui/src/components/terminal/terminal-find.browser.test.tsx",
+      "sha256": "3a42239542ae87d8145fa8e03963b1b7e739a94edcb355b35226fe9605fe5712",
+      "LF": 219
+    },
+    {
+      "path": "ui/src/components/terminal/terminal-find.tsx",
+      "sha256": "c1efa16503b7931ab13b14da423b663d30354a2b7182eca8282f465bf2d1f01e",
+      "LF": 186
+    },
+    {
+      "path": "ui/src/components/terminal/terminal-panel.css",
+      "sha256": "37462a435cf1ff37cc274ef931aea12f2e2570c2df5511e20b9ea11e42c2c9d8",
+      "LF": 798
+    },
+    {
+      "path": "config/test-lines-allocations/terminal-find.txt",
+      "sha256": "af47d633fd7b021370c1e508b69df8586d3a1258133c41a32972ba6e64d94899",
+      "LF": 1
+    }
+  ],
+  "numstatFromPreviousPublishedHead": {
+    "config/test-lines-allocations/terminal-find.txt": [
+      1,
+      0
+    ],
+    "ui/src/components/terminal/terminal-find.browser.test.tsx": [
+      2,
+      1
+    ],
+    "ui/src/components/terminal/terminal-find.tsx": [
+      2,
+      2
+    ],
+    "ui/src/components/terminal/terminal-panel.css": [
+      2,
+      0
+    ]
+  },
+  "collectorSHA256": "7248c802ede040ca634cb9323c23c52f297e9d041a91008eb54c3839c6e8d336",
+  "originalFinalReceiptSHA256": "873548d8dfc90f5c7aec15f17f2518060713d2f0ca99297fb09e7ea2d1d41464",
+  "originalBodySHA256": "978584c60d67ca69f4a3f22972cea3bee1d17104a284b3f5d217e95eed16e7c7",
+  "review": "Independent adversarial fallback PASS for pinned working snapshot. Exact reviewed file bytes match final normal commit; no claim reviewer inspected a later commit or ran official helper.",
+  "gateBinding": "Recorded precommit gates use the pinned parent HEAD plus exact tracked diff, matching final source/test hashes. New final component replay ran after commit on clean HEAD. Modern allocation ran separately on explicit private local CI merge view; product branch was not merged with main.",
+  "ownAllocationLF": 219,
+  "featureTestLF": 219,
+  "netMaintenanceTestLF": 1,
+  "redaction": "Original private receipt/log/source SHA checked before path substitution. Frozen collector and PNG bytes unchanged. MANIFEST binds public bytes."
+}

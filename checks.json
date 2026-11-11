@@ -1,0 +1,253 @@
+{
+  "browser": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "vitest",
+        "run",
+        "--config",
+        "ui/vitest.config.ts",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 10.65,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "f476d2d407ea514058cb69044f236f9d832a16b61a3da192b49533a2d4943e71"
+    },
+    "originalReceiptSHA256": "65b6114adca86fbb7007962459f382527a00b4f591cedbdb8a51650b0c27b3e2"
+  },
+  "scrollOwnerTests": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "vitest",
+        "run",
+        "--config",
+        "ui/vitest.config.ts",
+        "ui/src/components/scroll-state-observer.test.ts",
+        "ui/src/lib/reactive/scroll-state.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 19.948,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "426f39c514ee75b8e512dad0072526f953f46246929ba034682424a108c7baca"
+    },
+    "originalReceiptSHA256": "338421db8f64aa254dd9f345dbdda31c671c851b7c199810d3ef22cd47197b18"
+  },
+  "productionTypes": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "tsconfig.ui.json",
+        "--incremental",
+        "--tsBuildInfoFile",
+        "../terminal-ui-types.tsbuildinfo"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 157.274,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "originalReceiptSHA256": "5e8db7b848f87c84fc4424bbcda46ef0cad4ae3946c063eb716df46f0b3c4470"
+  },
+  "typedLint": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-oxlint.mjs",
+        "ui/src/components/terminal/terminal-find.tsx",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 495.382,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "067a15f7fb5cd4cbfa43dede182128a5eb865d342442f78938bba9529aa2baf1"
+    },
+    "originalReceiptSHA256": "eb72df1524a7e07e6a56e31f13ccdf9db57851c77f24fa52ecfafd7e62878c87"
+  },
+  "stylelint": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "stylelint",
+        "--config",
+        "config/stylelint.config.mjs",
+        "ui/src/components/terminal/terminal-panel.css"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.889,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "originalReceiptSHA256": "d35ae016e6c9557328b80418017d348ea715d64601a188256ee13a8421cd5eee"
+  },
+  "format": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "oxfmt",
+        "--check",
+        "ui/src/components/terminal/terminal-find.tsx",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "ui/src/components/terminal/terminal-panel.css"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.935,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e398c6726d150b7f05d8ce29679393f3f8e35ab2709c3c104e84223161dc2f77"
+    },
+    "originalReceiptSHA256": "4aff0729b03765b72259c5b91f796039b40871f69926910c187d7387e2a5ce40"
+  },
+  "controller": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-control-ui-controllers.mts"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 29.244,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "ca0f98754263eaf027011adc055d74938723698c28599d596f546cdc4a677674"
+    },
+    "originalReceiptSHA256": "2db0c5c4766b312a4b59b314663f5ddae22e84586479e654bba1e9e841079d8f"
+  },
+  "i18nBaseline": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/control-ui-i18n-verify.ts",
+        "baseline"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 17.01,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "1bce064f50e2d9ac57eb2f8708618aef1ddf626d6e011f58163fb9249903e9bb"
+    },
+    "originalReceiptSHA256": "e4c6afdb5a04152a244e53f9a898a175bca7a88b20edd3b22b5d40b7b7005a82"
+  },
+  "linecap": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-line-cap-ratchet.mts",
+        "--base",
+        "27e7e5ee87ccbc1cfa11b7e0b79d78bbf503280f",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.468,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e46e649c0b64744408798afffabe11c53c854c99b4b7307fb07d065726fc7915"
+    },
+    "originalReceiptSHA256": "2f4311c63998040e844ceb4e711d468b11df89def14280661d2b10a93191a9e0"
+  },
+  "oldScalarBudget": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "27e7e5ee87ccbc1cfa11b7e0b79d78bbf503280f",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 18.17,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "bfb9f341d9d6bfffa02ae933de29c543fdbdb486d2ead3831c4fdaa3e308edf2"
+    },
+    "originalReceiptSHA256": "44201befeb743d2001f630da7f1c4df87a16f64264f38cc4487aeed675e9c0bb"
+  },
+  "changedMocks": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "../check-terminal-mocks.mts",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 0.697,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "67bcacc5be50b14b4733f60efcb9cf6b99aa0d188cbb1db63fe945eae370aac9"
+    },
+    "originalReceiptSHA256": "a2e08d253b921666ac26115c851918458b0991e8446753bd0020790db0b31a3b"
+  },
+  "browserTypes": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../terminal-browser-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 210.337,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "originalReceiptSHA256": "6ba2919d77cb2a855a94e1bf97ae29928243d4a0655965d5f75cb2e569e33829"
+  },
+  "finalBrowserRepeat": {
+    "receipt": {
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "vitest",
+        "run",
+        "--config",
+        "ui/vitest.config.ts",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 11.77,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "cacc767c485b47d7c0d7e6a32ca3629a38bafbca25acf69a4eb7cff659fc108c"
+    },
+    "originalReceiptSHA256": "342f61b5d835cfea44e5d555b395b2b7e062d6e547c3944a4fc72c547ea93c17"
+  }
+}

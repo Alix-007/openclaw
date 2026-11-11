@@ -1,0 +1,160 @@
+{
+  "pass": true,
+  "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+  "beforeHead": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+  "collectorSHA256": "7248c802ede040ca634cb9323c23c52f297e9d041a91008eb54c3839c6e8d336",
+  "scope": "Actual production TerminalFind source compiled by canonical Solid/Vite config with actual isolated Ghostty WASM emulator in Chromium. BEFORE reads explicitly pinned pre-repair Git source for the two changed production files; AFTER reads current working source. This is a component rendering seam, not a normal full UI build, live Gateway, PTY, provider, or WebKit proof.",
+  "output": "TASK/terminal-fractional-TDN6Lc",
+  "records": [
+    {
+      "stage": "before",
+      "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+      "sourceCommit": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "sourceSHA256": {
+        "ui/src/components/terminal/terminal-find.tsx": "24d60a06a67fde9646cf381c8ad2acd179b0d6f5fa4953ceac43045790096372",
+        "ui/src/components/terminal/terminal-panel.css": "d2d1670c71a829e06869b0a671b709e8eb9173f8ab784275e98bfdf306a4c6df",
+        "ui/src/components/terminal/terminal-find.ts": "a75d21dd8301bc584ff808b666b799aa721ce83746649195c3058f6c14f71378",
+        "ui/src/components/terminal/terminal-runtime.ts": "dbf3f0b217f5e21173d1d20c7eb2eb4f0dcdc248a9342301fb2271e0aebcaa7a"
+      },
+      "late": {
+        "preview": {
+          "x": 17,
+          "y": 139.59375,
+          "width": 286.25,
+          "height": 18.734375,
+          "top": 139.59375,
+          "right": 303.25,
+          "bottom": 158.328125,
+          "left": 17
+        },
+        "mark": {
+          "x": 260.59375,
+          "y": 140.59375,
+          "width": 42.703125,
+          "height": 16,
+          "top": 140.59375,
+          "right": 303.296875,
+          "bottom": 156.59375,
+          "left": 260.59375
+        },
+        "scrollLeft": 404,
+        "scrollWidth": 690,
+        "clientWidth": 286,
+        "font": "12.1px / 18.755px \"JetBrains Mono\", ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Monaco, Consolas, monospace",
+        "fontSize": "12.1px",
+        "paddingInlineEnd": "0px",
+        "text": "needle",
+        "sent": []
+      },
+      "start": {
+        "preview": {
+          "x": 17,
+          "y": 139.59375,
+          "width": 286.25,
+          "height": 18.734375,
+          "top": 139.59375,
+          "right": 303.25,
+          "bottom": 158.328125,
+          "left": 17
+        },
+        "mark": {
+          "x": 17,
+          "y": 140.59375,
+          "width": 42.703125,
+          "height": 16,
+          "top": 140.59375,
+          "right": 59.703125,
+          "bottom": 156.59375,
+          "left": 17
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 286,
+        "clientWidth": 286,
+        "font": "12.1px / 18.755px \"JetBrains Mono\", ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Monaco, Consolas, monospace",
+        "fontSize": "12.1px",
+        "paddingInlineEnd": "0px",
+        "text": "needle",
+        "sent": []
+      },
+      "latePngSHA256": "7776b6a50e7288cfc54cb8c4a5e6320918777faa84d7f68d3a645cc347875631",
+      "errors": [],
+      "lateVisible": false,
+      "startVisible": true
+    },
+    {
+      "stage": "after",
+      "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+      "sourceCommit": null,
+      "sourceSHA256": {
+        "ui/src/components/terminal/terminal-find.tsx": "c1efa16503b7931ab13b14da423b663d30354a2b7182eca8282f465bf2d1f01e",
+        "ui/src/components/terminal/terminal-panel.css": "37462a435cf1ff37cc274ef931aea12f2e2570c2df5511e20b9ea11e42c2c9d8",
+        "ui/src/components/terminal/terminal-find.ts": "a75d21dd8301bc584ff808b666b799aa721ce83746649195c3058f6c14f71378",
+        "ui/src/components/terminal/terminal-runtime.ts": "dbf3f0b217f5e21173d1d20c7eb2eb4f0dcdc248a9342301fb2271e0aebcaa7a"
+      },
+      "late": {
+        "preview": {
+          "x": 17,
+          "y": 139.59375,
+          "width": 286.25,
+          "height": 18.734375,
+          "top": 139.59375,
+          "right": 303.25,
+          "bottom": 158.328125,
+          "left": 17
+        },
+        "mark": {
+          "x": 259.59375,
+          "y": 140.59375,
+          "width": 42.703125,
+          "height": 16,
+          "top": 140.59375,
+          "right": 302.296875,
+          "bottom": 156.59375,
+          "left": 259.59375
+        },
+        "scrollLeft": 405,
+        "scrollWidth": 691,
+        "clientWidth": 286,
+        "font": "12.1px / 18.755px \"JetBrains Mono\", ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Monaco, Consolas, monospace",
+        "fontSize": "12.1px",
+        "paddingInlineEnd": "1px",
+        "text": "needle",
+        "sent": []
+      },
+      "start": {
+        "preview": {
+          "x": 17,
+          "y": 139.59375,
+          "width": 286.25,
+          "height": 18.734375,
+          "top": 139.59375,
+          "right": 303.25,
+          "bottom": 158.328125,
+          "left": 17
+        },
+        "mark": {
+          "x": 17,
+          "y": 140.59375,
+          "width": 42.703125,
+          "height": 16,
+          "top": 140.59375,
+          "right": 59.703125,
+          "bottom": 156.59375,
+          "left": 17
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 286,
+        "clientWidth": 286,
+        "font": "12.1px / 18.755px \"JetBrains Mono\", ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Monaco, Consolas, monospace",
+        "fontSize": "12.1px",
+        "paddingInlineEnd": "1px",
+        "text": "needle",
+        "sent": []
+      },
+      "latePngSHA256": "6c30066201672b824df6122beaf11046e9875b00608100fcc07b47712693b1c3",
+      "errors": [],
+      "lateVisible": true,
+      "startVisible": true
+    }
+  ]
+}

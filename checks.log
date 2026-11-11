@@ -1,0 +1,144 @@
+
+--- browser ---
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 2.6s of this 3.9s build (67%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin externalize-deps resolveId (40%, 1.6s, 127 calls)
+  - plugin vite:native-config-compat-check transform (26%, 1.0s, 67 calls)
+Additional callback time came from callbacks under 1s.
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 CHECKOUT/ui
+
+(node:1603731) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > finds real retained Unicode output and wraps navigation without sending terminal input 300ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > refreshes streamed output and rescans after resize while matching literal visual rows 55ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > preserves printed graphemes and spaces on screen and in history 47ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > lets keyboard users activate each Find button with Enter 312ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > keeps the selected glyphs visible through navigation, reopening and resize 100ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > advances from a surviving match when earlier visual rows disappear 46ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  20:28:50
+   Duration  3.02s (tests 56%, import 24%, worker 14%, setup 6%)
+
+
+--- scrollOwnerTests ---
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 CHECKOUT/ui
+
+ DEPRECATED  "vitest.cache.getFileTestResults" is deprecated. Use "getTestSpecificationResult(specification)" instead.
+(node:1616115) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > tracks Solid-bound scroll state with {"horizontal":true,"trackScroll":true} 222ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > tracks Solid-bound scroll state with {"horizontal":false,"trackScroll":false} 16ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > moves observation to the rendered replacement and ignores the old pending layout 47ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > resamples content on reveal and releases live external targets when disposed 16ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > defers bounded reveal and cancels replaced, cleared, and disposed requests 11ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/lib/reactive/scroll-state.test.tsx: retiring openclaw.agentDatabaseReaders
+
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > resamples loaded font metrics only for the current presented element 8ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > restores a destination after readiness without overwriting subsequent reader scroll 4ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > restores retained scroll after accepted content and finishes when it is genuinely shorter 6ms
+ ✓ |unit| src/lib/reactive/scroll-state.test.tsx > lets user scrolling, a replacement scope and disposal cancel retained restoration 7ms
+ ✓ |unit| src/components/scroll-state-observer.test.ts > batches geometry and scrolls (shared=false) 6ms
+ ✓ |unit| src/components/scroll-state-observer.test.ts > batches geometry and scrolls (shared=true) 3ms
+ ✓ |unit| src/components/scroll-state-observer.test.ts > updates scroll boundaries after resize and stops observing after disconnect 3ms
+ ✓ |unit| src/components/scroll-state-observer.test.ts > releases retired publishers while fonts load and remeasures active views 167ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  20:32:37
+   Duration  13.82s (worker 59%, environment 23%, transform 10%, tests 4%, import 3%)
+
+
+--- productionTypes ---
+
+--- typedLint ---
+[dist artifacts] waiting for checkout ownership: CHECKOUT/.artifacts/dist-artifacts.lock
+[plugin-sdk boundary dts] emitted 13206 files
+
+--- stylelint ---
+
+--- format ---
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 7ms on 3 files using 16 threads.
+
+--- controller ---
+Control UI createEffect ratchet OK: 77 files, 86 grandfathered createEffect calls.
+Control UI untrack ratchet OK: 23 files, 26 grandfathered untrack calls.
+Control UI addEventListener ratchet OK: 15 files, 17 grandfathered addEventListener calls.
+Control UI querySelector ratchet OK: 23 files, 48 grandfathered querySelector calls.
+Control UI flush ratchet OK: 0 files, 0 grandfathered flush calls.
+Control UI getOwner ratchet OK: 5 files, 6 grandfathered getOwner calls.
+Control UI runWithOwner ratchet OK: 9 files, 10 grandfathered runWithOwner calls.
+Control UI onCleanup ratchet OK: 44 files, 50 grandfathered onCleanup calls.
+Control UI manualImport ratchet OK: 52 files, 60 grandfathered manualImport calls.
+Plugin UI createEffect ratchet OK: 10 files, 10 grandfathered createEffect calls.
+Plugin UI untrack ratchet OK: 2 files, 2 grandfathered untrack calls.
+Plugin UI addEventListener ratchet OK: 4 files, 15 grandfathered addEventListener calls.
+Plugin UI querySelector ratchet OK: 0 files, 0 grandfathered querySelector calls.
+Plugin UI flush ratchet OK: 0 files, 0 grandfathered flush calls.
+Plugin UI getOwner ratchet OK: 1 files, 1 grandfathered getOwner calls.
+Plugin UI runWithOwner ratchet OK: 1 files, 1 grandfathered runWithOwner calls.
+Plugin UI onCleanup ratchet OK: 3 files, 3 grandfathered onCleanup calls.
+Plugin UI manualImport ratchet OK: 1 files, 1 grandfathered manualImport calls.
+Control UI controller guard OK.
+
+--- i18nBaseline ---
+control-ui-i18n: raw-copy: baseline entries=71
+control-ui-i18n: source: keys=11400 literal_references=9760 template_prefix_references=328
+control-ui-i18n: plugin=memory-core keys=74 locales=21 unused_translations=0
+control-ui-i18n: plugin=nostr keys=61 locales=21 unused_translations=0
+control-ui-i18n: plugin=whatsapp keys=23 locales=21 unused_translations=0
+control-ui-i18n: plugin=workboard keys=381 locales=21 unused_translations=1180
+
+--- linecap ---
+Line-cap ratchet OK: 5 changed source files; no new violations or over-cap growth.
+
+--- oldScalarBudget ---
+Test lines OK: 6369393; ceiling: 6405000; slack: 35607.
+
+--- changedMocks ---
+{"base":"f7b0ceafae9e8d47dbae306a378bf57a16d10dd4","head":"f7b0ceafae9e8d47dbae306a378bf57a16d10dd4","scope":"Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.","records":[{"file":"ui/src/components/terminal/terminal-find.browser.test.tsx","baselineSHA256":"c553f16781b02ffcb746427c2dbbc196c7c585bb0b8efd560e98ff351b84ffaf","currentSHA256":"3a42239542ae87d8145fa8e03963b1b7e739a94edcb355b35226fe9605fe5712","callFingerprints":[],"closedFactories":[],"unchangedFactories":true}],"ledgerSHA256":"cff6f899e0d8f5e8258f693adb2de261a0c828ccb9684919098acfd1c123fdcc","ledgerUnchanged":true,"result":"PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"}
+
+--- browserTypes ---
+
+--- finalBrowserRepeat ---
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 2.2s of this 3.3s build (67%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin vite:native-config-compat-check transform (63%, 2.1s, 67 calls)
+Additional callback time came from callbacks under 1s.
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./control-ui-i18n-config.json" without import attributes (scripts/lib/control-ui-i18n-sync-plan.ts:2:41). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 CHECKOUT/ui
+
+(node:1597131) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > finds real retained Unicode output and wraps navigation without sending terminal input 328ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > refreshes streamed output and rescans after resize while matching literal visual rows 49ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > preserves printed graphemes and spaces on screen and in history 48ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > lets keyboard users activate each Find button with Enter 349ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > keeps the selected glyphs visible through navigation, reopening and resize 117ms
+ ✓ |chromium| src/components/terminal/terminal-find.browser.test.tsx > advances from a surviving match when earlier visual rows disappear 40ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  20:26:43
+   Duration  4.32s (tests 57%, import 17%, worker 15%, setup 11%)
+

@@ -1,0 +1,37 @@
+{
+  "name": "terminal",
+  "number": 180829,
+  "worktree": "CHECKOUT",
+  "originalHead": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+  "main": null,
+  "message": "fix(control-ui): keep terminal find matches fully visible",
+  "stagedTree": "38e1854e7d70ffa53441562bb602dd81541d4819",
+  "files": [
+    {
+      "path": "ui/src/components/terminal/terminal-find.browser.test.tsx",
+      "sha256": "3a42239542ae87d8145fa8e03963b1b7e739a94edcb355b35226fe9605fe5712",
+      "LF": 219
+    },
+    {
+      "path": "ui/src/components/terminal/terminal-find.tsx",
+      "sha256": "c1efa16503b7931ab13b14da423b663d30354a2b7182eca8282f465bf2d1f01e",
+      "LF": 186
+    },
+    {
+      "path": "ui/src/components/terminal/terminal-panel.css",
+      "sha256": "37462a435cf1ff37cc274ef931aea12f2e2570c2df5511e20b9ea11e42c2c9d8",
+      "LF": 798
+    },
+    {
+      "path": "config/test-lines-allocations/terminal-find.txt",
+      "sha256": "af47d633fd7b021370c1e508b69df8586d3a1258133c41a32972ba6e64d94899",
+      "LF": 1
+    }
+  ],
+  "review": "terminal-independent-review.json",
+  "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+  "tree": "38e1854e7d70ffa53441562bb602dd81541d4819",
+  "elapsedSeconds": 3.548,
+  "companyIdentityVerified": true,
+  "normalHooks": true
+}

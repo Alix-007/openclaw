@@ -1,0 +1,17 @@
+{
+  "command": [
+    "NODE26",
+    "--import",
+    "MAIN_CHECKOUT/scripts/tsx.mjs",
+    "scripts/check-test-lines-ratchet.mts",
+    "--base",
+    "aab88e31bf5a64012a699139e19af193fa9a69c7",
+    "--no-merge-base"
+  ],
+  "cwd": "LOCAL_CI_VIEW",
+  "exit_code": 0,
+  "elapsed_seconds": 10.777,
+  "head": "efc5efe38886fe347a1ecef8ef86064d3a6a5b8b",
+  "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "logSHA256": "3745f3e1e3e6ab35e4ef6a687c8ffb5dd598231d2e01771efc23abb2b1cb817b"
+}

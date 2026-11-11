@@ -1,0 +1,16 @@
+{
+  "command": [
+    "NODE26",
+    "--import",
+    "./scripts/tsx.mjs",
+    "TASK/terminal-render-proof.mts",
+    "CHECKOUT",
+    "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4"
+  ],
+  "cwd": "CHECKOUT",
+  "exit_code": 0,
+  "elapsed_seconds": 9.698,
+  "head": "241f3bb34cb578685c75cdc78a1836ed1f1026a2",
+  "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "logSHA256": "7a7af90ecc4b874e8058f0113e5cfdb413f381cc0a16a09aee055284a52847af"
+}

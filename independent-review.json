@@ -1,0 +1,316 @@
+{
+  "reviewKind": "Independent GPT6.1Sol adversarial fallback review; not official helper result",
+  "at": "2026-11-11T12:59:52.719923+00:00",
+  "status": "PASS_REVIEWED_WORKING_SNAPSHOT",
+  "verdict": "PASS",
+  "findings": [],
+  "scope": {
+    "worktree": "CHECKOUT",
+    "observedHead": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+    "featureBase": "27e7e5ee87ccbc1cfa11b7e0b79d78bbf503280f",
+    "stagedTree": null,
+    "committedFinalHeadReviewed": false,
+    "files": [
+      {
+        "path": "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "sha256": "3a42239542ae87d8145fa8e03963b1b7e739a94edcb355b35226fe9605fe5712",
+        "LF": 219
+      },
+      {
+        "path": "ui/src/components/terminal/terminal-find.tsx",
+        "sha256": "c1efa16503b7931ab13b14da423b663d30354a2b7182eca8282f465bf2d1f01e",
+        "LF": 186
+      },
+      {
+        "path": "ui/src/components/terminal/terminal-panel.css",
+        "sha256": "37462a435cf1ff37cc274ef931aea12f2e2570c2df5511e20b9ea11e42c2c9d8",
+        "LF": 798
+      },
+      {
+        "path": "config/test-lines-allocations/terminal-find.txt",
+        "sha256": "af47d633fd7b021370c1e508b69df8586d3a1258133c41a32972ba6e64d94899",
+        "LF": 1
+      }
+    ],
+    "fourFileBindingSHA256": "61785417f79f2330860fdf1514af9ad359e2fd8f580608cb5f40445058b4785f",
+    "fourFileBindingEncoding": "UTF8 path + SPACE + SHA256 + LF in listed order",
+    "trackedDiffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+    "trackedFullIndexDiffSHA256": "bac54c9be20abe6fda88e026d27de85327028dc98c6aa96bf6fda4565f9ba945",
+    "bindingNote": "Three tracked changed files plus exact untracked own allocation. Index/product untouched by reviewer."
+  },
+  "assessment": [
+    "No P0\u2013P3 finding in the four-file candidate. Read full TerminalFind owner, literal search/reveal helper, panel caller integration, relevant CSS, shared reactive scroll/observer/layout lifecycle and existing six test flows. Accepted search scope remains literal/case-sensitive retained visual rows with explicit refresh/navigation; no shell input, canvas/selection, session, protocol, permission or retention changes.",
+    "The smallest fix stays at the preview owner: floor leftward adjustment and ceil rightward adjustment prevent browser rounding from leaving fractional edges clipped; one pixel inline-end padding supplies actual final-glyph scroll extent where scrollWidth/clientWidth integer clamping made ceil alone ineffective. Oversized match policy and ordinary near-start behavior retain their existing branch. No duplicate state, helper, observer or test seam added.",
+    "Existing selected-glyph regression gains only one font-size line and replaces integer width with 320.25px. Exact reconstruction from parent test verifies every other byte, including strict selected.left>=box.left and selected.right<=box.right assertions, remains unchanged. Six scenarios retain Unicode/graphemes/printed spaces, literal matching, refreshed output/reflow, keyboard, navigation/reopen/resize, surviving history anchor and zero terminal input.",
+    "Test audit: one existing real browser/Ghostty owner regression, no new test layer/matrix or mocks. Complete feature test is219LF versus218 at parent; feature-base test absent, own219 grant exact. No global scalar or scanner changes. Supplied old checker result is not modern CI accounting; root owns that pending check.",
+    "All12 supplied gate receipts bind parent HEAD and exact current tracked diff; actual log digests verified. Browser6 and scroll owner13 controls pass, production and canonical browser type graph pass, typed lint/style/format/controller/i18n/linecap/old scalar/changed mocks pass. No mock factory is present; canonical detailed scanner and unchanged ledger inspected. Earlier type setup failures/exploratory runs remain historical; none relabeled passing.",
+    "Paired actual component evidence inspected: canonical Solid/Vite configuration and real isolated Ghostty WASM in Chromium. Before source loaded from pinned parent, after exact current production hashes; invariant unchanged helpers also verified. Same12.1px/320.25px case fails old geometry303.296875>303.25 and passes repaired302.296875<=303.25. Near-start visible on both, zero terminal input/errors both. All PNG hashes verified; before-late/after-late/after-start visually inspected; before-start byte-identical to after-start.",
+    "Historical body preserves Closes #180756, maintainer credit/accepted scope and prior real Gateway/Bash PTY recordings. Fresh proof is accurately component-only: no new normal full UI build, live Gateway/PTY, provider or WebKit claim. Modern CI, final normal commit and public outcome remain root-owned, outside this scoped pass."
+  ],
+  "gates": {
+    "browser": {
+      "receipt": "terminal-narrow-browser.json",
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "vitest",
+        "run",
+        "--config",
+        "ui/vitest.config.ts",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 10.65,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "f476d2d407ea514058cb69044f236f9d832a16b61a3da192b49533a2d4943e71",
+      "testsPassed": 6,
+      "filesPassed": 1
+    },
+    "scrollOwnerTests": {
+      "receipt": "terminal-scroll-tests.json",
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "vitest",
+        "run",
+        "--config",
+        "ui/vitest.config.ts",
+        "ui/src/components/scroll-state-observer.test.ts",
+        "ui/src/lib/reactive/scroll-state.test.tsx",
+        "--maxWorkers=1"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 19.948,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "426f39c514ee75b8e512dad0072526f953f46246929ba034682424a108c7baca",
+      "testsPassed": 13,
+      "filesPassed": 2
+    },
+    "productionTypes": {
+      "receipt": "terminal-ui-types.json",
+      "command": [
+        "NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "tsconfig.ui.json",
+        "--incremental",
+        "--tsBuildInfoFile",
+        "../terminal-ui-types.tsbuildinfo"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 157.274,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "typedLint": {
+      "receipt": "terminal-scoped-lint.json",
+      "command": [
+        "NODE26",
+        "scripts/run-oxlint.mjs",
+        "ui/src/components/terminal/terminal-find.tsx",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 495.382,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "067a15f7fb5cd4cbfa43dede182128a5eb865d342442f78938bba9529aa2baf1"
+    },
+    "stylelint": {
+      "receipt": "terminal-stylelint.json",
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "stylelint",
+        "--config",
+        "config/stylelint.config.mjs",
+        "ui/src/components/terminal/terminal-panel.css"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.889,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "format": {
+      "receipt": "terminal-format.json",
+      "command": [
+        "NODE26",
+        "scripts/run-node-package-bin.mts",
+        "oxfmt",
+        "--check",
+        "ui/src/components/terminal/terminal-find.tsx",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx",
+        "ui/src/components/terminal/terminal-panel.css"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.935,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e398c6726d150b7f05d8ce29679393f3f8e35ab2709c3c104e84223161dc2f77"
+    },
+    "controller": {
+      "receipt": "terminal-controller.json",
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-control-ui-controllers.mts"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 29.244,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "ca0f98754263eaf027011adc055d74938723698c28599d596f546cdc4a677674"
+    },
+    "i18nBaseline": {
+      "receipt": "terminal-i18n.json",
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/control-ui-i18n-verify.ts",
+        "baseline"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 17.01,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "1bce064f50e2d9ac57eb2f8708618aef1ddf626d6e011f58163fb9249903e9bb"
+    },
+    "linecap": {
+      "receipt": "terminal-linecap.json",
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-line-cap-ratchet.mts",
+        "--base",
+        "27e7e5ee87ccbc1cfa11b7e0b79d78bbf503280f",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 1.468,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e46e649c0b64744408798afffabe11c53c854c99b4b7307fb07d065726fc7915"
+    },
+    "oldScalarBudget": {
+      "receipt": "terminal-old-budget.json",
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "scripts/check-test-lines-ratchet.mts",
+        "--base",
+        "27e7e5ee87ccbc1cfa11b7e0b79d78bbf503280f",
+        "--no-merge-base"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 18.17,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "bfb9f341d9d6bfffa02ae933de29c543fdbdb486d2ead3831c4fdaa3e308edf2"
+    },
+    "changedMocks": {
+      "receipt": "terminal-mocks-qualified.json",
+      "command": [
+        "NODE26",
+        "--import",
+        "./scripts/tsx.mjs",
+        "../check-terminal-mocks.mts",
+        "ui/src/components/terminal/terminal-find.browser.test.tsx"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 0.697,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "67bcacc5be50b14b4733f60efcb9cf6b99aa0d188cbb1db63fe945eae370aac9"
+    },
+    "browserTypes": {
+      "receipt": "terminal-browser-types-canonical.json",
+      "command": [
+        "NODE26",
+        "scripts/run-tsgo.mjs",
+        "-p",
+        "../terminal-browser-types.tsconfig.json",
+        "--incremental"
+      ],
+      "cwd": "CHECKOUT",
+      "exit_code": 0,
+      "elapsed_seconds": 210.337,
+      "head": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "diffSHA256": "36012ead051f44bfecb0619233844dc10cf37df5ffe9d4363fcd6312e9d25352",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "proof": {
+    "receipt": "TASK/terminal-fractional-FFXYuL/receipt.json",
+    "receiptSHA256": "7cccda80395ea49a6fb9ab9da01a65494b667dd8bbf7439556c3a10eb3faa050",
+    "collector": "TASK/terminal-render-proof.mts",
+    "collectorSHA256": "7248c802ede040ca634cb9323c23c52f297e9d041a91008eb54c3839c6e8d336",
+    "before": {
+      "sourceCommit": "f7b0ceafae9e8d47dbae306a378bf57a16d10dd4",
+      "lateVisible": false,
+      "startVisible": true,
+      "markRight": 303.296875,
+      "previewRight": 303.25
+    },
+    "after": {
+      "sourceCommit": null,
+      "exactWorkingSource": true,
+      "lateVisible": true,
+      "startVisible": true,
+      "markRight": 302.296875,
+      "previewRight": 303.25
+    },
+    "images": {
+      "after-late.png": {
+        "sha256": "6c30066201672b824df6122beaf11046e9875b00608100fcc07b47712693b1c3",
+        "width": 1520,
+        "height": 680,
+        "visuallyInspected": true
+      },
+      "after-start.png": {
+        "sha256": "1e61286c15425ace188697bf98f049d3066d9ce5ab13c5f2b6dc526972e1ebc8",
+        "width": 1520,
+        "height": 680,
+        "visuallyInspected": true
+      },
+      "before-late.png": {
+        "sha256": "7776b6a50e7288cfc54cb8c4a5e6320918777faa84d7f68d3a645cc347875631",
+        "width": 1520,
+        "height": 680,
+        "visuallyInspected": true
+      },
+      "before-start.png": {
+        "sha256": "1e61286c15425ace188697bf98f049d3066d9ce5ab13c5f2b6dc526972e1ebc8",
+        "width": 1520,
+        "height": 680,
+        "visuallyInspected": true
+      }
+    },
+    "scope": "Actual production TerminalFind source compiled by canonical Solid/Vite config with actual isolated Ghostty WASM emulator in Chromium. BEFORE reads explicitly pinned pre-repair Git source for the two changed production files; AFTER reads current working source. This is a component rendering seam, not a normal full UI build, live Gateway, PTY, provider, or WebKit proof."
+  },
+  "pending": [
+    "Root modern CI allocation/context accounting; old scalar gate alone does not prove it",
+    "Root exact normal commit/source binding and publication/hosted CI reconciliation",
+    "Safari/WebKit remain unvalidated; prior live Gateway/PTY evidence stays historical"
+  ],
+  "operations": "Read-only file/Git/receipt/image inspection plus requested task-only reports. No product, index, Git/public mutation, tests, build, auth, API or delegation."
+}
