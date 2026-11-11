@@ -1,0 +1,21 @@
+{
+  "portable-memory-deep-probe-v3.py": "1298edc6862b2ce2f19b14ed0a8bf92ed8101c9d58ec032a4800677619c96fd8",
+  "portable-memory-index-custody-control.py": "4e4731cf5a0994949bff596a54c43ab26cdc3b222670ef054d2ef7b111655862",
+  "base_native-receipt.json": "f4f2f76077067643287dc7f1336a7613264cece06d3a73e4fa995750e6ec9336",
+  "base_native-streams.txt": "776f474eab1e50b4ef0f1a1d9b2b7818c93bb3af44adfbd7d3dd9e439a305791",
+  "head_native-receipt.json": "0385c193a173fdd89735043ab734e3d1c7ebfee8a219d508569316549c5271a0",
+  "head_native-streams.txt": "56f05b7b4e05f7abfdf61f361393d7313fef84bd04ee484c7fb560bde797dc3b",
+  "base_index-receipt.json": "b50de64bd5a9716a7d138851e2174a4814873704ae0ef70072448c7f37fd1ff1",
+  "base_index-streams.txt": "040ac8c87509c3cc257e68bd6d75648afb7364cb83d976583ab832a7bad67e11",
+  "head_index-receipt.json": "f8fbc924a08865b042f9d654950e4e73f96bc3a8046323d86bf5a7ff3dbb6407",
+  "head_index-streams.txt": "d3584225b788d9ffba1775ed205cc095aa3545bcdbf73a52bf2aafacaa5fac19",
+  "checks.json": "ec802f6c83a4501e4c6a38942ebf4429f8454f12f52a189ed99e24ad466316f8",
+  "test-summary.json": "a6d06a8feabed4608623f456419f211df0b02a9798c28ba41587a8c0ce3e33c5",
+  "final-focused.json": "574d2b55a1fece43f16c322d4255cc5c10afd0b57c26f22a627bcc49e7e63a95",
+  "final-focused.log": "28fdb892fa3cd22fd68d820cd526c2d1b2184d852e27bd2881e5f4a09eaecc6f",
+  "independent-review.json": "53f4810c435f7f6a0d069e72307ffbbec2d2908b053d5ad4230b3b3d4b8ebd63",
+  "independent-review.md": "0271429ded158b8d773240b181d0ff70225938e1bd5ad0e103a6ce5ea416f218",
+  "SOURCE-MANIFEST.json": "0f115716ed544423d7e26bef7c8d6c26952beb3c9a4cd76cc8bf57bb929bbb38",
+  "EVIDENCE.md": "b1c1b3b7cd5ba8ac28d0ead1db7c8630a3eae3a5bc92b28bd0a272b46c65dd9f",
+  "README.md": "a575da75b227c083d56a88cf39726fcbaf3b8b7a6b026511d6c95e8483e68623"
+}

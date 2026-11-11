@@ -1,0 +1,706 @@
+{
+  "collector_sha256": "1298edc6862b2ce2f19b14ed0a8bf92ed8101c9d58ec032a4800677619c96fd8",
+  "expect": "green",
+  "binding_before": {
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "tracked_status": "",
+    "build_info": {
+      "version": "2026.11.3",
+      "commit": "493066f11544c2c52c0ddb397912eb409331173b",
+      "builtAt": "2026-11-11T10:39:21.274Z",
+      "buildId": "2026.11.3-493066f11544-2026-11-11T10-39-21.274Z"
+    },
+    "build_stamp": {
+      "builtAt": 1794393828708,
+      "head": "493066f11544c2c52c0ddb397912eb409331173b",
+      "inputsClean": true,
+      "inputSignature": "77b917f67e5c405a75c549423784758fcfeb3ebfeab1259d58f0622b73e0fa7a"
+    },
+    "sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "node-runtime-recovery.mjs": "6b4de18b5980c14f74cbc7d85457c8293ee6dca558415090809840c644b58433",
+      "gateway-shutdown-budget.mjs": "509f6760528c1212c180c2961a16eaf3f56658a488a35aab238751350067bd1a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "8c0267a349c3b98a097df4d5c367f05889fabdc2f447fc44cf763c16726708af",
+      "dist/.buildstamp": "e7d04e253fd4b7ba5d406aaca72f3263736b851fc0fcf66c92dc8b4d9d917677",
+      "extensions/memory-core/src/cli-status.runtime.ts": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5",
+      "extensions/memory-core/src/cli-runtime-common.ts": "9d66534da413ab3d6889f45f83884880085dd8e978ff07b2e118397b46a75082",
+      "extensions/memory-core/src/memory/manager-provider-lifecycle.ts": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46",
+      "extensions/memory-core/src/memory/manager-embedding-ops.ts": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e",
+      "extensions/memory-core/src/memory/paused-deadline.ts": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28",
+      "packages/memory-host-sdk/src/host/search-manager.types.ts": "fff2cddc642da0fea42df28d1243e0bd7f5872504c134f5a8a14363e8311d2a9"
+    },
+    "pass": true
+  },
+  "cases": [
+    {
+      "label": "response-200-control",
+      "mode": "200",
+      "argv": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "memory",
+        "status",
+        "--deep",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "environment": {
+        "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+        "HOME": "<HEAD_NATIVE_OUTPUT>/response-200-control/home",
+        "USERPROFILE": "<HEAD_NATIVE_OUTPUT>/response-200-control/home",
+        "XDG_CONFIG_HOME": "<HEAD_NATIVE_OUTPUT>/response-200-control/xdg-config",
+        "XDG_CACHE_HOME": "<HEAD_NATIVE_OUTPUT>/response-200-control/xdg-cache",
+        "XDG_DATA_HOME": "<HEAD_NATIVE_OUTPUT>/response-200-control/xdg-data",
+        "XDG_STATE_HOME": "<HEAD_NATIVE_OUTPUT>/response-200-control/xdg-state",
+        "TMPDIR": "<HEAD_NATIVE_OUTPUT>/response-200-control/tmp",
+        "TMP": "<HEAD_NATIVE_OUTPUT>/response-200-control/tmp",
+        "TEMP": "<HEAD_NATIVE_OUTPUT>/response-200-control/tmp",
+        "OPENCLAW_CONFIG_PATH": "<HEAD_NATIVE_OUTPUT>/response-200-control/openclaw.json",
+        "OPENCLAW_STATE_DIR": "<HEAD_NATIVE_OUTPUT>/response-200-control/state",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "TERM": "xterm-256color"
+      },
+      "config_sha256_before": "dba10226f5c4cd157c88f395e6c48888d392662400e58c243795fcd6daf65b9e",
+      "config_sha256_after": "dba10226f5c4cd157c88f395e6c48888d392662400e58c243795fcd6daf65b9e",
+      "config_unchanged": true,
+      "corpus_unchanged": true,
+      "pid": 1324696,
+      "process_group": 1324696,
+      "owned_processes_at_interrupt": [],
+      "owned_processes_before_harness_cleanup": [],
+      "request_seen": true,
+      "signal_sent": false,
+      "interrupt_acknowledged": false,
+      "exit_code": 0,
+      "elapsed_seconds": 8.192335010040551,
+      "interrupt_to_exit_ms": null,
+      "interrupt_to_http_close_ms": null,
+      "http_closed_before_harness_cleanup": false,
+      "harness_watchdog_kill": false,
+      "pty_eof_drained": true,
+      "success_status_json_published": true,
+      "json_payload": [
+        {
+          "agentId": "main",
+          "status": {
+            "backend": "builtin",
+            "files": 0,
+            "chunks": 0,
+            "dirty": true,
+            "workspaceDir": "<HEAD_NATIVE_OUTPUT>/response-200-control/workspace",
+            "dbPath": "<HEAD_NATIVE_OUTPUT>/response-200-control/state/agents/main/agent/openclaw-agent.sqlite",
+            "storage": {
+              "databaseBytes": 0,
+              "walBytes": 0,
+              "reusableBytes": 0,
+              "embeddingCacheBytes": 0,
+              "embeddingCacheEntries": 0
+            },
+            "provider": "openai",
+            "model": "text-embedding-3-small",
+            "requestedProvider": "openai",
+            "sources": [
+              "memory",
+              "sessions"
+            ],
+            "extraPaths": [],
+            "sourceCounts": [
+              {
+                "source": "memory",
+                "files": 0,
+                "chunks": 0,
+                "chunkBytes": 0,
+                "dirty": true,
+                "eligible": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "files": 0,
+                "chunks": 0,
+                "chunkBytes": 0,
+                "eligible": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "cache": {
+              "enabled": true,
+              "entries": 0,
+              "maxEntries": 50000
+            },
+            "fts": {
+              "enabled": true,
+              "available": false
+            },
+            "vector": {
+              "enabled": true,
+              "index": {
+                "state": "empty"
+              },
+              "storeAvailable": false,
+              "semanticAvailable": false,
+              "available": false,
+              "loadError": "Memory search database unavailable: database-missing"
+            },
+            "batch": {
+              "enabled": false,
+              "failures": 0,
+              "limit": 2,
+              "wait": true,
+              "concurrency": 2,
+              "pollIntervalMs": 2000,
+              "timeoutMs": 3600000
+            },
+            "custom": {
+              "searchMode": "hybrid",
+              "providerState": {
+                "mode": "active",
+                "providerId": "openai"
+              },
+              "indexIdentity": {
+                "status": "missing",
+                "reason": "index metadata is missing",
+                "code": "metadata_missing",
+                "owner": "openclaw"
+              },
+              "automaticRebuildNotice": {
+                "sequence": 0,
+                "warning": ""
+              }
+            }
+          },
+          "embeddingProbe": {
+            "ok": true
+          },
+          "scan": {
+            "sources": [
+              {
+                "source": "memory",
+                "totalFiles": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "totalFiles": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "totalFiles": 1,
+            "issues": [
+              "no eligible session transcripts found"
+            ]
+          },
+          "audit": {
+            "storePath": "plugin-state:memory-core/short-term-recall/ef7e73b07925a838375525c2d27d23bfa2808f585cef54fc03664d865e3b7a53",
+            "lockPath": "plugin-state:memory-core/short-term-locks/ef7e73b07925a838375525c2d27d23bfa2808f585cef54fc03664d865e3b7a53",
+            "exists": false,
+            "entryCount": 0,
+            "promotedCount": 0,
+            "spacedEntryCount": 0,
+            "conceptTaggedEntryCount": 0,
+            "invalidEntryCount": 0,
+            "danglingEntryCount": 0,
+            "issues": []
+          },
+          "dreamingAudit": {
+            "sessionCorpusDir": "<HEAD_NATIVE_OUTPUT>/response-200-control/workspace/memory/.dreams/session-corpus",
+            "sessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusLineCount": 0,
+            "sessionIngestionPath": "<HEAD_NATIVE_OUTPUT>/response-200-control/workspace/memory/.dreams/session-ingestion.json",
+            "sessionIngestionExists": false,
+            "issues": []
+          }
+        }
+      ],
+      "events": [
+        {
+          "event": "request",
+          "at": 3533446.815817984,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "ping"
+            ]
+          },
+          "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "response",
+          "at": 3533446.816269215,
+          "status": 200,
+          "body_sha256": "25cbf9f614eae2e5a331b73c19d587f1d79a994da38f4abc6e46267e1d148a46"
+        }
+      ],
+      "error": null,
+      "terminal_sha256": "c2b5054a4cc46ef9d76b1e9d07eafa5f7d78ccc1ee6bb753747871aeceeebe79",
+      "diagnostics_sha256": "46ee09e9de374eefbd47651d6c33a4642939f32c7de6c7b6befa2375830ff5aa",
+      "terminal_bytes_at_interrupt": null,
+      "stdout_after_interrupt_normalized": null,
+      "diagnostics_after_ack": null,
+      "quiet_after_ack": null,
+      "result": "LEGAL_RESPONSE_CONTROL"
+    },
+    {
+      "label": "response-401-control",
+      "mode": "401",
+      "argv": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "memory",
+        "status",
+        "--deep",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "environment": {
+        "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+        "HOME": "<HEAD_NATIVE_OUTPUT>/response-401-control/home",
+        "USERPROFILE": "<HEAD_NATIVE_OUTPUT>/response-401-control/home",
+        "XDG_CONFIG_HOME": "<HEAD_NATIVE_OUTPUT>/response-401-control/xdg-config",
+        "XDG_CACHE_HOME": "<HEAD_NATIVE_OUTPUT>/response-401-control/xdg-cache",
+        "XDG_DATA_HOME": "<HEAD_NATIVE_OUTPUT>/response-401-control/xdg-data",
+        "XDG_STATE_HOME": "<HEAD_NATIVE_OUTPUT>/response-401-control/xdg-state",
+        "TMPDIR": "<HEAD_NATIVE_OUTPUT>/response-401-control/tmp",
+        "TMP": "<HEAD_NATIVE_OUTPUT>/response-401-control/tmp",
+        "TEMP": "<HEAD_NATIVE_OUTPUT>/response-401-control/tmp",
+        "OPENCLAW_CONFIG_PATH": "<HEAD_NATIVE_OUTPUT>/response-401-control/openclaw.json",
+        "OPENCLAW_STATE_DIR": "<HEAD_NATIVE_OUTPUT>/response-401-control/state",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "TERM": "xterm-256color"
+      },
+      "config_sha256_before": "141a60e34125d4c0a526f68d9670ffcb297e2ecb48d9818058a66f7a3f146dc3",
+      "config_sha256_after": "141a60e34125d4c0a526f68d9670ffcb297e2ecb48d9818058a66f7a3f146dc3",
+      "config_unchanged": true,
+      "corpus_unchanged": true,
+      "pid": 1325062,
+      "process_group": 1325062,
+      "owned_processes_at_interrupt": [],
+      "owned_processes_before_harness_cleanup": [],
+      "request_seen": true,
+      "signal_sent": false,
+      "interrupt_acknowledged": false,
+      "exit_code": 0,
+      "elapsed_seconds": 8.311947994865477,
+      "interrupt_to_exit_ms": null,
+      "interrupt_to_http_close_ms": null,
+      "http_closed_before_harness_cleanup": false,
+      "harness_watchdog_kill": false,
+      "pty_eof_drained": true,
+      "success_status_json_published": true,
+      "json_payload": [
+        {
+          "agentId": "main",
+          "status": {
+            "backend": "builtin",
+            "files": 0,
+            "chunks": 0,
+            "dirty": true,
+            "workspaceDir": "<HEAD_NATIVE_OUTPUT>/response-401-control/workspace",
+            "dbPath": "<HEAD_NATIVE_OUTPUT>/response-401-control/state/agents/main/agent/openclaw-agent.sqlite",
+            "storage": {
+              "databaseBytes": 0,
+              "walBytes": 0,
+              "reusableBytes": 0,
+              "embeddingCacheBytes": 0,
+              "embeddingCacheEntries": 0
+            },
+            "provider": "openai",
+            "model": "text-embedding-3-small",
+            "requestedProvider": "openai",
+            "sources": [
+              "memory",
+              "sessions"
+            ],
+            "extraPaths": [],
+            "sourceCounts": [
+              {
+                "source": "memory",
+                "files": 0,
+                "chunks": 0,
+                "chunkBytes": 0,
+                "dirty": true,
+                "eligible": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "files": 0,
+                "chunks": 0,
+                "chunkBytes": 0,
+                "eligible": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "cache": {
+              "enabled": true,
+              "entries": 0,
+              "maxEntries": 50000
+            },
+            "fts": {
+              "enabled": true,
+              "available": false
+            },
+            "vector": {
+              "enabled": true,
+              "index": {
+                "state": "empty"
+              },
+              "storeAvailable": false,
+              "semanticAvailable": false,
+              "available": false,
+              "loadError": "Memory search database unavailable: database-missing"
+            },
+            "batch": {
+              "enabled": false,
+              "failures": 0,
+              "limit": 2,
+              "wait": true,
+              "concurrency": 2,
+              "pollIntervalMs": 2000,
+              "timeoutMs": 3600000
+            },
+            "custom": {
+              "searchMode": "hybrid",
+              "providerState": {
+                "mode": "active",
+                "providerId": "openai"
+              },
+              "indexIdentity": {
+                "status": "missing",
+                "reason": "index metadata is missing",
+                "code": "metadata_missing",
+                "owner": "openclaw"
+              },
+              "automaticRebuildNotice": {
+                "sequence": 0,
+                "warning": ""
+              }
+            }
+          },
+          "embeddingProbe": {
+            "ok": false,
+            "error": "openai embeddings failed (model: text-embedding-3-small, batch size: 1) (401): synthetic fixture authorization rejection [type=invalid_request_error, code=invalid_authentication]"
+          },
+          "scan": {
+            "sources": [
+              {
+                "source": "memory",
+                "totalFiles": 1,
+                "issues": []
+              },
+              {
+                "source": "sessions",
+                "totalFiles": 0,
+                "issues": [
+                  "no eligible session transcripts found"
+                ]
+              }
+            ],
+            "totalFiles": 1,
+            "issues": [
+              "no eligible session transcripts found"
+            ]
+          },
+          "audit": {
+            "storePath": "plugin-state:memory-core/short-term-recall/7d14f55ba9631b754661b353f253b37f04d894e57e3c7eff560af400e2a666c2",
+            "lockPath": "plugin-state:memory-core/short-term-locks/7d14f55ba9631b754661b353f253b37f04d894e57e3c7eff560af400e2a666c2",
+            "exists": false,
+            "entryCount": 0,
+            "promotedCount": 0,
+            "spacedEntryCount": 0,
+            "conceptTaggedEntryCount": 0,
+            "invalidEntryCount": 0,
+            "danglingEntryCount": 0,
+            "issues": []
+          },
+          "dreamingAudit": {
+            "sessionCorpusDir": "<HEAD_NATIVE_OUTPUT>/response-401-control/workspace/memory/.dreams/session-corpus",
+            "sessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusFileCount": 0,
+            "suspiciousSessionCorpusLineCount": 0,
+            "sessionIngestionPath": "<HEAD_NATIVE_OUTPUT>/response-401-control/workspace/memory/.dreams/session-ingestion.json",
+            "sessionIngestionExists": false,
+            "issues": []
+          }
+        }
+      ],
+      "events": [
+        {
+          "event": "request",
+          "at": 3533455.323479274,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "ping"
+            ]
+          },
+          "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "response",
+          "at": 3533455.323797331,
+          "status": 401,
+          "body_sha256": "421175b5d3df04da30b0e02195f4720a9b753495ad6dfbb5ca2510ab2a740958"
+        }
+      ],
+      "error": null,
+      "terminal_sha256": "99aa06efd79e9ea576bfd39c2e27e8852fcec9b6b98824e0ce627f5ab3625a6f",
+      "diagnostics_sha256": "e7cebbacee6973d743bc938c2a5182ab3ce4d010cb2075f3d6ef7e57feedea9a",
+      "terminal_bytes_at_interrupt": null,
+      "stdout_after_interrupt_normalized": null,
+      "diagnostics_after_ack": null,
+      "quiet_after_ack": null,
+      "result": "LEGAL_RESPONSE_CONTROL"
+    },
+    {
+      "label": "pending-sigint",
+      "mode": "SIGINT",
+      "argv": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "memory",
+        "status",
+        "--deep",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "environment": {
+        "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+        "HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigint/home",
+        "USERPROFILE": "<HEAD_NATIVE_OUTPUT>/pending-sigint/home",
+        "XDG_CONFIG_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigint/xdg-config",
+        "XDG_CACHE_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigint/xdg-cache",
+        "XDG_DATA_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigint/xdg-data",
+        "XDG_STATE_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigint/xdg-state",
+        "TMPDIR": "<HEAD_NATIVE_OUTPUT>/pending-sigint/tmp",
+        "TMP": "<HEAD_NATIVE_OUTPUT>/pending-sigint/tmp",
+        "TEMP": "<HEAD_NATIVE_OUTPUT>/pending-sigint/tmp",
+        "OPENCLAW_CONFIG_PATH": "<HEAD_NATIVE_OUTPUT>/pending-sigint/openclaw.json",
+        "OPENCLAW_STATE_DIR": "<HEAD_NATIVE_OUTPUT>/pending-sigint/state",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "TERM": "xterm-256color"
+      },
+      "config_sha256_before": "f17cbb5eaf3a8ab4f727d67cfe9fd28e7adc5129b899365f3d17d0799d4c1ee5",
+      "config_sha256_after": "f17cbb5eaf3a8ab4f727d67cfe9fd28e7adc5129b899365f3d17d0799d4c1ee5",
+      "config_unchanged": true,
+      "corpus_unchanged": true,
+      "pid": 1325460,
+      "process_group": 1325460,
+      "owned_processes_at_interrupt": [
+        {
+          "pid": "1325460",
+          "ppid": "1324639",
+          "pgid": "1325460",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "1325467",
+          "ppid": "1325460",
+          "pgid": "1325460",
+          "stat": "Sl+"
+        }
+      ],
+      "owned_processes_before_harness_cleanup": [],
+      "request_seen": true,
+      "signal_sent": true,
+      "interrupt_acknowledged": true,
+      "exit_code": 130,
+      "elapsed_seconds": 7.797077613417059,
+      "interrupt_to_exit_ms": 237.32721526175737,
+      "interrupt_to_http_close_ms": 27.21619699150324,
+      "http_closed_before_harness_cleanup": true,
+      "harness_watchdog_kill": false,
+      "pty_eof_drained": true,
+      "success_status_json_published": false,
+      "json_payload": null,
+      "events": [
+        {
+          "event": "request",
+          "at": 3533463.373409436,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "ping"
+            ]
+          },
+          "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "peer-closed",
+          "at": 3533463.408155514
+        }
+      ],
+      "error": null,
+      "terminal_sha256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "diagnostics_sha256": "1bc7734597f7fccb1a14d9f9a14c211f24ca634d6ed06b8b1285589635186e66",
+      "terminal_bytes_at_interrupt": 0,
+      "stdout_after_interrupt_normalized": "",
+      "diagnostics_after_ack": "\n",
+      "quiet_after_ack": true,
+      "result": "GREEN_CANCELLED_AND_JOINED"
+    },
+    {
+      "label": "pending-sigterm",
+      "mode": "SIGTERM",
+      "argv": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "memory",
+        "status",
+        "--deep",
+        "--agent",
+        "main",
+        "--json"
+      ],
+      "environment": {
+        "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+        "HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/home",
+        "USERPROFILE": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/home",
+        "XDG_CONFIG_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/xdg-config",
+        "XDG_CACHE_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/xdg-cache",
+        "XDG_DATA_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/xdg-data",
+        "XDG_STATE_HOME": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/xdg-state",
+        "TMPDIR": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/tmp",
+        "TMP": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/tmp",
+        "TEMP": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/tmp",
+        "OPENCLAW_CONFIG_PATH": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/openclaw.json",
+        "OPENCLAW_STATE_DIR": "<HEAD_NATIVE_OUTPUT>/pending-sigterm/state",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "NO_COLOR": "1",
+        "TERM": "xterm-256color"
+      },
+      "config_sha256_before": "051878b83a97fec9645309f5bf78595be3ff1dabd307d8f41a068cbbb7778336",
+      "config_sha256_after": "051878b83a97fec9645309f5bf78595be3ff1dabd307d8f41a068cbbb7778336",
+      "config_unchanged": true,
+      "corpus_unchanged": true,
+      "pid": 1325825,
+      "process_group": 1325825,
+      "owned_processes_at_interrupt": [
+        {
+          "pid": "1325825",
+          "ppid": "1324639",
+          "pgid": "1325825",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "1325832",
+          "ppid": "1325825",
+          "pgid": "1325825",
+          "stat": "Sl+"
+        }
+      ],
+      "owned_processes_before_harness_cleanup": [],
+      "request_seen": true,
+      "signal_sent": true,
+      "interrupt_acknowledged": true,
+      "exit_code": 143,
+      "elapsed_seconds": 7.947521972004324,
+      "interrupt_to_exit_ms": 256.07003504410386,
+      "interrupt_to_http_close_ms": 27.824577875435352,
+      "http_closed_before_harness_cleanup": true,
+      "harness_watchdog_kill": false,
+      "pty_eof_drained": true,
+      "success_status_json_published": false,
+      "json_payload": null,
+      "events": [
+        {
+          "event": "request",
+          "at": 3533471.552055715,
+          "method": "POST",
+          "path": "/v1/embeddings",
+          "body": {
+            "dimensions": 3,
+            "model": "text-embedding-3-small",
+            "input": [
+              "ping"
+            ]
+          },
+          "body_sha256": "2a242cf0558a43bc9fdce4d8de74084e84bdd88fc4380eee30be1420b658f0bc",
+          "synthetic_auth_matches": true
+        },
+        {
+          "event": "peer-closed",
+          "at": 3533471.593257473
+        }
+      ],
+      "error": null,
+      "terminal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics_sha256": "ee0a006393d09d1d1147ca3145a133dcf947412e1158535af1601d89cbae6882",
+      "terminal_bytes_at_interrupt": 0,
+      "stdout_after_interrupt_normalized": "",
+      "diagnostics_after_ack": "\n",
+      "quiet_after_ack": true,
+      "result": "GREEN_CANCELLED_AND_JOINED"
+    }
+  ],
+  "scope": "Normal memory status --deep CLI through Memory Core and bundled OpenAI plugin to synthetic compatible loopback HTTP. Real OS PTY/pipe/socket and actual product HTTP transport; no actual OpenAI/Ollama provider service, semantic-quality, inference, Gateway, or indexing claim.",
+  "isolation": "Allowlisted environment, task-owned HOME/USERPROFILE/XDG/tmp/config/state/workspace. Not an OS filesystem/network sandbox. Product/dependency reads expected.",
+  "fixture_cleanup": "Retained; owned children and server sockets waited/closed.",
+  "output_contract_source": "https://github.com/openclaw/openclaw/pull/197110#issuecomment-6790934424; accepted readUnlessAborted pattern suppresses both rejected and resolved reads after abort, before JSON/global failure output",
+  "v2_oracle_gap": "V2 rejected success status array only; graceful exit plus generic cli_error JSON/banner could pass. V3 preserves all V2 exit/socket/control assertions and adds strict post-interrupt stdout/stderr silence. Frozen V1/V2 remain unchanged.",
+  "result": "GREEN",
+  "binding_after": {
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "tracked_status": "",
+    "build_info": {
+      "version": "2026.11.3",
+      "commit": "493066f11544c2c52c0ddb397912eb409331173b",
+      "builtAt": "2026-11-11T10:39:21.274Z",
+      "buildId": "2026.11.3-493066f11544-2026-11-11T10-39-21.274Z"
+    },
+    "build_stamp": {
+      "builtAt": 1794393828708,
+      "head": "493066f11544c2c52c0ddb397912eb409331173b",
+      "inputsClean": true,
+      "inputSignature": "77b917f67e5c405a75c549423784758fcfeb3ebfeab1259d58f0622b73e0fa7a"
+    },
+    "sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "node-runtime-recovery.mjs": "6b4de18b5980c14f74cbc7d85457c8293ee6dca558415090809840c644b58433",
+      "gateway-shutdown-budget.mjs": "509f6760528c1212c180c2961a16eaf3f56658a488a35aab238751350067bd1a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "8c0267a349c3b98a097df4d5c367f05889fabdc2f447fc44cf763c16726708af",
+      "dist/.buildstamp": "e7d04e253fd4b7ba5d406aaca72f3263736b851fc0fcf66c92dc8b4d9d917677",
+      "extensions/memory-core/src/cli-status.runtime.ts": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5",
+      "extensions/memory-core/src/cli-runtime-common.ts": "9d66534da413ab3d6889f45f83884880085dd8e978ff07b2e118397b46a75082",
+      "extensions/memory-core/src/memory/manager-provider-lifecycle.ts": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46",
+      "extensions/memory-core/src/memory/manager-embedding-ops.ts": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e",
+      "extensions/memory-core/src/memory/paused-deadline.ts": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28",
+      "packages/memory-host-sdk/src/host/search-manager.types.ts": "fff2cddc642da0fea42df28d1243e0bd7f5872504c134f5a8a14363e8311d2a9"
+    },
+    "pass": true
+  },
+  "pass": true
+}

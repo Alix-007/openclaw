@@ -1,0 +1,18 @@
+{
+  "command": [
+    "<NODE26>",
+    "scripts/run-vitest.mjs",
+    "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+    "extensions/memory-core/src/cli.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts",
+    "extensions/memory-core/src/memory/paused-deadline.test.ts",
+    "src/gateway/server-methods/doctor.test.ts",
+    "--maxWorkers=1"
+  ],
+  "cwd": "<HEAD_CHECKOUT>",
+  "exit_code": 0,
+  "elapsed_seconds": 154.192,
+  "head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "diffSHA256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46",
+  "logSHA256": "7124ede052b132e51320b9094230bd6db41440b9ec947df39c541c25c397fa67"
+}

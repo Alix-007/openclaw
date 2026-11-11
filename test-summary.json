@@ -1,0 +1,14 @@
+{
+  "passed": 111,
+  "files": [
+    "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+    "extensions/memory-core/src/cli.test.ts",
+    "extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts",
+    "extensions/memory-core/src/memory/paused-deadline.test.ts",
+    "src/gateway/server-methods/doctor.test.ts"
+  ],
+  "seconds": 154.192,
+  "source_diff_sha256": "ae517f66f53d3c18d418179f0cca59feff2abb114ac9ef7b1b2f4bb49876ce46",
+  "failure_history": [],
+  "note": "One final five-file all-green focused command; no reuse of prior110/117 claim after restoring CLI tests to BASE."
+}

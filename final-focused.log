@@ -1,0 +1,145 @@
+[test] starting test/vitest/vitest.gateway.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache hit after 8644ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared ed965fda9333 in 8834ms (18965 inputs, 29631 outputs)
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.status: {} 196ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.status: {"agentId":42} 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.status: {"agentId":"invented"} 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.dreamDiary: {"agentId":"invented"} 15ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.backfillDreamDiary: {"agentId":"invented"} 9ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.resetDreamDiary: {"agentId":"invented"} 6ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.resetGroundedShortTerm: {"agentId":"invented"} 8ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.repairDreamingArtifacts: {"agentId":"invented"} 19ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory agent targeting > rejects invalid agent selection for doctor.memory.dedupeDreamDiary: {"agentId":"invented"} 8ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > returns cached embedding readiness and dreaming configuration 15ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > returns selected-plugin embedding readiness and dreaming configuration 12ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > orders dreaming entries deterministically when one timestamp is malformed 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > returns llama.cpp runtime facts created by the deep embedding probe 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > reports missing memory manager errors 6ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > reports probe failure memory manager errors 10ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > includes dreaming counts and managed cron status when workspace data is available 12ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > scopes dreaming status to the requested agent workspace 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > falls back to the manager workspace when no configured dreaming workspaces resolve 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.status > merges workspace store errors when multiple workspace stores are unreadable 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory dream actions > dispatches resetGroundedShortTerm to its workspace owner 4ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory dream actions > dispatches repairDreamingArtifacts to its workspace owner 5ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory dream actions > dispatches dedupeDreamDiary to its workspace owner 6ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory dream actions > dispatches resetDreamDiary to its workspace owner 9ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > reads the Harness diary without following symlinks: symlink=false 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > reads the Harness diary without following symlinks: symlink=true 8ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > does not fall back to Gateway files when remote maintenance is unavailable 10ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > reads the local diary DREAMS.md for agent research-analyst 8ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > reads the local diary dreams.md for agent undefined 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > reads the local diary undefined for agent undefined 6ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > backfills local daily memory 2026-02-19.md 11ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > backfills local daily memory 2026-02-19-vendor-pitch.md 9ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > backfills remote daily memory 2026-02-19.md 7ms
+ ✓ |gateway-methods| src/gateway/server-methods/doctor.test.ts > doctor.memory.dreamDiary > backfills empty daily memory undefined 8ms
+
+ Test Files  1 passed (1)
+      Tests  33 passed (33)
+   Start at  18:35:15
+   Duration  16.90s (transform 83%, import 6%, worker 6%, tests 3%, setup 2%)
+
+[test] starting test/vitest/vitest.extension-database-workers.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+(node:1299830) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: MemorySearchManager.status is deprecated; use MemorySearchManager.statusAsync instead. The legacy contract remains supported during its deprecation period. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > indexes and searches NoNe without an embedding provider 8154ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > keeps keyword recall available when Auto cannot initialize embeddings 4604ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > drains startup transcript discovery before closing (scan failure: false) 3723ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > drains startup transcript discovery before closing (scan failure: true) 2369ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > caches embedding probe readiness across transient status managers 34ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > clears cached embedding probe readiness when local embeddings degrade 2354ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > waits for provider shutdown before degraded fallback initialization 4311ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > waits for provider shutdown before retry initialization 4477ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > retries failed provider retirement before fallback initialization 4176ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > waits for active provider shutdown before fallback initialization 4196ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-lifecycle.test.ts > memory index > leases the indexing provider generation through chunk publication 3686ms
+(node:1302600) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: sqlite-runtime.openNodeSqliteDatabase is deprecated; use openOpenClawAgentSqliteWorkerStoreV2 or the owning domain's awaited operations instead. Native SQL and callbacks retain their current completion and transaction ordering. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1302600) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: sqlite-runtime.runSqliteImmediateTransactionSync is deprecated; use openOpenClawAgentSqliteWorkerStoreV2 or the owning domain's awaited operations instead. Native SQL and callbacks retain their current completion and transaction ordering. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > resets and rebuilds the real index without changing canonical session bytes or other owners 16337ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > requires reset confirmation and does not create missing agent databases 80ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > forwards repeated forget selectors and reports quoted lines and curated writes in both output formats 52ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rejects invalid explicit agent "nope-zzz" before acquisition 33ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rejects invalid explicit agent "" before acquisition 36ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > drains admitted session backfill in one apply command before preview 9841ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rejects invalid memory numeric options before acquisition 15ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > prints vector status when available 1705ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > handles degraded secrets according to memory ownership (own=true) 69ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > handles degraded secrets according to memory ownership (own=false) 43ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports disabled dreaming phases during status 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > keeps newer-index upgrade advice in registered deep status without reindexing 34ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > probes persisted vector state only with --index (index=false) 38ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > probes persisted vector state only with --index (index=true) 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > fans JSON status out to every keyed agent entry 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > repairs invalid recall metadata and stale locks with status --fix 1841ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > repairs contaminated dreaming artifacts during status --fix 77ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports the index outcome for missing-directory 33ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports the index outcome for sessions 29ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports the index outcome for unsupported 31ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > warns on stderr when index has vector store but no semantic vectors 32ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates search failure and rebuild notice after closing the manager 36ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > routes gateway secret diagnostics to stderr for json status output 32ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports unavailable search once (disabled) 30ms
+(node:1302600) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: sqlite-runtime.openOpenClawAgentDatabase is deprecated; use openOpenClawAgentSqliteWorkerStoreV2 or the owning domain's awaited operations instead. Native SQL and callbacks retain their current completion and transaction ordering. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > reports unavailable search once (failed) 31ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > fails index --force when the memory index has orphaned provenance 2352ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["search","positional","--query",""] 11ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["forget","--dry-run"] 8ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["promote-explain","   "] 9ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["promote-explain","  unmatched fixture  "] 146ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["session-backfill","<redacted len=10>","--from","2026-01-01"] 6ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates invalid memory input without a success report: ["rem-backfill"] 43ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates forget operation failure without a success report 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates rank operation failure without a success report 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates apply operation failure without a success report 41ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > propagates rank operation failure without a success report 32ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > qualifies json search results when the index remains stale 34ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > promote-explain finds München 83ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > promote-explain finds München 92ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > previews live recall candidates with rem-harness (json=false) 62ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > previews live recall candidates with rem-harness (json=true) 62ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > picks up slugged daily memory files for rem-backfill (#69536) 55ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rejects missing historical input without allocating scratch 34ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > publishes rem-harness success only after scratch cleanup 175ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > publishes rem-backfill success only after scratch cleanup 42ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rejects scratch cleanup without publishing success even when manager close fails 53ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > cleans allocated scratch when preparing historical input fails 35ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rolls back grounded short-term entries without touching the other store 347ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > rolls back grounded diary entries without touching the other store 191ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > prefers persistence-relevant evidence over narrated operational logs in grounded what happened 183ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > suppresses monitoring-heavy operational days instead of promoting alert sludge 177ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > splits multi-fact person lines into atomic grounded candidates 205ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > honors the configured prior-entry loss limit during CLI promotion 219ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > uses the smallest bootstrap cap across CLI workspace symlink aliases 197ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > names apply-time rejections without ranking blocked origins 112ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > keeps preview limits available and preserves mixed apply output order 458ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > records search recalls only when dreaming is enabled (enabled=true, json=true) 167ms
+ ✓ |extension-database-workers| extensions/memory-core/src/cli.test.ts > records search recalls only when dreaming is enabled (enabled=false, json=false) 32ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 60000 ms, override=undefined, pause=false, cancel=false 1662ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe local: 300000 ms, override=undefined, pause=false, cancel=false 34ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 90000 ms, override=90000, pause=false, cancel=false 32ms
+(node:1304901) [DEP_PLUGIN_SDK] DeprecationWarning: Plugin SDK: MemorySearchManager.status is deprecated; use MemorySearchManager.statusAsync instead. The legacy contract remains supported during its deprecation period. Final compatibility day: 2026-12-31. Removal ships in the first January 2027 stable release; no SDK major is required.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe openai: 60000 ms, override=undefined, pause=true, cancel=false 29ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > probe local: 300000 ms, override=undefined, pause=false, cancel=true 28ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > keeps another caller alive during cancelled initialization 26ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/manager-provider-probe.test.ts > keeps another caller alive during cancelled probe 23ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/paused-deadline.test.ts > createPausedDeadline > does not treat a wall-clock jump as an expired embedding pause budget 47ms
+ ✓ |extension-database-workers| extensions/memory-core/src/memory/paused-deadline.test.ts > createPausedDeadline > keeps remaining embedding budget when pause accounting sees a wall-clock jump 9ms
+
+ Test Files  4 passed (4)
+      Tests  78 passed (78)
+   Start at  18:35:35
+   Duration  120.72s (tests 72%, import 14%, transform 11%, setup 3%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 2 Vitest shards in 153.02s

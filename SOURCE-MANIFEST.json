@@ -1,0 +1,42 @@
+{
+  "head": "493066f11544c2c52c0ddb397912eb409331173b",
+  "tree": "c87f4739191d7a6d9c068d89317d0d27cadd32ae",
+  "files": [
+    {
+      "path": "config/test-lines-allocations/memory-deep-probe-cancellation.txt",
+      "sha256": "89e56b272669de11431602f3c77e560ecf6c61512fa8db5ac0006606e88d5282"
+    },
+    {
+      "path": "extensions/memory-core/src/cli-status.runtime.ts",
+      "sha256": "f959d2d732c2a9c3716265b6fb190da4ddde4f218b73d2ae63ddd236f5af3aa5"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-embedding-ops.ts",
+      "sha256": "a1ee10834ff33c74faf5832d6fe060010e6e7c213de6ed6c4c3775394976b71e"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-lifecycle.ts",
+      "sha256": "f1e624bf095ae116c0f8853cf812b1016e4280075669351960cd87c5ec6dcd46"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/manager-provider-probe.test.ts",
+      "sha256": "32bb9737885ffa890aa722e3e5861350433d9dcb3da811e1f2c118939caf3cb3"
+    },
+    {
+      "path": "extensions/memory-core/src/memory/paused-deadline.ts",
+      "sha256": "77567f86f3e325f99078ccce907d0ce1fea233e4947e5582ea289a83b9cb3c28"
+    }
+  ],
+  "build_info": {
+    "version": "2026.11.3",
+    "commit": "493066f11544c2c52c0ddb397912eb409331173b",
+    "builtAt": "2026-11-11T10:39:21.274Z",
+    "buildId": "2026.11.3-493066f11544-2026-11-11T10-39-21.274Z"
+  },
+  "build_stamp": {
+    "builtAt": 1794393828708,
+    "head": "493066f11544c2c52c0ddb397912eb409331173b",
+    "inputsClean": true,
+    "inputSignature": "77b917f67e5c405a75c549423784758fcfeb3ebfeab1259d58f0622b73e0fa7a"
+  }
+}
