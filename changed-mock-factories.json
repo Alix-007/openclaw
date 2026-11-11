@@ -1,0 +1,20 @@
+{
+  "base": "83872e599d5720c0bc97d313283a2bc245046699",
+  "head": "83872e599d5720c0bc97d313283a2bc245046699",
+  "scope": "Changed test sources; canonical native parser + canonical closed-factory scanner, exact vi.mock/doMock call bytes and unchanged ledger. Full repository guard deferred to PR CI.",
+  "records": [
+    {
+      "file": "extensions/diffs/src/browser.runtime.test.ts",
+      "baselineSHA256": "90b8224df4e780866a29c31059a86e5cdde69fbd74827c2d5745f55f44c6c399",
+      "currentSHA256": "9ec9e985f17af289d86a18d099b07e11b3e5c1a64ca2b15f297cd8d87feb4833",
+      "callFingerprints": [
+        "63bcfff7dc1cb726ffea406ac689661443f7e75711725e9ba30508603995377a"
+      ],
+      "closedFactories": [],
+      "unchangedFactories": true
+    }
+  ],
+  "ledgerSHA256": "37edf1a26e656869c352821ddeeb0e5e2f94a428f915b3bd76e97fb6195c22b3",
+  "ledgerUnchanged": true,
+  "result": "PASS_CHANGED_SCOPE_UNCHANGED_MOCK_FACTORIES"
+}

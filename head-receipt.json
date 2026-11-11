@@ -1,0 +1,426 @@
+{
+  "expected": "green",
+  "expected_head": "b9e9171c69e6bcae81183c3607a37b8380b7a200",
+  "collector_sha256": "0c07886b31ef3fcd934ac1619dacf5dded48657776b5680d4fede424e93c1660",
+  "binding_before": {
+    "head": "b9e9171c69e6bcae81183c3607a37b8380b7a200",
+    "tracked_status": "",
+    "build_stamp": {
+      "version": "2026.11.3",
+      "commit": "b9e9171c69e6bcae81183c3607a37b8380b7a200",
+      "builtAt": "2026-11-11T05:28:33.893Z",
+      "buildId": "2026.11.3-b9e9171c69e6-2026-11-11T05-28-33.893Z"
+    },
+    "file_sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "4c463fb3b935e17553af050088e51b88e94a688bba8f7818c7621550af2f1781",
+      "src/gateway/server-methods/agents-files.ts": "fee7bc9f40273e2516b74571f45cab74e867938689be44238cd8bfadf6de9fb7",
+      "extensions/diffs/src/browser.runtime.ts": "163dc873cc8fd5586ef1859a339aafe64ae5a28c597fdfa9d9e9ede783b7a829",
+      "extensions/diffs/src/config.ts": "93679f94e48dc6f29494365d1437608c967f454d007c900da14867e5b3712f1c",
+      "extensions/diffs/src/render.ts": "8dba0c934106e7f34ad08d56ecd08947946c6e786056163aee86cf41f4e053f2",
+      "extensions/diffs/src/tool.ts": "e4fa1e744d9af12d651ea6b49ac0640971b204e739a04b5e685856b2e8f97f94"
+    },
+    "pass": true
+  },
+  "environment": {
+    "PATH": "<NODE26_BIN>:/usr/bin:/bin",
+    "HOME": "<HEAD_OUTPUT>/home",
+    "USERPROFILE": "<HEAD_OUTPUT>/home",
+    "XDG_CONFIG_HOME": "<HEAD_OUTPUT>/xdg-config",
+    "XDG_CACHE_HOME": "<HEAD_OUTPUT>/xdg-cache",
+    "XDG_DATA_HOME": "<HEAD_OUTPUT>/xdg-data",
+    "XDG_STATE_HOME": "<HEAD_OUTPUT>/xdg-state",
+    "TMPDIR": "/tmp/ocdr-gvysy3wh",
+    "TMP": "/tmp/ocdr-gvysy3wh",
+    "TEMP": "/tmp/ocdr-gvysy3wh",
+    "OPENCLAW_CONFIG_PATH": "<HEAD_OUTPUT>/openclaw.json",
+    "OPENCLAW_STATE_DIR": "<HEAD_OUTPUT>/state",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "NO_COLOR": "1",
+    "TERM": "dumb"
+  },
+  "environment_policy": "Explicit allowlist; no parent environment copied",
+  "isolation_limit": "HOME/XDG/tmp/state/config are task-owned. This is not an OS filesystem or network sandbox; product package/dependency reads are expected.",
+  "runs": [],
+  "fixture_actions": [],
+  "cases": [
+    {
+      "name": "small-scale4",
+      "count": 2,
+      "scale_requested": 4,
+      "request": {
+        "tool": "diffs",
+        "args": {
+          "before": "line 0: old value\nline 1: old value",
+          "after": "line 0: new value\nline 1: new value",
+          "path": "example.txt",
+          "mode": "file",
+          "fileFormat": "png",
+          "fileQuality": "standard",
+          "fileScale": 4,
+          "fileMaxWidth": 960,
+          "expandUnchanged": true
+        }
+      },
+      "request_sha256": "0a5a8dd10faa30d7dc78b4360c6a26afe0022c74ce62dcb568ad1a192c704070",
+      "status": 200,
+      "raw_response": "{\"ok\":true,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Diff PNG generated at: /tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png\\nTo send this file, use an available file-sending tool to send it as an attachment.\"}],\"details\":{\"changed\":true,\"artifactId\":\"790c3228afa523fd1852\",\"expiresAt\":\"2026-11-11T06:04:27.485Z\",\"title\":\"example.txt\",\"inputKind\":\"before_after\",\"fileCount\":1,\"mode\":\"file\",\"context\":{\"agentId\":\"main\"},\"filePath\":\"/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png\",\"path\":\"/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png\",\"fileBytes\":106145,\"fileFormat\":\"png\",\"fileQuality\":\"standard\",\"fileScale\":4,\"fileMaxWidth\":960}}}",
+      "payload": {
+        "ok": true,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Diff PNG generated at: /tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png\nTo send this file, use an available file-sending tool to send it as an attachment."
+            }
+          ],
+          "details": {
+            "changed": true,
+            "artifactId": "790c3228afa523fd1852",
+            "expiresAt": "2026-11-11T06:04:27.485Z",
+            "title": "example.txt",
+            "inputKind": "before_after",
+            "fileCount": 1,
+            "mode": "file",
+            "context": {
+              "agentId": "main"
+            },
+            "filePath": "/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png",
+            "path": "/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png",
+            "fileBytes": 106145,
+            "fileFormat": "png",
+            "fileQuality": "standard",
+            "fileScale": 4,
+            "fileMaxWidth": 960
+          }
+        }
+      },
+      "rendered": true,
+      "elapsed_seconds": 6.174652397632599,
+      "config_sha256_before": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "config_sha256_after": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "owned_log_delta": "2026-11-11T13:34:26.168+08:00 [gateway] startup phase: post-attach.system-ca starting total=15422.9ms\n2026-11-11T13:34:26.169+08:00 [gateway] startup phase: post-attach.system-ca 0.9ms total=15423.8ms rssMb=850.2 heapUsedMb=258.9 workers=9 workerHeapSamples=7/9 workerHeapMb=234.6 workerHeapSource=cached\n2026-11-11T13:34:26.195+08:00 [gateway] startup phase: plugins.runtime-post-bind starting total=15450.5ms\n2026-11-11T13:34:26.356+08:00 [event-loop] main-thread stall: elapsedMs=278 task=\"gateway:http\" taskMs=278 stallStartMs=1794375265782 stallEndMs=1794375266060 reportedAtMs=1794375266356\n2026-11-11T13:34:26.366+08:00 [event-loop] main-thread stall profile: windowMs=278 windowStartMs=1794375265782 windowEndMs=1794375266060 reportedAtMs=1794375266366 samples=12 intervalMs=25 truncated=false inclusive=[] reportTruncated=true self=[[\"[native]@:0\",4,100.4,\"resolve@openclaw:dist/plugin-module-loader-cache-9BGzPKgz.mjs:279\"],[\"[native]@:0\",3,75.4,\"(anonymous)@openclaw:dist/gateway-prewarm.js:8003\"],[\"compileSourceTextModule@node:internal/modules/esm/utils:338\",2,46.9,\"(anonymous)@openclaw:dist/gateway-prewarm.js:8003\"],[\"getPackageScopeConfig@node:internal/modules/helpers:90\",1,25.1,\"resolve@openclaw:dist/plugin-module-loader-cache-9BGzPKgz.mjs:279\"],[\"defaultLoadSync@node:internal/modules/esm/load:134\",1,25.1,\"(anonymous)@openclaw:dist/gateway-prewarm.js:8003\"],[\"after@openclaw:dist/main-thread-stall-DRtPpqB3.mjs:97\",1,4.9,\"after@openclaw:dist/main-thread-stall-DRtPpqB3.mjs:97\"]] deepest=[[2,[\"resolve@openclaw:dist/plugin-module-loader-cache-9BGzPKgz.mjs:279\",\"nextStep@node:internal/modules/customization_hooks:184\",\"#resolveAndMaybeBlockOnLoaderThread@node:internal/modules/esm/loader:723\",\"#cachedDefaultResolve@node:internal/modules/esm/loader:700\",\"defaultResolve@node:internal/modules/esm/resolve:928\",\"moduleResolve@node:internal/modules/esm/resolve:812\",\"packageResolve@node:internal/modules/esm/resolve:729\",\"getPackageJSONURL@node:internal/modules/package_json_reader:300\",\"loaderMethodWrapper@node:internal/modules/helpers:114\",\"internalModuleStat@node:internal/modules/helpers:75\",\"[native]@:0\"]]]\n2026-11-11T13:34:26.652+08:00 [gateway] startup trace: plugins.gateway-load.plugin.diffs configValidationMs=0.6 artifactPreparationMs=2.2 loadMs=241.6 modulePreparationMs=1.0 loadFailedCount=0.0 registerMs=8.1 loadAndRegisterMs=250.5 registerFailedCount=0.0 workersStarted=0 workerScripts=none\n2026-11-11T13:34:27.477+08:00 [gateway] startup trace: plugins.gateway-load.plugin.memory-core configValidationMs=0.3 artifactPreparationMs=0.6 loadMs=733.4 modulePreparationMs=693.8 loadFailedCount=0.0 registerMs=5.1 loadAndRegisterMs=738.8 registerFailedCount=0.0 workersStarted=1 workerScripts=plugin-generation-preparation.worker.js:1\n2026-11-11T13:34:27.482+08:00 [gateway] startup phase: plugins.runtime-post-bind 1286.3ms total=16736.8ms rssMb=1045.1 heapUsedMb=260.5 workers=11 workerHeapSamples=7/11 workerHeapMb=234.6 workerHeapSource=cached\n2026-11-11T13:34:27.482+08:00 [gateway] startup phase: plugins.runtime-attach starting total=16737.6ms\n2026-11-11T13:34:27.496+08:00 [gateway] startup phase: plugins.runtime-attach 13.0ms total=16750.6ms rssMb=1045.6 heapUsedMb=265.3 workers=11 workerHeapSamples=7/11 workerHeapMb=234.6 workerHeapSource=cached\n2026-11-11T13:34:27.531+08:00 [gateway] agent model: openai/gpt-6-astra (thinking=medium, fast=off)\n2026-11-11T13:34:27.531+08:00 [gateway] http server listening (3 plugins: browser, diffs, memory-core; 9.3s)\n2026-11-11T13:34:27.532+08:00 [gateway] log file: /tmp/openclaw/openclaw-2026-11-11.log\n2026-11-11T13:34:27.532+08:00 [gateway] Older local CLI/SDK versions can bypass Gateway state mutation routing. Use matching CLI/SDK and Gateway versions; direct state writes from another process while this Gateway owns state are unsupported.\n2026-11-11T13:34:27.534+08:00 [gateway] native runtime: {\"pid\":430219,\"platform\":\"linux\",\"arch\":\"x64\",\"node\":\"26.12.1\",\"v8\":\"14.6.202.34-node.40\",\"uv\":\"1.52.1\",\"openssl\":\"3.5.9\",\"sqlite\":\"3.54.0\",\"sqliteClose\":{\"explicitSqliteCloseReleasesNativeResources\":true,\"decided\":true,\"reason\":\"Node runtime\"}}\n2026-11-11T13:34:27.538+08:00 [gateway] worker startup state: {\"workerCount\":11,\"sqliteReaderMetrics\":[{\"operation\":\"gatewayOwnerLease.read\",\"count\":1,\"readBytes\":0},{\"operation\":\"machineState.read\",\"count\":1,\"readBytes\":0},{\"operation\":\"agentDatabaseRegistry.read\",\"count\":1,\"readBytes\":0},{\"operation\":\"acpSessions.list\",\"count\":1,\"readBytes\":0},{\"operation\":\"workerEnvironments.snapshot\",\"count\":1,\"readBytes\":0},{\"operation\":\"subagents.restore\",\"count\":1,\"readBytes\":0},{\"operation\":\"devicePairing.list\",\"count\":2,\"readBytes\":0},{\"operation\":\"mentions.snapshot\",\"count\":1,\"readBytes\":0},{\"operation\":\"sandboxRegistry.browsers\",\"count\":1,\"readBytes\":0},{\"operation\":\"userProfiles.catalog\",\"count\":1,\"readBytes\":0},{\"operation\":\"sessionGroups.snapshot\",\"count\":1,\"readBytes\":0},{\"operation\":\"agentDatabaseDeletion.snapshot\",\"count\":2,\"readBytes\":0},{\"operation\":\"plugins.deferredMigrations.read\",\"count\":2,\"readBytes\":0},{\"operation\":\"exec-approvals.read\",\"count\":1,\"readBytes\":0},{\"operation\":\"cron.store\",\"count\":1,\"readBytes\":0},{\"operation\":\"sandboxRegistry.list\",\"count\":1,\"readBytes\":0},{\"operation\":\"sandboxPersistentExec.list\",\"count\":1,\"readBytes\":0},{\"operation\":\"userGitHubConnections.list\",\"count\":1,\"readBytes\":0},{\"operation\":\"agentDeletionJournal.status\",\"count\":1,\"readBytes\":0},{\"operation\":\"sessions.session-exact-entries\",\"count\":3,\"readBytes\":0}],\"postgresBridgeCount\":0,\"postgresPoolSelfRootCount\":0,\"workerLifecycle\":[{\"script\":\"client-credential.worker.js\",\"started\":1,\"retired\":[]},{\"script\":\"sqlite-store.worker.js\",\"started\":1,\"retired\":[]},{\"script\":\"gateway-state-owner-heartbeat.worker.js\",\"started\":2,\"retired\":[{\"reason\":\"exit\",\"count\":1}]},{\"script\":\"worker-native-lifecycle.worker.js\",\"started\":1,\"retired\":[]},{\"script\":\"openclaw-state-read.worker.js\",\"started\":2,\"retired\":[]},{\"script\":\"openclaw-state-lease-heartbeat.worker.js\",\"started\":1,\"retired\":[]},{\"script\":\"other\",\"started\":1,\"retired\":[]},{\"script\":\"session-transcript.worker.js\",\"started\":2,\"retired\":[]},{\"script\":\"plugin-generation-preparation.worker.js\",\"started\":1,\"retired\":[]}],\"workerTaskMetrics\":[{\"workerClass\":\"singleton\",\"script\":\"client-credential.worker.js\",\"tasksCompleted\":0,\"heapUsedHighWaterBytes\":28373408,\"gc\":[]},{\"workerClass\":\"other\",\"script\":\"openclaw-state-read.worker.js\",\"tasksCompleted\":0,\"heapUsedHighWaterBytes\":21209384,\"gc\":[]},{\"workerClass\":\"other\",\"script\":\"session-transcript.worker.js\",\"tasksCompleted\":0,\"heapUsedHighWaterBytes\":20947888,\"gc\":[]},{\"workerClass\":\"writer\",\"script\":\"session-transcript.worker.js\",\"tasksCompleted\":0,\"heapUsedHighWaterBytes\":0,\"gc\":[]},{\"workerClass\":\"other\",\"script\":\"plugin-generation-preparation.worker.js\",\"tasksCompleted\":0,\"heapUsedHighWaterBytes\":0,\"gc\":[]}],\"compute\":{\"limit\":15,\"active\":0,\"waitingPools\":0,\"pendingTasks\":0,\"pendingBytes\":0}}\n2026-11-11T13:34:27.556+08:00 [event-loop] main-thread stall: elapsedMs=397 task=\"gateway:http\" taskMs=397 stallStartMs=1794375267011 stallEndMs=1794375267408 reportedAtMs=1794375267556\n2026-11-11T13:34:27.565+08:00 [event-loop] main-thread stall profile: windowMs=397 windowStartMs=1794375267011 windowEndMs=1794375267408 reportedAtMs=1794375267564 samples=20 intervalMs=25 truncated=false inclusive=[] reportTruncated=true self=[[\"wrapSafe@node:internal/modules/cjs/loader:1858\",6,150.7,\"[async task:gateway:http]\"],[\"(garbage collector)@:0\",2,49.8,\"[async task:gateway:http]\"],[\"[dep:playwright-core]@node_modules/playwright-core:59377\",1,25.2,\"[async task:gateway:http]\"],[\"[dep:playwright-core]@node_modules/playwright-core:12\",1,25.2,\"[async task:gateway:http]\"],[\"reportModuleToWatchModeFromWorker@node:internal/modules/cjs/loader:359\",1,25.2,\"[async task:gateway:http]\"],[\"[dep:playwright-core]@node_modules/playwright-core:5486\",1,25.1,\"[async task:gateway:http]\"],[\"[dep:playwright-core]@node_modules/playwright-core:69885\",1,25.1,\"[async task:gateway:http]\"],[\"[dep:playwright-core]@node_modules/playwright-core:8444\",1,25.1,\"[async task:gateway:http]\"],[\"get@node:internal/util:638\",1,14.1,\"[async task:gateway:http]\"],[\"promisify@node:internal/util:455\",1,9.8,\"[async task:gateway:http]\"]] deepest=[[3,[\"[async task:gateway:http]\",\"[...]\",\"(anonymous)@node:internal/modules/esm/translators:237\",\"loadCJSModuleWithModuleLoad@node:internal/modules/esm/translators:358\",\"wrapModuleLoad@node:internal/modules/cjs/loader:244\",\"(anonymous)@node:internal/modules/cjs/loader:1341\",\"(anonymous)@node:internal/modules/cjs/loader:1675\",\"(anonymous)@node:internal/modules/cjs/loader:2064\",\"(anonymous)@node:internal/modules/cjs/loader:1919\",\"[dep:playwright-core]@node_modules/playwright-core:1\",\"require@node:internal/modules/helpers:317\",\"(anonymous)@node:internal/modules/cjs/loader:1705\",\"wrapModuleLoad@node:internal/modules/cjs/loader:244\",\"(anonymous)@node:internal/modules/cjs/loader:1341\",\"(anonymous)@node:internal/modules/cjs/loader:1675\",\"(anonymous)@node:internal/modules/cjs/loader:2064\",\"(anonymous)@node:internal/modules/cjs/loader:1919\",\"wrapSafe@node:internal/modules/cjs/loader:1858\"]]]\n2026-11-11T13:34:27.577+08:00 [gateway] startup phase: sidecars.worker-environments starting total=16832.4ms\n2026-11-11T13:34:27.597+08:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=16852.6ms\n2026-11-11T13:34:27.598+08:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.6ms total=16853.3ms rssMb=1054.9 heapUsedMb=262.2 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:27.599+08:00 [gateway] startup phase: sidecars.worker-environments.workspaces starting total=16854.0ms\n2026-11-11T13:34:27.762+08:00 [gateway] startup phase: sidecars.worker-environments.workspaces 163.1ms total=17017.1ms rssMb=1030.9 heapUsedMb=262.7 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:27.764+08:00 [gateway] startup phase: sidecars.worker-environments.active starting total=17019.5ms\n2026-11-11T13:34:27.770+08:00 [gateway] startup phase: sidecars.worker-environments 192.1ms total=17024.5ms rssMb=1031.9 heapUsedMb=262.9 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:27.770+08:00 [gateway] starting channels and sidecars...\n2026-11-11T13:34:27.771+08:00 [gateway] startup phase: sidecars.internal-hooks starting total=17026.4ms\n2026-11-11T13:34:27.773+08:00 [gateway] startup phase: sidecars.model-runtime starting total=17028.4ms\n2026-11-11T13:34:27.774+08:00 [gateway] startup phase: sidecars.reply-runtime starting total=17029.3ms\n2026-11-11T13:34:27.949+08:00 [gateway] startup phase: sidecars.internal-hooks 177.1ms total=17203.5ms rssMb=1036.3 heapUsedMb=258.4 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.285+08:00 [gateway] startup phase: sidecars.reply-runtime 510.5ms total=17539.8ms rssMb=1050.7 heapUsedMb=298.1 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.329+08:00 [gateway] startup phase: sidecars.worker-environments.active 564.3ms total=17583.8ms rssMb=1054.8 heapUsedMb=278.7 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.434+08:00 [gateway] startup phase: sidecars.worker-environments.publications starting total=17689.5ms\n2026-11-11T13:34:28.494+08:00 [gateway] startup phase: sidecars.model-runtime 720.1ms total=17748.5ms rssMb=1063.9 heapUsedMb=298.6 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.494+08:00 [gateway] startup phase: sidecars.chat-metadata starting total=17749.4ms\n2026-11-11T13:34:28.495+08:00 [gateway] startup phase: sidecars.chat-metadata 1.0ms total=17750.4ms rssMb=1063.9 heapUsedMb=298.7 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.496+08:00 [gateway] startup phase: sidecars.plugin-services starting total=17750.9ms\n2026-11-11T13:34:28.499+08:00 [gateway] startup phase: sidecars.channels starting total=17754.6ms\n2026-11-11T13:34:28.506+08:00 [gateway] startup phase: sidecars.channels 6.5ms total=17761.1ms rssMb=1063.9 heapUsedMb=303.6 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.648+08:00 [gateway] startup phase: sidecars.plugin-services 151.6ms total=17902.5ms rssMb=1065.9 heapUsedMb=309.2 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:28.652+08:00 [gateway] startup outcomes: internal-hooks=skipped (not-configured); internal-startup-hook=skipped (no-handlers-loaded); gateway-start-hooks=scheduled; gmail-watcher=skipped (hooks-disabled); gmail-model=skipped (not-configured)\n2026-11-11T13:34:28.657+08:00 [gateway] startup phase: runtime.worker-pool-metrics starting total=17912.2ms\n2026-11-11T13:34:28.674+08:00 [gateway] startup phase: runtime.worker-pool-metrics 16.9ms total=17929.2ms rssMb=1067.5 heapUsedMb=289.6 workers=11 workerHeapSamples=9/11 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:29.061+08:00 [gateway] startup phase: sidecars.worker-environments.publications 625.7ms total=18315.3ms rssMb=1070.6 heapUsedMb=310.1 workers=12 workerHeapSamples=9/12 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:29.154+08:00 [gateway] startup phase: ready 93.3ms total=18408.6ms rssMb=1086.6 heapUsedMb=313.1 workers=12 workerHeapSamples=9/12 workerHeapMb=317.3 workerHeapSource=cached\n2026-11-11T13:34:29.155+08:00 [gateway] ready\n2026-11-11T13:34:29.157+08:00 [restart-resume] startup restart resume: []\n2026-11-11T13:34:29.205+08:00 [plugins] memory-core: created managed dreaming cron job.\n2026-11-11T13:34:30.270+08:00 [cron/maintenance] Session registry maintenance completed\n",
+      "png": {
+        "width": 4000,
+        "height": 1280,
+        "pixels": 5120000,
+        "bit_depth": 8,
+        "color_type": 2,
+        "decoded_pixel_sha256": "38a473021b73852e117b514a34201e0b92592124eaa914df0a434083ea1c0aba",
+        "filter_types": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "sample_color_count": 21,
+        "crc_verified": true,
+        "full_scanlines_decoded": true
+      },
+      "artifact_sha256": "05dfa0331e90b8a6abe8a4cd62150254ca072bb9ba0c053891fe91c547dd047d",
+      "file_bytes": 106145,
+      "evidence": "<HEAD_OUTPUT>/small-scale4.png",
+      "file_scale_reported": 4,
+      "artifact_id": "790c3228afa523fd1852",
+      "pass": true
+    },
+    {
+      "name": "same-input-scale1",
+      "count": 40,
+      "scale_requested": 1,
+      "request": {
+        "tool": "diffs",
+        "args": {
+          "before": "line 0: old value\nline 1: old value\nline 2: old value\nline 3: old value\nline 4: old value\nline 5: old value\nline 6: old value\nline 7: old value\nline 8: old value\nline 9: old value\nline 10: old value\nline 11: old value\nline 12: old value\nline 13: old value\nline 14: old value\nline 15: old value\nline 16: old value\nline 17: old value\nline 18: old value\nline 19: old value\nline 20: old value\nline 21: old value\nline 22: old value\nline 23: old value\nline 24: old value\nline 25: old value\nline 26: old value\nline 27: old value\nline 28: old value\nline 29: old value\nline 30: old value\nline 31: old value\nline 32: old value\nline 33: old value\nline 34: old value\nline 35: old value\nline 36: old value\nline 37: old value\nline 38: old value\nline 39: old value",
+          "after": "line 0: new value\nline 1: new value\nline 2: new value\nline 3: new value\nline 4: new value\nline 5: new value\nline 6: new value\nline 7: new value\nline 8: new value\nline 9: new value\nline 10: new value\nline 11: new value\nline 12: new value\nline 13: new value\nline 14: new value\nline 15: new value\nline 16: new value\nline 17: new value\nline 18: new value\nline 19: new value\nline 20: new value\nline 21: new value\nline 22: new value\nline 23: new value\nline 24: new value\nline 25: new value\nline 26: new value\nline 27: new value\nline 28: new value\nline 29: new value\nline 30: new value\nline 31: new value\nline 32: new value\nline 33: new value\nline 34: new value\nline 35: new value\nline 36: new value\nline 37: new value\nline 38: new value\nline 39: new value",
+          "path": "example.txt",
+          "mode": "file",
+          "fileFormat": "png",
+          "fileQuality": "standard",
+          "fileScale": 1,
+          "fileMaxWidth": 960,
+          "expandUnchanged": true
+        }
+      },
+      "request_sha256": "7f6a7df5e310a5259a9b1018084a195e1e25b5b73eb891519e46647eb34ed867",
+      "status": 200,
+      "raw_response": "{\"ok\":true,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Diff PNG generated at: /tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png\\nTo send this file, use an available file-sending tool to send it as an attachment.\"}],\"details\":{\"changed\":true,\"artifactId\":\"21edca2d6203733045ef\",\"expiresAt\":\"2026-11-11T06:04:33.856Z\",\"title\":\"example.txt\",\"inputKind\":\"before_after\",\"fileCount\":1,\"mode\":\"file\",\"context\":{\"agentId\":\"main\"},\"filePath\":\"/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png\",\"path\":\"/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png\",\"fileBytes\":244180,\"fileFormat\":\"png\",\"fileQuality\":\"standard\",\"fileScale\":1,\"fileMaxWidth\":960}}}",
+      "payload": {
+        "ok": true,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Diff PNG generated at: /tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png\nTo send this file, use an available file-sending tool to send it as an attachment."
+            }
+          ],
+          "details": {
+            "changed": true,
+            "artifactId": "21edca2d6203733045ef",
+            "expiresAt": "2026-11-11T06:04:33.856Z",
+            "title": "example.txt",
+            "inputKind": "before_after",
+            "fileCount": 1,
+            "mode": "file",
+            "context": {
+              "agentId": "main"
+            },
+            "filePath": "/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png",
+            "path": "/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png",
+            "fileBytes": 244180,
+            "fileFormat": "png",
+            "fileQuality": "standard",
+            "fileScale": 1,
+            "fileMaxWidth": 960
+          }
+        }
+      },
+      "rendered": true,
+      "elapsed_seconds": 1.1061495849862695,
+      "config_sha256_before": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "config_sha256_after": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "owned_log_delta": "2026-11-11T13:34:33.803+08:00 [gateway] startup phase: startup.maintenance.plugin-registry 836.0ms total=23057.7ms rssMb=1265.9 heapUsedMb=327.1 workers=14 workerHeapSamples=11/14 workerHeapMb=443.3 workerHeapSource=cached\n2026-11-11T13:34:33.804+08:00 [gateway] startup phase: post-ready.startup-maintenance 838.4ms total=23058.6ms rssMb=1265.9 heapUsedMb=327.2 workers=14 workerHeapSamples=11/14 workerHeapMb=443.3 workerHeapSource=cached\n",
+      "png": {
+        "width": 1000,
+        "height": 2246,
+        "pixels": 2246000,
+        "bit_depth": 8,
+        "color_type": 2,
+        "decoded_pixel_sha256": "25219f0f33907ca5aeef43e8949944cbd878899f7fed5212c280dc96e3d6c839",
+        "filter_types": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "sample_color_count": 22,
+        "crc_verified": true,
+        "full_scanlines_decoded": true
+      },
+      "artifact_sha256": "cb54b4dd2bf83df8087a5b471b3c63d7dd3f9a8d90996bba347b45371990e7dd",
+      "file_bytes": 244180,
+      "evidence": "<HEAD_OUTPUT>/same-input-scale1.png",
+      "file_scale_reported": 1,
+      "artifact_id": "21edca2d6203733045ef",
+      "pass": true
+    },
+    {
+      "name": "same-input-auto-scale4",
+      "count": 40,
+      "scale_requested": 4,
+      "request": {
+        "tool": "diffs",
+        "args": {
+          "before": "line 0: old value\nline 1: old value\nline 2: old value\nline 3: old value\nline 4: old value\nline 5: old value\nline 6: old value\nline 7: old value\nline 8: old value\nline 9: old value\nline 10: old value\nline 11: old value\nline 12: old value\nline 13: old value\nline 14: old value\nline 15: old value\nline 16: old value\nline 17: old value\nline 18: old value\nline 19: old value\nline 20: old value\nline 21: old value\nline 22: old value\nline 23: old value\nline 24: old value\nline 25: old value\nline 26: old value\nline 27: old value\nline 28: old value\nline 29: old value\nline 30: old value\nline 31: old value\nline 32: old value\nline 33: old value\nline 34: old value\nline 35: old value\nline 36: old value\nline 37: old value\nline 38: old value\nline 39: old value",
+          "after": "line 0: new value\nline 1: new value\nline 2: new value\nline 3: new value\nline 4: new value\nline 5: new value\nline 6: new value\nline 7: new value\nline 8: new value\nline 9: new value\nline 10: new value\nline 11: new value\nline 12: new value\nline 13: new value\nline 14: new value\nline 15: new value\nline 16: new value\nline 17: new value\nline 18: new value\nline 19: new value\nline 20: new value\nline 21: new value\nline 22: new value\nline 23: new value\nline 24: new value\nline 25: new value\nline 26: new value\nline 27: new value\nline 28: new value\nline 29: new value\nline 30: new value\nline 31: new value\nline 32: new value\nline 33: new value\nline 34: new value\nline 35: new value\nline 36: new value\nline 37: new value\nline 38: new value\nline 39: new value",
+          "path": "example.txt",
+          "mode": "file",
+          "fileFormat": "png",
+          "fileQuality": "standard",
+          "fileScale": 4,
+          "fileMaxWidth": 960,
+          "expandUnchanged": true
+        }
+      },
+      "request_sha256": "eda71c30cb92a6b07b975e0c030b443407caf56ba39eb0f0dce44618684d0b60",
+      "status": 200,
+      "raw_response": "{\"ok\":true,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Diff PNG generated at: /tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png\\nTo send this file, use an available file-sending tool to send it as an attachment.\"}],\"details\":{\"changed\":true,\"artifactId\":\"077b53f355f52e3abf09\",\"expiresAt\":\"2026-11-11T06:04:36.684Z\",\"title\":\"example.txt\",\"inputKind\":\"before_after\",\"fileCount\":1,\"mode\":\"file\",\"context\":{\"agentId\":\"main\"},\"filePath\":\"/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png\",\"path\":\"/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png\",\"fileBytes\":559064,\"fileFormat\":\"png\",\"fileQuality\":\"standard\",\"fileScale\":1.8799999952316284,\"fileMaxWidth\":960}}}",
+      "payload": {
+        "ok": true,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Diff PNG generated at: /tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png\nTo send this file, use an available file-sending tool to send it as an attachment."
+            }
+          ],
+          "details": {
+            "changed": true,
+            "artifactId": "077b53f355f52e3abf09",
+            "expiresAt": "2026-11-11T06:04:36.684Z",
+            "title": "example.txt",
+            "inputKind": "before_after",
+            "fileCount": 1,
+            "mode": "file",
+            "context": {
+              "agentId": "main"
+            },
+            "filePath": "/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png",
+            "path": "/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png",
+            "fileBytes": 559064,
+            "fileFormat": "png",
+            "fileQuality": "standard",
+            "fileScale": 1.8799999952316284,
+            "fileMaxWidth": 960
+          }
+        }
+      },
+      "rendered": true,
+      "elapsed_seconds": 2.341535055078566,
+      "config_sha256_before": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "config_sha256_after": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "owned_log_delta": "",
+      "png": {
+        "width": 1880,
+        "height": 4222,
+        "pixels": 7937360,
+        "bit_depth": 8,
+        "color_type": 2,
+        "decoded_pixel_sha256": "cdaac18ccb4daa02958d96e9ac9f01d6497e2de5c02c7e579a9213aae17d94fc",
+        "filter_types": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "sample_color_count": 23,
+        "crc_verified": true,
+        "full_scanlines_decoded": true
+      },
+      "artifact_sha256": "9bf80e9651559505854a0b6f7601c33778eec002be69a5a9564960b126b45ab5",
+      "file_bytes": 559064,
+      "evidence": "<HEAD_OUTPUT>/same-input-auto-scale4.png",
+      "file_scale_reported": 1.8799999952316284,
+      "artifact_id": "077b53f355f52e3abf09",
+      "pass": true
+    },
+    {
+      "name": "hard-limit-scale1",
+      "count": 200,
+      "scale_requested": 1,
+      "request": {
+        "tool": "diffs",
+        "args": {
+          "before": "line 0: old value\nline 1: old value\nline 2: old value\nline 3: old value\nline 4: old value\nline 5: old value\nline 6: old value\nline 7: old value\nline 8: old value\nline 9: old value\nline 10: old value\nline 11: old value\nline 12: old value\nline 13: old value\nline 14: old value\nline 15: old value\nline 16: old value\nline 17: old value\nline 18: old value\nline 19: old value\nline 20: old value\nline 21: old value\nline 22: old value\nline 23: old value\nline 24: old value\nline 25: old value\nline 26: old value\nline 27: old value\nline 28: old value\nline 29: old value\nline 30: old value\nline 31: old value\nline 32: old value\nline 33: old value\nline 34: old value\nline 35: old value\nline 36: old value\nline 37: old value\nline 38: old value\nline 39: old value\nline 40: old value\nline 41: old value\nline 42: old value\nline 43: old value\nline 44: old value\nline 45: old value\nline 46: old value\nline 47: old value\nline 48: old value\nline 49: old value\nline 50: old value\nline 51: old value\nline 52: old value\nline 53: old value\nline 54: old value\nline 55: old value\nline 56: old value\nline 57: old value\nline 58: old value\nline 59: old value\nline 60: old value\nline 61: old value\nline 62: old value\nline 63: old value\nline 64: old value\nline 65: old value\nline 66: old value\nline 67: old value\nline 68: old value\nline 69: old value\nline 70: old value\nline 71: old value\nline 72: old value\nline 73: old value\nline 74: old value\nline 75: old value\nline 76: old value\nline 77: old value\nline 78: old value\nline 79: old value\nline 80: old value\nline 81: old value\nline 82: old value\nline 83: old value\nline 84: old value\nline 85: old value\nline 86: old value\nline 87: old value\nline 88: old value\nline 89: old value\nline 90: old value\nline 91: old value\nline 92: old value\nline 93: old value\nline 94: old value\nline 95: old value\nline 96: old value\nline 97: old value\nline 98: old value\nline 99: old value\nline 100: old value\nline 101: old value\nline 102: old value\nline 103: old value\nline 104: old value\nline 105: old value\nline 106: old value\nline 107: old value\nline 108: old value\nline 109: old value\nline 110: old value\nline 111: old value\nline 112: old value\nline 113: old value\nline 114: old value\nline 115: old value\nline 116: old value\nline 117: old value\nline 118: old value\nline 119: old value\nline 120: old value\nline 121: old value\nline 122: old value\nline 123: old value\nline 124: old value\nline 125: old value\nline 126: old value\nline 127: old value\nline 128: old value\nline 129: old value\nline 130: old value\nline 131: old value\nline 132: old value\nline 133: old value\nline 134: old value\nline 135: old value\nline 136: old value\nline 137: old value\nline 138: old value\nline 139: old value\nline 140: old value\nline 141: old value\nline 142: old value\nline 143: old value\nline 144: old value\nline 145: old value\nline 146: old value\nline 147: old value\nline 148: old value\nline 149: old value\nline 150: old value\nline 151: old value\nline 152: old value\nline 153: old value\nline 154: old value\nline 155: old value\nline 156: old value\nline 157: old value\nline 158: old value\nline 159: old value\nline 160: old value\nline 161: old value\nline 162: old value\nline 163: old value\nline 164: old value\nline 165: old value\nline 166: old value\nline 167: old value\nline 168: old value\nline 169: old value\nline 170: old value\nline 171: old value\nline 172: old value\nline 173: old value\nline 174: old value\nline 175: old value\nline 176: old value\nline 177: old value\nline 178: old value\nline 179: old value\nline 180: old value\nline 181: old value\nline 182: old value\nline 183: old value\nline 184: old value\nline 185: old value\nline 186: old value\nline 187: old value\nline 188: old value\nline 189: old value\nline 190: old value\nline 191: old value\nline 192: old value\nline 193: old value\nline 194: old value\nline 195: old value\nline 196: old value\nline 197: old value\nline 198: old value\nline 199: old value",
+          "after": "line 0: new value\nline 1: new value\nline 2: new value\nline 3: new value\nline 4: new value\nline 5: new value\nline 6: new value\nline 7: new value\nline 8: new value\nline 9: new value\nline 10: new value\nline 11: new value\nline 12: new value\nline 13: new value\nline 14: new value\nline 15: new value\nline 16: new value\nline 17: new value\nline 18: new value\nline 19: new value\nline 20: new value\nline 21: new value\nline 22: new value\nline 23: new value\nline 24: new value\nline 25: new value\nline 26: new value\nline 27: new value\nline 28: new value\nline 29: new value\nline 30: new value\nline 31: new value\nline 32: new value\nline 33: new value\nline 34: new value\nline 35: new value\nline 36: new value\nline 37: new value\nline 38: new value\nline 39: new value\nline 40: new value\nline 41: new value\nline 42: new value\nline 43: new value\nline 44: new value\nline 45: new value\nline 46: new value\nline 47: new value\nline 48: new value\nline 49: new value\nline 50: new value\nline 51: new value\nline 52: new value\nline 53: new value\nline 54: new value\nline 55: new value\nline 56: new value\nline 57: new value\nline 58: new value\nline 59: new value\nline 60: new value\nline 61: new value\nline 62: new value\nline 63: new value\nline 64: new value\nline 65: new value\nline 66: new value\nline 67: new value\nline 68: new value\nline 69: new value\nline 70: new value\nline 71: new value\nline 72: new value\nline 73: new value\nline 74: new value\nline 75: new value\nline 76: new value\nline 77: new value\nline 78: new value\nline 79: new value\nline 80: new value\nline 81: new value\nline 82: new value\nline 83: new value\nline 84: new value\nline 85: new value\nline 86: new value\nline 87: new value\nline 88: new value\nline 89: new value\nline 90: new value\nline 91: new value\nline 92: new value\nline 93: new value\nline 94: new value\nline 95: new value\nline 96: new value\nline 97: new value\nline 98: new value\nline 99: new value\nline 100: new value\nline 101: new value\nline 102: new value\nline 103: new value\nline 104: new value\nline 105: new value\nline 106: new value\nline 107: new value\nline 108: new value\nline 109: new value\nline 110: new value\nline 111: new value\nline 112: new value\nline 113: new value\nline 114: new value\nline 115: new value\nline 116: new value\nline 117: new value\nline 118: new value\nline 119: new value\nline 120: new value\nline 121: new value\nline 122: new value\nline 123: new value\nline 124: new value\nline 125: new value\nline 126: new value\nline 127: new value\nline 128: new value\nline 129: new value\nline 130: new value\nline 131: new value\nline 132: new value\nline 133: new value\nline 134: new value\nline 135: new value\nline 136: new value\nline 137: new value\nline 138: new value\nline 139: new value\nline 140: new value\nline 141: new value\nline 142: new value\nline 143: new value\nline 144: new value\nline 145: new value\nline 146: new value\nline 147: new value\nline 148: new value\nline 149: new value\nline 150: new value\nline 151: new value\nline 152: new value\nline 153: new value\nline 154: new value\nline 155: new value\nline 156: new value\nline 157: new value\nline 158: new value\nline 159: new value\nline 160: new value\nline 161: new value\nline 162: new value\nline 163: new value\nline 164: new value\nline 165: new value\nline 166: new value\nline 167: new value\nline 168: new value\nline 169: new value\nline 170: new value\nline 171: new value\nline 172: new value\nline 173: new value\nline 174: new value\nline 175: new value\nline 176: new value\nline 177: new value\nline 178: new value\nline 179: new value\nline 180: new value\nline 181: new value\nline 182: new value\nline 183: new value\nline 184: new value\nline 185: new value\nline 186: new value\nline 187: new value\nline 188: new value\nline 189: new value\nline 190: new value\nline 191: new value\nline 192: new value\nline 193: new value\nline 194: new value\nline 195: new value\nline 196: new value\nline 197: new value\nline 198: new value\nline 199: new value",
+          "path": "example.txt",
+          "mode": "file",
+          "fileFormat": "png",
+          "fileQuality": "standard",
+          "fileScale": 1,
+          "fileMaxWidth": 960,
+          "expandUnchanged": true
+        }
+      },
+      "request_sha256": "c47bd59c83fcebca48375c4508b9077db3abb3f5b92c7701bb19b07da38a1089",
+      "status": 500,
+      "raw_response": "{\"ok\":false,\"error\":{\"type\":\"tool_error\",\"message\":\"tool execution failed\"}}",
+      "payload": {
+        "ok": false,
+        "error": {
+          "type": "tool_error",
+          "message": "tool execution failed"
+        }
+      },
+      "rendered": false,
+      "elapsed_seconds": 1.1189044173806906,
+      "config_sha256_before": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "config_sha256_after": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+      "owned_log_delta": "2026-11-11T13:34:46.465+08:00 [tools-invoke] tool execution failed: Error: Diff frame did not render within image size limits.\n",
+      "pass": true
+    }
+  ],
+  "fixture_cleanup": "Retained for review; no fixture deletion is claimed",
+  "port": 38025,
+  "pixel_budget": 8000000,
+  "short_tmp_retained": "/tmp/ocdr-gvysy3wh",
+  "initial_config_sha256": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+  "chrome_version": "Google Chrome 152.0.7977.64",
+  "artifacts": [
+    {
+      "id": "790c3228afa523fd1852",
+      "original": "/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png",
+      "evidence": "<HEAD_OUTPUT>/small-scale4.png",
+      "sha256": "05dfa0331e90b8a6abe8a4cd62150254ca072bb9ba0c053891fe91c547dd047d"
+    },
+    {
+      "id": "21edca2d6203733045ef",
+      "original": "/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png",
+      "evidence": "<HEAD_OUTPUT>/same-input-scale1.png",
+      "sha256": "cb54b4dd2bf83df8087a5b471b3c63d7dd3f9a8d90996bba347b45371990e7dd"
+    },
+    {
+      "id": "077b53f355f52e3abf09",
+      "original": "/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png",
+      "evidence": "<HEAD_OUTPUT>/same-input-auto-scale4.png",
+      "sha256": "9bf80e9651559505854a0b6f7601c33778eec002be69a5a9564960b126b45ab5"
+    }
+  ],
+  "gateway_argv": [
+    "<NODE26>",
+    "<HEAD_CHECKOUT>/openclaw.mjs",
+    "gateway",
+    "run",
+    "--port",
+    "38025",
+    "--bind",
+    "loopback"
+  ],
+  "owned_process": {
+    "pid": 430219,
+    "process_group": 430219,
+    "new_session": true
+  },
+  "normal_input_sha256": "c312486d0decf57d8c77c9aaa94b708c501c0d806af33a3f0d94667bdc147fb6",
+  "same_input_control_verified": true,
+  "artifact_cleanup": [
+    {
+      "id": "790c3228afa523fd1852",
+      "original": "/tmp/openclaw/openclaw-diffs/790c3228afa523fd1852/preview.png",
+      "evidence": "<HEAD_OUTPUT>/small-scale4.png",
+      "sha256": "05dfa0331e90b8a6abe8a4cd62150254ca072bb9ba0c053891fe91c547dd047d",
+      "original_removed": true
+    },
+    {
+      "id": "21edca2d6203733045ef",
+      "original": "/tmp/openclaw/openclaw-diffs/21edca2d6203733045ef/preview.png",
+      "evidence": "<HEAD_OUTPUT>/same-input-scale1.png",
+      "sha256": "cb54b4dd2bf83df8087a5b471b3c63d7dd3f9a8d90996bba347b45371990e7dd",
+      "original_removed": true
+    },
+    {
+      "id": "077b53f355f52e3abf09",
+      "original": "/tmp/openclaw/openclaw-diffs/077b53f355f52e3abf09/preview.png",
+      "evidence": "<HEAD_OUTPUT>/same-input-auto-scale4.png",
+      "sha256": "9bf80e9651559505854a0b6f7601c33778eec002be69a5a9564960b126b45ab5",
+      "original_removed": true
+    }
+  ],
+  "artifact_cleanup_scope": "Only exact returned task-generated IDs; hashed PNG evidence retained; short tmp/HOME/state fixtures retained",
+  "process_cleanup": {
+    "scope": "Only the process group created by this collector; fixtures retained",
+    "sent": [
+      "SIGTERM"
+    ],
+    "leader_exit": 0,
+    "owned_process_group_absent": true
+  },
+  "binding_after": {
+    "head": "b9e9171c69e6bcae81183c3607a37b8380b7a200",
+    "tracked_status": "",
+    "build_stamp": {
+      "version": "2026.11.3",
+      "commit": "b9e9171c69e6bcae81183c3607a37b8380b7a200",
+      "builtAt": "2026-11-11T05:28:33.893Z",
+      "buildId": "2026.11.3-b9e9171c69e6-2026-11-11T05-28-33.893Z"
+    },
+    "file_sha256": {
+      "openclaw.mjs": "eebed013b2713107b1ff2bda6efac3a101b639c75db73a56d748255a6d39d05a",
+      "dist/entry.js": "6b0344ccc6954edebe8e8d0f14ee945500e9db02cbd2db2897e52789b372bcdc",
+      "dist/index.js": "575656768de8a83a97cdbdad080bf35d47920e2946d25736534c5e6fa39788e5",
+      "dist/build-info.json": "4c463fb3b935e17553af050088e51b88e94a688bba8f7818c7621550af2f1781",
+      "src/gateway/server-methods/agents-files.ts": "fee7bc9f40273e2516b74571f45cab74e867938689be44238cd8bfadf6de9fb7",
+      "extensions/diffs/src/browser.runtime.ts": "163dc873cc8fd5586ef1859a339aafe64ae5a28c597fdfa9d9e9ede783b7a829",
+      "extensions/diffs/src/config.ts": "93679f94e48dc6f29494365d1437608c967f454d007c900da14867e5b3712f1c",
+      "extensions/diffs/src/render.ts": "8dba0c934106e7f34ad08d56ecd08947946c6e786056163aee86cf41f4e053f2",
+      "extensions/diffs/src/tool.ts": "e4fa1e744d9af12d651ea6b49ac0640971b204e739a04b5e685856b2e8f97f94"
+    },
+    "pass": true
+  },
+  "config_final_sha256": "4af454dd3285edf94f99598987820748d74a9a71f027b4e826db4a19a9546dac",
+  "elapsed_seconds": 36.57184552401304,
+  "pass": true
+}
