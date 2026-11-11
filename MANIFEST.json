@@ -1,0 +1,12 @@
+{
+  "devices-read-cancel-proof-v3.py": "0e19d3a84fabf6c495fb6a7af2d0a469ada670ccecf9761349c30dc2b756a1d5",
+  "devices-read-cancel-proof-v3.mjs": "9da73ac2f99d3afcea3fff7d80bce9c401920d5fc62c4c216c921424de9eb383",
+  "base-receipt.json": "33460edc9dfd4e4bd783240ea7df7659e8844635e9888e2793776b7bb4a1052b",
+  "base-streams.txt": "c7c52c7229e24a408776b9102e130aa51b37f067fc59ed131be3ba500edd86ec",
+  "head-receipt.json": "31e925e49bcc411246cbd0ff2c555c270651c8876a561c9f8866959ab9aa5781",
+  "head-streams.txt": "ac289fc7d79a2b172a4b0015437829b506a5d7d9d8af98ce1fc08d36738198a3",
+  "independent-review.md": "062bc5fa63d48bef4af8aee1d15c1b81c0d50fb41d92eb8f25a0dac2e4df7d53",
+  "checks.json": "d6feb2c2fe7cb0df097a118b1981a040f0d393e0fe5a16d92d18969db78984a2",
+  "changed-mock-factories.json": "3d21a4561021da2fd95c52ba9de7536670cdeef8e411915c20040a3352e727ec",
+  "EVIDENCE.md": "de258cdd6d0b276c73ca6642d8b19d0e7b7bb2762ae67e67473e3692fbf1b623"
+}

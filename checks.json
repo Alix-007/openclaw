@@ -1,0 +1,111 @@
+{
+  "devices-read-focused-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-vitest.mjs",
+      "src/cli/devices-cli.test.ts",
+      "src/cli/devices-cli.gateway.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 54.286,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "1286ba19858e0d5e5b4e4fd1f8dfbab4d745c21351fee8dc597884e2b4d97175"
+  },
+  "devices-read-types-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../devices-read-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 38.935,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "devices-read-lint-fixed": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-oxlint.mjs",
+      "src/cli/devices-cli.runtime.ts",
+      "src/cli/devices-cli-gateway.ts",
+      "src/cli/devices-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 50.339,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "devices-read-ratchet-final-correct": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--staged",
+      "--base",
+      "83872e599d5720c0bc97d313283a2bc245046699"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 123.039,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "509f686e79815c13f9caa43d16bf66192ee9f30b5dad7e42f3ff23de330adf03"
+  },
+  "devices-read-format-final": {
+    "command": [
+      "<NODE26>",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/devices-cli.runtime.ts",
+      "src/cli/devices-cli-gateway.ts",
+      "src/cli/devices-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.291,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "d3b8c5f8a8210a4e510262c273bd178f0498832b591e172a24ce86ea8115d890"
+  },
+  "devices-read-changed-mocks-final": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-changed-mocks.mts",
+      "src/cli/devices-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.699,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "9021e8af93f6e1f8c031fb629abc566cefdd5ab7ec6532efb6716a9da9ecef55"
+  },
+  "devices-read-native-cli-build": {
+    "command": [
+      "<NODE26>",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 273.804,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "2bfcb64b6063a22211e7c5ce86453d0ec0020beda85813b4f4993b8203fc8b96"
+  }
+}

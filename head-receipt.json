@@ -1,0 +1,1247 @@
+{
+  "head": "55a85add8f781458f054a661a52043616cef8d69",
+  "buildStamp": {
+    "builtAt": 1794381380055,
+    "head": "55a85add8f781458f054a661a52043616cef8d69",
+    "inputsClean": true,
+    "inputSignature": "881a10b5f95b33bea7848395f3848fb5129cecf49ccb36e9f4dab88fd8d1afa9"
+  },
+  "expectation": "green",
+  "collectorSHA256": "0e19d3a84fabf6c495fb6a7af2d0a469ada670ccecf9761349c30dc2b756a1d5",
+  "peerSHA256": "9da73ac2f99d3afcea3fff7d80bce9c401920d5fc62c4c216c921424de9eb383",
+  "entry": "Normal openclaw.mjs devices list / approve --latest / remove synthetic-device-1 --timeout 30000 --json 2>diagnostics.log; PTY VINTR SIGINT / owned process-group SIGTERM; normal respawn policy",
+  "boundary": "Native loopback WebSocket challenge/connect/device.pair.list read and peer lifecycle; synthetic peer is explicit, no real Gateway/provider is claimed",
+  "scope": "Actual public devices reads plus one admitted-write receipt control. Compatible loopback protocol recorder only; no real Gateway storage/effect, provider, or service lifecycle claim.",
+  "cases": [
+    {
+      "cliPid": 736065,
+      "cliProcessGroup": 736065,
+      "ownedProcessesAtInterrupt": [],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521273.388110004,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": null,
+      "statusJSONPublished": true,
+      "cancellationJSONPublished": false,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-connect-control",
+      "exitSignal": null,
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 0,
+      "seconds": 2.807,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:44297",
+          "at": 75.234012,
+          "observedAt": 3521270.580246943
+        },
+        {
+          "event": "peer-connected",
+          "at": 2762.89925,
+          "observedAt": 3521273.265127771
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:d77e42f1-ad0f-40f5-9030-0b071eea640f",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "2c060811-d066-414b-b9e1-78d85458f2b0"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2769.542695,
+          "observedAt": 3521273.271540682
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2769.764829,
+          "observedAt": 3521273.271606265
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:e5c3971e-a3df-48f0-af54-aaeffa4c6df4",
+          "params": {},
+          "at": 2771.816196,
+          "observedAt": 3521273.273765492
+        },
+        {
+          "event": "response",
+          "method": "device.pair.list",
+          "at": 2772.062062,
+          "observedAt": 3521273.273966027
+        },
+        {
+          "event": "peer-closed",
+          "at": 2776.419367,
+          "observedAt": 3521273.27831695
+        }
+      ],
+      "rawOutputSHA256": "e3c7c4e7c46453481289f6d3c8990dae7bd324a445b3fa517a2d2a63fd72ca4e",
+      "diagnosticsSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "configUnchanged": true,
+      "output": "{\r\n  \"pending\": [],\r\n  \"paired\": []\r\n}\r\n",
+      "diagnostics": "",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "cliPid": 736252,
+      "cliProcessGroup": 736252,
+      "ownedProcessesAtInterrupt": [],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521276.172430444,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": null,
+      "statusJSONPublished": true,
+      "cancellationJSONPublished": false,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-rpc-control",
+      "exitSignal": null,
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 0,
+      "seconds": 2.661,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:46543",
+          "at": 77.708831,
+          "observedAt": 3521273.510856993
+        },
+        {
+          "event": "peer-connected",
+          "at": 2647.40699,
+          "observedAt": 3521276.07842626
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:a05e2038-50dd-4841-9ab5-2a649f666d26",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "63c836d7-d960-4838-8586-a52b1b213ab1"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2653.444753,
+          "observedAt": 3521276.084392095
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2653.645902,
+          "observedAt": 3521276.084422808
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:5f7e43f3-a72e-49fe-83fa-47b1cb345808",
+          "params": {},
+          "at": 2655.693717,
+          "observedAt": 3521276.086497125
+        },
+        {
+          "event": "response",
+          "method": "device.pair.list",
+          "at": 2655.866193,
+          "observedAt": 3521276.088160997
+        },
+        {
+          "event": "peer-closed",
+          "at": 2659.518513,
+          "observedAt": 3521276.090326716
+        }
+      ],
+      "rawOutputSHA256": "e3c7c4e7c46453481289f6d3c8990dae7bd324a445b3fa517a2d2a63fd72ca4e",
+      "diagnosticsSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "configUnchanged": true,
+      "output": "{\r\n  \"pending\": [],\r\n  \"paired\": []\r\n}\r\n",
+      "diagnostics": "",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "cliPid": 736405,
+      "cliProcessGroup": 736405,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "736405",
+          "ppid": "735987",
+          "pgid": "736405",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "736417",
+          "ppid": "736405",
+          "pgid": "736405",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521278.952918754,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 49.05,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-connect-sigint-interrupt",
+      "exitSignal": "SIGINT",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 130,
+      "seconds": 2.67,
+      "interruptSent": true,
+      "interruptToExitMs": 158.87,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:35027",
+          "at": 65.271702,
+          "observedAt": 3521276.282630907
+        },
+        {
+          "event": "peer-connected",
+          "at": 2541.235076,
+          "observedAt": 3521278.756542714
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:35622216-460e-49df-b630-8d39cd18a567",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "4e65c564-0713-4ab6-b248-26d0099a9375"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2550.802649,
+          "observedAt": 3521278.765981982
+        },
+        {
+          "event": "read-held",
+          "method": "connect",
+          "at": 2550.864979,
+          "observedAt": 3521278.766012071
+        },
+        {
+          "event": "peer-closed",
+          "at": 2615.246802,
+          "observedAt": 3521278.843048591
+        }
+      ],
+      "rawOutputSHA256": "cc00481a1e8bb38d42a8621426e41f17770a7a87b92ec8e9cd030eaf621d393c",
+      "diagnosticsSHA256": "a09f8564d9696309c135dfc82b4fa6e72e09d60f4d4fbc333257e9c44bb78b54",
+      "configUnchanged": true,
+      "output": "^C{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGINT)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 736559,
+      "cliProcessGroup": 736559,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "736559",
+          "ppid": "735987",
+          "pgid": "736559",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "736566",
+          "ppid": "736559",
+          "pgid": "736559",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521281.634547699,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 29.46,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-rpc-sigint-interrupt",
+      "exitSignal": "SIGINT",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 130,
+      "seconds": 2.555,
+      "interruptSent": true,
+      "interruptToExitMs": 121.94,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:35953",
+          "at": 80.288398,
+          "observedAt": 3521279.078663361
+        },
+        {
+          "event": "peer-connected",
+          "at": 2483.862907,
+          "observedAt": 3521281.479944847
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:37294985-065b-4c99-8ad0-e669960c7408",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "e4559d78-099e-4de5-a5a5-84072ef1237b"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2490.09544,
+          "observedAt": 3521281.486187659
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2490.37118,
+          "observedAt": 3521281.486209428
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:2457a37e-ba7b-4e44-8720-ba9c4fa9d36e",
+          "params": {},
+          "at": 2492.250126,
+          "observedAt": 3521281.491362589
+        },
+        {
+          "event": "read-held",
+          "method": "device.pair.list",
+          "at": 2492.333205,
+          "observedAt": 3521281.49137077
+        },
+        {
+          "event": "peer-closed",
+          "at": 2546.078903,
+          "observedAt": 3521281.542027292
+        }
+      ],
+      "rawOutputSHA256": "cc00481a1e8bb38d42a8621426e41f17770a7a87b92ec8e9cd030eaf621d393c",
+      "diagnosticsSHA256": "a09f8564d9696309c135dfc82b4fa6e72e09d60f4d4fbc333257e9c44bb78b54",
+      "configUnchanged": true,
+      "output": "^C{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGINT)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 736687,
+      "cliProcessGroup": 736687,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "736687",
+          "ppid": "735987",
+          "pgid": "736687",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "736699",
+          "ppid": "736687",
+          "pgid": "736687",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521284.392491047,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 35.11,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-connect-sigterm-interrupt",
+      "exitSignal": "SIGTERM",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 143,
+      "seconds": 2.64,
+      "interruptSent": true,
+      "interruptToExitMs": 126.13,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:34919",
+          "at": 66.678614,
+          "observedAt": 3521281.752431009
+        },
+        {
+          "event": "peer-connected",
+          "at": 2574.864551,
+          "observedAt": 3521284.259292438
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:7981ee52-fbb2-4a3b-90ac-5335aa6ed8e6",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "91e46373-f29f-495b-aef1-d635a14e45a3"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2581.07288,
+          "observedAt": 3521284.264577678
+        },
+        {
+          "event": "read-held",
+          "method": "connect",
+          "at": 2581.129082,
+          "observedAt": 3521284.264588925
+        },
+        {
+          "event": "peer-closed",
+          "at": 2618.028439,
+          "observedAt": 3521284.301428383
+        }
+      ],
+      "rawOutputSHA256": "03d2f0868a6eccdeb499b67cc4786a3adb26c734d668abee572eece12b3629a8",
+      "diagnosticsSHA256": "87d9cf4045143639afe47cd021751176892c313c94ecd5d535e435fc0345c7e5",
+      "configUnchanged": true,
+      "output": "{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGTERM)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 736841,
+      "cliProcessGroup": 736841,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "736841",
+          "ppid": "735987",
+          "pgid": "736841",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "736848",
+          "ppid": "736841",
+          "pgid": "736841",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521287.333299329,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 28.99,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-list-rpc-sigterm-interrupt",
+      "exitSignal": "SIGTERM",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "list",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 143,
+      "seconds": 2.832,
+      "interruptSent": true,
+      "interruptToExitMs": 131.59,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:42471",
+          "at": 64.9083,
+          "observedAt": 3521284.500450672
+        },
+        {
+          "event": "peer-connected",
+          "at": 2743.269599,
+          "observedAt": 3521287.17647183
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:593ab58b-64fb-4965-9ff6-c32b37f38705",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "14968ef8-f3b5-46bb-b64b-79284ab2976e"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2749.71195,
+          "observedAt": 3521287.182856933
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2749.912589,
+          "observedAt": 3521287.182889469
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:2981dd28-6d9e-433a-8eec-d8f2871a663a",
+          "params": {},
+          "at": 2751.842592,
+          "observedAt": 3521287.18483558
+        },
+        {
+          "event": "read-held",
+          "method": "device.pair.list",
+          "at": 2751.909515,
+          "observedAt": 3521287.18485073
+        },
+        {
+          "event": "peer-closed",
+          "at": 2797.609583,
+          "observedAt": 3521287.2306709
+        }
+      ],
+      "rawOutputSHA256": "03d2f0868a6eccdeb499b67cc4786a3adb26c734d668abee572eece12b3629a8",
+      "diagnosticsSHA256": "87d9cf4045143639afe47cd021751176892c313c94ecd5d535e435fc0345c7e5",
+      "configUnchanged": true,
+      "output": "{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGTERM)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 736991,
+      "cliProcessGroup": 736991,
+      "ownedProcessesAtInterrupt": [],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521290.152463191,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": null,
+      "statusJSONPublished": true,
+      "cancellationJSONPublished": false,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-preview-rpc-control",
+      "exitSignal": null,
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "approve",
+        "--latest",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 1,
+      "seconds": 2.702,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:44757",
+          "at": 72.200427,
+          "observedAt": 3521287.449430447
+        },
+        {
+          "event": "peer-connected",
+          "at": 2689.472877,
+          "observedAt": 3521290.064264565
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:b86a6dad-d0e9-47b6-a995-483c8705f16a",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "9b35f94d-3408-4962-a6f0-0f4d4a5f0437"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2695.950037,
+          "observedAt": 3521290.070672552
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2696.184216,
+          "observedAt": 3521290.07070102
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:201a656f-6705-4bc6-9739-1f4a66a8580f",
+          "params": {},
+          "at": 2698.293087,
+          "observedAt": 3521290.072890257
+        },
+        {
+          "event": "response",
+          "method": "device.pair.list",
+          "at": 2698.613822,
+          "observedAt": 3521290.073175636
+        },
+        {
+          "event": "peer-closed",
+          "at": 2702.473768,
+          "observedAt": 3521290.077137736
+        }
+      ],
+      "rawOutputSHA256": "cad531630b7cfc07c3d48afd9c4434d43449ae7808730435fcaac481b2ac3ad5",
+      "diagnosticsSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "configUnchanged": true,
+      "output": "{\r\n  \"selected\": {\r\n    \"requestId\": \"synthetic-request-1\",\r\n    \"deviceId\": \"synthetic-device-1\",\r\n    \"publicKey\": \"synthetic-public-key\",\r\n    \"displayName\": \"Synthetic unapproved device\",\r\n    \"role\": \"operator\",\r\n    \"scopes\": [\r\n      \"operator.read\"\r\n    ],\r\n    \"ts\": 1794381681241\r\n  },\r\n  \"approvalState\": {\r\n    \"kind\": \"new-pairing\",\r\n    \"requested\": {\r\n      \"roles\": [\r\n        \"operator\"\r\n      ],\r\n      \"scopes\": [\r\n        \"operator.read\"\r\n      ]\r\n    },\r\n    \"approved\": null\r\n  },\r\n  \"approveCommand\": \"openclaw devices approve synthetic-request-1 --timeout 30000 --json\",\r\n  \"requiresAuthFlags\": {\r\n    \"token\": false,\r\n    \"password\": false\r\n  }\r\n}\r\n",
+      "diagnostics": "",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "cliPid": 737144,
+      "cliProcessGroup": 737144,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "737144",
+          "ppid": "735987",
+          "pgid": "737144",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "737156",
+          "ppid": "737144",
+          "pgid": "737144",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521293.045960271,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 29.85,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-preview-rpc-sigint-interrupt",
+      "exitSignal": "SIGINT",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "approve",
+        "--latest",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 130,
+      "seconds": 2.772,
+      "interruptSent": true,
+      "interruptToExitMs": 142.86,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:33753",
+          "at": 66.074206,
+          "observedAt": 3521290.273804484
+        },
+        {
+          "event": "peer-connected",
+          "at": 2683.671865,
+          "observedAt": 3521292.889262904
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:7dd4ff49-ec6c-4a7d-b6c8-46c7932a0619",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "0f4587e0-00f1-4ce1-b4fb-4c4a0b5391f8"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2690.701035,
+          "observedAt": 3521292.896184841
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2690.927985,
+          "observedAt": 3521292.896246065
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:9a3d1351-132f-45f4-8ed7-fb3dfb1b9df0",
+          "params": {},
+          "at": 2693.060273,
+          "observedAt": 3521292.898456348
+        },
+        {
+          "event": "read-held",
+          "method": "device.pair.list",
+          "at": 2693.15695,
+          "observedAt": 3521292.898476894
+        },
+        {
+          "event": "peer-closed",
+          "at": 2727.499289,
+          "observedAt": 3521292.932922555
+        }
+      ],
+      "rawOutputSHA256": "cc00481a1e8bb38d42a8621426e41f17770a7a87b92ec8e9cd030eaf621d393c",
+      "diagnosticsSHA256": "a09f8564d9696309c135dfc82b4fa6e72e09d60f4d4fbc333257e9c44bb78b54",
+      "configUnchanged": true,
+      "output": "^C{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGINT)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 737300,
+      "cliProcessGroup": 737300,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "737300",
+          "ppid": "735987",
+          "pgid": "737300",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "737312",
+          "ppid": "737300",
+          "pgid": "737300",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521295.91697686,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 30.2,
+      "statusJSONPublished": false,
+      "cancellationJSONPublished": true,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-preview-rpc-sigterm-interrupt",
+      "exitSignal": "SIGTERM",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "approve",
+        "--latest",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 143,
+      "seconds": 2.762,
+      "interruptSent": true,
+      "interruptToExitMs": 133.29,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:41857",
+          "at": 63.335001,
+          "observedAt": 3521293.154764051
+        },
+        {
+          "event": "peer-connected",
+          "at": 2679.869716,
+          "observedAt": 3521295.769250325
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:a8f66c3e-2572-4639-9ae4-656b69f80ac7",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "56167389-27d4-4653-b273-a4f6bd963b1c"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2686.497716,
+          "observedAt": 3521295.775784981
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2686.716545,
+          "observedAt": 3521295.775823743
+        },
+        {
+          "event": "request",
+          "method": "device.pair.list",
+          "id": "2:16be7d45-8161-4ffe-9ef0-c4e50441a787",
+          "params": {},
+          "at": 2688.940401,
+          "observedAt": 3521295.778131752
+        },
+        {
+          "event": "read-held",
+          "method": "device.pair.list",
+          "at": 2689.030156,
+          "observedAt": 3521295.778146998
+        },
+        {
+          "event": "peer-closed",
+          "at": 2724.620069,
+          "observedAt": 3521295.813859815
+        }
+      ],
+      "rawOutputSHA256": "03d2f0868a6eccdeb499b67cc4786a3adb26c734d668abee572eece12b3629a8",
+      "diagnosticsSHA256": "87d9cf4045143639afe47cd021751176892c313c94ecd5d535e435fc0345c7e5",
+      "configUnchanged": true,
+      "output": "{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"CLI stopping (SIGTERM)\"\r\n  }\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "result": "GREEN"
+    },
+    {
+      "cliPid": 737452,
+      "cliProcessGroup": 737452,
+      "ownedProcessesAtInterrupt": [],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521298.618793318,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": null,
+      "statusJSONPublished": true,
+      "cancellationJSONPublished": false,
+      "lateStatusJSONAfterAcceptedInterrupt": false,
+      "label": "devices-remove-rpc-control",
+      "exitSignal": null,
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "remove",
+        "synthetic-device-1",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 0,
+      "seconds": 2.578,
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptAcknowledged": false,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:34645",
+          "at": 68.026234,
+          "observedAt": 3521296.040498354
+        },
+        {
+          "event": "peer-connected",
+          "at": 2563.971092,
+          "observedAt": 3521298.534189008
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:1fb54f01-76cd-4909-b037-9984e7792a3d",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "3a1449b5-ab71-4950-b89a-2569a12155e1"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2570.049756,
+          "observedAt": 3521298.540201799
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2570.289637,
+          "observedAt": 3521298.540266601
+        },
+        {
+          "event": "request",
+          "method": "device.pair.remove",
+          "id": "2:576eb324-2206-4da7-bc9a-d49fa54a3452",
+          "params": {
+            "deviceId": "synthetic-device-1"
+          },
+          "at": 2572.057308,
+          "observedAt": 3521298.542076663
+        },
+        {
+          "event": "response",
+          "method": "device.pair.remove",
+          "at": 2572.261336,
+          "observedAt": 3521298.542267037
+        },
+        {
+          "event": "peer-closed",
+          "at": 2575.894573,
+          "observedAt": 3521298.546025503
+        }
+      ],
+      "rawOutputSHA256": "29771d6c7f748d8d0906f958f74344d7204549464d06ed542d6218e6db72faaa",
+      "diagnosticsSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "configUnchanged": true,
+      "output": "{\r\n  \"deviceId\": \"synthetic-device-1\"\r\n}\r\n",
+      "diagnostics": "",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "cliPid": 737583,
+      "cliProcessGroup": 737583,
+      "ownedProcessesAtInterrupt": [
+        {
+          "pid": "737583",
+          "ppid": "735987",
+          "pgid": "737583",
+          "stat": "Ssl+"
+        },
+        {
+          "pid": "737590",
+          "ppid": "737583",
+          "pgid": "737583",
+          "stat": "Sl+"
+        }
+      ],
+      "ownedProcessesBeforeHarnessCleanup": [],
+      "peerCleanupStartedAt": 3521301.925685731,
+      "peerClosedBeforeHarnessCleanup": true,
+      "interruptToPeerCloseMs": 584.67,
+      "statusJSONPublished": true,
+      "cancellationJSONPublished": false,
+      "lateStatusJSONAfterAcceptedInterrupt": true,
+      "label": "devices-remove-rpc-sigint-interrupt",
+      "exitSignal": "SIGINT",
+      "command": [
+        "<NODE26>",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "devices",
+        "remove",
+        "synthetic-device-1",
+        "--timeout",
+        "30000",
+        "--json"
+      ],
+      "stderrRedirection": "diagnostics.log (regular file; stdin/stdout remain controlling PTY)",
+      "exitCode": 130,
+      "seconds": 3.198,
+      "interruptSent": true,
+      "interruptToExitMs": 654.68,
+      "interruptAcknowledged": true,
+      "watchdogKill": false,
+      "ptyEofDrained": true,
+      "events": [
+        {
+          "event": "listening",
+          "url": "ws://127.0.0.1:42115",
+          "at": 64.294136,
+          "observedAt": 3521298.727574589
+        },
+        {
+          "event": "peer-connected",
+          "at": 2579.651087,
+          "observedAt": 3521301.240688703
+        },
+        {
+          "event": "request",
+          "method": "connect",
+          "id": "1:014c8f1a-084b-4807-963f-e5d7e5cb7c17",
+          "params": {
+            "minProtocol": 4,
+            "maxProtocol": 4,
+            "client": {
+              "id": "cli",
+              "version": "2026.11.3",
+              "platform": "linux",
+              "deviceFamily": "Linux",
+              "mode": "cli",
+              "instanceId": "8b9ef202-001d-469f-b65c-b5021e548f15"
+            },
+            "caps": [
+              "ultrafast"
+            ],
+            "auth": {
+              "token": "<SYNTHETIC_PROTOCOL_PEER_TOKEN>"
+            },
+            "role": "operator",
+            "scopes": [
+              "operator.pairing"
+            ]
+          },
+          "at": 2586.061047,
+          "observedAt": 3521301.24718783
+        },
+        {
+          "event": "response",
+          "method": "connect",
+          "at": 2586.315952,
+          "observedAt": 3521301.247213416
+        },
+        {
+          "event": "request",
+          "method": "device.pair.remove",
+          "id": "2:a7e4896e-effd-4d68-948e-c74fe5344523",
+          "params": {
+            "deviceId": "synthetic-device-1"
+          },
+          "at": 2588.411991,
+          "observedAt": 3521301.249273995
+        },
+        {
+          "event": "read-held",
+          "method": "device.pair.remove",
+          "at": 2588.48675,
+          "observedAt": 3521301.249289746
+        },
+        {
+          "event": "held-response-released",
+          "method": "device.pair.remove",
+          "at": 3190.024519,
+          "observedAt": 3521301.851109489
+        },
+        {
+          "event": "peer-closed",
+          "at": 3194.743635,
+          "observedAt": 3521301.855650235
+        }
+      ],
+      "rawOutputSHA256": "04d666d1cb9558a22b418c718c5280b49dfa4bb7013d48a5a5586dd491a3e2a0",
+      "diagnosticsSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "configUnchanged": true,
+      "output": "^C{\r\n  \"deviceId\": \"synthetic-device-1\"\r\n}\r\n",
+      "diagnostics": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "result": "GREEN_ADMITTED_WRITE_RECEIPT_CONTROL"
+    }
+  ],
+  "result": "GREEN",
+  "cleanup": {
+    "onlyIsolatedTestConfiguration": true,
+    "noRealGatewayServiceMutation": true,
+    "noRemoteProviderOrChannel": true,
+    "ownedPeerAndCLIWaited": true,
+    "fixturesRetained": true
+  }
+}
