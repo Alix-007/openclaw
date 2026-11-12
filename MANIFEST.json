@@ -1,0 +1,13 @@
+{
+  "mcp-diagnostic-cancel-proof-v2.py": "9db9bdb63092be935a90afa14c646bd99b21fc496054d5262fbc275a73d788de",
+  "check-mcp-diagnostic-proof.py": "f1ce9ae566cda32fb080f31d23e111a3a108f0da634347a76f19f87756bc7577",
+  "base-receipt.json": "26500843f9ff6eb397b51de223c8dd6418e31266054f0262ca1ce047be9ec784",
+  "base-streams.txt": "a36adffd4d9574613de0c89535aada2b88eeb2f723ce6c8b6830087cd5857920",
+  "head-receipt.json": "a0660b6dc9eb1fb6cc37fda90ee2b0c87cb88b1070b0d3a6294877ba46934cf3",
+  "head-streams.txt": "53c88769e66f50d1e122465324c5f061333fb0a13625593c0142690c83aa0871",
+  "checks.json": "c2518e53841156cde24bf3fbcf0a3208c7c9409abcbc557654e73599deb87dd2",
+  "focused-tests.log": "172d143c0d6908c1f115817165cffc70fc2347b2da61925dda4bf0eac64e6676",
+  "independent-review.md": "2d8de0674f0af8f4ab16ec4ab89230b630deb7785b5072d3e6772bbc152680f0",
+  "native-readback.json": "e42780d3649260b5736ce424f095802af2bbbfd483bc747f02fa7080b2fd81ac",
+  "EVIDENCE.md": "919ee35a4e1b9ceb00c3b65dc151a57390282547da13b9fdf09db757a4006e73"
+}

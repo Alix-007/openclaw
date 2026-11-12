@@ -1,0 +1,131 @@
+[vitest-workers] local cache miss after 6208ms
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 1.0s of this 3.2s build (32%).
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin tsdown:deps resolveId (74 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+[vitest-workers] prepared c6c8b1eb3ffc in 122403ms (19005 inputs, 24446 outputs)
+[test] starting test/vitest/vitest.infra.config.ts
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.5 [39m[90m<HEAD_CHECKOUT>[39m
+
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mescapes MCP report fields without altering JSON or the saved server[33m 4923[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mescapes mutation acknowledgements and unknown-server errors without rewriting names[33m 5216[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22madds a configured MCP server from flags without replacing operator knobs[33m 2908[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mredacts MCP registry inspection without changing saved credentials[33m 2513[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mpreserves literal stdio paths from add flags[33m 2582[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mpreserves literal TLS client paths from add flags: "cert.pem"[33m 2698[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mpreserves literal TLS client paths from add flags: " cert.pem "[33m 2641[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mtreats whitespace-only TLS client paths from add flags as absent[33m 2794[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mpreserves the existing MCP server when add loses[33m 2690[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mpreserves the race MCP server when add loses[33m 3017[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mupdates MCP controls with [ 'configure', '--approval', …(3) ] without replacing sibling metadata[33m 5320[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mupdates MCP controls with [ 'tools', '--clear' ] without replacing sibling metadata[33m 6367[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mupdates MCP controls with [ 'configure', '--clear-tools' ] without replacing sibling metadata[33m 6422[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key __proto__ in --env without changing config[32m 20[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key __proto__ in --header without changing config[32m 18[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key constructor in --env without changing config[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key constructor in --header without changing config[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key prototype in --env without changing config[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects reserved key prototype in --header without changing config[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrejects hexadecimal MCP timeout options before writing configuration[33m 2824[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrequires initialize to finish within the configured probe timeout before saving[33m 4982[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mexplains only disabled servers and overrides while preserving JSON output[33m 1873[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mrequires an explicit MCP tool filter operation[33m 3081[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mredacts stdio argv credentials from MCP status output[33m 2649[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mreports MCP doctor setup errors and sensitive literals[33m 2616[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mdoes not flag authored MCP header/env references after environment resolution[33m 1819[2mms[22m[39m
+ ✓  infra  src/cli/mcp-cli.test.ts > reports ignored OAuth Authorization headers regardless of casing 1626ms
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mbounds concurrent MCP doctor server checks[33m 1606[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22msurfaces unexpected MCP doctor check errors[33m 2534[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mdoes not fail MCP doctor for disabled-only overrides[33m 2599[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mdoes not treat Path as PATH when checking MCP stdio commands[33m 2568[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mresolves relative configured PATH entries from the MCP stdio cwd[33m 2462[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mremoves pure disabled tombstones when enabling MCP servers[33m 4751[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mfails named probes for disabled MCP servers[33m 3100[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mreports omitted enabled servers while accepting omitted disabled servers[33m 4034[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mjoins interrupted probe cleanup before returning without a report[33m 1834[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mjoins interrupted doctor cleanup before returning without a report[33m 2027[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mwarns when auto-approved Codex MCP tools have no safety annotations[33m 2663[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mfails when removing an unknown MCP server[33m 1730[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mstarts the channel bridge with parsed serve options[32m 12[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mreports serve flag errors as-is and start failures with one hint period[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22memits one JSON failure for an unknown server in show[32m 12[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22memits one JSON failure for invalid config in probe[32m 19[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.test.ts[2m > [22mreports directories and continues past them on PATH[33m 6297[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.cleanup.test.ts[2m > [22msucceeds after DELETE 204[33m 4352[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.cleanup.test.ts[2m > [22msucceeds after DELETE 400[33m 2274[2mms[22m[39m
+ [32m✓[39m [30m[42m infra [49m[39m src/cli/mcp-cli.cleanup.test.ts[2m > [22mpreserves the discovery failure when DELETE is unconfirmed[33m 3770[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m47 passed[39m[22m[90m (47)[39m
+[2m   Start at [22m 02:55:24
+[2m   Duration [22m 137.56s[2m (tests 88%, transform 6%, import 4%, setup 2%)[22m
+
+[test] starting test/vitest/vitest.cli-process.config.ts
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.5 [39m[90m<HEAD_CHECKOUT>[39m
+
+ [32m✓[39m [30m[45m cli-process [49m[39m src/cli/mcp-cli.import-boundary.test.ts[2m > [22mkeeps client and catalog imports within their boundary[33m 2843[2mms[22m[39m
+ [32m✓[39m [30m[45m cli-process [49m[39m src/cli/mcp-cli.import-boundary.test.ts[2m > [22mkeeps registry reads imports within their boundary[33m 5427[2mms[22m[39m
+ [32m✓[39m [30m[45m cli-process [49m[39m src/cli/mcp-cli.import-boundary.test.ts[2m > [22mkeeps metadata owner imports within their boundary[32m 103[2mms[22m[39m
+ [32m✓[39m [30m[45m cli-process [49m[39m src/cli/mcp-cli.probe-exit.process.test.ts[2m > [22mmcp probe process exit[2m > [22mprints named JSON diagnostics before exiting nonzero[33m 9832[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 02:57:44
+[2m   Duration [22m 45.46s[2m (transform 47%, tests 42%, import 7%, setup 4%)[22m
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 2 Vitest shards in 320.37s

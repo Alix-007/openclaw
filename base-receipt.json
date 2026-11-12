@@ -1,0 +1,566 @@
+{
+  "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+  "buildStamp": {
+    "builtAt": 1794448141001,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "inputsClean": true,
+    "inputSignature": "5a71a92a18bb66698977bc4813a2a5a76e550e14a696d42a38722783e5c4fa08"
+  },
+  "trackedCleanAfter": true,
+  "collectorSHA256": "9db9bdb63092be935a90afa14c646bd99b21fc496054d5262fbc275a73d788de",
+  "rows": [
+    {
+      "case": "probe-normal",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "probe",
+        "fixture",
+        "--json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 6.52,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        63
+      ],
+      "providerAliveAtCliExit": [],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.947757374
+        },
+        {
+          "kind": "request",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.948156986,
+          "method": "initialize",
+          "id": 0
+        },
+        {
+          "kind": "response",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.948312015,
+          "method": "initialize"
+        },
+        {
+          "kind": "request",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.957259728,
+          "method": "notifications/initialized",
+          "id": null
+        },
+        {
+          "kind": "request",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.958456965,
+          "method": "tools/list",
+          "id": 1
+        },
+        {
+          "kind": "response",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.958724562,
+          "method": "tools/list"
+        },
+        {
+          "kind": "eof",
+          "pid": 63,
+          "ppid": 56,
+          "time": 3589602.970604577
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "b6107c450dded7ce140a574932acf919e691b2a9e7787dcf2ed54db0eb5c40cf",
+      "configAfterSHA256": "b6107c450dded7ce140a574932acf919e691b2a9e7787dcf2ed54db0eb5c40cf",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/probe-normal/server.py",
+              "args": [
+                "<BASE_OUTPUT>/probe-normal/events.jsonl",
+                "normal"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "c801dc3f4e8ebda85dda9dc2dec37e1e0b38bb2f6aa4fe5976077456365a6ccc",
+      "harnessPostObservationCleanup": false,
+      "output": "{\r\n  \"generatedAt\": \"2026-11-12T02:19:54.132Z\",\r\n  \"servers\": {\r\n    \"fixture\": {\r\n      \"launch\": \"<BASE_OUTPUT>/probe-normal/server.py <BASE_OUTPUT>/probe-normal/events.jsonl normal\",\r\n      \"tools\": 1,\r\n      \"codexApprovalMode\": \"auto\",\r\n      \"requestTimeoutMs\": 60000\r\n    }\r\n  },\r\n  \"tools\": [\r\n    \"fixture__synthetic_ping\"\r\n  ],\r\n  \"diagnostics\": []\r\n}\r\n"
+    },
+    {
+      "case": "probe-error",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "probe",
+        "fixture",
+        "--json"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 6.622,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        98
+      ],
+      "providerAliveAtCliExit": [],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 98,
+          "ppid": 91,
+          "time": 3589609.68688206
+        },
+        {
+          "kind": "request",
+          "pid": 98,
+          "ppid": 91,
+          "time": 3589609.687312811,
+          "method": "initialize",
+          "id": 0
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "f94143fc5e9ca96decebb60eafb4f5444bd4bbb579dcecec8e13f6809d7b0f27",
+      "configAfterSHA256": "f94143fc5e9ca96decebb60eafb4f5444bd4bbb579dcecec8e13f6809d7b0f27",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/probe-error/server.py",
+              "args": [
+                "<BASE_OUTPUT>/probe-error/events.jsonl",
+                "error"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "6fd9f8c054a3e3bdce7b0485c5fc9bca50e5a93c9464d1580e55155f50e9608e",
+      "harnessPostObservationCleanup": false,
+      "output": "02:20:00 [bundle-mcp] failed to start server \"fixture\" (<BASE_OUTPUT>/probe-error/server.py <BASE_OUTPUT>/probe-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it.\r\n{\r\n  \"generatedAt\": \"2026-11-12T02:20:00.911Z\",\r\n  \"servers\": {},\r\n  \"tools\": [],\r\n  \"diagnostics\": [\r\n    {\r\n      \"serverName\": \"fixture\",\r\n      \"safeServerName\": \"fixture\",\r\n      \"launchSummary\": \"<BASE_OUTPUT>/probe-error/server.py <BASE_OUTPUT>/probe-error/events.jsonl error\",\r\n      \"message\": \"Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it.\"\r\n    }\r\n  ]\r\n}\r\nMCP check failed for \"fixture\" in <BASE_OUTPUT>/probe-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m"
+    },
+    {
+      "case": "doctor-static",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "doctor",
+        "fixture",
+        "--json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 5.482,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [],
+      "providerAliveAtCliExit": [],
+      "observedEvents": [],
+      "configUnchanged": true,
+      "configSHA256": "5a2a51d9d4fb0f055eff602c540689a63115231f0eee4d5ef39b0488e777328a",
+      "configAfterSHA256": "5a2a51d9d4fb0f055eff602c540689a63115231f0eee4d5ef39b0488e777328a",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/doctor-static/server.py",
+              "args": [
+                "<BASE_OUTPUT>/doctor-static/events.jsonl",
+                "normal"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "0d8ba44ff46f98f30d330254bb56600cfee06c2d356a9b09a48a4b1fe29b9084",
+      "harnessPostObservationCleanup": false,
+      "output": "{\r\n  \"path\": \"<BASE_OUTPUT>/doctor-static/state/openclaw.json\",\r\n  \"ok\": true,\r\n  \"servers\": [\r\n    {\r\n      \"name\": \"fixture\",\r\n      \"ok\": true,\r\n      \"issues\": []\r\n    }\r\n  ]\r\n}\r\n"
+    },
+    {
+      "case": "probe-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "probe",
+        "fixture",
+        "--json"
+      ],
+      "exitCode": -9,
+      "elapsedSeconds": 8.489,
+      "interruptToExitSeconds": 2.041,
+      "harnessWatchdog": false,
+      "providerPids": [
+        158
+      ],
+      "providerAliveAtCliExit": [
+        158
+      ],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 158,
+          "ppid": 151,
+          "time": 3589622.136923306
+        },
+        {
+          "kind": "request",
+          "pid": 158,
+          "ppid": 151,
+          "time": 3589622.137322541,
+          "method": "initialize",
+          "id": 0
+        },
+        {
+          "kind": "signal",
+          "pid": 158,
+          "ppid": 151,
+          "time": 3589624.186410122,
+          "signal": 15
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "8529ada47b1bfcc7fe12c3277ce7176dd012c4f124f646cbdd611f2aa36e705d",
+      "configAfterSHA256": "8529ada47b1bfcc7fe12c3277ce7176dd012c4f124f646cbdd611f2aa36e705d",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/probe-int/server.py",
+              "args": [
+                "<BASE_OUTPUT>/probe-int/events.jsonl",
+                "pending"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "harnessPostObservationCleanup": true,
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n"
+    },
+    {
+      "case": "probe-term-human",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "probe",
+        "fixture"
+      ],
+      "exitCode": -9,
+      "elapsedSeconds": 8.805,
+      "interruptToExitSeconds": 2.045,
+      "harnessWatchdog": false,
+      "providerPids": [
+        193
+      ],
+      "providerAliveAtCliExit": [
+        193
+      ],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 193,
+          "ppid": 186,
+          "time": 3589631.072315443
+        },
+        {
+          "kind": "request",
+          "pid": 193,
+          "ppid": 186,
+          "time": 3589631.072768152,
+          "method": "initialize",
+          "id": 0
+        },
+        {
+          "kind": "signal",
+          "pid": 193,
+          "ppid": 186,
+          "time": 3589633.144717289,
+          "signal": 15
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "ef40a3f28e929b4f7560242bbe2ee83b58c9ba81931896ce9c8836a641d50222",
+      "configAfterSHA256": "ef40a3f28e929b4f7560242bbe2ee83b58c9ba81931896ce9c8836a641d50222",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/probe-term-human/server.py",
+              "args": [
+                "<BASE_OUTPUT>/probe-term-human/events.jsonl",
+                "pending"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "f12e3896544a86a561dd4ad4bb3ac83f93179696f9436d6e560042c45badba54",
+      "harnessPostObservationCleanup": true,
+      "output": "\u001b[?25l\u2502\r\n\u001b[?25h\u25c7  \r\n\r\u001b[2K\r\nOpenClaw 2026.11.3 (bc56f78)\r\nOpenClaw Support will never DM you first. I, on the other hand, absolutely will.\r\n\r\nCommand interrupted by SIGTERM. Waiting for cleanup before exiting.\r\n"
+    },
+    {
+      "case": "doctor-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "doctor",
+        "fixture",
+        "--probe",
+        "--json"
+      ],
+      "exitCode": -9,
+      "elapsedSeconds": 8.434,
+      "interruptToExitSeconds": 2.044,
+      "harnessWatchdog": false,
+      "providerPids": [
+        228
+      ],
+      "providerAliveAtCliExit": [
+        228
+      ],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 228,
+          "ppid": 221,
+          "time": 3589639.675840764
+        },
+        {
+          "kind": "request",
+          "pid": 228,
+          "ppid": 221,
+          "time": 3589639.679590281,
+          "method": "initialize",
+          "id": 0
+        },
+        {
+          "kind": "signal",
+          "pid": 228,
+          "ppid": 221,
+          "time": 3589641.734931998,
+          "signal": 15
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "c580ae3edf70cd33ac282db2650883f2cc3f2f70aa89f79b585c5a4d3d0502bd",
+      "configAfterSHA256": "c580ae3edf70cd33ac282db2650883f2cc3f2f70aa89f79b585c5a4d3d0502bd",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/doctor-int/server.py",
+              "args": [
+                "<BASE_OUTPUT>/doctor-int/events.jsonl",
+                "pending"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "harnessPostObservationCleanup": true,
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n"
+    },
+    {
+      "case": "configure-success",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "configure",
+        "fixture",
+        "--timeout",
+        "61",
+        "--probe"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 7.606,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        263
+      ],
+      "providerAliveAtCliExit": [],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.203279728
+        },
+        {
+          "kind": "request",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.203640986,
+          "method": "initialize",
+          "id": 0
+        },
+        {
+          "kind": "response",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.203829402,
+          "method": "initialize"
+        },
+        {
+          "kind": "request",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.213094196,
+          "method": "notifications/initialized",
+          "id": null
+        },
+        {
+          "kind": "request",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.214219245,
+          "method": "tools/list",
+          "id": 1
+        },
+        {
+          "kind": "response",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.214394761,
+          "method": "tools/list"
+        },
+        {
+          "kind": "eof",
+          "pid": 263,
+          "ppid": 256,
+          "time": 3589648.226751649
+        }
+      ],
+      "configUnchanged": false,
+      "configSHA256": "92570b173f2ad4e5136d0de0dd3337c4584bf533cb5e4520b25f0b522e582696",
+      "configAfterSHA256": "0a9de6134304a522b72fb199703c816d95ff0cc5c488589c89e282b14af7861c",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/configure-success/server.py",
+              "args": [
+                "<BASE_OUTPUT>/configure-success/events.jsonl",
+                "normal"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 61000
+            }
+          }
+        },
+        "meta": {
+          "migrations": {
+            "modelPolicyAllowlist": true,
+            "utilityModelSeparation": true,
+            "skillWorkshopPlugin": true,
+            "skillLibraryToolSplit": true
+          },
+          "lastTouchedVersion": "2026.11.3"
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "7314f8720010b2954510918303ceb698a8f26388cbca6d0566a9f4f31211621d",
+      "harnessPostObservationCleanup": false,
+      "output": "\u001b[?25l\u2502\r\n\u001b[?25h\u25c7  \r\n\r\u001b[2K\r\nOpenClaw 2026.11.3 (bc56f78)\r\nI don't have opinions about tabs vs spaces. I have opinions about everything else.\r\n\r\nUpdated MCP server \"fixture\" in <BASE_OUTPUT>/configure-success/state/openclaw.json.\r\n"
+    },
+    {
+      "case": "configure-error",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "mcp",
+        "configure",
+        "fixture",
+        "--timeout",
+        "61",
+        "--probe"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 7.554,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        300
+      ],
+      "providerAliveAtCliExit": [],
+      "observedEvents": [
+        {
+          "kind": "start",
+          "pid": 300,
+          "ppid": 293,
+          "time": 3589656.95275794
+        },
+        {
+          "kind": "request",
+          "pid": 300,
+          "ppid": 293,
+          "time": 3589656.953242952,
+          "method": "initialize",
+          "id": 0
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "5c7df9c3808892aa8c449621de474f73c422f0d8ffcbf5051e5d42a0082e3e50",
+      "configAfterSHA256": "5c7df9c3808892aa8c449621de474f73c422f0d8ffcbf5051e5d42a0082e3e50",
+      "configReadback": {
+        "mcp": {
+          "servers": {
+            "fixture": {
+              "command": "<BASE_OUTPUT>/configure-error/server.py",
+              "args": [
+                "<BASE_OUTPUT>/configure-error/events.jsonl",
+                "error"
+              ],
+              "connectionTimeoutMs": 60000,
+              "requestTimeoutMs": 60000
+            }
+          }
+        }
+      },
+      "serverSHA256": "819abe228be963ea51b59ff4b4c62a66db72b6934bd1bc211e03636348990497",
+      "terminalSHA256": "2ebecb642d2ea1061d135729089abefe76a749539ce53471c1dbe064f7642e23",
+      "harnessPostObservationCleanup": false,
+      "output": "\u001b[?25l\u2502\r\n\u001b[?25h\u25c7  \r\n\r\u001b[2K\r\nOpenClaw 2026.11.3 (bc56f78)\r\nRan git blame like you asked. It's you. It's always you.\r\n\r\n02:20:48 [bundle-mcp] failed to start server \"fixture\" (<BASE_OUTPUT>/configure-error/server.py <BASE_OUTPUT>/configure-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-12T02:20:53.133Z. Check server reachability or reload MCP after fixing it.\r\nMCP check failed for \"fixture\" in <BASE_OUTPUT>/configure-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-12T02:20:53.133Z. Check server reachability or reload MCP after fixing it.\r\nConfiguration was not saved.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m"
+    }
+  ],
+  "revisionNote": "V1 failed native helper admission before peer. V2 synthetic pending initialize withholds response while keeping stdin reader alive and honors normal EOF; adds actual config write/preflight controls before production edits.",
+  "limits": "Normal CLI with compatible local synthetic stdio MCP server only. Combined PTY output; direct synthetic child PIDs, not arbitrary descendants. Post-observation collector cleanup distinguished."
+}

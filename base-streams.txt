@@ -1,0 +1,83 @@
+
+--- probe-normal/terminal.bin (UTF-8) ---
+{
+  "generatedAt": "2026-11-12T02:19:54.132Z",
+  "servers": {
+    "fixture": {
+      "launch": "<BASE_OUTPUT>/probe-normal/server.py <BASE_OUTPUT>/probe-normal/events.jsonl normal",
+      "tools": 1,
+      "codexApprovalMode": "auto",
+      "requestTimeoutMs": 60000
+    }
+  },
+  "tools": [
+    "fixture__synthetic_ping"
+  ],
+  "diagnostics": []
+}
+
+--- probe-error/terminal.bin (UTF-8) ---
+02:20:00 [bundle-mcp] failed to start server "fixture" (<BASE_OUTPUT>/probe-error/server.py <BASE_OUTPUT>/probe-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it.
+{
+  "generatedAt": "2026-11-12T02:20:00.911Z",
+  "servers": {},
+  "tools": [],
+  "diagnostics": [
+    {
+      "serverName": "fixture",
+      "safeServerName": "fixture",
+      "launchSummary": "<BASE_OUTPUT>/probe-error/server.py <BASE_OUTPUT>/probe-error/events.jsonl error",
+      "message": "Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it."
+    }
+  ]
+}
+MCP check failed for "fixture" in <BASE_OUTPUT>/probe-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-12T02:20:05.865Z. Check server reachability or reload MCP after fixing it.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+--- doctor-static/terminal.bin (UTF-8) ---
+{
+  "path": "<BASE_OUTPUT>/doctor-static/state/openclaw.json",
+  "ok": true,
+  "servers": [
+    {
+      "name": "fixture",
+      "ok": true,
+      "issues": []
+    }
+  ]
+}
+
+--- probe-int/terminal.bin (UTF-8) ---
+^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- probe-term-human/terminal.bin (UTF-8) ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (bc56f78)
+OpenClaw Support will never DM you first. I, on the other hand, absolutely will.
+
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- doctor-int/terminal.bin (UTF-8) ---
+^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- configure-success/terminal.bin (UTF-8) ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (bc56f78)
+I don't have opinions about tabs vs spaces. I have opinions about everything else.
+
+Updated MCP server "fixture" in <BASE_OUTPUT>/configure-success/state/openclaw.json.
+
+--- configure-error/terminal.bin (UTF-8) ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (bc56f78)
+Ran git blame like you asked. It's you. It's always you.
+
+02:20:48 [bundle-mcp] failed to start server "fixture" (<BASE_OUTPUT>/configure-error/server.py <BASE_OUTPUT>/configure-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-12T02:20:53.133Z. Check server reachability or reload MCP after fixing it.
+MCP check failed for "fixture" in <BASE_OUTPUT>/configure-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-12T02:20:53.133Z. Check server reachability or reload MCP after fixing it.
+Configuration was not saved.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m

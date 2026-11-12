@@ -1,0 +1,86 @@
+{
+  "head": "fd429b3827b65ede726fcb8c2c93e2e58cff0a3d",
+  "artifacts": [
+    {
+      "artifact": "probe-normal/terminal.bin",
+      "rawSHA256": "c801dc3f4e8ebda85dda9dc2dec37e1e0b38bb2f6aa4fe5976077456365a6ccc",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-error/terminal.bin",
+      "rawSHA256": "6fd9f8c054a3e3bdce7b0485c5fc9bca50e5a93c9464d1580e55155f50e9608e",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "doctor-static/terminal.bin",
+      "rawSHA256": "0d8ba44ff46f98f30d330254bb56600cfee06c2d356a9b09a48a4b1fe29b9084",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-int/terminal.bin",
+      "rawSHA256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-term-human/terminal.bin",
+      "rawSHA256": "f12e3896544a86a561dd4ad4bb3ac83f93179696f9436d6e560042c45badba54",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "doctor-int/terminal.bin",
+      "rawSHA256": "9d4545b18010e82bf3616ad14b1a1df2c3c27f8c430c89c3931bc3e4dfc9e1eb",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "configure-success/terminal.bin",
+      "rawSHA256": "7314f8720010b2954510918303ceb698a8f26388cbca6d0566a9f4f31211621d",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "configure-error/terminal.bin",
+      "rawSHA256": "2ebecb642d2ea1061d135729089abefe76a749539ce53471c1dbe064f7642e23",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-normal/terminal.bin",
+      "rawSHA256": "7a1e5fa89fea75ae44b02c7ef499184b4803a66340b1abc19d4cee5a94bf89cc",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-error/terminal.bin",
+      "rawSHA256": "79aaf20b5efe3e981e9b046ce78f13ffc043cf177eeabb47d1da37a8b0446bbe",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "doctor-static/terminal.bin",
+      "rawSHA256": "505f8d80a1efff4838c38791ab356e9e877fe4aca36bb8ac17a1c7031974c96e",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-int/terminal.bin",
+      "rawSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "probe-term-human/terminal.bin",
+      "rawSHA256": "53ad1b8f11cb5ddf6ca954c3eb76b13c75611cecc2497418e676c6946fe16d80",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "doctor-int/terminal.bin",
+      "rawSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "configure-success/terminal.bin",
+      "rawSHA256": "7d2e3e2e37b6aea8f63b62c3e20f491115d5ebc6d78ff13fd3efa7c09ef026ea",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "configure-error/terminal.bin",
+      "rawSHA256": "ab3f1f59efaf57316c962edb6797dbe579d186af537c9418a0d81f71c1b0f268",
+      "receiptHashMatched": true
+    }
+  ],
+  "note": "Raw observations hash-checked before replacing private local paths with portable labels in public copies. Collector bytes are unchanged. BASE failures and post-observation cleanup are preserved, never relabeled as success."
+}
