@@ -1,0 +1,65 @@
+$ node scripts/test-projects.mts src/cli/id-cli.commands.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > authorizes status through the real method scope gate 181ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > authorizes rebind through the real method scope gate 12ms
+ × |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.status is interrupted 16ms
+   → expected '{\n  "status": {\n    "state": "on"\n…' to be '' // Object.is equality
+ × |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.people is interrupted 7ms
+   → expected '{\n  "status": {\n    "state": "on"\n…' to be '' // Object.is equality
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > preserves ordinary status read failures 6ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports an accepted commit when its publication read fails (json=true) 11ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports an accepted commit when its publication read fails (json=false) 9ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports committed follow-up failure without polling or retrying (json=true) 8ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports committed follow-up failure without polling or retrying (json=false) 8ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > does not claim a move when the commit RPC is rejected 7ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > treats a full command rerun as a new signed rotation, not a commit replay 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.status is interrupted
+ FAIL  |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.people is interrupted
+AssertionError: expected '{\n  "status": {\n    "state": "on"\n…' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ {
++   "status": {
++     "state": "on"
++   },
++   "link": {
++     "linked": true
++   },
++   "people": {
++     "binding": {
++       "bindingSeq": 1,
++       "publishedBindingSeq": 1,
++       "kSrv": "iroh:0202020202020202020202020202020202020202020202020202020202020202",
++       "kGw": "ed25519:0303030303030303030303030303030303030303030303030303030303030303"
++     }
++   }
++ }
++
+
+ ❯ src/cli/id-cli.commands.test.ts:177:22
+    175|
+    176|       await expect(work.run(() => run("status"))).resolves.toBeUndefin…
+    177|       expect(output).toBe("");
+       |                      ^
+    178|       expect(callGatewayFromCli).toHaveBeenCalledTimes(method === "ope…
+    179|       expect(commits).toHaveLength(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 passed (11)
+   Start at  20:50:24
+   Duration  7.07s (transform 42%, worker 36%, import 11%, setup 7%, tests 5%)
+
+[test] failed 1 Vitest shard in 11.69s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

@@ -1,0 +1,80 @@
+{
+  "id-tests-green-v2": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/id-cli.commands.test.ts",
+      "src/cli/id-cli-rebind.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 17.223,
+    "head": "b48d16bf6e98f0b9c1e110548fc46b3b35f2becd",
+    "diffSHA256": "e3a0b69b6fa506b94e144a16192526d887587ae37a1df6c042185accee135496",
+    "logSHA256": "f74be69057ad519cb6124938b714d148f82e0dccbe03b483979e10df7694356b"
+  },
+  "id-types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../id-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 91.176,
+    "head": "b48d16bf6e98f0b9c1e110548fc46b3b35f2becd",
+    "diffSHA256": "e3a0b69b6fa506b94e144a16192526d887587ae37a1df6c042185accee135496",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "id-lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../id-types.tsconfig.json",
+      "src/cli/id-cli.ts",
+      "src/cli/id-cli.commands.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 357.907,
+    "head": "b48d16bf6e98f0b9c1e110548fc46b3b35f2becd",
+    "diffSHA256": "729672509851db67655f9124c3c4408ee84ff5745826f7795c130a8e2ca86e7e",
+    "logSHA256": "3b8a57937ff75c599221469fcfb8c8ba70c32a85bcab5fbbcb1e84146e21d69b"
+  },
+  "id-format-check": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/id-cli.ts",
+      "src/cli/id-cli.commands.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.305,
+    "head": "b48d16bf6e98f0b9c1e110548fc46b3b35f2becd",
+    "diffSHA256": "e3a0b69b6fa506b94e144a16192526d887587ae37a1df6c042185accee135496",
+    "logSHA256": "de62983df8536a5ab334fef6807541d9261ddeebc1637568ca953eb6326849ba"
+  },
+  "id-qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 279.448,
+    "head": "a7a5630312e519d55bb56e0d986b26109d3bf134",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "f4f4d30974f54339813fd66ecbd9a5022639a394b115d37d9bc8dfce75793061"
+  }
+}
