@@ -1,0 +1,144 @@
+$ node scripts/test-projects.mts src/commands/sessions.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 5190ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 90000ms.
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared d8d7ac307777 in 130303ms (20023 inputs, 24679 outputs)
+[vitest] still running with no output for 30000ms.
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > aligns listing columns for Unicode keys and full model names 7326ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > aligns cleanup dry-run columns for Unicode keys and full model names 6958ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves recorded tokens without freshness provenance in text and JSON 4172ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > renders current runtime and context after a same-model runtime change 4752ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity 32768 for openclaw without a default denominator 4957ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity undefined for openclaw without a default denominator 4825ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity 96000 for native-fixture without a default denominator 5184ms
+ × |commands| src/commands/sessions.test.ts > sessionsCommand > does not warn or print sessions after an interrupted Gateway catalog read 4679ms
+   → expected [ Array(1) ] to deeply equal []
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is absent 4363ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is unreachable 4131ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is uninspectable 4348ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is other-workspace 4610ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > shows placeholder rows when tokens are missing 4952ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > escapes terminal controls in store headers without changing JSON paths 728ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > sanitizes persisted identifiers only for terminal output 4718ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves collaboration metadata (delegated=false) 4545ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves collaboration metadata (delegated=true) 4815ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports an existing empty SQLite store as an empty successful list 1022ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > exports session color and subagent lineage metadata in JSON output 8327ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > projects a bare row with its resolved fixed-store owner 3821ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > allows full JSON output with --limit all 4272ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > rejects partially numeric active minutes before reading session stores 9ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > rejects an invalid limit before reading session stores 7ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > resolves fallback aliases with the store owner (agent-scoped=false) 4990ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > resolves fallback aliases with the store owner (agent-scoped=true) 4442ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > preserves nested override models when their provider is recorded separately 4586ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sessionStateNotices
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > preserves a router-owned session's recorded model, runtime, and context window 4464ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |commands| src/commands/sessions.test.ts > sessionsCommand > does not warn or print sessions after an interrupted Gateway catalog read
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "{\n+   \"path\": \"<TEMP_CACHE>/user-tmp/oc-vt-34WiOm/sessions-bHSKUR/openclaw-agent.sqlite\",\n+   \"count\": 1,\n+   \"totalCount\": 1,\n+   \"limitApplied\": 100,\n+   \"hasMore\": false,\n+   \"activeMinutes\": null,\n+   \"sessions\": <redacted len=529>\n+ }",
++ ]
+
+ ❯ src/commands/sessions.test.ts:<redacted len=6>
+    299|     await work.run(() => sessionsCommand({ json: true }, runtime));
+    300|
+    301|     expect(logs).toEqual([]);
+       |                  ^
+    302|     expect(errors).toEqual([]);
+    303|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 passed (27)
+   Start at  21:00:45
+   Duration  295.44s (transform 57%, tests 39%, import 2%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 303.96s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

@@ -1,0 +1,152 @@
+$ node scripts/test-projects.mts src/commands/sessions.test.ts src/cli/program/register.status-health-sessions.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 7279ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared 3763bca20967 in 133686ms (20023 inputs, 24679 outputs)
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions --active 5 cleanup before loading the session owner 234ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions --store /tmp/other.sqlite archive agent:work:main before loading the session owner 8ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions --store /tmp/other.sqlite --all-agents --limit 25 --verbose compact agent:work:main before loading the session owner 7ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions delete agent:work:main --timeout 0 --json before loading the session owner 10ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions compact agent:work:main --max-lines 0 --json before loading the session owner 7ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects sessions compact agent:work:main --timeout 0 --json before loading the session owner 7ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > dispatches status --json --all --deep --usage --agent beta --debug --timeout 5000 with verbose and parsed timeout 10ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > dispatches health --json --timeout 2500 --verbose with verbose and parsed timeout 9ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > rejects an invalid probe timeout without dispatch 8ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > preserves parent options and blank store: --json --verbose --agent work --all-agents --active 120 --limit 25 list 6ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > preserves parent options and blank store: --all-agents --json cleanup --dry-run --enforce --fix-missing --fix-dm-scope --active-key agent:work:main 5ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > preserves parent options and blank store: --agent work tail --session-key agent:work:main --tail 5 --follow 6ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > preserves parent options and blank store: --json export-trajectory --session-key agent:work:main --workspace /workspace --output bug-123 --request-json-base64 eyJzZXNzaW9uS2V5IjoiYWdlbnQ6bWFpbjp0ZWxlZ3JhbTpkaXJlY3Q6b3duZXIifQ 6ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > compact inherits parent agent and JSON options (#91378) 6ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/cli/program/register.status-health-sessions.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > forwards archive keys, inherited scope and RPC options 13525ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > forwards delete keys with leaf scope and confirmation 9ms
+ ✓ |cli| src/cli/program/register.status-health-sessions.test.ts > documents retained delete archives and local memory cleanup 13ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  21:06:40
+   Duration  159.43s (transform 89%, tests 9%, worker 2%)
+
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest] still running with no output for 30000ms.
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > aligns listing columns for Unicode keys and full model names 8175ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > aligns cleanup dry-run columns for Unicode keys and full model names 6843ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves recorded tokens without freshness provenance in text and JSON 3865ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > renders current runtime and context after a same-model runtime change 4175ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity 32768 for openclaw without a default denominator 4830ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity undefined for openclaw without a default denominator 4870ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports admitted Gateway capacity 96000 for native-fixture without a default denominator 4652ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > does not warn or print sessions after an interrupted Gateway catalog read 4610ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is absent 4576ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is unreachable 4351ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is uninspectable 4113ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves verified capacity for auto runtime when the Gateway is other-workspace 4276ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > shows placeholder rows when tokens are missing 4305ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > escapes terminal controls in store headers without changing JSON paths 650ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > sanitizes persisted identifiers only for terminal output 4177ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves collaboration metadata (delegated=false) 4146ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > preserves collaboration metadata (delegated=true) 4321ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > reports an existing empty SQLite store as an empty successful list 577ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > exports session color and subagent lineage metadata in JSON output 7250ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > projects a bare row with its resolved fixed-store owner 3518ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > allows full JSON output with --limit all 4220ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > rejects partially numeric active minutes before reading session stores 14ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand > rejects an invalid limit before reading session stores 6ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > resolves fallback aliases with the store owner (agent-scoped=false) 4785ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > resolves fallback aliases with the store owner (agent-scoped=true) 4318ms
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > preserves nested override models when their provider is recorded separately 4412ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.sessionStateNotices
+[sqlite-test-lifecycle] src/commands/sessions.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |commands| src/commands/sessions.test.ts > sessionsCommand model resolution > preserves a router-owned session's recorded model, runtime, and context window 4239ms
+
+ Test Files  1 passed (1)
+      Tests  27 passed (27)
+   Start at  21:09:22
+   Duration  151.99s (tests 73%, transform 21%, import 4%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 2 Vitest shards in 323.53s

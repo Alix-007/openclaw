@@ -1,0 +1,273 @@
+{
+  "head": "1c7a491f44ba3e38ea9d84b2d521752c6c6313fd",
+  "stamp": {
+    "builtAt": 1794489884871,
+    "head": "1c7a491f44ba3e38ea9d84b2d521752c6c6313fd",
+    "inputsClean": true,
+    "inputSignature": "294364a6c9954b600078e5f4512b16ab473d58e0b774ce72dfe3cc0df07f8451"
+  },
+  "expectation": "green",
+  "hashes": {
+    "sessions-read-proof-v2.py": "0ae44269ea5aff18c39ea426f17c27a96e2c6705edae1867a6ff8173aae12b3a",
+    "sessions-read-fixture.mts": "8d35e45fc709e825b93baf5b1112e06f3fc4f7f10b7a41667faefaabb3fdbdf8"
+  },
+  "boundary": "normally built sessions list CLI in controlling PTY; real isolated SQLite and real Gateway; only task-owned Gateway process group is suspended to hold a real TCP/WS connection",
+  "cases": [
+    {
+      "label": "json-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "list",
+        "--json"
+      ],
+      "human": false,
+      "signal": null,
+      "explicitStore": false,
+      "exitCode": 0,
+      "seconds": 5.221,
+      "connectedSocketReadback": [
+        {
+          "pid": 193,
+          "fd": "38",
+          "inode": "421064829",
+          "tcp": [
+            "2:",
+            "0100007F:B8CC",
+            "0100007F:A129",
+            "01"
+          ]
+        }
+      ],
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToSocketCloseMs": null,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "9c61c87fbdf91728e41c37e80e7ca35cd801b3de64415796e594b031a069cce6",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"path\": \"<HEAD_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite\",\r\n  \"count\": 1,\r\n  \"totalCount\": 1,\r\n  \"limitApplied\": 100,\r\n  \"hasMore\": false,\r\n  \"activeMinutes\": null,\r\n  \"sessions\": [\r\n    {\r\n      \"key\": \"agent:main:catalog-proof\",\r\n      \"updatedAt\": 1794490013533,\r\n      \"ageMs\": 22196,\r\n      \"sessionId\": \"catalog-proof-session\",\r\n      \"sessionStartedAt\": 1794490013533,\r\n      \"status\": \"done\",\r\n      \"visibility\": \"shared\",\r\n      \"totalTokens\": null,\r\n      \"totalTokensFresh\": false,\r\n      \"model\": \"synthetic-read-model\",\r\n      \"modelProvider\": \"ollama\",\r\n      \"contextTokens\": 8192,\r\n      \"agentId\": \"main\",\r\n      \"acpRuntime\": false,\r\n      \"agentRuntime\": {\r\n        \"id\": \"openclaw\",\r\n        \"source\": \"implicit\"\r\n      },\r\n      \"kind\": \"direct\"\r\n    }\r\n  ]\r\n}\r\n",
+      "stderr": "",
+      "sessionReadback": {
+        "key": "agent:main:catalog-proof",
+        "updatedAt": 1794490013533,
+        "ageMs": 22196,
+        "sessionId": "catalog-proof-session",
+        "sessionStartedAt": 1794490013533,
+        "status": "done",
+        "visibility": "shared",
+        "totalTokens": null,
+        "totalTokensFresh": false,
+        "model": "synthetic-read-model",
+        "modelProvider": "ollama",
+        "contextTokens": 8192,
+        "agentId": "main",
+        "acpRuntime": false,
+        "agentRuntime": {
+          "id": "openclaw",
+          "source": "implicit"
+        },
+        "kind": "direct"
+      },
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "human-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "list"
+      ],
+      "human": true,
+      "signal": null,
+      "explicitStore": false,
+      "exitCode": 0,
+      "seconds": 5.12,
+      "connectedSocketReadback": [
+        {
+          "pid": 414,
+          "fd": "38",
+          "inode": "421056343",
+          "tcp": [
+            "1:",
+            "0100007F:B8D8",
+            "0100007F:A129",
+            "01"
+          ]
+        }
+      ],
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToSocketCloseMs": null,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "f7b64945952108e4c4162472d28f49d070106407fae081ce8a403cd7d6612b97",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (1c7a491) \u2014 New model dropped\u2014already benchmarking my personality against it.\r\n\r\nSession store: <HEAD_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite\r\nSessions listed: 1\r\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\r\n\u2502 Kind   \u2502 Key                      \u2502 Age      \u2502 Model                \u2502 Runtime          \u2502 Tokens (ctx %)    \u2502 Flags   \u2502\r\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\r\n\u2502 direct \u2502 agent:main:catalog-proof \u2502 just now \u2502 synthetic-read-model \u2502 OpenClaw Default \u2502 unknown/8.2k (?%) \u2502 visibil \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 ity:sha \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 red     \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 id:cata \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 log-    \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 proof-  \u2502\r\n\u2502        \u2502                          \u2502          \u2502                      \u2502                  \u2502                   \u2502 session \u2502\r\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\r\n",
+      "stderr": "",
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "catalog-json-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "list",
+        "--json"
+      ],
+      "human": false,
+      "signal": "SIGINT",
+      "explicitStore": false,
+      "exitCode": 130,
+      "seconds": 5.077,
+      "connectedSocketReadback": [
+        {
+          "pid": 640,
+          "fd": "38",
+          "inode": "421071895",
+          "tcp": [
+            "3:",
+            "0100007F:8986",
+            "0100007F:A129",
+            "01"
+          ]
+        }
+      ],
+      "interruptSent": true,
+      "interruptToExitMs": 148.61,
+      "interruptToSocketCloseMs": 8.15,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "result": "GREEN_READ_ABORT"
+    },
+    {
+      "label": "catalog-human-term",
+      "command": [
+        "<NODE26>/bin/node",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "list"
+      ],
+      "human": true,
+      "signal": "SIGTERM",
+      "explicitStore": false,
+      "exitCode": 143,
+      "seconds": 5.18,
+      "connectedSocketReadback": [
+        {
+          "pid": 820,
+          "fd": "38",
+          "inode": "421059855",
+          "tcp": [
+            "2:",
+            "0100007F:898E",
+            "0100007F:A129",
+            "01"
+          ]
+        }
+      ],
+      "interruptSent": true,
+      "interruptToExitMs": 127.32,
+      "interruptToSocketCloseMs": 34.18,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "c974acbe673290daf5e1093e22bddb8745fd73a67108fa6b11a761f0eb7883da",
+      "stderrSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "stdout": "\r\nOpenClaw 2026.11.3 (1c7a491) \u2014 It's not \"failing,\" it's \"discovering new ways to configure the same thing wrong.\"\r\n\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n",
+      "result": "GREEN_READ_ABORT"
+    },
+    {
+      "label": "store-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<HEAD_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "list",
+        "--json",
+        "--store",
+        "<HEAD_OUTPUT>/state/agents/main/sessions/sessions.json"
+      ],
+      "human": false,
+      "signal": null,
+      "explicitStore": true,
+      "exitCode": 0,
+      "seconds": 5.916,
+      "connectedSocketReadback": [],
+      "interruptSent": false,
+      "interruptToExitMs": null,
+      "interruptToSocketCloseMs": null,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "9e3caabdd7b765b6398622e49b0444e0a75b1155603235723800768f3d34959b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"path\": \"<HEAD_OUTPUT>/state/agents/main/agent/openclaw-agent.sqlite\",\r\n  \"count\": 1,\r\n  \"totalCount\": 1,\r\n  \"limitApplied\": 100,\r\n  \"hasMore\": false,\r\n  \"activeMinutes\": null,\r\n  \"sessions\": [\r\n    {\r\n      \"key\": \"agent:main:catalog-proof\",\r\n      \"updatedAt\": 1794490013533,\r\n      \"ageMs\": 43206,\r\n      \"sessionId\": \"catalog-proof-session\",\r\n      \"sessionStartedAt\": 1794490013533,\r\n      \"status\": \"done\",\r\n      \"visibility\": \"shared\",\r\n      \"totalTokens\": null,\r\n      \"totalTokensFresh\": false,\r\n      \"model\": \"synthetic-read-model\",\r\n      \"modelProvider\": \"ollama\",\r\n      \"contextTokens\": 8192,\r\n      \"agentId\": \"main\",\r\n      \"acpRuntime\": false,\r\n      \"agentRuntime\": {\r\n        \"id\": \"openclaw\",\r\n        \"source\": \"implicit\"\r\n      },\r\n      \"kind\": \"direct\"\r\n    }\r\n  ]\r\n}\r\n",
+      "stderr": "",
+      "sessionReadback": {
+        "key": "agent:main:catalog-proof",
+        "updatedAt": 1794490013533,
+        "ageMs": 43206,
+        "sessionId": "catalog-proof-session",
+        "sessionStartedAt": 1794490013533,
+        "status": "done",
+        "visibility": "shared",
+        "totalTokens": null,
+        "totalTokensFresh": false,
+        "model": "synthetic-read-model",
+        "modelProvider": "ollama",
+        "contextTokens": 8192,
+        "agentId": "main",
+        "acpRuntime": false,
+        "agentRuntime": {
+          "id": "openclaw",
+          "source": "implicit"
+        },
+        "kind": "direct"
+      },
+      "result": "GREEN_EXISTING_CONTROL"
+    }
+  ],
+  "result": "GREEN",
+  "fixtureReadback": {
+    "lane": "sessions",
+    "sessionKey": "agent:main:catalog-proof",
+    "sessionId": "catalog-proof-session",
+    "storePath": "<HEAD_OUTPUT>/state/agents/main/sessions/sessions.json",
+    "entries": [
+      {
+        "key": "agent:main:catalog-proof",
+        "sessionId": "catalog-proof-session"
+      }
+    ]
+  },
+  "gatewayPid": 117,
+  "gatewayHealthy": true,
+  "cleanup": {
+    "gatewayExit": 0,
+    "gatewayOwnedSurvivors": [],
+    "configUnchanged": true,
+    "isolatedStateRetained": true
+  }
+}

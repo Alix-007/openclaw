@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const [checkout,configPath,lane]=process.argv.slice(2);
+const source=(name:string)=>pathToFileURL(path.join(checkout!,'src',name)).href;
+  const cfg=JSON.parse(fs.readFileSync(configPath!,'utf8'));
+  const {resolveSessionStoreTargets}=await import(source('config/sessions.ts'));
+  const {upsertSessionEntryCore,listSessionEntriesReadOnly}=await import(source('config/sessions/session-accessor.ts'));
+  const target=resolveSessionStoreTargets(cfg,{agent:'main'})[0];
+  const sessionKey='agent:main:catalog-proof',sessionId='catalog-proof-session';
+  await upsertSessionEntryCore({sessionKey,storePath:target.storePath},{sessionId,updatedAt:Date.now(),modelProvider:'ollama',model:'synthetic-read-model',agentHarnessId:'openclaw',status:'done'});
+  const entries=listSessionEntriesReadOnly({agentId:'main',storePath:target.storePath,projection:'list'});
+  console.log(JSON.stringify({lane,sessionKey,sessionId,storePath:target.storePath,entries:entries.map((x:any)=>({key:x.sessionKey,sessionId:x.entry.sessionId}))}));const {closeOpenClawAgentDatabasesAsync}=await import(source('state/openclaw-agent-db.ts'));
+await closeOpenClawAgentDatabasesAsync();
