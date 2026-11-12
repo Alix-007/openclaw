@@ -1,0 +1,22 @@
+import {createRequire} from 'node:module';
+import {createInterface} from 'node:readline';
+import path from 'node:path';
+const[checkout,backendPort]=process.argv.slice(2);
+const{WebSocket,WebSocketServer}=createRequire(path.join(checkout,'package.json'))('ws');
+let mode='normal',label='initial',sequence=0,connection=0;
+const peers=new Set();
+const record=(event,facts={})=>process.stdout.write(JSON.stringify({event,sequence:++sequence,wallMs:Date.now(),...facts})+'\n');
+const server=new WebSocketServer({host:'127.0.0.1',port:0});
+server.on('listening',()=>record('listening',{port:server.address().port,pid:process.pid}));
+server.on('connection',front=>{
+ const id=++connection,caseLabel=label,caseMode=mode,methods=new Map(),pending=[];
+ const back=new WebSocket('ws://127.0.0.1:'+backendPort);const peer={front,back};peers.add(peer);
+ record('front-connected',{connectionId:id,label:caseLabel,mode:caseMode});
+ front.on('message',raw=>{const f=JSON.parse(raw.toString());if(f.type==='req'){methods.set(f.id,f.method);record('request',{connectionId:id,label:caseLabel,method:f.method,requestId:f.id});}if(back.readyState===WebSocket.OPEN)back.send(raw);else pending.push(raw);});
+ back.on('open',()=>{for(const raw of pending.splice(0))back.send(raw);});
+ back.on('message',raw=>{const f=JSON.parse(raw.toString()),method=methods.get(f.id);if(f.type==='res'){record('real-response',{connectionId:id,label:caseLabel,method,requestId:f.id,ok:f.ok,...(method==='sessions.list'?{sessionCount:f.payload?.sessions?.length}:{}),...(f.ok?{}:{message:f.error?.message})});if(caseMode===method&&f.ok){record('response-held',{connectionId:id,label:caseLabel,method,requestId:f.id,actualGatewaySuccess:true});return;}}if(front.readyState===WebSocket.OPEN)front.send(raw);});
+ front.on('close',()=>{record('front-closed',{connectionId:id,label:caseLabel});back.terminate();peers.delete(peer);});back.on('close',()=>{record('back-closed',{connectionId:id,label:caseLabel});front.terminate();});front.on('error',()=>back.terminate());back.on('error',e=>{record('backend-error',{label:caseLabel,message:e.message});front.terminate();});
+});
+const lines=createInterface({input:process.stdin,terminal:false});
+lines.on('line',line=>{const msg=JSON.parse(line);if(msg.op==='configure'){mode=msg.mode;label=msg.label;record('configured',{mode,label});}else if(msg.op==='stop'){for(const peer of peers){peer.front.terminate();peer.back.terminate();}server.close(()=>process.exit(0));lines.close();}else throw Error('unknown operation');});
+process.on('SIGTERM',()=>{for(const peer of peers){peer.front.terminate();peer.back.terminate();}server.close(()=>process.exit(0));});

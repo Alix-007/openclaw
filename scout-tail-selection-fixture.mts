@@ -1,0 +1,27 @@
+// Setup/readback only. Command and selection behavior run through the normal built CLI.
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const [checkout,configPath]=process.argv.slice(2);
+const source=(name:string)=>pathToFileURL(path.join(checkout!,'src',name)).href;
+console.error('fixture: import start');
+const cfg=JSON.parse(fs.readFileSync(configPath!,'utf8'));
+const {resolveSessionStoreTargets}=await import(source('config/sessions.ts'));
+const {upsertSessionEntryCore,listSessionEntriesReadOnly}=await import(source('config/sessions/session-accessor.ts'));
+const {appendSqliteTrajectoryRuntimeEvents}=await import(source('trajectory/runtime-store.test-support.ts'));
+const {loadSqliteTrajectoryRuntimeEventRowsSync}=await import(source('trajectory/runtime-store.sqlite.ts'));
+const {closeOpenClawAgentDatabasesAsync}=await import(source('state/openclaw-agent-db.ts'));
+console.error('fixture: imports complete');
+const target=resolveSessionStoreTargets(cfg,{agent:'main'})[0];
+const sessionKey='agent:main:tail-selection-proof',sessionId='tail-selection-proof-session';
+console.error('fixture: upsert start');
+await upsertSessionEntryCore({sessionKey,storePath:target.storePath},{sessionId,updatedAt:Date.now(),status:'done'});
+console.error('fixture: upsert complete');
+const event={ts:'2026-11-12T00:00:00.000Z',traceSchema:'openclaw-trajectory',schemaVersion:1,traceId:sessionId,source:'runtime',seq:1,sessionId,sessionKey,type:'tool.result',data:{name:'selection-proof-marker',success:true}};
+console.error('fixture: append start');
+appendSqliteTrajectoryRuntimeEvents({agentId:'main',sessionId,storePath:target.storePath},[event]);
+console.error('fixture: append complete');
+const entries=listSessionEntriesReadOnly({agentId:'main',storePath:target.storePath,projection:'list'});
+const rows=loadSqliteTrajectoryRuntimeEventRowsSync({agentId:'main',sessionId,storePath:target.storePath});
+await closeOpenClawAgentDatabasesAsync();
+console.log(JSON.stringify({fixture:'canonical-session-and-trajectory',storePath:target.storePath,sessionKey,sessionId,entries:entries.map((x:any)=>({key:x.sessionKey,sessionId:x.entry.sessionId})),rowCount:rows.length,marker:rows[0]?.event.data?.name}));

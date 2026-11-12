@@ -1,0 +1,296 @@
+{
+  "head": "498f9aa34950c32f4d4525dc9b23030ad28ba5e7",
+  "artifacts": [
+    {
+      "artifact": "finite-list-int/stdout.raw",
+      "rawSHA256": "ebd5e93b8775b2505c9a756b09b60c1bab2ad02d47f2b918ff0a68ade118eb99",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-int/proxy-events.json",
+      "rawSHA256": "ed6e0b6f3cc75dd6d3bc28169f95d6e9ea2f1806beb8d1b401319c93da3f7d8c",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-list-term/stdout.raw",
+      "rawSHA256": "ea0d79fc015d618f2ae2902a191fc481996711bad9d8254888b823107a3faf96",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-term/stderr.log",
+      "rawSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-term/proxy-events.json",
+      "rawSHA256": "dcd5869384c1606e5d673148dc5b93de74f8b2a093365f8dd62a3da2bf34f76f",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-list-int/stdout.raw",
+      "rawSHA256": "2731dc08516fd36afb07e9b55e238dc2e307aa7c256d43bb467f0279e5420752",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-int/proxy-events.json",
+      "rawSHA256": "1a02780b78398b725c3b153af8ac76cf7310c463ef299cf8fa481a1a50551cb9",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-list-term/stdout.raw",
+      "rawSHA256": "4734d114cf21d1a47132978ce037b1f863fd72a9965b8304d9d589befde71ac0",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-term/stderr.log",
+      "rawSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-term/proxy-events.json",
+      "rawSHA256": "df17e62fa8eb23414adc0e9c669546cc95c4c0153ea74d8bf53fa0195ea77387",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-connect-int/stdout.raw",
+      "rawSHA256": "f4303f350458cb26e3730f3c39f42b956991ff6a0a6700f2dbdb4d0e22431679",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-connect-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-connect-int/proxy-events.json",
+      "rawSHA256": "d4045759d1e686b64f4ae55288296d3a7b611feb335c4a9c780c4d5089791efd",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-control/stdout.raw",
+      "rawSHA256": "b07a46e852cba319f727520b1decb125ca5b48c671df60b3c76b3a8f8e1cbbc6",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-control/proxy-events.json",
+      "rawSHA256": "ad2e8063622e60fd2d49b191fb26055b5cb49c6dd733387f59a99a2c12809185",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-control/stdout.raw",
+      "rawSHA256": "0e94fd6c2779674a2cea7b625b75a6e3ef92e6c562becbb1b5977c02b2797b82",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-control/proxy-events.json",
+      "rawSHA256": "3853f9ff12eb493a356aa0aaa88e7632a3b37eefe54d2016358120509e76ee6a",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "explicit-key-control/stdout.raw",
+      "rawSHA256": "447feb8c4c290cca3ddf801b1f16aa4617dba53096d84c371b46e11a4e346e96",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "explicit-key-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "explicit-key-control/proxy-events.json",
+      "rawSHA256": "8b61cd6919a9eca92fa1dfdacdb11b8a65a63f997a7bccb8e58dba811c1f6703",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "scout-tail-selection-base-bc56-v2/fixture.stdout",
+      "rawSHA256": "d480f0bc742f734ebe5338fa22f76f9e52645fe0137cad280ba1ff3205532321",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "scout-tail-selection-base-bc56-v2/fixture.stderr",
+      "rawSHA256": "77245ca5a590592c9c5540149adeda8389eb98410b6f7b72d98635d88a049a33",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "scout-tail-selection-base-bc56-v2/gateway.stdout",
+      "rawSHA256": "6995443aab544c8eecd1d3ad28e7d641fd2976002fc771d554f3e312de365afd",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "scout-tail-selection-base-bc56-v2/gateway.stderr",
+      "rawSHA256": "baa1ab0def923bfd11b1d382b9e414fdfd17ebe668564df2e811a681d03e41ac",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "scout-tail-selection-base-bc56-v2/proxy.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-list-int/stdout.raw",
+      "rawSHA256": "9ef36b7cc0c0afbf140496976dcc5dfa091083e34f282eda75ead3dba718c922",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-int/proxy-events.json",
+      "rawSHA256": "bae92a93eef09ec987033fbfc847f379c695a881f8d4a9a9a5e7bb82e2a6290e",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-list-term/stdout.raw",
+      "rawSHA256": "13f58fd50251b151d62eb0fe78e5798de086f0fd67a75b5729994d00eca482c3",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-term/stderr.log",
+      "rawSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-list-term/proxy-events.json",
+      "rawSHA256": "b86061ef3c202d7ca8085f11e8624f62d05ad94a66104db8f2d199facf2263c4",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-list-int/stdout.raw",
+      "rawSHA256": "a89ce2652d4293e0099403efe4c7cc161b848a6bdb9e774914a474db3eb91d2f",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-int/proxy-events.json",
+      "rawSHA256": "0b2f3a16cb307f97ab2a941c8db6aed233d3e7e3aef640cd88e95b633033c551",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-list-term/stdout.raw",
+      "rawSHA256": "ec74468fe1397f651615593d4d0631515d8e77dad6aa5b96f36ed56745e32da4",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-term/stderr.log",
+      "rawSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-list-term/proxy-events.json",
+      "rawSHA256": "dc8e0bb3f354890ba2dc43c917f574fe4759ab5c9fcf178682d06188adee3cf8",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-connect-int/stdout.raw",
+      "rawSHA256": "04129f64087019540f2d2a4dc196f83291ab7d0d1907d5cb26a1ca1a8e51fef2",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-connect-int/stderr.log",
+      "rawSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-connect-int/proxy-events.json",
+      "rawSHA256": "811ac8228cb5cb85a19025c2effc9c53ff2d8dd0950a713688a5150d6cfa50b2",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "finite-control/stdout.raw",
+      "rawSHA256": "a37f7d3b8443c22671b36f9764b59a436b7c93fcd31b496186bd19a10150be03",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "finite-control/proxy-events.json",
+      "rawSHA256": "0baca773789cc8f43659b2938aa90efd346133492e8a066ce2508d7462feda02",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "follow-control/stdout.raw",
+      "rawSHA256": "3735cafe2d02880c32d23331b22279012ce39103f6fc676ccc027aa05d6a6f06",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "follow-control/proxy-events.json",
+      "rawSHA256": "53ad6f9cfaf9295a048e2bc66f94145d742f7b40add5ccb9ec3593276af20386",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "explicit-key-control/stdout.raw",
+      "rawSHA256": "45abd2e0e8300ecfc5e4b0c52ce00fe02717a5168a09e4329d1191a3c29b368d",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "explicit-key-control/stderr.log",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": true
+    },
+    {
+      "artifact": "explicit-key-control/proxy-events.json",
+      "rawSHA256": "1b08b656b7faba76cc82dfee15fa3a34a083792b9e4d439d8bbec593446cbbde",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "tail-native-head-498f9aa/fixture.stdout",
+      "rawSHA256": "1df8aa251c16f4b7efee322738cddcf76e2a89a43c2421149dec264db5b6a05e",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "tail-native-head-498f9aa/fixture.stderr",
+      "rawSHA256": "bec35333f4a85a830dcb0c96fc485b53d49f1c81d1af01c6457a37372f64d9eb",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "tail-native-head-498f9aa/gateway.stdout",
+      "rawSHA256": "2b435f29fadb4f0b6ff71916a14e7079daca6ce995a927af34190d44a698c6df",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "tail-native-head-498f9aa/gateway.stderr",
+      "rawSHA256": "bbcf93b8e1b7b2dd13a24738a296ff0c3975ee06c3c39f32f5bcfdd23e577f0b",
+      "receiptHashMatched": false
+    },
+    {
+      "artifact": "tail-native-head-498f9aa/proxy.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptHashMatched": false
+    }
+  ],
+  "note": "Raw observations hash-checked before replacing private local paths with portable labels in public copies. Collector bytes are unchanged. BASE failures and post-observation cleanup are preserved, never relabeled as success."
+}

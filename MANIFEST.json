@@ -1,0 +1,14 @@
+{
+  "scout-tail-selection-proof.py": "e0ee64fe46e92b9513e5af17ff381e8c92c7f3110bf4c857c5dc3beae4e4acc4",
+  "scout-tail-selection-fixture.mts": "890d0845d7ac1a70f23d1ae7a7c75819b12a3fdf6221c7ebcc744db363bcb825",
+  "scout-tail-selection-proxy.mjs": "d353abed351062a03973f637e1fc35124f12d8ffd78b8abdbd8b4ad7e746512e",
+  "base-receipt.json": "1227fe66af7897ac22883e2f2b3f1e2c84a59143cbe9ab002acf189db45d0e5b",
+  "base-streams.txt": "7a12eedc8549a24f57b2c390ab6738d7d5b6874d0973e365ad27d4d9025dd9dd",
+  "head-receipt.json": "20d35cb7695d79e8b1f1746462dd126664f06e60ad6c6446f689a312d837f947",
+  "head-streams.txt": "2e16dca0bb8bc81996668df8d6ff1586c21ed2b9adf2ca4f6456c89ad20b29d0",
+  "checks.json": "32ff405075340de58536638dd12723681cdd097179704c88e23112431eab4b29",
+  "focused-tests.log": "164adc2fee763338116bf3f29358af7bbfe44119f3821c4cd032a9c13dcfba23",
+  "independent-review.md": "aca7199e507b26fc5a3cbfa7f0407990d9eb9935349f7ab4d13dcaecff63345c",
+  "native-readback.json": "67103ae0626e9be93689b7050fe6df64515d23f72eb03b45137e3efd130f2adf",
+  "EVIDENCE.md": "7b508be39b69d4367206a7ee0723819a670fac87a8e0ee4c54d5d2ce43c6abe9"
+}

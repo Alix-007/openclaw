@@ -1,0 +1,127 @@
+{
+  "tail-owner-final-green": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-vitest.mjs",
+      "src/commands/sessions-tail.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 199.349,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "d6ff8aeaf0d6dcb32e5ca19629923f88d9cd7111998e42c3b289d4a14c22f5d7"
+  },
+  "tail-types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../tail-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 24.982,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tail-lint-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../tail-types.tsconfig.json",
+      "src/commands/sessions-tail.ts",
+      "src/commands/sessions-tail.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 94.227,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "f5fc9f97de78ca71ef68054bccd46a965a73dec1782696d6e4eba216ae0010fc"
+  },
+  "tail-format-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/commands/sessions-tail.ts",
+      "src/commands/sessions-tail.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.543,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "685bc1cf08b7db43746cdfb6273023d7a208b50fc50a64c6cc54eef0e0a42202"
+  },
+  "tail-ratchet-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 18.847,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "5f9e3d8d380815ce8b3fb285539b724ef12c00c4f4d64a9a654de5be2a1e85ef"
+  },
+  "tail-linecap-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-line-cap-ratchet.mts",
+      "--base",
+      "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+      "--no-merge-base"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 1.627,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "4ffb0319cec8e4ddeff751071959bd20e7cd46d6ab22eca278904dbfdd5937fa"
+  },
+  "tail-mocks-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "../check-tail-mocks.mts",
+      "src/commands/sessions-tail.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.897,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "diffSHA256": "02e8666f0c8418a7d633208f686a2457faec26d7ef49c9e4c576e7558c676fb0",
+    "logSHA256": "56decad350fe36815301078cbb208b12a4769ebe9a4d1288faa9b3e86eb03827"
+  },
+  "tail-native-qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 278.211,
+    "head": "498f9aa34950c32f4d4525dc9b23030ad28ba5e7",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "481be432ae620e4287b47418a6d06ad34c40db824c209d08c4813b4f819c0dc2"
+  }
+}

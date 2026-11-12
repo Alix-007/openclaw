@@ -1,0 +1,879 @@
+{
+  "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+  "stamp": {
+    "builtAt": 1794448141001,
+    "head": "bc56f785b2d4e30e5c34bea6123747cfbcf18816",
+    "inputsClean": true,
+    "inputSignature": "5a71a92a18bb66698977bc4813a2a5a76e550e14a696d42a38722783e5c4fa08"
+  },
+  "expectation": "red",
+  "hashes": {
+    "scout-tail-selection-proof.py": "e0ee64fe46e92b9513e5af17ff381e8c92c7f3110bf4c857c5dc3beae4e4acc4",
+    "scout-tail-selection-fixture.mts": "890d0845d7ac1a70f23d1ae7a7c75819b12a3fdf6221c7ebcc744db363bcb825",
+    "scout-tail-selection-proxy.mjs": "d353abed351062a03973f637e1fc35124f12d8ffd78b8abdbd8b4ad7e746512e"
+  },
+  "boundary": "normal built sessions tail CLI through controlling PTY; canonical isolated SQLite session/trajectory; actual normal built Gateway; transparent WebSocket proxy holds successful real connect/sessions.list replies only",
+  "cases": [
+    {
+      "label": "finite-list-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1"
+      ],
+      "mode": "sessions.list",
+      "follow": false,
+      "signal": "SIGINT",
+      "exitCode": -9,
+      "seconds": 7.394,
+      "interruptToExitMs": 2038.44,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2034.82,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "ebd5e93b8775b2505c9a756b09b60c1bab2ad02d47f2b918ff0a68ade118eb99",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78) \u2014 Self-hosted, self-updating, self-aware (just kidding... unless?).\r\n\r\n^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 2,
+          "wallMs": 1794449639019,
+          "mode": "sessions.list",
+          "label": "finite-list-int",
+          "observedAt": 3589247.851106753
+        },
+        {
+          "event": "front-connected",
+          "sequence": 3,
+          "wallMs": 1794449644212,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "mode": "sessions.list",
+          "observedAt": 3589253.043704045
+        },
+        {
+          "event": "request",
+          "sequence": 4,
+          "wallMs": 1794449644231,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "method": "connect",
+          "requestId": "1:e830a6b9-c2f4-464b-9641-7c9b88733480",
+          "observedAt": 3589253.06363937
+        },
+        {
+          "event": "real-response",
+          "sequence": 5,
+          "wallMs": 1794449644262,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "method": "connect",
+          "requestId": "1:e830a6b9-c2f4-464b-9641-7c9b88733480",
+          "ok": true,
+          "observedAt": 3589253.094072307
+        },
+        {
+          "event": "request",
+          "sequence": 6,
+          "wallMs": 1794449644265,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "method": "sessions.list",
+          "requestId": "2:6008fdc8-12c2-45f1-90e8-30377135d15c",
+          "observedAt": 3589253.097306585
+        },
+        {
+          "event": "real-response",
+          "sequence": 7,
+          "wallMs": 1794449644362,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "method": "sessions.list",
+          "requestId": "2:6008fdc8-12c2-45f1-90e8-30377135d15c",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589253.194302574
+        },
+        {
+          "event": "response-held",
+          "sequence": 8,
+          "wallMs": 1794449644362,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "method": "sessions.list",
+          "requestId": "2:6008fdc8-12c2-45f1-90e8-30377135d15c",
+          "actualGatewaySuccess": true,
+          "observedAt": 3589253.194337376
+        },
+        {
+          "event": "front-closed",
+          "sequence": 9,
+          "wallMs": 1794449646413,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "observedAt": 3589255.246054861
+        },
+        {
+          "event": "back-closed",
+          "sequence": 10,
+          "wallMs": 1794449646413,
+          "connectionId": 1,
+          "label": "finite-list-int",
+          "observedAt": 3589255.246068227
+        }
+      ],
+      "result": "RED_INITIAL_SELECTION_PENDING"
+    },
+    {
+      "label": "finite-list-term",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1"
+      ],
+      "mode": "sessions.list",
+      "follow": false,
+      "signal": "SIGTERM",
+      "exitCode": -9,
+      "seconds": 5.698,
+      "interruptToExitMs": 2034.4,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2035.59,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "ea0d79fc015d618f2ae2902a191fc481996711bad9d8254888b823107a3faf96",
+      "stderrSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78)\r\nI don't have opinions about tabs vs spaces. I have opinions about everything else.\r\n\r\n",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 11,
+          "wallMs": 1794449646476,
+          "mode": "sessions.list",
+          "label": "finite-list-term",
+          "observedAt": 3589255.307762349
+        },
+        {
+          "event": "front-connected",
+          "sequence": 12,
+          "wallMs": 1794449650095,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "mode": "sessions.list",
+          "observedAt": 3589258.927214573
+        },
+        {
+          "event": "request",
+          "sequence": 13,
+          "wallMs": 1794449650105,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "method": "connect",
+          "requestId": "1:be7d2da2-9005-469f-980d-6941056af7ca",
+          "observedAt": 3589258.936562389
+        },
+        {
+          "event": "real-response",
+          "sequence": 14,
+          "wallMs": 1794449650114,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "method": "connect",
+          "requestId": "1:be7d2da2-9005-469f-980d-6941056af7ca",
+          "ok": true,
+          "observedAt": 3589258.946277845
+        },
+        {
+          "event": "request",
+          "sequence": 15,
+          "wallMs": 1794449650117,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "method": "sessions.list",
+          "requestId": "2:588fd90c-9d7f-45e8-8fd8-2cc02652104f",
+          "observedAt": 3589258.948830812
+        },
+        {
+          "event": "real-response",
+          "sequence": 16,
+          "wallMs": 1794449650125,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "method": "sessions.list",
+          "requestId": "2:588fd90c-9d7f-45e8-8fd8-2cc02652104f",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589258.956774555
+        },
+        {
+          "event": "response-held",
+          "sequence": 17,
+          "wallMs": 1794449650125,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "method": "sessions.list",
+          "requestId": "2:588fd90c-9d7f-45e8-8fd8-2cc02652104f",
+          "actualGatewaySuccess": true,
+          "observedAt": 3589258.956801612
+        },
+        {
+          "event": "front-closed",
+          "sequence": 18,
+          "wallMs": 1794449652173,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "observedAt": 3589261.012019371
+        },
+        {
+          "event": "back-closed",
+          "sequence": 19,
+          "wallMs": 1794449652173,
+          "connectionId": 2,
+          "label": "finite-list-term",
+          "observedAt": 3589261.012028389
+        }
+      ],
+      "result": "RED_INITIAL_SELECTION_PENDING"
+    },
+    {
+      "label": "follow-list-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "mode": "sessions.list",
+      "follow": true,
+      "signal": "SIGINT",
+      "exitCode": -9,
+      "seconds": 5.894,
+      "interruptToExitMs": 2038.92,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2032.26,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "2731dc08516fd36afb07e9b55e238dc2e307aa7c256d43bb467f0279e5420752",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78) \u2014 New model dropped\u2014already benchmarking my personality against it.\r\n\r\n^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 20,
+          "wallMs": 1794449652253,
+          "mode": "sessions.list",
+          "label": "follow-list-int",
+          "observedAt": 3589261.093069627
+        },
+        {
+          "event": "front-connected",
+          "sequence": 21,
+          "wallMs": 1794449656076,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "mode": "sessions.list",
+          "observedAt": 3589264.90996599
+        },
+        {
+          "event": "request",
+          "sequence": 22,
+          "wallMs": 1794449656083,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "method": "connect",
+          "requestId": "1:d36e7d30-bec5-43f5-95a5-15d7b73ea268",
+          "observedAt": 3589264.916544971
+        },
+        {
+          "event": "real-response",
+          "sequence": 23,
+          "wallMs": 1794449656089,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "method": "connect",
+          "requestId": "1:d36e7d30-bec5-43f5-95a5-15d7b73ea268",
+          "ok": true,
+          "observedAt": 3589264.921289398
+        },
+        {
+          "event": "request",
+          "sequence": 24,
+          "wallMs": 1794449656092,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "method": "sessions.list",
+          "requestId": "2:7777d9fc-8cc7-4361-b03a-590f3f3dda4c",
+          "observedAt": 3589264.924380143
+        },
+        {
+          "event": "real-response",
+          "sequence": 25,
+          "wallMs": 1794449656098,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "method": "sessions.list",
+          "requestId": "2:7777d9fc-8cc7-4361-b03a-590f3f3dda4c",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589264.931526306
+        },
+        {
+          "event": "response-held",
+          "sequence": 26,
+          "wallMs": 1794449656098,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "method": "sessions.list",
+          "requestId": "2:7777d9fc-8cc7-4361-b03a-590f3f3dda4c",
+          "actualGatewaySuccess": true,
+          "observedAt": 3589264.93154579
+        },
+        {
+          "event": "front-closed",
+          "sequence": 27,
+          "wallMs": 1794449658150,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "observedAt": 3589266.981824717
+        },
+        {
+          "event": "back-closed",
+          "sequence": 28,
+          "wallMs": 1794449658150,
+          "connectionId": 3,
+          "label": "follow-list-int",
+          "observedAt": 3589266.981876051
+        }
+      ],
+      "result": "RED_INITIAL_SELECTION_PENDING"
+    },
+    {
+      "label": "follow-list-term",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "mode": "sessions.list",
+      "follow": true,
+      "signal": "SIGTERM",
+      "exitCode": -9,
+      "seconds": 6.124,
+      "interruptToExitMs": 2042.11,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2036.46,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "4734d114cf21d1a47132978ce037b1f863fd72a9965b8304d9d589befde71ac0",
+      "stderrSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78)\r\nReachable via WhatsApp, Telegram, Signal, iMessage, and sheer force of will.\r\n\r\n",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 29,
+          "wallMs": 1794449658213,
+          "mode": "sessions.list",
+          "label": "follow-list-term",
+          "observedAt": 3589267.044748096
+        },
+        {
+          "event": "front-connected",
+          "sequence": 30,
+          "wallMs": 1794449662248,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "mode": "sessions.list",
+          "observedAt": 3589271.081026799
+        },
+        {
+          "event": "request",
+          "sequence": 31,
+          "wallMs": 1794449662257,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "method": "connect",
+          "requestId": "1:213feb2b-b7f8-4492-8bf8-e0ff50abb2f9",
+          "observedAt": 3589271.08944781
+        },
+        {
+          "event": "real-response",
+          "sequence": 32,
+          "wallMs": 1794449662266,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "method": "connect",
+          "requestId": "1:213feb2b-b7f8-4492-8bf8-e0ff50abb2f9",
+          "ok": true,
+          "observedAt": 3589271.099807755
+        },
+        {
+          "event": "request",
+          "sequence": 33,
+          "wallMs": 1794449662270,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "method": "sessions.list",
+          "requestId": "2:2d4f32e7-dd37-43aa-bb6a-5c4f79018671",
+          "observedAt": 3589271.102486892
+        },
+        {
+          "event": "real-response",
+          "sequence": 34,
+          "wallMs": 1794449662280,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "method": "sessions.list",
+          "requestId": "2:2d4f32e7-dd37-43aa-bb6a-5c4f79018671",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589271.111970784
+        },
+        {
+          "event": "response-held",
+          "sequence": 35,
+          "wallMs": 1794449662280,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "method": "sessions.list",
+          "requestId": "2:2d4f32e7-dd37-43aa-bb6a-5c4f79018671",
+          "actualGatewaySuccess": true,
+          "observedAt": 3589271.111981543
+        },
+        {
+          "event": "front-closed",
+          "sequence": 36,
+          "wallMs": 1794449664336,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "observedAt": 3589273.168001424
+        },
+        {
+          "event": "back-closed",
+          "sequence": 37,
+          "wallMs": 1794449664336,
+          "connectionId": 4,
+          "label": "follow-list-term",
+          "observedAt": 3589273.168035226
+        }
+      ],
+      "result": "RED_INITIAL_SELECTION_PENDING"
+    },
+    {
+      "label": "finite-connect-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1"
+      ],
+      "mode": "connect",
+      "follow": false,
+      "signal": "SIGINT",
+      "exitCode": -9,
+      "seconds": 5.567,
+      "interruptToExitMs": 2034.6,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2028.63,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "f4303f350458cb26e3730f3c39f42b956991ff6a0a6700f2dbdb4d0e22431679",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78)\r\nI can run local, remote, or purely on vibes\u2014results may vary with DNS.\r\n\r\n^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 38,
+          "wallMs": 1794449664396,
+          "mode": "connect",
+          "label": "finite-connect-int",
+          "observedAt": 3589273.227935556
+        },
+        {
+          "event": "front-connected",
+          "sequence": 39,
+          "wallMs": 1794449667905,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "mode": "connect",
+          "observedAt": 3589276.73702011
+        },
+        {
+          "event": "request",
+          "sequence": 40,
+          "wallMs": 1794449667911,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "method": "connect",
+          "requestId": "1:83209789-345f-4e44-af87-36fccbf7b0ba",
+          "observedAt": 3589276.742848532
+        },
+        {
+          "event": "real-response",
+          "sequence": 41,
+          "wallMs": 1794449667918,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "method": "connect",
+          "requestId": "1:83209789-345f-4e44-af87-36fccbf7b0ba",
+          "ok": true,
+          "observedAt": 3589276.749583256
+        },
+        {
+          "event": "response-held",
+          "sequence": 42,
+          "wallMs": 1794449667918,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "method": "connect",
+          "requestId": "1:83209789-345f-4e44-af87-36fccbf7b0ba",
+          "actualGatewaySuccess": true,
+          "observedAt": 3589276.749603983
+        },
+        {
+          "event": "front-closed",
+          "sequence": 43,
+          "wallMs": 1794449669961,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "observedAt": 3589278.793501088
+        },
+        {
+          "event": "back-closed",
+          "sequence": 44,
+          "wallMs": 1794449669962,
+          "connectionId": 5,
+          "label": "finite-connect-int",
+          "observedAt": 3589278.794617946
+        }
+      ],
+      "result": "RED_INITIAL_SELECTION_PENDING"
+    },
+    {
+      "label": "finite-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1"
+      ],
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 3.694,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "b07a46e852cba319f727520b1decb125ca5b48c671df60b3c76b3a8f8e1cbbc6",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78) \u2014 The lobster in your shell.\r\n\r\n00:00:00Z tool.result      agent:main:tail-selection-pro\u2026 selection-proof-marker ok\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 45,
+          "wallMs": 1794449670024,
+          "mode": "normal",
+          "label": "finite-control",
+          "observedAt": 3589278.855696658
+        },
+        {
+          "event": "front-connected",
+          "sequence": 46,
+          "wallMs": 1794449673578,
+          "connectionId": 6,
+          "label": "finite-control",
+          "mode": "normal",
+          "observedAt": 3589282.409978301
+        },
+        {
+          "event": "request",
+          "sequence": 47,
+          "wallMs": 1794449673585,
+          "connectionId": 6,
+          "label": "finite-control",
+          "method": "connect",
+          "requestId": "1:2afaedd4-94d6-4aaa-9336-ade2f5b81b99",
+          "observedAt": 3589282.416933355
+        },
+        {
+          "event": "real-response",
+          "sequence": 48,
+          "wallMs": 1794449673591,
+          "connectionId": 6,
+          "label": "finite-control",
+          "method": "connect",
+          "requestId": "1:2afaedd4-94d6-4aaa-9336-ade2f5b81b99",
+          "ok": true,
+          "observedAt": 3589282.423457931
+        },
+        {
+          "event": "request",
+          "sequence": 49,
+          "wallMs": 1794449673594,
+          "connectionId": 6,
+          "label": "finite-control",
+          "method": "sessions.list",
+          "requestId": "2:190562d3-2573-4517-afeb-d6665843d125",
+          "observedAt": 3589282.42618491
+        },
+        {
+          "event": "real-response",
+          "sequence": 50,
+          "wallMs": 1794449673600,
+          "connectionId": 6,
+          "label": "finite-control",
+          "method": "sessions.list",
+          "requestId": "2:190562d3-2573-4517-afeb-d6665843d125",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589282.432288787
+        },
+        {
+          "event": "front-closed",
+          "sequence": 51,
+          "wallMs": 1794449673603,
+          "connectionId": 6,
+          "label": "finite-control",
+          "observedAt": 3589282.435371638
+        },
+        {
+          "event": "back-closed",
+          "sequence": 52,
+          "wallMs": 1794449673603,
+          "connectionId": 6,
+          "label": "finite-control",
+          "observedAt": 3589282.435378441
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "follow-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1",
+        "--follow"
+      ],
+      "mode": "normal",
+      "follow": true,
+      "signal": "SIGINT",
+      "exitCode": 130,
+      "seconds": 3.719,
+      "interruptToExitMs": 95.95,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": -27.08,
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "0e94fd6c2779674a2cea7b625b75a6e3ef92e6c562becbb1b5977c02b2797b82",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78)\r\nThe sass is configurable. Taking it out might bring the whole thing down.\r\n\r\n00:00:00Z tool.result      agent:main:tail-selection-pro\u2026 selection-proof-marker ok\r\n^C\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 53,
+          "wallMs": 1794449673778,
+          "mode": "normal",
+          "label": "follow-control",
+          "observedAt": 3589282.609750728
+        },
+        {
+          "event": "front-connected",
+          "sequence": 54,
+          "wallMs": 1794449677340,
+          "connectionId": 7,
+          "label": "follow-control",
+          "mode": "normal",
+          "observedAt": 3589286.172275117
+        },
+        {
+          "event": "request",
+          "sequence": 55,
+          "wallMs": 1794449677351,
+          "connectionId": 7,
+          "label": "follow-control",
+          "method": "connect",
+          "requestId": "1:ce18981b-da11-4c86-9cb5-f5b345aa0065",
+          "observedAt": 3589286.183215814
+        },
+        {
+          "event": "real-response",
+          "sequence": 56,
+          "wallMs": 1794449677362,
+          "connectionId": 7,
+          "label": "follow-control",
+          "method": "connect",
+          "requestId": "1:ce18981b-da11-4c86-9cb5-f5b345aa0065",
+          "ok": true,
+          "observedAt": 3589286.194197755
+        },
+        {
+          "event": "request",
+          "sequence": 57,
+          "wallMs": 1794449677365,
+          "connectionId": 7,
+          "label": "follow-control",
+          "method": "sessions.list",
+          "requestId": "2:cd08eed0-2c88-44ce-a93e-0151135fb271",
+          "observedAt": 3589286.197117058
+        },
+        {
+          "event": "real-response",
+          "sequence": 58,
+          "wallMs": 1794449677375,
+          "connectionId": 7,
+          "label": "follow-control",
+          "method": "sessions.list",
+          "requestId": "2:cd08eed0-2c88-44ce-a93e-0151135fb271",
+          "ok": true,
+          "sessionCount": 0,
+          "observedAt": 3589286.207720661
+        },
+        {
+          "event": "front-closed",
+          "sequence": 59,
+          "wallMs": 1794449677379,
+          "connectionId": 7,
+          "label": "follow-control",
+          "observedAt": 3589286.210584891
+        },
+        {
+          "event": "back-closed",
+          "sequence": 60,
+          "wallMs": 1794449677379,
+          "connectionId": 7,
+          "label": "follow-control",
+          "observedAt": 3589286.210628673
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "explicit-key-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "sessions",
+        "tail",
+        "--tail",
+        "1",
+        "--session-key",
+        "agent:main:tail-selection-proof"
+      ],
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 3.657,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "frontClosedBeforeHarnessCleanup": false,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "447feb8c4c290cca3ddf801b1f16aa4617dba53096d84c371b46e11a4e346e96",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (bc56f78) \u2014 Automation with claws: minimal fuss, maximal pinch.\r\n\r\n00:00:00Z tool.result      agent:main:tail-selection-pro\u2026 selection-proof-marker ok\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 61,
+          "wallMs": 1794449677558,
+          "mode": "normal",
+          "label": "explicit-key-control",
+          "observedAt": 3589286.389980447
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    }
+  ],
+  "result": "RED_WITH_REAL_GATEWAY_AND_LEGAL_CONTROLS",
+  "fixtureReadback": {
+    "fixture": "canonical-session-and-trajectory",
+    "storePath": "<BASE_OUTPUT>/state/agents/main/sessions/sessions.json",
+    "sessionKey": "agent:main:tail-selection-proof",
+    "sessionId": "tail-selection-proof-session",
+    "entries": [
+      {
+        "key": "agent:main:tail-selection-proof",
+        "sessionId": "tail-selection-proof-session"
+      }
+    ],
+    "rowCount": 1,
+    "marker": "selection-proof-marker"
+  },
+  "gatewayPid": 3736253,
+  "gatewayHealthy": true,
+  "configuredProxyPort": 45923,
+  "proxyPid": 3736839,
+  "cleanup": {
+    "gatewayExit": 0,
+    "proxyExit": 0,
+    "gatewayOwnedSurvivors": [],
+    "proxyOwnedSurvivors": [],
+    "configUnchanged": true,
+    "isolatedStateRetained": true
+  }
+}

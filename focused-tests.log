@@ -1,0 +1,116 @@
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 7208ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared d60f19513e05 in 137935ms (19005 inputs, 24446 outputs)
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the requested newest progress lines with tool arguments 4426ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for provider failure 3470ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for tool turn without delivery 499ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for assistant interruption 423ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for prompt failure 621ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for timeout with abort and failure 518ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for abort with failure 538ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders the recorded terminal outcome for delivered partial reply 565ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > aligns CJK session keys and replaces invalid timestamps 671ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders CSI inside as plain progress labels 526ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > renders OSC beyond cutoff as plain progress labels 630ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > rejects unsafe tail count 395ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > rejects missing session before following 460ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > rejects blank session key 424ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > reports an empty default selection without failing or following 7ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a reachable Gateway source 526ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a unreachable Gateway source 572ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a explicit store Gateway source 789ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a explicit key Gateway source 565ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a different session id Gateway source 645ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > selects trajectory sessions with a rejected Gateway source 582ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > cancels a pending Gateway selection without fallback or progress output 675ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > isolates trajectory rows by session id 634ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > continues following until SIGINT and exits with 130 443ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > continues following until SIGTERM and exits with 143 575ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > continues following until abort and exits with undefined 558ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > exits unsuccessfully when the followed trajectory store becomes unreadable 945ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > rejects an explicit blank agent without inferring a store 11ms
+ ✓ |commands| src/commands/sessions-tail.test.ts > sessionsTailCommand > resolves the target store from a fully qualified non-default agent session key 2911ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+[sqlite-test-lifecycle] src/commands/sessions-tail.test.ts: retiring openclaw.sessionStateNotices
+
+
+ Test Files  1 passed (1)
+      Tests  29 passed (29)
+   Start at  10:44:07
+   Duration  185.52s (transform 83%, tests 14%, import 2%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 197.23s
