@@ -1,0 +1,40 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const [checkout,configPath,lane]=process.argv.slice(2);
+const source=(name:string)=>pathToFileURL(path.join(checkout!,'src',name)).href;
+if(lane==='sessions'){
+  const cfg=JSON.parse(fs.readFileSync(configPath!,'utf8'));
+  const {resolveSessionStoreTargets}=await import(source('config/sessions.ts'));
+  const {upsertSessionEntryCore,listSessionEntriesReadOnly}=await import(source('config/sessions/session-accessor.ts'));
+  const target=resolveSessionStoreTargets(cfg,{agent:'main'})[0];
+  const sessionKey='agent:main:catalog-cancellation-proof',sessionId='catalog-cancellation-proof-session';
+  await upsertSessionEntryCore({sessionKey,storePath:target.storePath},{sessionId,updatedAt:Date.now(),modelProvider:'ollama',model:'synthetic-read-model',agentHarnessId:'openclaw',status:'done'});
+  const entries=listSessionEntriesReadOnly({agentId:'main',storePath:target.storePath,projection:'list'});
+  console.log(JSON.stringify({lane,sessionKey,sessionId,entries:entries.map((x:any)=>({key:x.sessionKey,sessionId:x.entry.sessionId}))}));
+}else{
+  const protocol=await import(pathToFileURL(path.join(checkout!,'packages/openclaw-id-protocol/src/index.ts')).href);
+  const {createOpenClawIdAuthority}=await import(source('gateway/openclaw-id/authority.ts'));
+  const owner=createOpenClawIdAuthority();
+  const gatewaySeed=new Uint8Array(32).fill(37);
+  const state=process.env.OPENCLAW_STATE_DIR!;
+  fs.mkdirSync(path.join(state,'openclaw-id'),{recursive:true});
+  fs.writeFileSync(path.join(state,'openclaw-id/gateway-key'),gatewaySeed,{mode:0o600});
+  const kGw=protocol.formatEd25519PublicKey((await protocol.ed25519SignerFromSeed(gatewaySeed)).publicKey);
+  const kSrv=protocol.formatIrohEndpointKey(new Uint8Array(32).fill(42));
+  const prep=await owner.prepareLink({kSrv,kGw,hostname:'synthetic-proof.claws.example.test'});
+  if('ok' in prep)throw new Error(prep.detail);
+  const secret=protocol.generateKitSecret();
+  const root=await protocol.deriveRootSigner(secret);secret.fill(0);
+  const device=await protocol.generateEd25519Signer();
+  const issued_at=Math.floor(Date.now()/1000);
+  const cert=await protocol.signStatement('OwnerDeviceCert',{device_pub:protocol.formatEd25519PublicKey(device.publicKey),peer_keys:[protocol.formatIrohEndpointKey(new Uint8Array(32).fill(43))],label:'Synthetic proof device',scope:'owner',caps:[...protocol.OWNER_CAPABILITIES],issued_at,expires_at:null,root_epoch:protocol.ROOT_EPOCH},root);
+  const change=await protocol.signStatement('MembershipChange',{claw_id:prep.claw_id,seq:1,target:{op:'add_owner_device',cert},issued_at},root);
+  const binding=await protocol.signStatement('ServerBinding',{...prep,issued_at},root);
+  const linked=await owner.commitLink({root_pub:protocol.formatEd25519PublicKey(root.publicKey),owner_device:change,binding},'local_operator',{kSrv,kGw});
+  if(!linked.ok)throw new Error(JSON.stringify(linked));
+  const record=await owner.load();
+  console.log(JSON.stringify({lane,linked:linked.ok,clawId:record?.claw_id,hostname:record?.hostname,bindingSeq:record?.binding?.body.binding_seq,ownerDeviceCount:Object.keys(record?.authority?.owner_devices??{}).length}));
+}
+const {closeOpenClawAgentDatabasesAsync}=await import(source('state/openclaw-agent-db.ts'));
+await closeOpenClawAgentDatabasesAsync();

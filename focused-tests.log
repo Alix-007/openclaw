@@ -1,0 +1,34 @@
+$ node scripts/test-projects.mts src/cli/id-cli.commands.test.ts src/cli/id-cli-rebind.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.unit-fast.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |unit-fast| src/cli/id-cli-rebind.test.ts > openclaw id status > explains refused keys with the fix 4ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  20:54:25
+   Duration  3.32s (transform 75%, import 23%, setup 2%)
+
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > authorizes status through the real method scope gate 220ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > authorizes rebind through the real method scope gate 10ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.status is interrupted 11ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > quietly stops status when openclawId.people is interrupted 7ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > preserves ordinary status read failures 6ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports an accepted commit when its publication read fails (json=true) 8ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports an accepted commit when its publication read fails (json=false) 10ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports committed follow-up failure without polling or retrying (json=true) 11ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > reports committed follow-up failure without polling or retrying (json=false) 8ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > does not claim a move when the commit RPC is rejected 8ms
+ ✓ |cli| src/cli/id-cli.commands.test.ts > registered id commands > treats a full command rerun as a new signed rotation, not a commit replay 8ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  20:54:31
+   Duration  7.11s (transform 43%, worker 35%, import 10%, setup 6%, tests 5%)
+
+[test] passed 2 Vitest shards in 16.23s

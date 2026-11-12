@@ -1,0 +1,266 @@
+{
+  "head": "a7a5630312e519d55bb56e0d986b26109d3bf134",
+  "artifacts": [
+    {
+      "source": "status-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-json-int/proxy-events.json",
+      "originalSHA256": "783e5fae83f6a77894ebb52ca0ff8baf8d77fc4798ffce19304a3b1119a470ed",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "status-human-term/stdout.raw",
+      "originalSHA256": "3b5bb8044f4c17d0b0b7afbc12430064cf9e7af93b199789df15e98c670d56ad",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-human-term/stderr.log",
+      "originalSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-human-term/proxy-events.json",
+      "originalSHA256": "422324b8b6b71c9e6d8e06ddd87d4b9cc2df78a78bcd47f354e9c10e904d48b0",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "people-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-json-int/proxy-events.json",
+      "originalSHA256": "69d5ed3e8c1422dc04b6b5fa35f3d014283afe94945cb70531b41faf9034aca0",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "people-human-term/stdout.raw",
+      "originalSHA256": "5b88ed484a08e6a4a0f75a41b4817816b67eaf7bf18d93f204b62ab75a05893a",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-human-term/stderr.log",
+      "originalSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-human-term/proxy-events.json",
+      "originalSHA256": "d16f09aac4c624a693a7bfda980cf08fb203a6125f2e00d60c6bcfe5919e1429",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "json-control/stdout.raw",
+      "originalSHA256": "8b714e6b8967c041becdadadd37f3c71859c3468711d99a078a1fcd957a5742a",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "json-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "json-control/proxy-events.json",
+      "originalSHA256": "f545cb31c5bcae1e55a2886954fe8eb3493b81667d4fb5f7e844e3028677728b",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "human-control/stdout.raw",
+      "originalSHA256": "1098e418ae1116a0a7ff2ef3a66fe241c09ee19311de2efcd2b1b7b909cd9b75",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "human-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "human-control/proxy-events.json",
+      "originalSHA256": "1469336472fbb1af818a0af4b9bbed899e316c19d78fca673d208caaaa29857b",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "error-control/stdout.raw",
+      "originalSHA256": "9974208168bcfb617c0c17fc98add677cc8db6bc6558a3b9cbb8ccddc90c92e7",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/stderr.log",
+      "originalSHA256": "e06bf5d3f0847bc120db599c2d7ec29a16c200a8042ccd5f50b4b8c825ce842d",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/proxy-events.json",
+      "originalSHA256": "e796b68f7f15568e643025b343777995db65e1d57f85eb4eed0a02386695af49",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-base-v3/fixture.stdout",
+      "originalSHA256": "9acd13cba8a44b3b6f4c3b63f109e713d5398906981e7e0df1b8655f40081a24",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-base-v3/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-base-v3/gateway.stdout",
+      "originalSHA256": "9b5f2dbb272e3d1954037dd0581869127ad0bc39cbda6fb0864dfdd2ac5f64bf",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-base-v3/gateway.stderr",
+      "originalSHA256": "4158f47f156b6d71d22e48a2fdfb851a94cd2198fe2939bb66c0cc49ce06fc69",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-base-v3/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "status-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-json-int/proxy-events.json",
+      "originalSHA256": "730c01eb7606ed9738a24aeb81e0b04a05b8e88cda366b2987ec350bac7cb840",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "status-human-term/stdout.raw",
+      "originalSHA256": "6c91cf2402bc0e121b9faa80c10e408da06868785cd389ce6da1b59b0f0da224",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-human-term/stderr.log",
+      "originalSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "status-human-term/proxy-events.json",
+      "originalSHA256": "7d4769ffd638e538bc62085bd18d9faf09f929870bcd05f6e7536869681364e6",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "people-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-json-int/proxy-events.json",
+      "originalSHA256": "5ecc606a1023256dd3686838fdcb54b9eeab1c2f66b2979ec641eb4a363fe979",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "people-human-term/stdout.raw",
+      "originalSHA256": "ab199921ff361dc78693443cb1836bcc979694fe5c7d938fcda34e6d50d1b7e5",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-human-term/stderr.log",
+      "originalSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "people-human-term/proxy-events.json",
+      "originalSHA256": "fd1b6c47dc70c65eb955bb81fbf30435d3e2b8737acafd97ccb2f7249fbeae14",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "json-control/stdout.raw",
+      "originalSHA256": "dafab8656d0a08f1512f9d8c2603063927c5b370cf157ee86f81b8251968cffb",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "json-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "json-control/proxy-events.json",
+      "originalSHA256": "857ddea17be0ffe8f4d47ddd876e4012a529c0270f1481d23fdc3c158a220e39",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "human-control/stdout.raw",
+      "originalSHA256": "56b4b9e42896d017094dbee3eeead9f16d72ca340e7e5f5dd4ef5661ba80b5b6",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "human-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "human-control/proxy-events.json",
+      "originalSHA256": "e2234eef8b8924f2afe591ca901a79965e41d2b239a5e9b9dc0d94739b2ffcd9",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "error-control/stdout.raw",
+      "originalSHA256": "9974208168bcfb617c0c17fc98add677cc8db6bc6558a3b9cbb8ccddc90c92e7",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/stderr.log",
+      "originalSHA256": "e06bf5d3f0847bc120db599c2d7ec29a16c200a8042ccd5f50b4b8c825ce842d",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/proxy-events.json",
+      "originalSHA256": "6057dca2eadc25a9764dbee770dbe5c917fb8cb7660f3fe39b4256e9999f35e5",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-native-head-a7a5630/fixture.stdout",
+      "originalSHA256": "e1e9aa7949a70e15df85542d5808e590ba55df708e6738fb811b0d0a60cecad8",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-native-head-a7a5630/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-native-head-a7a5630/gateway.stdout",
+      "originalSHA256": "8db6828b16d516cd30ae0c77ef38aa1d85f6352f5ee6869339cfaf423ae96a1e",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-native-head-a7a5630/gateway.stderr",
+      "originalSHA256": "ee102b7227ef912e2012a00359fe4f3c23761dee3d730cf2104b31e72da8695f",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "id-native-head-a7a5630/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    }
+  ],
+  "note": "Original observations hash-checked before replacing private local path labels. Collector bytes unchanged. BASE launchers emergency SIGKILL remains RED. No state database, private key, auth credential or product artifact uploaded."
+}
