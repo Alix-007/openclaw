@@ -1,0 +1,2994 @@
+
+--- list-json-int/stdout.raw ---
+^C{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "gateway timeout after 1500ms\nGateway target: ws://127.0.0.1:50007\nSource: env OPENCLAW_GATEWAY_URL\nConfig: <BASE_OUTPUT>/config.json\n\nThe request was already sent to the gateway, so the operation may have been applied even though no response arrived; its outcome is unknown. Verify the current state (for example, re-run the equivalent read-only command) before retrying, especially for write actions."
+  }
+}
+
+--- list-json-int/stderr.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+OpenClaw took too long to respond.
+Your request may have completed. Check its result before trying again.
+Check the Control UI or run `openclaw gateway status` in your terminal.
+
+--- list-json-int/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 2,
+    "wallMs": 1794541130607,
+    "mode": "hooks.status",
+    "label": "list-json-int",
+    "observedAt": 3680739.438449507
+  },
+  {
+    "event": "front-connected",
+    "sequence": 3,
+    "wallMs": 1794541134312,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "mode": "hooks.status",
+    "observedAt": 3680743.144108136
+  },
+  {
+    "event": "request",
+    "sequence": 4,
+    "wallMs": 1794541134328,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "method": "connect",
+    "requestId": "1:cffd23ce-67c0-44f1-8fe0-095e1a720bf2",
+    "observedAt": 3680743.159858682
+  },
+  {
+    "event": "real-response",
+    "sequence": 5,
+    "wallMs": 1794541134356,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "method": "connect",
+    "requestId": "1:cffd23ce-67c0-44f1-8fe0-095e1a720bf2",
+    "ok": true,
+    "observedAt": 3680743.188070361
+  },
+  {
+    "event": "request",
+    "sequence": 6,
+    "wallMs": 1794541134359,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "method": "hooks.status",
+    "requestId": "2:50965389-c747-4bca-bd06-1e1fac376b6e",
+    "observedAt": 3680743.190996759
+  },
+  {
+    "event": "real-response",
+    "sequence": 7,
+    "wallMs": 1794541134411,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "method": "hooks.status",
+    "requestId": "2:50965389-c747-4bca-bd06-1e1fac376b6e",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680743.243813978
+  },
+  {
+    "event": "response-held",
+    "sequence": 8,
+    "wallMs": 1794541134412,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "method": "hooks.status",
+    "requestId": "2:50965389-c747-4bca-bd06-1e1fac376b6e",
+    "actualGatewaySuccess": true,
+    "observedAt": 3680743.243831557
+  },
+  {
+    "event": "front-closed",
+    "sequence": 9,
+    "wallMs": 1794541135799,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "observedAt": 3680744.630774989
+  },
+  {
+    "event": "back-closed",
+    "sequence": 10,
+    "wallMs": 1794541135799,
+    "connectionId": 1,
+    "label": "list-json-int",
+    "observedAt": 3680744.630959988
+  }
+]
+
+--- info-human-term/stdout.raw ---
+
+OpenClaw 2026.11.3 (0633f25) — New model dropped—already benchmarking my personality against it.
+
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+--- info-human-term/stderr.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+OpenClaw took too long to respond.
+Your request may have completed. Check its result before trying again.
+Check the Control UI or run `openclaw gateway status` in your terminal.
+
+--- info-human-term/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 11,
+    "wallMs": 1794541136222,
+    "mode": "hooks.status",
+    "label": "info-human-term",
+    "observedAt": 3680745.053817611
+  },
+  {
+    "event": "front-connected",
+    "sequence": 12,
+    "wallMs": 1794541139702,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "mode": "hooks.status",
+    "observedAt": 3680748.534318404
+  },
+  {
+    "event": "request",
+    "sequence": 13,
+    "wallMs": 1794541139710,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "method": "connect",
+    "requestId": "1:3f522bcc-ce19-4ca8-ab5c-61ff5b5ff73b",
+    "observedAt": 3680748.542217971
+  },
+  {
+    "event": "real-response",
+    "sequence": 14,
+    "wallMs": 1794541139717,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "method": "connect",
+    "requestId": "1:3f522bcc-ce19-4ca8-ab5c-61ff5b5ff73b",
+    "ok": true,
+    "observedAt": 3680748.549376081
+  },
+  {
+    "event": "request",
+    "sequence": 15,
+    "wallMs": 1794541139720,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "method": "hooks.status",
+    "requestId": "2:458dd46c-ceae-46c1-bc21-de6ea50c1098",
+    "observedAt": 3680748.55199916
+  },
+  {
+    "event": "real-response",
+    "sequence": 16,
+    "wallMs": 1794541139740,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "method": "hooks.status",
+    "requestId": "2:458dd46c-ceae-46c1-bc21-de6ea50c1098",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680748.571873168
+  },
+  {
+    "event": "response-held",
+    "sequence": 17,
+    "wallMs": 1794541139740,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "method": "hooks.status",
+    "requestId": "2:458dd46c-ceae-46c1-bc21-de6ea50c1098",
+    "actualGatewaySuccess": true,
+    "observedAt": 3680748.571893132
+  },
+  {
+    "event": "front-closed",
+    "sequence": 18,
+    "wallMs": 1794541141197,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "observedAt": 3680750.028769395
+  },
+  {
+    "event": "back-closed",
+    "sequence": 19,
+    "wallMs": 1794541141197,
+    "connectionId": 2,
+    "label": "info-human-term",
+    "observedAt": 3680750.028777711
+  }
+]
+
+--- check-json-int/stdout.raw ---
+^C{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "gateway timeout after 1500ms\nGateway target: ws://127.0.0.1:50007\nSource: env OPENCLAW_GATEWAY_URL\nConfig: <BASE_OUTPUT>/config.json\n\nThe request was already sent to the gateway, so the operation may have been applied even though no response arrived; its outcome is unknown. Verify the current state (for example, re-run the equivalent read-only command) before retrying, especially for write actions."
+  }
+}
+
+--- check-json-int/stderr.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+OpenClaw took too long to respond.
+Your request may have completed. Check its result before trying again.
+Check the Control UI or run `openclaw gateway status` in your terminal.
+
+--- check-json-int/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 20,
+    "wallMs": 1794541141677,
+    "mode": "hooks.status",
+    "label": "check-json-int",
+    "observedAt": 3680750.509380272
+  },
+  {
+    "event": "front-connected",
+    "sequence": 21,
+    "wallMs": 1794541145188,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "mode": "hooks.status",
+    "observedAt": 3680754.020185484
+  },
+  {
+    "event": "request",
+    "sequence": 22,
+    "wallMs": 1794541145197,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "method": "connect",
+    "requestId": "1:830ef671-4a8f-4310-9822-f278417cc1bb",
+    "observedAt": 3680754.028733698
+  },
+  {
+    "event": "real-response",
+    "sequence": 23,
+    "wallMs": 1794541145203,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "method": "connect",
+    "requestId": "1:830ef671-4a8f-4310-9822-f278417cc1bb",
+    "ok": true,
+    "observedAt": 3680754.035194979
+  },
+  {
+    "event": "request",
+    "sequence": 24,
+    "wallMs": 1794541145210,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "method": "hooks.status",
+    "requestId": "2:4fb574e0-7f2b-4df5-a834-7d8fa516f832",
+    "observedAt": 3680754.041657099
+  },
+  {
+    "event": "real-response",
+    "sequence": 25,
+    "wallMs": 1794541145227,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "method": "hooks.status",
+    "requestId": "2:4fb574e0-7f2b-4df5-a834-7d8fa516f832",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680754.059572591
+  },
+  {
+    "event": "response-held",
+    "sequence": 26,
+    "wallMs": 1794541145227,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "method": "hooks.status",
+    "requestId": "2:4fb574e0-7f2b-4df5-a834-7d8fa516f832",
+    "actualGatewaySuccess": true,
+    "observedAt": 3680754.059591202
+  },
+  {
+    "event": "front-closed",
+    "sequence": 27,
+    "wallMs": 1794541146677,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "observedAt": 3680755.508763478
+  },
+  {
+    "event": "back-closed",
+    "sequence": 28,
+    "wallMs": 1794541146677,
+    "connectionId": 3,
+    "label": "check-json-int",
+    "observedAt": 3680755.508772638
+  }
+]
+
+--- list-control/stdout.raw ---
+{
+  "workspaceDir": "<BASE_OUTPUT>/workspace",
+  "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+  "hooks": [
+    {
+      "name": "boot-md",
+      "description": "Run BOOT.md on gateway startup",
+      "emoji": "🚀",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-bundled",
+      "events": [
+        "gateway:startup"
+      ],
+      "unknownEvents": [],
+      "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    },
+    {
+      "name": "bootstrap-extra-files",
+      "description": "Inject additional workspace bootstrap files via glob/path patterns",
+      "emoji": "📎",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-bundled",
+      "events": [
+        "agent:bootstrap"
+      ],
+      "unknownEvents": [],
+      "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    },
+    {
+      "name": "command-logger",
+      "description": "Log emitted command events to a centralized audit file",
+      "emoji": "📝",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-bundled",
+      "events": [
+        "command"
+      ],
+      "unknownEvents": [],
+      "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    },
+    {
+      "name": "compaction-notifier",
+      "description": "Send visible chat notices when session compaction starts and finishes.",
+      "emoji": "🧹",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-bundled",
+      "events": [
+        "session:compact:before",
+        "session:compact:after"
+      ],
+      "unknownEvents": [],
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    },
+    {
+      "name": "session-memory",
+      "description": "Save session context to memory on manual or automatic reset",
+      "emoji": "💾",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-bundled",
+      "events": [
+        "command:new",
+        "command:reset",
+        "session:auto-reset"
+      ],
+      "unknownEvents": [],
+      "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    },
+    {
+      "name": "proof-hook",
+      "description": "Synthetic proof hook",
+      "eligible": true,
+      "disabled": false,
+      "enabledByConfig": true,
+      "requirementsSatisfied": true,
+      "loadable": true,
+      "source": "openclaw-workspace",
+      "events": [
+        "command:new"
+      ],
+      "unknownEvents": [],
+      "missing": {
+        "bins": [],
+        "anyBins": [],
+        "env": [],
+        "config": [],
+        "os": []
+      },
+      "managedByPlugin": false
+    }
+  ]
+}
+
+--- list-control/stderr.log ---
+
+--- list-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 29,
+    "wallMs": 1794541147089,
+    "mode": "normal",
+    "label": "list-control",
+    "observedAt": 3680755.920864948
+  },
+  {
+    "event": "front-connected",
+    "sequence": 30,
+    "wallMs": 1794541150574,
+    "connectionId": 4,
+    "label": "list-control",
+    "mode": "normal",
+    "observedAt": 3680759.405939019
+  },
+  {
+    "event": "request",
+    "sequence": 31,
+    "wallMs": 1794541150582,
+    "connectionId": 4,
+    "label": "list-control",
+    "method": "connect",
+    "requestId": "1:968b1ebb-46ba-4d9e-b1f3-421558e064fe",
+    "observedAt": 3680759.413853371
+  },
+  {
+    "event": "real-response",
+    "sequence": 32,
+    "wallMs": 1794541150588,
+    "connectionId": 4,
+    "label": "list-control",
+    "method": "connect",
+    "requestId": "1:968b1ebb-46ba-4d9e-b1f3-421558e064fe",
+    "ok": true,
+    "observedAt": 3680759.419489374
+  },
+  {
+    "event": "request",
+    "sequence": 33,
+    "wallMs": 1794541150590,
+    "connectionId": 4,
+    "label": "list-control",
+    "method": "hooks.status",
+    "requestId": "2:8aed7d15-99f5-48e6-b776-f53dd1bc8937",
+    "observedAt": 3680759.422104528
+  },
+  {
+    "event": "real-response",
+    "sequence": 34,
+    "wallMs": 1794541150606,
+    "connectionId": 4,
+    "label": "list-control",
+    "method": "hooks.status",
+    "requestId": "2:8aed7d15-99f5-48e6-b776-f53dd1bc8937",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680759.438683474
+  },
+  {
+    "event": "front-closed",
+    "sequence": 35,
+    "wallMs": 1794541150610,
+    "connectionId": 4,
+    "label": "list-control",
+    "observedAt": 3680759.442030382
+  },
+  {
+    "event": "back-closed",
+    "sequence": 36,
+    "wallMs": 1794541150610,
+    "connectionId": 4,
+    "label": "list-control",
+    "observedAt": 3680759.442046971
+  }
+]
+
+--- info-control/stdout.raw ---
+
+OpenClaw 2026.11.3 (0633f25)
+My heartbeat is a config option. Romance isn't dead, it's just scheduled.
+
+proof-hook ✓ Ready
+
+Synthetic proof hook
+
+Details:
+  Source: openclaw-workspace
+  Path: <BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md
+  Handler: <BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js
+  Events: command:new
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+--- info-control/stderr.log ---
+
+--- info-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 37,
+    "wallMs": 1794541150701,
+    "mode": "normal",
+    "label": "info-control",
+    "observedAt": 3680759.533383523
+  },
+  {
+    "event": "front-connected",
+    "sequence": 38,
+    "wallMs": 1794541154411,
+    "connectionId": 5,
+    "label": "info-control",
+    "mode": "normal",
+    "observedAt": 3680763.242708234
+  },
+  {
+    "event": "request",
+    "sequence": 39,
+    "wallMs": 1794541154421,
+    "connectionId": 5,
+    "label": "info-control",
+    "method": "connect",
+    "requestId": "1:93354d79-3312-4d80-afc7-6bd74ff77552",
+    "observedAt": 3680763.252562293
+  },
+  {
+    "event": "real-response",
+    "sequence": 40,
+    "wallMs": 1794541154430,
+    "connectionId": 5,
+    "label": "info-control",
+    "method": "connect",
+    "requestId": "1:93354d79-3312-4d80-afc7-6bd74ff77552",
+    "ok": true,
+    "observedAt": 3680763.262367025
+  },
+  {
+    "event": "request",
+    "sequence": 41,
+    "wallMs": 1794541154433,
+    "connectionId": 5,
+    "label": "info-control",
+    "method": "hooks.status",
+    "requestId": "2:58069a17-c837-4899-9ca7-7ccf30d000d0",
+    "observedAt": 3680763.265229102
+  },
+  {
+    "event": "real-response",
+    "sequence": 42,
+    "wallMs": 1794541154449,
+    "connectionId": 5,
+    "label": "info-control",
+    "method": "hooks.status",
+    "requestId": "2:58069a17-c837-4899-9ca7-7ccf30d000d0",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680763.281315641
+  },
+  {
+    "event": "front-closed",
+    "sequence": 43,
+    "wallMs": 1794541154453,
+    "connectionId": 5,
+    "label": "info-control",
+    "observedAt": 3680763.284558752
+  },
+  {
+    "event": "back-closed",
+    "sequence": 44,
+    "wallMs": 1794541154453,
+    "connectionId": 5,
+    "label": "info-control",
+    "observedAt": 3680763.284646935
+  }
+]
+
+--- check-control/stdout.raw ---
+{
+  "total": 6,
+  "eligible": 6,
+  "notEligible": 0,
+  "hooks": {
+    "eligible": [
+      "boot-md",
+      "bootstrap-extra-files",
+      "command-logger",
+      "compaction-notifier",
+      "session-memory",
+      "proof-hook"
+    ],
+    "notEligible": []
+  }
+}
+
+--- check-control/stderr.log ---
+
+--- check-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 45,
+    "wallMs": 1794541154836,
+    "mode": "normal",
+    "label": "check-control",
+    "observedAt": 3680763.668430739
+  },
+  {
+    "event": "front-connected",
+    "sequence": 46,
+    "wallMs": 1794541158404,
+    "connectionId": 6,
+    "label": "check-control",
+    "mode": "normal",
+    "observedAt": 3680767.236074292
+  },
+  {
+    "event": "request",
+    "sequence": 47,
+    "wallMs": 1794541158411,
+    "connectionId": 6,
+    "label": "check-control",
+    "method": "connect",
+    "requestId": "1:158ae6f7-7faa-4c44-8164-7f6d83975a51",
+    "observedAt": 3680767.242971243
+  },
+  {
+    "event": "real-response",
+    "sequence": 48,
+    "wallMs": 1794541158417,
+    "connectionId": 6,
+    "label": "check-control",
+    "method": "connect",
+    "requestId": "1:158ae6f7-7faa-4c44-8164-7f6d83975a51",
+    "ok": true,
+    "observedAt": 3680767.249079406
+  },
+  {
+    "event": "request",
+    "sequence": 49,
+    "wallMs": 1794541158419,
+    "connectionId": 6,
+    "label": "check-control",
+    "method": "hooks.status",
+    "requestId": "2:076ca6a4-fe8f-4064-a246-7ec327b69253",
+    "observedAt": 3680767.251402833
+  },
+  {
+    "event": "real-response",
+    "sequence": 50,
+    "wallMs": 1794541158436,
+    "connectionId": 6,
+    "label": "check-control",
+    "method": "hooks.status",
+    "requestId": "2:076ca6a4-fe8f-4064-a246-7ec327b69253",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680767.267782848
+  },
+  {
+    "event": "front-closed",
+    "sequence": 51,
+    "wallMs": 1794541158439,
+    "connectionId": 6,
+    "label": "check-control",
+    "observedAt": 3680767.270580384
+  },
+  {
+    "event": "back-closed",
+    "sequence": 52,
+    "wallMs": 1794541158439,
+    "connectionId": 6,
+    "label": "check-control",
+    "observedAt": 3680767.270596367
+  }
+]
+
+--- missing-control/stdout.raw ---
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "Hook \"missing-hook\" not found."
+  },
+  "hook": "missing-hook"
+}
+
+--- missing-control/stderr.log ---
+
+--- missing-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 53,
+    "wallMs": 1794541158531,
+    "mode": "missing",
+    "label": "missing-control",
+    "observedAt": 3680767.363305536
+  },
+  {
+    "event": "front-connected",
+    "sequence": 54,
+    "wallMs": 1794541162039,
+    "connectionId": 7,
+    "label": "missing-control",
+    "mode": "missing",
+    "observedAt": 3680770.87128721
+  },
+  {
+    "event": "request",
+    "sequence": 55,
+    "wallMs": 1794541162046,
+    "connectionId": 7,
+    "label": "missing-control",
+    "method": "connect",
+    "requestId": "1:48f36dba-9ae9-4496-875f-109899a7a536",
+    "observedAt": 3680770.877967731
+  },
+  {
+    "event": "real-response",
+    "sequence": 56,
+    "wallMs": 1794541162050,
+    "connectionId": 7,
+    "label": "missing-control",
+    "method": "connect",
+    "requestId": "1:48f36dba-9ae9-4496-875f-109899a7a536",
+    "ok": true,
+    "observedAt": 3680770.882387083
+  },
+  {
+    "event": "request",
+    "sequence": 57,
+    "wallMs": 1794541162053,
+    "connectionId": 7,
+    "label": "missing-control",
+    "method": "hooks.status",
+    "requestId": "2:925b2c2d-8112-4b46-845b-05e7669be181",
+    "observedAt": 3680770.884970088
+  },
+  {
+    "event": "real-response",
+    "sequence": 58,
+    "wallMs": 1794541162067,
+    "connectionId": 7,
+    "label": "missing-control",
+    "method": "hooks.status",
+    "requestId": "2:925b2c2d-8112-4b46-845b-05e7669be181",
+    "ok": true,
+    "payload": {
+      "workspaceDir": "<BASE_OUTPUT>/workspace",
+      "managedHooksDir": "<BASE_OUTPUT>/state/hooks",
+      "hooks": [
+        {
+          "name": "boot-md",
+          "description": "Run BOOT.md on gateway startup",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/boot-md/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/boot-md",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/boot-md/handler.js",
+          "hookKey": "boot-md",
+          "emoji": "\ud83d\ude80",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#boot-md",
+          "events": [
+            "gateway:startup"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "bootstrap-extra-files",
+          "description": "Inject additional workspace bootstrap files via glob/path patterns",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/bootstrap-extra-files/handler.js",
+          "hookKey": "bootstrap-extra-files",
+          "emoji": "\ud83d\udcce",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#bootstrap-extra-files",
+          "events": [
+            "agent:bootstrap"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "command-logger",
+          "description": "Log emitted command events to a centralized audit file",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/command-logger/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/command-logger",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/command-logger/handler.js",
+          "hookKey": "command-logger",
+          "emoji": "\ud83d\udcdd",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#command-logger",
+          "events": [
+            "command"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "compaction-notifier",
+          "description": "Send visible chat notices when session compaction starts and finishes.",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/compaction-notifier/handler.js",
+          "hookKey": "compaction-notifier",
+          "emoji": "\ud83e\uddf9",
+          "events": [
+            "session:compact:before",
+            "session:compact:after"
+          ],
+          "unknownEvents": [],
+          "always": true,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        },
+        {
+          "name": "session-memory",
+          "description": "Save session context to memory on manual or automatic reset",
+          "source": "openclaw-bundled",
+          "filePath": "<BASE_CHECKOUT>/dist/bundled/session-memory/HOOK.md",
+          "baseDir": "<BASE_CHECKOUT>/dist/bundled/session-memory",
+          "handlerPath": "<BASE_CHECKOUT>/dist/bundled/session-memory/handler.js",
+          "hookKey": "session-memory",
+          "emoji": "\ud83d\udcbe",
+          "homepage": "https://docs.openclaw.ai/automation/hooks#session-memory",
+          "events": [
+            "command:new",
+            "command:reset",
+            "session:auto-reset"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [
+              "workspace.dir"
+            ],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [
+            {
+              "path": "workspace.dir",
+              "satisfied": true
+            }
+          ],
+          "install": [
+            {
+              "id": "bundled",
+              "kind": "bundled",
+              "label": "Bundled with OpenClaw",
+              "bins": []
+            }
+          ]
+        },
+        {
+          "name": "proof-hook",
+          "description": "Synthetic proof hook",
+          "source": "openclaw-workspace",
+          "filePath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/HOOK.md",
+          "baseDir": "<BASE_OUTPUT>/workspace/hooks/proof-hook",
+          "handlerPath": "<BASE_OUTPUT>/workspace/hooks/proof-hook/handler.js",
+          "hookKey": "proof-hook",
+          "events": [
+            "command:new"
+          ],
+          "unknownEvents": [],
+          "always": false,
+          "enabledByConfig": true,
+          "requirementsSatisfied": true,
+          "loadable": true,
+          "managedByPlugin": false,
+          "requirements": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "missing": {
+            "bins": [],
+            "anyBins": [],
+            "env": [],
+            "config": [],
+            "os": []
+          },
+          "configChecks": [],
+          "install": []
+        }
+      ]
+    },
+    "observedAt": 3680770.899586151
+  },
+  {
+    "event": "front-closed",
+    "sequence": 59,
+    "wallMs": 1794541162072,
+    "connectionId": 7,
+    "label": "missing-control",
+    "observedAt": 3680770.906388241
+  },
+  {
+    "event": "back-closed",
+    "sequence": 60,
+    "wallMs": 1794541162073,
+    "connectionId": 7,
+    "label": "missing-control",
+    "observedAt": 3680770.90639672
+  }
+]
+
+--- error-control/stdout.raw ---
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)"
+  }
+}
+
+--- error-control/stderr.log ---
+gateway connect failed: GatewayClientRequestError: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+Error: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+
+--- error-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 61,
+    "wallMs": 1794541162185,
+    "mode": "error",
+    "label": "error-control",
+    "observedAt": 3680771.017576224
+  },
+  {
+    "event": "front-connected",
+    "sequence": 62,
+    "wallMs": 1794541165753,
+    "connectionId": 8,
+    "label": "error-control",
+    "mode": "error",
+    "observedAt": 3680774.584711268
+  },
+  {
+    "event": "request",
+    "sequence": 63,
+    "wallMs": 1794541165759,
+    "connectionId": 8,
+    "label": "error-control",
+    "method": "connect",
+    "requestId": "1:319bcc3a-7066-4091-933b-5d3510bb3b7c",
+    "observedAt": 3680774.59120598
+  },
+  {
+    "event": "real-response",
+    "sequence": 64,
+    "wallMs": 1794541166016,
+    "connectionId": 8,
+    "label": "error-control",
+    "method": "connect",
+    "requestId": "1:319bcc3a-7066-4091-933b-5d3510bb3b7c",
+    "ok": false,
+    "message": "unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)",
+    "observedAt": 3680774.847969224
+  },
+  {
+    "event": "back-closed",
+    "sequence": 65,
+    "wallMs": 1794541166027,
+    "connectionId": 8,
+    "label": "error-control",
+    "observedAt": 3680774.859376581
+  },
+  {
+    "event": "front-closed",
+    "sequence": 66,
+    "wallMs": 1794541166028,
+    "connectionId": 8,
+    "label": "error-control",
+    "observedAt": 3680774.859432664
+  }
+]
+
+--- fixture.stdout ---
+{"lane":"hooks","hook":"proof-hook","artifact":"workspace/hooks/proof-hook/HOOK.md"}
+
+--- fixture.stderr ---
+
+--- gateway.stdout ---
+2026-11-13T03:38:43.381+00:00 [gateway] loading configuration…
+2026-11-13T03:38:43.410+00:00 [gateway] resolving authentication…
+2026-11-13T03:38:43.414+00:00 [gateway] starting...
+2026-11-13T03:38:44.511+00:00 [gateway] shutdown budget at startup: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T03:38:44.580+00:00 [gateway] Agent exec isolation unavailable: Error: requires Delegate=yes and DelegateSubgroup=gateway (systemd 254+). Continuing with shared sampled memory protection. Check Gateway service delegation with openclaw doctor.
+2026-11-13T03:38:45.043+00:00 [gateway] spawn broker ready pid=93
+2026-11-13T03:38:45.954+00:00 [gateway] startup phase: process.bootstrap 8172.8ms total=8172.8ms rssMb=578.3 heapUsedMb=167.4 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+2026-11-13T03:38:45.962+00:00 [gateway] startup phase: state.schema-preflight starting total=8180.7ms
+2026-11-13T03:38:47.086+00:00 [gateway] startup phase: state.schema-preflight 1123.4ms total=9304.0ms rssMb=578.6 heapUsedMb=168.1 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+2026-11-13T03:38:47.122+00:00 [gateway] startup phase: config.auth starting total=9340.7ms
+2026-11-13T03:38:47.250+00:00 [gateway] startup phase: config.auth 127.9ms total=9468.6ms rssMb=587.9 heapUsedMb=159.4 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+2026-11-13T03:38:47.293+00:00 [gateway] startup phase: state.desktop-approval-admission starting total=9512.1ms
+2026-11-13T03:38:47.363+00:00 [gateway] startup phase: state.desktop-approval-admission 70.2ms total=9582.3ms rssMb=593.6 heapUsedMb=163.5 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+2026-11-13T03:38:47.364+00:00 [gateway] startup phase: sessions.admission starting total=9583.4ms
+2026-11-13T03:38:47.792+00:00 [gateway] startup phase: sessions.admission 427.6ms total=10011.0ms rssMb=672.2 heapUsedMb=182.3 workers=8 workerHeapSamples=7/8 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:49.433+00:00 [gateway] starting HTTP server...
+2026-11-13T03:38:50.463+00:00 [gateway] startup phase: http.bound 0.0ms total=12681.1ms rssMb=779.5 heapUsedMb=204.4 workers=9 workerHeapSamples=7/9 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:50.463+00:00 [gateway] startup phase: runtime.early starting total=12682.9ms
+2026-11-13T03:38:50.471+00:00 [gateway] startup phase: runtime.early.discovery starting total=12690.1ms
+2026-11-13T03:38:50.480+00:00 [gateway] startup phase: runtime.early.discovery 8.9ms total=12699.0ms rssMb=779.5 heapUsedMb=210.4 workers=9 workerHeapSamples=7/9 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:50.480+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports starting total=12699.9ms
+2026-11-13T03:38:50.486+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports 5.2ms total=12705.2ms rssMb=779.5 heapUsedMb=213.7 workers=9 workerHeapSamples=7/9 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:50.488+00:00 [gateway] startup phase: runtime.early.skills-listener starting total=12707.3ms
+2026-11-13T03:38:50.496+00:00 [gateway] startup phase: runtime.early.skills-listener 7.3ms total=12714.6ms rssMb=779.8 heapUsedMb=215.7 workers=9 workerHeapSamples=7/9 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:50.496+00:00 [gateway] startup phase: runtime.early 32.6ms total=12715.5ms rssMb=779.8 heapUsedMb=215.7 workers=9 workerHeapSamples=7/9 workerHeapMb=233.1 workerHeapSource=cached
+2026-11-13T03:38:51.735+00:00 [gateway] startup phase: post-attach.system-ca starting total=13953.9ms
+2026-11-13T03:38:51.736+00:00 [gateway] startup phase: post-attach.system-ca 0.9ms total=13954.8ms rssMb=847.5 heapUsedMb=200.4 workers=10 workerHeapSamples=8/10 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:51.741+00:00 [gateway] startup phase: runtime.worker-pool-metrics starting total=13960.2ms
+2026-11-13T03:38:51.748+00:00 [gateway] startup phase: runtime.worker-pool-metrics 7.1ms total=13967.3ms rssMb=847.5 heapUsedMb=207.0 workers=10 workerHeapSamples=8/10 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:51.848+00:00 [gateway] startup phase: plugins.runtime-post-bind starting total=14067.1ms
+2026-11-13T03:38:51.994+00:00 [gateway] startup phase: plugins.runtime-post-bind 145.4ms total=14212.5ms rssMb=888.3 heapUsedMb=227.7 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:51.994+00:00 [gateway] startup phase: plugins.runtime-attach starting total=14213.4ms
+2026-11-13T03:38:52.010+00:00 [gateway] startup phase: plugins.runtime-attach 15.4ms total=14228.8ms rssMb=894.3 heapUsedMb=202.8 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:52.023+00:00 [gateway] agent model: ollama/synthetic-read-model (thinking=off, fast=off)
+2026-11-13T03:38:52.024+00:00 [gateway] http server listening (0 plugins, 7.5s)
+2026-11-13T03:38:52.024+00:00 [gateway] log file: <BASE_OUTPUT>/state/logs/openclaw-2026-11-13.log
+2026-11-13T03:38:52.025+00:00 [gateway] Older local CLI/SDK versions can bypass Gateway state mutation routing. Use matching CLI/SDK and Gateway versions; direct state writes from another process while this Gateway owns state are unsupported.
+2026-11-13T03:38:52.026+00:00 [gateway] native runtime: {"pid":52,"platform":"linux","arch":"x64","node":"26.12.1","v8":"14.6.202.34-node.40","uv":"1.52.1","openssl":"3.5.9","sqlite":"3.54.0","sqliteClose":{"explicitSqliteCloseReleasesNativeResources":true,"decided":true,"reason":"Node runtime"}}
+2026-11-13T03:38:52.030+00:00 [gateway] worker startup state: {"workerCount":12,"sqliteReaderMetrics":[{"operation":"gatewayOwnerLease.read","count":1,"readBytes":0},{"operation":"machineState.read","count":1,"readBytes":0},{"operation":"agentDatabaseRegistry.read","count":1,"readBytes":0},{"operation":"acpSessions.list","count":1,"readBytes":0},{"operation":"workerEnvironments.snapshot","count":1,"readBytes":0},{"operation":"subagents.restore","count":1,"readBytes":0},{"operation":"devicePairing.list","count":3,"readBytes":0},{"operation":"mentions.snapshot","count":1,"readBytes":0},{"operation":"sandboxRegistry.browsers","count":1,"readBytes":0},{"operation":"userProfiles.catalog","count":1,"readBytes":0},{"operation":"sessionGroups.snapshot","count":1,"readBytes":0},{"operation":"agentDatabaseDeletion.snapshot","count":2,"readBytes":0},{"operation":"updateRuns.reconciliationCandidates","count":2,"readBytes":0},{"operation":"config.snapshot.read","count":1,"readBytes":0},{"operation":"userGitHubConnections.list","count":1,"readBytes":0},{"operation":"updateRuns.list","count":2,"readBytes":0},{"operation":"agentDeletionJournal.status","count":1,"readBytes":0},{"operation":"cron.store","count":1,"readBytes":0},{"operation":"sandboxRegistry.list","count":1,"readBytes":0},{"operation":"sandboxPersistentExec.list","count":1,"readBytes":0},{"operation":"updateRuns.interruptedCandidate","count":1,"readBytes":0},{"operation":"plugins.deferredMigrations.read","count":1,"readBytes":0}],"postgresBridgeCount":0,"postgresPoolSelfRootCount":0,"workerLifecycle":[{"script":"client-credential.worker.js","started":1,"retired":[]},{"script":"sqlite-store.worker.js","started":1,"retired":[]},{"script":"gateway-state-owner-heartbeat.worker.js","started":2,"retired":[{"reason":"exit","count":1}]},{"script":"logger-file.worker.js","started":1,"retired":[]},{"script":"worker-native-lifecycle.worker.js","started":1,"retired":[]},{"script":"openclaw-state-read.worker.js","started":2,"retired":[]},{"script":"openclaw-state-lease-heartbeat.worker.js","started":1,"retired":[]},{"script":"other","started":2,"retired":[]},{"script":"session-transcript.worker.js","started":2,"retired":[]}],"workerTaskMetrics":[{"workerClass":"singleton","script":"client-credential.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":28604024,"gc":[]},{"workerClass":"writer","script":"logger-file.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":24187800,"gc":[]},{"workerClass":"other","script":"openclaw-state-read.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":21491592,"gc":[]},{"workerClass":"other","script":"session-transcript.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":31248016,"gc":[]},{"workerClass":"writer","script":"session-transcript.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":0,"gc":[]}],"compute":{"limit":15,"active":0,"waitingPools":0,"pendingTasks":0,"pendingBytes":0}}
+2026-11-13T03:38:52.041+00:00 [gateway] startup phase: sidecars.worker-environments starting total=14260.5ms
+2026-11-13T03:38:52.051+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=14270.4ms
+2026-11-13T03:38:52.052+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.7ms total=14271.1ms rssMb=898.9 heapUsedMb=213.4 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:52.052+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces starting total=14271.8ms
+2026-11-13T03:38:52.155+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces 102.6ms total=14374.4ms rssMb=913.3 heapUsedMb=222.0 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:52.157+00:00 [gateway] startup phase: sidecars.worker-environments.active starting total=14376.5ms
+2026-11-13T03:38:52.161+00:00 [gateway] startup phase: sidecars.worker-environments 120.0ms total=14380.5ms rssMb=914.6 heapUsedMb=222.3 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:52.162+00:00 [gateway] starting channels and sidecars...
+2026-11-13T03:38:52.163+00:00 [gateway] startup phase: sidecars.internal-hooks starting total=14382.1ms
+2026-11-13T03:38:52.164+00:00 [gateway] startup phase: sidecars.model-runtime starting total=14383.9ms
+2026-11-13T03:38:52.165+00:00 [gateway] startup phase: sidecars.reply-runtime starting total=14384.6ms
+2026-11-13T03:38:52.785+00:00 [gateway] startup phase: sidecars.reply-runtime 619.6ms total=15004.2ms rssMb=1003.4 heapUsedMb=252.7 workers=12 workerHeapSamples=8/12 workerHeapMb=272.1 workerHeapSource=cached
+2026-11-13T03:38:52.827+00:00 [hooks] loaded 1 internal hook handler
+2026-11-13T03:38:52.828+00:00 [gateway] startup phase: sidecars.internal-hooks 665.0ms total=15047.1ms rssMb=1008.7 heapUsedMb=259.0 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.854+00:00 [gateway] startup phase: sidecars.model-runtime 689.3ms total=15073.3ms rssMb=1009.8 heapUsedMb=260.0 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.855+00:00 [gateway] startup phase: sidecars.chat-metadata starting total=15074.2ms
+2026-11-13T03:38:52.858+00:00 [gateway] startup phase: sidecars.chat-metadata 3.1ms total=15077.2ms rssMb=1009.8 heapUsedMb=260.2 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.858+00:00 [gateway] startup phase: sidecars.plugin-services starting total=15077.8ms
+2026-11-13T03:38:52.859+00:00 [gateway] startup phase: sidecars.channels starting total=15078.7ms
+2026-11-13T03:38:52.860+00:00 [gateway/channels] skipping channel start (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)
+2026-11-13T03:38:52.864+00:00 [gateway] startup phase: sidecars.channels 4.6ms total=15083.4ms rssMb=1010.3 heapUsedMb=264.4 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.866+00:00 [gateway] startup phase: sidecars.plugin-services 7.6ms total=15085.4ms rssMb=1010.6 heapUsedMb=264.6 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.868+00:00 [gateway] startup outcomes: internal-hooks=loaded; internal-startup-hook=scheduled; gateway-start-hooks=skipped (no-handlers-loaded); gmail-watcher=skipped (hooks-disabled); gmail-model=skipped (not-configured)
+2026-11-13T03:38:52.919+00:00 [gateway] startup phase: sidecars.worker-environments.active 761.8ms total=15138.4ms rssMb=1015.0 heapUsedMb=237.4 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:52.973+00:00 [gateway] startup phase: sidecars.worker-environments.publications starting total=15192.1ms
+2026-11-13T03:38:53.023+00:00 [gateway] startup phase: sidecars.worker-environments.publications 49.5ms total=15241.6ms rssMb=1017.3 heapUsedMb=261.1 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:53.072+00:00 [gateway] startup phase: ready 49.0ms total=15290.6ms rssMb=1017.5 heapUsedMb=261.4 workers=12 workerHeapSamples=9/12 workerHeapMb=311.0 workerHeapSource=cached
+2026-11-13T03:38:53.072+00:00 [gateway] ready
+2026-11-13T03:38:53.074+00:00 [restart-resume] startup restart resume: []
+2026-11-13T03:38:53.426+00:00 [gateway] remote model catalog refresh failed; next check in 6 hours, or run openclaw models refresh
+2026-11-13T03:38:54.349+00:00 [ws] client connected conn=9c5fb523-a92d-4338-956a-6d6c3f94db23 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:38:54.869+00:00 [health] Managed worktree cleanup completed: removed 0; deleted 0 orphans; retired 0 orphan records; pruned 0 snapshots; scratch (24 h): removed 0 entries / 0 bytes, skipped-live 0, deferred 0; eligible 0; deferred 0; failed 0; protected 0; limits satisfied.
+2026-11-13T03:38:55.702+00:00 [gateway] database page-cache residency: database=state scope=file-sample resident=100.0% readBytes=38428 diskBytes=0 payloadBytes=0 payloadMessages=0 elapsedMs=26.7 projectionQueryMs=n/a->n/a limited=false
+2026-11-13T03:38:56.350+00:00 [cron/maintenance] Session registry maintenance completed
+2026-11-13T03:38:56.416+00:00 [gateway] startup phase: post-ready.startup-maintenance starting total=18634.8ms
+2026-11-13T03:38:56.417+00:00 [gateway] startup phase: startup.maintenance.plugin-registry starting total=18636.2ms
+2026-11-13T03:38:56.419+00:00 [gateway] startup phase: startup.maintenance.channels starting total=18638.6ms
+2026-11-13T03:38:56.420+00:00 [gateway] startup phase: startup.maintenance.sessions starting total=18639.6ms
+2026-11-13T03:38:56.421+00:00 [gateway] startup phase: startup.maintenance.pairing starting total=18640.1ms
+2026-11-13T03:38:56.430+00:00 [gateway] startup phase: startup.maintenance.sessions 9.0ms total=18648.5ms rssMb=1180.3 heapUsedMb=262.6 workers=14 workerHeapSamples=11/14 workerHeapMb=439.4 workerHeapSource=cached
+2026-11-13T03:38:56.432+00:00 [gateway] startup phase: startup.maintenance.channels 12.1ms total=18650.7ms rssMb=1180.4 heapUsedMb=262.8 workers=14 workerHeapSamples=11/14 workerHeapMb=439.4 workerHeapSource=cached
+2026-11-13T03:38:56.438+00:00 [gateway] startup phase: startup.maintenance.pairing 17.2ms total=18657.2ms rssMb=1180.4 heapUsedMb=263.1 workers=14 workerHeapSamples=11/14 workerHeapMb=439.4 workerHeapSource=cached
+2026-11-13T03:38:56.533+00:00 [gateway] startup phase: startup.maintenance.plugin-registry 115.4ms total=18751.5ms rssMb=1181.9 heapUsedMb=268.6 workers=14 workerHeapSamples=11/14 workerHeapMb=439.4 workerHeapSource=cached
+2026-11-13T03:38:56.533+00:00 [gateway] startup phase: post-ready.startup-maintenance 117.8ms total=18752.6ms rssMb=1181.9 heapUsedMb=268.6 workers=14 workerHeapSamples=11/14 workerHeapMb=439.4 workerHeapSource=cached
+2026-11-13T03:38:59.715+00:00 [ws] client connected conn=f59d342e-3228-4417-a340-ad855bf88fe8 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:05.201+00:00 [ws] client connected conn=95da76ff-2ea5-4d88-8fd6-8ae0cfe113ab client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:10.585+00:00 [ws] client connected conn=f91ca5c6-feae-421d-9af6-d07692eb8148 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:14.427+00:00 [ws] client connected conn=590eec81-a122-48e7-a090-8524a778240f client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:18.415+00:00 [ws] client connected conn=92d318a8-11ad-4d60-803d-5ab236126ec6 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:22.049+00:00 [ws] client connected conn=2121a52b-3cf4-4749-8d92-2fa6dcade9b4 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:26.026+00:00 [ws] ⇄ res ✗ connect 257ms bytes=365 sendMs=1.315744999999879 failurePhase=auth failureCause=unauthorized conn=af9265bc…26da id=1:319bcc3a-7…3b7c
+2026-11-13T03:39:26.405+00:00 [admission] closed: restart-signal fence
+2026-11-13T03:39:26.442+00:00 [admission] closed: stop (SIGTERM)
+2026-11-13T03:39:26.443+00:00 [gateway] received SIGTERM; shutting down
+2026-11-13T03:39:26.449+00:00 [gateway] shutdown budget at shutdown: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T03:39:26.473+00:00 [restart-resume] shutdown restart resume: []
+2026-11-13T03:39:26.629+00:00 [gmail-watcher] gmail watcher stopped
+2026-11-13T03:39:26.700+00:00 [shutdown] completed cleanly in 235ms
+
+--- gateway.stderr ---
+[gateway] startup phase: entry.run-main-import starting total=161.1ms
+[gateway] startup phase: entry.run-main-import 75.2ms total=236.2ms start=161.1ms rssMb=74.6 heapUsedMb=11.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment starting total=1723.4ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports starting total=1723.5ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports 10.5ms total=1734.1ms start=1723.5ms rssMb=192.7 heapUsedMb=52.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard starting total=1735.3ms
+[gateway] startup phase: cli.environment.imports starting total=1735.6ms
+[gateway] startup phase: cli.environment.imports 4.9ms total=1740.6ms start=1735.6ms rssMb=192.7 heapUsedMb=54.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=1742.7ms
+[gateway] startup phase: cli.environment.config-import 271.8ms total=2014.5ms start=1742.7ms rssMb=196.1 heapUsedMb=78.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=2015.3ms
+[gateway] startup phase: cli.environment.config-read 44.9ms total=2060.2ms start=2015.3ms rssMb=196.9 heapUsedMb=83.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=2061.3ms
+[gateway] startup phase: cli.environment.config-recovery 14.9ms total=2076.2ms start=2061.3ms rssMb=201.8 heapUsedMb=69.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard 342.2ms total=2077.5ms start=1735.3ms rssMb=201.8 heapUsedMb=69.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.pin-runtime-paths starting total=2077.7ms
+[gateway] startup phase: cli.environment.pin-runtime-paths 0.4ms total=2078.1ms start=2077.7ms rssMb=201.8 heapUsedMb=69.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment 354.9ms total=2078.3ms start=1723.4ms rssMb=201.8 heapUsedMb=69.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-imports starting total=2104.0ms
+[gateway] startup phase: cli.main.gateway-run-imports 5.5ms total=2109.5ms start=2104.0ms rssMb=202.5 heapUsedMb=78.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap starting total=2141.3ms
+[gateway] startup phase: cli.environment.imports starting total=2141.9ms
+[gateway] startup phase: cli.environment.imports 0.3ms total=2142.3ms start=2141.9ms rssMb=205.5 heapUsedMb=85.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=2143.2ms
+[gateway] startup phase: cli.environment.config-import 0.1ms total=2143.3ms start=2143.2ms rssMb=205.5 heapUsedMb=85.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=2143.4ms
+[gateway] startup phase: cli.environment.config-read 2.9ms total=2146.4ms start=2143.4ms rssMb=205.6 heapUsedMb=86.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=2146.6ms
+[gateway] startup phase: cli.environment.config-recovery 0.9ms total=2147.5ms start=2146.6ms rssMb=205.6 heapUsedMb=86.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap 6.8ms total=2148.0ms start=2141.3ms rssMb=205.6 heapUsedMb=86.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap starting total=2148.2ms
+[gateway] startup phase: cli.command.config-ready starting total=2150.3ms
+[gateway] startup phase: cli.command.config-guard-import starting total=2150.5ms
+[gateway] startup phase: cli.command.config-guard-import 23.0ms total=2173.5ms start=2150.5ms rssMb=205.9 heapUsedMb=93.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.live-owner starting total=2207.2ms
+[gateway] startup phase: cli.bootstrap.admission.live-owner 4.4ms total=2211.7ms start=2207.2ms rssMb=209.7 heapUsedMb=81.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.core-config starting total=2211.9ms
+[gateway] startup phase: cli.bootstrap.admission.core-config 4.3ms total=2216.2ms start=2211.9ms rssMb=209.7 heapUsedMb=82.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot starting total=2216.6ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery starting total=2217.4ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery 1.0ms total=2218.5ms start=2217.4ms rssMb=209.7 heapUsedMb=82.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import starting total=2218.9ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-config starting total=2218.9ms
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import 35.3ms total=2254.2ms start=2218.9ms rssMb=210.4 heapUsedMb=88.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-readiness starting total=2254.6ms
+[gateway] startup phase: cli.bootstrap.admission.database-readiness 11.7ms total=2266.3ms start=2254.6ms agentCount=1 schemaProcessCount=0 schemaInspectionCount=0 schemaSnapshotCount=0 statePreflightMs=0.6453889999997955 agentPreflightMs=1.5964570000001004 rssMb=210.7 heapUsedMb=88.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import starting total=2266.7ms
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import 2.1ms total=2268.8ms start=2266.7ms rssMb=210.8 heapUsedMb=90.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-targets starting total=2269.1ms
+[gateway] startup phase: cli.bootstrap.admission.session-targets 2.7ms total=2271.8ms start=2269.1ms agentCount=1 registeredDatabaseCount=0 rssMb=210.8 heapUsedMb=90.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-readiness starting total=2272.1ms
+[gateway] startup phase: cli.bootstrap.admission.session-readiness 0.3ms total=2272.4ms start=2272.1ms targetCount=1 rssMb=210.8 heapUsedMb=90.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import starting total=2272.7ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import 10.4ms total=2283.1ms start=2272.7ms rssMb=211.0 heapUsedMb=93.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness starting total=2283.3ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness 4.0ms total=2287.3ms start=2283.3ms agentCount=1 rssMb=211.2 heapUsedMb=93.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion starting total=2311.7ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion 1.2ms total=2313.0ms start=2311.7ms rssMb=212.0 heapUsedMb=94.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.plugin-config 94.3ms total=2313.3ms start=2218.9ms registrySnapshotMs=9.373653999999988 manifestRegistryMs=0.530920000000151 ownerMapsMs=2.2680490000002465 totalMs=12.49724200000037 indexPluginCount=0 manifestPluginCount=0 rssMb=212.0 heapUsedMb=94.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-recovery starting total=2313.6ms
+[gateway] startup phase: cli.bootstrap.admission.config-recovery 1.4ms total=2314.9ms start=2313.6ms rssMb=212.0 heapUsedMb=94.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-guard starting total=2315.2ms
+[gateway] startup phase: cli.bootstrap.admission.config-guard 1.7ms total=2316.8ms start=2315.2ms rssMb=212.3 heapUsedMb=94.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot 100.5ms total=2317.1ms start=2216.6ms rssMb=212.3 heapUsedMb=95.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.device-identity starting total=2935.5ms
+[gateway] startup phase: cli.bootstrap.admission.device-identity 147.3ms total=3082.9ms start=2935.5ms rssMb=276.8 heapUsedMb=76.7 workers=1 workerHeapSamples=1/1 workerHeapMb=51.5 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.webhook-readiness starting total=3156.1ms
+[gateway] startup phase: cli.bootstrap.webhook-readiness 45.0ms total=3201.1ms start=3156.1ms rssMb=278.2 heapUsedMb=101.7 workers=1 workerHeapSamples=1/1 workerHeapMb=51.5 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan-import starting total=4997.1ms
+[gateway] startup phase: cli.bootstrap.plugin-plan-import 7.8ms total=5004.9ms start=4997.1ms rssMb=379.9 heapUsedMb=83.0 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan starting total=5005.6ms
+[gateway] startup phase: cli.bootstrap.plugin-plan 4.3ms total=5009.9ms start=5005.6ms rssMb=379.9 heapUsedMb=83.2 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.command.config-ready 2865.6ms total=5015.9ms start=2150.3ms rssMb=380.0 heapUsedMb=84.1 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-reload-environment starting total=5016.4ms
+[gateway] startup phase: cli.main.gateway-run-reload-environment 1.1ms total=5017.5ms start=5016.4ms rssMb=380.0 heapUsedMb=83.7 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap 2869.5ms total=5017.7ms start=2148.2ms rssMb=380.0 heapUsedMb=83.7 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime starting total=5637.0ms
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime 97.5ms total=5734.4ms start=5637.0ms rssMb=404.5 heapUsedMb=130.0 workers=2 workerHeapSamples=2/2 workerHeapMb=92.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.gateway-lock starting total=5746.4ms
+[gateway] startup phase: cli.bootstrap.gateway-lock 979.7ms total=6726.1ms start=5746.4ms rssMb=529.1 heapUsedMb=112.0 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.boot-lifecycle starting total=6738.5ms
+[gateway] startup phase: cli.bootstrap.boot-lifecycle 31.6ms total=6770.1ms start=6738.5ms rssMb=534.0 heapUsedMb=112.4 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+[gateway] startup phase: gateway.server-start-import starting total=7267.2ms
+[gateway] startup phase: gateway.server-start-import 878.2ms total=8145.4ms start=7267.2ms rssMb=576.8 heapUsedMb=161.5 workers=7 workerHeapSamples=6/7 workerHeapMb=207.3 workerHeapSource=cached
+2026-11-13T03:38:52.825+00:00 [hooks:loader] Loading workspace hook code into the gateway process. Hooks are trusted local code.
+2026-11-13T03:39:26.015+00:00 [ws] unauthorized conn=af9265bc-baf3-45d6-9969-0b97fcf626da peer=127.0.0.1:37932->127.0.0.1:55789 remote=127.0.0.1 client=cli cli v2026.11.3 role=operator scopes=0 auth=token device=no platform=linux instance=c1c59a44-f7bf-4009-a3b6-5be10f155002 host=127.0.0.1:55789 origin=n/a ua=n/a reason=token_mismatch guidance=unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+2026-11-13T03:39:26.042+00:00 [ws] closed before connect conn=af9265bc-baf3-45d6-9969-0b97fcf626da peer=127.0.0.1:37932->127.0.0.1:55789 remote=127.0.0.1 fwd=n/a origin=n/a host=127.0.0.1:55789 ua=n/a code=1008 reason=unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device) phase=auth_credentials_received cause=unauthorized durationMs=273 handshake=failed phase=auth_credentials_received lastFrameType=req lastFrameMethod=connect lastFrameId=1:319bcc3a-7066-4091-933b-5d3510bb3b7c host=127.0.0.1:55789 remoteAddr=127.0.0.1 remotePort=37932 localAddr=127.0.0.1 localPort=55789 endpoint=127.0.0.1:37932->127.0.0.1:55789 authMode=token authProvided=token authReason=token_mismatch allowTailscale=false peer=127.0.0.1:37932->127.0.0.1:55789 role=operator scopeCount=0 hasDeviceIdentity=false client=cli mode=cli version=2026.11.3 platform=linux deviceFamily=Linux instanceId=c1c59a44-f7bf-4009-a3b6-5be10f155002
+
+--- proxy.stderr ---

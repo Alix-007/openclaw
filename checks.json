@@ -1,0 +1,80 @@
+{
+  "hooks-focused-green-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/hooks-cli.test.ts",
+      "src/cli/hooks-cli.toggle.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 33.977,
+    "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+    "diffSHA256": "4502b96892072fd4013852a1397e8039ee736d8b1d5a71306a8401af5aab27a5",
+    "logSHA256": "3c68f8df110dd5c0e3cb95c3af941e0e73f1428f070268d99fe6c1dba00ba836"
+  },
+  "hooks-types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../hooks-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 24.359,
+    "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+    "diffSHA256": "4502b96892072fd4013852a1397e8039ee736d8b1d5a71306a8401af5aab27a5",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "hooks-lint-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../hooks-types.tsconfig.json",
+      "src/cli/hooks-cli.ts",
+      "src/cli/hooks-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 57.209,
+    "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+    "diffSHA256": "4502b96892072fd4013852a1397e8039ee736d8b1d5a71306a8401af5aab27a5",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "hooks-format-check-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/hooks-cli.ts",
+      "src/cli/hooks-cli.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.426,
+    "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+    "diffSHA256": "4502b96892072fd4013852a1397e8039ee736d8b1d5a71306a8401af5aab27a5",
+    "logSHA256": "0dd052abd39756e955195b1b2f9045c75a7ea803ca4be69c3777df229d718948"
+  },
+  "hooks-qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 271.756,
+    "head": "3477ef2c5a7fd1fb1df3598c218733a17a0fbec0",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "5f93053c1ece2bebdfad07aeb813058345a86e20675e8026719fe1b252e846dc"
+  }
+}

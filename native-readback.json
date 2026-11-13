@@ -1,0 +1,296 @@
+{
+  "head": "3477ef2c5a7fd1fb1df3598c218733a17a0fbec0",
+  "artifacts": [
+    {
+      "source": "list-json-int/stdout.raw",
+      "originalSHA256": "0273edbcde4f66e24f0f423c8d64204d882dfcf1d6c362c81245a7c663c71bfc",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-json-int/stderr.log",
+      "originalSHA256": "45070eaad81a3dc582991cef334c6bead629cdde29b2f3b80afb7bdf80c12db0",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-json-int/proxy-events.json",
+      "originalSHA256": "44653f376462dc2667bb0675097a990c1f730a3a151d379c98527bb70c89d5ab",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "info-human-term/stdout.raw",
+      "originalSHA256": "3fa3a79c0588516ccf13873b52c234a0bf9c6ea8587ebde73e97e6eb20155aa1",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-human-term/stderr.log",
+      "originalSHA256": "ccd39097655212e509bae7ab4fbb76923121d7135920d1f9592ec251b06f65b6",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-human-term/proxy-events.json",
+      "originalSHA256": "f15c1a467fbc7c1cc1951222d240d7212d97866b8be9fe8bedabcdcaf6b774d5",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "check-json-int/stdout.raw",
+      "originalSHA256": "0273edbcde4f66e24f0f423c8d64204d882dfcf1d6c362c81245a7c663c71bfc",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-json-int/stderr.log",
+      "originalSHA256": "45070eaad81a3dc582991cef334c6bead629cdde29b2f3b80afb7bdf80c12db0",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-json-int/proxy-events.json",
+      "originalSHA256": "bc5690635ae4126150365577f61e8a0939679537048b86685eeb5359c5dbed40",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "list-control/stdout.raw",
+      "originalSHA256": "08a7e8e937ac5f8fa292442627ff4564e8d371fc2c51d4943249a8f1e13a125c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-control/proxy-events.json",
+      "originalSHA256": "42df465946f14aeef41d809fe0dc775974ee6d7419aa2edc975cf8f8b0f50d7c",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "info-control/stdout.raw",
+      "originalSHA256": "4463201da49bb4ed8fe72789faba48c0d4d6c8e9e09b6615ce7cbe8c4287e85a",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-control/proxy-events.json",
+      "originalSHA256": "d360365a37ae76e3e7825b294b1d393ccccac9c683209db3b28df90b42d35f90",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "check-control/stdout.raw",
+      "originalSHA256": "509a1b19930cecd63568da83b29db4f24af6dbfedeadbe18333b918748769119",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-control/proxy-events.json",
+      "originalSHA256": "783eaec3069820568e434d43453c4ee5f99b1144370689b92b1bcf468d8375fc",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "missing-control/stdout.raw",
+      "originalSHA256": "62817de301a74ea3aa980110883f97d05e47eb4e71cff8de5fca4acb939ae1d9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "missing-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "missing-control/proxy-events.json",
+      "originalSHA256": "7509fb985291f3f522fae7f0a5ee42d3dda6170e7ae5176d6d9246014e578243",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "error-control/stdout.raw",
+      "originalSHA256": "9974208168bcfb617c0c17fc98add677cc8db6bc6558a3b9cbb8ccddc90c92e7",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/stderr.log",
+      "originalSHA256": "71d08780d256f4dadb1298875b6dff57cac8a466e5e976899d82617315a1dda2",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/proxy-events.json",
+      "originalSHA256": "da4d24183ade39e456012778b929335e9e423068093c0f901cf33b73a3359cb8",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-base-v2/fixture.stdout",
+      "originalSHA256": "65d8f707cf209ca7faaa7f55c47e7ed0a9da06a94eaededbd38a19474f3c5385",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-base-v2/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-base-v2/gateway.stdout",
+      "originalSHA256": "ef3ae86f05500cc1bd1b6c83489e231e5a9d298a87b30e88d4d48642fe55868a",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-base-v2/gateway.stderr",
+      "originalSHA256": "b720e280278b10e4007e23e123e60d4c6832fc4a5b72b15c2a8deda7df373bc5",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-base-v2/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "list-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-json-int/proxy-events.json",
+      "originalSHA256": "ce09b5541d0f7cbf45a7c5468c04ab68a290e103fa3c820c9508119ab1a332a4",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "info-human-term/stdout.raw",
+      "originalSHA256": "13a963a7b161087e6e320c19a83b446049fa9201111621fea6740a7324cb758d",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-human-term/stderr.log",
+      "originalSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-human-term/proxy-events.json",
+      "originalSHA256": "3f4b39214e1084441f33bd35e6c2b4ed3dfa4c193fc7030444bcd8049ddafd6a",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "check-json-int/stdout.raw",
+      "originalSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-json-int/stderr.log",
+      "originalSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-json-int/proxy-events.json",
+      "originalSHA256": "63542872ea45586b752c8e848fdbe9ee6de9eaaa6573c4ad40fcfe44405757f3",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "list-control/stdout.raw",
+      "originalSHA256": "e5a1d229223de21244e1bb645c297f9d79c3a208ec04c9f59c1033dbd5f508db",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "list-control/proxy-events.json",
+      "originalSHA256": "f9364d80ebf3e1719d0e9197fb1ec71ea88f713d7ab8453e69df188b2ba26c5c",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "info-control/stdout.raw",
+      "originalSHA256": "7b43f041723e1c28bd2945b5493c14df353468aa5a85a03e2cd72f7d33f8563d",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "info-control/proxy-events.json",
+      "originalSHA256": "86b5d1e3c63728a53f0b5f3bb152be8515c6d6235b9e7d4e106ed4e21ca29aee",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "check-control/stdout.raw",
+      "originalSHA256": "509a1b19930cecd63568da83b29db4f24af6dbfedeadbe18333b918748769119",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "check-control/proxy-events.json",
+      "originalSHA256": "ae9fb8d7952b42be3a237aa3008132769b460791181240bebf79247338ad725e",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "missing-control/stdout.raw",
+      "originalSHA256": "62817de301a74ea3aa980110883f97d05e47eb4e71cff8de5fca4acb939ae1d9",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "missing-control/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "missing-control/proxy-events.json",
+      "originalSHA256": "15c66795bd5ae09bb91de847ed179b9e118a0f343c9bb693e93404366e1916b7",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "error-control/stdout.raw",
+      "originalSHA256": "9974208168bcfb617c0c17fc98add677cc8db6bc6558a3b9cbb8ccddc90c92e7",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/stderr.log",
+      "originalSHA256": "71d08780d256f4dadb1298875b6dff57cac8a466e5e976899d82617315a1dda2",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "error-control/proxy-events.json",
+      "originalSHA256": "8350ced644dbf199771b0eb5578f189f79f9ab019e454c87309cc998cc0c77e2",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-native-head-3477ef2/fixture.stdout",
+      "originalSHA256": "65d8f707cf209ca7faaa7f55c47e7ed0a9da06a94eaededbd38a19474f3c5385",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-native-head-3477ef2/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-native-head-3477ef2/gateway.stdout",
+      "originalSHA256": "0b89ea0872310348ae748ef0ab05ec0187df2f303338ac77cbb1b2e5f1a2c042",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-native-head-3477ef2/gateway.stderr",
+      "originalSHA256": "051333b8494e0fb0f1464d30b097478ed5f103693e3e13fe4a63251a5640b698",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "hooks-native-head-3477ef2/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    }
+  ],
+  "note": "Original observations hash-checked before replacing private local path labels. Collector bytes unchanged. Tools BASE launcher emergency SIGKILL, hooks BASE late timeout banners remain RED. No state database, private key, auth credential or product artifact uploaded."
+}

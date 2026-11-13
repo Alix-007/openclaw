@@ -1,0 +1,80 @@
+$ node scripts/test-projects.mts src/cli/hooks-cli.test.ts src/cli/hooks-cli.toggle.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache hit after 8171ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared ebdc577aed87 in 8338ms (20057 inputs, 24752 outputs)
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > refuses hook enable while the Gateway owns state 13454ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > rejects the ambiguous hook identifier shared-key without mutation 39ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > gives the recovery command for an unknown hook 9ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > names missing requirements and the available install route 9ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > inspects ["info","shared"] without mutation 12ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > inspects ["info","metadata-key","--json"] without mutation 7ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > inspects ["info","metadata-key"] without mutation 7ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > reports a missing hook (parent JSON=false) 6ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > reports a missing hook (parent JSON=true) 8ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > still rejects disabling plugin-managed hooks 8ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > sanitizes ambiguous hook metadata only in the human error 7ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > propagates invalid hook agent usage to the root renderer: "list" 6ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > propagates invalid hook agent usage to the root renderer: "--agent" 5ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > propagates invalid hook agent usage to the root renderer: "--agent" 5ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/hooks-cli.toggle.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/hooks-cli.toggle.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/hooks-cli.toggle.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/hooks-cli.toggle.test.ts: retiring openclaw.stateSnapshotOwners
+
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > uses hooks.status for the check read command 6ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > does not substitute local hooks after configured remote unsupported method 7ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > keeps multi-line remote failures on separate human lines without controls 6ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > does not substitute implicit-local hooks after request validation 11ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > does not substitute implicit-local hooks after pairing close 6ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > uses --agent for enable hook discovery 8ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > leaves config unchanged when the selected hook agent is invalid 8ms
+ ✓ |cli| src/cli/hooks-cli.toggle.test.ts > hooks CLI metadata config keys > uses the selected local fallback for an older Gateway 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > retains raw hook descriptor metadata in JSON 842ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted list output 12ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted info session-memory output 8ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list --verbose with {"events":[],"loadable":false,"blockedReason":"no events defined"} 45ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list --verbose with {"enabledByConfig":false,"loadable":false,"blockedReason":"workspace hook (disabled by default)"} 11ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list with {"source":"openclaw-plugin","pluginId":"voice-call","managedByPlugin":true} 7ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info session-memory with {"events":[],"loadable":false,"blockedReason":"no events defined"} 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info session-memory with {"requirementsSatisfied":false,"loadable":false,"blockedReason":"missing requirements","requirements":{"bins":[],"anyBins":[],"env":["DEMO_HOOK_TOKEN"],"config":[],"os":[]},"missing":{"bins":[],"anyBins":[],"env":["DEMO_HOOK_TOKEN"],"config":[],"os":[]}} 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info typo-hook with {"name":"typo-hook","events":["command:nwe","command:new"],"unknownEvents":["command:nwe"]} 9ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats check with {"events":[],"loadable":false,"blockedReason":"no events defined"} 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > classifies eventless hooks as not eligible in JSON check output 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > forwards install-policy acknowledgement through deprecated [ 'install', 'npm:demo-hooks', …(1) ] 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > forwards install-policy acknowledgement through deprecated [ 'update', 'demo-hooks' ] 4ms
+stderr | src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock
+Config health-state write failed: Shared-state admission requires the host broker
+
+stderr | src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock
+Config metadata state update failed: Shared-state admission requires the host broker
+
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |cli| src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock 1471ms
+
+ Test Files  2 passed (2)
+      Tests  36 passed (36)
+   Start at  12:10:42
+   Duration  25.82s (tests 65%, transform 16%, import 13%, worker 4%, setup 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 32.98s

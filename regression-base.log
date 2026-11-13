@@ -1,0 +1,163 @@
+$ node scripts/test-projects.mts src/cli/hooks-cli.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 5039ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 90000ms.
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared aa60fae09eea in 123093ms (20057 inputs, 24752 outputs)
+[vitest] still running with no output for 30000ms.
+ ✓ |cli| src/cli/hooks-cli.test.ts > retains raw hook descriptor metadata in JSON 819ms
+ × |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted list output 55ms
+   → expected 'Hooks (1/1 ready)\n┌──────────┬──────…' to be '' // Object.is equality
+ × |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted info session-memory output 17ms
+   → expected '💾 session-memory ✓ Ready\n\nSave ses…' to be '' // Object.is equality
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list --verbose with {"events":[],"loadable":false,"blockedReason":"no events defined"} 10ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list --verbose with {"enabledByConfig":false,"loadable":false,"blockedReason":"workspace hook (disabled by default)"} 7ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats list with {"source":"openclaw-plugin","pluginId":"voice-call","managedByPlugin":true} 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info session-memory with {"events":[],"loadable":false,"blockedReason":"no events defined"} 7ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info session-memory with {"requirementsSatisfied":false,"loadable":false,"blockedReason":"missing requirements","requirements":{"bins":[],"anyBins":[],"env":["DEMO_HOOK_TOKEN"],"config":[],"os":[]},"missing":{"bins":[],"anyBins":[],"env":["DEMO_HOOK_TOKEN"],"config":[],"os":[]}} 7ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats info typo-hook with {"name":"typo-hook","events":["command:nwe","command:new"],"unknownEvents":["command:nwe"]} 7ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > formats check with {"events":[],"loadable":false,"blockedReason":"no events defined"} 6ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > classifies eventless hooks as not eligible in JSON check output 8ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > forwards install-policy acknowledgement through deprecated [ 'install', 'npm:demo-hooks', …(1) ] 8ms
+ ✓ |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > forwards install-policy acknowledgement through deprecated [ 'update', 'demo-hooks' ] 5ms
+stderr | src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock
+Config health-state write failed: Shared-state admission requires the host broker
+
+stderr | src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock
+Config metadata state update failed: Shared-state admission requires the host broker
+
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/cli/hooks-cli.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |cli| src/cli/hooks-cli.test.ts > preserves env references while disable waits for the write lock 2321ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted list output
+AssertionError: expected 'Hooks (1/1 ready)\n┌──────────┬──────…' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ Hooks (1/1 ready)
++ ┌──────────┬───────────────────────────────┬────────────────────────────────────────────┬──────────────────────────────┐
++ │ Status   │ Hook                          │ Description                                │ Source                       │
++ ├──────────┼───────────────────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
++ │ ✓ ready  │ 💾 session-memory             │ Save session context to memory             │ openclaw-bundled             │
++ └──────────┴───────────────────────────────┴────────────────────────────────────────────┴──────────────────────────────┘
+
+ ❯ src/cli/hooks-cli.test.ts:132:69
+    130| describe("hooks cli formatting", () => {
+    131|   it.each(["list", "info session-memory"])("does not publish interrupt…
+    132|     expect(await runHooksReport(withHook(), args.split(" "), true)).to…
+       |                                                                     ^
+    133|   });
+    134|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |cli| src/cli/hooks-cli.test.ts > hooks cli formatting > does not publish interrupted info session-memory output
+AssertionError: expected '💾 session-memory ✓ Ready\n\nSave ses…' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ 💾 session-memory ✓ Ready
++
++ Save session context to memory
++
++ Details:
++   Source: openclaw-bundled
++   Path: /tmp/hooks/session-memory/HOOK.md
++   Handler: /tmp/hooks/session-memory/handler.js
++   Homepage: https://docs.openclaw.ai/automation/hooks#session-memory
++   Events: command:new
+
+ ❯ src/cli/hooks-cli.test.ts:132:69
+    130| describe("hooks cli formatting", () => {
+    131|   it.each(["list", "info session-memory"])("does not publish interrupt…
+    132|     expect(await runHooksReport(withHook(), args.split(" "), true)).to…
+       |                                                                     ^
+    133|   });
+    134|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 passed (14)
+   Start at  11:48:00
+   Duration  167.92s (transform 93%, import 3%, tests 2%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 175.50s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.
