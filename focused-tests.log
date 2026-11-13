@@ -1,0 +1,112 @@
+$ node scripts/test-projects.mts src/cli/skills-cli.commands.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 7740ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared cb91b78dd2e4 in 139786ms (20068 inputs, 24801 outputs)
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted check --json quiet 89ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted info calendar quiet 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for install skills-sh/invalid 10ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for update 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for verify weather --global --agent main 11ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > installs a versioned ClawHub skill globally with interactive confirmation 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: skills-sh:openclaw/skills/weather --version 1.2.3 10ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: git:owner/tools --version 1.2.3 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: ./local-skill --force-install 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > installs a source under --as with noninteractive policy acknowledgement 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps a local install from refreshing a configured remote Gateway 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a blocked install failure when no trust warning was emitted 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > updates tracked skills with the requested force options 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > does not bootstrap configured skills during update all 16ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for update failure force_required 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for update failure undefined 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata { available: false } 14ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata null 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata { available: true } 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > fails closed for verification envelopes with unknown decision 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > fails closed for verification envelopes with non-boolean ok 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > writes default JSON from the selected workspace to stdout 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > writes check JSON from the selected workspace to stdout 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for missing skill info (JSON: false) 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for missing skill info (JSON: true) 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > renders sanitized colored skill names with normalized and fallback emoji 42ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a copyable API-key setup path for weather 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a copyable API-key setup path for acme.weather 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > renders one status per alternative group 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > uses Gateway skills.status instead of local status when reachable 5ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: Error: Gateway not reachable: ws://127.0.0.1:9 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: GatewayClientRequestError: invalid skills.status params: unknown agent id "retired" 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: GatewayTransportError: gateway closed (1008): unavailable 5ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects an unknown agent before resolving a skills workspace 6ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > canonicalizes a mixed-case --agent before selecting the configured agent 5ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > redacts secrets from rendered skills CLI errors 42ms
+
+ Test Files  1 passed (1)
+      Tests  36 passed (36)
+   Start at  21:33:00
+   Duration  154.78s (transform 97%, import 2%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 164.56s

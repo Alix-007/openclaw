@@ -1,0 +1,206 @@
+$ node scripts/test-projects.mts src/cli/skills-cli.commands.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 5167ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 3.0s of this 3.3s build (93%).
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin tsdown:deps resolveId (1566 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared dd1987d2126b in 136796ms (20068 inputs, 24801 outputs)
+ × |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted check --json quiet 191ms
+   → expected [ Array(1) ] to deeply equal []
+ × |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted info calendar quiet 12ms
+   → expected [ Array(1) ] to deeply equal []
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for install skills-sh/invalid 12ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for update 15ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > preserves terminal failures for verify weather --global --agent main 16ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > installs a versioned ClawHub skill globally with interactive confirmation 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: skills-sh:openclaw/skills/weather --version 1.2.3 11ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: git:owner/tools --version 1.2.3 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects invalid install arguments: ./local-skill --force-install 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > installs a source under --as with noninteractive policy acknowledgement 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps a local install from refreshing a configured remote Gateway 24ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a blocked install failure when no trust warning was emitted 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > updates tracked skills with the requested force options 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > does not bootstrap configured skills during update all 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for update failure force_required 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for update failure undefined 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata { available: false } 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata null 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects verified Skill Card metadata { available: true } 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > fails closed for verification envelopes with unknown decision 10ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > fails closed for verification envelopes with non-boolean ok 9ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > writes default JSON from the selected workspace to stdout 11ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > writes check JSON from the selected workspace to stdout 17ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for missing skill info (JSON: false) 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > exits nonzero for missing skill info (JSON: true) 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > renders sanitized colored skill names with normalized and fallback emoji 45ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a copyable API-key setup path for weather 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > prints a copyable API-key setup path for acme.weather 7ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > renders one status per alternative group 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > uses Gateway skills.status instead of local status when reachable 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: Error: Gateway not reachable: ws://127.0.0.1:9 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: GatewayClientRequestError: invalid skills.status params: unknown agent id "retired" 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > never replaces failed Gateway data with local skills: GatewayTransportError: gateway closed (1008): unavailable 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > rejects an unknown agent before resolving a skills workspace 8ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > canonicalizes a mixed-case --agent before selecting the configured agent 6ms
+ ✓ |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > redacts secrets from rendered skills CLI errors 46ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/skills-cli.commands.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted check --json quiet
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "{
++   \"workspaceDir\": \"/tmp/workspace\",
++   \"managedSkillsDir\": \"/tmp/workspace/skills\",
++   \"summary\": {
++     \"total\": 1,
++     \"eligible\": 1,
++     \"modelVisible\": 1,
++     \"commandVisible\": 1,
++     \"disabled\": 0,
++     \"blocked\": 0,
++     \"agentFiltered\": 0,
++     \"notInjected\": 0,
++     \"missingRequirements\": 0
++   },
++   \"eligible\": [
++     \"calendar\"
++   ],
++   \"modelVisible\": [
++     \"calendar\"
++   ],
++   \"commandVisible\": [
++     \"calendar\"
++   ],
++   \"disabled\": [],
++   \"blocked\": [],
++   \"agentFiltered\": [],
++   \"notInjected\": [],
++   \"missingRequirements\": []
++ }",
++ ]
+
+ ❯ src/cli/skills-cli.commands.test.ts:171:20
+    169|     });
+    170|     await work.run(() => run(args));
+    171|     expect(stdout).toEqual([]);
+       |                    ^
+    172|     expect(errors).toEqual([]);
+    173|     expect(runtime.exit).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |cli| src/cli/skills-cli.commands.test.ts > skills cli commands > keeps interrupted info calendar quiet
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "🧪 calendar ✓ Ready
++
++ A test skill
++
++ Details:
++   Source: bundled
++   Path: /path/to/SKILL.md
++   Homepage: https://example.com
++   Visible to model: yes
++   Available as command: yes
++   Primary env: CALENDAR_API_KEY
++
++ Tip: use `openclaw skills search`, `openclaw skills install`, and `openclaw skills update` for ClawHub-backed skills.",
++ ]
+
+ ❯ src/cli/skills-cli.commands.test.ts:171:20
+    169|     });
+    170|     await work.run(() => run(args));
+    171|     expect(stdout).toEqual([]);
+       |                    ^
+    172|     expect(errors).toEqual([]);
+    173|     expect(runtime.exit).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 34 passed (36)
+   Start at  21:18:54
+   Duration  162.35s (transform 96%, import 2%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 169.63s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

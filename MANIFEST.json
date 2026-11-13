@@ -1,0 +1,15 @@
+{
+  "skills-read-proof-v1.py": "7dcaee16d90da60e7c542bf417534202b8bda8a57e018a948c442f4374a0ed9c",
+  "read-fixture.mts": "bbc022f437aead352fc67f33a5da9123c0f6fa135a2722d23abb6d74fcdd2422",
+  "read-proxy.mjs": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9",
+  "base-receipt.json": "e977087e11851350fb2002e0dc05f73a2944edc0dc49b6f01957f7962b30eb69",
+  "base-streams.txt": "1f0a056e6f8cb47b320125907bfcfa6264a25abb2e951ad8d846051343e4ec4c",
+  "head-receipt.json": "cf1d2c0f0c76de603d2aada50afac6cb4d156e3fa5fbc57678806619582f287b",
+  "head-streams.txt": "a5f6c35a78f8fb0cadea30d4d9f096427e0cf143ee12b236be3d6c1e1d027e2d",
+  "checks.json": "1eb20be485c57f336796745b7513bbb2e3ce4dcd474e2d7245148a3751c8e581",
+  "focused-tests.log": "219aaadf957130a9975839268453266c56d674f814f44a2f32a599dc7b42c3ee",
+  "regression-base.log": "37c58f9dcfd8e67fa02de4aff76286b9b76b92a7d53af50bbc0a7399049cfc65",
+  "independent-review.md": "7978c8be84cfc04f1259629427b58aa4f24da2622ec576bd784029bede9b2255",
+  "EVIDENCE.md": "15ccf34868235ca3ed7a746808e1b0e3de1bb5e4e9445740d476c0a36dcd1df6",
+  "native-readback.json": "0aff86e403297c2a38c1e13840e7d958b0b4ac52107439e676c8894db3f97980"
+}
