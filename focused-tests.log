@@ -1,0 +1,22 @@
+$ node scripts/test-projects.mts src/cli/tools-cli.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["status"] through the admin-only Gateway API 113ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["import","--dry-run"] through the admin-only Gateway API 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["import","--agent","work","--since","14"] through the admin-only Gateway API 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["reset","--agent","work"] through the admin-only Gateway API 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["status","--session","agent:main:example","--limit","3"] through the admin-only Gateway API 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 0 before RPC 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 91 before RPC 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 2.5 before RPC 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days not-a-number before RPC 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > does not publish an interrupted usage status report 7ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  11:49:26
+   Duration  3.48s (worker 59%, transform 19%, setup 12%, tests 7%, import 3%)
+
+[test] passed 1 Vitest shard in 9.27s

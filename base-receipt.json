@@ -1,0 +1,675 @@
+{
+  "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+  "stamp": {
+    "builtAt": 1794540530812,
+    "head": "0633f256350b5580a5bdbcd8a6a5782750de03d4",
+    "inputsClean": true,
+    "inputSignature": "fc63eefc17bb25f5d15c2fb59254ae93058436363117d27358d1ac979dccc892"
+  },
+  "expectation": "red",
+  "hashes": {
+    "cli-read-proof-v2.py": "55f611db6139e584322141cf921150f68c1cda87debeb68ee73ff5ba19473557",
+    "read-fixture.mts": "04b0babf08bcb1ee231d757ada9fe348cb9ddb53bd6df940bd6760978c68c076",
+    "read-proxy.mjs": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9"
+  },
+  "boundary": "normal built CLI through controlling PTY and actual normal Gateway; canonical isolated SQLite state; transparent proxy holds successful real replies",
+  "cases": [
+    {
+      "label": "status-json-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "tools",
+        "usage",
+        "status",
+        "--json"
+      ],
+      "lane": "tools",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:38517",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "toolUsage.status",
+      "follow": false,
+      "signal": "SIGINT",
+      "exitCode": -9,
+      "seconds": 6.075,
+      "interruptToExitMs": 2032.77,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2027.71,
+      "targetConnectionIds": [
+        1
+      ],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 2,
+          "wallMs": 1794541158984,
+          "mode": "toolUsage.status",
+          "label": "status-json-int",
+          "observedAt": 3680767.816240718
+        },
+        {
+          "event": "front-connected",
+          "sequence": 3,
+          "wallMs": 1794541161523,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "mode": "toolUsage.status",
+          "observedAt": 3680770.356154069
+        },
+        {
+          "event": "request",
+          "sequence": 4,
+          "wallMs": 1794541161639,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "method": "connect",
+          "requestId": "1:4a509ea2-1104-448a-8933-04774380e3fa",
+          "observedAt": 3680770.477132518
+        },
+        {
+          "event": "real-response",
+          "sequence": 5,
+          "wallMs": 1794541161724,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "method": "connect",
+          "requestId": "1:4a509ea2-1104-448a-8933-04774380e3fa",
+          "ok": true,
+          "observedAt": 3680770.556051755
+        },
+        {
+          "event": "request",
+          "sequence": 6,
+          "wallMs": 1794541161727,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "method": "toolUsage.status",
+          "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+          "observedAt": 3680770.559412602
+        },
+        {
+          "event": "real-response",
+          "sequence": 7,
+          "wallMs": 1794541163029,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "method": "toolUsage.status",
+          "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+          "ok": true,
+          "payload": {
+            "agentId": "main",
+            "enabled": false,
+            "now": 1794541161979,
+            "rowCount": 1,
+            "halfLifeDays": 14,
+            "retentionDays": 90,
+            "lastImportAt": null,
+            "top": [
+              {
+                "toolId": "openclaw:core:read",
+                "score": 2.999932845242061,
+                "updatedAt": 1794541122915
+              }
+            ]
+          },
+          "observedAt": 3680771.861357702
+        },
+        {
+          "event": "response-held",
+          "sequence": 8,
+          "wallMs": 1794541163029,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "method": "toolUsage.status",
+          "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+          "actualGatewaySuccess": true,
+          "observedAt": 3680771.861393473
+        },
+        {
+          "event": "front-closed",
+          "sequence": 9,
+          "wallMs": 1794541165059,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "observedAt": 3680773.890876246
+        },
+        {
+          "event": "back-closed",
+          "sequence": 10,
+          "wallMs": 1794541165059,
+          "connectionId": 1,
+          "label": "status-json-int",
+          "observedAt": 3680773.89113852
+        }
+      ],
+      "result": "RED_READ_PENDING"
+    },
+    {
+      "label": "status-human-term",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "tools",
+        "usage",
+        "status"
+      ],
+      "lane": "tools",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:38517",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "toolUsage.status",
+      "follow": true,
+      "signal": "SIGTERM",
+      "exitCode": -9,
+      "seconds": 4.691,
+      "interruptToExitMs": 2031.75,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 2026.99,
+      "targetConnectionIds": [
+        2
+      ],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "40524a562fecd21170494477c408d0d127ba1c3021f7eccd1de8c41bbc879ce6",
+      "stderrSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "stdout": "\r\nOpenClaw 2026.11.3 (0633f25)\r\nOpenClaw Support will never DM you first. I, on the other hand, absolutely will.\r\n\r\n",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 11,
+          "wallMs": 1794541165081,
+          "mode": "toolUsage.status",
+          "label": "status-human-term",
+          "observedAt": 3680773.913329447
+        },
+        {
+          "event": "front-connected",
+          "sequence": 12,
+          "wallMs": 1794541167700,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "mode": "toolUsage.status",
+          "observedAt": 3680776.532319759
+        },
+        {
+          "event": "request",
+          "sequence": 13,
+          "wallMs": 1794541167709,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "method": "connect",
+          "requestId": "1:7532e08c-0bd8-4faa-ab83-55b0e0613f8c",
+          "observedAt": 3680776.541315081
+        },
+        {
+          "event": "real-response",
+          "sequence": 14,
+          "wallMs": 1794541167720,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "method": "connect",
+          "requestId": "1:7532e08c-0bd8-4faa-ab83-55b0e0613f8c",
+          "ok": true,
+          "observedAt": 3680776.552093321
+        },
+        {
+          "event": "request",
+          "sequence": 15,
+          "wallMs": 1794541167723,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "method": "toolUsage.status",
+          "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+          "observedAt": 3680776.55501148
+        },
+        {
+          "event": "real-response",
+          "sequence": 16,
+          "wallMs": 1794541167732,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "method": "toolUsage.status",
+          "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+          "ok": true,
+          "payload": {
+            "agentId": "main",
+            "enabled": false,
+            "now": 1794541167726,
+            "rowCount": 1,
+            "halfLifeDays": 14,
+            "retentionDays": 90,
+            "lastImportAt": null,
+            "top": [
+              {
+                "toolId": "openclaw:core:read",
+                "score": 2.9999229657254025,
+                "updatedAt": 1794541122915
+              }
+            ]
+          },
+          "observedAt": 3680776.564542023
+        },
+        {
+          "event": "response-held",
+          "sequence": 17,
+          "wallMs": 1794541167733,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "method": "toolUsage.status",
+          "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+          "actualGatewaySuccess": true,
+          "observedAt": 3680776.564587925
+        },
+        {
+          "event": "front-closed",
+          "sequence": 18,
+          "wallMs": 1794541169773,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "observedAt": 3680778.604543383
+        },
+        {
+          "event": "back-closed",
+          "sequence": 19,
+          "wallMs": 1794541169773,
+          "connectionId": 2,
+          "label": "status-human-term",
+          "observedAt": 3680778.604648424
+        }
+      ],
+      "result": "RED_READ_PENDING"
+    },
+    {
+      "label": "json-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "tools",
+        "usage",
+        "status",
+        "--json"
+      ],
+      "lane": "tools",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:38517",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 2.54,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "7fb723bdfff4aad4a61465fac07e4fc9e8022f8f9bd9c051f8eca23e9edd7377",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"agentId\": \"main\",\r\n  \"enabled\": false,\r\n  \"now\": 1794541172248,\r\n  \"rowCount\": 1,\r\n  \"halfLifeDays\": 14,\r\n  \"retentionDays\": 90,\r\n  \"lastImportAt\": null,\r\n  \"top\": [\r\n    {\r\n      \"toolId\": \"openclaw:core:read\",\r\n      \"score\": 2.9999151920969207,\r\n      \"updatedAt\": 1794541122915\r\n    }\r\n  ]\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 20,
+          "wallMs": 1794541169790,
+          "mode": "normal",
+          "label": "json-control",
+          "observedAt": 3680778.622122551
+        },
+        {
+          "event": "front-connected",
+          "sequence": 21,
+          "wallMs": 1794541172225,
+          "connectionId": 3,
+          "label": "json-control",
+          "mode": "normal",
+          "observedAt": 3680781.056767032
+        },
+        {
+          "event": "request",
+          "sequence": 22,
+          "wallMs": 1794541172233,
+          "connectionId": 3,
+          "label": "json-control",
+          "method": "connect",
+          "requestId": "1:4dac5f30-a224-4daa-a94b-31e478c3652f",
+          "observedAt": 3680781.065206985
+        },
+        {
+          "event": "real-response",
+          "sequence": 23,
+          "wallMs": 1794541172242,
+          "connectionId": 3,
+          "label": "json-control",
+          "method": "connect",
+          "requestId": "1:4dac5f30-a224-4daa-a94b-31e478c3652f",
+          "ok": true,
+          "observedAt": 3680781.074399331
+        },
+        {
+          "event": "request",
+          "sequence": 24,
+          "wallMs": 1794541172245,
+          "connectionId": 3,
+          "label": "json-control",
+          "method": "toolUsage.status",
+          "requestId": "2:6251ea27-5e23-455b-8f44-870e32b712df",
+          "observedAt": 3680781.076984956
+        },
+        {
+          "event": "real-response",
+          "sequence": 25,
+          "wallMs": 1794541172252,
+          "connectionId": 3,
+          "label": "json-control",
+          "method": "toolUsage.status",
+          "requestId": "2:6251ea27-5e23-455b-8f44-870e32b712df",
+          "ok": true,
+          "payload": {
+            "agentId": "main",
+            "enabled": false,
+            "now": 1794541172248,
+            "rowCount": 1,
+            "halfLifeDays": 14,
+            "retentionDays": 90,
+            "lastImportAt": null,
+            "top": [
+              {
+                "toolId": "openclaw:core:read",
+                "score": 2.9999151920969207,
+                "updatedAt": 1794541122915
+              }
+            ]
+          },
+          "observedAt": 3680781.083957539
+        },
+        {
+          "event": "front-closed",
+          "sequence": 26,
+          "wallMs": 1794541172256,
+          "connectionId": 3,
+          "label": "json-control",
+          "observedAt": 3680781.087809306
+        },
+        {
+          "event": "back-closed",
+          "sequence": 27,
+          "wallMs": 1794541172256,
+          "connectionId": 3,
+          "label": "json-control",
+          "observedAt": 3680781.087919836
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "human-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "tools",
+        "usage",
+        "status"
+      ],
+      "lane": "tools",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:38517",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": true,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 2.782,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "9df6d18c910c37bc7093cb565e244f7dda6cddf26e3578434c0f1d581d053d6b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (0633f25) \u2014 I ask before I sudo. Character development.\r\n\r\n{\r\n  \"agentId\": \"main\",\r\n  \"enabled\": false,\r\n  \"now\": 1794541174741,\r\n  \"rowCount\": 1,\r\n  \"halfLifeDays\": 14,\r\n  \"retentionDays\": 90,\r\n  \"lastImportAt\": null,\r\n  \"top\": [\r\n    {\r\n      \"toolId\": \"openclaw:core:read\",\r\n      \"score\": 2.9999109064673646,\r\n      \"updatedAt\": 1794541122915\r\n    }\r\n  ]\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 28,
+          "wallMs": 1794541172347,
+          "mode": "normal",
+          "label": "human-control",
+          "observedAt": 3680781.179153327
+        },
+        {
+          "event": "front-connected",
+          "sequence": 29,
+          "wallMs": 1794541174725,
+          "connectionId": 4,
+          "label": "human-control",
+          "mode": "normal",
+          "observedAt": 3680783.557299291
+        },
+        {
+          "event": "request",
+          "sequence": 30,
+          "wallMs": 1794541174732,
+          "connectionId": 4,
+          "label": "human-control",
+          "method": "connect",
+          "requestId": "1:1e9c1f35-44a8-4e72-b8cd-b8de763328b6",
+          "observedAt": 3680783.56426006
+        },
+        {
+          "event": "real-response",
+          "sequence": 31,
+          "wallMs": 1794541174737,
+          "connectionId": 4,
+          "label": "human-control",
+          "method": "connect",
+          "requestId": "1:1e9c1f35-44a8-4e72-b8cd-b8de763328b6",
+          "ok": true,
+          "observedAt": 3680783.569487491
+        },
+        {
+          "event": "request",
+          "sequence": 32,
+          "wallMs": 1794541174740,
+          "connectionId": 4,
+          "label": "human-control",
+          "method": "toolUsage.status",
+          "requestId": "2:3571b58b-0b94-4d1b-9cd0-d44cbc8721cb",
+          "observedAt": 3680783.571929939
+        },
+        {
+          "event": "real-response",
+          "sequence": 33,
+          "wallMs": 1794541174745,
+          "connectionId": 4,
+          "label": "human-control",
+          "method": "toolUsage.status",
+          "requestId": "2:3571b58b-0b94-4d1b-9cd0-d44cbc8721cb",
+          "ok": true,
+          "payload": {
+            "agentId": "main",
+            "enabled": false,
+            "now": 1794541174741,
+            "rowCount": 1,
+            "halfLifeDays": 14,
+            "retentionDays": 90,
+            "lastImportAt": null,
+            "top": [
+              {
+                "toolId": "openclaw:core:read",
+                "score": 2.9999109064673646,
+                "updatedAt": 1794541122915
+              }
+            ]
+          },
+          "observedAt": 3680783.577310157
+        },
+        {
+          "event": "front-closed",
+          "sequence": 34,
+          "wallMs": 1794541174749,
+          "connectionId": 4,
+          "label": "human-control",
+          "observedAt": 3680783.580932325
+        },
+        {
+          "event": "back-closed",
+          "sequence": 35,
+          "wallMs": 1794541174749,
+          "connectionId": 4,
+          "label": "human-control",
+          "observedAt": 3680783.581017385
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "error-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "tools",
+        "usage",
+        "status",
+        "--json"
+      ],
+      "lane": "tools",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:38517",
+        "auth": "wrong synthetic token"
+      },
+      "mode": "error",
+      "follow": false,
+      "signal": null,
+      "exitCode": 1,
+      "seconds": 3.132,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "9974208168bcfb617c0c17fc98add677cc8db6bc6558a3b9cbb8ccddc90c92e7",
+      "stderrSHA256": "e06bf5d3f0847bc120db599c2d7ec29a16c200a8042ccd5f50b4b8c825ce842d",
+      "stdout": "{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)\"\r\n  }\r\n}\r\n",
+      "stderr": "gateway connect failed: GatewayClientRequestError: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)\n[openclaw] The CLI command failed.\n[openclaw] Reason: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)\n[openclaw] For help, run `openclaw doctor`.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 36,
+          "wallMs": 1794541175149,
+          "mode": "error",
+          "label": "error-control",
+          "observedAt": 3680783.981121968
+        },
+        {
+          "event": "front-connected",
+          "sequence": 37,
+          "wallMs": 1794541177625,
+          "connectionId": 5,
+          "label": "error-control",
+          "mode": "error",
+          "observedAt": 3680786.456601558
+        },
+        {
+          "event": "request",
+          "sequence": 38,
+          "wallMs": 1794541177631,
+          "connectionId": 5,
+          "label": "error-control",
+          "method": "connect",
+          "requestId": "1:f6c1900f-c3d4-483d-8b04-03d3b24f5caa",
+          "observedAt": 3680786.462963099
+        },
+        {
+          "event": "real-response",
+          "sequence": 39,
+          "wallMs": 1794541177890,
+          "connectionId": 5,
+          "label": "error-control",
+          "method": "connect",
+          "requestId": "1:f6c1900f-c3d4-483d-8b04-03d3b24f5caa",
+          "ok": false,
+          "message": "unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)",
+          "observedAt": 3680786.721779811
+        },
+        {
+          "event": "back-closed",
+          "sequence": 40,
+          "wallMs": 1794541177902,
+          "connectionId": 5,
+          "label": "error-control",
+          "observedAt": 3680786.73445238
+        },
+        {
+          "event": "front-closed",
+          "sequence": 41,
+          "wallMs": 1794541177903,
+          "connectionId": 5,
+          "label": "error-control",
+          "observedAt": 3680786.734617463
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    }
+  ],
+  "result": "RED_WITH_REAL_GATEWAY_AND_LEGAL_CONTROLS",
+  "fixtureReadback": {
+    "lane": "tools",
+    "rows": [
+      {
+        "toolId": "openclaw:core:read",
+        "score": 3,
+        "updatedAt": 1794541122915
+      }
+    ],
+    "generation": 0
+  },
+  "gatewayPid": 163,
+  "gatewayHealthy": true,
+  "configuredProxyPort": 38517,
+  "proxyPid": 227,
+  "cleanup": {
+    "gatewayExit": 0,
+    "proxyExit": 0,
+    "gatewayOwnedSurvivors": [],
+    "proxyOwnedSurvivors": [],
+    "configUnchanged": true,
+    "isolatedStateRetained": true
+  }
+}

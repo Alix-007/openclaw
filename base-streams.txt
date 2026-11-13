@@ -1,0 +1,729 @@
+
+--- status-json-int/stdout.raw ---
+^C
+--- status-json-int/stderr.log ---
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+--- status-json-int/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 2,
+    "wallMs": 1794541158984,
+    "mode": "toolUsage.status",
+    "label": "status-json-int",
+    "observedAt": 3680767.816240718
+  },
+  {
+    "event": "front-connected",
+    "sequence": 3,
+    "wallMs": 1794541161523,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "mode": "toolUsage.status",
+    "observedAt": 3680770.356154069
+  },
+  {
+    "event": "request",
+    "sequence": 4,
+    "wallMs": 1794541161639,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "method": "connect",
+    "requestId": "1:4a509ea2-1104-448a-8933-04774380e3fa",
+    "observedAt": 3680770.477132518
+  },
+  {
+    "event": "real-response",
+    "sequence": 5,
+    "wallMs": 1794541161724,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "method": "connect",
+    "requestId": "1:4a509ea2-1104-448a-8933-04774380e3fa",
+    "ok": true,
+    "observedAt": 3680770.556051755
+  },
+  {
+    "event": "request",
+    "sequence": 6,
+    "wallMs": 1794541161727,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "method": "toolUsage.status",
+    "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+    "observedAt": 3680770.559412602
+  },
+  {
+    "event": "real-response",
+    "sequence": 7,
+    "wallMs": 1794541163029,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "method": "toolUsage.status",
+    "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+    "ok": true,
+    "payload": {
+      "agentId": "main",
+      "enabled": false,
+      "now": 1794541161979,
+      "rowCount": 1,
+      "halfLifeDays": 14,
+      "retentionDays": 90,
+      "lastImportAt": null,
+      "top": [
+        {
+          "toolId": "openclaw:core:read",
+          "score": 2.999932845242061,
+          "updatedAt": 1794541122915
+        }
+      ]
+    },
+    "observedAt": 3680771.861357702
+  },
+  {
+    "event": "response-held",
+    "sequence": 8,
+    "wallMs": 1794541163029,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "method": "toolUsage.status",
+    "requestId": "2:e8bcf047-8ad7-4a88-b595-17e7e1f564f8",
+    "actualGatewaySuccess": true,
+    "observedAt": 3680771.861393473
+  },
+  {
+    "event": "front-closed",
+    "sequence": 9,
+    "wallMs": 1794541165059,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "observedAt": 3680773.890876246
+  },
+  {
+    "event": "back-closed",
+    "sequence": 10,
+    "wallMs": 1794541165059,
+    "connectionId": 1,
+    "label": "status-json-int",
+    "observedAt": 3680773.89113852
+  }
+]
+
+--- status-human-term/stdout.raw ---
+
+OpenClaw 2026.11.3 (0633f25)
+OpenClaw Support will never DM you first. I, on the other hand, absolutely will.
+
+
+--- status-human-term/stderr.log ---
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+--- status-human-term/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 11,
+    "wallMs": 1794541165081,
+    "mode": "toolUsage.status",
+    "label": "status-human-term",
+    "observedAt": 3680773.913329447
+  },
+  {
+    "event": "front-connected",
+    "sequence": 12,
+    "wallMs": 1794541167700,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "mode": "toolUsage.status",
+    "observedAt": 3680776.532319759
+  },
+  {
+    "event": "request",
+    "sequence": 13,
+    "wallMs": 1794541167709,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "method": "connect",
+    "requestId": "1:7532e08c-0bd8-4faa-ab83-55b0e0613f8c",
+    "observedAt": 3680776.541315081
+  },
+  {
+    "event": "real-response",
+    "sequence": 14,
+    "wallMs": 1794541167720,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "method": "connect",
+    "requestId": "1:7532e08c-0bd8-4faa-ab83-55b0e0613f8c",
+    "ok": true,
+    "observedAt": 3680776.552093321
+  },
+  {
+    "event": "request",
+    "sequence": 15,
+    "wallMs": 1794541167723,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "method": "toolUsage.status",
+    "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+    "observedAt": 3680776.55501148
+  },
+  {
+    "event": "real-response",
+    "sequence": 16,
+    "wallMs": 1794541167732,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "method": "toolUsage.status",
+    "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+    "ok": true,
+    "payload": {
+      "agentId": "main",
+      "enabled": false,
+      "now": 1794541167726,
+      "rowCount": 1,
+      "halfLifeDays": 14,
+      "retentionDays": 90,
+      "lastImportAt": null,
+      "top": [
+        {
+          "toolId": "openclaw:core:read",
+          "score": 2.9999229657254025,
+          "updatedAt": 1794541122915
+        }
+      ]
+    },
+    "observedAt": 3680776.564542023
+  },
+  {
+    "event": "response-held",
+    "sequence": 17,
+    "wallMs": 1794541167733,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "method": "toolUsage.status",
+    "requestId": "2:cad31a2f-3fd9-49aa-9d5f-bbee75e093e9",
+    "actualGatewaySuccess": true,
+    "observedAt": 3680776.564587925
+  },
+  {
+    "event": "front-closed",
+    "sequence": 18,
+    "wallMs": 1794541169773,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "observedAt": 3680778.604543383
+  },
+  {
+    "event": "back-closed",
+    "sequence": 19,
+    "wallMs": 1794541169773,
+    "connectionId": 2,
+    "label": "status-human-term",
+    "observedAt": 3680778.604648424
+  }
+]
+
+--- json-control/stdout.raw ---
+{
+  "agentId": "main",
+  "enabled": false,
+  "now": 1794541172248,
+  "rowCount": 1,
+  "halfLifeDays": 14,
+  "retentionDays": 90,
+  "lastImportAt": null,
+  "top": [
+    {
+      "toolId": "openclaw:core:read",
+      "score": 2.9999151920969207,
+      "updatedAt": 1794541122915
+    }
+  ]
+}
+
+--- json-control/stderr.log ---
+
+--- json-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 20,
+    "wallMs": 1794541169790,
+    "mode": "normal",
+    "label": "json-control",
+    "observedAt": 3680778.622122551
+  },
+  {
+    "event": "front-connected",
+    "sequence": 21,
+    "wallMs": 1794541172225,
+    "connectionId": 3,
+    "label": "json-control",
+    "mode": "normal",
+    "observedAt": 3680781.056767032
+  },
+  {
+    "event": "request",
+    "sequence": 22,
+    "wallMs": 1794541172233,
+    "connectionId": 3,
+    "label": "json-control",
+    "method": "connect",
+    "requestId": "1:4dac5f30-a224-4daa-a94b-31e478c3652f",
+    "observedAt": 3680781.065206985
+  },
+  {
+    "event": "real-response",
+    "sequence": 23,
+    "wallMs": 1794541172242,
+    "connectionId": 3,
+    "label": "json-control",
+    "method": "connect",
+    "requestId": "1:4dac5f30-a224-4daa-a94b-31e478c3652f",
+    "ok": true,
+    "observedAt": 3680781.074399331
+  },
+  {
+    "event": "request",
+    "sequence": 24,
+    "wallMs": 1794541172245,
+    "connectionId": 3,
+    "label": "json-control",
+    "method": "toolUsage.status",
+    "requestId": "2:6251ea27-5e23-455b-8f44-870e32b712df",
+    "observedAt": 3680781.076984956
+  },
+  {
+    "event": "real-response",
+    "sequence": 25,
+    "wallMs": 1794541172252,
+    "connectionId": 3,
+    "label": "json-control",
+    "method": "toolUsage.status",
+    "requestId": "2:6251ea27-5e23-455b-8f44-870e32b712df",
+    "ok": true,
+    "payload": {
+      "agentId": "main",
+      "enabled": false,
+      "now": 1794541172248,
+      "rowCount": 1,
+      "halfLifeDays": 14,
+      "retentionDays": 90,
+      "lastImportAt": null,
+      "top": [
+        {
+          "toolId": "openclaw:core:read",
+          "score": 2.9999151920969207,
+          "updatedAt": 1794541122915
+        }
+      ]
+    },
+    "observedAt": 3680781.083957539
+  },
+  {
+    "event": "front-closed",
+    "sequence": 26,
+    "wallMs": 1794541172256,
+    "connectionId": 3,
+    "label": "json-control",
+    "observedAt": 3680781.087809306
+  },
+  {
+    "event": "back-closed",
+    "sequence": 27,
+    "wallMs": 1794541172256,
+    "connectionId": 3,
+    "label": "json-control",
+    "observedAt": 3680781.087919836
+  }
+]
+
+--- human-control/stdout.raw ---
+
+OpenClaw 2026.11.3 (0633f25) — I ask before I sudo. Character development.
+
+{
+  "agentId": "main",
+  "enabled": false,
+  "now": 1794541174741,
+  "rowCount": 1,
+  "halfLifeDays": 14,
+  "retentionDays": 90,
+  "lastImportAt": null,
+  "top": [
+    {
+      "toolId": "openclaw:core:read",
+      "score": 2.9999109064673646,
+      "updatedAt": 1794541122915
+    }
+  ]
+}
+
+--- human-control/stderr.log ---
+
+--- human-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 28,
+    "wallMs": 1794541172347,
+    "mode": "normal",
+    "label": "human-control",
+    "observedAt": 3680781.179153327
+  },
+  {
+    "event": "front-connected",
+    "sequence": 29,
+    "wallMs": 1794541174725,
+    "connectionId": 4,
+    "label": "human-control",
+    "mode": "normal",
+    "observedAt": 3680783.557299291
+  },
+  {
+    "event": "request",
+    "sequence": 30,
+    "wallMs": 1794541174732,
+    "connectionId": 4,
+    "label": "human-control",
+    "method": "connect",
+    "requestId": "1:1e9c1f35-44a8-4e72-b8cd-b8de763328b6",
+    "observedAt": 3680783.56426006
+  },
+  {
+    "event": "real-response",
+    "sequence": 31,
+    "wallMs": 1794541174737,
+    "connectionId": 4,
+    "label": "human-control",
+    "method": "connect",
+    "requestId": "1:1e9c1f35-44a8-4e72-b8cd-b8de763328b6",
+    "ok": true,
+    "observedAt": 3680783.569487491
+  },
+  {
+    "event": "request",
+    "sequence": 32,
+    "wallMs": 1794541174740,
+    "connectionId": 4,
+    "label": "human-control",
+    "method": "toolUsage.status",
+    "requestId": "2:3571b58b-0b94-4d1b-9cd0-d44cbc8721cb",
+    "observedAt": 3680783.571929939
+  },
+  {
+    "event": "real-response",
+    "sequence": 33,
+    "wallMs": 1794541174745,
+    "connectionId": 4,
+    "label": "human-control",
+    "method": "toolUsage.status",
+    "requestId": "2:3571b58b-0b94-4d1b-9cd0-d44cbc8721cb",
+    "ok": true,
+    "payload": {
+      "agentId": "main",
+      "enabled": false,
+      "now": 1794541174741,
+      "rowCount": 1,
+      "halfLifeDays": 14,
+      "retentionDays": 90,
+      "lastImportAt": null,
+      "top": [
+        {
+          "toolId": "openclaw:core:read",
+          "score": 2.9999109064673646,
+          "updatedAt": 1794541122915
+        }
+      ]
+    },
+    "observedAt": 3680783.577310157
+  },
+  {
+    "event": "front-closed",
+    "sequence": 34,
+    "wallMs": 1794541174749,
+    "connectionId": 4,
+    "label": "human-control",
+    "observedAt": 3680783.580932325
+  },
+  {
+    "event": "back-closed",
+    "sequence": 35,
+    "wallMs": 1794541174749,
+    "connectionId": 4,
+    "label": "human-control",
+    "observedAt": 3680783.581017385
+  }
+]
+
+--- error-control/stdout.raw ---
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)"
+  }
+}
+
+--- error-control/stderr.log ---
+gateway connect failed: GatewayClientRequestError: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+[openclaw] The CLI command failed.
+[openclaw] Reason: unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+[openclaw] For help, run `openclaw doctor`.
+
+--- error-control/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 36,
+    "wallMs": 1794541175149,
+    "mode": "error",
+    "label": "error-control",
+    "observedAt": 3680783.981121968
+  },
+  {
+    "event": "front-connected",
+    "sequence": 37,
+    "wallMs": 1794541177625,
+    "connectionId": 5,
+    "label": "error-control",
+    "mode": "error",
+    "observedAt": 3680786.456601558
+  },
+  {
+    "event": "request",
+    "sequence": 38,
+    "wallMs": 1794541177631,
+    "connectionId": 5,
+    "label": "error-control",
+    "method": "connect",
+    "requestId": "1:f6c1900f-c3d4-483d-8b04-03d3b24f5caa",
+    "observedAt": 3680786.462963099
+  },
+  {
+    "event": "real-response",
+    "sequence": 39,
+    "wallMs": 1794541177890,
+    "connectionId": 5,
+    "label": "error-control",
+    "method": "connect",
+    "requestId": "1:f6c1900f-c3d4-483d-8b04-03d3b24f5caa",
+    "ok": false,
+    "message": "unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)",
+    "observedAt": 3680786.721779811
+  },
+  {
+    "event": "back-closed",
+    "sequence": 40,
+    "wallMs": 1794541177902,
+    "connectionId": 5,
+    "label": "error-control",
+    "observedAt": 3680786.73445238
+  },
+  {
+    "event": "front-closed",
+    "sequence": 41,
+    "wallMs": 1794541177903,
+    "connectionId": 5,
+    "label": "error-control",
+    "observedAt": 3680786.734617463
+  }
+]
+
+--- fixture.stdout ---
+{"lane":"tools","rows":[{"toolId":"openclaw:core:read","score":3,"updatedAt":1794541122915}],"generation":0}
+
+--- fixture.stderr ---
+[state/agent-db] agent database clean-close receipt: written; agent=main
+
+--- gateway.stdout ---
+2026-11-13T03:39:12.552+00:00 [gateway] loading configuration…
+2026-11-13T03:39:12.590+00:00 [gateway] resolving authentication…
+2026-11-13T03:39:12.594+00:00 [gateway] starting...
+2026-11-13T03:39:13.306+00:00 [gateway] shutdown budget at startup: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T03:39:13.394+00:00 [gateway] Agent exec isolation unavailable: Error: requires Delegate=yes and DelegateSubgroup=gateway (systemd 254+). Continuing with shared sampled memory protection. Check Gateway service delegation with openclaw doctor.
+2026-11-13T03:39:13.861+00:00 [gateway] spawn broker ready pid=210
+2026-11-13T03:39:14.810+00:00 [gateway] startup phase: process.bootstrap 8801.9ms total=8801.9ms rssMb=583.7 heapUsedMb=166.3 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+2026-11-13T03:39:14.818+00:00 [gateway] startup phase: state.schema-preflight starting total=8810.2ms
+2026-11-13T03:39:14.830+00:00 [gateway] startup phase: state.schema-preflight 11.6ms total=8821.8ms rssMb=583.8 heapUsedMb=167.1 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+2026-11-13T03:39:14.863+00:00 [gateway] startup phase: config.auth starting total=8855.2ms
+2026-11-13T03:39:15.345+00:00 [gateway] startup phase: config.auth 480.6ms total=9335.9ms rssMb=593.5 heapUsedMb=173.0 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+2026-11-13T03:39:15.397+00:00 [gateway] startup phase: state.desktop-approval-admission starting total=9389.9ms
+2026-11-13T03:39:15.479+00:00 [gateway] startup phase: state.desktop-approval-admission 81.8ms total=9471.6ms rssMb=599.4 heapUsedMb=178.3 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+2026-11-13T03:39:15.480+00:00 [gateway] startup phase: sessions.admission starting total=9473.0ms
+2026-11-13T03:39:16.023+00:00 [gateway] startup phase: sessions.admission 542.7ms total=10015.7ms rssMb=687.5 heapUsedMb=185.5 workers=8 workerHeapSamples=7/8 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:17.641+00:00 [gateway] starting HTTP server...
+2026-11-13T03:39:18.839+00:00 [gateway] startup phase: http.bound 0.0ms total=12830.4ms rssMb=789.8 heapUsedMb=205.4 workers=9 workerHeapSamples=7/9 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:18.840+00:00 [gateway] startup phase: runtime.early starting total=12833.0ms
+2026-11-13T03:39:18.849+00:00 [gateway] startup phase: runtime.early.discovery starting total=12841.9ms
+2026-11-13T03:39:18.860+00:00 [gateway] startup phase: runtime.early.discovery 10.2ms total=12852.2ms rssMb=789.9 heapUsedMb=211.5 workers=9 workerHeapSamples=7/9 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:18.860+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports starting total=12853.2ms
+2026-11-13T03:39:18.867+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports 5.9ms total=12859.1ms rssMb=789.9 heapUsedMb=214.7 workers=9 workerHeapSamples=7/9 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:18.869+00:00 [gateway] startup phase: runtime.early.skills-listener starting total=12861.5ms
+2026-11-13T03:39:18.877+00:00 [gateway] startup phase: runtime.early.skills-listener 8.3ms total=12869.8ms rssMb=789.9 heapUsedMb=216.6 workers=9 workerHeapSamples=7/9 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:18.878+00:00 [gateway] startup phase: runtime.early 37.9ms total=12870.9ms rssMb=790.0 heapUsedMb=216.7 workers=9 workerHeapSamples=7/9 workerHeapMb=235.4 workerHeapSource=cached
+2026-11-13T03:39:21.178+00:00 [gateway] startup phase: post-attach.system-ca starting total=15169.6ms
+2026-11-13T03:39:21.180+00:00 [gateway] startup phase: post-attach.system-ca 2.0ms total=15171.6ms rssMb=935.3 heapUsedMb=204.2 workers=11 workerHeapSamples=9/11 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:21.188+00:00 [gateway] startup phase: runtime.worker-pool-metrics starting total=15180.7ms
+2026-11-13T03:39:21.207+00:00 [gateway] startup phase: runtime.worker-pool-metrics 19.1ms total=15199.9ms rssMb=935.3 heapUsedMb=211.3 workers=11 workerHeapSamples=9/11 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:21.375+00:00 [gateway] startup phase: plugins.runtime-post-bind starting total=15367.6ms
+2026-11-13T03:39:21.536+00:00 [gateway] startup phase: plugins.runtime-post-bind 161.1ms total=15528.7ms rssMb=961.4 heapUsedMb=232.8 workers=12 workerHeapSamples=9/12 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:21.537+00:00 [gateway] startup phase: plugins.runtime-attach starting total=15529.7ms
+2026-11-13T03:39:21.557+00:00 [gateway] startup phase: plugins.runtime-attach 19.6ms total=15549.3ms rssMb=965.0 heapUsedMb=208.4 workers=12 workerHeapSamples=9/12 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:21.578+00:00 [gateway] agent model: ollama/synthetic-read-model (thinking=off, fast=off)
+2026-11-13T03:39:21.578+00:00 [gateway] http server listening (0 plugins, 8.3s)
+2026-11-13T03:39:21.579+00:00 [gateway] log file: <BASE_OUTPUT>/state/logs/openclaw-2026-11-13.log
+2026-11-13T03:39:21.579+00:00 [gateway] Older local CLI/SDK versions can bypass Gateway state mutation routing. Use matching CLI/SDK and Gateway versions; direct state writes from another process while this Gateway owns state are unsupported.
+2026-11-13T03:39:21.581+00:00 [gateway] native runtime: {"pid":163,"platform":"linux","arch":"x64","node":"26.12.1","v8":"14.6.202.34-node.40","uv":"1.52.1","openssl":"3.5.9","sqlite":"3.54.0","sqliteClose":{"explicitSqliteCloseReleasesNativeResources":true,"decided":true,"reason":"Node runtime"}}
+2026-11-13T03:39:21.586+00:00 [gateway] worker startup state: {"workerCount":12,"sqliteReaderMetrics":[{"operation":"plugins.metadata.read","count":1,"readBytes":0},{"operation":"machineState.read","count":2,"readBytes":0},{"operation":"gatewayOwnerLease.read","count":1,"readBytes":0},{"operation":"agentDatabaseRegistry.read","count":1,"readBytes":0},{"operation":"acpSessions.list","count":1,"readBytes":0},{"operation":"workerEnvironments.snapshot","count":1,"readBytes":0},{"operation":"agentDatabaseDeletion.snapshot","count":3,"readBytes":0},{"operation":"subagents.restore","count":1,"readBytes":0},{"operation":"devicePairing.list","count":3,"readBytes":0},{"operation":"mentions.snapshot","count":1,"readBytes":0},{"operation":"userProfiles.catalog","count":1,"readBytes":0},{"operation":"sessionGroups.snapshot","count":1,"readBytes":0},{"operation":"updateRuns.reconciliationCandidates","count":2,"readBytes":0},{"operation":"config.snapshot.read","count":1,"readBytes":0},{"operation":"userGitHubConnections.list","count":1,"readBytes":0},{"operation":"updateRuns.list","count":1,"readBytes":0},{"operation":"agentDeletionJournal.status","count":1,"readBytes":0},{"operation":"cron.store","count":1,"readBytes":0},{"operation":"sandboxRegistry.list","count":1,"readBytes":0},{"operation":"sandboxPersistentExec.list","count":1,"readBytes":0},{"operation":"sandboxRegistry.browsers","count":1,"readBytes":0},{"operation":"updateRuns.interruptedCandidate","count":1,"readBytes":0},{"operation":"sessions.session-store-projection","count":1,"readBytes":12288},{"operation":"sessions.session-membership-facts","count":1,"readBytes":0}],"postgresBridgeCount":0,"postgresPoolSelfRootCount":0,"workerLifecycle":[{"script":"worker-native-lifecycle.worker.js","started":1,"retired":[]},{"script":"openclaw-state-read.worker.js","started":2,"retired":[]},{"script":"client-credential.worker.js","started":1,"retired":[]},{"script":"sqlite-store.worker.js","started":1,"retired":[]},{"script":"logger-file.worker.js","started":1,"retired":[]},{"script":"gateway-state-owner-heartbeat.worker.js","started":1,"retired":[]},{"script":"openclaw-state-lease-heartbeat.worker.js","started":1,"retired":[]},{"script":"other","started":2,"retired":[]},{"script":"session-transcript.worker.js","started":2,"retired":[]}],"workerTaskMetrics":[{"workerClass":"other","script":"openclaw-state-read.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":21474792,"gc":[]},{"workerClass":"singleton","script":"client-credential.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":29034856,"gc":[]},{"workerClass":"writer","script":"logger-file.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":24219592,"gc":[]},{"workerClass":"other","script":"session-transcript.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":15040328,"gc":[]}],"compute":{"limit":15,"active":0,"waitingPools":0,"pendingTasks":0,"pendingBytes":0}}
+2026-11-13T03:39:21.605+00:00 [gateway] startup phase: sidecars.worker-environments starting total=15597.5ms
+2026-11-13T03:39:21.713+00:00 [ws] client connected conn=13f4912d-0b8f-4701-b004-30b2d6bc677e client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:21.785+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=15777.8ms
+2026-11-13T03:39:21.786+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.9ms total=15778.7ms rssMb=969.5 heapUsedMb=212.8 workers=12 workerHeapSamples=9/12 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:21.787+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces starting total=15779.7ms
+2026-11-13T03:39:22.120+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces 332.1ms total=16111.7ms rssMb=978.9 heapUsedMb=230.1 workers=14 workerHeapSamples=9/14 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:22.123+00:00 [gateway] startup phase: sidecars.worker-environments.active starting total=16115.5ms
+2026-11-13T03:39:22.129+00:00 [gateway] startup phase: sidecars.worker-environments 524.1ms total=16121.6ms rssMb=980.4 heapUsedMb=230.4 workers=14 workerHeapSamples=9/14 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:22.130+00:00 [gateway] starting channels and sidecars...
+2026-11-13T03:39:22.131+00:00 [gateway] startup phase: sidecars.internal-hooks starting total=16124.0ms
+2026-11-13T03:39:22.133+00:00 [gateway] startup phase: sidecars.model-runtime starting total=16126.2ms
+2026-11-13T03:39:22.134+00:00 [gateway] startup phase: sidecars.reply-runtime starting total=16127.2ms
+2026-11-13T03:39:22.781+00:00 [gateway] startup phase: sidecars.internal-hooks 649.0ms total=16773.0ms rssMb=1128.1 heapUsedMb=263.0 workers=14 workerHeapSamples=9/14 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:22.809+00:00 [gateway] startup phase: sidecars.reply-runtime 673.9ms total=16801.1ms rssMb=1132.5 heapUsedMb=264.6 workers=14 workerHeapSamples=9/14 workerHeapMb=311.8 workerHeapSource=cached
+2026-11-13T03:39:22.856+00:00 [gateway] startup phase: sidecars.worker-environments.active 733.2ms total=16848.8ms rssMb=1141.0 heapUsedMb=244.5 workers=14 workerHeapSamples=10/14 workerHeapMb=353.8 workerHeapSource=cached
+2026-11-13T03:39:22.883+00:00 [gateway] startup phase: sidecars.worker-environments.publications starting total=16875.9ms
+2026-11-13T03:39:22.912+00:00 [gateway] startup phase: sidecars.model-runtime 777.5ms total=16903.7ms rssMb=1144.2 heapUsedMb=246.0 workers=14 workerHeapSamples=10/14 workerHeapMb=353.8 workerHeapSource=cached
+2026-11-13T03:39:22.912+00:00 [gateway] startup phase: sidecars.chat-metadata starting total=16905.4ms
+2026-11-13T03:39:22.914+00:00 [gateway] startup phase: sidecars.chat-metadata 1.4ms total=16906.8ms rssMb=1144.5 heapUsedMb=246.2 workers=14 workerHeapSamples=10/14 workerHeapMb=353.8 workerHeapSource=cached
+2026-11-13T03:39:22.914+00:00 [gateway] startup phase: sidecars.plugin-services starting total=16907.5ms
+2026-11-13T03:39:22.916+00:00 [gateway] startup phase: sidecars.channels starting total=16908.5ms
+2026-11-13T03:39:22.916+00:00 [gateway/channels] skipping channel start (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)
+2026-11-13T03:39:22.928+00:00 [gateway] startup phase: sidecars.channels 11.8ms total=16920.3ms rssMb=1144.8 heapUsedMb=250.8 workers=14 workerHeapSamples=10/14 workerHeapMb=353.8 workerHeapSource=cached
+2026-11-13T03:39:22.932+00:00 [gateway] startup phase: sidecars.plugin-services 16.4ms total=16923.9ms rssMb=1145.3 heapUsedMb=251.0 workers=14 workerHeapSamples=10/14 workerHeapMb=353.8 workerHeapSource=cached
+2026-11-13T03:39:22.934+00:00 [gateway] startup outcomes: internal-hooks=skipped (no-handlers-loaded); internal-startup-hook=scheduled; gateway-start-hooks=skipped (no-handlers-loaded); gmail-watcher=skipped (hooks-disabled); gmail-model=skipped (not-configured)
+2026-11-13T03:39:23.032+00:00 [ws] ⇄ res ✓ toolUsage.status 1239ms bytes=297 conn=13f4912d…677e id=2:e8bcf047-8…64f8
+2026-11-13T03:39:23.044+00:00 [gateway] startup phase: sidecars.worker-environments.publications 160.4ms total=17036.3ms rssMb=1151.9 heapUsedMb=250.9 workers=14 workerHeapSamples=11/14 workerHeapMb=422.1 workerHeapSource=cached
+2026-11-13T03:39:23.384+00:00 [gateway] startup phase: ready 339.6ms total=17376.0ms rssMb=1186.4 heapUsedMb=250.1 workers=16 workerHeapSamples=11/16 workerHeapMb=422.1 workerHeapSource=cached
+2026-11-13T03:39:23.385+00:00 [gateway] ready
+2026-11-13T03:39:23.387+00:00 [restart-resume] startup restart resume: []
+2026-11-13T03:39:23.521+00:00 [gateway] remote model catalog refresh failed; next check in 6 hours, or run openclaw models refresh
+2026-11-13T03:39:24.855+00:00 [health] Managed worktree cleanup completed: removed 0; deleted 0 orphans; retired 0 orphan records; pruned 0 snapshots; scratch (24 h): removed 0 entries / 0 bytes, skipped-live 0, deferred 0; eligible 0; deferred 0; failed 0; protected 0; limits satisfied.
+2026-11-13T03:39:25.019+00:00 [cron/maintenance] Session registry maintenance completed
+2026-11-13T03:39:25.490+00:00 [gateway] database page-cache residency: database=state scope=file-sample resident=100.0% readBytes=30767 diskBytes=0 payloadBytes=0 payloadMessages=0 elapsedMs=12.3 projectionQueryMs=n/a->n/a limited=false
+2026-11-13T03:39:25.715+00:00 [gateway] database page-cache residency: database=agent scope=file-sample resident=100.0% readBytes=95918 diskBytes=0 payloadBytes=0 payloadMessages=0 elapsedMs=31.8 projectionQueryMs=1.79->n/a limited=false
+2026-11-13T03:39:26.467+00:00 [gateway] startup phase: post-ready.startup-maintenance starting total=20459.7ms
+2026-11-13T03:39:26.469+00:00 [gateway] startup phase: startup.maintenance.plugin-registry starting total=20461.6ms
+2026-11-13T03:39:26.471+00:00 [gateway] startup phase: startup.maintenance.channels starting total=20464.0ms
+2026-11-13T03:39:26.472+00:00 [gateway] startup phase: startup.maintenance.sessions starting total=20465.0ms
+2026-11-13T03:39:26.473+00:00 [gateway] startup phase: startup.maintenance.pairing starting total=20465.5ms
+2026-11-13T03:39:26.492+00:00 [gateway] startup phase: startup.maintenance.channels 20.0ms total=20484.0ms rssMb=1376.2 heapUsedMb=279.2 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:26.500+00:00 [gateway] startup phase: startup.maintenance.pairing 26.7ms total=20492.2ms rssMb=1376.2 heapUsedMb=279.5 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:26.509+00:00 [gateway] startup phase: startup.maintenance.session-transcripts starting total=20501.6ms
+2026-11-13T03:39:26.603+00:00 [gateway] startup phase: startup.maintenance.session-transcripts 93.2ms total=20594.9ms rssMb=1389.0 heapUsedMb=260.0 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:26.604+00:00 [gateway] startup phase: startup.maintenance.sessions 131.2ms total=20596.2ms rssMb=1389.0 heapUsedMb=260.0 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:26.629+00:00 [gateway] startup phase: startup.maintenance.plugin-registry 159.3ms total=20620.9ms rssMb=1389.7 heapUsedMb=261.7 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:26.629+00:00 [gateway] startup phase: post-ready.startup-maintenance 162.3ms total=20622.0ms rssMb=1389.7 heapUsedMb=261.7 workers=18 workerHeapSamples=15/18 workerHeapMb=631.6 workerHeapSource=cached
+2026-11-13T03:39:27.717+00:00 [ws] client connected conn=5b2f7fbf-1ce1-4e20-9f80-51572c6c041b client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:32.240+00:00 [ws] client connected conn=630cc68a-145f-4469-b3f2-a1c74f6d6f95 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:34.736+00:00 [ws] client connected conn=868392cb-ca77-483d-a4cf-fd4e2bdb00b5 client=cli name=cli mode=cli role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T03:39:37.900+00:00 [ws] ⇄ res ✗ connect 259ms bytes=365 sendMs=1.9991359999985434 failurePhase=auth failureCause=unauthorized conn=59cf0337…1682 id=1:f6c1900f-c…5caa
+2026-11-13T03:39:38.319+00:00 [admission] closed: restart-signal fence
+2026-11-13T03:39:38.335+00:00 [admission] closed: stop (SIGTERM)
+2026-11-13T03:39:38.335+00:00 [gateway] received SIGTERM; shutting down
+2026-11-13T03:39:38.338+00:00 [gateway] shutdown budget at shutdown: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T03:39:38.348+00:00 [restart-resume] shutdown restart resume: []
+2026-11-13T03:39:38.453+00:00 [gmail-watcher] gmail watcher stopped
+2026-11-13T03:39:38.525+00:00 [shutdown] completed cleanly in 179ms
+
+--- gateway.stderr ---
+[gateway] startup phase: entry.run-main-import starting total=147.5ms
+[gateway] startup phase: entry.run-main-import 75.5ms total=222.9ms start=147.5ms rssMb=73.9 heapUsedMb=11.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment starting total=1757.8ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports starting total=1757.9ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports 10.5ms total=1768.4ms start=1757.9ms rssMb=194.3 heapUsedMb=51.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard starting total=1769.7ms
+[gateway] startup phase: cli.environment.imports starting total=1770.1ms
+[gateway] startup phase: cli.environment.imports 5.5ms total=1775.6ms start=1770.1ms rssMb=194.3 heapUsedMb=54.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=1777.7ms
+[gateway] startup phase: cli.environment.config-import 284.9ms total=2062.7ms start=1777.7ms rssMb=197.9 heapUsedMb=78.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=2063.5ms
+[gateway] startup phase: cli.environment.config-read 44.7ms total=2108.2ms start=2063.5ms rssMb=199.9 heapUsedMb=83.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=2109.4ms
+[gateway] startup phase: cli.environment.config-recovery 16.3ms total=2125.7ms start=2109.4ms rssMb=202.1 heapUsedMb=67.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard 357.3ms total=2127.0ms start=1769.7ms rssMb=202.1 heapUsedMb=68.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.pin-runtime-paths starting total=2127.3ms
+[gateway] startup phase: cli.environment.pin-runtime-paths 0.4ms total=2127.7ms start=2127.3ms rssMb=202.1 heapUsedMb=68.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment 370.0ms total=2127.8ms start=1757.8ms rssMb=202.1 heapUsedMb=68.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-imports starting total=2152.8ms
+[gateway] startup phase: cli.main.gateway-run-imports 5.5ms total=2158.3ms start=2152.8ms rssMb=202.8 heapUsedMb=77.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap starting total=2191.1ms
+[gateway] startup phase: cli.environment.imports starting total=2191.8ms
+[gateway] startup phase: cli.environment.imports 0.3ms total=2192.1ms start=2191.8ms rssMb=203.8 heapUsedMb=84.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=2193.1ms
+[gateway] startup phase: cli.environment.config-import 0.2ms total=2193.3ms start=2193.1ms rssMb=203.8 heapUsedMb=84.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=2193.4ms
+[gateway] startup phase: cli.environment.config-read 3.2ms total=2196.6ms start=2193.4ms rssMb=203.8 heapUsedMb=85.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=2196.9ms
+[gateway] startup phase: cli.environment.config-recovery 0.6ms total=2197.5ms start=2196.9ms rssMb=204.0 heapUsedMb=85.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap 7.1ms total=2198.1ms start=2191.1ms rssMb=204.0 heapUsedMb=85.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap starting total=2198.3ms
+[gateway] startup phase: cli.command.config-ready starting total=2200.6ms
+[gateway] startup phase: cli.command.config-guard-import starting total=2200.8ms
+[gateway] startup phase: cli.command.config-guard-import 23.7ms total=2224.5ms start=2200.8ms rssMb=204.3 heapUsedMb=92.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.live-owner starting total=2260.3ms
+[gateway] startup phase: cli.bootstrap.admission.live-owner 4.6ms total=2265.0ms start=2260.3ms rssMb=208.0 heapUsedMb=80.7 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.core-config starting total=2265.3ms
+[gateway] startup phase: cli.bootstrap.admission.core-config 4.2ms total=2269.5ms start=2265.3ms rssMb=208.0 heapUsedMb=81.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot starting total=2269.9ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery starting total=2283.3ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery 0.8ms total=2284.1ms start=2283.3ms rssMb=208.4 heapUsedMb=81.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import starting total=2284.6ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-config starting total=2284.6ms
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import 47.2ms total=2331.7ms start=2284.6ms rssMb=209.1 heapUsedMb=88.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-readiness starting total=2332.3ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion starting total=2811.6ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion 1.5ms total=2813.1ms start=2811.6ms rssMb=262.2 heapUsedMb=91.5 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.plugin-config 529.0ms total=2813.6ms start=2284.6ms registrySnapshotMs=9.47938000000022 manifestRegistryMs=0.5480929999998807 ownerMapsMs=2.131151999999929 totalMs=12.529779999999846 indexPluginCount=0 manifestPluginCount=0 rssMb=262.2 heapUsedMb=91.5 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-readiness 1282.2ms total=3614.4ms start=2332.3ms agentCount=1 schemaProcessCount=0 schemaInspectionCount=0 schemaSnapshotCount=0 stateIntegrityCheckCount=0 stateIntegrityMs=0 stateSealCount=1 statePreflightMs=1252.507681 agentPreflightMs=20.026320999999825 rssMb=262.3 heapUsedMb=94.7 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import starting total=3614.9ms
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import 2.2ms total=3617.1ms start=3614.9ms rssMb=262.3 heapUsedMb=96.3 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-targets starting total=3617.4ms
+[gateway] startup phase: cli.bootstrap.admission.session-targets 3.5ms total=3620.9ms start=3617.4ms agentCount=1 registeredDatabaseCount=1 rssMb=262.3 heapUsedMb=96.5 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-readiness starting total=3621.4ms
+[gateway] startup phase: cli.bootstrap.admission.session-readiness 0.3ms total=3621.6ms start=3621.4ms targetCount=1 rssMb=262.3 heapUsedMb=96.5 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import starting total=3621.9ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import 11.0ms total=3632.9ms start=3621.9ms rssMb=262.8 heapUsedMb=98.9 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness starting total=3633.3ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness 3.8ms total=3637.1ms start=3633.3ms agentCount=1 rssMb=262.9 heapUsedMb=99.0 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-recovery starting total=3637.8ms
+[gateway] startup phase: cli.bootstrap.admission.config-recovery 1.0ms total=3638.7ms start=3637.8ms rssMb=262.9 heapUsedMb=99.1 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-guard starting total=3639.0ms
+[gateway] startup phase: cli.bootstrap.admission.config-guard 0.9ms total=3639.9ms start=3639.0ms rssMb=263.1 heapUsedMb=99.2 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot 1371.1ms total=3641.0ms start=2269.9ms rssMb=263.1 heapUsedMb=99.3 workers=2 workerHeapSamples=2/2 workerHeapMb=36.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.device-identity starting total=4341.9ms
+[gateway] startup phase: cli.bootstrap.admission.device-identity 170.5ms total=4512.4ms start=4341.9ms rssMb=328.8 heapUsedMb=78.3 workers=3 workerHeapSamples=3/3 workerHeapMb=88.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.webhook-readiness starting total=4584.5ms
+[gateway] startup phase: cli.bootstrap.webhook-readiness 52.8ms total=4637.4ms start=4584.5ms rssMb=330.5 heapUsedMb=104.3 workers=3 workerHeapSamples=3/3 workerHeapMb=88.6 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan-import starting total=5945.6ms
+[gateway] startup phase: cli.bootstrap.plugin-plan-import 8.5ms total=5954.1ms start=5945.6ms rssMb=415.7 heapUsedMb=81.3 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan starting total=5954.8ms
+[gateway] startup phase: cli.bootstrap.plugin-plan 5.2ms total=5960.0ms start=5954.8ms rssMb=415.7 heapUsedMb=81.5 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.command.config-ready 3766.4ms total=5967.0ms start=2200.6ms rssMb=415.8 heapUsedMb=81.9 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-reload-environment starting total=5967.5ms
+[gateway] startup phase: cli.main.gateway-run-reload-environment 1.4ms total=5968.9ms start=5967.5ms rssMb=415.8 heapUsedMb=82.0 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap 3770.9ms total=5969.2ms start=2198.3ms rssMb=415.8 heapUsedMb=82.0 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime starting total=6590.6ms
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime 96.3ms total=6686.9ms start=6590.6ms rssMb=453.9 heapUsedMb=128.4 workers=4 workerHeapSamples=4/4 workerHeapMb=129.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.gateway-lock starting total=6698.8ms
+[gateway] startup phase: cli.bootstrap.gateway-lock 596.8ms total=7295.6ms start=6698.8ms rssMb=536.0 heapUsedMb=111.3 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.boot-lifecycle starting total=7303.5ms
+[gateway] startup phase: cli.bootstrap.boot-lifecycle 63.0ms total=7366.6ms start=7303.5ms rssMb=541.1 heapUsedMb=111.7 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+[gateway] startup phase: gateway.server-start-import starting total=7858.8ms
+[gateway] startup phase: gateway.server-start-import 913.9ms total=8772.7ms start=7858.8ms rssMb=582.6 heapUsedMb=160.4 workers=7 workerHeapSamples=6/7 workerHeapMb=209.1 workerHeapSource=cached
+2026-11-13T03:39:37.888+00:00 [ws] unauthorized conn=59cf0337-01bb-4959-8a4f-87a3f66a1682 peer=127.0.0.1:46448->127.0.0.1:50995 remote=127.0.0.1 client=cli cli v2026.11.3 role=operator scopes=0 auth=token device=no platform=linux instance=9ed3b1cb-a478-470e-80e2-7dea9e74f35e host=127.0.0.1:50995 origin=n/a ua=n/a reason=token_mismatch guidance=unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device)
+2026-11-13T03:39:37.925+00:00 [ws] closed before connect conn=59cf0337-01bb-4959-8a4f-87a3f66a1682 peer=127.0.0.1:46448->127.0.0.1:50995 remote=127.0.0.1 fwd=n/a origin=n/a host=127.0.0.1:50995 ua=n/a code=1008 reason=unauthorized: gateway token mismatch (use this gateway's gateway.auth.token or pair the device) phase=auth_credentials_received cause=unauthorized durationMs=277 handshake=failed phase=auth_credentials_received lastFrameType=req lastFrameMethod=connect lastFrameId=1:f6c1900f-c3d4-483d-8b04-03d3b24f5caa host=127.0.0.1:50995 remoteAddr=127.0.0.1 remotePort=46448 localAddr=127.0.0.1 localPort=50995 endpoint=127.0.0.1:46448->127.0.0.1:50995 authMode=token authProvided=token authReason=token_mismatch allowTailscale=false peer=127.0.0.1:46448->127.0.0.1:50995 role=operator scopeCount=0 hasDeviceIdentity=false client=cli mode=cli version=2026.11.3 platform=linux deviceFamily=Linux instanceId=9ed3b1cb-a478-470e-80e2-7dea9e74f35e
+[state/agent-db] agent database clean-close receipt: written; agent=main
+
+--- proxy.stderr ---

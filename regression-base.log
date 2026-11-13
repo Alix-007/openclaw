@@ -1,0 +1,70 @@
+$ node scripts/test-projects.mts src/cli/tools-cli.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["status"] through the admin-only Gateway API 211ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["import","--dry-run"] through the admin-only Gateway API 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["import","--agent","work","--since","14"] through the admin-only Gateway API 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["reset","--agent","work"] through the admin-only Gateway API 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > routes ["status","--session","agent:main:example","--limit","3"] through the admin-only Gateway API 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 0 before RPC 12ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 91 before RPC 7ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days 2.5 before RPC 5ms
+ ✓ |cli| src/cli/tools-cli.test.ts > rejects invalid import days not-a-number before RPC 7ms
+ × |cli| src/cli/tools-cli.test.ts > does not publish an interrupted usage status report 11ms
+   → expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "agentId": "main",
+      },
+      2,
+    ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |cli| src/cli/tools-cli.test.ts > does not publish an interrupted usage status report
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "agentId": "main",
+      },
+      2,
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/cli/tools-cli.test.ts:72:31
+     70|   await work.run(() => run(["status", "--json"]));
+     71|
+     72|   expect(mocks.writeJson).not.toHaveBeenCalled();
+       |                               ^
+     73|   expect(mocks.log).not.toHaveBeenCalled();
+     74| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  11:48:00
+   Duration  7.05s (worker 52%, transform 35%, setup 6%, tests 5%, import 2%)
+
+[test] failed 1 Vitest shard in 11.57s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.
