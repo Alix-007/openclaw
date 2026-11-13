@@ -1,0 +1,176 @@
+{
+  "head": "ea5b3cd85995b5f8edc2840db023f611715860ff",
+  "artifacts": [
+    {
+      "source": "unsafe-human/stdout.raw",
+      "originalSHA256": "134dc744dfd16af32bc748b68f832e710b02373bae9e90a27e10b63e2319189b",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-human/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-human/proxy-events.json",
+      "originalSHA256": "d2b0adc631516c156c8e7c99e5195a9554e08d68ea939e6a5b52e731a6155de9",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "unsafe-json/stdout.raw",
+      "originalSHA256": "ee7d8549f1deea777643f3b54820b2e9c3e6882c987256655d0a740e25409578",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-json/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-json/proxy-events.json",
+      "originalSHA256": "4c25316bd2dcc684ca1794cb173200912c9932645c974086cf105f718ed54c69",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "normal-human/stdout.raw",
+      "originalSHA256": "2cecf5bd071348ba03c356ff2911c78a6052b60adac2032fc901008ecbb31e33",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-human/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-human/proxy-events.json",
+      "originalSHA256": "548e8d7d67380646457ea6f9899aad2ac22be633baafa2921e65002ed54c831f",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "normal-json/stdout.raw",
+      "originalSHA256": "3006c8262e6bc9c8ce63dc353682ec09d89916d2f61d0b217326978408c76421",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-json/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-json/proxy-events.json",
+      "originalSHA256": "0abe9b67aec6faee62857fbe311f0131dc5c911c2ffba7901ea4a092e277dbd7",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-base-v1/fixture.stdout",
+      "originalSHA256": "561f5131f887a640964c3ccb0b32cd89d2a26881524bc96f8bc4ab3e2ab7aa7d",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-base-v1/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-base-v1/gateway.stdout",
+      "originalSHA256": "c6699a2374b00526cdc2b1fae34f3c391d9efc1eb67b711680d7e45c00657b1d",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-base-v1/gateway.stderr",
+      "originalSHA256": "995d3e9094cdbb555bc6d959d9ba3fcf39f0568224bb02bc31939a34c1b626f5",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-base-v1/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "unsafe-human/stdout.raw",
+      "originalSHA256": "68137d833b1372751c95034668da5badf3f13505de3c75980dc6aedc61c0499f",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-human/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-human/proxy-events.json",
+      "originalSHA256": "8d6f5fca3a367b4133ac64480581bd87452850eaea0c67ff736d172f01c015db",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "unsafe-json/stdout.raw",
+      "originalSHA256": "1ab264fa097164bf39ddd32527a9e4f46c456eab2b198ce9e6827fbae5293aa4",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-json/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "unsafe-json/proxy-events.json",
+      "originalSHA256": "5fb1f1220543ffce6144c0f8d590f3261b87ef2a1333c8e63bcd2c5c28d53df9",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "normal-human/stdout.raw",
+      "originalSHA256": "220e3bd32af268edf0e5c5901e23f44e269ac4b68e87c8d2ef971f4f8e8e8450",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-human/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-human/proxy-events.json",
+      "originalSHA256": "1463cb3c837458edae608dff85da509be9846cd9f202b9107c4b5d4499e31ae7",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "normal-json/stdout.raw",
+      "originalSHA256": "8b9a893f86ab3b9bea90f61142f7e1907c1004e49e120498e8a91f5456cec006",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-json/stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": true
+    },
+    {
+      "source": "normal-json/proxy-events.json",
+      "originalSHA256": "846e5d91710e90265cd8880a8aab1910942a1680b7b0d86f9023b6d4ab5bb375",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-native-head-ea5b3cd/fixture.stdout",
+      "originalSHA256": "561f5131f887a640964c3ccb0b32cd89d2a26881524bc96f8bc4ab3e2ab7aa7d",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-native-head-ea5b3cd/fixture.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-native-head-ea5b3cd/gateway.stdout",
+      "originalSHA256": "9a8d19799d3eaccf8b21dcf026d53600061e04f7e1af82a1cae476c91129f64e",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-native-head-ea5b3cd/gateway.stderr",
+      "originalSHA256": "e00996433b668e1e02a539f18d8ae6883e9cf5b84ac641c4eb668654fbe2c6c3",
+      "hashMatchesCollector": false
+    },
+    {
+      "source": "channels-native-head-ea5b3cd/proxy.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hashMatchesCollector": false
+    }
+  ],
+  "note": "Original observations hash-checked before replacing private local path labels. Collector bytes unchanged. Skills BASE non-quiet interruption and channels BASE raw terminal diagnostics remain RED. No state database, private key, auth credential or product artifact uploaded."
+}

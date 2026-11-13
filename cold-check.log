@@ -1,0 +1,143 @@
+$ node scripts/test-projects.mts src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts src/commands/channels.status.command-flow.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > preserves a Gateway rejection instead of reporting it unreachable 99ms
+[vitest-workers] local cache miss after 6439ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+ × |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > does not publish config-only status after cancellation during fallback 120133ms
+   → Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > sends valid channel RPC parameters after fractional startup timing 27ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > reports pending startup in JSON without falling back to a Gateway error 17ms
+[vitest] still running with no output for 30000ms.
+[vitest-workers] prepared 4a6c75381d8e in 148348ms (20068 inputs, 24801 outputs)
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ × |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > keeps read-only fallback output when SecretRefs are unresolved 41356ms
+   → expected "vi.fn()" to be called once, but got 2 times
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > labels config-only fallback as auth-unavailable when gateway auth SecretRefs are unresolved 31ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > resolves config-only repair hints only for the requested channel 7ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > keeps JSON fallback structured without rendering config-only text 19ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > filters JSON fallback channels (all) 7ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > filters JSON fallback channels (clickclack) 5ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Signal runtime errors in channel status 12ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders degraded Gateway event loop in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders partial status warnings in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders policy diagnostics without partial stat… in channel status 9ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders transport liveness timestamps in channel status 5ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders phone allowlists without interpreting a… in channel status 13ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Telegram bot username from probe data in channel status 5ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders unlinked WhatsApp in channel status 5ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders disconnected WhatsApp in channel status 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > does not publish config-only status after cancellation during fallback
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/commands/channels.status.command-flow.test.ts:225:3
+    223|   });
+    224|
+    225|   it("does not publish config-only status after cancellation during fa…
+       |   ^
+    226|     const scope = new AsyncWorkScope();
+    227|     const reason = new Error("Status interrupted");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > keeps read-only fallback output when SecretRefs are unresolved
+AssertionError: expected "vi.fn()" to be called once, but got 2 times
+ ❯ src/commands/channels.status.command-flow.test.ts:308:51
+    306|     expect(errors.join("\n")).toContain("Couldn't connect to OpenClaw.…
+    307|     expect(errors.join("\n")).not.toContain("Gateway auth unavailable"…
+    308|     expect(mocks.resolveCommandConfigWithSecrets).toHaveBeenCalledOnce…
+       |                                                   ^
+    309|     const configResolutionRequest = mocks.resolveCommandConfigWithSecr…
+    310|     expect(configResolutionRequest?.commandName).toBe("channels status…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 17 passed (19)
+   Start at  21:32:21
+   Duration  173.23s (tests 94%, transform 3%, import 2%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 186.60s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

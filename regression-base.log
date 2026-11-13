@@ -1,0 +1,134 @@
+$ node scripts/test-projects.mts src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+[vitest-workers] local cache miss after 4959ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 3.1s of this 3.3s build (96%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin openclaw:discord-voice-package-boundary resolveId (41%, 1.3s, 7580 calls)
+Additional callback time came from the callbacks below and from callbacks under 1s.
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin tsdown:deps resolveId (1566 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared d56c23c25736 in 134864ms (20068 inputs, 24801 outputs)
+[vitest] still running with no output for 30000ms.
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Signal runtime errors in channel status 62ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders degraded Gateway event loop in channel status 8ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ × |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders partial status warnings in channel status 12ms
+   → expected [ 'Gateway reachable.', …(7) ] to include '- snapshot failed\nnext\rrow\tcell'
+ × |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders policy diagnostics without partial stat… in channel status 35ms
+   → expected [ 'Gateway reachable.', …(8) ] to include '- signal default: Issue text\nnext (f…'
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders transport liveness timestamps in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders phone allowlists without interpreting a… in channel status 13ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Telegram bot username from probe data in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders unlinked WhatsApp in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders disconnected WhatsApp in channel status 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders partial status warnings in channel status
+AssertionError: expected [ 'Gateway reachable.', …(7) ] to include '- snapshot failed\nnext\rrow\tcell'
+ ❯ verify src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts:78:38
+     76|     },
+     77|     contains: [/Channel status is partial/, "whatsapp:default status f…
+     78|     verify: (lines) => expect(lines).toContain("- snapshot failed\\nne…
+       |                                      ^
+     79|   },
+     80|   {
+ ❯ src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts:153:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders policy diagnostics without partial stat… in channel status
+AssertionError: expected [ 'Gateway reachable.', …(8) ] to include '- signal default: Issue text\nnext (f…'
+ ❯ verify src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts:104:21
+    102|     verify: (lines, output) => {
+    103|       expect(output).not.toContain("status is partial");
+    104|       expect(lines).toContain("- signal default: Issue text\\nnext (fi…
+       |                     ^
+    105|     },
+    106|   },
+ ❯ src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts:153:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  21:18:55
+   Duration  180.97s (transform 95%, import 3%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 188.26s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

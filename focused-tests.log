@@ -1,0 +1,57 @@
+$ node scripts/test-projects.mts src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts src/commands/channels.status.command-flow.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <HEAD_CHECKOUT>
+
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > preserves a Gateway rejection instead of reporting it unreachable 107ms
+[vitest-workers] local cache hit after 8798ms
+[vitest-workers] reused local compiler outputs
+[vitest-workers] prepared 6bded34dfa1b in 8959ms (20068 inputs, 24801 outputs)
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > does not publish config-only status after cancellation during fallback 15933ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > sends valid channel RPC parameters after fractional startup timing 7ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > reports pending startup in JSON without falling back to a Gateway error 7ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > keeps read-only fallback output when SecretRefs are unresolved 8ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > labels config-only fallback as auth-unavailable when gateway auth SecretRefs are unresolved 29ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > resolves config-only repair hints only for the requested channel 7ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > keeps JSON fallback structured without rendering config-only text 18ms
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > filters JSON fallback channels (all) 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/channels.status.command-flow.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |commands| src/commands/channels.status.command-flow.test.ts > channelsStatusCommand SecretRef fallback flow > filters JSON fallback channels (clickclack) 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts: retiring openclaw.pluginStateNamespaceOwner
+
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Signal runtime errors in channel status 10ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders degraded Gateway event loop in channel status 6ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders partial status warnings in channel status 7ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders policy diagnostics without partial stat… in channel status 9ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders transport liveness timestamps in channel status 5ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders phone allowlists without interpreting a… in channel status 12ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders Telegram bot username from probe data in channel status 5ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders unlinked WhatsApp in channel status 4ms
+ ✓ |commands| src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts > renders disconnected WhatsApp in channel status 11ms
+
+ Test Files  2 passed (2)
+      Tests  19 passed (19)
+   Start at  21:36:25
+   Duration  24.08s (tests 70%, import 12%, transform 11%, worker 5%, setup 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 32.22s

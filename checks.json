@@ -1,0 +1,80 @@
+{
+  "channels-lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../channels-types.tsconfig.json",
+      "src/commands/channels/status.runtime.ts",
+      "src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 277.023,
+    "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+    "diffSHA256": "253eb5cbd176f4ce19c25b63c9ed98c8b0a8d041fe69a17fcc1793467b2e2eba",
+    "logSHA256": "04a8daab7257f71048337857b03508c5a98de30482bc5c94eff742f5b3085f25"
+  },
+  "channels-types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../channels-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 91.859,
+    "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+    "diffSHA256": "253eb5cbd176f4ce19c25b63c9ed98c8b0a8d041fe69a17fcc1793467b2e2eba",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "channels-focused-green-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts",
+      "src/commands/channels.status.command-flow.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 33.317,
+    "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+    "diffSHA256": "253eb5cbd176f4ce19c25b63c9ed98c8b0a8d041fe69a17fcc1793467b2e2eba",
+    "logSHA256": "e718e624d1b1c037c32f7e3d55022efacab06ff7ae9c6d3de8987e4d8c2e3f27"
+  },
+  "channels-format-check": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/commands/channels/status.runtime.ts",
+      "src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.549,
+    "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+    "diffSHA256": "253eb5cbd176f4ce19c25b63c9ed98c8b0a8d041fe69a17fcc1793467b2e2eba",
+    "logSHA256": "de62983df8536a5ab334fef6807541d9261ddeebc1637568ca953eb6326849ba"
+  },
+  "channels-qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<HEAD_CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 290.72,
+    "head": "ea5b3cd85995b5f8edc2840db023f611715860ff",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "6e958b17192faced000e20c9f662ec09997ba1ce040050acd7a76778e132b1d4"
+  }
+}

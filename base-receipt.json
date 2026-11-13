@@ -1,0 +1,1046 @@
+{
+  "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+  "stamp": {
+    "builtAt": 1794575351022,
+    "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+    "inputsClean": true,
+    "inputSignature": "2e52047484ec408cf5a84ec8d81981d3f33f60bbe42df325d2fafbeb01789b85"
+  },
+  "expectation": "red",
+  "hashes": {
+    "channel-report-proof-v1.py": "edb62d8563c24f57c9ea8c775b5b7d3278aaab9ceda8bb6820caedd5e821108a",
+    "channel-fixture.mts": "3691c00459e7c4e51d776807df147c6da06004a73e86832a0512d534b1565f73",
+    "read-proxy.mjs": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9"
+  },
+  "boundary": "normal built CLI through controlling PTY and actual normal Gateway; canonical isolated SQLite state; transparent proxy holds successful real replies",
+  "cases": [
+    {
+      "label": "unsafe-human",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "channels",
+        "status",
+        "--probe",
+        "--channel",
+        "report-error",
+        "--timeout",
+        "12000"
+      ],
+      "lane": "channels",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:47391",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": true,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 4.147,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "134dc744dfd16af32bc748b68f832e710b02373bae9e90a27e10b63e2319189b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (eb1a592) \u2014 Automation with claws: minimal fuss, maximal pinch.\r\n\r\nChecking channel connections\u2026\r\nGateway reachable.\r\nGateway event loop degraded for 3s (p99 142ms) reasons=cpu eventLoopDelayMaxMs=142 eventLoopUtilization=0.668 cpuCoreRatio=1.965\r\nChannel status is partial:\r\n- report-error summary failed: Error: snapshot\u001b[2J failed\r\nFORGED warning\rrewrite\tcell\u202e\r\n\r\n- report-error default: enabled, configured, running, connected\r\n\r\nWarnings:\r\n- report-error default: Issue\u001b[31m text\r\nFORGED issue (fix\u001b]2;FORGED TITLE\u0007 here\rrewrite)\r\n- Run: openclaw doctor\r\n\r\nTip: \u001b]8;;https://docs.openclaw.ai/cli/status\u0007status --deep\u001b]8;;\u0007 adds gateway health checks to status output (requires a reachable gateway).\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 2,
+          "wallMs": 1794575738516,
+          "mode": "normal",
+          "label": "unsafe-human",
+          "observedAt": 3715347.3479708
+        },
+        {
+          "event": "front-connected",
+          "sequence": 3,
+          "wallMs": 1794575741777,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "mode": "normal",
+          "observedAt": 3715350.609024019
+        },
+        {
+          "event": "request",
+          "sequence": 4,
+          "wallMs": 1794575741793,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "method": "connect",
+          "requestId": "1:fc35ec1a-06c7-4a6e-8f54-7515b84dc6d2",
+          "observedAt": 3715350.625194858
+        },
+        {
+          "event": "real-response",
+          "sequence": 5,
+          "wallMs": 1794575741820,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "method": "connect",
+          "requestId": "1:fc35ec1a-06c7-4a6e-8f54-7515b84dc6d2",
+          "ok": true,
+          "observedAt": 3715350.652027653
+        },
+        {
+          "event": "request",
+          "sequence": 6,
+          "wallMs": 1794575741823,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "method": "channels.status",
+          "requestId": "2:7499c29f-8579-4819-a9bc-7dd1880267c4",
+          "observedAt": 3715350.654790075
+        },
+        {
+          "event": "real-response",
+          "sequence": 7,
+          "wallMs": 1794575741916,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "method": "channels.status",
+          "requestId": "2:7499c29f-8579-4819-a9bc-7dd1880267c4",
+          "ok": true,
+          "payload": {
+            "ts": 1794575741909,
+            "channelOrder": [
+              "report-error"
+            ],
+            "channelLabels": {
+              "report-error": "report-error"
+            },
+            "channelDetailLabels": {
+              "report-error": "report-error"
+            },
+            "channelSystemImages": {},
+            "channelMeta": [
+              {
+                "id": "report-error",
+                "label": "report-error",
+                "detailLabel": "report-error"
+              }
+            ],
+            "eventLoop": {
+              "degraded": true,
+              "degradedSinceMs": 3143,
+              "reasons": [
+                "cpu"
+              ],
+              "intervalMs": 1000.7522069999995,
+              "delayP99Ms": 142,
+              "delayMaxMs": 142,
+              "utilization": 0.668,
+              "cpuCoreRatio": 1.965,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.564,
+                "hostUtilization": 0.252,
+                "hostCpuCount": 16
+              }
+            },
+            "channels": {
+              "report-error": {
+                "configured": true,
+                "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+              }
+            },
+            "channelAccounts": {
+              "report-error": [
+                {
+                  "accountId": "default",
+                  "enabled": true,
+                  "configured": true,
+                  "running": true,
+                  "connected": true,
+                  "lastError": null,
+                  "lastInboundAt": null,
+                  "lastOutboundAt": null
+                }
+              ]
+            },
+            "channelDefaultAccountId": {
+              "report-error": "default"
+            },
+            "statusIssues": [
+              {
+                "channel": "report-error",
+                "accountId": "default",
+                "kind": "runtime",
+                "message": "Issue\u001b[31m text\nFORGED issue",
+                "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+              }
+            ],
+            "partial": true,
+            "warnings": [
+              "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+            ]
+          },
+          "observedAt": 3715350.747777021
+        },
+        {
+          "event": "front-closed",
+          "sequence": 8,
+          "wallMs": 1794575741921,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "observedAt": 3715350.761632406
+        },
+        {
+          "event": "back-closed",
+          "sequence": 9,
+          "wallMs": 1794575741921,
+          "connectionId": 1,
+          "label": "unsafe-human",
+          "observedAt": 3715350.761645352
+        }
+      ],
+      "gatewayPayloadReadback": {
+        "ts": 1794575741909,
+        "channelOrder": [
+          "report-error"
+        ],
+        "channelLabels": {
+          "report-error": "report-error"
+        },
+        "channelDetailLabels": {
+          "report-error": "report-error"
+        },
+        "channelSystemImages": {},
+        "channelMeta": [
+          {
+            "id": "report-error",
+            "label": "report-error",
+            "detailLabel": "report-error"
+          }
+        ],
+        "eventLoop": {
+          "degraded": true,
+          "degradedSinceMs": 3143,
+          "reasons": [
+            "cpu"
+          ],
+          "intervalMs": 1000.7522069999995,
+          "delayP99Ms": 142,
+          "delayMaxMs": 142,
+          "utilization": 0.668,
+          "cpuCoreRatio": 1.965,
+          "cpuBreakdown": {
+            "mainThreadCoreRatio": 0.564,
+            "hostUtilization": 0.252,
+            "hostCpuCount": 16
+          }
+        },
+        "channels": {
+          "report-error": {
+            "configured": true,
+            "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+          }
+        },
+        "channelAccounts": {
+          "report-error": [
+            {
+              "accountId": "default",
+              "enabled": true,
+              "configured": true,
+              "running": true,
+              "connected": true,
+              "lastError": null,
+              "lastInboundAt": null,
+              "lastOutboundAt": null
+            }
+          ]
+        },
+        "channelDefaultAccountId": {
+          "report-error": "default"
+        },
+        "statusIssues": [
+          {
+            "channel": "report-error",
+            "accountId": "default",
+            "kind": "runtime",
+            "message": "Issue\u001b[31m text\nFORGED issue",
+            "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+          }
+        ],
+        "partial": true,
+        "warnings": [
+          "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+        ]
+      },
+      "unsafeTerminalBytesPresent": true,
+      "result": "RED_DIAGNOSTIC_CONTROL_BYTES"
+    },
+    {
+      "label": "unsafe-json",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "channels",
+        "status",
+        "--probe",
+        "--channel",
+        "report-error",
+        "--timeout",
+        "12000",
+        "--json"
+      ],
+      "lane": "channels",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:47391",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 3.299,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "ee7d8549f1deea777643f3b54820b2e9c3e6882c987256655d0a740e25409578",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"ts\": 1794575745927,\r\n  \"channelOrder\": [\r\n    \"report-error\"\r\n  ],\r\n  \"channelLabels\": {\r\n    \"report-error\": \"report-error\"\r\n  },\r\n  \"channelDetailLabels\": {\r\n    \"report-error\": \"report-error\"\r\n  },\r\n  \"channelSystemImages\": {},\r\n  \"channelMeta\": [\r\n    {\r\n      \"id\": \"report-error\",\r\n      \"label\": \"report-error\",\r\n      \"detailLabel\": \"report-error\"\r\n    }\r\n  ],\r\n  \"eventLoop\": {\r\n    \"degraded\": false,\r\n    \"degradedSinceMs\": null,\r\n    \"reasons\": [],\r\n    \"intervalMs\": 1002.8360379999976,\r\n    \"delayP99Ms\": 57.9,\r\n    \"delayMaxMs\": 57.9,\r\n    \"utilization\": 0.422,\r\n    \"cpuCoreRatio\": 0.581,\r\n    \"cpuBreakdown\": {\r\n      \"mainThreadCoreRatio\": 0.108,\r\n      \"hostUtilization\": 0.177,\r\n      \"hostCpuCount\": 16,\r\n      \"workerCoreRatio\": 0.162,\r\n      \"otherThreadsCoreRatio\": 0.311\r\n    }\r\n  },\r\n  \"channels\": {\r\n    \"report-error\": {\r\n      \"configured\": true,\r\n      \"lastError\": \"Error: snapshot\\u001b[2J failed\\nFORGED warning\\rrewrite\\tcell\u202e\"\r\n    }\r\n  },\r\n  \"channelAccounts\": {\r\n    \"report-error\": [\r\n      {\r\n        \"accountId\": \"default\",\r\n        \"enabled\": true,\r\n        \"configured\": true,\r\n        \"running\": true,\r\n        \"connected\": true,\r\n        \"lastError\": null,\r\n        \"lastInboundAt\": null,\r\n        \"lastOutboundAt\": null\r\n      }\r\n    ]\r\n  },\r\n  \"channelDefaultAccountId\": {\r\n    \"report-error\": \"default\"\r\n  },\r\n  \"statusIssues\": [\r\n    {\r\n      \"channel\": \"report-error\",\r\n      \"accountId\": \"default\",\r\n      \"kind\": \"runtime\",\r\n      \"message\": \"Issue\\u001b[31m text\\nFORGED issue\",\r\n      \"fix\": \"fix\\u001b]2;FORGED TITLE\\u0007 here\\rrewrite\"\r\n    }\r\n  ],\r\n  \"partial\": true,\r\n  \"warnings\": [\r\n    \"report-error summary failed: Error: snapshot\\u001b[2J failed\\nFORGED warning\\rrewrite\\tcell\u202e\"\r\n  ]\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 10,
+          "wallMs": 1794575742712,
+          "mode": "normal",
+          "label": "unsafe-json",
+          "observedAt": 3715351.543671343
+        },
+        {
+          "event": "front-connected",
+          "sequence": 11,
+          "wallMs": 1794575745902,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "mode": "normal",
+          "observedAt": 3715354.733615284
+        },
+        {
+          "event": "request",
+          "sequence": 12,
+          "wallMs": 1794575745910,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "method": "connect",
+          "requestId": "1:6529b166-8692-4e31-977c-62b44f22dfc8",
+          "observedAt": 3715354.741973004
+        },
+        {
+          "event": "real-response",
+          "sequence": 13,
+          "wallMs": 1794575745918,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "method": "connect",
+          "requestId": "1:6529b166-8692-4e31-977c-62b44f22dfc8",
+          "ok": true,
+          "observedAt": 3715354.750049671
+        },
+        {
+          "event": "request",
+          "sequence": 14,
+          "wallMs": 1794575745922,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "method": "channels.status",
+          "requestId": "2:5cfc0a03-d238-4ad0-bd2b-a5dc7a524acc",
+          "observedAt": 3715354.753585682
+        },
+        {
+          "event": "real-response",
+          "sequence": 15,
+          "wallMs": 1794575745929,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "method": "channels.status",
+          "requestId": "2:5cfc0a03-d238-4ad0-bd2b-a5dc7a524acc",
+          "ok": true,
+          "payload": {
+            "ts": 1794575745927,
+            "channelOrder": [
+              "report-error"
+            ],
+            "channelLabels": {
+              "report-error": "report-error"
+            },
+            "channelDetailLabels": {
+              "report-error": "report-error"
+            },
+            "channelSystemImages": {},
+            "channelMeta": [
+              {
+                "id": "report-error",
+                "label": "report-error",
+                "detailLabel": "report-error"
+              }
+            ],
+            "eventLoop": {
+              "degraded": false,
+              "degradedSinceMs": null,
+              "reasons": [],
+              "intervalMs": 1002.8360379999976,
+              "delayP99Ms": 57.9,
+              "delayMaxMs": 57.9,
+              "utilization": 0.422,
+              "cpuCoreRatio": 0.581,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.108,
+                "hostUtilization": 0.177,
+                "hostCpuCount": 16,
+                "workerCoreRatio": 0.162,
+                "otherThreadsCoreRatio": 0.311
+              }
+            },
+            "channels": {
+              "report-error": {
+                "configured": true,
+                "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+              }
+            },
+            "channelAccounts": {
+              "report-error": [
+                {
+                  "accountId": "default",
+                  "enabled": true,
+                  "configured": true,
+                  "running": true,
+                  "connected": true,
+                  "lastError": null,
+                  "lastInboundAt": null,
+                  "lastOutboundAt": null
+                }
+              ]
+            },
+            "channelDefaultAccountId": {
+              "report-error": "default"
+            },
+            "statusIssues": [
+              {
+                "channel": "report-error",
+                "accountId": "default",
+                "kind": "runtime",
+                "message": "Issue\u001b[31m text\nFORGED issue",
+                "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+              }
+            ],
+            "partial": true,
+            "warnings": [
+              "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+            ]
+          },
+          "observedAt": 3715354.761428528
+        },
+        {
+          "event": "front-closed",
+          "sequence": 16,
+          "wallMs": 1794575745933,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "observedAt": 3715354.764898016
+        },
+        {
+          "event": "back-closed",
+          "sequence": 17,
+          "wallMs": 1794575745933,
+          "connectionId": 2,
+          "label": "unsafe-json",
+          "observedAt": 3715354.764993885
+        }
+      ],
+      "gatewayPayloadReadback": {
+        "ts": 1794575745927,
+        "channelOrder": [
+          "report-error"
+        ],
+        "channelLabels": {
+          "report-error": "report-error"
+        },
+        "channelDetailLabels": {
+          "report-error": "report-error"
+        },
+        "channelSystemImages": {},
+        "channelMeta": [
+          {
+            "id": "report-error",
+            "label": "report-error",
+            "detailLabel": "report-error"
+          }
+        ],
+        "eventLoop": {
+          "degraded": false,
+          "degradedSinceMs": null,
+          "reasons": [],
+          "intervalMs": 1002.8360379999976,
+          "delayP99Ms": 57.9,
+          "delayMaxMs": 57.9,
+          "utilization": 0.422,
+          "cpuCoreRatio": 0.581,
+          "cpuBreakdown": {
+            "mainThreadCoreRatio": 0.108,
+            "hostUtilization": 0.177,
+            "hostCpuCount": 16,
+            "workerCoreRatio": 0.162,
+            "otherThreadsCoreRatio": 0.311
+          }
+        },
+        "channels": {
+          "report-error": {
+            "configured": true,
+            "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+          }
+        },
+        "channelAccounts": {
+          "report-error": [
+            {
+              "accountId": "default",
+              "enabled": true,
+              "configured": true,
+              "running": true,
+              "connected": true,
+              "lastError": null,
+              "lastInboundAt": null,
+              "lastOutboundAt": null
+            }
+          ]
+        },
+        "channelDefaultAccountId": {
+          "report-error": "default"
+        },
+        "statusIssues": [
+          {
+            "channel": "report-error",
+            "accountId": "default",
+            "kind": "runtime",
+            "message": "Issue\u001b[31m text\nFORGED issue",
+            "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+          }
+        ],
+        "partial": true,
+        "warnings": [
+          "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+        ]
+      },
+      "result": "GREEN_JSON_PRESERVES_RAW_DIAGNOSTICS"
+    },
+    {
+      "label": "normal-human",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "channels",
+        "status",
+        "--probe",
+        "--channel",
+        "report-normal",
+        "--timeout",
+        "12000"
+      ],
+      "lane": "channels",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:47391",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": true,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 3.792,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "2cecf5bd071348ba03c356ff2911c78a6052b60adac2032fc901008ecbb31e33",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (eb1a592) \u2014 Your config is valid, your assumptions are not.\r\n\r\nChecking channel connections\u2026\r\nGateway reachable.\r\n- report-normal default: enabled, configured, running, connected\r\n\r\nTip: \u001b]8;;https://docs.openclaw.ai/cli/status\u0007status --deep\u001b]8;;\u0007 adds gateway health checks to status output (requires a reachable gateway).\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 18,
+          "wallMs": 1794575746043,
+          "mode": "normal",
+          "label": "normal-human",
+          "observedAt": 3715354.874515576
+        },
+        {
+          "event": "front-connected",
+          "sequence": 19,
+          "wallMs": 1794575749124,
+          "connectionId": 3,
+          "label": "normal-human",
+          "mode": "normal",
+          "observedAt": 3715357.956453543
+        },
+        {
+          "event": "request",
+          "sequence": 20,
+          "wallMs": 1794575749132,
+          "connectionId": 3,
+          "label": "normal-human",
+          "method": "connect",
+          "requestId": "1:6b446562-ec97-4179-a5ff-27608143368d",
+          "observedAt": 3715357.964314579
+        },
+        {
+          "event": "real-response",
+          "sequence": 21,
+          "wallMs": 1794575749138,
+          "connectionId": 3,
+          "label": "normal-human",
+          "method": "connect",
+          "requestId": "1:6b446562-ec97-4179-a5ff-27608143368d",
+          "ok": true,
+          "observedAt": 3715357.970256737
+        },
+        {
+          "event": "request",
+          "sequence": 22,
+          "wallMs": 1794575749141,
+          "connectionId": 3,
+          "label": "normal-human",
+          "method": "channels.status",
+          "requestId": "2:8db2ff05-9285-4e25-b5c6-8011001bbab3",
+          "observedAt": 3715357.972896312
+        },
+        {
+          "event": "real-response",
+          "sequence": 23,
+          "wallMs": 1794575749146,
+          "connectionId": 3,
+          "label": "normal-human",
+          "method": "channels.status",
+          "requestId": "2:8db2ff05-9285-4e25-b5c6-8011001bbab3",
+          "ok": true,
+          "payload": {
+            "ts": 1794575749144,
+            "channelOrder": [
+              "report-normal"
+            ],
+            "channelLabels": {
+              "report-normal": "report-normal"
+            },
+            "channelDetailLabels": {
+              "report-normal": "report-normal"
+            },
+            "channelSystemImages": {},
+            "channelMeta": [
+              {
+                "id": "report-normal",
+                "label": "report-normal",
+                "detailLabel": "report-normal"
+              }
+            ],
+            "eventLoop": {
+              "degraded": false,
+              "degradedSinceMs": null,
+              "reasons": [],
+              "intervalMs": 1002.0123220000023,
+              "delayP99Ms": 21.3,
+              "delayMaxMs": 21.3,
+              "utilization": 0.326,
+              "cpuCoreRatio": 0.121,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.055,
+                "hostUtilization": 0.122,
+                "hostCpuCount": 16,
+                "workerCoreRatio": 0.05,
+                "otherThreadsCoreRatio": 0.016
+              }
+            },
+            "channels": {
+              "report-normal": {
+                "configured": true,
+                "running": true
+              }
+            },
+            "channelAccounts": {
+              "report-normal": [
+                {
+                  "accountId": "default",
+                  "enabled": true,
+                  "configured": true,
+                  "running": true,
+                  "connected": true,
+                  "lastError": null,
+                  "lastInboundAt": null,
+                  "lastOutboundAt": null
+                }
+              ]
+            },
+            "channelDefaultAccountId": {
+              "report-normal": "default"
+            },
+            "statusIssues": []
+          },
+          "observedAt": 3715357.978063948
+        },
+        {
+          "event": "front-closed",
+          "sequence": 24,
+          "wallMs": 1794575749149,
+          "connectionId": 3,
+          "label": "normal-human",
+          "observedAt": 3715357.980931474
+        },
+        {
+          "event": "back-closed",
+          "sequence": 25,
+          "wallMs": 1794575749149,
+          "connectionId": 3,
+          "label": "normal-human",
+          "observedAt": 3715357.981063906
+        }
+      ],
+      "gatewayPayloadReadback": {
+        "ts": 1794575749144,
+        "channelOrder": [
+          "report-normal"
+        ],
+        "channelLabels": {
+          "report-normal": "report-normal"
+        },
+        "channelDetailLabels": {
+          "report-normal": "report-normal"
+        },
+        "channelSystemImages": {},
+        "channelMeta": [
+          {
+            "id": "report-normal",
+            "label": "report-normal",
+            "detailLabel": "report-normal"
+          }
+        ],
+        "eventLoop": {
+          "degraded": false,
+          "degradedSinceMs": null,
+          "reasons": [],
+          "intervalMs": 1002.0123220000023,
+          "delayP99Ms": 21.3,
+          "delayMaxMs": 21.3,
+          "utilization": 0.326,
+          "cpuCoreRatio": 0.121,
+          "cpuBreakdown": {
+            "mainThreadCoreRatio": 0.055,
+            "hostUtilization": 0.122,
+            "hostCpuCount": 16,
+            "workerCoreRatio": 0.05,
+            "otherThreadsCoreRatio": 0.016
+          }
+        },
+        "channels": {
+          "report-normal": {
+            "configured": true,
+            "running": true
+          }
+        },
+        "channelAccounts": {
+          "report-normal": [
+            {
+              "accountId": "default",
+              "enabled": true,
+              "configured": true,
+              "running": true,
+              "connected": true,
+              "lastError": null,
+              "lastInboundAt": null,
+              "lastOutboundAt": null
+            }
+          ]
+        },
+        "channelDefaultAccountId": {
+          "report-normal": "default"
+        },
+        "statusIssues": []
+      },
+      "result": "GREEN_NORMAL_STATUS_CONTROL"
+    },
+    {
+      "label": "normal-json",
+      "command": [
+        "<NODE26>/bin/node",
+        "<BASE_CHECKOUT>/openclaw.mjs",
+        "channels",
+        "status",
+        "--probe",
+        "--channel",
+        "report-normal",
+        "--timeout",
+        "12000",
+        "--json"
+      ],
+      "lane": "channels",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:47391",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 2.998,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "3006c8262e6bc9c8ce63dc353682ec09d89916d2f61d0b217326978408c76421",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"ts\": 1794575752772,\r\n  \"channelOrder\": [\r\n    \"report-normal\"\r\n  ],\r\n  \"channelLabels\": {\r\n    \"report-normal\": \"report-normal\"\r\n  },\r\n  \"channelDetailLabels\": {\r\n    \"report-normal\": \"report-normal\"\r\n  },\r\n  \"channelSystemImages\": {},\r\n  \"channelMeta\": [\r\n    {\r\n      \"id\": \"report-normal\",\r\n      \"label\": \"report-normal\",\r\n      \"detailLabel\": \"report-normal\"\r\n    }\r\n  ],\r\n  \"eventLoop\": {\r\n    \"degraded\": false,\r\n    \"degradedSinceMs\": null,\r\n    \"reasons\": [],\r\n    \"intervalMs\": 3453.3408359999994,\r\n    \"delayP99Ms\": 0,\r\n    \"delayMaxMs\": 0.8639769999972486,\r\n    \"utilization\": 0.685,\r\n    \"cpuCoreRatio\": 0.02,\r\n    \"cpuBreakdown\": {\r\n      \"mainThreadCoreRatio\": 0.01,\r\n      \"hostUtilization\": 0.137,\r\n      \"hostCpuCount\": 16,\r\n      \"workerCoreRatio\": 0.003,\r\n      \"otherThreadsCoreRatio\": 0.007\r\n    }\r\n  },\r\n  \"channels\": {\r\n    \"report-normal\": {\r\n      \"configured\": true,\r\n      \"running\": true\r\n    }\r\n  },\r\n  \"channelAccounts\": {\r\n    \"report-normal\": [\r\n      {\r\n        \"accountId\": \"default\",\r\n        \"enabled\": true,\r\n        \"configured\": true,\r\n        \"running\": true,\r\n        \"connected\": true,\r\n        \"lastError\": null,\r\n        \"lastInboundAt\": null,\r\n        \"lastOutboundAt\": null\r\n      }\r\n    ]\r\n  },\r\n  \"channelDefaultAccountId\": {\r\n    \"report-normal\": \"default\"\r\n  },\r\n  \"statusIssues\": []\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 26,
+          "wallMs": 1794575749852,
+          "mode": "normal",
+          "label": "normal-json",
+          "observedAt": 3715358.684423694
+        },
+        {
+          "event": "front-connected",
+          "sequence": 27,
+          "wallMs": 1794575752755,
+          "connectionId": 4,
+          "label": "normal-json",
+          "mode": "normal",
+          "observedAt": 3715361.586970486
+        },
+        {
+          "event": "request",
+          "sequence": 28,
+          "wallMs": 1794575752761,
+          "connectionId": 4,
+          "label": "normal-json",
+          "method": "connect",
+          "requestId": "1:3be7229b-13b8-43d1-b271-30826da39bba",
+          "observedAt": 3715361.593345158
+        },
+        {
+          "event": "real-response",
+          "sequence": 29,
+          "wallMs": 1794575752767,
+          "connectionId": 4,
+          "label": "normal-json",
+          "method": "connect",
+          "requestId": "1:3be7229b-13b8-43d1-b271-30826da39bba",
+          "ok": true,
+          "observedAt": 3715361.598971159
+        },
+        {
+          "event": "request",
+          "sequence": 30,
+          "wallMs": 1794575752769,
+          "connectionId": 4,
+          "label": "normal-json",
+          "method": "channels.status",
+          "requestId": "2:3c609959-5b0f-4327-a460-a21a7d3108e8",
+          "observedAt": 3715361.600995074
+        },
+        {
+          "event": "real-response",
+          "sequence": 31,
+          "wallMs": 1794575752774,
+          "connectionId": 4,
+          "label": "normal-json",
+          "method": "channels.status",
+          "requestId": "2:3c609959-5b0f-4327-a460-a21a7d3108e8",
+          "ok": true,
+          "payload": {
+            "ts": 1794575752772,
+            "channelOrder": [
+              "report-normal"
+            ],
+            "channelLabels": {
+              "report-normal": "report-normal"
+            },
+            "channelDetailLabels": {
+              "report-normal": "report-normal"
+            },
+            "channelSystemImages": {},
+            "channelMeta": [
+              {
+                "id": "report-normal",
+                "label": "report-normal",
+                "detailLabel": "report-normal"
+              }
+            ],
+            "eventLoop": {
+              "degraded": false,
+              "degradedSinceMs": null,
+              "reasons": [],
+              "intervalMs": 3453.3408359999994,
+              "delayP99Ms": 0,
+              "delayMaxMs": 0.8639769999972486,
+              "utilization": 0.685,
+              "cpuCoreRatio": 0.02,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.01,
+                "hostUtilization": 0.137,
+                "hostCpuCount": 16,
+                "workerCoreRatio": 0.003,
+                "otherThreadsCoreRatio": 0.007
+              }
+            },
+            "channels": {
+              "report-normal": {
+                "configured": true,
+                "running": true
+              }
+            },
+            "channelAccounts": {
+              "report-normal": [
+                {
+                  "accountId": "default",
+                  "enabled": true,
+                  "configured": true,
+                  "running": true,
+                  "connected": true,
+                  "lastError": null,
+                  "lastInboundAt": null,
+                  "lastOutboundAt": null
+                }
+              ]
+            },
+            "channelDefaultAccountId": {
+              "report-normal": "default"
+            },
+            "statusIssues": []
+          },
+          "observedAt": 3715361.605513233
+        },
+        {
+          "event": "front-closed",
+          "sequence": 32,
+          "wallMs": 1794575752776,
+          "connectionId": 4,
+          "label": "normal-json",
+          "observedAt": 3715361.608306619
+        },
+        {
+          "event": "back-closed",
+          "sequence": 33,
+          "wallMs": 1794575752777,
+          "connectionId": 4,
+          "label": "normal-json",
+          "observedAt": 3715361.608408495
+        }
+      ],
+      "gatewayPayloadReadback": {
+        "ts": 1794575752772,
+        "channelOrder": [
+          "report-normal"
+        ],
+        "channelLabels": {
+          "report-normal": "report-normal"
+        },
+        "channelDetailLabels": {
+          "report-normal": "report-normal"
+        },
+        "channelSystemImages": {},
+        "channelMeta": [
+          {
+            "id": "report-normal",
+            "label": "report-normal",
+            "detailLabel": "report-normal"
+          }
+        ],
+        "eventLoop": {
+          "degraded": false,
+          "degradedSinceMs": null,
+          "reasons": [],
+          "intervalMs": 3453.3408359999994,
+          "delayP99Ms": 0,
+          "delayMaxMs": 0.8639769999972486,
+          "utilization": 0.685,
+          "cpuCoreRatio": 0.02,
+          "cpuBreakdown": {
+            "mainThreadCoreRatio": 0.01,
+            "hostUtilization": 0.137,
+            "hostCpuCount": 16,
+            "workerCoreRatio": 0.003,
+            "otherThreadsCoreRatio": 0.007
+          }
+        },
+        "channels": {
+          "report-normal": {
+            "configured": true,
+            "running": true
+          }
+        },
+        "channelAccounts": {
+          "report-normal": [
+            {
+              "accountId": "default",
+              "enabled": true,
+              "configured": true,
+              "running": true,
+              "connected": true,
+              "lastError": null,
+              "lastInboundAt": null,
+              "lastOutboundAt": null
+            }
+          ]
+        },
+        "channelDefaultAccountId": {
+          "report-normal": "default"
+        },
+        "statusIssues": []
+      },
+      "result": "GREEN_NORMAL_STATUS_CONTROL"
+    }
+  ],
+  "result": "RED_WITH_REAL_GATEWAY_AND_LEGAL_CONTROLS",
+  "fixtureReadback": {
+    "lane": "channels",
+    "plugin": "channel-report-proof",
+    "channels": [
+      "report-error",
+      "report-normal"
+    ],
+    "warning": "snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e",
+    "message": "Issue\u001b[31m text\nFORGED issue",
+    "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite",
+    "scope": "public plugin status hooks only, no outbound adapter or real channel messages"
+  },
+  "gatewayPid": 43,
+  "gatewayHealthy": true,
+  "configuredProxyPort": 47391,
+  "proxyPid": 101,
+  "cleanup": {
+    "gatewayExit": 0,
+    "proxyExit": 0,
+    "gatewayOwnedSurvivors": [],
+    "proxyOwnedSurvivors": [],
+    "configUnchanged": true,
+    "isolatedStateRetained": true
+  }
+}

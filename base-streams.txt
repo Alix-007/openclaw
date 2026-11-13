@@ -1,0 +1,954 @@
+
+--- unsafe-human/stdout.raw ---
+
+OpenClaw 2026.11.3 (eb1a592) — Automation with claws: minimal fuss, maximal pinch.
+
+Checking channel connections…
+Gateway reachable.
+Gateway event loop degraded for 3s (p99 142ms) reasons=cpu eventLoopDelayMaxMs=142 eventLoopUtilization=0.668 cpuCoreRatio=1.965
+Channel status is partial:
+- report-error summary failed: Error: snapshot[2J failed
+FORGED warningrewrite	cell‮
+
+- report-error default: enabled, configured, running, connected
+
+Warnings:
+- report-error default: Issue[31m text
+FORGED issue (fix]2;FORGED TITLE hererewrite)
+- Run: openclaw doctor
+
+Tip: ]8;;https://docs.openclaw.ai/cli/statusstatus --deep]8;; adds gateway health checks to status output (requires a reachable gateway).
+
+--- unsafe-human/stderr.log ---
+
+--- unsafe-human/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 2,
+    "wallMs": 1794575738516,
+    "mode": "normal",
+    "label": "unsafe-human",
+    "observedAt": 3715347.3479708
+  },
+  {
+    "event": "front-connected",
+    "sequence": 3,
+    "wallMs": 1794575741777,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "mode": "normal",
+    "observedAt": 3715350.609024019
+  },
+  {
+    "event": "request",
+    "sequence": 4,
+    "wallMs": 1794575741793,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "method": "connect",
+    "requestId": "1:fc35ec1a-06c7-4a6e-8f54-7515b84dc6d2",
+    "observedAt": 3715350.625194858
+  },
+  {
+    "event": "real-response",
+    "sequence": 5,
+    "wallMs": 1794575741820,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "method": "connect",
+    "requestId": "1:fc35ec1a-06c7-4a6e-8f54-7515b84dc6d2",
+    "ok": true,
+    "observedAt": 3715350.652027653
+  },
+  {
+    "event": "request",
+    "sequence": 6,
+    "wallMs": 1794575741823,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "method": "channels.status",
+    "requestId": "2:7499c29f-8579-4819-a9bc-7dd1880267c4",
+    "observedAt": 3715350.654790075
+  },
+  {
+    "event": "real-response",
+    "sequence": 7,
+    "wallMs": 1794575741916,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "method": "channels.status",
+    "requestId": "2:7499c29f-8579-4819-a9bc-7dd1880267c4",
+    "ok": true,
+    "payload": {
+      "ts": 1794575741909,
+      "channelOrder": [
+        "report-error"
+      ],
+      "channelLabels": {
+        "report-error": "report-error"
+      },
+      "channelDetailLabels": {
+        "report-error": "report-error"
+      },
+      "channelSystemImages": {},
+      "channelMeta": [
+        {
+          "id": "report-error",
+          "label": "report-error",
+          "detailLabel": "report-error"
+        }
+      ],
+      "eventLoop": {
+        "degraded": true,
+        "degradedSinceMs": 3143,
+        "reasons": [
+          "cpu"
+        ],
+        "intervalMs": 1000.7522069999995,
+        "delayP99Ms": 142,
+        "delayMaxMs": 142,
+        "utilization": 0.668,
+        "cpuCoreRatio": 1.965,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.564,
+          "hostUtilization": 0.252,
+          "hostCpuCount": 16
+        }
+      },
+      "channels": {
+        "report-error": {
+          "configured": true,
+          "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+        }
+      },
+      "channelAccounts": {
+        "report-error": [
+          {
+            "accountId": "default",
+            "enabled": true,
+            "configured": true,
+            "running": true,
+            "connected": true,
+            "lastError": null,
+            "lastInboundAt": null,
+            "lastOutboundAt": null
+          }
+        ]
+      },
+      "channelDefaultAccountId": {
+        "report-error": "default"
+      },
+      "statusIssues": [
+        {
+          "channel": "report-error",
+          "accountId": "default",
+          "kind": "runtime",
+          "message": "Issue\u001b[31m text\nFORGED issue",
+          "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+        }
+      ],
+      "partial": true,
+      "warnings": [
+        "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+      ]
+    },
+    "observedAt": 3715350.747777021
+  },
+  {
+    "event": "front-closed",
+    "sequence": 8,
+    "wallMs": 1794575741921,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "observedAt": 3715350.761632406
+  },
+  {
+    "event": "back-closed",
+    "sequence": 9,
+    "wallMs": 1794575741921,
+    "connectionId": 1,
+    "label": "unsafe-human",
+    "observedAt": 3715350.761645352
+  }
+]
+
+--- unsafe-json/stdout.raw ---
+{
+  "ts": 1794575745927,
+  "channelOrder": [
+    "report-error"
+  ],
+  "channelLabels": {
+    "report-error": "report-error"
+  },
+  "channelDetailLabels": {
+    "report-error": "report-error"
+  },
+  "channelSystemImages": {},
+  "channelMeta": [
+    {
+      "id": "report-error",
+      "label": "report-error",
+      "detailLabel": "report-error"
+    }
+  ],
+  "eventLoop": {
+    "degraded": false,
+    "degradedSinceMs": null,
+    "reasons": [],
+    "intervalMs": 1002.8360379999976,
+    "delayP99Ms": 57.9,
+    "delayMaxMs": 57.9,
+    "utilization": 0.422,
+    "cpuCoreRatio": 0.581,
+    "cpuBreakdown": {
+      "mainThreadCoreRatio": 0.108,
+      "hostUtilization": 0.177,
+      "hostCpuCount": 16,
+      "workerCoreRatio": 0.162,
+      "otherThreadsCoreRatio": 0.311
+    }
+  },
+  "channels": {
+    "report-error": {
+      "configured": true,
+      "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell‮"
+    }
+  },
+  "channelAccounts": {
+    "report-error": [
+      {
+        "accountId": "default",
+        "enabled": true,
+        "configured": true,
+        "running": true,
+        "connected": true,
+        "lastError": null,
+        "lastInboundAt": null,
+        "lastOutboundAt": null
+      }
+    ]
+  },
+  "channelDefaultAccountId": {
+    "report-error": "default"
+  },
+  "statusIssues": [
+    {
+      "channel": "report-error",
+      "accountId": "default",
+      "kind": "runtime",
+      "message": "Issue\u001b[31m text\nFORGED issue",
+      "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+    }
+  ],
+  "partial": true,
+  "warnings": [
+    "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell‮"
+  ]
+}
+
+--- unsafe-json/stderr.log ---
+
+--- unsafe-json/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 10,
+    "wallMs": 1794575742712,
+    "mode": "normal",
+    "label": "unsafe-json",
+    "observedAt": 3715351.543671343
+  },
+  {
+    "event": "front-connected",
+    "sequence": 11,
+    "wallMs": 1794575745902,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "mode": "normal",
+    "observedAt": 3715354.733615284
+  },
+  {
+    "event": "request",
+    "sequence": 12,
+    "wallMs": 1794575745910,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "method": "connect",
+    "requestId": "1:6529b166-8692-4e31-977c-62b44f22dfc8",
+    "observedAt": 3715354.741973004
+  },
+  {
+    "event": "real-response",
+    "sequence": 13,
+    "wallMs": 1794575745918,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "method": "connect",
+    "requestId": "1:6529b166-8692-4e31-977c-62b44f22dfc8",
+    "ok": true,
+    "observedAt": 3715354.750049671
+  },
+  {
+    "event": "request",
+    "sequence": 14,
+    "wallMs": 1794575745922,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "method": "channels.status",
+    "requestId": "2:5cfc0a03-d238-4ad0-bd2b-a5dc7a524acc",
+    "observedAt": 3715354.753585682
+  },
+  {
+    "event": "real-response",
+    "sequence": 15,
+    "wallMs": 1794575745929,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "method": "channels.status",
+    "requestId": "2:5cfc0a03-d238-4ad0-bd2b-a5dc7a524acc",
+    "ok": true,
+    "payload": {
+      "ts": 1794575745927,
+      "channelOrder": [
+        "report-error"
+      ],
+      "channelLabels": {
+        "report-error": "report-error"
+      },
+      "channelDetailLabels": {
+        "report-error": "report-error"
+      },
+      "channelSystemImages": {},
+      "channelMeta": [
+        {
+          "id": "report-error",
+          "label": "report-error",
+          "detailLabel": "report-error"
+        }
+      ],
+      "eventLoop": {
+        "degraded": false,
+        "degradedSinceMs": null,
+        "reasons": [],
+        "intervalMs": 1002.8360379999976,
+        "delayP99Ms": 57.9,
+        "delayMaxMs": 57.9,
+        "utilization": 0.422,
+        "cpuCoreRatio": 0.581,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.108,
+          "hostUtilization": 0.177,
+          "hostCpuCount": 16,
+          "workerCoreRatio": 0.162,
+          "otherThreadsCoreRatio": 0.311
+        }
+      },
+      "channels": {
+        "report-error": {
+          "configured": true,
+          "lastError": "Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+        }
+      },
+      "channelAccounts": {
+        "report-error": [
+          {
+            "accountId": "default",
+            "enabled": true,
+            "configured": true,
+            "running": true,
+            "connected": true,
+            "lastError": null,
+            "lastInboundAt": null,
+            "lastOutboundAt": null
+          }
+        ]
+      },
+      "channelDefaultAccountId": {
+        "report-error": "default"
+      },
+      "statusIssues": [
+        {
+          "channel": "report-error",
+          "accountId": "default",
+          "kind": "runtime",
+          "message": "Issue\u001b[31m text\nFORGED issue",
+          "fix": "fix\u001b]2;FORGED TITLE\u0007 here\rrewrite"
+        }
+      ],
+      "partial": true,
+      "warnings": [
+        "report-error summary failed: Error: snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell\u202e"
+      ]
+    },
+    "observedAt": 3715354.761428528
+  },
+  {
+    "event": "front-closed",
+    "sequence": 16,
+    "wallMs": 1794575745933,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "observedAt": 3715354.764898016
+  },
+  {
+    "event": "back-closed",
+    "sequence": 17,
+    "wallMs": 1794575745933,
+    "connectionId": 2,
+    "label": "unsafe-json",
+    "observedAt": 3715354.764993885
+  }
+]
+
+--- normal-human/stdout.raw ---
+
+OpenClaw 2026.11.3 (eb1a592) — Your config is valid, your assumptions are not.
+
+Checking channel connections…
+Gateway reachable.
+- report-normal default: enabled, configured, running, connected
+
+Tip: ]8;;https://docs.openclaw.ai/cli/statusstatus --deep]8;; adds gateway health checks to status output (requires a reachable gateway).
+
+--- normal-human/stderr.log ---
+
+--- normal-human/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 18,
+    "wallMs": 1794575746043,
+    "mode": "normal",
+    "label": "normal-human",
+    "observedAt": 3715354.874515576
+  },
+  {
+    "event": "front-connected",
+    "sequence": 19,
+    "wallMs": 1794575749124,
+    "connectionId": 3,
+    "label": "normal-human",
+    "mode": "normal",
+    "observedAt": 3715357.956453543
+  },
+  {
+    "event": "request",
+    "sequence": 20,
+    "wallMs": 1794575749132,
+    "connectionId": 3,
+    "label": "normal-human",
+    "method": "connect",
+    "requestId": "1:6b446562-ec97-4179-a5ff-27608143368d",
+    "observedAt": 3715357.964314579
+  },
+  {
+    "event": "real-response",
+    "sequence": 21,
+    "wallMs": 1794575749138,
+    "connectionId": 3,
+    "label": "normal-human",
+    "method": "connect",
+    "requestId": "1:6b446562-ec97-4179-a5ff-27608143368d",
+    "ok": true,
+    "observedAt": 3715357.970256737
+  },
+  {
+    "event": "request",
+    "sequence": 22,
+    "wallMs": 1794575749141,
+    "connectionId": 3,
+    "label": "normal-human",
+    "method": "channels.status",
+    "requestId": "2:8db2ff05-9285-4e25-b5c6-8011001bbab3",
+    "observedAt": 3715357.972896312
+  },
+  {
+    "event": "real-response",
+    "sequence": 23,
+    "wallMs": 1794575749146,
+    "connectionId": 3,
+    "label": "normal-human",
+    "method": "channels.status",
+    "requestId": "2:8db2ff05-9285-4e25-b5c6-8011001bbab3",
+    "ok": true,
+    "payload": {
+      "ts": 1794575749144,
+      "channelOrder": [
+        "report-normal"
+      ],
+      "channelLabels": {
+        "report-normal": "report-normal"
+      },
+      "channelDetailLabels": {
+        "report-normal": "report-normal"
+      },
+      "channelSystemImages": {},
+      "channelMeta": [
+        {
+          "id": "report-normal",
+          "label": "report-normal",
+          "detailLabel": "report-normal"
+        }
+      ],
+      "eventLoop": {
+        "degraded": false,
+        "degradedSinceMs": null,
+        "reasons": [],
+        "intervalMs": 1002.0123220000023,
+        "delayP99Ms": 21.3,
+        "delayMaxMs": 21.3,
+        "utilization": 0.326,
+        "cpuCoreRatio": 0.121,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.055,
+          "hostUtilization": 0.122,
+          "hostCpuCount": 16,
+          "workerCoreRatio": 0.05,
+          "otherThreadsCoreRatio": 0.016
+        }
+      },
+      "channels": {
+        "report-normal": {
+          "configured": true,
+          "running": true
+        }
+      },
+      "channelAccounts": {
+        "report-normal": [
+          {
+            "accountId": "default",
+            "enabled": true,
+            "configured": true,
+            "running": true,
+            "connected": true,
+            "lastError": null,
+            "lastInboundAt": null,
+            "lastOutboundAt": null
+          }
+        ]
+      },
+      "channelDefaultAccountId": {
+        "report-normal": "default"
+      },
+      "statusIssues": []
+    },
+    "observedAt": 3715357.978063948
+  },
+  {
+    "event": "front-closed",
+    "sequence": 24,
+    "wallMs": 1794575749149,
+    "connectionId": 3,
+    "label": "normal-human",
+    "observedAt": 3715357.980931474
+  },
+  {
+    "event": "back-closed",
+    "sequence": 25,
+    "wallMs": 1794575749149,
+    "connectionId": 3,
+    "label": "normal-human",
+    "observedAt": 3715357.981063906
+  }
+]
+
+--- normal-json/stdout.raw ---
+{
+  "ts": 1794575752772,
+  "channelOrder": [
+    "report-normal"
+  ],
+  "channelLabels": {
+    "report-normal": "report-normal"
+  },
+  "channelDetailLabels": {
+    "report-normal": "report-normal"
+  },
+  "channelSystemImages": {},
+  "channelMeta": [
+    {
+      "id": "report-normal",
+      "label": "report-normal",
+      "detailLabel": "report-normal"
+    }
+  ],
+  "eventLoop": {
+    "degraded": false,
+    "degradedSinceMs": null,
+    "reasons": [],
+    "intervalMs": 3453.3408359999994,
+    "delayP99Ms": 0,
+    "delayMaxMs": 0.8639769999972486,
+    "utilization": 0.685,
+    "cpuCoreRatio": 0.02,
+    "cpuBreakdown": {
+      "mainThreadCoreRatio": 0.01,
+      "hostUtilization": 0.137,
+      "hostCpuCount": 16,
+      "workerCoreRatio": 0.003,
+      "otherThreadsCoreRatio": 0.007
+    }
+  },
+  "channels": {
+    "report-normal": {
+      "configured": true,
+      "running": true
+    }
+  },
+  "channelAccounts": {
+    "report-normal": [
+      {
+        "accountId": "default",
+        "enabled": true,
+        "configured": true,
+        "running": true,
+        "connected": true,
+        "lastError": null,
+        "lastInboundAt": null,
+        "lastOutboundAt": null
+      }
+    ]
+  },
+  "channelDefaultAccountId": {
+    "report-normal": "default"
+  },
+  "statusIssues": []
+}
+
+--- normal-json/stderr.log ---
+
+--- normal-json/proxy-events.json ---
+[
+  {
+    "event": "configured",
+    "sequence": 26,
+    "wallMs": 1794575749852,
+    "mode": "normal",
+    "label": "normal-json",
+    "observedAt": 3715358.684423694
+  },
+  {
+    "event": "front-connected",
+    "sequence": 27,
+    "wallMs": 1794575752755,
+    "connectionId": 4,
+    "label": "normal-json",
+    "mode": "normal",
+    "observedAt": 3715361.586970486
+  },
+  {
+    "event": "request",
+    "sequence": 28,
+    "wallMs": 1794575752761,
+    "connectionId": 4,
+    "label": "normal-json",
+    "method": "connect",
+    "requestId": "1:3be7229b-13b8-43d1-b271-30826da39bba",
+    "observedAt": 3715361.593345158
+  },
+  {
+    "event": "real-response",
+    "sequence": 29,
+    "wallMs": 1794575752767,
+    "connectionId": 4,
+    "label": "normal-json",
+    "method": "connect",
+    "requestId": "1:3be7229b-13b8-43d1-b271-30826da39bba",
+    "ok": true,
+    "observedAt": 3715361.598971159
+  },
+  {
+    "event": "request",
+    "sequence": 30,
+    "wallMs": 1794575752769,
+    "connectionId": 4,
+    "label": "normal-json",
+    "method": "channels.status",
+    "requestId": "2:3c609959-5b0f-4327-a460-a21a7d3108e8",
+    "observedAt": 3715361.600995074
+  },
+  {
+    "event": "real-response",
+    "sequence": 31,
+    "wallMs": 1794575752774,
+    "connectionId": 4,
+    "label": "normal-json",
+    "method": "channels.status",
+    "requestId": "2:3c609959-5b0f-4327-a460-a21a7d3108e8",
+    "ok": true,
+    "payload": {
+      "ts": 1794575752772,
+      "channelOrder": [
+        "report-normal"
+      ],
+      "channelLabels": {
+        "report-normal": "report-normal"
+      },
+      "channelDetailLabels": {
+        "report-normal": "report-normal"
+      },
+      "channelSystemImages": {},
+      "channelMeta": [
+        {
+          "id": "report-normal",
+          "label": "report-normal",
+          "detailLabel": "report-normal"
+        }
+      ],
+      "eventLoop": {
+        "degraded": false,
+        "degradedSinceMs": null,
+        "reasons": [],
+        "intervalMs": 3453.3408359999994,
+        "delayP99Ms": 0,
+        "delayMaxMs": 0.8639769999972486,
+        "utilization": 0.685,
+        "cpuCoreRatio": 0.02,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.01,
+          "hostUtilization": 0.137,
+          "hostCpuCount": 16,
+          "workerCoreRatio": 0.003,
+          "otherThreadsCoreRatio": 0.007
+        }
+      },
+      "channels": {
+        "report-normal": {
+          "configured": true,
+          "running": true
+        }
+      },
+      "channelAccounts": {
+        "report-normal": [
+          {
+            "accountId": "default",
+            "enabled": true,
+            "configured": true,
+            "running": true,
+            "connected": true,
+            "lastError": null,
+            "lastInboundAt": null,
+            "lastOutboundAt": null
+          }
+        ]
+      },
+      "channelDefaultAccountId": {
+        "report-normal": "default"
+      },
+      "statusIssues": []
+    },
+    "observedAt": 3715361.605513233
+  },
+  {
+    "event": "front-closed",
+    "sequence": 32,
+    "wallMs": 1794575752776,
+    "connectionId": 4,
+    "label": "normal-json",
+    "observedAt": 3715361.608306619
+  },
+  {
+    "event": "back-closed",
+    "sequence": 33,
+    "wallMs": 1794575752777,
+    "connectionId": 4,
+    "label": "normal-json",
+    "observedAt": 3715361.608408495
+  }
+]
+
+--- fixture.stdout ---
+{"lane":"channels","plugin":"channel-report-proof","channels":["report-error","report-normal"],"warning":"snapshot\u001b[2J failed\nFORGED warning\rrewrite\tcell‮","message":"Issue\u001b[31m text\nFORGED issue","fix":"fix\u001b]2;FORGED TITLE\u0007 here\rrewrite","scope":"public plugin status hooks only, no outbound adapter or real channel messages"}
+
+--- fixture.stderr ---
+
+--- gateway.stdout ---
+2026-11-13T13:15:32.128+00:00 [gateway] loading configuration…
+2026-11-13T13:15:32.161+00:00 [gateway] resolving authentication…
+2026-11-13T13:15:32.165+00:00 [gateway] starting...
+2026-11-13T13:15:32.815+00:00 [gateway] shutdown budget at startup: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T13:15:32.878+00:00 [gateway] Agent exec isolation unavailable: Error: requires Delegate=yes and DelegateSubgroup=gateway (systemd 254+). Continuing with shared sampled memory protection. Check Gateway service delegation with openclaw doctor.
+2026-11-13T13:15:33.346+00:00 [gateway] spawn broker ready pid=84
+2026-11-13T13:15:34.299+00:00 [gateway] startup phase: process.bootstrap 8126.5ms total=8126.5ms rssMb=585.7 heapUsedMb=167.3 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:34.308+00:00 [gateway] startup phase: state.schema-preflight starting total=8136.5ms
+2026-11-13T13:15:35.441+00:00 [gateway] startup phase: state.schema-preflight 1132.7ms total=9269.2ms rssMb=585.9 heapUsedMb=113.1 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:35.478+00:00 [gateway] startup phase: config.auth starting total=9306.2ms
+2026-11-13T13:15:35.587+00:00 [gateway] startup phase: config.auth 108.6ms total=9414.8ms rssMb=589.1 heapUsedMb=128.4 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:35.646+00:00 [gateway] startup phase: state.desktop-approval-admission starting total=9474.9ms
+2026-11-13T13:15:35.718+00:00 [gateway] startup phase: state.desktop-approval-admission 71.7ms total=9546.6ms rssMb=589.4 heapUsedMb=132.5 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:35.718+00:00 [gateway] startup phase: sessions.admission starting total=9547.7ms
+2026-11-13T13:15:35.777+00:00 [gateway] startup phase: sessions.admission 58.7ms total=9606.3ms rssMb=606.3 heapUsedMb=123.3 workers=8 workerHeapSamples=6/8 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:37.370+00:00 [gateway] starting HTTP server...
+2026-11-13T13:15:38.357+00:00 [gateway] startup phase: http.bound 0.0ms total=12185.2ms rssMb=718.6 heapUsedMb=181.0 workers=9 workerHeapSamples=7/9 workerHeapMb=231.2 workerHeapSource=cached
+2026-11-13T13:15:38.358+00:00 [gateway] startup phase: runtime.early starting total=12187.0ms
+2026-11-13T13:15:38.365+00:00 [gateway] startup phase: runtime.early.discovery starting total=12194.4ms
+2026-11-13T13:15:38.374+00:00 [gateway] startup phase: runtime.early.discovery 8.2ms total=12202.6ms rssMb=718.9 heapUsedMb=187.0 workers=9 workerHeapSamples=7/9 workerHeapMb=231.2 workerHeapSource=cached
+2026-11-13T13:15:38.374+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports starting total=12203.3ms
+2026-11-13T13:15:38.379+00:00 [gateway] startup phase: runtime.early.lazy-runtime-imports 5.1ms total=12208.4ms rssMb=718.9 heapUsedMb=190.3 workers=9 workerHeapSamples=7/9 workerHeapMb=231.2 workerHeapSource=cached
+2026-11-13T13:15:38.381+00:00 [gateway] startup phase: runtime.early.skills-listener starting total=12210.3ms
+2026-11-13T13:15:38.388+00:00 [gateway] startup phase: runtime.early.skills-listener 6.9ms total=12217.2ms rssMb=718.9 heapUsedMb=192.2 workers=9 workerHeapSamples=7/9 workerHeapMb=231.2 workerHeapSource=cached
+2026-11-13T13:15:38.389+00:00 [gateway] startup phase: runtime.early 30.8ms total=12217.9ms rssMb=718.9 heapUsedMb=192.3 workers=9 workerHeapSamples=7/9 workerHeapMb=231.2 workerHeapSource=cached
+2026-11-13T13:15:39.649+00:00 [gateway] startup phase: post-attach.system-ca starting total=13478.1ms
+2026-11-13T13:15:39.650+00:00 [gateway] startup phase: post-attach.system-ca 0.9ms total=13479.1ms rssMb=837.3 heapUsedMb=211.0 workers=10 workerHeapSamples=8/10 workerHeapMb=270.2 workerHeapSource=cached
+2026-11-13T13:15:39.655+00:00 [gateway] startup phase: runtime.worker-pool-metrics starting total=13484.7ms
+2026-11-13T13:15:39.673+00:00 [gateway] startup phase: runtime.worker-pool-metrics 17.6ms total=13502.3ms rssMb=838.4 heapUsedMb=188.0 workers=10 workerHeapSamples=8/10 workerHeapMb=270.2 workerHeapSource=cached
+2026-11-13T13:15:39.783+00:00 [gateway] startup phase: plugins.runtime-post-bind starting total=13612.3ms
+2026-11-13T13:15:40.462+00:00 [gateway] startup trace: plugins.gateway-load.plugin.channel-report-proof configValidationMs=0.3 artifactPreparationMs=1.4 loadMs=512.7 modulePreparationMs=497.3 loadFailedCount=0.0 registerMs=15.5 loadAndRegisterMs=530.1 registerFailedCount=0.0 workersStarted=1 workerScripts=plugin-generation-preparation.worker.js:1
+2026-11-13T13:15:40.469+00:00 [gateway] startup phase: plugins.runtime-post-bind 685.5ms total=14297.8ms rssMb=975.3 heapUsedMb=205.3 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.470+00:00 [gateway] startup phase: plugins.runtime-attach starting total=14299.1ms
+2026-11-13T13:15:40.491+00:00 [gateway] startup phase: plugins.runtime-attach 20.3ms total=14319.4ms rssMb=980.2 heapUsedMb=209.9 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.509+00:00 [gateway] agent model: ollama/synthetic-read-model (thinking=off, fast=off)
+2026-11-13T13:15:40.510+00:00 [gateway] http server listening (1 plugin: channel-report-proof; 7.7s)
+2026-11-13T13:15:40.510+00:00 [gateway] log file: <BASE_OUTPUT>/state/logs/openclaw-2026-11-13.log
+2026-11-13T13:15:40.510+00:00 [gateway] Older local CLI/SDK versions can bypass Gateway state mutation routing. Use matching CLI/SDK and Gateway versions; direct state writes from another process while this Gateway owns state are unsupported.
+2026-11-13T13:15:40.512+00:00 [gateway] native runtime: {"pid":43,"platform":"linux","arch":"x64","node":"26.12.1","v8":"14.6.202.34-node.40","uv":"1.52.1","openssl":"3.5.9","sqlite":"3.54.0","sqliteClose":{"explicitSqliteCloseReleasesNativeResources":true,"decided":true,"reason":"Node runtime"}}
+2026-11-13T13:15:40.516+00:00 [gateway] worker startup state: {"workerCount":13,"sqliteReaderMetrics":[{"operation":"updateRuns.pluginCohortRecoveries","count":1,"readBytes":0},{"operation":"gatewayOwnerLease.read","count":1,"readBytes":0},{"operation":"machineState.read","count":1,"readBytes":0},{"operation":"agentDatabaseRegistry.read","count":1,"readBytes":0},{"operation":"acpSessions.list","count":1,"readBytes":0},{"operation":"workerEnvironments.snapshot","count":1,"readBytes":0},{"operation":"subagents.restore","count":1,"readBytes":0},{"operation":"devicePairing.list","count":3,"readBytes":0},{"operation":"mentions.snapshot","count":1,"readBytes":0},{"operation":"sandboxRegistry.browsers","count":1,"readBytes":0},{"operation":"userProfiles.catalog","count":1,"readBytes":0},{"operation":"sessionGroups.snapshot","count":1,"readBytes":0},{"operation":"agentDatabaseDeletion.snapshot","count":2,"readBytes":0},{"operation":"updateRuns.reconciliationCandidates","count":2,"readBytes":0},{"operation":"config.snapshot.read","count":1,"readBytes":0},{"operation":"plugins.deferredMigrations.read","count":2,"readBytes":0},{"operation":"updateRuns.list","count":2,"readBytes":0},{"operation":"config.health.read","count":2,"readBytes":0},{"operation":"cron.store","count":1,"readBytes":0},{"operation":"sandboxRegistry.list","count":1,"readBytes":0},{"operation":"sandboxPersistentExec.list","count":1,"readBytes":0},{"operation":"updateRuns.interruptedCandidate","count":1,"readBytes":0},{"operation":"userGitHubConnections.list","count":1,"readBytes":0},{"operation":"agentDeletionJournal.status","count":1,"readBytes":0}],"postgresBridgeCount":0,"postgresPoolSelfRootCount":0,"workerLifecycle":[{"script":"client-credential.worker.js","started":1,"retired":[]},{"script":"sqlite-store.worker.js","started":1,"retired":[]},{"script":"gateway-state-owner-heartbeat.worker.js","started":2,"retired":[{"reason":"exit","count":1}]},{"script":"worker-native-lifecycle.worker.js","started":1,"retired":[]},{"script":"openclaw-state-read.worker.js","started":2,"retired":[]},{"script":"logger-file.worker.js","started":1,"retired":[]},{"script":"openclaw-state-lease-heartbeat.worker.js","started":1,"retired":[]},{"script":"other","started":2,"retired":[]},{"script":"session-transcript.worker.js","started":2,"retired":[]},{"script":"plugin-generation-preparation.worker.js","started":1,"retired":[]}],"workerTaskMetrics":[{"workerClass":"singleton","script":"client-credential.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":27322944,"gc":[]},{"workerClass":"other","script":"openclaw-state-read.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":21462424,"gc":[]},{"workerClass":"writer","script":"logger-file.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":24199768,"gc":[]},{"workerClass":"other","script":"session-transcript.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":14630200,"gc":[]},{"workerClass":"other","script":"plugin-generation-preparation.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":32016728,"gc":[]},{"workerClass":"writer","script":"session-transcript.worker.js","tasksCompleted":0,"heapUsedHighWaterBytes":14795768,"gc":[]}],"compute":{"limit":15,"active":0,"waitingPools":0,"pendingTasks":0,"pendingBytes":0}}
+2026-11-13T13:15:40.538+00:00 [gateway] startup phase: sidecars.worker-environments starting total=14366.9ms
+2026-11-13T13:15:40.548+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=14377.0ms
+2026-11-13T13:15:40.549+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.8ms total=14377.8ms rssMb=991.4 heapUsedMb=193.1 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.549+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces starting total=14378.7ms
+2026-11-13T13:15:40.666+00:00 [gateway] startup phase: sidecars.worker-environments.workspaces 116.3ms total=14495.0ms rssMb=1003.2 heapUsedMb=193.5 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.668+00:00 [gateway] startup phase: sidecars.worker-environments.active starting total=14497.3ms
+2026-11-13T13:15:40.673+00:00 [gateway] startup phase: sidecars.worker-environments 134.5ms total=14501.4ms rssMb=1003.3 heapUsedMb=193.7 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.673+00:00 [gateway] starting channels and sidecars...
+2026-11-13T13:15:40.674+00:00 [gateway] startup phase: sidecars.internal-hooks starting total=14503.3ms
+2026-11-13T13:15:40.676+00:00 [gateway] startup phase: sidecars.model-runtime starting total=14505.3ms
+2026-11-13T13:15:40.784+00:00 [gateway] startup phase: sidecars.internal-hooks 109.9ms total=14613.2ms rssMb=1011.0 heapUsedMb=193.7 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.822+00:00 [gateway] startup phase: sidecars.worker-environments.active 153.0ms total=14650.4ms rssMb=1013.3 heapUsedMb=199.9 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.834+00:00 [gateway] startup phase: sidecars.worker-environments.publications starting total=14663.0ms
+2026-11-13T13:15:40.853+00:00 [gateway] startup phase: sidecars.model-runtime 176.2ms total=14681.5ms rssMb=1017.9 heapUsedMb=201.2 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.853+00:00 [gateway] startup phase: sidecars.chat-metadata starting total=14682.3ms
+2026-11-13T13:15:40.854+00:00 [gateway] startup phase: sidecars.chat-metadata 1.0ms total=14683.3ms rssMb=1018.2 heapUsedMb=201.4 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.855+00:00 [gateway] startup phase: sidecars.plugin-services starting total=14683.9ms
+2026-11-13T13:15:40.855+00:00 [gateway] startup phase: sidecars.channels starting total=14684.8ms
+2026-11-13T13:15:40.856+00:00 [gateway/channels] skipping channel start (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)
+2026-11-13T13:15:40.864+00:00 [gateway] startup phase: sidecars.channels 7.8ms total=14692.6ms rssMb=1018.2 heapUsedMb=206.0 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.867+00:00 [gateway] startup phase: sidecars.plugin-services 11.7ms total=14695.6ms rssMb=1018.4 heapUsedMb=206.2 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:40.869+00:00 [gateway] startup outcomes: internal-hooks=skipped (no-handlers-loaded); internal-startup-hook=scheduled; gateway-start-hooks=skipped (no-handlers-loaded); gmail-watcher=skipped (hooks-disabled); gmail-model=skipped (not-configured)
+2026-11-13T13:15:41.045+00:00 [gateway] startup phase: sidecars.worker-environments.publications 211.1ms total=14874.1ms rssMb=1025.1 heapUsedMb=206.1 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:41.105+00:00 [gateway] startup phase: ready 59.5ms total=14933.6ms rssMb=1025.9 heapUsedMb=206.5 workers=13 workerHeapSamples=10/13 workerHeapMb=355.5 workerHeapSource=cached
+2026-11-13T13:15:41.105+00:00 [gateway] ready
+2026-11-13T13:15:41.107+00:00 [restart-resume] startup restart resume: []
+2026-11-13T13:15:41.466+00:00 [gateway] remote model catalog refresh failed; next check in 6 hours, or run openclaw models refresh
+2026-11-13T13:15:41.813+00:00 [ws] client connected conn=24c7a8a7-a5e5-4e44-9e2a-fff957593d81 client=gateway-client name=gateway:channels.status mode=backend role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T13:15:42.838+00:00 [health] Managed worktree cleanup completed: removed 0; deleted 0 orphans; retired 0 orphan records; pruned 0 snapshots; scratch (24 h): removed 0 entries / 0 bytes, skipped-live 0, deferred 0; eligible 0; deferred 0; failed 0; protected 0; limits satisfied.
+2026-11-13T13:15:44.254+00:00 [cron/maintenance] Session registry maintenance completed
+2026-11-13T13:15:44.680+00:00 [gateway] database page-cache residency: database=state scope=file-sample resident=100.0% readBytes=38427 diskBytes=0 payloadBytes=0 payloadMessages=0 elapsedMs=27.9 projectionQueryMs=n/a->n/a limited=false
+2026-11-13T13:15:45.405+00:00 [gateway] startup phase: post-ready.startup-maintenance starting total=19233.3ms
+2026-11-13T13:15:45.406+00:00 [gateway] startup phase: startup.maintenance.plugin-registry starting total=19235.7ms
+2026-11-13T13:15:45.410+00:00 [gateway] startup phase: startup.maintenance.channels starting total=19239.4ms
+2026-11-13T13:15:45.411+00:00 [gateway] startup phase: startup.maintenance.sessions starting total=19240.7ms
+2026-11-13T13:15:45.412+00:00 [gateway] startup phase: startup.maintenance.pairing starting total=19241.3ms
+2026-11-13T13:15:45.438+00:00 [gateway] startup phase: startup.maintenance.sessions 25.4ms total=19266.1ms rssMb=1079.1 heapUsedMb=224.8 workers=15 workerHeapSamples=12/15 workerHeapMb=482.1 workerHeapSource=cached
+2026-11-13T13:15:45.440+00:00 [gateway] startup phase: startup.maintenance.channels 29.9ms total=19269.3ms rssMb=1079.1 heapUsedMb=224.9 workers=15 workerHeapSamples=12/15 workerHeapMb=482.1 workerHeapSource=cached
+2026-11-13T13:15:45.449+00:00 [gateway] startup phase: startup.maintenance.pairing 36.9ms total=19278.2ms rssMb=1079.2 heapUsedMb=225.3 workers=15 workerHeapSamples=12/15 workerHeapMb=482.1 workerHeapSource=cached
+2026-11-13T13:15:45.592+00:00 [gateway] startup phase: startup.maintenance.plugin-registry 185.5ms total=19421.1ms rssMb=1083.4 heapUsedMb=231.3 workers=15 workerHeapSamples=12/15 workerHeapMb=482.1 workerHeapSource=cached
+2026-11-13T13:15:45.593+00:00 [gateway] startup phase: post-ready.startup-maintenance 188.9ms total=19422.2ms rssMb=1083.4 heapUsedMb=231.4 workers=15 workerHeapSamples=12/15 workerHeapMb=482.1 workerHeapSource=cached
+2026-11-13T13:15:45.915+00:00 [ws] client connected conn=02270e59-cc85-4fd9-817a-c108058ba048 client=gateway-client name=gateway:channels.status mode=backend role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T13:15:49.137+00:00 [ws] client connected conn=c39e79cf-fc2c-4cba-86e6-d678506e8f58 client=gateway-client name=gateway:channels.status mode=backend role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T13:15:52.765+00:00 [ws] client connected conn=2b5ae532-722a-4c31-8cd3-dc525260a88c client=gateway-client name=gateway:channels.status mode=backend role=operator auth=token version=2026.11.3 platform=linux build=legacy remote=127.0.0.1
+2026-11-13T13:15:52.878+00:00 [admission] closed: restart-signal fence
+2026-11-13T13:15:52.891+00:00 [admission] closed: stop (SIGTERM)
+2026-11-13T13:15:52.891+00:00 [gateway] received SIGTERM; shutting down
+2026-11-13T13:15:52.893+00:00 [gateway] shutdown budget at shutdown: drain=315000ms shutdown=325000ms reserve=10000ms exitMargin=5000ms; source=Gateway stop policy=330000ms
+2026-11-13T13:15:52.903+00:00 [restart-resume] shutdown restart resume: []
+2026-11-13T13:15:53.008+00:00 [gmail-watcher] gmail watcher stopped
+2026-11-13T13:15:53.135+00:00 [shutdown] completed cleanly in 234ms
+
+--- gateway.stderr ---
+[gateway] startup phase: entry.run-main-import starting total=149.2ms
+[gateway] startup phase: entry.run-main-import 72.4ms total=221.6ms start=149.2ms rssMb=77.6 heapUsedMb=11.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment starting total=1192.1ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports starting total=1192.3ms
+[gateway] startup phase: cli.main.gateway-run-select-environment-imports 303.0ms total=1495.3ms start=1192.3ms rssMb=177.2 heapUsedMb=47.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard starting total=1496.4ms
+[gateway] startup phase: cli.environment.imports starting total=1496.8ms
+[gateway] startup phase: cli.environment.imports 6.0ms total=1502.8ms start=1496.8ms rssMb=177.2 heapUsedMb=49.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=1505.0ms
+[gateway] startup phase: cli.environment.config-import 314.6ms total=1819.5ms start=1505.0ms rssMb=190.3 heapUsedMb=80.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=1820.4ms
+[gateway] startup phase: cli.environment.config-read 58.0ms total=1878.4ms start=1820.4ms rssMb=199.2 heapUsedMb=70.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=1879.6ms
+[gateway] startup phase: cli.environment.config-recovery 3.6ms total=1883.2ms start=1879.6ms rssMb=199.2 heapUsedMb=70.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-guard 387.9ms total=1884.3ms start=1496.4ms rssMb=199.4 heapUsedMb=70.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.pin-runtime-paths starting total=1884.5ms
+[gateway] startup phase: cli.environment.pin-runtime-paths 0.4ms total=1884.9ms start=1884.5ms rssMb=199.4 heapUsedMb=70.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-select-environment 692.9ms total=1885.1ms start=1192.1ms rssMb=199.4 heapUsedMb=70.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-imports starting total=1911.2ms
+[gateway] startup phase: cli.main.gateway-run-imports 5.3ms total=1916.5ms start=1911.2ms rssMb=199.6 heapUsedMb=79.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap starting total=1948.9ms
+[gateway] startup phase: cli.environment.imports starting total=1949.6ms
+[gateway] startup phase: cli.environment.imports 0.3ms total=1949.9ms start=1949.6ms rssMb=200.1 heapUsedMb=86.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-import starting total=1950.9ms
+[gateway] startup phase: cli.environment.config-import 0.1ms total=1951.0ms start=1950.9ms rssMb=200.1 heapUsedMb=86.9 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-read starting total=1951.2ms
+[gateway] startup phase: cli.environment.config-read 3.3ms total=1954.5ms start=1951.2ms rssMb=200.1 heapUsedMb=87.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.environment.config-recovery starting total=1954.8ms
+[gateway] startup phase: cli.environment.config-recovery 10.3ms total=1965.0ms start=1954.8ms rssMb=208.1 heapUsedMb=68.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-pre-bootstrap 17.2ms total=1966.1ms start=1948.9ms rssMb=208.1 heapUsedMb=68.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap starting total=1966.3ms
+[gateway] startup phase: cli.command.config-ready starting total=1968.9ms
+[gateway] startup phase: cli.command.config-guard-import starting total=1969.1ms
+[gateway] startup phase: cli.command.config-guard-import 23.5ms total=1992.7ms start=1969.1ms rssMb=208.3 heapUsedMb=75.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.live-owner starting total=2012.8ms
+[gateway] startup phase: cli.bootstrap.admission.live-owner 6.6ms total=2019.4ms start=2012.8ms rssMb=208.4 heapUsedMb=85.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.core-config starting total=2019.7ms
+[gateway] startup phase: cli.bootstrap.admission.core-config 4.2ms total=2023.9ms start=2019.7ms rssMb=208.4 heapUsedMb=85.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot starting total=2024.2ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery starting total=2025.3ms
+[gateway] startup phase: cli.bootstrap.admission.core-recovery 1.0ms total=2026.3ms start=2025.3ms rssMb=208.6 heapUsedMb=85.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import starting total=2026.7ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-config starting total=2026.8ms
+[gateway] startup phase: cli.bootstrap.admission.database-runtime-import 36.6ms total=2063.3ms start=2026.7ms rssMb=209.2 heapUsedMb=92.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.database-readiness starting total=2063.8ms
+[gateway] startup phase: cli.bootstrap.admission.database-readiness 11.8ms total=2075.6ms start=2063.8ms agentCount=1 schemaProcessCount=0 schemaInspectionCount=0 schemaSnapshotCount=0 statePreflightMs=0.6009350000003906 agentPreflightMs=1.5410049999995863 rssMb=209.7 heapUsedMb=92.4 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import starting total=2075.9ms
+[gateway] startup phase: cli.bootstrap.admission.session-runtime-import 2.0ms total=2078.0ms start=2075.9ms rssMb=209.7 heapUsedMb=94.0 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-targets starting total=2078.2ms
+[gateway] startup phase: cli.bootstrap.admission.session-targets 2.2ms total=2080.4ms start=2078.2ms agentCount=1 registeredDatabaseCount=0 rssMb=209.7 heapUsedMb=94.1 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.session-readiness starting total=2080.6ms
+[gateway] startup phase: cli.bootstrap.admission.session-readiness 0.2ms total=2080.8ms start=2080.6ms targetCount=1 rssMb=209.7 heapUsedMb=94.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import starting total=2081.0ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-runtime-import 8.3ms total=2089.3ms start=2081.0ms rssMb=209.9 heapUsedMb=96.3 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness starting total=2089.5ms
+[gateway] startup phase: cli.bootstrap.admission.workspace-readiness 3.6ms total=2093.1ms start=2089.5ms agentCount=1 rssMb=210.0 heapUsedMb=96.5 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion starting total=2153.1ms
+[gateway] startup phase: cli.bootstrap.admission.plugin-metadata-completion 1.4ms total=2154.6ms start=2153.1ms rssMb=212.5 heapUsedMb=75.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.plugin-config 128.1ms total=2154.8ms start=2026.8ms registrySnapshotMs=31.018895999999586 manifestRegistryMs=0.6359749999996893 ownerMapsMs=2.2962870000001203 totalMs=34.331866999999875 indexPluginCount=1 manifestPluginCount=1 rssMb=212.5 heapUsedMb=75.6 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-recovery starting total=2155.0ms
+[gateway] startup phase: cli.bootstrap.admission.config-recovery 1.4ms total=2156.4ms start=2155.0ms rssMb=212.6 heapUsedMb=76.2 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.config-guard starting total=2156.7ms
+[gateway] startup phase: cli.bootstrap.admission.config-guard 1.7ms total=2158.3ms start=2156.7ms rssMb=212.6 heapUsedMb=75.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.state-snapshot 134.4ms total=2158.6ms start=2024.2ms rssMb=212.6 heapUsedMb=75.8 workers=0 workerHeapSamples=0/0 workerHeapMb=0.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.admission.device-identity starting total=2797.4ms
+[gateway] startup phase: cli.bootstrap.admission.device-identity 124.0ms total=2921.5ms start=2797.4ms rssMb=270.3 heapUsedMb=79.5 workers=1 workerHeapSamples=1/1 workerHeapMb=46.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.webhook-readiness starting total=2988.7ms
+[gateway] startup phase: cli.bootstrap.webhook-readiness 54.3ms total=3043.0ms start=2988.7ms rssMb=273.5 heapUsedMb=75.6 workers=1 workerHeapSamples=1/1 workerHeapMb=46.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan-import starting total=4578.9ms
+[gateway] startup phase: cli.bootstrap.plugin-plan-import 8.3ms total=4587.3ms start=4578.9ms rssMb=373.2 heapUsedMb=83.2 workers=2 workerHeapSamples=2/2 workerHeapMb=86.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-plan starting total=4587.9ms
+[gateway] startup phase: cli.bootstrap.plugin-plan 1.2ms total=4589.2ms start=4587.9ms rssMb=373.2 heapUsedMb=83.3 workers=2 workerHeapSamples=2/2 workerHeapMb=86.9 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-payload-verification-import starting total=5376.2ms
+[gateway] startup phase: cli.bootstrap.plugin-payload-verification-import 5.0ms total=5381.2ms start=5376.2ms rssMb=431.7 heapUsedMb=94.1 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.plugin-payload-verification starting total=5381.8ms
+[gateway] startup phase: cli.bootstrap.plugin-payload-verification 4.7ms total=5386.4ms start=5381.8ms rssMb=431.7 heapUsedMb=94.4 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.command.config-ready 3423.2ms total=5392.1ms start=1968.9ms rssMb=431.8 heapUsedMb=94.9 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-reload-environment starting total=5392.6ms
+[gateway] startup phase: cli.main.gateway-run-reload-environment 1.4ms total=5393.9ms start=5392.6ms rssMb=431.8 heapUsedMb=95.0 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.main.gateway-run-bootstrap 3427.9ms total=5394.2ms start=1966.3ms rssMb=431.8 heapUsedMb=95.0 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime starting total=5998.1ms
+[gateway] startup phase: cli.bootstrap.lifecycle-runtime 108.2ms total=6106.3ms start=5998.1ms rssMb=429.5 heapUsedMb=114.7 workers=4 workerHeapSamples=4/4 workerHeapMb=123.5 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.gateway-lock starting total=6111.6ms
+[gateway] startup phase: cli.bootstrap.gateway-lock 530.7ms total=6642.3ms start=6111.6ms rssMb=537.2 heapUsedMb=117.6 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+[gateway] startup phase: cli.bootstrap.boot-lifecycle starting total=6648.7ms
+[gateway] startup phase: cli.bootstrap.boot-lifecycle 36.5ms total=6685.2ms start=6648.7ms rssMb=541.5 heapUsedMb=118.0 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+[gateway] startup phase: gateway.server-start-import starting total=7180.0ms
+[gateway] startup phase: gateway.server-start-import 916.7ms total=8096.7ms start=7180.0ms rssMb=584.5 heapUsedMb=161.3 workers=7 workerHeapSamples=6/7 workerHeapMb=202.0 workerHeapSource=cached
+2026-11-13T13:15:41.938+00:00 [health] post-connect health refresh failed: snapshot[2J failed
+FORGED warningrewrite	cell‮
+2026-11-13T13:15:42.332+00:00 [health] refresh failed: snapshot[2J failed
+FORGED warningrewrite	cell‮
+
+--- proxy.stderr ---

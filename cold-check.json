@@ -1,0 +1,16 @@
+{
+  "command": [
+    "<NODE26>/bin/node",
+    "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+    "test",
+    "src/commands/channels.surfaces-signal-runtime-errors-channels-status-output.test.ts",
+    "src/commands/channels.status.command-flow.test.ts",
+    "--maxWorkers=1"
+  ],
+  "cwd": "<HEAD_CHECKOUT>",
+  "exit_code": 1,
+  "elapsed_seconds": 187.733,
+  "head": "eb1a592fc06233963cb8b70ad998f271b8e2da81",
+  "diffSHA256": "253eb5cbd176f4ce19c25b63c9ed98c8b0a8d041fe69a17fcc1793467b2e2eba",
+  "logSHA256": "247642865b97f836eff7c7bc4c56d818885497b5d08fea5e3c97bbd5ec4792e1"
+}
