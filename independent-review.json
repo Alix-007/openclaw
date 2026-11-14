@@ -1,0 +1,80 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "2aa417588232321d79b4c10e481907b445e1a55d",
+  "base": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+  "files": [
+    {
+      "path": "src/templates/path-containment.ts",
+      "sha256": "908b79805d0c914c2197d57f259ff9242c81f8f427908659ddeaf5ec1e1636a6"
+    },
+    {
+      "path": "src/templates/project-build.ts",
+      "sha256": "f639d690f0170f007086ea5bf8ebc7a5763323349f17b44c3d611a3c965042c0"
+    },
+    {
+      "path": "src/templates/project.test.ts",
+      "sha256": "ff0cab4972835b9df475d22f3e44e2b9463d58838fdea6dc4fd9688b2048bbfd"
+    },
+    {
+      "path": "src/templates/project.ts",
+      "sha256": "10d679b2e8ee82e96d647057a34f88ff97e7fbbcc9208bae5051f7fe29bccf43"
+    },
+    {
+      "path": "src/templates/reader.test.ts",
+      "sha256": "3c5b8fa52f862a6afab4ed2cecce874f7c5945e5d41f2f94658b4af53b2ce32e"
+    },
+    {
+      "path": "src/templates/reader.ts",
+      "sha256": "2a2ddaa6cea1bacdde730c4e5e78517c6e4679141168b1a102a0b5bb5dcfc83d"
+    }
+  ],
+  "fullIndexDiffSHA256": "b353946818a46205af9a1b2ec2c62cd4bd6493fccfc2bb5542514f5659b43092",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "expectedSingleParent": true,
+    "cleanWorktree": true,
+    "authorAndCommitter": "Alix-007 <li.long15@xydigit.com>",
+    "normalHooks": "Recorded by normal commit receipt/log; actual commit identity independently verified.",
+    "allSixSourceHashesAndCommittedPatchMatchSourceApproval": true,
+    "build": "Normal cliStartup build exit 0 in 238.0s; current dist/.buildstamp exactly equals native receipt stamp, exact HEAD and inputsClean true.",
+    "checks": "Corrected focused suite: 49 pass, two platform skips. Format/lint/types/test-lines/line-cap pass. Retained check/build log hashes independently verified.",
+    "correctedRegression": "Corrected golden source-parent regression BASE exit 1 at intended lexical discovery owner; original invalid-fixture failure remains retained separately.",
+    "collectorSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479",
+    "native": "Same frozen collector on BASE: BASE5RED_CONTROLS7PASS; HEAD: GREEN12PASS, runner exit 0 in 38.854s. All 24 case stdout/stderr pairs and parsed public JSON match retained receipt hashes/values.",
+    "physicalSelection": "Actual validate/inspect and independently opened build-parent-traversal tar package.json select decoy-template on BASE and physical-template on HEAD.",
+    "writeReadbacks": "Created project file hashes, actual archive byte hashes/sizes/package metadata and absent wrong-directory outputs verified from disk on both heads. Final create/output symlinks retained; empty create target and absent output target verified. Both original physical and decoy source snapshots match before/after and current disk."
+  },
+  "proofFiles": [
+    {
+      "path": "template-path-build.json",
+      "sha256": "cbbc80c865fd2eae9c6c604e8cc27685b9f827cd0c8724f00a4712ba3c4f8077"
+    },
+    {
+      "path": "template-path-build.log",
+      "sha256": "3841e9237f74dfcac175280105e8cb489bc961dcac7d56c6890a372dfdf0916a"
+    },
+    {
+      "path": "template-path-base-proof/receipt.json",
+      "sha256": "572ba40ca005af46f73d6af3137ba847435bdf801fb105c1ca62a36402665ee3"
+    },
+    {
+      "path": "template-path-head-proof/receipt.json",
+      "sha256": "8b9db747c2c5bd3af58d25ac0f6afd2ad6fab524df18b54fe0371598c2879d5c"
+    },
+    {
+      "path": "template-path-head-proof-runner.json",
+      "sha256": "7721234fd4a3384d68b27fc02da2470484e4b9c9ebe051c8fda2c37b5f9a6547"
+    },
+    {
+      "path": "template-path-proof-v1.py",
+      "sha256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479"
+    }
+  ],
+  "limitations": [
+    "Qualified isolated Linux/Node26 synthetic local Template CLI/source/file/tar proof only; no actual agent activation or external package installation.",
+    "No native macOS/Windows behavior, external model/channel behavior or full repository-suite proof is claimed.",
+    "No tests/builds/native collectors rerun by this reviewer; attestation independently checks exact committed bytes and retained raw artifacts."
+  ]
+}

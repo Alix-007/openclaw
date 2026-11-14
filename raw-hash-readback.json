@@ -1,0 +1,57 @@
+[
+  {
+    "file": "BASE.json",
+    "originalSHA256": "572ba40ca005af46f73d6af3137ba847435bdf801fb105c1ca62a36402665ee3",
+    "publicSHA256": "3efc322e4cba40b9e90eca0706fd66608582abe4824a3644f4a8e5ee660cfa88"
+  },
+  {
+    "file": "base-streams.txt",
+    "originalSHA256": "8494d2d2691742b7130ecc486403e512906b583ebc5ade7addb8df1be1aa2cf3",
+    "publicSHA256": "e29009c93d29e61abe0fe8a491f37add30ffee1c622b071b0f123ad735261041"
+  },
+  {
+    "file": "HEAD.json",
+    "originalSHA256": "8b9db747c2c5bd3af58d25ac0f6afd2ad6fab524df18b54fe0371598c2879d5c",
+    "publicSHA256": "ffd1544fc0be6b8edb47fe08cfa2d390b9f00e65b5b694b66c605e9a018b783e"
+  },
+  {
+    "file": "head-streams.txt",
+    "originalSHA256": "43ba75622ba55f8524ba0e97181c98aedf6f6a38048d19b2dc257811df797bea",
+    "publicSHA256": "8162170b36e62cff6679748cb16ceae2a9a871b3926a5424b56ffdd16cd744eb"
+  },
+  {
+    "file": "checks.json",
+    "originalSHA256": "4cbaa28c1d1df0afbcb90fdb0c576a75a6410ff2799c74b3c81112cc90fb665e",
+    "publicSHA256": "dab6b7c20929e6ffa97f138d6b28302cf3a33f0c36c6039cc8d3d6b7a4464725"
+  },
+  {
+    "file": "collector.py",
+    "originalSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479",
+    "publicSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479"
+  },
+  {
+    "file": "independent-review.md",
+    "originalSHA256": "29da5c8d2b9f81598ca41292e1de13a9f2e8923b6e23253bc95e709598e31ae0",
+    "publicSHA256": "29da5c8d2b9f81598ca41292e1de13a9f2e8923b6e23253bc95e709598e31ae0"
+  },
+  {
+    "file": "independent-review.json",
+    "originalSHA256": "32b03bade3808d5a72cd3aa5160f29c939ade6bd6e1c335362599d02b2335f62",
+    "publicSHA256": "32b03bade3808d5a72cd3aa5160f29c939ade6bd6e1c335362599d02b2335f62"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "originalSHA256": "eb670f9ac8457a7f49d4ead8a835b83310e2eba3f5d82c030688a9b76a74bd69",
+    "publicSHA256": "eb670f9ac8457a7f49d4ead8a835b83310e2eba3f5d82c030688a9b76a74bd69"
+  },
+  {
+    "file": "base-selected-archive.tgz.base64.txt",
+    "originalSHA256": "a5a6fc1b9afe5b3d1d00f35e9d44d3833db0c68bfe91571c0539d21726d47c2e",
+    "publicSHA256": "a5a6fc1b9afe5b3d1d00f35e9d44d3833db0c68bfe91571c0539d21726d47c2e"
+  },
+  {
+    "file": "head-selected-archive.tgz.base64.txt",
+    "originalSHA256": "09a1a5a71d6339d12ad10686b0415a69f1f785899eba0c3faeca3026437e373e",
+    "publicSHA256": "09a1a5a71d6339d12ad10686b0415a69f1f785899eba0c3faeca3026437e373e"
+  }
+]

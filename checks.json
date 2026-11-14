@@ -1,0 +1,151 @@
+{
+  "format-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/templates/path-containment.ts",
+      "src/templates/project-build.ts",
+      "src/templates/project.test.ts",
+      "src/templates/project.ts",
+      "src/templates/reader.test.ts",
+      "src/templates/reader.ts"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 0.623,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "7a9c01dabccfb82ff9c745bb7ceaa17f43ade3b324fb0401b384c7af09edad53"
+  },
+  "lint-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "$TASK/template-path-types.tsconfig.json",
+      "src/templates/path-containment.ts",
+      "src/templates/project-build.ts",
+      "src/templates/project.test.ts",
+      "src/templates/project.ts",
+      "src/templates/reader.test.ts",
+      "src/templates/reader.ts"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 78.177,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "types-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$TASK/template-path-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 24.679,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "08ae8c62b83ede02db3a8d2bc3ce36206008d253"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 1.419,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "4a6f7e993a10c93cc92714231609486a2c891cf0de95984642f464c8a9a81ced"
+  },
+  "line-cap-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "08ae8c62b83ede02db3a8d2bc3ce36206008d253"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 2.207,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "3fce9a569ef86c1d00ac3f27c29857e786209d8b6b7038bc36ea31e3be5e6fa9"
+  },
+  "focused-corrected": {
+    "command": [
+      "$NODE26/bin/node",
+      "$CAMPAIGN/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/templates/project.test.ts",
+      "src/templates/reader.test.ts",
+      "src/templates/path-containment.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 168.581,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "6ee8588a25b57edd7552f752f97c5c6bb224012cfb47adc5e411cd93626cd214",
+    "logSHA256": "6bdc51f904100a8ade17aaf247bf649acd6ee6876550ea19707678293233fbbf"
+  },
+  "corrected-source-parent-red": {
+    "command": [
+      "$NODE26/bin/node",
+      "$CAMPAIGN/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/templates/project.test.ts",
+      "--maxWorkers=1",
+      "-t",
+      "golden artifact digest through source parent"
+    ],
+    "cwd": "$TASK/base",
+    "exit_code": 1,
+    "elapsed_seconds": 204.899,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "c25fad30c8f3893baa88dc8bde1c87d72b989677f40771aac57f4e16956e2083",
+    "logSHA256": "d91c2c2d133ee0d8630f34053889d5b4692fe3626272bb27b5d40746c6f1d939"
+  },
+  "build": {
+    "command": [
+      "$NODE26/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "$TASK/template-path",
+    "exit_code": 0,
+    "elapsed_seconds": 238.0,
+    "head": "2aa417588232321d79b4c10e481907b445e1a55d",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "3841e9237f74dfcac175280105e8cb489bc961dcac7d56c6890a372dfdf0916a"
+  },
+  "commit": {
+    "head": "2aa417588232321d79b4c10e481907b445e1a55d",
+    "base": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "normalHooksUsed": true,
+    "files": [
+      "src/templates/path-containment.ts",
+      "src/templates/project-build.ts",
+      "src/templates/project.test.ts",
+      "src/templates/project.ts",
+      "src/templates/reader.test.ts",
+      "src/templates/reader.ts"
+    ],
+    "elapsedSeconds": 6.668
+  }
+}

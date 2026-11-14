@@ -1,0 +1,53 @@
+{
+  "head": "2aa417588232321d79b4c10e481907b445e1a55d",
+  "files": [
+    {
+      "name": "BASE.json",
+      "sha256": "3efc322e4cba40b9e90eca0706fd66608582abe4824a3644f4a8e5ee660cfa88"
+    },
+    {
+      "name": "base-streams.txt",
+      "sha256": "e29009c93d29e61abe0fe8a491f37add30ffee1c622b071b0f123ad735261041"
+    },
+    {
+      "name": "HEAD.json",
+      "sha256": "ffd1544fc0be6b8edb47fe08cfa2d390b9f00e65b5b694b66c605e9a018b783e"
+    },
+    {
+      "name": "head-streams.txt",
+      "sha256": "8162170b36e62cff6679748cb16ceae2a9a871b3926a5424b56ffdd16cd744eb"
+    },
+    {
+      "name": "checks.json",
+      "sha256": "dab6b7c20929e6ffa97f138d6b28302cf3a33f0c36c6039cc8d3d6b7a4464725"
+    },
+    {
+      "name": "collector.py",
+      "sha256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479"
+    },
+    {
+      "name": "independent-review.md",
+      "sha256": "29da5c8d2b9f81598ca41292e1de13a9f2e8923b6e23253bc95e709598e31ae0"
+    },
+    {
+      "name": "independent-review.json",
+      "sha256": "32b03bade3808d5a72cd3aa5160f29c939ade6bd6e1c335362599d02b2335f62"
+    },
+    {
+      "name": "EVIDENCE.md",
+      "sha256": "eb670f9ac8457a7f49d4ead8a835b83310e2eba3f5d82c030688a9b76a74bd69"
+    },
+    {
+      "name": "base-selected-archive.tgz.base64.txt",
+      "sha256": "a5a6fc1b9afe5b3d1d00f35e9d44d3833db0c68bfe91571c0539d21726d47c2e"
+    },
+    {
+      "name": "head-selected-archive.tgz.base64.txt",
+      "sha256": "09a1a5a71d6339d12ad10686b0415a69f1f785899eba0c3faeca3026437e373e"
+    },
+    {
+      "name": "raw-hash-readback.json",
+      "sha256": "283d889e0020651332de210f55fb1c3baaf81b2fd3742bbd6d281410fdb357a6"
+    }
+  ]
+}

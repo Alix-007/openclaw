@@ -1,0 +1,589 @@
+{
+  "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+  "buildStamp": {
+    "builtAt": 1794646123360,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "inputsClean": true,
+    "inputSignature": "9dc8393a43fe0438111f7a5fc429557b4c1e7bea1a2008318e69a980c09cd822"
+  },
+  "collectorSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479",
+  "mode": "red",
+  "boundary": "normal built templates create/validate/inspect/build -> actual selected metadata, created files and tar archive readback",
+  "cases": [
+    {
+      "label": "physical-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "create",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--name",
+        "physical-template",
+        "--agent-id",
+        "proof-agent",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.704,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$TASK/template-path-base-proof/fixtures/physical/source\",\n  \"packageJson\": {\n    \"name\": \"physical-template\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "c65dacbb7efb18f169ff92d2336e57c8d3d17108335a0e58e56fdd28cbcf49bd",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": true,
+        "root": "$TASK/template-path-base-proof/fixtures/physical/source",
+        "packageJson": {
+          "name": "physical-template",
+          "version": "0.1.0",
+          "openclaw": {
+            "template": "CLAW.md"
+          }
+        },
+        "filesWritten": [
+          "package.json",
+          "CLAW.md"
+        ]
+      }
+    },
+    {
+      "label": "decoy-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "create",
+        "$TASK/template-path-base-proof/fixtures/source",
+        "--name",
+        "decoy-template",
+        "--agent-id",
+        "proof-agent",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.061,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$TASK/template-path-base-proof/fixtures/source\",\n  \"packageJson\": {\n    \"name\": \"decoy-template\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "f8d10b8635553eb32472c22c3df9e7a68b14dd8e60abd56f347ddc9b7fa003bd",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": true,
+        "root": "$TASK/template-path-base-proof/fixtures/source",
+        "packageJson": {
+          "name": "decoy-template",
+          "version": "0.1.0",
+          "openclaw": {
+            "template": "CLAW.md"
+          }
+        },
+        "filesWritten": [
+          "package.json",
+          "CLAW.md"
+        ]
+      }
+    },
+    {
+      "label": "validate-ordinary-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "validate",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.716,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$TASK/template-path-base-proof/fixtures/physical/source\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"physical-template\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$TASK/template-path-base-proof/fixtures/physical/source\",\n    \"manifestPath\": \"$TASK/template-path-base-proof/fixtures/physical/source/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:374d2cecd15096bac9ba3c2c48686307ada5bcbe9efedc93fda070700411f96f\",\n    \"byteLength\": 376\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-agent\",\n      \"name\": \"Proof Agent\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"skills\": [],\n    \"plugins\": [],\n    \"mcpServers\": {},\n    \"automations\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "db0c4469e0d264ba472fa7f07e3c209125fec195530c283c9f630d82c64640e8",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": true,
+        "root": "$TASK/template-path-base-proof/fixtures/physical/source",
+        "source": {
+          "kind": "package",
+          "name": "physical-template",
+          "version": "0.1.0",
+          "packageRoot": "$TASK/template-path-base-proof/fixtures/physical/source",
+          "manifestPath": "$TASK/template-path-base-proof/fixtures/physical/source/CLAW.md",
+          "integrityKind": "development-snapshot",
+          "integrity": "sha256:374d2cecd15096bac9ba3c2c48686307ada5bcbe9efedc93fda070700411f96f",
+          "byteLength": 376
+        },
+        "manifest": {
+          "schemaVersion": 1,
+          "agent": {
+            "id": "proof-agent",
+            "name": "Proof Agent"
+          },
+          "metadata": {},
+          "workspace": {
+            "bootstrapFiles": {},
+            "files": []
+          },
+          "skills": [],
+          "plugins": [],
+          "mcpServers": {},
+          "automations": []
+        },
+        "excludedPaths": [],
+        "diagnostics": []
+      }
+    },
+    {
+      "label": "validate-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "validate",
+        "$TASK/template-path-base-proof/fixtures/selected/../source",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.71,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$TASK/template-path-base-proof/fixtures/source\",\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"decoy-template\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$TASK/template-path-base-proof/fixtures/source\",\n    \"manifestPath\": \"$TASK/template-path-base-proof/fixtures/source/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95\",\n    \"byteLength\": 364\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-agent\",\n      \"name\": \"Proof Agent\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"skills\": [],\n    \"plugins\": [],\n    \"mcpServers\": {},\n    \"automations\": []\n  },\n  \"excludedPaths\": [],\n  \"diagnostics\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "aa5c79381ccdcd988d9148190405383f48459c9a16179cd81028adf8319b6ab5",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": true,
+        "root": "$TASK/template-path-base-proof/fixtures/source",
+        "source": {
+          "kind": "package",
+          "name": "decoy-template",
+          "version": "0.1.0",
+          "packageRoot": "$TASK/template-path-base-proof/fixtures/source",
+          "manifestPath": "$TASK/template-path-base-proof/fixtures/source/CLAW.md",
+          "integrityKind": "development-snapshot",
+          "integrity": "sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95",
+          "byteLength": 364
+        },
+        "manifest": {
+          "schemaVersion": 1,
+          "agent": {
+            "id": "proof-agent",
+            "name": "Proof Agent"
+          },
+          "metadata": {},
+          "workspace": {
+            "bootstrapFiles": {},
+            "files": []
+          },
+          "skills": [],
+          "plugins": [],
+          "mcpServers": {},
+          "automations": []
+        },
+        "excludedPaths": [],
+        "diagnostics": []
+      },
+      "selectedSource": {
+        "kind": "package",
+        "name": "decoy-template",
+        "version": "0.1.0",
+        "packageRoot": "$TASK/template-path-base-proof/fixtures/source",
+        "manifestPath": "$TASK/template-path-base-proof/fixtures/source/CLAW.md",
+        "integrityKind": "development-snapshot",
+        "integrity": "sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95",
+        "byteLength": 364
+      }
+    },
+    {
+      "label": "inspect-ordinary-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "inspect",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 6.271,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateInspect.v1\",\n  \"stability\": \"experimental\",\n  \"valid\": true,\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"physical-template\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$TASK/template-path-base-proof/fixtures/physical/source\",\n    \"manifestPath\": \"$TASK/template-path-base-proof/fixtures/physical/source/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:374d2cecd15096bac9ba3c2c48686307ada5bcbe9efedc93fda070700411f96f\",\n    \"byteLength\": 376\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-agent\",\n      \"name\": \"Proof Agent\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"skills\": [],\n    \"plugins\": [],\n    \"mcpServers\": {},\n    \"automations\": []\n  },\n  \"inventory\": [],\n  \"diagnostics\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "36d6d94bbb70907b1eb732f0e015794e5a0c5c24389504b2e4cd2321208b085e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateInspect.v1",
+        "stability": "experimental",
+        "valid": true,
+        "source": {
+          "kind": "package",
+          "name": "physical-template",
+          "version": "0.1.0",
+          "packageRoot": "$TASK/template-path-base-proof/fixtures/physical/source",
+          "manifestPath": "$TASK/template-path-base-proof/fixtures/physical/source/CLAW.md",
+          "integrityKind": "development-snapshot",
+          "integrity": "sha256:374d2cecd15096bac9ba3c2c48686307ada5bcbe9efedc93fda070700411f96f",
+          "byteLength": 376
+        },
+        "manifest": {
+          "schemaVersion": 1,
+          "agent": {
+            "id": "proof-agent",
+            "name": "Proof Agent"
+          },
+          "metadata": {},
+          "workspace": {
+            "bootstrapFiles": {},
+            "files": []
+          },
+          "skills": [],
+          "plugins": [],
+          "mcpServers": {},
+          "automations": []
+        },
+        "inventory": [],
+        "diagnostics": []
+      }
+    },
+    {
+      "label": "inspect-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "inspect",
+        "$TASK/template-path-base-proof/fixtures/selected/../source",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 4.725,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateInspect.v1\",\n  \"stability\": \"experimental\",\n  \"valid\": true,\n  \"source\": {\n    \"kind\": \"package\",\n    \"name\": \"decoy-template\",\n    \"version\": \"0.1.0\",\n    \"packageRoot\": \"$TASK/template-path-base-proof/fixtures/source\",\n    \"manifestPath\": \"$TASK/template-path-base-proof/fixtures/source/CLAW.md\",\n    \"integrityKind\": \"development-snapshot\",\n    \"integrity\": \"sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95\",\n    \"byteLength\": 364\n  },\n  \"manifest\": {\n    \"schemaVersion\": 1,\n    \"agent\": {\n      \"id\": \"proof-agent\",\n      \"name\": \"Proof Agent\"\n    },\n    \"metadata\": {},\n    \"workspace\": {\n      \"bootstrapFiles\": {},\n      \"files\": []\n    },\n    \"skills\": [],\n    \"plugins\": [],\n    \"mcpServers\": {},\n    \"automations\": []\n  },\n  \"inventory\": [],\n  \"diagnostics\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "0397fdeff2be8ea82319e471dcd9ef4597f93266f580bc3f384356d498d0f553",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateInspect.v1",
+        "stability": "experimental",
+        "valid": true,
+        "source": {
+          "kind": "package",
+          "name": "decoy-template",
+          "version": "0.1.0",
+          "packageRoot": "$TASK/template-path-base-proof/fixtures/source",
+          "manifestPath": "$TASK/template-path-base-proof/fixtures/source/CLAW.md",
+          "integrityKind": "development-snapshot",
+          "integrity": "sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95",
+          "byteLength": 364
+        },
+        "manifest": {
+          "schemaVersion": 1,
+          "agent": {
+            "id": "proof-agent",
+            "name": "Proof Agent"
+          },
+          "metadata": {},
+          "workspace": {
+            "bootstrapFiles": {},
+            "files": []
+          },
+          "skills": [],
+          "plugins": [],
+          "mcpServers": {},
+          "automations": []
+        },
+        "inventory": [],
+        "diagnostics": []
+      },
+      "selectedSource": {
+        "kind": "package",
+        "name": "decoy-template",
+        "version": "0.1.0",
+        "packageRoot": "$TASK/template-path-base-proof/fixtures/source",
+        "manifestPath": "$TASK/template-path-base-proof/fixtures/source/CLAW.md",
+        "integrityKind": "development-snapshot",
+        "integrity": "sha256:f7b4d780ad61a76dbe7e9918607bf38938e95b9afaa3f9ab07c602c833b13c95",
+        "byteLength": 364
+      }
+    },
+    {
+      "label": "build-ordinary-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "build",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--out",
+        "$TASK/template-path-base-proof/build-ordinary-control.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.799,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateBuild.v1\",\n  \"projectSchemaVersion\": \"openclaw.templateProject.v1\",\n  \"artifact\": \"$TASK/template-path-base-proof/build-ordinary-control.tgz\",\n  \"integrity\": \"sha256:c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab\",\n  \"byteLength\": 284,\n  \"files\": [\n    \"CLAW.md\",\n    \"package.json\"\n  ],\n  \"excludedPaths\": [],\n  \"template\": {\n    \"name\": \"physical-template\",\n    \"version\": \"0.1.0\"\n  },\n  \"stability\": \"experimental\",\n  \"ok\": true\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "4eaf567c15f96c11a8207e19cf460067686c120b7b24526cb7d241de4c0d8b06",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateBuild.v1",
+        "projectSchemaVersion": "openclaw.templateProject.v1",
+        "artifact": "$TASK/template-path-base-proof/build-ordinary-control.tgz",
+        "integrity": "sha256:c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab",
+        "byteLength": 284,
+        "files": [
+          "CLAW.md",
+          "package.json"
+        ],
+        "excludedPaths": [],
+        "template": {
+          "name": "physical-template",
+          "version": "0.1.0"
+        },
+        "stability": "experimental",
+        "ok": true
+      },
+      "archiveReadback": {
+        "path": "$TASK/template-path-base-proof/build-ordinary-control.tgz",
+        "bytes": 284,
+        "sha256": "c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab",
+        "packageName": "physical-template"
+      }
+    },
+    {
+      "label": "build-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "build",
+        "$TASK/template-path-base-proof/fixtures/selected/../source",
+        "--out",
+        "$TASK/template-path-base-proof/build-parent-traversal.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.746,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateBuild.v1\",\n  \"projectSchemaVersion\": \"openclaw.templateProject.v1\",\n  \"artifact\": \"$TASK/template-path-base-proof/build-parent-traversal.tgz\",\n  \"integrity\": \"sha256:3c3492f12680fad745b87dfd546e4fe4386fa30fe514a42a7cc2b6d0fc1ade4f\",\n  \"byteLength\": 281,\n  \"files\": [\n    \"CLAW.md\",\n    \"package.json\"\n  ],\n  \"excludedPaths\": [],\n  \"template\": {\n    \"name\": \"decoy-template\",\n    \"version\": \"0.1.0\"\n  },\n  \"stability\": \"experimental\",\n  \"ok\": true\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "aa3e8d1dd0ad93a3fd45098695718f61018588c7a6cc75819ffa19aadc7c3ec9",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateBuild.v1",
+        "projectSchemaVersion": "openclaw.templateProject.v1",
+        "artifact": "$TASK/template-path-base-proof/build-parent-traversal.tgz",
+        "integrity": "sha256:3c3492f12680fad745b87dfd546e4fe4386fa30fe514a42a7cc2b6d0fc1ade4f",
+        "byteLength": 281,
+        "files": [
+          "CLAW.md",
+          "package.json"
+        ],
+        "excludedPaths": [],
+        "template": {
+          "name": "decoy-template",
+          "version": "0.1.0"
+        },
+        "stability": "experimental",
+        "ok": true
+      },
+      "archiveReadback": {
+        "path": "$TASK/template-path-base-proof/build-parent-traversal.tgz",
+        "bytes": 281,
+        "sha256": "3c3492f12680fad745b87dfd546e4fe4386fa30fe514a42a7cc2b6d0fc1ade4f",
+        "packageName": "decoy-template"
+      }
+    },
+    {
+      "label": "create-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "create",
+        "$TASK/template-path-base-proof/fixtures/selected/../new-template",
+        "--name",
+        "created-template",
+        "--agent-id",
+        "created-agent",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.743,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": true,\n  \"root\": \"$TASK/template-path-base-proof/fixtures/new-template\",\n  \"packageJson\": {\n    \"name\": \"created-template\",\n    \"version\": \"0.1.0\",\n    \"openclaw\": {\n      \"template\": \"CLAW.md\"\n    }\n  },\n  \"filesWritten\": [\n    \"package.json\",\n    \"CLAW.md\"\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "e6cb7087360c88b438c0d8ab88387984785a2a791fd08d788a3afce2e1e33623",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": true,
+        "root": "$TASK/template-path-base-proof/fixtures/new-template",
+        "packageJson": {
+          "name": "created-template",
+          "version": "0.1.0",
+          "openclaw": {
+            "template": "CLAW.md"
+          }
+        },
+        "filesWritten": [
+          "package.json",
+          "CLAW.md"
+        ]
+      },
+      "createdFilesReadback": {
+        "actualRoot": "$TASK/template-path-base-proof/fixtures/new-template",
+        "files": {
+          "package.json": "85326756888eb90d5ce237fea1ce06f5f4049343534fe50366da41b9f37ed1df",
+          "CLAW.md": "e227c920540464d577645c7d38cd858285455afb55add61342bd4058a0b483d5"
+        },
+        "wrongRootAbsent": "$TASK/template-path-base-proof/fixtures/physical/new-template"
+      }
+    },
+    {
+      "label": "build-output-parent-traversal",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "build",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--out",
+        "$TASK/template-path-base-proof/fixtures/selected/../selected-output.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 2.707,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateBuild.v1\",\n  \"projectSchemaVersion\": \"openclaw.templateProject.v1\",\n  \"artifact\": \"$TASK/template-path-base-proof/fixtures/selected-output.tgz\",\n  \"integrity\": \"sha256:c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab\",\n  \"byteLength\": 284,\n  \"files\": [\n    \"CLAW.md\",\n    \"package.json\"\n  ],\n  \"excludedPaths\": [],\n  \"template\": {\n    \"name\": \"physical-template\",\n    \"version\": \"0.1.0\"\n  },\n  \"stability\": \"experimental\",\n  \"ok\": true\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "bad1b6cd3d858f4d247f7385b6b4e1ec2919fe518d4a9b8e95357323db64d561",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateBuild.v1",
+        "projectSchemaVersion": "openclaw.templateProject.v1",
+        "artifact": "$TASK/template-path-base-proof/fixtures/selected-output.tgz",
+        "integrity": "sha256:c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab",
+        "byteLength": 284,
+        "files": [
+          "CLAW.md",
+          "package.json"
+        ],
+        "excludedPaths": [],
+        "template": {
+          "name": "physical-template",
+          "version": "0.1.0"
+        },
+        "stability": "experimental",
+        "ok": true
+      },
+      "archiveReadback": {
+        "path": "$TASK/template-path-base-proof/fixtures/selected-output.tgz",
+        "bytes": 284,
+        "sha256": "c3facdebf0a91d6ae8609026ec05cc92e9bd55b9e259be034350d8c6b87737ab",
+        "packageName": "physical-template"
+      }
+    },
+    {
+      "label": "create-final-symlink-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "create",
+        "$TASK/template-path-base-proof/fixtures/final-link",
+        "--name",
+        "forbidden-template",
+        "--agent-id",
+        "forbidden-agent",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.836,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateProject.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"project_target_not_empty\",\n    \"message\": \"Template project target \\\"$TASK/template-path-base-proof/fixtures/final-link\\\" must be absent or empty.\"\n  }\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "78636357bc6eb023d6fefef71f3edc10ee2c22e2828fdd214fc08323f4566e75",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateProject.v1",
+        "stability": "experimental",
+        "ok": false,
+        "error": {
+          "code": "project_target_not_empty",
+          "message": "Template project target \"$TASK/template-path-base-proof/fixtures/final-link\" must be absent or empty."
+        }
+      },
+      "noWriteReadback": {
+        "targetEmpty": true,
+        "symlinkRetained": true
+      }
+    },
+    {
+      "label": "build-final-symlink-control",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "templates",
+        "build",
+        "$TASK/template-path-base-proof/fixtures/physical/source",
+        "--out",
+        "$TASK/template-path-base-proof/fixtures/final-output.tgz",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 3.05,
+      "stdout": "{\n  \"schemaVersion\": \"openclaw.templateBuild.v1\",\n  \"stability\": \"experimental\",\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"artifact_exists\",\n    \"message\": \"Refusing to overwrite existing artifact \\\"$TASK/template-path-base-proof/fixtures/final-output.tgz\\\".\"\n  }\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "0d48dd9174823147390380c7bae0c1268b6f55cb081582ff0ae0e4de2feb2413",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "value": {
+        "schemaVersion": "openclaw.templateBuild.v1",
+        "stability": "experimental",
+        "ok": false,
+        "error": {
+          "code": "artifact_exists",
+          "message": "Refusing to overwrite existing artifact \"$TASK/template-path-base-proof/fixtures/final-output.tgz\"."
+        }
+      },
+      "noWriteReadback": {
+        "targetAbsent": true,
+        "symlinkRetained": true
+      }
+    }
+  ],
+  "result": "BASE5RED_CONTROLS7PASS",
+  "fixture": {
+    "link": "$TASK/template-path-base-proof/fixtures/selected",
+    "linkTarget": "$TASK/template-path-base-proof/fixtures/physical/nested",
+    "rawSource": "$TASK/template-path-base-proof/fixtures/selected/../source",
+    "filesystemRealpath": "$TASK/template-path-base-proof/fixtures/physical/source",
+    "physicalRoot": "$TASK/template-path-base-proof/fixtures/physical/source",
+    "decoyRoot": "$TASK/template-path-base-proof/fixtures/source"
+  },
+  "sourceSnapshots": {
+    "before": {
+      "$TASK/template-path-base-proof/fixtures/physical/source": {
+        "package.json": "83f118af5e970a5c2d7f64a861d4f9f2fc7eafb1aee9ea9428c5fa557d45c61d",
+        "CLAW.md": "efe98736085156c0904bbe9cb40e72b43166d2f11727440bb09b5028f3b468ba"
+      },
+      "$TASK/template-path-base-proof/fixtures/source": {
+        "package.json": "c844a2d3f11f88806dc483c387249ecb72d1fd7dda7b300cfce12f07bc1f9ab0",
+        "CLAW.md": "efe98736085156c0904bbe9cb40e72b43166d2f11727440bb09b5028f3b468ba"
+      }
+    },
+    "after": {
+      "$TASK/template-path-base-proof/fixtures/physical/source": {
+        "package.json": "83f118af5e970a5c2d7f64a861d4f9f2fc7eafb1aee9ea9428c5fa557d45c61d",
+        "CLAW.md": "efe98736085156c0904bbe9cb40e72b43166d2f11727440bb09b5028f3b468ba"
+      },
+      "$TASK/template-path-base-proof/fixtures/source": {
+        "package.json": "c844a2d3f11f88806dc483c387249ecb72d1fd7dda7b300cfce12f07bc1f9ab0",
+        "CLAW.md": "efe98736085156c0904bbe9cb40e72b43166d2f11727440bb09b5028f3b468ba"
+      }
+    }
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "isolatedFixturesRetained": true
+  }
+}
