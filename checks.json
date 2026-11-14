@@ -1,0 +1,158 @@
+{
+  "format-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/plugins-control-ui-build.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "scripts/build-plugin-control-ui.mts"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 1.267,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "68e0497abea054194e3c1818b38efd06887625036ec9d63de3c3de2c0dcdf60d",
+    "logSHA256": "c518b7ae76f5a203081035657954dd14df85862a353d90eaabf2b5494a0424f4"
+  },
+  "lint-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "$TASK/plugin-json5-types.tsconfig.json",
+      "src/cli/plugins-control-ui-build.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "scripts/build-plugin-control-ui.mts"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 63.542,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "3c208d90d136cf384d3622b36ae9f27227148aeca1a1e31517c22fbd2637c949",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "types-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "$TASK/plugin-json5-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 18.123,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "3c208d90d136cf384d3622b36ae9f27227148aeca1a1e31517c22fbd2637c949",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "erasability-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "scripts/check-script-erasability.mjs",
+      "scripts/build-plugin-control-ui.mts"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 1.795,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "3c208d90d136cf384d3622b36ae9f27227148aeca1a1e31517c22fbd2637c949",
+    "logSHA256": "68f2d2e08ef66c10a26614b3fb6d32e04a4905da7d2d69bfb8168dfde92804a4"
+  },
+  "test-lines-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "08ae8c62b83ede02db3a8d2bc3ce36206008d253"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 1.222,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "3c208d90d136cf384d3622b36ae9f27227148aeca1a1e31517c22fbd2637c949",
+    "logSHA256": "c4b1570b8c30c747a86953fb29c401470c37b6ef2fa6c4a5d314b03d28b7cec6"
+  },
+  "owner-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "$CAMPAIGN/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 30.471,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "3c208d90d136cf384d3622b36ae9f27227148aeca1a1e31517c22fbd2637c949",
+    "logSHA256": "47b24b379a0c2b33222cef99a13c38fcc2c376a0c2f2d809e1abf8f8beed33e6"
+  },
+  "focused-warm": {
+    "command": [
+      "$NODE26/bin/node",
+      "$CAMPAIGN/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.utf8.test.ts",
+      "src/cli/plugins-control-ui-reproducibility.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 64.689,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "768364ad128e155c47f2fa20f5ddd9d99906e34574ee54d2a642d0d2618ed5e8",
+    "logSHA256": "963ea1cce14bcef397f5407cd6c2a19febde33f0be7a707aad43c47df139f216"
+  },
+  "focused-final": {
+    "command": [
+      "$NODE26/bin/node",
+      "$CAMPAIGN/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.utf8.test.ts",
+      "src/cli/plugins-control-ui-reproducibility.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 1,
+    "elapsed_seconds": 170.853,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "diffSHA256": "768364ad128e155c47f2fa20f5ddd9d99906e34574ee54d2a642d0d2618ed5e8",
+    "logSHA256": "d2ad8ef10063c827abcb362dc29a58f6443ac7b4177571c6697afbf5385f4189"
+  },
+  "build": {
+    "command": [
+      "$NODE26/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "$TASK/plugin-json5",
+    "exit_code": 0,
+    "elapsed_seconds": 244.042,
+    "head": "769d226cc6dc5304c92f12850077660f0fa042d2",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "1761ee069aa90eac4a6263eb7f70b3356bcb3fc08bf5b31225085fe668cd3e28"
+  },
+  "commit": {
+    "head": "769d226cc6dc5304c92f12850077660f0fa042d2",
+    "base": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "normalHooksUsed": true,
+    "files": [
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-control-ui-build.ts"
+    ],
+    "elapsedSeconds": 6.275
+  }
+}

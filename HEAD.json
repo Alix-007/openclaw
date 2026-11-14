@@ -1,0 +1,261 @@
+{
+  "head": "769d226cc6dc5304c92f12850077660f0fa042d2",
+  "buildStamp": {
+    "builtAt": 1794650380804,
+    "head": "769d226cc6dc5304c92f12850077660f0fa042d2",
+    "inputsClean": true,
+    "inputSignature": "47d9ecf0a35c518178860cd44507f70e0d0cbc801e30e7ababf5fd986ae6389f"
+  },
+  "collectorSHA256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7",
+  "mode": "green",
+  "boundary": "normal built plugins build/check/validate and actual bundled UI script -> generated asset bytes and authored/generated manifest readback",
+  "cases": [
+    {
+      "label": "tool-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-head-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.948,
+      "inputBefore": {
+        "package.json": "9b9fa2c7c5914cd50013ad414004a8d50c11e4ba1d86ea7de825ea2fdc604d58",
+        "openclaw.plugin.json": "a3f2f621445227555092ff195834eb6175387356c15158fd2022ab6691794529"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "22ebdb73928f606766ae83b0f274a70651bbefdd70da2e7bf2155d071320bec9"
+      },
+      "stdoutSHA256": "89da7cd6f749dfb4a59adade6d20a166793d33042445ecd1b970b6c237211492",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-head-proof/without-ui/openclaw.plugin.json\nUpdated ../plugin-json5-head-proof/without-ui/package.json\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-check",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--check",
+        "--root",
+        "$TASK/plugin-json5-head-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.552,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "stdoutSHA256": "25974137cca07373b3b60afabc6c46c42a17d05d6bcf54f908ecc309e3cc2451",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Plugin metadata is up to date.\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-validate",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "$TASK/plugin-json5-head-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.367,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "stdoutSHA256": "68944d6d827d31fc731efcfa99a30eccbe2b528e5fa2849b615ca40d0e719238",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"json5-proof\",\n  \"errors\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-build",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-head-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.627,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "8cc24bed15517b54f33238cb108e6372e9ffb13206ad4df3e639b61f7635edf9"
+      },
+      "stdoutSHA256": "89da7cd6f749dfb4a59adade6d20a166793d33042445ecd1b970b6c237211492",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-head-proof/without-ui/openclaw.plugin.json\nUpdated ../plugin-json5-head-proof/without-ui/package.json\n",
+      "stderr": "",
+      "authoredMetadataReadback": "authored-value-preserved"
+    },
+    {
+      "label": "ui-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-head-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.756,
+      "inputBefore": {
+        "package.json": "57733179bca43f4cbcab0367aa70cb2848ceaac8a6c5a6c7c5dd4367ad611841",
+        "openclaw.plugin.json": "a3f2f621445227555092ff195834eb6175387356c15158fd2022ab6691794529"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "adaa51565d40369d8d6f74c8e8f6a1858b96b8b807d92ccf83835a1e1900337f"
+      },
+      "stdoutSHA256": "0f9f71b4b1909599255134cbefb607acfb2a5dc1f20b56d6f5f362d72273fed2",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-head-proof/with-ui/openclaw.plugin.json\nUpdated ../plugin-json5-head-proof/with-ui/package.json\n",
+      "stderr": ""
+    },
+    {
+      "label": "ui-json5-check",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--check",
+        "--root",
+        "$TASK/plugin-json5-head-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.56,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "25974137cca07373b3b60afabc6c46c42a17d05d6bcf54f908ecc309e3cc2451",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Plugin metadata is up to date.\n",
+      "stderr": ""
+    },
+    {
+      "label": "ui-json5-validate",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "$TASK/plugin-json5-head-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.358,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "68944d6d827d31fc731efcfa99a30eccbe2b528e5fa2849b615ca40d0e719238",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"json5-proof\",\n  \"errors\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "ui-json5-bundled-script",
+      "command": [
+        "$NODE26/bin/node",
+        "--import",
+        "$TASK/plugin-json5/scripts/tsx.mjs",
+        "$TASK/plugin-json5/scripts/build-plugin-control-ui.mts",
+        "$TASK/plugin-json5-head-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.425,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stderr": "",
+      "artifactReadback": {
+        "entry": "$TASK/plugin-json5-head-proof/with-ui/dist/control-ui/bccf6c037032e5a111b6fde4a266629dbadc2909f8886b5f0900abe1d349e1f4/index.js",
+        "bytes": 64,
+        "sha256": "819115389c78a9233ae1ba2d72d04513bfbb99e9308de2556cd5561dc6eb8077",
+        "authoredMetadata": "authored-value-preserved"
+      }
+    },
+    {
+      "label": "ui-json5-build",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/plugin-json5/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-head-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.612,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "a58e3dfd771f63cfd8dfff898cdad5eb7e6dc10bb211f77a9d018666a590a86d"
+      },
+      "stdoutSHA256": "0f9f71b4b1909599255134cbefb607acfb2a5dc1f20b56d6f5f362d72273fed2",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-head-proof/with-ui/openclaw.plugin.json\nUpdated ../plugin-json5-head-proof/with-ui/package.json\n",
+      "stderr": "",
+      "authoredMetadataReadback": "authored-value-preserved",
+      "artifactReadback": {
+        "entry": "$TASK/plugin-json5-head-proof/with-ui/dist/control-ui/bccf6c037032e5a111b6fde4a266629dbadc2909f8886b5f0900abe1d349e1f4/index.js",
+        "bytes": 64,
+        "sha256": "819115389c78a9233ae1ba2d72d04513bfbb99e9308de2556cd5561dc6eb8077"
+      }
+    }
+  ],
+  "result": "GREEN9PASS",
+  "cleanup": {
+    "productionStateTouched": false,
+    "isolatedFixturesRetained": true,
+    "externalRequests": false
+  }
+}

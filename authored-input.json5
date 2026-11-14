@@ -1,0 +1,24 @@
+// Native manifest: supported JSON5
+{
+  id: "json5-proof",
+  "name": "JSON5 Proof",
+  "configSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "description": "Synthetic plugin",
+  "version": "1.0.0",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "proof_echo"
+    ]
+  },
+  "controlUi": {
+    "entry": "dist/control-ui/bccf6c037032e5a111b6fde4a266629dbadc2909f8886b5f0900abe1d349e1f4/index.js"
+  },
+  "proofMetadata": "authored-value-preserved",
+}

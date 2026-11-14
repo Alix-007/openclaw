@@ -1,0 +1,56 @@
+
+=== tool-seed stdout ===
+Wrote ../plugin-json5-head-proof/without-ui/openclaw.plugin.json
+Updated ../plugin-json5-head-proof/without-ui/package.json
+
+=== stderr ===
+
+=== tool-json5-check stdout ===
+Plugin metadata is up to date.
+
+=== stderr ===
+
+=== tool-json5-validate stdout ===
+{
+  "valid": true,
+  "pluginId": "json5-proof",
+  "errors": []
+}
+
+=== stderr ===
+
+=== tool-json5-build stdout ===
+Wrote ../plugin-json5-head-proof/without-ui/openclaw.plugin.json
+Updated ../plugin-json5-head-proof/without-ui/package.json
+
+=== stderr ===
+
+=== ui-seed stdout ===
+Wrote ../plugin-json5-head-proof/with-ui/openclaw.plugin.json
+Updated ../plugin-json5-head-proof/with-ui/package.json
+
+=== stderr ===
+
+=== ui-json5-check stdout ===
+Plugin metadata is up to date.
+
+=== stderr ===
+
+=== ui-json5-validate stdout ===
+{
+  "valid": true,
+  "pluginId": "json5-proof",
+  "errors": []
+}
+
+=== stderr ===
+
+=== ui-json5-bundled-script stdout ===
+
+=== stderr ===
+
+=== ui-json5-build stdout ===
+Wrote ../plugin-json5-head-proof/with-ui/openclaw.plugin.json
+Updated ../plugin-json5-head-proof/with-ui/package.json
+
+=== stderr ===

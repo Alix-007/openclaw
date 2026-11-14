@@ -1,0 +1,1 @@
+var r="json5-native-control-ui-proof";export{r as proofMarker};

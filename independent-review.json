@@ -1,0 +1,68 @@
+{
+  "verdict": "PASS",
+  "head": "769d226cc6dc5304c92f12850077660f0fa042d2",
+  "base": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "130d1159f6e6b7acc2a61e73a956b543d4b7fbdb2aaaa9a84f47732102bf685b"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "7b3e0c143cad7ad509ae1dd122f2858cda571827aa113a2d9788febe44751d4a"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.ts",
+      "sha256": "8cff9c9129e478e6b0dba90f04199be3f310f5270d95445035fc00eba3b7e912"
+    }
+  ],
+  "fullIndexDiffSHA256": "53ed964bad348bd2a9a7cbe3fd618aaf033dc624a5565e32fc3bc88dc29646ab",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "singleParentVerified": true,
+    "cleanWorktreeVerified": true,
+    "authorAndCommitter": "Alix-007 <li.long15@xydigit.com>",
+    "committedPatchMatchesSourceApproval": true,
+    "currentSourceHashesMatch": true,
+    "normalHooks": "Recorded in plugin-json5-commit.json and normal commit log; company identity independently read from commit.",
+    "cleanBuild": "Exit 0, 244.042s; exact current dist/.buildstamp equals native receipt stamp, head matches and inputsClean true.",
+    "checks": "Final format/lint/types/erasability/test-lines and 32 owner tests pass; their log hashes independently verified.",
+    "focusedSuiteQualification": "Broader 69-test suite passed before removal of the unused settings-only hunk; final narrowed owner suite passed 32 tests afterward. Earlier unchanged existing install-test cold compiler timeouts remain retained.",
+    "nativeProof": "Unchanged frozen collector: BASE4RED_CONTROLS5PASS versus committed HEAD GREEN9PASS; runner exit 0, 24.258s. All 18 BASE/HEAD stdout/stderr pairs independently hashed and matched receipts. All nine HEAD commands exit 0.",
+    "readback": "Check/validate/direct-script cases preserve package and authored-manifest hashes. Actual generated 64-byte browser assets match recorded SHA256 and contain proof marker; ordinary build metadata readbacks preserve authored proofMetadata. Ordinary builds intentionally update metadata.",
+    "collectorSHA256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7"
+  },
+  "proofFiles": [
+    {
+      "path": "plugin-json5-build.json",
+      "sha256": "a3743df8050c5f6705b764606891d795afd5d2d61614e42ab01dc6145f88bef2"
+    },
+    {
+      "path": "plugin-json5-build.log",
+      "sha256": "1761ee069aa90eac4a6263eb7f70b3356bcb3fc08bf5b31225085fe668cd3e28"
+    },
+    {
+      "path": "plugin-json5-base-proof/receipt.json",
+      "sha256": "1babc95bc4f3fe0b463c90e97e3173e79379ebcdb452a9a07a271016a82663bd"
+    },
+    {
+      "path": "plugin-json5-head-proof/receipt.json",
+      "sha256": "bef6912a1cd6a795dfdd44ca160fa8c28a14193a14c82234d9dcd6b79504c0bb"
+    },
+    {
+      "path": "plugin-json5-head-proof-runner.json",
+      "sha256": "7c085fef400161a835669a7ac7d494b989260fa00465e439b47d2085d12af60a"
+    },
+    {
+      "path": "plugin-json5-proof-v1.py",
+      "sha256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7"
+    }
+  ],
+  "limitations": [
+    "Proof covers isolated external native-plugin authoring CLI build/check/validate and direct browser asset script in the qualified Linux/Node runtime, with networking disabled.",
+    "No full repository-wide bundled inventory/copy/settings JSON5 support or --prepare-settings claim; those readers remain outside this patch.",
+    "Browser asset bytes/readbacks are verified here; no external plugin service, production installation or cross-platform behavior is claimed.",
+    "No builds, tests or native collectors were rerun by this reviewer; attestation independently checks committed bytes and retained raw artifacts."
+  ]
+}

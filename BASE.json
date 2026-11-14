@@ -1,0 +1,249 @@
+{
+  "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+  "buildStamp": {
+    "builtAt": 1794646123360,
+    "head": "08ae8c62b83ede02db3a8d2bc3ce36206008d253",
+    "inputsClean": true,
+    "inputSignature": "9dc8393a43fe0438111f7a5fc429557b4c1e7bea1a2008318e69a980c09cd822"
+  },
+  "collectorSHA256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7",
+  "mode": "red",
+  "boundary": "normal built plugins build/check/validate and actual bundled UI script -> generated asset bytes and authored/generated manifest readback",
+  "cases": [
+    {
+      "label": "tool-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-base-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.919,
+      "inputBefore": {
+        "package.json": "9b9fa2c7c5914cd50013ad414004a8d50c11e4ba1d86ea7de825ea2fdc604d58",
+        "openclaw.plugin.json": "a3f2f621445227555092ff195834eb6175387356c15158fd2022ab6691794529"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "22ebdb73928f606766ae83b0f274a70651bbefdd70da2e7bf2155d071320bec9"
+      },
+      "stdoutSHA256": "7be6fba599618e485e8fe48689e386b8b33108a832a1df24e3ef2e1f425ba51a",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-base-proof/without-ui/openclaw.plugin.json\nUpdated ../plugin-json5-base-proof/without-ui/package.json\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-check",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--check",
+        "--root",
+        "$TASK/plugin-json5-base-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.462,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "stdoutSHA256": "25974137cca07373b3b60afabc6c46c42a17d05d6bcf54f908ecc309e3cc2451",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Plugin metadata is up to date.\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-validate",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "$TASK/plugin-json5-base-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.344,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "stdoutSHA256": "68944d6d827d31fc731efcfa99a30eccbe2b528e5fa2849b615ca40d0e719238",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"json5-proof\",\n  \"errors\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "tool-json5-build",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-base-proof/without-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 2.66,
+      "inputBefore": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "9c5de83b6d83a0c1a4aeeab1c4b50939a79506edf5937fe0bd0080a2972a1945"
+      },
+      "inputAfter": {
+        "package.json": "b5087a46d97205e85bfb2c85a256dd5aed4ce5d2a86a5df5f26d66609f08b669",
+        "openclaw.plugin.json": "8cc24bed15517b54f33238cb108e6372e9ffb13206ad4df3e639b61f7635edf9"
+      },
+      "stdoutSHA256": "7be6fba599618e485e8fe48689e386b8b33108a832a1df24e3ef2e1f425ba51a",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-base-proof/without-ui/openclaw.plugin.json\nUpdated ../plugin-json5-base-proof/without-ui/package.json\n",
+      "stderr": "",
+      "authoredMetadataReadback": "authored-value-preserved"
+    },
+    {
+      "label": "ui-seed",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-base-proof/with-ui"
+      ],
+      "exitCode": 0,
+      "seconds": 3.26,
+      "inputBefore": {
+        "package.json": "57733179bca43f4cbcab0367aa70cb2848ceaac8a6c5a6c7c5dd4367ad611841",
+        "openclaw.plugin.json": "a3f2f621445227555092ff195834eb6175387356c15158fd2022ab6691794529"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "adaa51565d40369d8d6f74c8e8f6a1858b96b8b807d92ccf83835a1e1900337f"
+      },
+      "stdoutSHA256": "d7b140454b9487f82b18fa2242c121bfba58de488f9cd8e0ce5969c2e4dc4cb8",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Wrote ../plugin-json5-base-proof/with-ui/openclaw.plugin.json\nUpdated ../plugin-json5-base-proof/with-ui/package.json\n",
+      "stderr": ""
+    },
+    {
+      "label": "ui-json5-check",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--check",
+        "--root",
+        "$TASK/plugin-json5-base-proof/with-ui"
+      ],
+      "exitCode": 1,
+      "seconds": 2.744,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b",
+      "stdout": "",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n"
+    },
+    {
+      "label": "ui-json5-validate",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "$TASK/plugin-json5-base-proof/with-ui"
+      ],
+      "exitCode": 1,
+      "seconds": 2.577,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "96e269f78bc3ce615a2256f2d634464690a166ba390c83c6ea294aa82ae79ec9",
+      "stderrSHA256": "2352b702590843e6e7d49ca7d6e540bad058384b5ea44b60439baa45c36be458",
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"Unexpected token '/', \\\"// Native \\\"... is not valid JSON\"\n  ]\n}\n",
+      "stderr": "Unexpected token '/', \"// Native \"... is not valid JSON\n"
+    },
+    {
+      "label": "ui-json5-bundled-script",
+      "command": [
+        "$NODE26/bin/node",
+        "--import",
+        "$TASK/base/scripts/tsx.mjs",
+        "$TASK/base/scripts/build-plugin-control-ui.mts",
+        "$TASK/plugin-json5-base-proof/with-ui"
+      ],
+      "exitCode": 1,
+      "seconds": 0.268,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "714faf3d51086c20aedf64e154391ab786d7ba27f25def390f836e4fbfcaf358",
+      "stdout": "",
+      "stderr": "<anonymous_script>:1\n// Native manifest: supported JSON5\n^\n\nSyntaxError: Unexpected token '/', \"// Native \"... is not valid JSON\n    at JSON.parse (<anonymous>)\n    at buildBundledPluginControlUi ($TASK/base/scripts/build-plugin-control-ui.mts:14:25)\n    at async <anonymous> ($TASK/base/scripts/build-plugin-control-ui.mts:94:5)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "label": "ui-json5-build",
+      "command": [
+        "$NODE26/bin/node",
+        "$TASK/base/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "$TASK/plugin-json5-base-proof/with-ui"
+      ],
+      "exitCode": 1,
+      "seconds": 2.741,
+      "inputBefore": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "inputAfter": {
+        "package.json": "609b1906bd4241fcf2b2b2a9d5ef7739c1b6996964dcd5a294272081cf07e1a3",
+        "openclaw.plugin.json": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+      },
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b",
+      "stdout": "",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n"
+    }
+  ],
+  "result": "BASE4RED_CONTROLS5PASS",
+  "cleanup": {
+    "productionStateTouched": false,
+    "isolatedFixturesRetained": true,
+    "externalRequests": false
+  }
+}

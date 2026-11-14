@@ -1,0 +1,69 @@
+
+=== tool-seed stdout ===
+Wrote ../plugin-json5-base-proof/without-ui/openclaw.plugin.json
+Updated ../plugin-json5-base-proof/without-ui/package.json
+
+=== stderr ===
+
+=== tool-json5-check stdout ===
+Plugin metadata is up to date.
+
+=== stderr ===
+
+=== tool-json5-validate stdout ===
+{
+  "valid": true,
+  "pluginId": "json5-proof",
+  "errors": []
+}
+
+=== stderr ===
+
+=== tool-json5-build stdout ===
+Wrote ../plugin-json5-base-proof/without-ui/openclaw.plugin.json
+Updated ../plugin-json5-base-proof/without-ui/package.json
+
+=== stderr ===
+
+=== ui-seed stdout ===
+Wrote ../plugin-json5-base-proof/with-ui/openclaw.plugin.json
+Updated ../plugin-json5-base-proof/with-ui/package.json
+
+=== stderr ===
+
+=== ui-json5-check stdout ===
+
+=== stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== ui-json5-validate stdout ===
+{
+  "valid": false,
+  "errors": [
+    "Unexpected token '/', \"// Native \"... is not valid JSON"
+  ]
+}
+
+=== stderr ===
+Unexpected token '/', "// Native "... is not valid JSON
+
+=== ui-json5-bundled-script stdout ===
+
+=== stderr ===
+<anonymous_script>:1
+// Native manifest: supported JSON5
+^
+
+SyntaxError: Unexpected token '/', "// Native "... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at buildBundledPluginControlUi ($TASK/base/scripts/build-plugin-control-ui.mts:14:25)
+    at async <anonymous> ($TASK/base/scripts/build-plugin-control-ui.mts:94:5)
+
+Node.js v26.12.1
+
+=== ui-json5-build stdout ===
+
+=== stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.

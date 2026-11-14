@@ -1,0 +1,62 @@
+[
+  {
+    "file": "BASE.json",
+    "originalSHA256": "1babc95bc4f3fe0b463c90e97e3173e79379ebcdb452a9a07a271016a82663bd",
+    "publicSHA256": "03ed47f7221b54c4e155184af1f6d65f81d37c83fc1974fe18f3480b52bb3924"
+  },
+  {
+    "file": "base-streams.txt",
+    "originalSHA256": "678cc7412ef9a9d0e560981a55662bf5e2565330af85849834117a66d2dd219c",
+    "publicSHA256": "5d040f61f09e5ccc0b55d047a29ea40edc4be9d0839ad79a077f93ec05b831fb"
+  },
+  {
+    "file": "HEAD.json",
+    "originalSHA256": "bef6912a1cd6a795dfdd44ca160fa8c28a14193a14c82234d9dcd6b79504c0bb",
+    "publicSHA256": "6828fbe9d71d9f421d15485268627b3d85d555d28c0749cc9a351ff8156d6cce"
+  },
+  {
+    "file": "head-streams.txt",
+    "originalSHA256": "82a34909ddf38b6cd9077e8abaed5272f2c38c6e393291f9c79bcdcc9298263f",
+    "publicSHA256": "82a34909ddf38b6cd9077e8abaed5272f2c38c6e393291f9c79bcdcc9298263f"
+  },
+  {
+    "file": "checks.json",
+    "originalSHA256": "b6c4ec46b92a1c33c9a0920c907ef9ca125e86753ef991a7b2799c11d254965d",
+    "publicSHA256": "529f20b2d15bdf8171f030499fb8054ed009122a15c99003630844868401932c"
+  },
+  {
+    "file": "collector.py",
+    "originalSHA256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7",
+    "publicSHA256": "445e0f83c47808ef9ee918b1d71bfa043b5ff8b09069a730c3b7fce5ccb711f7"
+  },
+  {
+    "file": "independent-review.md",
+    "originalSHA256": "95c48589d15b45f06da0f3895b81993382cacbb614294c9d73638b4bd70fb882",
+    "publicSHA256": "95c48589d15b45f06da0f3895b81993382cacbb614294c9d73638b4bd70fb882"
+  },
+  {
+    "file": "independent-review.json",
+    "originalSHA256": "2a78effad17d7201ea6c551d97646d910e669e9a7072f4195da4aa96f041f1a2",
+    "publicSHA256": "2a78effad17d7201ea6c551d97646d910e669e9a7072f4195da4aa96f041f1a2"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "originalSHA256": "2635268d9dff1cffea3f1530b007a6d976bd403cf6462c59557d08498eec0fd5",
+    "publicSHA256": "2635268d9dff1cffea3f1530b007a6d976bd403cf6462c59557d08498eec0fd5"
+  },
+  {
+    "file": "generated-browser-asset.js.txt",
+    "originalSHA256": "819115389c78a9233ae1ba2d72d04513bfbb99e9308de2556cd5561dc6eb8077",
+    "publicSHA256": "819115389c78a9233ae1ba2d72d04513bfbb99e9308de2556cd5561dc6eb8077"
+  },
+  {
+    "file": "authored-input.json5",
+    "originalSHA256": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9",
+    "publicSHA256": "895e07a94628b3e263577632eeb5dbe6424c9bdb0f108b0ba95d0cd868fafdf9"
+  },
+  {
+    "file": "runtime-manifest-after-build.json",
+    "originalSHA256": "a58e3dfd771f63cfd8dfff898cdad5eb7e6dc10bb211f77a9d018666a590a86d",
+    "publicSHA256": "a58e3dfd771f63cfd8dfff898cdad5eb7e6dc10bb211f77a9d018666a590a86d"
+  }
+]
