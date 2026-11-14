@@ -1,0 +1,38 @@
+{
+  "head": "9fde0dee56b5e5de702a299c108872dbdf1154c3",
+  "note": "Original stream hashes independently checked before replacing private local paths in published copies. Public MANIFEST binds sanitized artifacts. Only synthetic fixture data, no production state.",
+  "artifacts": [
+    {
+      "path": "probe-normal/terminal.bin",
+      "originalSHA256": "7e86664aee84146c392cce9a64728f9ff39656f9a9caee0ae9e9d58de3f6c5d2"
+    },
+    {
+      "path": "probe-error/terminal.bin",
+      "originalSHA256": "18b5b927c42bed9c8404b5754864c8a17748306621dea8e441daf377b33e2285"
+    },
+    {
+      "path": "doctor-static/terminal.bin",
+      "originalSHA256": "87c3e52d80cc129968d5594ed1a287a4c13fab9c574b97010360df7cfc47e699"
+    },
+    {
+      "path": "probe-int/terminal.bin",
+      "originalSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84"
+    },
+    {
+      "path": "probe-term-human/terminal.bin",
+      "originalSHA256": "b0c199194c515a82e9a8ac1d89e41734391da6316a49c62bb456cf45881ce3a8"
+    },
+    {
+      "path": "doctor-int/terminal.bin",
+      "originalSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84"
+    },
+    {
+      "path": "configure-success/terminal.bin",
+      "originalSHA256": "e49b6e7eae5e759c3c434d3fe0f108e6cb3feb23bd6e032a049d05e93e927881"
+    },
+    {
+      "path": "configure-error/terminal.bin",
+      "originalSHA256": "4e5fe69be5cb3658f07eea2a1e729c4515cd792c1071583ee56309d6a4152106"
+    }
+  ]
+}

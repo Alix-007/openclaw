@@ -1,0 +1,10 @@
+{
+  "HEAD.json": "c6d00067706666dd0f840673d8b2a1d841aa5ac23f4728b6c1da42f251e13504",
+  "head-streams.txt": "b4683087f1bad32bf4ad196c745e06e67e78d4171bd2ddd1200443973fb7f9cf",
+  "checks.json": "87aaa0adf6d39724c277f30daab25cbe487de5e0ab794dc0aa556d91b26ac43d",
+  "independent-review.md": "8396cee229a6146c58eac2d9499f41bd0c6ed9564b385914e757da12a23d2c57",
+  "raw-hash-readback.json": "fd3151f9af47c8af7cd2a4aa6d97fddf68f33dee1bed9f48999babb489141943",
+  "mcp-diagnostic-cancel-proof-v2.py": "9db9bdb63092be935a90afa14c646bd99b21fc496054d5262fbc275a73d788de",
+  "check-mcp-diagnostic-proof.py": "f1ce9ae566cda32fb080f31d23e111a3a108f0da634347a76f19f87756bc7577",
+  "EVIDENCE.md": "cad6849465721238545823172050442b7798dedabaae7da1080802115b7afdb1"
+}

@@ -1,0 +1,90 @@
+
+--- probe-normal ---
+{
+  "generatedAt": "2026-11-14T09:24:18.026Z",
+  "servers": {
+    "fixture": {
+      "launch": "<PROOF_OUTPUT>/probe-normal/server.py <PROOF_OUTPUT>/probe-normal/events.jsonl normal",
+      "tools": 1,
+      "codexApprovalMode": "auto",
+      "requestTimeoutMs": 60000
+    }
+  },
+  "tools": [
+    "fixture__synthetic_ping"
+  ],
+  "diagnostics": []
+}
+
+
+--- probe-error ---
+09:24:24 [bundle-mcp] failed to start server "fixture" (<PROOF_OUTPUT>/probe-error/server.py <PROOF_OUTPUT>/probe-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-14T09:24:29.369Z. Check server reachability or reload MCP after fixing it.
+{
+  "generatedAt": "2026-11-14T09:24:24.411Z",
+  "servers": {},
+  "tools": [],
+  "diagnostics": [
+    {
+      "serverName": "fixture",
+      "safeServerName": "fixture",
+      "launchSummary": "<PROOF_OUTPUT>/probe-error/server.py <PROOF_OUTPUT>/probe-error/events.jsonl error",
+      "message": "Connection closed; server unavailable; retry after 2026-11-14T09:24:29.369Z. Check server reachability or reload MCP after fixing it."
+    }
+  ]
+}
+MCP check failed for "fixture" in <PROOF_OUTPUT>/probe-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-14T09:24:29.369Z. Check server reachability or reload MCP after fixing it.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+
+--- doctor-static ---
+{
+  "path": "<PROOF_OUTPUT>/doctor-static/state/openclaw.json",
+  "ok": true,
+  "servers": [
+    {
+      "name": "fixture",
+      "ok": true,
+      "issues": []
+    }
+  ]
+}
+
+
+--- probe-int ---
+^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+
+--- probe-term-human ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (9fde0de)
+Fresh shell, same claws—molting is just semver for crustaceans.
+
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+
+--- doctor-int ---
+^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
+
+--- configure-success ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (9fde0de)
+Teach a bot to ship and you can finally go to bed.
+
+Updated MCP server "fixture" in <PROOF_OUTPUT>/configure-success/state/openclaw.json.
+
+
+--- configure-error ---
+[?25l│
+[?25h◇  
+[2K
+OpenClaw 2026.11.3 (9fde0de)
+Your second brain, except this one actually remembers where you left things.
+
+09:25:04 [bundle-mcp] failed to start server "fixture" (<PROOF_OUTPUT>/configure-error/server.py <PROOF_OUTPUT>/configure-error/events.jsonl error): Connection closed; server unavailable; retry after 2026-11-14T09:25:09.014Z. Check server reachability or reload MCP after fixing it.
+MCP check failed for "fixture" in <PROOF_OUTPUT>/configure-error/state/openclaw.json: Connection closed; server unavailable; retry after 2026-11-14T09:25:09.014Z. Check server reachability or reload MCP after fixing it.
+Configuration was not saved.
+[0m[?25h[?1000l[?1002l[?1003l[?1006l[?2004l[<u[>4;0m
