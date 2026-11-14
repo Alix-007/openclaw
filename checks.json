@@ -1,0 +1,133 @@
+{
+  "lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "<TASK>/pr-171681-types.tsconfig.json",
+      "src/cli/capability-cli.test.ts",
+      "src/cli/capability-cli/model.ts"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 359.271,
+    "head": "c45e78b57d7bf1d6f326f3fd7a7e5f76b3bdc625",
+    "diffSHA256": "587ec767587394eec166caf9eb6300e45b032f15e8ae621d6739c0813df7ffd3",
+    "logSHA256": "a52674ee01ccc6be58c9435c9717a0274747a19f55826710d28325d6a05e824d"
+  },
+  "types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "<TASK>/pr-171681-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 103.511,
+    "head": "c45e78b57d7bf1d6f326f3fd7a7e5f76b3bdc625",
+    "diffSHA256": "587ec767587394eec166caf9eb6300e45b032f15e8ae621d6739c0813df7ffd3",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "focused": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/capability-cli.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 254.368,
+    "head": "c45e78b57d7bf1d6f326f3fd7a7e5f76b3bdc625",
+    "diffSHA256": "587ec767587394eec166caf9eb6300e45b032f15e8ae621d6739c0813df7ffd3",
+    "logSHA256": "9524b15cd577c5a26ba9de80215964f444ab8660a4f82dfad9780e0a689e6f3e"
+  },
+  "format": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/capability-cli.test.ts",
+      "src/cli/capability-cli/model.ts"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 0.738,
+    "head": "c45e78b57d7bf1d6f326f3fd7a7e5f76b3bdc625",
+    "diffSHA256": "587ec767587394eec166caf9eb6300e45b032f15e8ae621d6739c0813df7ffd3",
+    "logSHA256": "1c5a8b255e1ac3992c68bf5b4e9ca85a1989c07b8615604fed27648da0fad9a5"
+  },
+  "qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 288.103,
+    "head": "50c1828fe4df64fb0f9e5e092bdd3c237f231075",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "84003dfb933e4196b681499d76223e7f1546490fcdc79d28259de985c059e22b"
+  },
+  "head-proof-run": {
+    "head": "50c1828fe4df64fb0f9e5e092bdd3c237f231075",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "256",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=256m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CHECKOUT>:<CHECKOUT>:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<CAMPAIGN>/alix-fill18-20261014.X5Nz7j/proof-model-files.mjs:<CAMPAIGN>/alix-fill18-20261014.X5Nz7j/proof-model-files.mjs:ro",
+      "-v",
+      "<CAMPAIGN>/alix-fill18-20261014.X5Nz7j/proof-cli-common.mjs:<CAMPAIGN>/alix-fill18-20261014.X5Nz7j/proof-cli-common.mjs:ro",
+      "-e",
+      "TMPDIR=<TASK>/pr-171681-head-proof",
+      "-e",
+      "PATH=<NODE26>/bin:/usr/bin:/bin",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<CHECKOUT>",
+      "-w",
+      "<TASK>",
+      "alix-openclaw-native-tools-20261114",
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-fill18-20261014.X5Nz7j/proof-model-files.mjs",
+      "<CHECKOUT>",
+      "green"
+    ],
+    "exit_code": 0,
+    "seconds": 33.154,
+    "collectorSHA256": "88d76b0353441faa678e11864fa76a909bb34a1a67b765ca5cd2d6ecec44e91b",
+    "logSHA256": "6dd5b990a5cfe52b4c4aab80ae17d135205348de066ed4a45b5b206b0ed255fd",
+    "image": "alix-openclaw-native-tools-20261114",
+    "imageDigest": "sha256:27add5c082c4e59fd2ba709e0600584c82c79a9fa41b735d1756637bd087b52d"
+  }
+}

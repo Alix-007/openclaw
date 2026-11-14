@@ -1,0 +1,30 @@
+{
+  "head": "50c1828fe4df64fb0f9e5e092bdd3c237f231075",
+  "note": "Original stream hashes independently checked before replacing private local paths in published copies. Public MANIFEST binds sanitized artifacts. Only synthetic fixture data, no production state.",
+  "artifacts": [
+    {
+      "path": "regular-png.strace.gz.base64.txt",
+      "originalSHA256": "eff1580ede7cf567a99f2bb5d1f1be4196d8fb2dbee4af408b2e5fad85758a02",
+      "sanitizedSHA256": "f0454b376d4b0108a313006123a1e35cf7551ed328160735284196ffa9065689",
+      "encoding": "base64(gzip(sanitized full strace)); original raw hash verified before path replacement"
+    },
+    {
+      "path": "symlink-png.strace.gz.base64.txt",
+      "originalSHA256": "f13e0df489365afcaf24276d137fc4cc7499ac7bac07f562b50ed0b871bd57d9",
+      "sanitizedSHA256": "c0e495ba88ddb5c9ba52cd8e5c73701ed29d2d6c8b3d179af178ba0d2e554810",
+      "encoding": "base64(gzip(sanitized full strace)); original raw hash verified before path replacement"
+    },
+    {
+      "path": "fifo-rejection.strace.gz.base64.txt",
+      "originalSHA256": "3230894c69c2e0eb67877cfd5d439c64ff1a603ee09ad5b1862d23cb6d459e57",
+      "sanitizedSHA256": "d820b0372783c7755c0ff71ec23657f96e383d3b99098657eb8124a78ec400c4",
+      "encoding": "base64(gzip(sanitized full strace)); original raw hash verified before path replacement"
+    },
+    {
+      "path": "text-rejection.strace.gz.base64.txt",
+      "originalSHA256": "a4078886dff28341edf2bddaf23ad67317158b894ffb487eb0dd97cc86560312",
+      "sanitizedSHA256": "2e16d08a854f8cd51c1d1016821c5eaaa2803db196bd2b019dbe8d75683a9140",
+      "encoding": "base64(gzip(sanitized full strace)); original raw hash verified before path replacement"
+    }
+  ]
+}

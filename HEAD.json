@@ -1,0 +1,139 @@
+{
+  "name": "model-files",
+  "phase": "green",
+  "head": "50c1828fe4df64fb0f9e5e092bdd3c237f231075",
+  "time": "2026-11-14T09:06:33.959Z",
+  "root": "<PROOF_OUTPUT>",
+  "runs": [
+    {
+      "label": "regular-png",
+      "args": [
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--model",
+        "image-proof/image-proof",
+        "--prompt",
+        "Describe this image",
+        "--file",
+        "<PROOF_OUTPUT>/image.png",
+        "--json"
+      ],
+      "code": 0,
+      "signal": null,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"model.run\",\n  \"transport\": \"local\",\n  \"provider\": \"image-proof\",\n  \"model\": \"image-proof\",\n  \"usage\": {\n    \"usageReport\": {\n      \"state\": \"unavailable\"\n    },\n    \"contextUsage\": {\n      \"state\": \"unavailable\"\n    }\n  },\n  \"lastCallUsage\": {\n    \"usageReport\": {\n      \"state\": \"unavailable\"\n    },\n    \"contextUsage\": {\n      \"state\": \"unavailable\"\n    }\n  },\n  \"attempts\": [],\n  \"inputs\": [\n    {\n      \"path\": \"<PROOF_OUTPUT>/image.png\",\n      \"mimeType\": \"image/png\"\n    }\n  ],\n  \"outputs\": [\n    {\n      \"text\": \"image proof reply\",\n      \"mediaUrl\": null\n    }\n  ]\n}\n",
+      "stderr": "",
+      "elapsedMs": 8977,
+      "tracePath": "<PROOF_OUTPUT>/regular-png.strace",
+      "traceSha256": "eff1580ede7cf567a99f2bb5d1f1be4196d8fb2dbee4af408b2e5fad85758a02"
+    },
+    {
+      "label": "symlink-png",
+      "args": [
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--model",
+        "image-proof/image-proof",
+        "--prompt",
+        "Describe this image",
+        "--file",
+        "<PROOF_OUTPUT>/linked.png",
+        "--json"
+      ],
+      "code": 0,
+      "signal": null,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"model.run\",\n  \"transport\": \"local\",\n  \"provider\": \"image-proof\",\n  \"model\": \"image-proof\",\n  \"usage\": {\n    \"usageReport\": {\n      \"state\": \"unavailable\"\n    },\n    \"contextUsage\": {\n      \"state\": \"unavailable\"\n    }\n  },\n  \"lastCallUsage\": {\n    \"usageReport\": {\n      \"state\": \"unavailable\"\n    },\n    \"contextUsage\": {\n      \"state\": \"unavailable\"\n    }\n  },\n  \"attempts\": [],\n  \"inputs\": [\n    {\n      \"path\": \"<PROOF_OUTPUT>/linked.png\",\n      \"mimeType\": \"image/png\"\n    }\n  ],\n  \"outputs\": [\n    {\n      \"text\": \"image proof reply\",\n      \"mediaUrl\": null\n    }\n  ]\n}\n",
+      "stderr": "",
+      "elapsedMs": 9930,
+      "tracePath": "<PROOF_OUTPUT>/symlink-png.strace",
+      "traceSha256": "f13e0df489365afcaf24276d137fc4cc7499ac7bac07f562b50ed0b871bd57d9"
+    },
+    {
+      "label": "fifo-rejection",
+      "args": [
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--model",
+        "image-proof/image-proof",
+        "--prompt",
+        "Describe this image",
+        "--file",
+        "<PROOF_OUTPUT>/input.pipe",
+        "--json"
+      ],
+      "code": 1,
+      "signal": null,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"cli_error\",\n    \"message\": \"Cannot read model image file: <PROOF_OUTPUT>/input.pipe. Use a readable regular file containing an image and retry.\"\n  }\n}\n",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "elapsedMs": 6485,
+      "tracePath": "<PROOF_OUTPUT>/fifo-rejection.strace",
+      "traceSha256": "3230894c69c2e0eb67877cfd5d439c64ff1a603ee09ad5b1862d23cb6d459e57"
+    },
+    {
+      "label": "text-rejection",
+      "args": [
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--model",
+        "image-proof/image-proof",
+        "--prompt",
+        "Describe this image",
+        "--file",
+        "<PROOF_OUTPUT>/input.txt",
+        "--json"
+      ],
+      "code": 1,
+      "signal": null,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"cli_error\",\n    \"message\": \"Unsupported --file for model run: <PROOF_OUTPUT>/input.txt. Only image files are supported; use infer audio transcribe for audio files.\"\n  }\n}\n",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "elapsedMs": 6912,
+      "tracePath": "<PROOF_OUTPUT>/text-rejection.strace",
+      "traceSha256": "a4078886dff28341edf2bddaf23ad67317158b894ffb487eb0dd97cc86560312"
+    }
+  ],
+  "observations": [],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "model": "image-proof",
+      "content": [
+        {
+          "type": "text",
+          "text": "Describe this image"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+yf7kAAAAASUVORK5CYII="
+          }
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "model": "image-proof",
+      "content": [
+        {
+          "type": "text",
+          "text": "Describe this image"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+yf7kAAAAASUVORK5CYII="
+          }
+        }
+      ]
+    }
+  ],
+  "result": "PASS"
+}

@@ -1,0 +1,14 @@
+{
+  "regular-png.strace.gz.base64.txt": "ead2214f70d57eac99386d457f3d5c163388d064cf25da2200a287caae6f821a",
+  "symlink-png.strace.gz.base64.txt": "58f850028b5d894c43c63aac4facdf8c08344ad196ea15bf87ed7d6a9a22f856",
+  "fifo-rejection.strace.gz.base64.txt": "07a1d4f192a1d8766e090941d024786ed6c8a120cd3ff3d8b858430d34d0797e",
+  "text-rejection.strace.gz.base64.txt": "bc7a7f335fa7dd1abfd5252294074a817991cc47c9bcd72baf14f80fd923035a",
+  "HEAD.json": "039a1cca49ef480a5f19b59a8337500bbbaaa9b60f8d5e110aa8958a8f9f06f1",
+  "head-streams.txt": "2da36759827ed0e725eaa0ecdc06b3396cfe69f0954a4aad97f06ec0a02ceaf5",
+  "checks.json": "5a58965d0274626db2ec3515dc0172e0ecd422b16c7d3407100b8689029e6b3d",
+  "independent-review.md": "7aeab58058c7a331121ef7c32cb6f8ccd9a64421ee6d8c1e4845dd08504ae4b6",
+  "raw-hash-readback.json": "2449d998e8ce71434d565515f229ddf5cfd237a9cb86b9bd8e4df0437b143b50",
+  "proof-model-files.mjs": "88d76b0353441faa678e11864fa76a909bb34a1a67b765ca5cd2d6ecec44e91b",
+  "proof-cli-common.mjs": "9618fa1e6e0263e7ce22d485b7c1620a8db3cd0dee2ef11727c0d4253bace8cb",
+  "EVIDENCE.md": "047ca98d5cd96c32b8c2f1e19abdb8384ef21a792935c7497b2d84faa2376fd9"
+}
