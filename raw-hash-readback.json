@@ -1,0 +1,62 @@
+{
+  "head": "1fabf22891db7efb2135760100d5a33232bff047",
+  "note": "Original stream hashes independently checked before replacing private local paths in published copies. Public MANIFEST binds sanitized artifacts. Only synthetic fixture data, no production state.",
+  "artifacts": [
+    {
+      "path": "model-physical-control.stdout",
+      "originalSHA256": "69a2f93ce1f6b97e2ae8f3180daedb3938d4f4aa89cecbd5e06d96fc5c3b387e"
+    },
+    {
+      "path": "model-physical-control.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "model-parent-traversal.stdout",
+      "originalSHA256": "69a2f93ce1f6b97e2ae8f3180daedb3938d4f4aa89cecbd5e06d96fc5c3b387e"
+    },
+    {
+      "path": "model-parent-traversal.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "describe-physical-control.stdout",
+      "originalSHA256": "52a4a1d17c01caa1285a3eb102ba83e38be6dbc5736d3248628556e10773f7be"
+    },
+    {
+      "path": "describe-physical-control.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "describe-parent-traversal.stdout",
+      "originalSHA256": "52a4a1d17c01caa1285a3eb102ba83e38be6dbc5736d3248628556e10773f7be"
+    },
+    {
+      "path": "describe-parent-traversal.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "describe-many-parent-traversal.stdout",
+      "originalSHA256": "02c74e952980ff3d442373fba6a76890a5917d3514e9399ba537ecb8f5dc4b1d"
+    },
+    {
+      "path": "describe-many-parent-traversal.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edit-physical-control.stdout",
+      "originalSHA256": "ffef2af201b4211971c656d2c664acb8281d0d9d0f64dd6b1179bd665fff7924"
+    },
+    {
+      "path": "edit-physical-control.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edit-parent-traversal.stdout",
+      "originalSHA256": "0e22cd780f5002efbea2a70cb74cbdbee5ba391e21be08dabd7ef6827f6f5be1"
+    },
+    {
+      "path": "edit-parent-traversal.stderr",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

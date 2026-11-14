@@ -1,0 +1,358 @@
+{
+  "at": "2026-11-14T09:07:15Z",
+  "head": "1fabf22891db7efb2135760100d5a33232bff047",
+  "buildStamp": {
+    "builtAt": 1794647125119,
+    "head": "1fabf22891db7efb2135760100d5a33232bff047",
+    "inputsClean": true,
+    "inputSignature": "b5ae208c4f10f7e13763b858cf363a81f7e4ab6dde14e1768c6bad6d6c65fd21"
+  },
+  "collectorSha256": "a82934ade6162533194359649678c15ccd183db40f0d61ca4786a13641de88f6",
+  "expectedMode": "head",
+  "loopbackOptIn": "Existing OPENCLAW_QA_ALLOW_LOCAL_IMAGE_PROVIDER=1 permits only the configured loopback OpenAI image fixture; actual adapter SSRF policy otherwise unchanged",
+  "priorAttempt": "v1 retained at scout-cli-image-base: describe controls/RED succeeded; edit stopped before HTTP because explicit existing QA loopback opt-in was missing",
+  "fixture": {
+    "selected": "<PROOF_OUTPUT>/fixtures/selected-link/../photo.png",
+    "osReadSha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+    "intendedSha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+    "decoySha256": "b47200f6f0727c21e762f74f2ceb7cd21afda809fc7d71e240a8f54af35562e4"
+  },
+  "cases": [
+    {
+      "label": "model-physical-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--agent",
+        "main",
+        "--model",
+        "image-path/image-path",
+        "--prompt",
+        "Read the synthetic image",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.359,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "model-physical-control",
+          "path": "/v1/chat/completions",
+          "model": "image-path",
+          "headers": {
+            "host": "127.0.0.1:33633",
+            "connection": "keep-alive",
+            "accept": "application/json",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "user-agent": "OpenAI/JS 7.47.0",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Linux",
+            "x-stainless-package-version": "7.47.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v26.12.1",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "370"
+          },
+          "bodySha256": "bf0a6b1fc5f457f9b9a317cdcbe2cbc86989fcd886125d72d89fb1ea08020667",
+          "images": [
+            {
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "69a2f93ce1f6b97e2ae8f3180daedb3938d4f4aa89cecbd5e06d96fc5c3b387e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "modelReplyReadback": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "model-parent-traversal",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "model",
+        "run",
+        "--local",
+        "--agent",
+        "main",
+        "--model",
+        "image-path/image-path",
+        "--prompt",
+        "Read the synthetic image",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/selected-link/../photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 9.264,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "model-parent-traversal",
+          "path": "/v1/chat/completions",
+          "model": "image-path",
+          "headers": {
+            "host": "127.0.0.1:33633",
+            "connection": "keep-alive",
+            "accept": "application/json",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "application/json",
+            "user-agent": "OpenAI/JS 7.47.0",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Linux",
+            "x-stainless-package-version": "7.47.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v26.12.1",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "370"
+          },
+          "bodySha256": "bf0a6b1fc5f457f9b9a317cdcbe2cbc86989fcd886125d72d89fb1ea08020667",
+          "images": [
+            {
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "69a2f93ce1f6b97e2ae8f3180daedb3938d4f4aa89cecbd5e06d96fc5c3b387e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "modelReplyReadback": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "describe-physical-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "image",
+        "describe",
+        "--agent",
+        "main",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.017,
+      "diskReads": [
+        {
+          "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "52a4a1d17c01caa1285a3eb102ba83e38be6dbc5736d3248628556e10773f7be",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "describe-parent-traversal",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "image",
+        "describe",
+        "--agent",
+        "main",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/selected-link/../photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.76,
+      "diskReads": [
+        {
+          "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "52a4a1d17c01caa1285a3eb102ba83e38be6dbc5736d3248628556e10773f7be",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "describe-many-parent-traversal",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "image",
+        "describe-many",
+        "--agent",
+        "main",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/selected-link/../photo.png",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 7.748,
+      "diskReads": [
+        {
+          "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        },
+        {
+          "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+          "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+          "bytes": 79
+        }
+      ],
+      "httpRequests": [],
+      "stdoutSHA256": "02c74e952980ff3d442373fba6a76890a5917d3514e9399ba537ecb8f5dc4b1d",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "result": "GREEN_INTENDED_BYTES"
+    },
+    {
+      "label": "edit-physical-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "image",
+        "edit",
+        "--agent",
+        "main",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+        "--prompt",
+        "Preserve this synthetic image",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--output",
+        "<PROOF_OUTPUT>/edit-physical-control.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.604,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "edit-physical-control",
+          "path": "/v1/images/edits",
+          "headers": {
+            "host": "127.0.0.1:33633",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-097242643475",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "644"
+          },
+          "bodySha256": "8226f6dd924788a3c92ed515b285d4645b59043914201132cd66c75aa090f85e",
+          "images": [
+            {
+              "filename": "photo.png",
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "ffef2af201b4211971c656d2c664acb8281d0d9d0f64dd6b1179bd665fff7924",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": true,
+      "outputReadbackSHA256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "edit-parent-traversal",
+      "command": [
+        "<NODE26>/bin/node",
+        "<CHECKOUT>/openclaw.mjs",
+        "infer",
+        "image",
+        "edit",
+        "--agent",
+        "main",
+        "--file",
+        "<PROOF_OUTPUT>/fixtures/selected-link/../photo.png",
+        "--prompt",
+        "Preserve this synthetic image",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--output",
+        "<PROOF_OUTPUT>/edit-parent-traversal.png",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.374,
+      "diskReads": [],
+      "httpRequests": [
+        {
+          "case": "edit-parent-traversal",
+          "path": "/v1/images/edits",
+          "headers": {
+            "host": "127.0.0.1:33633",
+            "connection": "keep-alive",
+            "authorization": "[SYNTHETIC_AUTH_REDACTED]",
+            "content-type": "multipart/form-data; boundary=----formdata-undici-009407419443",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "undici",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "644"
+          },
+          "bodySha256": "e2d5be06a2cf5f556a5b2821998995fb1ad3f720236722eec71793f3e61b2ea5",
+          "images": [
+            {
+              "filename": "photo.png",
+              "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+              "bytes": 79
+            }
+          ]
+        }
+      ],
+      "stdoutSHA256": "0e22cd780f5002efbea2a70cb74cbdbee5ba391e21be08dabd7ef6827f6f5be1",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legalControl": false,
+      "outputReadbackSHA256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "result": "GREEN_INTENDED_BYTES"
+    }
+  ],
+  "boundary": "Normal shipped CLI -> actual path selection/cache and configured local CLI reader; native bundled OpenAI image adapter -> real loopback multipart HTTP recorder -> independently read output PNG; model local simple-completion adapter -> actual HTTP/SSE recorder with decoded image bytes. No substituted product functions, live provider or external channel.",
+  "result": "GREEN_WITH_LEGAL_CONTROLS",
+  "serverErrors": [],
+  "cleanup": {
+    "serverClosed": true,
+    "productionTouched": false,
+    "liveProvider": false,
+    "externalMessages": false,
+    "privateStateRetainedForReadback": "<PROOF_OUTPUT>"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "<TASK>/pr-195363-types.tsconfig.json",
+      "src/cli/capability-cli.image-options.test.ts",
+      "src/cli/capability-cli.media-inputs.test.ts",
+      "src/cli/capability-cli.test.ts",
+      "src/cli/capability-cli/image.ts",
+      "src/cli/capability-cli/media-input-path.ts",
+      "src/cli/capability-cli/media-understanding-command.ts",
+      "src/cli/capability-cli/model.ts"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 362.679,
+    "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+    "diffSHA256": "2658269a5d98d49f90ae352d2e57eaccde8e09aaf3be152e38e7effabf1e4d2a",
+    "logSHA256": "a52674ee01ccc6be58c9435c9717a0274747a19f55826710d28325d6a05e824d"
+  },
+  "types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "<TASK>/pr-195363-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 94.517,
+    "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+    "diffSHA256": "2658269a5d98d49f90ae352d2e57eaccde8e09aaf3be152e38e7effabf1e4d2a",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "focused": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/capability-cli.image-options.test.ts",
+      "src/cli/capability-cli.media-inputs.test.ts",
+      "src/cli/capability-cli.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 254.319,
+    "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+    "diffSHA256": "2658269a5d98d49f90ae352d2e57eaccde8e09aaf3be152e38e7effabf1e4d2a",
+    "logSHA256": "4859b34e8c8036c0a5de4a62c70f30f4256da89b45c61168d5ece2079f33c023"
+  },
+  "format": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/capability-cli.image-options.test.ts",
+      "src/cli/capability-cli.media-inputs.test.ts",
+      "src/cli/capability-cli.test.ts",
+      "src/cli/capability-cli/image.ts",
+      "src/cli/capability-cli/media-input-path.ts",
+      "src/cli/capability-cli/media-understanding-command.ts",
+      "src/cli/capability-cli/model.ts"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 1.729,
+    "head": "24a6dc57e42146d6e3adc8d4d58d1754f6722bef",
+    "diffSHA256": "2658269a5d98d49f90ae352d2e57eaccde8e09aaf3be152e38e7effabf1e4d2a",
+    "logSHA256": "8cc2498cdaee74cf4ad38c7fdf37f26a6acf7237d9bea213e24e1ddcf2f69e40"
+  },
+  "qa-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "qaRuntime"
+    ],
+    "cwd": "<CHECKOUT>",
+    "exit_code": 0,
+    "elapsed_seconds": 306.447,
+    "head": "1fabf22891db7efb2135760100d5a33232bff047",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "86c2f949c5932be97c706fd5c4aded3b7780bbdcd527ac7ca3746b73ec1bed0f"
+  },
+  "head-proof-run": {
+    "head": "1fabf22891db7efb2135760100d5a33232bff047",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "256",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=256m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CHECKOUT>:<CHECKOUT>:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/scout-cli-image-path-proof-v3.py:<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/scout-cli-image-path-proof-v3.py:ro",
+      "-e",
+      "PATH=<NODE26>/bin:/usr/bin:/bin",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<CHECKOUT>",
+      "-w",
+      "<TASK>",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/scout-cli-image-path-proof-v3.py",
+      "<CHECKOUT>",
+      "<PROOF_OUTPUT>",
+      "<NODE26>/bin/node",
+      "head"
+    ],
+    "exit_code": 0,
+    "seconds": 59.25,
+    "collectorSHA256": "a82934ade6162533194359649678c15ccd183db40f0d61ca4786a13641de88f6",
+    "logSHA256": "c73fa1b40ef7497600ea89c2d115488f98ef432d9733e6feac47c8004ca4d4fc",
+    "image": "alix-openclaw-native-tools-20261114",
+    "imageDigest": "sha256:27add5c082c4e59fd2ba709e0600584c82c79a9fa41b735d1756637bd087b52d"
+  }
+}

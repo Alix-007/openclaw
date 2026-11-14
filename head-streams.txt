@@ -1,0 +1,214 @@
+
+--- model-physical-control/stdout ---
+{
+  "ok": true,
+  "capability": "model.run",
+  "transport": "local",
+  "provider": "image-path",
+  "model": "image-path",
+  "usage": {
+    "usageReport": {
+      "state": "unavailable"
+    },
+    "contextUsage": {
+      "state": "unavailable"
+    }
+  },
+  "lastCallUsage": {
+    "usageReport": {
+      "state": "unavailable"
+    },
+    "contextUsage": {
+      "state": "unavailable"
+    }
+  },
+  "attempts": [],
+  "inputs": [
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "outputs": [
+    {
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "mediaUrl": null
+    }
+  ]
+}
+
+
+--- model-physical-control/stderr ---
+
+
+--- model-parent-traversal/stdout ---
+{
+  "ok": true,
+  "capability": "model.run",
+  "transport": "local",
+  "provider": "image-path",
+  "model": "image-path",
+  "usage": {
+    "usageReport": {
+      "state": "unavailable"
+    },
+    "contextUsage": {
+      "state": "unavailable"
+    }
+  },
+  "lastCallUsage": {
+    "usageReport": {
+      "state": "unavailable"
+    },
+    "contextUsage": {
+      "state": "unavailable"
+    }
+  },
+  "attempts": [],
+  "inputs": [
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "outputs": [
+    {
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "mediaUrl": null
+    }
+  ]
+}
+
+
+--- model-parent-traversal/stderr ---
+
+
+--- describe-physical-control/stdout ---
+{
+  "ok": true,
+  "capability": "image.describe",
+  "transport": "local",
+  "provider": "cli",
+  "model": "/usr/bin/python3",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "provider": "cli",
+      "model": "/usr/bin/python3",
+      "kind": "image.description"
+    }
+  ]
+}
+
+
+--- describe-physical-control/stderr ---
+
+
+--- describe-parent-traversal/stdout ---
+{
+  "ok": true,
+  "capability": "image.describe",
+  "transport": "local",
+  "provider": "cli",
+  "model": "/usr/bin/python3",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "provider": "cli",
+      "model": "/usr/bin/python3",
+      "kind": "image.description"
+    }
+  ]
+}
+
+
+--- describe-parent-traversal/stderr ---
+
+
+--- describe-many-parent-traversal/stdout ---
+{
+  "ok": true,
+  "capability": "image.describe-many",
+  "transport": "local",
+  "provider": "cli",
+  "model": "/usr/bin/python3",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "provider": "cli",
+      "model": "/usr/bin/python3",
+      "kind": "image.description"
+    },
+    {
+      "path": "<PROOF_OUTPUT>/fixtures/physical/photo.png",
+      "text": "selected-sha256:8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a",
+      "provider": "cli",
+      "model": "/usr/bin/python3",
+      "kind": "image.description"
+    }
+  ]
+}
+
+
+--- describe-many-parent-traversal/stderr ---
+
+
+--- edit-physical-control/stdout ---
+{
+  "ok": true,
+  "capability": "image.edit",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<PROOF_OUTPUT>/edit-physical-control.png",
+      "mimeType": "image/png",
+      "size": 79,
+      "width": 16,
+      "height": 16
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+
+--- edit-physical-control/stderr ---
+
+
+--- edit-parent-traversal/stdout ---
+{
+  "ok": true,
+  "capability": "image.edit",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<PROOF_OUTPUT>/edit-parent-traversal.png",
+      "mimeType": "image/png",
+      "size": 79,
+      "width": 16,
+      "height": 16
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+
+--- edit-parent-traversal/stderr ---
+
+
+--- backend-reads.jsonl ---
+{"path": "<PROOF_OUTPUT>/fixtures/physical/photo.png", "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a", "bytes": 79}
+{"path": "<PROOF_OUTPUT>/fixtures/physical/photo.png", "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a", "bytes": 79}
+{"path": "<PROOF_OUTPUT>/fixtures/physical/photo.png", "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a", "bytes": 79}
+{"path": "<PROOF_OUTPUT>/fixtures/physical/photo.png", "sha256": "8d0d8348f61b1b7a14ee386d80271a4f6647869e1c4158d5ee7253f7a2d1a55a", "bytes": 79}
