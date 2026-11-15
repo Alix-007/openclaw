@@ -1,0 +1,86 @@
+[
+  {
+    "file": "BASE-image.json",
+    "rawSHA256": "b6c00174d82683947d7565e30fd401891a323a546f998e469d18e9db470d4bc2"
+  },
+  {
+    "file": "BASE-image-streams.txt",
+    "rawSHA256": "23e6518525c9cb685c6923e97fff0a86ff379d02997d452da0b544cb2f86c3e6"
+  },
+  {
+    "file": "BASE-image-sample.base64.txt",
+    "rawSHA256": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd"
+  },
+  {
+    "file": "HEAD-image.json",
+    "rawSHA256": "2e023d0a42d6008404f0e6b9f4bfa267560209dcf5ee63c881567d7d81d7be8c"
+  },
+  {
+    "file": "HEAD-image-streams.txt",
+    "rawSHA256": "6ccf04fb91351883c2ea77c563aa22596fddb80269700c2c9057e2c7243c59b6"
+  },
+  {
+    "file": "HEAD-image-sample.base64.txt",
+    "rawSHA256": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd"
+  },
+  {
+    "file": "BASE-stream.json",
+    "rawSHA256": "e8360f2db22776f7257bc00792c0cd7ea36456d523a95b43c2d4a0bee46e7c9d"
+  },
+  {
+    "file": "BASE-stream-streams.txt",
+    "rawSHA256": "ddc5410967cd81a30eebd3bccd5ca751bd259dfa1be69ef06a18812d02bd0718"
+  },
+  {
+    "file": "BASE-stream-sample.base64.txt",
+    "rawSHA256": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533"
+  },
+  {
+    "file": "HEAD-stream.json",
+    "rawSHA256": "822fd42800fcd3d9a794fce960a5921d8b92c6a048eb1f2e1769875c41d081c9"
+  },
+  {
+    "file": "HEAD-stream-streams.txt",
+    "rawSHA256": "2e41f8cd37334165b098faa57df6d384a7a98b757f84220c79f29610c014b192"
+  },
+  {
+    "file": "HEAD-stream-sample.base64.txt",
+    "rawSHA256": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533"
+  },
+  {
+    "file": "media-output-proof-v1.py",
+    "rawSHA256": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c"
+  },
+  {
+    "file": "media-stream-output-proof-v1.py",
+    "rawSHA256": "bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e"
+  },
+  {
+    "file": "source-review.json",
+    "rawSHA256": "13a8c12b7c71502d5374c724502df858a7a3d6315a6a5796e075c5fd754cea1e"
+  },
+  {
+    "file": "source-review.md",
+    "rawSHA256": "95bbbf4ae57d539af987ad353ff355d1564c7ac96a0270323dd1730a6dadf2ec"
+  },
+  {
+    "file": "final-review.json",
+    "rawSHA256": "bb96b8625f76e808478c04f025b6af9fad2c5387c9bfcfb50e4913f9ba12f2b2"
+  },
+  {
+    "file": "final-review.md",
+    "rawSHA256": "e70950c72c96d0d1de86107d11fe53488626c6a77a89cc8a8880523adc614c1d"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "e3b77ce02dd6c2c51d190fd30f1a95ff3daa1608e80188b5703a1bf5eccb60ae"
+  },
+  {
+    "file": "focused.log",
+    "rawSHA256": "2d2034c6bed29d40cce75cbeaaa879226b2d391dfd77a7069898baa6acc24387"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "adcabf7fc48b9e316792dd5d9dddc2b0e0cc175514be0798599e9793b1582000"
+  }
+]

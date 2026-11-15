@@ -1,0 +1,47 @@
+{
+  "verdict": "PASS",
+  "stage": "source-only",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+  "fullIndexDiffSHA256": "27f9344bde04578be90365ee1d9f64124e412a16119a4860ea5ee1bfebb54222",
+  "repairDiffSHA256": "0562baff1b5b249993a771bee1268060561249b8680beee89d91747190ff1e32",
+  "files": [
+    {
+      "path": "src/cli/capability-cli.video-output.test-support.ts",
+      "sha256": "5f3ae13864a4e6afcb6aed32b4e370d6b9f71465c62eba1fc4985de8c48b3e0d"
+    },
+    {
+      "path": "src/cli/capability-cli/video.ts",
+      "sha256": "1b2995bc12e0a0938e05019a3e7688e596f317f19183f878f3ad1d62a27e7a7a"
+    },
+    {
+      "path": "src/cli/media-output.test.ts",
+      "sha256": "073668a8461ad5f7d706a3ad6ff13110e907d9f4e2bffc05d8dd90c3166bc146"
+    },
+    {
+      "path": "src/cli/media-output.ts",
+      "sha256": "386c735c3e3463142255e75aec86ebf1d7e702064d5c8eed09ad5f331bc0a84d"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/cli/media-output.test.ts",
+      "sha256": "073668a8461ad5f7d706a3ad6ff13110e907d9f4e2bffc05d8dd90c3166bc146"
+    },
+    {
+      "path": "src/cli/media-output.ts",
+      "sha256": "386c735c3e3463142255e75aec86ebf1d7e702064d5c8eed09ad5f331bc0a84d"
+    }
+  ],
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "limitations": [
+    "Source approval only; focused/static checks running, normal repair commit/build/frozen collector GREEN and updated body require final attestation.",
+    "No tests/builds rerun, no source/index/public mutations by reviewer."
+  ],
+  "reviewedScope": [
+    "Only recovery text and message assertions changed since prior exact-head approval. Final-dot/missing-parent branch conditions, shared output resolver, streamed/buffered callers and atomic publication owner unchanged.",
+    "Both errors now state concrete alternative filename/parent-creation or existing-directory path and retry step; sentinel/directory no-write assertions retained."
+  ],
+  "evidence": "Manifest full base-to-worktree and repair oldHead-to-worktree hashes plus all current source file hashes independently checked; no runtime control-flow change."
+}

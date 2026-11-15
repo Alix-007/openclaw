@@ -1,0 +1,219 @@
+{
+  "head": "61be73516244fc9e1d5669dd423edf16c2b2299a",
+  "collectorSHA256": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c",
+  "buildStamp": {
+    "builtAt": 1794754268132,
+    "head": "61be73516244fc9e1d5669dd423edf16c2b2299a",
+    "inputsClean": true,
+    "inputSignature": "beca4d1420e946c297b6fbf6fd650eb066d5b82f3904f42d186bab9f5f14c585"
+  },
+  "mode": "green",
+  "cases": [
+    {
+      "label": "ordinary",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "image",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--prompt",
+        "Synthetic output path fixture",
+        "--output",
+        "<TASK>/media-output-repair-head-proof/fixtures/ordinary.jpg",
+        "--count",
+        "1",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 9.082,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"image.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"openai\",\n  \"model\": \"gpt-image-1.5\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-output-repair-head-proof/fixtures/ordinary.png\",\n      \"mimeType\": \"image/png\",\n      \"size\": 68,\n      \"width\": 1,\n      \"height\": 1\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "cc2ffb3723b9e9edc70b2a765db7b69efeb2a51a94a89527617bf60a785d2a90",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requestCount": 1,
+      "readbacks": [
+        {
+          "path": "<TASK>/media-output-repair-head-proof/fixtures/ordinary.png",
+          "sha256": "7091aaabb3c9d27a4cd4ca8254fe60af3b0a14618e223c13f7d6785f6fb8565a",
+          "intendedPath": "<TASK>/media-output-repair-head-proof/fixtures/ordinary.png",
+          "decoyPath": "<TASK>/media-output-repair-head-proof/fixtures/ordinary.png"
+        }
+      ]
+    },
+    {
+      "label": "selected",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "image",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--prompt",
+        "Synthetic output path fixture",
+        "--output",
+        "<TASK>/media-output-repair-head-proof/fixtures/selected/../render.jpg",
+        "--count",
+        "1",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.602,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"image.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"openai\",\n  \"model\": \"gpt-image-1.5\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-output-repair-head-proof/fixtures/physical/render.png\",\n      \"mimeType\": \"image/png\",\n      \"size\": 68,\n      \"width\": 1,\n      \"height\": 1\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "40f0932a9bf7f5c3e73f661a4863bf465852893c633f2f1bd95cb4379cfb3697",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requestCount": 1,
+      "readbacks": [
+        {
+          "path": "<TASK>/media-output-repair-head-proof/fixtures/physical/render.png",
+          "sha256": "7091aaabb3c9d27a4cd4ca8254fe60af3b0a14618e223c13f7d6785f6fb8565a",
+          "intendedPath": "<TASK>/media-output-repair-head-proof/fixtures/physical/render.png",
+          "decoyPath": "<TASK>/media-output-repair-head-proof/fixtures/render.png"
+        }
+      ]
+    },
+    {
+      "label": "selected-multiple",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "image",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--prompt",
+        "Synthetic output path fixture",
+        "--output",
+        "<TASK>/media-output-repair-head-proof/fixtures/selected/../multi.jpg",
+        "--count",
+        "2",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.562,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"image.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"openai\",\n  \"model\": \"gpt-image-1.5\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-output-repair-head-proof/fixtures/physical/multi-1.png\",\n      \"mimeType\": \"image/png\",\n      \"size\": 68,\n      \"width\": 1,\n      \"height\": 1\n    },\n    {\n      \"path\": \"<TASK>/media-output-repair-head-proof/fixtures/physical/multi-2.png\",\n      \"mimeType\": \"image/png\",\n      \"size\": 68,\n      \"width\": 1,\n      \"height\": 1\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "795de428080aae688cca07b77279a6c31ccc19506d1c29561cf7859a71eb52a4",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requestCount": 1,
+      "readbacks": [
+        {
+          "path": "<TASK>/media-output-repair-head-proof/fixtures/physical/multi-1.png",
+          "sha256": "7091aaabb3c9d27a4cd4ca8254fe60af3b0a14618e223c13f7d6785f6fb8565a",
+          "intendedPath": "<TASK>/media-output-repair-head-proof/fixtures/physical/multi-1.png",
+          "decoyPath": "<TASK>/media-output-repair-head-proof/fixtures/multi-1.png"
+        },
+        {
+          "path": "<TASK>/media-output-repair-head-proof/fixtures/physical/multi-2.png",
+          "sha256": "7091aaabb3c9d27a4cd4ca8254fe60af3b0a14618e223c13f7d6785f6fb8565a",
+          "intendedPath": "<TASK>/media-output-repair-head-proof/fixtures/physical/multi-2.png",
+          "decoyPath": "<TASK>/media-output-repair-head-proof/fixtures/multi-2.png"
+        }
+      ]
+    },
+    {
+      "label": "missing-parent",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "image",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "openai/gpt-image-1.5",
+        "--prompt",
+        "Synthetic output path fixture",
+        "--output",
+        "<TASK>/media-output-repair-head-proof/fixtures/selected/../new/nested/render.jpg",
+        "--count",
+        "1",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 8.397,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"image.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"openai\",\n  \"model\": \"gpt-image-1.5\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-output-repair-head-proof/fixtures/physical/new/nested/render.png\",\n      \"mimeType\": \"image/png\",\n      \"size\": 68,\n      \"width\": 1,\n      \"height\": 1\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "3084922d3caa549e46cc26d16eb9ae912cbb784dd38976d281bbb1d755910fa5",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requestCount": 1,
+      "readbacks": [
+        {
+          "path": "<TASK>/media-output-repair-head-proof/fixtures/physical/new/nested/render.png",
+          "sha256": "7091aaabb3c9d27a4cd4ca8254fe60af3b0a14618e223c13f7d6785f6fb8565a",
+          "intendedPath": "<TASK>/media-output-repair-head-proof/fixtures/physical/new/nested/render.png",
+          "decoyPath": "<TASK>/media-output-repair-head-proof/fixtures/new/nested/render.png"
+        }
+      ]
+    }
+  ],
+  "result": "GREEN_4_SCENARIOS_5_PNGS",
+  "boundary": "normal built infer image generate -> bundled OpenAI adapter -> loopback HTTP request recorder -> actual PNG byte/location and directory readback",
+  "requests": [
+    {
+      "path": "/v1/images/generations",
+      "body": {
+        "model": "gpt-image-1.5",
+        "prompt": "Synthetic output path fixture",
+        "n": 1,
+        "size": "1024x1024"
+      },
+      "bodySHA256": "6f1bc54177c5fbabc5e4e5df6f1c5719ccf12621286a510ef28e3233f43779c5",
+      "syntheticAuthPresent": true
+    },
+    {
+      "path": "/v1/images/generations",
+      "body": {
+        "model": "gpt-image-1.5",
+        "prompt": "Synthetic output path fixture",
+        "n": 1,
+        "size": "1024x1024"
+      },
+      "bodySHA256": "6f1bc54177c5fbabc5e4e5df6f1c5719ccf12621286a510ef28e3233f43779c5",
+      "syntheticAuthPresent": true
+    },
+    {
+      "path": "/v1/images/generations",
+      "body": {
+        "model": "gpt-image-1.5",
+        "prompt": "Synthetic output path fixture",
+        "n": 2,
+        "size": "1024x1024"
+      },
+      "bodySHA256": "7bd005e2aeaf3ba90d5bfc0c4d2bb3411f9dd6d319879c681c3c06b43df52fad",
+      "syntheticAuthPresent": true
+    },
+    {
+      "path": "/v1/images/generations",
+      "body": {
+        "model": "gpt-image-1.5",
+        "prompt": "Synthetic output path fixture",
+        "n": 1,
+        "size": "1024x1024"
+      },
+      "bodySHA256": "6f1bc54177c5fbabc5e4e5df6f1c5719ccf12621286a510ef28e3233f43779c5",
+      "syntheticAuthPresent": true
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "serverStopped": true,
+    "isolatedFixturesRetained": true,
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "fixtureBoundary": "synthetic OpenAI responses only; existing explicit QA loopback opt-in; actual adapter/path owner/publication are unmodified"
+  }
+}

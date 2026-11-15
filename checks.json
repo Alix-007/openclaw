@@ -1,0 +1,132 @@
+{
+  "focused-corrected": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/media-output.test.ts",
+      "src/cli/capability-cli.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 193.792,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "2d2034c6bed29d40cce75cbeaaa879226b2d391dfd77a7069898baa6acc24387"
+  },
+  "format": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/media-output.ts",
+      "src/cli/media-output.test.ts"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 0.222,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "6abb81ac1f63651e8f27f3066d521794d099ad3922359607c91f1bf2b87f950a"
+  },
+  "lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../media-output-types.tsconfig.json",
+      "src/cli/media-output.test.ts",
+      "src/cli/media-output.ts"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 63.565,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../media-output-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 21.986,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 2.613,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "c267b0486d23632d764cf74e68067426d77fedd40e1f855d0d43e481d769a12e"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 1.582,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "fbf8624b1420fe58d2cbb877b693223735beb4891343d863df5b08e0a7e5b176",
+    "logSHA256": "2d498a93919b1e1f0f3b47aea0566e8ae5e6321619d0cb58005e0627508487b0"
+  },
+  "commit": {
+    "head": "61be73516244fc9e1d5669dd423edf16c2b2299a",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "oldHead": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "fullIndexDiffSHA256": "27f9344bde04578be90365ee1d9f64124e412a16119a4860ea5ee1bfebb54222",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "src/cli/capability-cli.video-output.test-support.ts",
+      "src/cli/capability-cli/video.ts",
+      "src/cli/media-output.test.ts",
+      "src/cli/media-output.ts"
+    ],
+    "repairFiles": [
+      "src/cli/media-output.test.ts",
+      "src/cli/media-output.ts"
+    ],
+    "elapsedSeconds": 6.885,
+    "knownValidationLimitations": []
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 240.279,
+    "head": "61be73516244fc9e1d5669dd423edf16c2b2299a",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "d05dd99acf33892ca130057fafdf8bdc481543f0601e4c96c2816c202d24acce"
+  }
+}

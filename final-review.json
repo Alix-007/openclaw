@@ -1,0 +1,62 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "61be73516244fc9e1d5669dd423edf16c2b2299a",
+  "oldHead": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "fullIndexDiffSHA256": "27f9344bde04578be90365ee1d9f64124e412a16119a4860ea5ee1bfebb54222",
+  "files": [
+    {
+      "path": "src/cli/capability-cli.video-output.test-support.ts",
+      "sha256": "5f3ae13864a4e6afcb6aed32b4e370d6b9f71465c62eba1fc4985de8c48b3e0d"
+    },
+    {
+      "path": "src/cli/capability-cli/video.ts",
+      "sha256": "1b2995bc12e0a0938e05019a3e7688e596f317f19183f878f3ad1d62a27e7a7a"
+    },
+    {
+      "path": "src/cli/media-output.test.ts",
+      "sha256": "073668a8461ad5f7d706a3ad6ff13110e907d9f4e2bffc05d8dd90c3166bc146"
+    },
+    {
+      "path": "src/cli/media-output.ts",
+      "sha256": "386c735c3e3463142255e75aec86ebf1d7e702064d5c8eed09ad5f331bc0a84d"
+    }
+  ],
+  "bodySHA256": "c235da7aa3ce5c4355ed9e4119ea8207d309c472b3be1184a97073621ca38ea3",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "sourceCommit": "Exact complete source bindings/full base patch match source approval; clean follow-up parent matches prior published head. Normal-hook receipt and company commit identity retained.",
+    "nativeBuild": "Actual clean matching-head dist/.buildstamp verified against all replay receipts; normal cliStartup exit0.",
+    "body": "Full updated four-section body accurate. New repair proof and prior original BASE distinctly identified; no old receipt relabeled as newHEAD.",
+    "scope": "Only verified immutable evidence URL substitution permitted after this approval; no other semantic body edits.",
+    "buildSeconds": 240.279,
+    "proof": "Same frozen original image/stream collectors on exact follow-upHEAD:GREEN4scenarios5PNGs andGREEN3streamedfiles. Actual output bytes/SHA/path/absentdecoy, raw stream hashes and stamps independently checked. OriginalBASE receipts retained separately.",
+    "checks": "Current123focusedPASS193.792s; final scoped checks pass with logs retained.",
+    "repair": "Only actionable recovery wording/assertions changed; original resolver and publication behavior intact."
+  },
+  "limitations": [
+    "No test/build/collector reruns or product/public writes by reviewer.",
+    "Qualified isolated Linux/Node synthetic local evidence only; native macOS/Windows/full-suite/hostedCI and external real service behavior not claimed.",
+    "Synthetic MP4 proves HTTP transport/publication, not playback; no external OpenAI/DeepInfra availability claim."
+  ],
+  "proofFiles": [
+    {
+      "path": "media-output-repair-head-proof/receipt.json",
+      "sha256": "2e023d0a42d6008404f0e6b9f4bfa267560209dcf5ee63c881567d7d81d7be8c"
+    },
+    {
+      "path": "media-stream-output-repair-head-proof/receipt.json",
+      "sha256": "822fd42800fcd3d9a794fce960a5921d8b92c6a048eb1f2e1769875c41d081c9"
+    },
+    {
+      "path": "media-output-repair-cli-build.json",
+      "sha256": "a60c598d9f0f7d630b42c9e74c87831944222f3cec952c79ac676a89ed48dfb6"
+    },
+    {
+      "path": "media-output-repair-body-draft.md",
+      "sha256": "c235da7aa3ce5c4355ed9e4119ea8207d309c472b3be1184a97073621ca38ea3"
+    }
+  ]
+}

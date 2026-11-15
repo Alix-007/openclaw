@@ -1,0 +1,215 @@
+$ node scripts/test-projects.mts src/cli/media-output.test.ts src/cli/capability-cli.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/media-output
+
+[vitest-workers] local cache miss after 12075ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared 42d024ff3920 in 139293ms (20154 inputs, 25028 outputs)
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects missing required repeatable input for infer [ 'image', 'edit', '--prompt', …(1) ] 880ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects missing required repeatable input for capability [ 'image', 'describe-many' ] 9ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects missing required repeatable input for infer [ 'embedding', 'create' ] 15ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > queries capability metadata through list 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > queries capability metadata through inspect 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > renders an explicit empty model list without changing JSON output 174ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > uses the requested agent's catalog for model inspect 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > uses the requested agent's catalog for model missing 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > uses the requested agent's catalog for model run 9649ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > scopes provider state and model selection to an explicit agent 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > requires an explicit owner for agent-backed provider state in explicit fleets 14ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > prepares local model content and instructions (ChatGPT API: false) 802ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > prepares local model content and instructions (ChatGPT API: true) 133ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > normalizes HEIF sequence images before Gateway probes 7479ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects non-image files for model probes 53ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects local Codex provider probes before simple-completion dispatch 57ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--prompt', '
+	' ] before dispatch 21ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--model', 'not-a-provider/' ] before dispatch 40ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--thinking', 'turbo-mode' ] before dispatch 18ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--thinking', '' ] before dispatch 19ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--thinking', ' 	' ] before dispatch 15ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--local', '--gateway' ] before dispatch 19ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid model run options [ '--agent', ' ' ] before dispatch 84ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > runs gateway model probes in fresh raw sessions without chat-agent prompt policy or tools 21ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > authorizes Gateway model overrides and preserves profile refs (profile: false) 2239ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > authorizes Gateway model overrides and preserves profile refs (profile: true) 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending local execution 39ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending gateway execution 18ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending audio execution 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending tts execution 220ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending image execution 120ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending image-model execution 602ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending tts status execution 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending tts providers execution 18ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending tts personas execution 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending tts disable execution 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > defaults tts status to gateway transport 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects conflicting TTS persona selectors before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > prints anonymous video descriptions with their input path 27ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > describes images through describe with files ["https://cdn.example.com/clip%2Emp4?download=1#preview"] and model undefined 9ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > describes images through describe with files ["https://example.com/photo.png"] and model ollama/qwen2.5vl:7b 574ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > describes images through describe-many with files ["a.jpg","b.jpg"] and model undefined 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > prepares input once before retrying explicit image models 610ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > does not start an image fallback after interruption 552ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports empty image results (action describe, file photo.jpg, missing provider false) 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports empty image results (action describe, file photo.jpg, missing provider true) 41ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports empty audio results (action transcribe, file memo.m4a, missing provider false) 11ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports empty audio results (action transcribe, file memo.m4a, missing provider true) 11ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rewrites mismatched explicit image output extensions to the detected file type 69ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > forwards image generation options using the leaf agent 56ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid image generate resolution before dispatch 13ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid image edit resolution before dispatch 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid numeric input before capability ["image","generate","--prompt","friendly lobster","--json","--timeout-ms"] dispatch 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid numeric input before capability ["image","generate","--prompt","friendly lobster","--json","--timeout-ms"] dispatch 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid numeric input before infer ["web","search","--query","ping","--limit"] dispatch 43ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > downloads generated videos with private-network opt-in false 847ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > downloads generated videos with private-network opt-in true 638ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves atomic video output on stream failure and accepted interruptions 616ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > streams video to the physical parent selected by the output path 549ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves buffered image output when publication fails 12ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > blocks private-network url-only generated video downloads by default 603ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > passes video duration 2.5 and generation parameters through to runtime 35ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > passes video duration 0.5 and generation parameters through to runtime 33ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > passes video duration 2e0 and generation parameters through to runtime 30ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > fails video generate when a provider returns an undeliverable asset 23ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > fails closed when an url-only generated video exceeds the in-memory byte cap 693ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects textual generated-video downloads with HTTP 403 599ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects textual generated-video downloads with HTTP 200 514ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects an empty-body url-only generated video in buffered mode 492ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects an empty-body url-only generated video in streamed mode 541ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration     before dispatch 12ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration 0 before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration -5 before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration 0.4 before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration abc before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration Infinity before dispatch 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration 1e309 before dispatch 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects invalid video duration 9007199254740992 before dispatch 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reads the selected audio through a symlink parent 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reads the selected video through a symlink parent 22ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports actual audio attribution and forwards request hints 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > hydrates default provider without a config block TTS config from API-key profiles 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > hydrates root provider TTS config from API-key profiles 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > hydrates channel provider TTS config from API-key profiles 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves existing inherited channel TTS credentials 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves existing provider map TTS credentials 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves existing token profile TTS credentials 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves explicit TTS selection without inventing overrides 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects conflicting TTS provider and model selections 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > fails clearly when gateway TTS output is requested against a remote gateway 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > keeps TTS publication and source custody for normal 38ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > keeps TTS publication and source custody for copy-failure 38ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > keeps TTS publication and source custody for interrupted-existing 13ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > keeps TTS publication and source custody for interrupted-absent 18ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > creates embeddings with openai selection and preserves the model id 14ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > creates embeddings with deepinfra selection and preserves the model id 9ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects conflicting provider and model prefixes before creating a provider 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > shows ordered embedding dimensions and bounded vector previews in text output 15ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves the primary embedding failure when sync cleanup fails 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > preserves the primary embedding failure when async cleanup fails 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > cancels pending embedding work and suppresses output while closing the provider 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > routes parent model auth login for agent "beta" 54ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > routes leaf model auth status for agent "beta" 18ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > routes leaf model auth status for agent "retired" 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > marks env-backed image providers as configured 21ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > marks env-backed tts providers as configured 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > marks env-backed video generation and description providers as configured 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > distinguishes the local STT fallback winner from global provider selection 9ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > inspects web provider state with explicit agent selection true 17ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > inspects web provider state with explicit agent selection false 10ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > reports structured web search failures and exits nonzero 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > fetches through the default tool with undefined output 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.pluginStateNamespaceOwner
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/cli/capability-cli.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > fetches through the default tool with text output 8ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects disabled web fetch with provider undefined 6ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > rejects disabled web fetch with provider firecrawl 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > resolves selected web search provider SecretRefs before execution 7ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > resolves selected web fetch provider SecretRefs before execution 5ms
+ ✓ |cli| src/cli/capability-cli.test.ts > capability cli > includes selected custom generic embedding provider aliases 7ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/cli/media-output.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/cli/media-output.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/cli/media-output.test.ts: retiring openclaw.stateSnapshotOwners
+
+ ✓ |cli| src/cli/media-output.test.ts > writes 1 buffered outputs through the selected physical parent 23ms
+ ✓ |cli| src/cli/media-output.test.ts > writes 2 buffered outputs through the selected physical parent 34ms
+ ✓ |cli| src/cli/media-output.test.ts > refuses an unreachable parent without replacing an existing output 6ms
+ ✓ |cli| src/cli/media-output.test.ts > refuses a final "." without changing the output parent 6ms
+ ✓ |cli| src/cli/media-output.test.ts > refuses a final ".." without changing the output parent 5ms
+
+ Test Files  2 passed (2)
+      Tests  123 passed (123)
+   Start at  22:42:17
+   Duration  181.23s (transform 81%, tests 18%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 192.37s
