@@ -1,0 +1,90 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+  "oldHead": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "fullIndexDiffSHA256": "27e30e42b1d07e426000badc4335b65847002426ff336b98a42f66a1f1723ef6",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "5a235d9d56f8e8b020725df2414e0936ec8f28be59b446a46c74997f57852871"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "921177cb003195f23bbb7f9b182e86d5618858a7bef109e664edf0b75f279dbf"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "9e0d7da91b83b4380177aea84a13e9139e96da5658768e51a6604e4442b07bbf"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "9880fea6b5cdcacadfabf6d547a0c3c4de554e7c286fec8ab0bab957e0b062dd"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "fa9f28282a13070115b3342c4feba8283f08170721980a5909c3960171f471ec"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "sha256": "eb870b257bd5baf2c786dc66a8f218360ef977d4d990f6e9a118ed73d3d67a9a"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "bc2a2692d050c3f4ca13c1cd6a68fced87c0b7ebf186ac5f687235c68a2b218b"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.test.ts",
+      "sha256": "769efda53b00692e68caf3c08d7c768e426322f47451220f3a7c93a1b0264ad4"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.ts",
+      "sha256": "681e69a87565c487e66810ea1562ec81338b5b31f48750954d394abf8be3db74"
+    }
+  ],
+  "bodySHA256": "b3531c5f88065a47c896f0fae5c95defc549c0e6db520d38804130a7c303a634",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "sourceCommit": "Exact complete source bindings/full base patch match source approval; clean follow-up parent matches prior published head. Normal-hook receipt and company commit identity retained.",
+    "nativeBuild": "Actual clean matching-head dist/.buildstamp verified against all replay receipts; normal cliStartup exit0.",
+    "body": "Full updated four-section body accurate. New repair proof and prior original BASE distinctly identified; no old receipt relabeled as newHEAD.",
+    "scope": "Only verified immutable evidence URL substitution permitted after this approval; no other semantic body edits.",
+    "buildSeconds": 248.194,
+    "proof": "Frozen original root/output collector replays GREEN10PASS/GREEN_PHYSICAL_ARCHIVE. Raw stream hashes/current stamps and actual manifest/scaffold/tar SHA+metadata readbacks verified. Additional diagnostics collector matches current/BASEpublisheda83/HEAD; all5HEAD checks exit1 as intended with correct diagnostics/recovery/no-force preservation. Actual unchanged malformed file/sentinel and absent unreachable parent verified.",
+    "checks": "Current full authoring+validation run:40PASS including all9validation and one SAME120s install timeout (exit1), cleanBASE reproduction retained. No full-green assertion. Final scoped checks pass; prior unchanged native17 and sibling evidence retained with honest attribution.",
+    "repair": "ENOENT raw candidate preserves physical selection and delayed package/manifest error precedence; loadToolPlugin still rejects missing raw input. Init gives recovery guidance."
+  },
+  "limitations": [
+    "No test/build/collector reruns or product/public writes by reviewer.",
+    "Qualified isolated Linux/Node synthetic local evidence only; native macOS/Windows/full-suite/hostedCI and external real service behavior not claimed.",
+    "Install-test120s timeout remains unresolved baseline validation limitation;40PASS+one timeout never treated as suitePASS."
+  ],
+  "proofFiles": [
+    {
+      "path": "plugin-root-repair-head-proof/receipt.json",
+      "sha256": "058fa5039167a75c2a4c84981cc4129e7e191214532508c640b4ea06afe32e8d"
+    },
+    {
+      "path": "plugin-output-repair-head-proof/receipt.json",
+      "sha256": "13e200d9416748fa37c60c677190be939288e71b6076c34b0b4b6c15fe04a8e4"
+    },
+    {
+      "path": "plugin-diagnostics-repair-base-proof/receipt.json",
+      "sha256": "a4ab26dfbb1e97b823d484a4fd5098f38ef5f07ab0a37c4461deb9a8da4e339a"
+    },
+    {
+      "path": "plugin-diagnostics-repair-head-proof/receipt.json",
+      "sha256": "47dd9667efb20fce08432cc6dcd9fd0e90db5ab49d82df022814e9ed6d6445c3"
+    },
+    {
+      "path": "plugin-root-repair-cli-build.json",
+      "sha256": "2c7a1a680d358036d56fbbdb412ae346a6239e725b4ce1a5a445f129a0c71256"
+    },
+    {
+      "path": "plugin-root-repair-body-draft.md",
+      "sha256": "b3531c5f88065a47c896f0fae5c95defc549c0e6db520d38804130a7c303a634"
+    }
+  ]
+}

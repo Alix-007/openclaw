@@ -1,0 +1,17 @@
+"""Supplemental pack destination sibling: actual built CLI and tar readback."""
+from pathlib import Path
+import hashlib,json,os,subprocess,sys,tarfile,time
+w,out,node=map(lambda s:Path(s).resolve(),sys.argv[1:4]);mode=sys.argv[4];assert mode in('red','green');out.mkdir();sha=lambda b:hashlib.sha256(b).hexdigest();head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=w,text=True).strip();stamp=json.loads((w/'dist/.buildstamp').read_text());assert stamp['head']==head and stamp['inputsClean'];assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=w).strip()
+r={'head':head,'collectorSHA256':sha(Path(__file__).read_bytes()),'buildStamp':stamp,'mode':mode,'cases':[],'result':'RUNNING'}
+def save():(out/'receipt.json').write_text(json.dumps(r,indent=2)+'\n')
+for leaf in ['home','state','tmp','project','physical/nested']:(out/leaf).mkdir(parents=True,exist_ok=True)
+c=out/'openclaw.json';c.write_text(json.dumps({'plugins':{'allow':[],'slots':{'memory':'none'}}}));env={'PATH':str(node.parent)+':/usr/bin:/bin','HOME':str(out/'home'),'OPENCLAW_STATE_DIR':str(out/'state'),'OPENCLAW_CONFIG_PATH':str(c),'TMPDIR':str(out/'tmp'),'NO_COLOR':'1','OPENCLAW_NO_RESPAWN':'1'}
+def run(label,args):
+ cmd=[str(node),str(w/'openclaw.mjs'),'plugins',*args];start=time.monotonic();v=subprocess.run(cmd,cwd=w,env=env,capture_output=True,timeout=90);(out/(label+'.stdout')).write_bytes(v.stdout);(out/(label+'.stderr')).write_bytes(v.stderr);row={'label':label,'command':cmd,'exitCode':v.returncode,'seconds':round(time.monotonic()-start,3),'stdout':v.stdout.decode(errors='replace'),'stderr':v.stderr.decode(errors='replace'),'stdoutSHA256':sha(v.stdout),'stderrSHA256':sha(v.stderr)};r['cases'].append(row);save();assert v.returncode==0,row;return row
+try:
+ root=out/'project';(root/'node_modules').mkdir();(root/'node_modules/esbuild').symlink_to(w/'node_modules/esbuild',target_is_directory=True);(root/'package.json').write_text(json.dumps({'name':'openclaw-plugin-output-proof','version':'1.0.0','type':'module','openclaw':{'extensions':['./index.ts']}}));(root/'index.ts').write_text('import{defineToolPlugin}from"openclaw/plugin-sdk/tool-plugin";export default defineToolPlugin({id:"output-proof",name:"Output Proof",description:"Synthetic",tools:tool=>[tool({name:"output_echo",description:"Synthetic",parameters:{type:"object",properties:{}},execute:async()=>({ok:true})})]});\n')
+ run('build-seed',['build','--root',str(root)]);(out/'selected').symlink_to(out/'physical/nested',target_is_directory=True);raw=str(out/'selected')+'/../result.tgz';row=run('pack-selected-output',['pack','--root',str(root),'--out',raw,'--json']);actual=out/('result.tgz'if mode=='red'else'physical/result.tgz');wrong=out/('physical/result.tgz'if mode=='red'else'result.tgz');assert actual.is_file()and not wrong.exists();assert json.loads(row['stdout'])['path']==str(actual)
+ with tarfile.open(actual,'r:gz')as a:manifest=json.load(a.extractfile('package/openclaw.plugin.json'))
+ assert manifest['id']=='output-proof';row['readback']={'rawOutput':raw,'actualArchive':str(actual),'sha256':sha(actual.read_bytes()),'pluginId':manifest['id'],'wrongArchiveAbsent':str(wrong)};r['result']='GREEN_PHYSICAL_ARCHIVE'if mode=='green'else'BASE_WRONG_ARCHIVE';save()
+except Exception as e:r['result']='BLOCKED_OR_UNEXPECTED';r['error']=repr(e);save();raise
+finally:r['cleanup']={'isolatedFixturesRetained':True,'externalRequests':False,'productionStateTouched':False};save()
