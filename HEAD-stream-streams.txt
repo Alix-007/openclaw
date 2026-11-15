@@ -1,0 +1,60 @@
+
+=== ordinary/stdout ===
+{
+  "ok": true,
+  "capability": "video.generate",
+  "transport": "local",
+  "provider": "deepinfra",
+  "model": "Wan-AI/Wan2.2-T2V-A14B",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-stream-output-head-proof/fixtures/ordinary.mp4",
+      "mimeType": "video/mp4",
+      "size": 37
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== ordinary/stderr ===
+
+=== selected/stdout ===
+{
+  "ok": true,
+  "capability": "video.generate",
+  "transport": "local",
+  "provider": "deepinfra",
+  "model": "Wan-AI/Wan2.2-T2V-A14B",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-stream-output-head-proof/fixtures/physical/render.mp4",
+      "mimeType": "video/mp4",
+      "size": 37
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== selected/stderr ===
+
+=== new-parent/stdout ===
+{
+  "ok": true,
+  "capability": "video.generate",
+  "transport": "local",
+  "provider": "deepinfra",
+  "model": "Wan-AI/Wan2.2-T2V-A14B",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-stream-output-head-proof/fixtures/physical/new/nested/render.mp4",
+      "mimeType": "video/mp4",
+      "size": 37
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== new-parent/stderr ===

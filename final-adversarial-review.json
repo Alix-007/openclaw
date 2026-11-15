@@ -1,0 +1,75 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "src/cli/capability-cli.video-output.test-support.ts",
+      "sha256": "5f3ae13864a4e6afcb6aed32b4e370d6b9f71465c62eba1fc4985de8c48b3e0d"
+    },
+    {
+      "path": "src/cli/capability-cli/video.ts",
+      "sha256": "1b2995bc12e0a0938e05019a3e7688e596f317f19183f878f3ad1d62a27e7a7a"
+    },
+    {
+      "path": "src/cli/media-output.test.ts",
+      "sha256": "9352b88a8290b84a1553bc6c8a4653aa73c494e0763aedcd699dc99d8c79b7a3"
+    },
+    {
+      "path": "src/cli/media-output.ts",
+      "sha256": "0a38f8adc23065f5cd8a6bc1ac90790e7e9dda2d133d76c2ae93304de6a55fce"
+    }
+  ],
+  "fullIndexDiffSHA256": "9673f8a75a9ef9976e2f5ade1933500b9db3cf5d9235591c60b04362523a0040",
+  "bodySHA256": "3b46fc81ac9a01bc216bb3ac776bc6fe87cf835fe185697655da36087eecf8c0",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "commitSource": "Clean single-parent expected-base/company identity; four hashes and committed complete full-index patch match source approval including new test.",
+    "build": "Normal cliStartup exit0 331.947s; actual exact clean HEAD dist/.buildstamp equals both native HEAD receipts.",
+    "imagePair": "Same frozen media-output-proof-v1.py hash fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c BASE/HEAD/current. BASE3wrong scenarios/ordinarycontrol -> HEAD4scenarios5PNGs. Actual bundled OpenAI adapter and loopback request records/paths, all raw hashes, output JSON/disk file SHA and wrong-path absence checked.",
+    "streamedVideoPair": "Separate frozen media-stream-output-proof-v1.py hash bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e same BASE/HEAD/current. BASE2wrong/ordinarycontrol -> HEAD3streamed files. Actual bundled DeepInfra adapter, POST URL-response plus GET stream per case verified; raw streams/output JSON/disk byte hashes/sizes and wrong path absence match.",
+    "checks": "Final123focused PASS175.356s and final typedlint/types/format/stagedratchets PASS, retained log hashes independently verified. Initial invalid new streaming fixture assertion failure remains retained and correctly qualified.",
+    "cleanup": "Both paired collectors close loopback servers, report no external requests/production effects; isolated network-none runtime boundary retained.",
+    "body": "Four sections accurately separate real adapters/owners from synthetic HTTP responses; no external provider availability or playable-video claim. Buffered speech/video remote services excluded. Only verified immutable URL substitution allowed."
+  },
+  "proofFiles": [
+    {
+      "path": "media-output-proof-v1.py",
+      "sha256": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c"
+    },
+    {
+      "path": "media-stream-output-proof-v1.py",
+      "sha256": "bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e"
+    },
+    {
+      "path": "media-output-base-proof/receipt.json",
+      "sha256": "b6c00174d82683947d7565e30fd401891a323a546f998e469d18e9db470d4bc2"
+    },
+    {
+      "path": "media-output-head-proof/receipt.json",
+      "sha256": "765228ef410ed732c6fa3bb966c7d09098a66bff6cf332bac433eac822405653"
+    },
+    {
+      "path": "media-stream-output-base-proof/receipt.json",
+      "sha256": "e8360f2db22776f7257bc00792c0cd7ea36456d523a95b43c2d4a0bee46e7c9d"
+    },
+    {
+      "path": "media-stream-output-head-proof/receipt.json",
+      "sha256": "91a9883118d6e334aad2bbcc29f6e9b264262551b78fbba129f7cea5ca83a33a"
+    },
+    {
+      "path": "media-output-cli-build.json",
+      "sha256": "68ed2da002b11d77e8884cdcc48aa472968d0033dd8529d7f20b13305004a206"
+    }
+  ],
+  "publicationBoundary": "Approve exact reviewed HEAD/evidence/body; PUBLIC_ARTIFACT_URL may be replaced only with a verified immutable evidence link without other semantic body changes. Reviewer publishes nothing.",
+  "limitations": [
+    "Qualified isolated Linux/Node synthetic loopback provider responses; no real OpenAI/DeepInfra service, charges, playback, activation, production data or external availability claim.",
+    "Native acceptance exercises image and streamed-video owners; buffered speech/video share reviewed owner/focused callers without real service requests.",
+    "No native macOS/Windows/full repository suite/hostedCI proof.",
+    "First media FAIL is finding history only because initial binding raced correction; current PASS source and final commit bytes independently verified.",
+    "No test/build/collector reruns or source/public mutations by reviewer."
+  ]
+}

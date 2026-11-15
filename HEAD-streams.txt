@@ -1,0 +1,95 @@
+
+=== ordinary/stdout ===
+{
+  "ok": true,
+  "capability": "image.generate",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-output-head-proof/fixtures/ordinary.png",
+      "mimeType": "image/png",
+      "size": 68,
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== ordinary/stderr ===
+
+=== selected/stdout ===
+{
+  "ok": true,
+  "capability": "image.generate",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-output-head-proof/fixtures/physical/render.png",
+      "mimeType": "image/png",
+      "size": 68,
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== selected/stderr ===
+
+=== selected-multiple/stdout ===
+{
+  "ok": true,
+  "capability": "image.generate",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-output-head-proof/fixtures/physical/multi-1.png",
+      "mimeType": "image/png",
+      "size": 68,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "path": "<TASK>/media-output-head-proof/fixtures/physical/multi-2.png",
+      "mimeType": "image/png",
+      "size": 68,
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== selected-multiple/stderr ===
+
+=== missing-parent/stdout ===
+{
+  "ok": true,
+  "capability": "image.generate",
+  "transport": "local",
+  "provider": "openai",
+  "model": "gpt-image-1.5",
+  "attempts": [],
+  "outputs": [
+    {
+      "path": "<TASK>/media-output-head-proof/fixtures/physical/new/nested/render.png",
+      "mimeType": "image/png",
+      "size": 68,
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "ignoredOverrides": []
+}
+
+=== missing-parent/stderr ===

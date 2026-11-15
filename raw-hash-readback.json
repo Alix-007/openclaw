@@ -1,0 +1,78 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "b6c00174d82683947d7565e30fd401891a323a546f998e469d18e9db470d4bc2"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "23e6518525c9cb685c6923e97fff0a86ff379d02997d452da0b544cb2f86c3e6"
+  },
+  {
+    "file": "BASE-sample.base64.txt",
+    "rawSHA256": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "765228ef410ed732c6fa3bb966c7d09098a66bff6cf332bac433eac822405653"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "b967912f0e4758ab93280bd7881d222a5c2f2408456efa6da0d3d020b1e44411"
+  },
+  {
+    "file": "HEAD-sample.base64.txt",
+    "rawSHA256": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd"
+  },
+  {
+    "file": "BASE-stream.json",
+    "rawSHA256": "e8360f2db22776f7257bc00792c0cd7ea36456d523a95b43c2d4a0bee46e7c9d"
+  },
+  {
+    "file": "BASE-stream-streams.txt",
+    "rawSHA256": "ddc5410967cd81a30eebd3bccd5ca751bd259dfa1be69ef06a18812d02bd0718"
+  },
+  {
+    "file": "BASE-stream-sample.base64.txt",
+    "rawSHA256": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533"
+  },
+  {
+    "file": "HEAD-stream.json",
+    "rawSHA256": "91a9883118d6e334aad2bbcc29f6e9b264262551b78fbba129f7cea5ca83a33a"
+  },
+  {
+    "file": "HEAD-stream-streams.txt",
+    "rawSHA256": "7acd486dbda5e89d01d12550fc94eb019a7a9a7dfa314dc936afdcf8b28c42dc"
+  },
+  {
+    "file": "HEAD-stream-sample.base64.txt",
+    "rawSHA256": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533"
+  },
+  {
+    "file": "media-output-proof-v1.py",
+    "rawSHA256": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c"
+  },
+  {
+    "file": "media-stream-output-proof-v1.py",
+    "rawSHA256": "bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "b2e7d4b3ae86467ef3d32aff7fc305f1ba875bd17cc65e82f587783e7324266c"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "d90565f1de971dab179308724180d119433a06e97eeedd397dc02c80826f5686"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "ee603719e31e338578f96cdb90bd2ea947172f7757cdba71b67a86fed851945a"
+  },
+  {
+    "file": "focused-final.log",
+    "rawSHA256": "77dd4a831dd157cc993ec2083c11ee4469624627355757a1e04ea3f4d5fd15b0"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "a0c4555575f10811a8551db03fd42b74aeed31d009f430f5c2c38d7e846fc9c1"
+  }
+]

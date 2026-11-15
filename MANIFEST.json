@@ -1,0 +1,22 @@
+{
+  "BASE.json": "af5ab8bd31042f612518c7e13ee75ffe4054a5d2a352fac1812063608fad03da",
+  "BASE-streams.txt": "b841c362d3ae4481c9697f4330017ec0d096f4f7bbcec702c5ba4a8ff257657a",
+  "BASE-sample.base64.txt": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd",
+  "HEAD.json": "75f0f426c707c338e478150ce57ae98d7e8bb18f763d8c64ae5fc3444d64b9ea",
+  "HEAD-streams.txt": "0e8d1185f592c5452fa79a9e93a743eb80f70e84239196b9a334187b15c6c69e",
+  "HEAD-sample.base64.txt": "b9967a4d30c3181b7a40f1696d355fcaa9556811cd082ee17fefce858a82d0bd",
+  "BASE-stream.json": "ddfc1de47faa3ee9799d58e9b170d191faa6cf7049c704a712bed0004425d868",
+  "BASE-stream-streams.txt": "f78e89c83389a6c8fdee392a259c65a453533efda67d182c2dc64f73ee8e38bf",
+  "BASE-stream-sample.base64.txt": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533",
+  "HEAD-stream.json": "36341d63919580806286d2d220ae7d18287f27ed2908842859d5d83c11bee060",
+  "HEAD-stream-streams.txt": "1b76ed288e4edcab099a33db573e4daaefee6b3aeb98c081f049eacb02096c41",
+  "HEAD-stream-sample.base64.txt": "a8814ae9b3c177c9154395cb474c3d7ccbf1124342e986d01f2d3af5792c1533",
+  "media-output-proof-v1.py": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c",
+  "media-stream-output-proof-v1.py": "bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e",
+  "final-adversarial-review.md": "b2e7d4b3ae86467ef3d32aff7fc305f1ba875bd17cc65e82f587783e7324266c",
+  "final-adversarial-review.json": "d90565f1de971dab179308724180d119433a06e97eeedd397dc02c80826f5686",
+  "checks.json": "a3466fd83e22860b167a5d9f4adefee415a766f9074cc50781e090966abd13a0",
+  "focused-final.log": "25ad6379c967b8c660192df0e7d70368c7cc8684088d6ef8f4e692acf8686022",
+  "EVIDENCE.md": "a0c4555575f10811a8551db03fd42b74aeed31d009f430f5c2c38d7e846fc9c1",
+  "raw-hash-readback.json": "38857f466a68b20e5a10113c1f372e5b0a38cdb718bcb0429064a19e6de13111"
+}

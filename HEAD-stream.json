@@ -1,0 +1,162 @@
+{
+  "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+  "mode": "green",
+  "collectorSHA256": "bacd547be74f7b46e2770cb94af35bf4fe28eb1e60850c9884fe59043b77e42e",
+  "buildStamp": {
+    "builtAt": 1794752033329,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "inputsClean": true,
+    "inputSignature": "eaeb124f168775256c2d8f700148d20e2cf37b51b49809129903ac82dbad0cde"
+  },
+  "cases": [
+    {
+      "label": "ordinary",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "video",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "deepinfra/Wan-AI/Wan2.2-T2V-A14B",
+        "--prompt",
+        "Synthetic streamed output path fixture",
+        "--output",
+        "<TASK>/media-stream-output-head-proof/fixtures/ordinary.webm",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 9.936,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"video.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"deepinfra\",\n  \"model\": \"Wan-AI/Wan2.2-T2V-A14B\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-stream-output-head-proof/fixtures/ordinary.mp4\",\n      \"mimeType\": \"video/mp4\",\n      \"size\": 37\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "dc0ca44c4dfcdbf42904b65c2bb0112dc88a5123c9eab58e7609fac69a129861",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "path": "<TASK>/media-stream-output-head-proof/fixtures/ordinary.mp4",
+        "sha256": "a7a912eb8aabdb9c6a89d082581755d1c69dd0efc8de6b631a56b023639b6f9f",
+        "bytes": 37,
+        "intended": "<TASK>/media-stream-output-head-proof/fixtures/ordinary.mp4",
+        "decoy": "<TASK>/media-stream-output-head-proof/fixtures/ordinary.mp4"
+      }
+    },
+    {
+      "label": "selected",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "video",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "deepinfra/Wan-AI/Wan2.2-T2V-A14B",
+        "--prompt",
+        "Synthetic streamed output path fixture",
+        "--output",
+        "<TASK>/media-stream-output-head-proof/fixtures/selected/../render.webm",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 9.212,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"video.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"deepinfra\",\n  \"model\": \"Wan-AI/Wan2.2-T2V-A14B\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-stream-output-head-proof/fixtures/physical/render.mp4\",\n      \"mimeType\": \"video/mp4\",\n      \"size\": 37\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "f6d2c48967a16c2d467746e34b0db5b301440a3150331dc3961bc2f707b49658",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "path": "<TASK>/media-stream-output-head-proof/fixtures/physical/render.mp4",
+        "sha256": "a7a912eb8aabdb9c6a89d082581755d1c69dd0efc8de6b631a56b023639b6f9f",
+        "bytes": 37,
+        "intended": "<TASK>/media-stream-output-head-proof/fixtures/physical/render.mp4",
+        "decoy": "<TASK>/media-stream-output-head-proof/fixtures/render.mp4"
+      }
+    },
+    {
+      "label": "new-parent",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/media-output/openclaw.mjs",
+        "infer",
+        "video",
+        "generate",
+        "--agent",
+        "main",
+        "--model",
+        "deepinfra/Wan-AI/Wan2.2-T2V-A14B",
+        "--prompt",
+        "Synthetic streamed output path fixture",
+        "--output",
+        "<TASK>/media-stream-output-head-proof/fixtures/selected/../new/nested/render.webm",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 9.302,
+      "stdout": "{\n  \"ok\": true,\n  \"capability\": \"video.generate\",\n  \"transport\": \"local\",\n  \"provider\": \"deepinfra\",\n  \"model\": \"Wan-AI/Wan2.2-T2V-A14B\",\n  \"attempts\": [],\n  \"outputs\": [\n    {\n      \"path\": \"<TASK>/media-stream-output-head-proof/fixtures/physical/new/nested/render.mp4\",\n      \"mimeType\": \"video/mp4\",\n      \"size\": 37\n    }\n  ],\n  \"ignoredOverrides\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "8bcc7b69f3e6b70a2bed750c9d22eff175de8dcecfadb18c23f1be0fba7f296e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "path": "<TASK>/media-stream-output-head-proof/fixtures/physical/new/nested/render.mp4",
+        "sha256": "a7a912eb8aabdb9c6a89d082581755d1c69dd0efc8de6b631a56b023639b6f9f",
+        "bytes": 37,
+        "intended": "<TASK>/media-stream-output-head-proof/fixtures/physical/new/nested/render.mp4",
+        "decoy": "<TASK>/media-stream-output-head-proof/fixtures/new/nested/render.mp4"
+      }
+    }
+  ],
+  "result": "GREEN3_STREAMED_FILES",
+  "fixtureLimit": "Synthetic MP4 bytes establish transport/publication identity, not playback or external provider availability.",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/openai/videos",
+      "body": {
+        "model": "Wan-AI/Wan2.2-T2V-A14B",
+        "prompt": "Synthetic streamed output path fixture"
+      },
+      "bodySHA256": "6ba83437cacc15444a2157e410a6f470594688d43dae458439f3a4fa9ff0ef9b"
+    },
+    {
+      "method": "GET",
+      "path": "/fixture.mp4",
+      "bytes": 37
+    },
+    {
+      "method": "POST",
+      "path": "/v1/openai/videos",
+      "body": {
+        "model": "Wan-AI/Wan2.2-T2V-A14B",
+        "prompt": "Synthetic streamed output path fixture"
+      },
+      "bodySHA256": "6ba83437cacc15444a2157e410a6f470594688d43dae458439f3a4fa9ff0ef9b"
+    },
+    {
+      "method": "GET",
+      "path": "/fixture.mp4",
+      "bytes": 37
+    },
+    {
+      "method": "POST",
+      "path": "/v1/openai/videos",
+      "body": {
+        "model": "Wan-AI/Wan2.2-T2V-A14B",
+        "prompt": "Synthetic streamed output path fixture"
+      },
+      "bodySHA256": "6ba83437cacc15444a2157e410a6f470594688d43dae458439f3a4fa9ff0ef9b"
+    },
+    {
+      "method": "GET",
+      "path": "/fixture.mp4",
+      "bytes": 37
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "serverStopped": true,
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "isolatedFixturesRetained": true
+  }
+}

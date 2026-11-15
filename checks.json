@@ -1,0 +1,174 @@
+{
+  "format-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/capability-cli.video-output.test-support.ts",
+      "src/cli/capability-cli/video.ts",
+      "src/cli/media-output.test.ts",
+      "src/cli/media-output.ts"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 0.521,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "ca11c8c1b0ae42c703348ff14957601924579cd8eb92b65a943718da3c01a0b9",
+    "logSHA256": "b7628e3c95a503fd13ce01bcc05ad1f633333cb5ea63a9b1beab3b4b4d3af25f"
+  },
+  "types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../media-output-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 94.729,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "ca11c8c1b0ae42c703348ff14957601924579cd8eb92b65a943718da3c01a0b9",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 2.523,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "ca11c8c1b0ae42c703348ff14957601924579cd8eb92b65a943718da3c01a0b9",
+    "logSHA256": "a9cd677726adfa7f30420bad6ebb27103d539bdfa13ab766e27f61eb5d303268"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 2.068,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "ca11c8c1b0ae42c703348ff14957601924579cd8eb92b65a943718da3c01a0b9",
+    "logSHA256": "2d498a93919b1e1f0f3b47aea0566e8ae5e6321619d0cb58005e0627508487b0"
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 331.947,
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "42a06940a213a49fc116fc656bbfd17619c2fd4543cc76a658a208341c96e832"
+  },
+  "commit": {
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "fullIndexDiffSHA256": "9673f8a75a9ef9976e2f5ade1933500b9db3cf5d9235591c60b04362523a0040",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "src/cli/capability-cli.video-output.test-support.ts",
+      "src/cli/capability-cli/video.ts",
+      "src/cli/media-output.test.ts",
+      "src/cli/media-output.ts"
+    ],
+    "elapsedSeconds": 3.839,
+    "knownValidationLimitations": []
+  },
+  "focused-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/media-output.test.ts",
+      "src/cli/capability-cli.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 175.356,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "cc572a27a74da1c73385c9896dcc9af79529763bd9ce597cf340443938cbed28",
+    "logSHA256": "77dd4a831dd157cc993ec2083c11ee4469624627355757a1e04ea3f4d5fd15b0"
+  },
+  "lint-corrected-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../media-output-types.tsconfig.json",
+      "src/cli/media-output.ts",
+      "src/cli/media-output.test.ts",
+      "src/cli/capability-cli/video.ts",
+      "src/cli/capability-cli.video-output.test-support.ts"
+    ],
+    "cwd": "<TASK>/media-output",
+    "exit_code": 0,
+    "elapsed_seconds": 101.852,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "ca11c8c1b0ae42c703348ff14957601924579cd8eb92b65a943718da3c01a0b9",
+    "logSHA256": "e32ecdd3fc3fbbc2a477d29fe571fd7378bb2329c77783d14b76b0e764af3106"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/media-output",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/media-output-proof-v1.py",
+      "<TASK>/media-output",
+      "<TASK>/media-output-head-proof",
+      "<NODE26>/bin/node",
+      "green"
+    ],
+    "head": "8b8df12c17b08ced20566b3dc60eeaa672d6efe6",
+    "exit_code": 0,
+    "elapsed_seconds": 41.415,
+    "collectorSHA256": "fa7985f5fc41114a467d00a354c47698d4ba0b698e225a6b63b30e29e488fe8c",
+    "runnerLogSHA256": "b34d3e635aeabbbaf285e114550516667f42764aee84417f229b583c492e751e",
+    "receipt": "<TASK>/media-output-head-proof/receipt.json"
+  }
+}
