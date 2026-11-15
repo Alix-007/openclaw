@@ -1,0 +1,90 @@
+
+=== file-alias-seed-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/package.json
+
+=== file-alias-seed-build/stderr ===
+
+=== file-alias-existing-data-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== file-alias-existing-data-validation/stderr ===
+
+=== file-alias-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/package.json
+
+=== file-alias-build/stderr ===
+
+=== file-alias-post-build-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== file-alias-post-build-validation/stderr ===
+
+=== directory-alias-seed-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/package.json
+
+=== directory-alias-seed-build/stderr ===
+
+=== directory-alias-existing-data-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== directory-alias-existing-data-validation/stderr ===
+
+=== directory-alias-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/package.json
+
+=== directory-alias-build/stderr ===
+
+=== directory-alias-post-build-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== directory-alias-post-build-validation/stderr ===
+
+=== ordinary-control-seed-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/package.json
+
+=== ordinary-control-seed-build/stderr ===
+
+=== ordinary-control-existing-data-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== ordinary-control-existing-data-validation/stderr ===
+
+=== ordinary-control-build/stdout ===
+Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/openclaw.plugin.json
+Updated ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/package.json
+
+=== ordinary-control-build/stderr ===
+
+=== ordinary-control-post-build-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "alias-proof",
+  "errors": []
+}
+
+=== ordinary-control-post-build-validation/stderr ===

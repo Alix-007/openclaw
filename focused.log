@@ -1,0 +1,91 @@
+$ node scripts/test-projects.mts src/cli/plugins-authoring-command.test.ts src/cli/plugins-authoring-validation.test.ts src/cli/plugins-control-ui-build.test.ts --maxWorkers=1 -t '^(?!.*builds and installs selected entries without changing sibling runtime pairs)'
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/plugin-root
+
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves manifest-owned metadata while updating generated fields 102ms
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and installs selected entries without changing sibling runtime pairs
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.ts 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 5ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/b/index.js 5ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 4ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.mts 9ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/a/index.js 4ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > emits a stable JSON validation result without human output 247ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports and retires a preceding host browser declaration through explicit authoring 390ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves shared output when authoring a backend without browser source 204ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps validation errors on stderr and sanitizes JSON paths 14ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON metadata and preserves authored fields 226ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON metadata and preserves authored fields 229ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON5 metadata and preserves authored fields 209ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON5 metadata and preserves authored fields 191ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build accepts reordered JSON5 metadata and preserves authored fields 257ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > projects undefined TypeBox options into the persisted manifest shape 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects a missing generated manifest without changing package metadata 184ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports stale manifest contracts 15ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports missing entries with an author-facing path 10ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: {invalid json 16ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: { // package.json must remain strict JSON
+} 11ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes a build from an absolute root after the launch directory is removed 190ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves the declared file alias and sibling runtime mapping 205ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves the declared directory alias and sibling runtime mapping 221ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=false 220ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=true 206ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps the project intact when package publication fails during write 169ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports a manifest rename failure after publishing package metadata 173ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects an invalid feature id without blocking a corrected retry 10ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes init with an absolute directory after the launch directory is removed 11ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > scaffolds a provider plugin project with ClawHub validation and release metadata 15ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > plugin build manifest publication > creates a manifest under isolated umask 2 2206ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > builds runtime browser artifacts without changing authored plugin metadata (authored UI: true) 2700ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > builds runtime browser artifacts without changing authored plugin metadata (authored UI: false) 2693ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > builds runtime browser artifacts without changing authored plugin metadata (authored UI: settings-only) 2663ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > builds runtime browser artifacts without changing authored plugin metadata (authored UI: channel-settings) 2737ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > requires author-installed compilers without replacing existing builds 236ms
+(node:463085) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > bundles a Solid TSX view with reactive updates and owned disposal 1221ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > removes unused dependency loaders without treating text as imports 291ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects a retained computed import in a split output chunk 190ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects a retained external static import 201ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects a retained external literal dynamic import 177ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > publishes complete immutable generations and detects stale source 515ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects a split build that the asset reader cannot admit 215ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > publishes a complete generation after a transient Windows EPERM rename denial 169ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > publishes a complete generation after a transient Windows EBUSY rename denial 177ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > publishes a complete generation after a transient Windows EACCES rename denial 170ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves win32 EPERM after 6 attempts 156ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves win32 EBUSY after 6 attempts 159ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves win32 EACCES after 6 attempts 148ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves win32 ENOSPC after 1 attempts 200ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves linux EPERM after 1 attempts 170ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves linux EBUSY after 1 attempts 182ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > cleans staging and preserves darwin EACCES after 1 attempts 163ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > reuses a Windows build collision only when every asset matches 211ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > normalizes fresh and validated browser generation permissions 220ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > bundles SDK source instead of stale dist under NODE_ENV=production 119ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects unresolved dynamic import without publishing a browser build 275ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects unresolved indirect require without publishing a browser build 265ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects unresolved local require.resolve without publishing a browser build 284ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > leaves the published build usable when browser compilation fails 211ms
+ ✓ |cli| src/cli/plugins-control-ui-build.test.ts > native plugin browser builds > rejects source entries outside the authoring package 11ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > keeps missing-root diagnostics actionable for build and validation 16ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves expected missing-entry diagnostics for missing.js 14ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves expected missing-entry diagnostics for package.json/index.js 14ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (implicit entry) 10ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (implicit entry) 67ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (explicit entry) 13ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (explicit entry) 21ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=false 248ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=true 295ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=false 301ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=true 199ms
+
+ Test Files  3 passed (3)
+      Tests  75 passed | 1 skipped (76)
+   Start at  01:11:33
+   Duration  34.23s (tests 75%, import 10%, transform 8%, worker 5%, setup 2%)
+
+[test] passed 1 Vitest shard in 39.87s

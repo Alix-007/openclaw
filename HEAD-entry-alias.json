@@ -1,0 +1,339 @@
+{
+  "head": "a483ef8b3959f9b69db238350dee69ca9b4aa958",
+  "buildStamp": {
+    "builtAt": 1794763117662,
+    "head": "a483ef8b3959f9b69db238350dee69ca9b4aa958",
+    "inputsClean": true,
+    "inputSignature": "eebd2c5d85fb10ebb3b501d23ff5c8cf031119549e1ce24e7bc89426fb9fbfe9"
+  },
+  "collectorSHA256": "a7cfcb615b1bdd71f5733cfbfe04e39614375679338ab5585ef6943646a618e8",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "file-alias-seed-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/file-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/package.json\n",
+      "stdoutSHA256": "2a01d9ccbe634c63f7262b16697efd789dd16b20dc455d67eacc0b91d0dce601",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "file-alias-existing-data-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/file-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "file-alias-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/file-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/file-alias/package.json\n",
+      "stdoutSHA256": "2a01d9ccbe634c63f7262b16697efd789dd16b20dc455d67eacc0b91d0dce601",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "file-alias-post-build-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/file-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "directory-alias-seed-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/directory-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/package.json\n",
+      "stdoutSHA256": "f0172fe91fa23c0e792d79862766c6db5a4d9c35aa9c76be468b79bccee61985",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "directory-alias-existing-data-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/directory-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "directory-alias-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/directory-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/directory-alias/package.json\n",
+      "stdoutSHA256": "f0172fe91fa23c0e792d79862766c6db5a4d9c35aa9c76be468b79bccee61985",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "directory-alias-post-build-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/directory-alias"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "ordinary-control-seed-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/package.json\n",
+      "stdoutSHA256": "ca07670c915cddf009b65563fd629082f21cb7c22030892a247a14bbf050d605",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "ordinary-control-existing-data-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "ordinary-control-build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/openclaw.plugin.json\nUpdated ../plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control/package.json\n",
+      "stdoutSHA256": "ca07670c915cddf009b65563fd629082f21cb7c22030892a247a14bbf050d605",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "ordinary-control-post-build-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-alias-repair4-head-proof/fixtures/ordinary-control"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"alias-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "07139432297b143994ddcc22f9062541edc79e5d0ba32502bf94f64218c037a4",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "models": [
+    {
+      "kind": "file-alias",
+      "legacyPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/alias.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "persistedPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/alias.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "sourceUnchanged": "6ec89bb84d5e97b604cd4c507ccaece8dcad90f71c0383c97029c2b53a65fe27",
+      "selectedEntry": "./src/alias.ts",
+      "physicalEntry": "./src/implementation.ts",
+      "duplicatePhysicalDeclarations": 1,
+      "manifestSHA256": "bead1b1a873af613640cb8c8dd41b0336921c6bd0eee24b650761bc102b657ce"
+    },
+    {
+      "kind": "directory-alias",
+      "legacyPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/declared/index.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "persistedPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/declared/index.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "sourceUnchanged": "6ec89bb84d5e97b604cd4c507ccaece8dcad90f71c0383c97029c2b53a65fe27",
+      "selectedEntry": "./src/declared/index.ts",
+      "physicalEntry": "./src/implementation/index.ts",
+      "duplicatePhysicalDeclarations": 1,
+      "manifestSHA256": "bead1b1a873af613640cb8c8dd41b0336921c6bd0eee24b650761bc102b657ce"
+    },
+    {
+      "kind": "ordinary-control",
+      "legacyPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/implementation.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "persistedPackage": {
+        "name": "openclaw-plugin-alias-proof",
+        "version": "1.0.0",
+        "type": "module",
+        "openclaw": {
+          "extensions": [
+            "./src/implementation.ts",
+            "./src/sibling.ts"
+          ],
+          "runtimeExtensions": [
+            "./dist/selected.js",
+            "./dist/sibling.js"
+          ],
+          "setupEntry": "./dist/selected.js"
+        }
+      },
+      "sourceUnchanged": "6ec89bb84d5e97b604cd4c507ccaece8dcad90f71c0383c97029c2b53a65fe27",
+      "selectedEntry": "./src/implementation.ts",
+      "physicalEntry": "./src/implementation.ts",
+      "duplicatePhysicalDeclarations": 1,
+      "manifestSHA256": "bead1b1a873af613640cb8c8dd41b0336921c6bd0eee24b650761bc102b657ce"
+    }
+  ],
+  "result": "GREEN_EXISTING_FILE_AND_DIRECTORY_ALIASES_AND_CONTROL",
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

@@ -1,0 +1,55 @@
+
+=== build/stdout ===
+
+=== build/stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== validate/stdout ===
+
+=== validate/stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== validate-json/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'"
+  ]
+}
+
+=== validate-json/stderr ===
+ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'
+
+=== pack/stdout ===
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'"
+  }
+}
+
+=== pack/stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== runtime-lint-control/stdout ===
+{
+  "complete": false,
+  "scannedPackages": 0,
+  "scannedFiles": 0,
+  "warnings": [
+    {
+      "ruleId": "scan-incomplete",
+      "packageName": "absent",
+      "file": "package.json",
+      "line": 1,
+      "column": 1,
+      "message": "Runtime dependency inspection could not finish: ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'. Inspect installed dependencies and retry."
+    }
+  ]
+}
+
+=== runtime-lint-control/stderr ===

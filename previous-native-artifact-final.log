@@ -1,0 +1,141 @@
+TAP version 13
+Created ../../../../cache/user-tmp/openclaw-feature-pack-seed-K0PB0P/draft-review
+Wrote ../../../../cache/user-tmp/openclaw-feature-pack-seed-K0PB0P/draft-review/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-feature-pack-seed-K0PB0P/draft-review/package.json
+# Subtest: plugin artifact authoring
+    # Subtest: packs CommonJS dependencies into a self-contained artifact bound to its exact digest
+    ok 1 - packs CommonJS dependencies into a self-contained artifact bound to its exact digest
+      ---
+      duration_ms: 2491.742197
+      type: 'test'
+      ...
+Wrote ../../../../cache/user-tmp/openclaw-tool-pack-fl1CUY/project/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-tool-pack-fl1CUY/project/package.json
+    # Subtest: packs inferred-tools with its installed runtime and metadata intact
+    ok 2 - packs inferred-tools with its installed runtime and metadata intact
+      ---
+      duration_ms: 337.79012
+      type: 'test'
+      ...
+Wrote ../../../../cache/user-tmp/openclaw-tool-pack-isp1Bg/project/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-tool-pack-isp1Bg/project/package.json
+    # Subtest: packs @author/tools with its installed runtime and metadata intact
+    ok 3 - packs @author/tools with its installed runtime and metadata intact
+      ---
+      duration_ms: 77.042776
+      type: 'test'
+      ...
+Wrote ../../../../cache/user-tmp/openclaw-tool-pack-KCvpun/project/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-tool-pack-KCvpun/project/package.json
+    # Subtest: packs runtime-tools with its installed runtime and metadata intact
+    ok 4 - packs runtime-tools with its installed runtime and metadata intact
+      ---
+      duration_ms: 77.407321
+      type: 'test'
+      ...
+Wrote ../../../../cache/user-tmp/openclaw-tool-pack-0xqELZ/project/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-tool-pack-0xqELZ/project/package.json
+    # Subtest: packs setup-tools with its installed runtime and metadata intact
+    ok 5 - packs setup-tools with its installed runtime and metadata intact
+      ---
+      duration_ms: 251.702566
+      type: 'test'
+      ...
+    # Subtest: rejects opaque prebundles with guidance to use the regular package-install flow
+    ok 6 - rejects opaque prebundles with guidance to use the regular package-install flow
+      ---
+      duration_ms: 398.596202
+      type: 'test'
+      ...
+    # Subtest: rejects unresolved dynamic import before producing an artifact
+    ok 7 - rejects unresolved dynamic import before producing an artifact
+      ---
+      duration_ms: 437.565964
+      type: 'test'
+      ...
+    # Subtest: rejects unresolved dynamic require before producing an artifact
+    ok 8 - rejects unresolved dynamic require before producing an artifact
+      ---
+      duration_ms: 380.976076
+      type: 'test'
+      ...
+    # Subtest: rejects unresolved indirect require before producing an artifact
+    ok 9 - rejects unresolved indirect require before producing an artifact
+      ---
+      duration_ms: 368.293127
+      type: 'test'
+      ...
+    # Subtest: rejects unresolved local require.resolve before producing an artifact
+    ok 10 - rejects unresolved local require.resolve before producing an artifact
+      ---
+      duration_ms: 433.185403
+      type: 'test'
+      ...
+    # Subtest: rejects unresolved indexed require.resolve before producing an artifact
+    ok 11 - rejects unresolved indexed require.resolve before producing an artifact
+      ---
+      duration_ms: 430.81339
+      type: 'test'
+      ...
+Wrote ../../../../cache/user-tmp/openclaw-feature-pack-fjZ3b6/draft-review/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/openclaw-feature-pack-fjZ3b6/draft-review/package.json
+Packed draft-review: <CACHE>/user-tmp/openclaw-feature-pack-fjZ3b6/lazy-page.tgz
+SHA256: 59ea1c38d7b5c65c8413ac8a848ff3856c90960e1da10ee0c897576b3e3707b2
+Use plugin_activate_artifact with this path and digest to request activation approval.
+    # Subtest: packs standard-builder lazy chunks for use without source or dependencies
+    ok 12 - packs standard-builder lazy chunks for use without source or dependencies
+      ---
+      duration_ms: 305.885382
+      type: 'test'
+      ...
+Packed draft-review: <CACHE>/user-tmp/openclaw-feature-pack-BZlPfK/prebuilt.tgz
+SHA256: b664dc3c3fc76bb44a8aa0a2878cf587e38ff280c5328874896f5b2abc4b5759
+Use plugin_activate_artifact with this path and digest to request activation approval.
+    # Subtest: preserves prebuilt browser dependencies without packing unrelated files
+    ok 13 - preserves prebuilt browser dependencies without packing unrelated files
+      ---
+      duration_ms: 263.532157
+      type: 'test'
+      ...
+    # Subtest: rejects backend resources located by ES module URL before producing an artifact
+    ok 14 - rejects backend resources located by ES module URL before producing an artifact
+      ---
+      duration_ms: 604.402502
+      type: 'test'
+      ...
+    # Subtest: rejects backend resources located by CommonJS directory before producing an artifact
+    ok 15 - rejects backend resources located by CommonJS directory before producing an artifact
+      ---
+      duration_ms: 555.425116
+      type: 'test'
+      ...
+    # Subtest: rejects backend resources located by CommonJS filename before producing an artifact
+    ok 16 - rejects backend resources located by CommonJS filename before producing an artifact
+      ---
+      duration_ms: 541.059372
+      type: 'test'
+      ...
+Packed draft-review: <CACHE>/user-tmp/openclaw-feature-pack-1vWU9Q/review.tgz
+SHA256: 553afe95fc29662d3e5990cfba24f3deb1c29d2425cdb772e633f04615920e62
+Use plugin_activate_artifact with this path and digest to request activation approval.
+    # Subtest: rejects stale browser source and never overwrites an existing approval artifact
+    ok 17 - rejects stale browser source and never overwrites an existing approval artifact
+      ---
+      duration_ms: 1464.045418
+      type: 'test'
+      ...
+    1..17
+ok 1 - plugin artifact authoring
+  ---
+  duration_ms: 9423.651864
+  type: 'suite'
+  ...
+1..1
+# tests 17
+# suites 1
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12774.682946

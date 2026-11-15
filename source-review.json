@@ -1,0 +1,84 @@
+{
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "050f9f63f297c83d287024ea5e67b712bf75b548",
+  "fullIndexDiffSHA256": "65e0f4361ba3b9bd0d14c97ebc3bd5dad56ab2e2b5b0299f27e51fb4445a4ffb",
+  "repairDiffSHA256": "01eed663b4a696a133c2e348caf52b44c2113980301518f86ddce5e3e2d3ac5d",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "7ce8f16c4576cfd54d1fb11d3ddeae555b0608dce7f36fa93370cfd8e4ffe412"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "38c7d8c1676ec71d0d8e9582de1101ad6ce229d6b6e71d2b48deacdc2cfcbe00"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "d82a529e5130e8aee072186c8d6cdfe4252ed8fb4fbc31528e1b06874f9d5007"
+    },
+    {
+      "path": "src/cli/plugins-authoring-root.ts",
+      "sha256": "64e76ab3fb8db460fa474725589bb15583d684acd0c5c08aefd8692e538891d5"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "d0d2d9443ab6f17319fca75c8efad38e7ccd8164f2c04851de17f245d737f725"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "fa9f28282a13070115b3342c4feba8283f08170721980a5909c3960171f471ec"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "sha256": "eb870b257bd5baf2c786dc66a8f218360ef977d4d990f6e9a118ed73d3d67a9a"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "e79702e3123ed6271fdbf272c3206003591408db7e39377b1a1158db0891e991"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.test.ts",
+      "sha256": "769efda53b00692e68caf3c08d7c768e426322f47451220f3a7c93a1b0264ad4"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.ts",
+      "sha256": "681e69a87565c487e66810ea1562ec81338b5b31f48750954d394abf8be3db74"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "7ce8f16c4576cfd54d1fb11d3ddeae555b0608dce7f36fa93370cfd8e4ffe412"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "d82a529e5130e8aee072186c8d6cdfe4252ed8fb4fbc31528e1b06874f9d5007"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "38c7d8c1676ec71d0d8e9582de1101ad6ce229d6b6e71d2b48deacdc2cfcbe00"
+    },
+    {
+      "path": "src/cli/plugins-authoring-root.ts",
+      "sha256": "64e76ab3fb8db460fa474725589bb15583d684acd0c5c08aefd8692e538891d5"
+    }
+  ],
+  "verdict": "PASS",
+  "stage": "source-only",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "reviewed": [
+    "All10 file hashes/both manifest lists, exact3 repair delta and canonical fullBASE/oldHEAD patches independently verified; stable staged source no unstaged changes.",
+    "Backend relative/default entries restore c016 lexical declaration-slot contract: package metadata selected extension/runtime pair stays lexical while native root still selects physical project. Absolute entries inside supplied lexical root map relative to selected physical root; otherwise existing lexical resolve/confinement owner applies. No entry-file native identity API added.",
+    "build/validation metadata precedence/missing-entry ENOENT/ENOTDIR expected-error guards preserved by original existsSync owner. Root native helper, init prefix/missing-parent protection, artifact parent/wx and runtime-lint owners unchanged.",
+    "Browser core native entry realpath/confinement unchanged from c016. Script keeps physical read root but derives --copy destination bundled slot from original packageDir spelling, preserving BASE logical slot.",
+    "New real file/directory alias tests assert exact extensions/runtime sibling mappings, successful validate/build-check, unchanged package/manifest/source; using log now has meaningful success assertion. Replaced missing/../entry test was PR-added native-entry expansion, not a BASE test or contract.",
+    "Frozen alias BASE050 collector hash and all12 raw command pairs independently checked: two existing declarations rejected/duplicated with ordinary control. Source root10/output proof boundary remains covered by unchanged native roots; fresh committed-head proof still required.",
+    "Final mechanical extraction: complete resolveEntryPath moved unchanged into existing plugins-authoring-root.ts; command imports/calls both helpers. node:path, JSON reader and manifest re-export imports resolve correctly; JSON reader/expected-error owner have no reverse dependency on authoring command/helper. Declared-slot and absolute-root mapping unchanged. All10 hashes/both manifest lists and full65e0/repair01ee verified;4-file repair delta."
+  ],
+  "limitations": [
+    "Source-only. Final focused/types/typed lint/ratchets after extraction remain pending; current format/ordinary lint reported PASS only. Earlier failed attempts retained; no final all-checks claim.",
+    "Final body must remove native backend-entry traversal capability claims and distinguish declared-slot identity from physical root selection. Lexical missing/../entry semantics intentionally revert to existing BASE contract.",
+    "No exact new committed-head build/native aliasGREEN/body attestation yet. No reviewer test/build/source/index/public mutations."
+  ]
+}

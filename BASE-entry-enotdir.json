@@ -1,0 +1,139 @@
+{
+  "head": "a5ea84b0e91db727c56c7cbcb2678d24b18e3c11",
+  "buildStamp": {
+    "builtAt": 1794757648103,
+    "head": "a5ea84b0e91db727c56c7cbcb2678d24b18e3c11",
+    "inputsClean": true,
+    "inputSignature": "35b53fed17c0cb9219302174f4717e65ced2ee9bcd761c98a5aafc86e131e48d"
+  },
+  "collectorSHA256": "875e3cee4dd2e77dea5b65121bc2954a627e0053b9c9c2bf1b071fa512decf49",
+  "mode": "red",
+  "cases": [
+    {
+      "label": "valid-build-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-enotdir-repair-base-proof/fixtures/project/openclaw.plugin.json\nUpdated ../plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json\n",
+      "stdoutSHA256": "f7a01582d068d1aca5e8df6989f22f043417086199b54626e64980d850922323",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b"
+    },
+    {
+      "label": "validate-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b"
+    },
+    {
+      "label": "validate-json-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"ENOTDIR: not a directory, realpath '<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json/index.js'\"\n  ]\n}\n",
+      "stdoutSHA256": "bb6f3c1c88e86448e50c444afc7f7ddcd4990e30d6f5953addc2e3aa6763bc36",
+      "stderr": "ENOTDIR: not a directory, realpath '<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json/index.js'\n",
+      "stderrSHA256": "117339e7109bb4e197b5cfaea5f1603790a6270a37e925a79d48c6fa9a06da73"
+    },
+    {
+      "label": "missing-entry-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--entry",
+        "missing.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "plugin entry not found: ./missing.js\n",
+      "stderrSHA256": "ef0c6fe83f50d4cb42f050d972048a91be6b542ff34331a70dae8a1e63844643"
+    },
+    {
+      "label": "valid-validate-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"entry-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "e8731c23a2d9d6c1ec8282f34feca0be50615a7956c5b52aeeaa92a6e2bbc957",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "BASE3_GENERIC_ENTRY_FAILURES_AND3_CONTROLS",
+  "readback": {
+    "before": {
+      "package.json": "9f78c64efe855c969a0c595748dc4fa6e6651856ef0ffe9fa9fc4acf67691444",
+      "index.ts": "cabbc691e79afea87a1fab309d6a29c8a7af32b684967a7052cab19217841fbc",
+      "openclaw.plugin.json": "0a35cf31ab8f80f020d233c7751623e26a970117d1a33a5808d6fff869be76ef"
+    },
+    "after": {
+      "package.json": "9f78c64efe855c969a0c595748dc4fa6e6651856ef0ffe9fa9fc4acf67691444",
+      "index.ts": "cabbc691e79afea87a1fab309d6a29c8a7af32b684967a7052cab19217841fbc",
+      "openclaw.plugin.json": "0a35cf31ab8f80f020d233c7751623e26a970117d1a33a5808d6fff869be76ef"
+    },
+    "pluginId": "entry-proof",
+    "fileComponentStillAFile": true
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

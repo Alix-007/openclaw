@@ -1,0 +1,43 @@
+
+=== valid-build-control/stdout ===
+Wrote ../plugin-entry-enotdir-repair-base-proof/fixtures/project/openclaw.plugin.json
+Updated ../plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json
+
+=== valid-build-control/stderr ===
+
+=== build-file-component/stdout ===
+
+=== build-file-component/stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== validate-file-component/stdout ===
+
+=== validate-file-component/stderr ===
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.
+
+=== validate-json-file-component/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "ENOTDIR: not a directory, realpath '<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json/index.js'"
+  ]
+}
+
+=== validate-json-file-component/stderr ===
+ENOTDIR: not a directory, realpath '<TASK>/plugin-entry-enotdir-repair-base-proof/fixtures/project/package.json/index.js'
+
+=== missing-entry-control/stdout ===
+
+=== missing-entry-control/stderr ===
+plugin entry not found: ./missing.js
+
+=== valid-validate-control/stdout ===
+{
+  "valid": true,
+  "pluginId": "entry-proof",
+  "errors": []
+}
+
+=== valid-validate-control/stderr ===

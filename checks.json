@@ -1,0 +1,155 @@
+{
+  "focused-corrected": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-validation.test.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "--maxWorkers=1",
+      "-t",
+      "^(?!.*builds and installs selected entries without changing sibling runtime pairs)"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 41.234,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "e9c1d51e6ea5afed4ad60d54998f3a219a020116a50edbf24c34e15935f77483"
+  },
+  "format": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-authoring-root.ts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "scripts/build-plugin-control-ui.mts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 1.246,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "757288d166cdce6233c47b7e723fc86cff9e0aef6761cac984fdf9d55681f1a9"
+  },
+  "lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../plugin-root-types.tsconfig.json",
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-authoring-root.ts",
+      "src/cli/plugins-authoring-validation.test.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "src/cli/plugins-feature-artifact.ts",
+      "src/cli/plugins-runtime-lint-command.test.ts",
+      "src/cli/plugins-runtime-lint-command.ts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 117.442,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../plugin-root-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 25.391,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 2.188,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "f1732acf93762e7b9040d68672a2fadbedcf09a36e6e85ba9b6201981659dd63"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 2.01,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "diffSHA256": "bf77187e9b4d1084756921b5c0cfbdafd41c8cc146e055e302e5e26768f6ec14",
+    "logSHA256": "a618b278042576803fc31a555b6438d8e72ab4adec3b146bd9ec56487ca05e76"
+  },
+  "commit": {
+    "head": "a483ef8b3959f9b69db238350dee69ca9b4aa958",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "oldHead": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "fullIndexDiffSHA256": "65e0f4361ba3b9bd0d14c97ebc3bd5dad56ab2e2b5b0299f27e51fb4445a4ffb",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-authoring-root.ts",
+      "src/cli/plugins-authoring-validation.test.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "src/cli/plugins-feature-artifact.ts",
+      "src/cli/plugins-runtime-lint-command.test.ts",
+      "src/cli/plugins-runtime-lint-command.ts"
+    ],
+    "repairFiles": [
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-root.ts"
+    ],
+    "elapsedSeconds": 5.894,
+    "knownValidationLimitations": [
+      "Current focused selection PASS, one known BASE120s install timeout explicitly excluded by testNamePattern; prior failing full selection and BASE reproduction retained. No BASE test assertion/skip/timeout changed. Repair4 restores BASE backend entry declaration semantics and withdraws the earlier proposed entry-native-traversal scope."
+    ]
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 231.188,
+    "head": "a483ef8b3959f9b69db238350dee69ca9b4aa958",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "d17149c885d149651e3988fd17869b236daf460bff74931a5f2e1b552ef8326c"
+  }
+}
