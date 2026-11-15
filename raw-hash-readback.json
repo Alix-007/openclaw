@@ -1,0 +1,42 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "ae1d80aaf02cf9bd205720b0eb7fa1087ed095bc526925d24a01698291621b5f"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "f25066e92c7de950bfb7443d7f6904e8f5403338989a7199ffdd2f09854e8db5"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "e7117e5965dd5d31e378f5aec7842cab36a94e98e6dd0d8304e2d67016c2f535"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "70b32387f1ce8989b24df350436179184ea8e822dbe5d80863a0c0e03bb9f98d"
+  },
+  {
+    "file": "skill-source-proof-v1.py",
+    "rawSHA256": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "c5d7c15e7696fd0ed771c47b6a5d167d7c7d9f31f3f79fac36fa77d64c7849c2"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "48f7cb5baf1c5d48697127ff1275f650f5d9d06a99fd2f94bdb5c1379c193d4f"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "7aa73abcb2b5be883a67c17c7f0a071de583cae4636123ebbaed30a91fdba163"
+  },
+  {
+    "file": "focused-final.log",
+    "rawSHA256": "345612b9db2b8fa1d5e86bcdf77bcdfa941d95a7cbc4a865164fc95e5fc7727b"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "e47e3bcbe0ce39fe1c9ae97230ef7cfd7c3306e8b0e0e0c101a5f46dd8a1e747"
+  }
+]

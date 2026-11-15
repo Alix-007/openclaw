@@ -1,0 +1,168 @@
+{
+  "format-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "src/skills/lifecycle/source-install.ts"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 0.831,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "229a43613127d6905f555014ac289fe5ebf8d6d0163af18b63dc7094558dbda6"
+  },
+  "types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../skill-source-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 263.921,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "39f2ff2b1f4e2b4719264f8bdbfacfec9a370c6d55f799fc3fba93136b034f97"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 2.634,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "7741a6a815d6e37f0c298fcec41900148b678a31cd002ebd66ceb6b96475a57a"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 2.057,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "4ffb0319cec8e4ddeff751071959bd20e7cd46d6ab22eca278904dbfdd5937fa"
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 339.262,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "c4673aade1b310ba45a755a0a70ced6c4cf4a0044a0d50e1475d740c39f8ace8"
+  },
+  "commit": {
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "fullIndexDiffSHA256": "940b011b2c09c65903bd4caf271e6b72215737e1afd85559f9f5e737e7cb89ce",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "src/skills/lifecycle/source-install.ts"
+    ],
+    "elapsedSeconds": 8.596,
+    "knownValidationLimitations": []
+  },
+  "focused-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/skills/lifecycle/source-install.test.ts",
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 244.9,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "345612b9db2b8fa1d5e86bcdf77bcdfa941d95a7cbc4a865164fc95e5fc7727b"
+  },
+  "lint-corrected-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../skill-source-types.tsconfig.json",
+      "src/skills/lifecycle/source-install.ts",
+      "src/skills/lifecycle/source-install-paths.test.ts"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 317.22,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "565e607f6eaa2b1f3ccbf69cc0734e4954747b0e864edd253ec0566db7c772cd",
+    "logSHA256": "6ec9367954c9c2582e31837468ff600e805a40126de8a3db4adda6e0797b5fa6"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/skill-source",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/skill-source-proof-v1.py",
+      "<TASK>/skill-source",
+      "<TASK>/skill-source-head-proof",
+      "<NODE26>/bin/node",
+      "green"
+    ],
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "exit_code": 0,
+    "elapsed_seconds": 24.292,
+    "collectorSHA256": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b",
+    "runnerLogSHA256": "05355f21a7e5dacc42cf6fb8917450f6beb2338becb6b8a225500b81b0be3dad",
+    "receipt": "<TASK>/skill-source-head-proof/receipt.json"
+  }
+}

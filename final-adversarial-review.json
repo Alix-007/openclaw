@@ -1,0 +1,57 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "src/skills/lifecycle/source-install-paths.test.ts",
+      "sha256": "4b6392d44f6fd521e1067eeb6fa24db78f8a4d5277d1d38f389dcba260fa342b"
+    },
+    {
+      "path": "src/skills/lifecycle/source-install.ts",
+      "sha256": "a69da323081c54fe8c6f4804c130ad19d2210239f0bff1660e85799c96362a59"
+    }
+  ],
+  "fullIndexDiffSHA256": "940b011b2c09c65903bd4caf271e6b72215737e1afd85559f9f5e737e7cb89ce",
+  "bodySHA256": "519dc1f626548091c07b5ac0f3bc6afbdf5faf27eb3a93601b7cde05451115e9",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "commitSource": "Clean company-author/committer single-parent commit, exact expected base. Both source/test hashes and full committed patch match source approval.",
+    "build": "Normal cliStartup exit0 339.262s; actual dist/.buildstamp exactly matches native HEAD receipt and inputsClean true.",
+    "checks": "Existing+new focused29PASS, final corrected typedlint/types/format/stagedratchets PASS. Retained focused/static/build log hashes independently verified.",
+    "pairedProof": "Same frozen collector dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b BASE/HEAD/current. BASE2wrong validdecoys/ordinaryPASS -> HEAD GREEN3_SELECTED_SOURCES_INSTALLED, runner0 24.292s. All6 paired raw stdout/stderr pairs match hashes; actual installed SKILL.md/asset/origin independently read. HEAD raw origin spec equals actual CLI requested path, correct slug and canonical target.",
+    "sourceImmutability": "All10 source fixture instruction/asset files on each revision match immutable collector-defined bytes and retained sourceIntegrity count10/allUnchanged.",
+    "body": "Full four sections accurate; no withdrawn187016/186924 accepted-merge claim, no persistent linked-plugin identity cutover claim. Raw origin metadata and canonical installed slug destination distinguished.",
+    "metadataConsumers": "Source-stage review traced origin record owner and common policy/staging callers; metadata remains existing format, only requested raw local spec value is preserved. Git spec normalization unchanged."
+  },
+  "proofFiles": [
+    {
+      "path": "skill-source-proof-v1.py",
+      "sha256": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b"
+    },
+    {
+      "path": "skill-source-base-proof/receipt.json",
+      "sha256": "ae1d80aaf02cf9bd205720b0eb7fa1087ed095bc526925d24a01698291621b5f"
+    },
+    {
+      "path": "skill-source-head-proof/receipt.json",
+      "sha256": "e7117e5965dd5d31e378f5aec7842cab36a94e98e6dd0d8304e2d67016c2f535"
+    },
+    {
+      "path": "skill-source-cli-build.json",
+      "sha256": "6d4af6844658815b5592a921972dce1314f00143ebc686294845151004c700d3"
+    },
+    {
+      "path": "skill-source-head-proof-runner.json",
+      "sha256": "cbf479cffbc6da798eff6071683048ed198ae11d627004a647c08b727de57da7"
+    }
+  ],
+  "publicationBoundary": "Approve exact reviewed HEAD/evidence/body; PUBLIC_ARTIFACT_URL may be replaced only with a verified immutable evidence link, without other semantic text changes. Reviewer performs no publication.",
+  "limitations": [
+    "Isolated qualified Linux/Node synthetic local install; no external Git/ClawHub availability, live activation, native macOS/Windows, hostedCI or full repository suite proof.",
+    "New trailing-space/physical-parent table skipsWindows, as source review recorded.",
+    "No tests/build/collectors rerun or source/public writes by reviewer."
+  ]
+}
