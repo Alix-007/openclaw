@@ -1,0 +1,50 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "0ebfeb7c795d0b08ac58cfc502bcbe28ab525b2b3783d7daba1785692d12bc8c"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "51057d72850d2c02a8881f0b035dd78da71af30b72e170ae98771d69dd68c722"
+  },
+  {
+    "file": "BASE-proxy-events.json",
+    "rawSHA256": "761dfb32f2c07a3281f67f1906d8ed759083b6b4f530b7f04cf15820904d8340"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "050bfc7bd10814f63a61178cd8d97ef1f9b8ba25f45aebc2292ac1e9705664b0"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "8afdd3afb4164df30114f1cf225edbe29fe935162189e4f2ec766d390298c534"
+  },
+  {
+    "file": "HEAD-proxy-events.json",
+    "rawSHA256": "0e24e052b9fc89cda771189b77387d7e50a487fd288c536253a63ce10d7d424f"
+  },
+  {
+    "file": "security-probe-proof-v2.py",
+    "rawSHA256": "d00e9fd940eca06de6be46e278d48810c803cc377a3ff6090e3339077b21e281"
+  },
+  {
+    "file": "read-proxy.mjs",
+    "rawSHA256": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "4c7e659c336e24da41a059142f128c52b2e881742d8f44b0c6d470e5ce1b14b2"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "ae43a22b53434786c3ccdb74c6d8f89b0b51f640c0ec497d869ead457147665e"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "d28d26785df971f384621d1d1193931a7331c835dc3950d96180dcbaf812408a"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "40e97fbebd950e210e47b0b56625b609c34e273339eddd3d3e9a3171c488993a"
+  }
+]

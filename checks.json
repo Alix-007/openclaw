@@ -1,0 +1,196 @@
+{
+  "format-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/security-cli.test.ts",
+      "src/cli/security-cli.ts",
+      "src/security/audit-gateway-probe.ts",
+      "src/security/audit-probe-failure.test.ts",
+      "src/security/audit.ts",
+      "src/security/audit.types.ts"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 0.607,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "b3cae10ca0cbe8942ea5d77c86d14c542999aa9c960bc446c2c4fbdbf617dff6",
+    "logSHA256": "490bea783d9b84470563a8fb5b8457e33afe509b976f8b2beb071963b0037ea1"
+  },
+  "types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../security-probe-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 106.591,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "b3cae10ca0cbe8942ea5d77c86d14c542999aa9c960bc446c2c4fbdbf617dff6",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 2.169,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "b3cae10ca0cbe8942ea5d77c86d14c542999aa9c960bc446c2c4fbdbf617dff6",
+    "logSHA256": "dfe5f541aa7b394b1794fb791757b84c31d68e90bae1f41664602a3d716bd16f"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 2.162,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "b3cae10ca0cbe8942ea5d77c86d14c542999aa9c960bc446c2c4fbdbf617dff6",
+    "logSHA256": "3fce9a569ef86c1d00ac3f27c29857e786209d8b6b7038bc36ea31e3be5e6fa9"
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 248.706,
+    "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "d089722529e44c7e49bb11ae9d59f070507cc24ac14213654c3c2b1dd9faa541"
+  },
+  "commit": {
+    "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "fullIndexDiffSHA256": "294ec3db254336cb645d4a7e6b65fa33cafb4f5719793c45e08fbbe48c770f40",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "src/cli/security-cli.test.ts",
+      "src/cli/security-cli.ts",
+      "src/security/audit-gateway-probe.ts",
+      "src/security/audit-probe-failure.test.ts",
+      "src/security/audit.ts",
+      "src/security/audit.types.ts"
+    ],
+    "elapsedSeconds": 4.6,
+    "knownValidationLimitations": []
+  },
+  "focused": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/security-cli.test.ts",
+      "src/security/audit-probe-failure.test.ts",
+      "src/security/audit-node-runtime.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 211.268,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "80a9357d877314e53d3c42e3e4b4488539cb2d56f5ad4566e077baab6c9428f7",
+    "logSHA256": "473875c8a344b15a49e6cf0bc0f026721af3a82e0f464551d035c4e3fb17884a"
+  },
+  "lint-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../security-probe-types.tsconfig.json",
+      "src/cli/security-cli.ts",
+      "src/cli/security-cli.test.ts",
+      "src/security/audit-gateway-probe.ts",
+      "src/security/audit-probe-failure.test.ts",
+      "src/security/audit.ts"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 68.345,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "e48894eecf8f6b071dff5afefaa8b90e6139c548001d9f71c5301d88fc4d7378",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "lint-extracted": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../security-probe-types.tsconfig.json",
+      "src/security/audit.ts",
+      "src/security/audit.types.ts"
+    ],
+    "cwd": "<TASK>/security-probe",
+    "exit_code": 0,
+    "elapsed_seconds": 328.968,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "b3cae10ca0cbe8942ea5d77c86d14c542999aa9c960bc446c2c4fbdbf617dff6",
+    "logSHA256": "6ec9367954c9c2582e31837468ff600e805a40126de8a3db4adda6e0797b5fa6"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/security-probe",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/security-probe-proof-v2.py",
+      "<TASK>/security-probe",
+      "<TASK>/security-probe-head-proof",
+      "<NODE26>/bin/node",
+      "green"
+    ],
+    "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+    "exit_code": 0,
+    "elapsed_seconds": 42.294,
+    "collectorSHA256": "d00e9fd940eca06de6be46e278d48810c803cc377a3ff6090e3339077b21e281",
+    "runnerLogSHA256": "8486ca0a64b9ac2801571837727f57dc3472123143f554401a65a028e74a05d7",
+    "receipt": "<TASK>/security-probe-head-proof/receipt.json"
+  }
+}

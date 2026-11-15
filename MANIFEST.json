@@ -1,0 +1,15 @@
+{
+  "BASE.json": "326cb087e976dfd4aa8fecc04478cdf3ff74b008ad24927aef9c2cfc6d788229",
+  "BASE-streams.txt": "9ca8ca7cd6115da7c1d694e6ffe4a3ec4c8a9bf148a72572b355e6f260ed51a5",
+  "BASE-proxy-events.json": "a441153eb8e6ba208839d43fc9f11766679d6dbbff2a23b7383bb7d0c7e05cd8",
+  "HEAD.json": "69fe849f913eb9083dd232e5050d043593bdab8a55f23c5a6ab474f8bd47f968",
+  "HEAD-streams.txt": "b97afe6a5f4e18e1cb734267c1e2be4019356303cbdef19658a09c9768cc6379",
+  "HEAD-proxy-events.json": "d3e68bb70321e9fcada72581beb756ab5a0ff6531222b707a817a750e7946f1b",
+  "security-probe-proof-v2.py": "d00e9fd940eca06de6be46e278d48810c803cc377a3ff6090e3339077b21e281",
+  "read-proxy.mjs": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9",
+  "final-adversarial-review.md": "4c7e659c336e24da41a059142f128c52b2e881742d8f44b0c6d470e5ce1b14b2",
+  "final-adversarial-review.json": "ae43a22b53434786c3ccdb74c6d8f89b0b51f640c0ec497d869ead457147665e",
+  "checks.json": "de0150f86cf8c3945eac0eefc2fb6ffe93e1b202e18fabb4f8a9a5020130d38c",
+  "EVIDENCE.md": "40e97fbebd950e210e47b0b56625b609c34e273339eddd3d3e9a3171c488993a",
+  "raw-hash-readback.json": "e0dda9fbf1736bceaa304560783c5eb23123504d15ea730c072809174d4811b1"
+}

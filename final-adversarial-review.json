@@ -1,0 +1,77 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "src/cli/security-cli.test.ts",
+      "sha256": "69f43280d2a3882619efa71516251d68c524594c9fea60d7aeb1ff43094ac2d3"
+    },
+    {
+      "path": "src/cli/security-cli.ts",
+      "sha256": "42f1f355288840cbb6f3de0342f69ebce638c466bf53bfa54aaa33a9d1e92984"
+    },
+    {
+      "path": "src/security/audit-gateway-probe.ts",
+      "sha256": "2c25ba2cf837c01ac259ec7338fff1237c048cdc7e5acc67ee9d93c973d5bcac"
+    },
+    {
+      "path": "src/security/audit-probe-failure.test.ts",
+      "sha256": "fbc2f760571f53f8552c1f17e3c48004759a3f409e145ea9eb1bff4e7454ee09"
+    },
+    {
+      "path": "src/security/audit.ts",
+      "sha256": "66cd68156be28ea845bd566694f8db6707b17a0f90fae735bd7bf0ad72b9eeaa"
+    },
+    {
+      "path": "src/security/audit.types.ts",
+      "sha256": "045b0c7dfbff0ef3a55489200c1a3e002aa51a911ee1417a9b4f352ac2114964"
+    }
+  ],
+  "fullIndexDiffSHA256": "294ec3db254336cb645d4a7e6b65fa33cafb4f5719793c45e08fbbe48c770f40",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "cleanSingleParentCompanyCommit": true,
+    "sourceAndCommittedPatchMatchReviewedManifest": true,
+    "build": "Normal cliStartup build exit0 248.706s; actual clean matching-head dist/.buildstamp equals receipt stamp.",
+    "checks": "23 focused PASS; final types/format/typed lint including type extraction/staged ratchets PASS. Retained check log hashes verified. --fix receipt retention and ordinary error propagation covered by existing reviewed AsyncWorkScope tests.",
+    "native": "Same frozen collector/proxy hashes across BASE/HEAD/current. All five BASE and five HEAD raw stdout/stderr/event files hash-match receipts. Two HEAD interrupts natural130/143 at141.0/108.05ms; matching held actual-success connection close12.51/9.53ms, no late report, PTY EOF, no watchdog/CLI survivors. Three ordinary/auth-error controls pass.",
+    "cleanup": "Gateway/proxy exit0, no owned survivors, configuration unchanged.",
+    "body": "Four sections complete and supported; PUBLIC_ARTIFACT_URL may be replaced with immutable evidence URL without semantic change. Existing unpaired read-scope warning explicitly retained; no authenticated health-detail success claim."
+  },
+  "proofFiles": [
+    {
+      "path": "security-probe-proof-v2.py",
+      "sha256": "d00e9fd940eca06de6be46e278d48810c803cc377a3ff6090e3339077b21e281"
+    },
+    {
+      "path": "read-proxy.mjs",
+      "sha256": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9"
+    },
+    {
+      "path": "security-probe-base-proof-v2/receipt.json",
+      "sha256": "0ebfeb7c795d0b08ac58cfc502bcbe28ab525b2b3783d7daba1785692d12bc8c"
+    },
+    {
+      "path": "security-probe-head-proof/receipt.json",
+      "sha256": "050bfc7bd10814f63a61178cd8d97ef1f9b8ba25f45aebc2292ac1e9705664b0"
+    },
+    {
+      "path": "security-probe-cli-build.json",
+      "sha256": "16e23dfbf6041f70cb2d539370b84384508b1874a630b4511dd21add8c2211de"
+    },
+    {
+      "path": "security-probe-body-draft.md",
+      "sha256": "f4f00a5efffd9abb89a910e31085f000d41dff2d5fe333b0fa07bba2678ca64a"
+    }
+  ],
+  "publicationBoundary": "Source/evidence/body approved for this exact HEAD; only immutable artifact URL substitution remains outside reviewed semantic text. Reviewer performs no publication.",
+  "limitations": [
+    "Isolated qualified Linux/Node synthetic loopback Gateway/PTy proof; no native macOS/Windows, external model/service or hosted CI claim.",
+    "Scope is owned read-only deep Gateway probe; secret resolution, plugin-owned collectors and --fix cancellation are excluded.",
+    "23-test focused receipt predates type-only relocation and mechanical generic removal; final static gates cover exact source and final actual CLI proof covers exact commit.",
+    "No tests/builds/collectors rerun by reviewer."
+  ]
+}

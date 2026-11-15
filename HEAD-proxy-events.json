@@ -1,0 +1,656 @@
+[
+  {
+    "event": "listening",
+    "sequence": 1,
+    "wallMs": 1794749538345,
+    "port": 51049,
+    "pid": 87,
+    "observedAt": 3889147.177129765
+  },
+  {
+    "event": "configured",
+    "sequence": 2,
+    "wallMs": 1794749538347,
+    "mode": "connect",
+    "label": "deep-json-int",
+    "observedAt": 3889147.178915875
+  },
+  {
+    "event": "front-connected",
+    "sequence": 3,
+    "wallMs": 1794749543860,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "mode": "connect",
+    "observedAt": 3889152.692517261
+  },
+  {
+    "event": "request",
+    "sequence": 4,
+    "wallMs": 1794749543893,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "method": "connect",
+    "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+    "observedAt": 3889152.72559154
+  },
+  {
+    "event": "real-response",
+    "sequence": 5,
+    "wallMs": 1794749543951,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "method": "connect",
+    "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+    "ok": true,
+    "observedAt": 3889152.783044851
+  },
+  {
+    "event": "response-held",
+    "sequence": 6,
+    "wallMs": 1794749543951,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "method": "connect",
+    "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+    "actualGatewaySuccess": true,
+    "observedAt": 3889152.783064845
+  },
+  {
+    "event": "front-closed",
+    "sequence": 7,
+    "wallMs": 1794749543978,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "observedAt": 3889152.80960297
+  },
+  {
+    "event": "back-closed",
+    "sequence": 8,
+    "wallMs": 1794749543978,
+    "connectionId": 1,
+    "label": "deep-json-int",
+    "observedAt": 3889152.809762822
+  },
+  {
+    "event": "configured",
+    "sequence": 9,
+    "wallMs": 1794749544147,
+    "mode": "connect",
+    "label": "deep-human-term",
+    "observedAt": 3889152.978488779
+  },
+  {
+    "event": "front-connected",
+    "sequence": 10,
+    "wallMs": 1794749549303,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "mode": "connect",
+    "observedAt": 3889158.136087173
+  },
+  {
+    "event": "request",
+    "sequence": 11,
+    "wallMs": 1794749549311,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "method": "connect",
+    "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+    "observedAt": 3889158.14266961
+  },
+  {
+    "event": "real-response",
+    "sequence": 12,
+    "wallMs": 1794749549317,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "method": "connect",
+    "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+    "ok": true,
+    "observedAt": 3889158.148774114
+  },
+  {
+    "event": "response-held",
+    "sequence": 13,
+    "wallMs": 1794749549317,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "method": "connect",
+    "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+    "actualGatewaySuccess": true,
+    "observedAt": 3889158.148818048
+  },
+  {
+    "event": "front-closed",
+    "sequence": 14,
+    "wallMs": 1794749549339,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "observedAt": 3889158.171029241
+  },
+  {
+    "event": "back-closed",
+    "sequence": 15,
+    "wallMs": 1794749549339,
+    "connectionId": 2,
+    "label": "deep-human-term",
+    "observedAt": 3889158.171954225
+  },
+  {
+    "event": "configured",
+    "sequence": 16,
+    "wallMs": 1794749549491,
+    "mode": "normal",
+    "label": "deep-json-control",
+    "observedAt": 3889158.322849857
+  },
+  {
+    "event": "front-connected",
+    "sequence": 17,
+    "wallMs": 1794749554966,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "mode": "normal",
+    "observedAt": 3889163.800172106
+  },
+  {
+    "event": "request",
+    "sequence": 18,
+    "wallMs": 1794749554984,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "connect",
+    "requestId": "1:f7649215-b7b2-48e8-9ef8-a6aa29fdc055",
+    "observedAt": 3889163.817434235
+  },
+  {
+    "event": "real-response",
+    "sequence": 19,
+    "wallMs": 1794749554990,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "connect",
+    "requestId": "1:f7649215-b7b2-48e8-9ef8-a6aa29fdc055",
+    "ok": true,
+    "observedAt": 3889163.822465666
+  },
+  {
+    "event": "request",
+    "sequence": 20,
+    "wallMs": 1794749555009,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "health",
+    "requestId": "2:09cb6c43-865f-40f1-8763-150a18b9e9c0",
+    "observedAt": 3889163.844117285
+  },
+  {
+    "event": "request",
+    "sequence": 21,
+    "wallMs": 1794749555010,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "status",
+    "requestId": "3:34284c70-d404-4342-9d3a-d888ad7c52e9",
+    "observedAt": 3889163.844126925
+  },
+  {
+    "event": "request",
+    "sequence": 22,
+    "wallMs": 1794749555010,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "system-presence",
+    "requestId": "4:89c3fbc2-8640-4581-a77a-f5772d011c42",
+    "observedAt": 3889163.844133758
+  },
+  {
+    "event": "request",
+    "sequence": 23,
+    "wallMs": 1794749555010,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "config.get",
+    "requestId": "5:6a68ae8f-ce04-4d5d-ab77-c9afa8697acb",
+    "observedAt": 3889163.844138224
+  },
+  {
+    "event": "real-response",
+    "sequence": 24,
+    "wallMs": 1794749555066,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "method": "status",
+    "requestId": "3:34284c70-d404-4342-9d3a-d888ad7c52e9",
+    "ok": false,
+    "message": "missing scope: operator.read",
+    "observedAt": 3889163.898492132
+  },
+  {
+    "event": "front-closed",
+    "sequence": 25,
+    "wallMs": 1794749555075,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "observedAt": 3889163.9073927
+  },
+  {
+    "event": "back-closed",
+    "sequence": 26,
+    "wallMs": 1794749555076,
+    "connectionId": 3,
+    "label": "deep-json-control",
+    "observedAt": 3889163.907536023
+  },
+  {
+    "event": "configured",
+    "sequence": 27,
+    "wallMs": 1794749555249,
+    "mode": "normal",
+    "label": "deep-human-control",
+    "observedAt": 3889164.081375703
+  },
+  {
+    "event": "front-connected",
+    "sequence": 28,
+    "wallMs": 1794749560627,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "mode": "normal",
+    "observedAt": 3889169.459323432
+  },
+  {
+    "event": "request",
+    "sequence": 29,
+    "wallMs": 1794749560633,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "connect",
+    "requestId": "1:2f38b45f-0bed-4eb8-b229-e3ce1893d759",
+    "observedAt": 3889169.465056452
+  },
+  {
+    "event": "real-response",
+    "sequence": 30,
+    "wallMs": 1794749560639,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "connect",
+    "requestId": "1:2f38b45f-0bed-4eb8-b229-e3ce1893d759",
+    "ok": true,
+    "observedAt": 3889169.471185071
+  },
+  {
+    "event": "request",
+    "sequence": 31,
+    "wallMs": 1794749560643,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "health",
+    "requestId": "2:b350291b-601a-4855-b25c-4c28a256c5ad",
+    "observedAt": 3889169.474791003
+  },
+  {
+    "event": "request",
+    "sequence": 32,
+    "wallMs": 1794749560643,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "status",
+    "requestId": "3:37fe1e77-8da0-4b04-9b51-3fd173af6473",
+    "observedAt": 3889169.474810963
+  },
+  {
+    "event": "request",
+    "sequence": 33,
+    "wallMs": 1794749560643,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "system-presence",
+    "requestId": "4:cc600024-ff1e-41b3-8de4-85b6dd271a33",
+    "observedAt": 3889169.475086926
+  },
+  {
+    "event": "request",
+    "sequence": 34,
+    "wallMs": 1794749560643,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "config.get",
+    "requestId": "5:786631e0-5d1c-41a7-94a1-83b2d9066b4a",
+    "observedAt": 3889169.475167052
+  },
+  {
+    "event": "real-response",
+    "sequence": 35,
+    "wallMs": 1794749560648,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "status",
+    "requestId": "3:37fe1e77-8da0-4b04-9b51-3fd173af6473",
+    "ok": false,
+    "message": "missing scope: operator.read",
+    "observedAt": 3889169.479906874
+  },
+  {
+    "event": "real-response",
+    "sequence": 36,
+    "wallMs": 1794749560650,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "system-presence",
+    "requestId": "4:cc600024-ff1e-41b3-8de4-85b6dd271a33",
+    "ok": false,
+    "message": "missing scope: operator.sessions.read",
+    "observedAt": 3889169.481526585
+  },
+  {
+    "event": "real-response",
+    "sequence": 37,
+    "wallMs": 1794749560650,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "config.get",
+    "requestId": "5:786631e0-5d1c-41a7-94a1-83b2d9066b4a",
+    "ok": false,
+    "message": "missing scope: operator.read",
+    "observedAt": 3889169.482267766
+  },
+  {
+    "event": "real-response",
+    "sequence": 38,
+    "wallMs": 1794749560652,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "method": "health",
+    "requestId": "2:b350291b-601a-4855-b25c-4c28a256c5ad",
+    "ok": true,
+    "payload": {
+      "ok": true,
+      "ts": 1794749543950,
+      "durationMs": 4,
+      "configReload": {
+        "hotReloadStatus": "active"
+      },
+      "channels": {},
+      "channelOrder": [],
+      "channelLabels": {},
+      "heartbeatSeconds": 0,
+      "defaultAgentId": "main",
+      "agents": [
+        {
+          "agentId": "main",
+          "isDefault": true,
+          "heartbeat": {
+            "enabled": false,
+            "every": "disabled",
+            "everyMs": null,
+            "prompt": "",
+            "target": "none",
+            "ackMaxChars": 300
+          },
+          "sessions": {
+            "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+            "count": 0,
+            "recent": []
+          }
+        }
+      ],
+      "sessions": {
+        "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+        "count": 0,
+        "recent": []
+      },
+      "coreReady": true,
+      "modelRuntime": {
+        "degraded": false,
+        "pendingAgents": []
+      },
+      "eventLoop": {
+        "degraded": false,
+        "degradedSinceMs": null,
+        "reasons": [],
+        "intervalMs": 10004.323744000001,
+        "delayP99Ms": 0,
+        "delayMaxMs": 4.665403999999398,
+        "utilization": 0.686,
+        "cpuCoreRatio": 0.048,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.013,
+          "hostUtilization": 0.206,
+          "hostCpuCount": 16,
+          "workerCoreRatio": 0.01,
+          "otherThreadsCoreRatio": 0.025
+        }
+      },
+      "childRuntime": {
+        "execPath": "[redacted]",
+        "available": true
+      },
+      "recentCrashes": []
+    },
+    "observedAt": 3889169.483639205
+  },
+  {
+    "event": "front-closed",
+    "sequence": 39,
+    "wallMs": 1794749560653,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "observedAt": 3889169.484727858
+  },
+  {
+    "event": "back-closed",
+    "sequence": 40,
+    "wallMs": 1794749560653,
+    "connectionId": 4,
+    "label": "deep-human-control",
+    "observedAt": 3889169.484854266
+  },
+  {
+    "event": "configured",
+    "sequence": 41,
+    "wallMs": 1794749561038,
+    "mode": "error",
+    "label": "auth-error-control",
+    "observedAt": 3889169.872027449
+  },
+  {
+    "event": "front-connected",
+    "sequence": 42,
+    "wallMs": 1794749566368,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "mode": "error",
+    "observedAt": 3889175.201652714
+  },
+  {
+    "event": "request",
+    "sequence": 43,
+    "wallMs": 1794749566391,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "connect",
+    "requestId": "1:9cb7eb32-14bc-43da-8ace-2fcbdbd0d7e0",
+    "observedAt": 3889175.22378201
+  },
+  {
+    "event": "real-response",
+    "sequence": 44,
+    "wallMs": 1794749566397,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "connect",
+    "requestId": "1:9cb7eb32-14bc-43da-8ace-2fcbdbd0d7e0",
+    "ok": true,
+    "observedAt": 3889175.229298823
+  },
+  {
+    "event": "request",
+    "sequence": 45,
+    "wallMs": 1794749566404,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "health",
+    "requestId": "2:747d88ae-cef1-4135-913b-fcd9b552b589",
+    "observedAt": 3889175.236781323
+  },
+  {
+    "event": "request",
+    "sequence": 46,
+    "wallMs": 1794749566404,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "status",
+    "requestId": "3:b606caa0-fb14-4146-9a82-fc42c29caae4",
+    "observedAt": 3889175.236795296
+  },
+  {
+    "event": "request",
+    "sequence": 47,
+    "wallMs": 1794749566405,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "system-presence",
+    "requestId": "4:bf3f724d-00be-4cf1-a550-e46877a8195b",
+    "observedAt": 3889175.236802772
+  },
+  {
+    "event": "request",
+    "sequence": 48,
+    "wallMs": 1794749566405,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "config.get",
+    "requestId": "5:2afd6992-9983-4e8a-8f13-093722312924",
+    "observedAt": 3889175.236809772
+  },
+  {
+    "event": "real-response",
+    "sequence": 49,
+    "wallMs": 1794749566447,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "status",
+    "requestId": "3:b606caa0-fb14-4146-9a82-fc42c29caae4",
+    "ok": false,
+    "message": "missing scope: operator.read",
+    "observedAt": 3889175.27907281
+  },
+  {
+    "event": "real-response",
+    "sequence": 50,
+    "wallMs": 1794749566453,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "system-presence",
+    "requestId": "4:bf3f724d-00be-4cf1-a550-e46877a8195b",
+    "ok": false,
+    "message": "missing scope: operator.sessions.read",
+    "observedAt": 3889175.285327787
+  },
+  {
+    "event": "real-response",
+    "sequence": 51,
+    "wallMs": 1794749566455,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "config.get",
+    "requestId": "5:2afd6992-9983-4e8a-8f13-093722312924",
+    "ok": false,
+    "message": "missing scope: operator.read",
+    "observedAt": 3889175.287344736
+  },
+  {
+    "event": "real-response",
+    "sequence": 52,
+    "wallMs": 1794749566456,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "method": "health",
+    "requestId": "2:747d88ae-cef1-4135-913b-fcd9b552b589",
+    "ok": true,
+    "payload": {
+      "ok": true,
+      "ts": 1794749543950,
+      "durationMs": 4,
+      "configReload": {
+        "hotReloadStatus": "active"
+      },
+      "channels": {},
+      "channelOrder": [],
+      "channelLabels": {},
+      "heartbeatSeconds": 0,
+      "defaultAgentId": "main",
+      "agents": [
+        {
+          "agentId": "main",
+          "isDefault": true,
+          "heartbeat": {
+            "enabled": false,
+            "every": "disabled",
+            "everyMs": null,
+            "prompt": "",
+            "target": "none",
+            "ackMaxChars": 300
+          },
+          "sessions": {
+            "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+            "count": 0,
+            "recent": []
+          }
+        }
+      ],
+      "sessions": {
+        "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+        "count": 0,
+        "recent": []
+      },
+      "coreReady": true,
+      "modelRuntime": {
+        "degraded": false,
+        "pendingAgents": []
+      },
+      "eventLoop": {
+        "degraded": false,
+        "degradedSinceMs": null,
+        "reasons": [],
+        "intervalMs": 10004.323744000001,
+        "delayP99Ms": 0,
+        "delayMaxMs": 4.665403999999398,
+        "utilization": 0.686,
+        "cpuCoreRatio": 0.048,
+        "cpuBreakdown": {
+          "mainThreadCoreRatio": 0.013,
+          "hostUtilization": 0.206,
+          "hostCpuCount": 16,
+          "workerCoreRatio": 0.01,
+          "otherThreadsCoreRatio": 0.025
+        }
+      },
+      "childRuntime": {
+        "execPath": "[redacted]",
+        "available": true
+      },
+      "recentCrashes": []
+    },
+    "observedAt": 3889175.288275635
+  },
+  {
+    "event": "front-closed",
+    "sequence": 53,
+    "wallMs": 1794749566458,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "observedAt": 3889175.290070641
+  },
+  {
+    "event": "back-closed",
+    "sequence": 54,
+    "wallMs": 1794749566458,
+    "connectionId": 5,
+    "label": "auth-error-control",
+    "observedAt": 3889175.290086893
+  }
+]

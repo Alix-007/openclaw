@@ -1,0 +1,136 @@
+
+=== deep-json-int/stdout ===
+^C
+=== deep-json-int/stderr ===
+Command interrupted by SIGINT. Waiting for cleanup before exiting.
+
+=== deep-human-term/stdout ===
+
+OpenClaw 2026.11.3 (c0166c3) — Half butler, half debugger, full crustacean.
+
+
+=== deep-human-term/stderr ===
+Command interrupted by SIGTERM. Waiting for cleanup before exiting.
+
+=== deep-json-control/stdout ===
+{
+  "ts": 1794746957740,
+  "summary": {
+    "critical": 0,
+    "warn": 2,
+    "info": 1
+  },
+  "findings": [
+    {
+      "checkId": "summary.attack_surface",
+      "severity": "info",
+      "title": "Exposure summary",
+      "detail": "groups: open=0, allowlist=0\ndirect messages: open=0\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model"
+    },
+    {
+      "checkId": "fs.state_dir.perms_readable",
+      "severity": "warn",
+      "title": "State dir is readable by others",
+      "detail": "<TASK>/security-probe-base-proof-v2/state mode=755; consider restricting to 700.",
+      "remediation": "chmod 700 <TASK>/security-probe-base-proof-v2/state"
+    },
+    {
+      "checkId": "gateway.probe_failed",
+      "severity": "warn",
+      "title": "Gateway check failed (deep)",
+      "detail": "missing scope: operator.read",
+      "remediation": "Run \"openclaw status --all\" to debug connectivity/auth, then re-run \"openclaw security audit --deep\"."
+    }
+  ],
+  "deep": {
+    "gateway": {
+      "attempted": true,
+      "url": "ws://127.0.0.1:47577",
+      "ok": false,
+      "error": "missing scope: operator.read",
+      "close": null
+    }
+  },
+  "secretDiagnostics": []
+}
+
+=== deep-json-control/stderr ===
+
+=== deep-human-control/stdout ===
+
+OpenClaw 2026.11.3 (c0166c3) — If found wandering, please return to ~/.openclaw.
+
+OpenClaw security audit
+Summary: 0 critical · 2 warn · 1 info
+Run deeper: openclaw security audit --deep
+
+WARN
+fs.state_dir.perms_readable State dir is readable by others
+  <TASK>/security-probe-base-proof-v2/state mode=755; consider restricting to 700.
+  Fix: chmod 700 <TASK>/security-probe-base-proof-v2/state
+gateway.probe_failed Gateway check failed (deep)
+  missing scope: operator.read
+  Fix: Run "openclaw status --all" to debug connectivity/auth, then re-run "openclaw security audit --deep".
+
+INFO
+summary.attack_surface Exposure summary
+  groups: open=0, allowlist=0
+direct messages: open=0
+tools.elevated: enabled
+hooks.webhooks: disabled
+hooks.internal: enabled
+browser control: enabled
+trust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model
+
+=== deep-human-control/stderr ===
+
+=== auth-error-control/stdout ===
+{
+  "ts": 1794746969327,
+  "summary": {
+    "critical": 0,
+    "warn": 3,
+    "info": 1
+  },
+  "findings": [
+    {
+      "checkId": "summary.attack_surface",
+      "severity": "info",
+      "title": "Exposure summary",
+      "detail": "groups: open=0, allowlist=0\ndirect messages: open=0\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model"
+    },
+    {
+      "checkId": "gateway.env_token_overrides_config",
+      "severity": "warn",
+      "title": "OPENCLAW_GATEWAY_TOKEN conflicts with gateway.auth.token",
+      "detail": "OPENCLAW_GATEWAY_TOKEN is set while gateway.auth.token uses a different configured source. Configured local Gateway clients and the managed gateway service prefer gateway.auth.token. Environment credentials remain active for explicit environment URL and node-host targets, so a stale value can still authenticate against the wrong target.",
+      "remediation": "Remove OPENCLAW_GATEWAY_TOKEN from the shell, ~/.openclaw/.env, or launchctl env if gateway.auth.token is intended, or point gateway.auth.token at ${OPENCLAW_GATEWAY_TOKEN} if the environment variable should supply the token."
+    },
+    {
+      "checkId": "fs.state_dir.perms_readable",
+      "severity": "warn",
+      "title": "State dir is readable by others",
+      "detail": "<TASK>/security-probe-base-proof-v2/state mode=755; consider restricting to 700.",
+      "remediation": "chmod 700 <TASK>/security-probe-base-proof-v2/state"
+    },
+    {
+      "checkId": "gateway.probe_failed",
+      "severity": "warn",
+      "title": "Gateway check failed (deep)",
+      "detail": "missing scope: operator.read",
+      "remediation": "Run \"openclaw status --all\" to debug connectivity/auth, then re-run \"openclaw security audit --deep\"."
+    }
+  ],
+  "deep": {
+    "gateway": {
+      "attempted": true,
+      "url": "ws://127.0.0.1:47577",
+      "ok": false,
+      "error": "missing scope: operator.read",
+      "close": null
+    }
+  },
+  "secretDiagnostics": []
+}
+
+=== auth-error-control/stderr ===

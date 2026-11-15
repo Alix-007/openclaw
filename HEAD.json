@@ -1,0 +1,868 @@
+{
+  "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+  "stamp": {
+    "builtAt": 1794749485380,
+    "head": "0ab1567b5c6b7a6f76ce93abde9b1af470407132",
+    "inputsClean": true,
+    "inputSignature": "fe73f63793a3db352dc87788359289d54048eed63a46c8eb684abf22e1c1bdb3"
+  },
+  "expectation": "green",
+  "hashes": {
+    "security-probe-proof-v2.py": "d00e9fd940eca06de6be46e278d48810c803cc377a3ff6090e3339077b21e281",
+    "read-proxy.mjs": "8ea5cd813feb87a2a6796c30b93fc4ea8505affecaf08e75685c92ecadacacf9"
+  },
+  "boundary": "normal built security audit --deep through controlling PTY, actual core audit and Gateway probe; transparent proxy records and holds actual successful Gateway handshake replies; existing unpaired read-scope warning is retained in ordinary controls",
+  "cases": [
+    {
+      "label": "deep-json-int",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/security-probe/openclaw.mjs",
+        "security",
+        "audit",
+        "--deep",
+        "--json"
+      ],
+      "lane": "security",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:51049",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "connect",
+      "follow": false,
+      "signal": "SIGINT",
+      "exitCode": 130,
+      "seconds": 5.755,
+      "interruptToExitMs": 141.0,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 12.51,
+      "targetConnectionIds": [
+        1
+      ],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "stderrSHA256": "4945b051de1ef1e8e11b9264fcbcae435135b4af9667202a763bce74a899755c",
+      "stdout": "^C",
+      "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 2,
+          "wallMs": 1794749538347,
+          "mode": "connect",
+          "label": "deep-json-int",
+          "observedAt": 3889147.178915875
+        },
+        {
+          "event": "front-connected",
+          "sequence": 3,
+          "wallMs": 1794749543860,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "mode": "connect",
+          "observedAt": 3889152.692517261
+        },
+        {
+          "event": "request",
+          "sequence": 4,
+          "wallMs": 1794749543893,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "method": "connect",
+          "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+          "observedAt": 3889152.72559154
+        },
+        {
+          "event": "real-response",
+          "sequence": 5,
+          "wallMs": 1794749543951,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "method": "connect",
+          "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+          "ok": true,
+          "observedAt": 3889152.783044851
+        },
+        {
+          "event": "response-held",
+          "sequence": 6,
+          "wallMs": 1794749543951,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "method": "connect",
+          "requestId": "1:8c434d4e-2744-41ac-b676-29b145f75652",
+          "actualGatewaySuccess": true,
+          "observedAt": 3889152.783064845
+        },
+        {
+          "event": "front-closed",
+          "sequence": 7,
+          "wallMs": 1794749543978,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "observedAt": 3889152.80960297
+        },
+        {
+          "event": "back-closed",
+          "sequence": 8,
+          "wallMs": 1794749543978,
+          "connectionId": 1,
+          "label": "deep-json-int",
+          "observedAt": 3889152.809762822
+        }
+      ],
+      "result": "GREEN_READ_ABORT"
+    },
+    {
+      "label": "deep-human-term",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/security-probe/openclaw.mjs",
+        "security",
+        "audit",
+        "--deep"
+      ],
+      "lane": "security",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:51049",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "connect",
+      "follow": true,
+      "signal": "SIGTERM",
+      "exitCode": 143,
+      "seconds": 5.286,
+      "interruptToExitMs": 108.05,
+      "interruptSent": true,
+      "interruptToFrontCloseMs": 9.53,
+      "targetConnectionIds": [
+        2
+      ],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": true,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "e784919c5281b0de465f45d8d85bfeb5b7b808cc047f160d6e5ea2224bf8e35c",
+      "stderrSHA256": "e3066dbde095b2248eba34c614ffb6a9845e3da482b950141dfdf529bc83c7a9",
+      "stdout": "\r\nOpenClaw 2026.11.3 (0ab1567) \u2014 I'm the middleware between your ambition and your attention span.\r\n\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "stderr": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\n",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 9,
+          "wallMs": 1794749544147,
+          "mode": "connect",
+          "label": "deep-human-term",
+          "observedAt": 3889152.978488779
+        },
+        {
+          "event": "front-connected",
+          "sequence": 10,
+          "wallMs": 1794749549303,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "mode": "connect",
+          "observedAt": 3889158.136087173
+        },
+        {
+          "event": "request",
+          "sequence": 11,
+          "wallMs": 1794749549311,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "method": "connect",
+          "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+          "observedAt": 3889158.14266961
+        },
+        {
+          "event": "real-response",
+          "sequence": 12,
+          "wallMs": 1794749549317,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "method": "connect",
+          "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+          "ok": true,
+          "observedAt": 3889158.148774114
+        },
+        {
+          "event": "response-held",
+          "sequence": 13,
+          "wallMs": 1794749549317,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "method": "connect",
+          "requestId": "1:ade30419-6c3a-4363-91b8-04627fd74e65",
+          "actualGatewaySuccess": true,
+          "observedAt": 3889158.148818048
+        },
+        {
+          "event": "front-closed",
+          "sequence": 14,
+          "wallMs": 1794749549339,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "observedAt": 3889158.171029241
+        },
+        {
+          "event": "back-closed",
+          "sequence": 15,
+          "wallMs": 1794749549339,
+          "connectionId": 2,
+          "label": "deep-human-term",
+          "observedAt": 3889158.171954225
+        }
+      ],
+      "result": "GREEN_READ_ABORT"
+    },
+    {
+      "label": "deep-json-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/security-probe/openclaw.mjs",
+        "security",
+        "audit",
+        "--deep",
+        "--json"
+      ],
+      "lane": "security",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:51049",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 5.74,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "47b987a58ba74f3b1da965064799dca4e8349282ad4edb0d575b8b15f919d2aa",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"ts\": 1794749555079,\r\n  \"summary\": {\r\n    \"critical\": 0,\r\n    \"warn\": 2,\r\n    \"info\": 1\r\n  },\r\n  \"findings\": [\r\n    {\r\n      \"checkId\": \"summary.attack_surface\",\r\n      \"severity\": \"info\",\r\n      \"title\": \"Exposure summary\",\r\n      \"detail\": \"groups: open=0, allowlist=0\\ndirect messages: open=0\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model\"\r\n    },\r\n    {\r\n      \"checkId\": \"fs.state_dir.perms_readable\",\r\n      \"severity\": \"warn\",\r\n      \"title\": \"State dir is readable by others\",\r\n      \"detail\": \"<TASK>/security-probe-head-proof/state mode=755; consider restricting to 700.\",\r\n      \"remediation\": \"chmod 700 <TASK>/security-probe-head-proof/state\"\r\n    },\r\n    {\r\n      \"checkId\": \"gateway.probe_failed\",\r\n      \"severity\": \"warn\",\r\n      \"title\": \"Gateway check failed (deep)\",\r\n      \"detail\": \"missing scope: operator.read\",\r\n      \"remediation\": \"Run \\\"openclaw status --all\\\" to debug connectivity/auth, then re-run \\\"openclaw security audit --deep\\\".\"\r\n    }\r\n  ],\r\n  \"deep\": {\r\n    \"gateway\": {\r\n      \"attempted\": true,\r\n      \"url\": \"ws://127.0.0.1:51049\",\r\n      \"ok\": false,\r\n      \"error\": \"missing scope: operator.read\",\r\n      \"close\": null\r\n    }\r\n  },\r\n  \"secretDiagnostics\": []\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 16,
+          "wallMs": 1794749549491,
+          "mode": "normal",
+          "label": "deep-json-control",
+          "observedAt": 3889158.322849857
+        },
+        {
+          "event": "front-connected",
+          "sequence": 17,
+          "wallMs": 1794749554966,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "mode": "normal",
+          "observedAt": 3889163.800172106
+        },
+        {
+          "event": "request",
+          "sequence": 18,
+          "wallMs": 1794749554984,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "connect",
+          "requestId": "1:f7649215-b7b2-48e8-9ef8-a6aa29fdc055",
+          "observedAt": 3889163.817434235
+        },
+        {
+          "event": "real-response",
+          "sequence": 19,
+          "wallMs": 1794749554990,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "connect",
+          "requestId": "1:f7649215-b7b2-48e8-9ef8-a6aa29fdc055",
+          "ok": true,
+          "observedAt": 3889163.822465666
+        },
+        {
+          "event": "request",
+          "sequence": 20,
+          "wallMs": 1794749555009,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "health",
+          "requestId": "2:09cb6c43-865f-40f1-8763-150a18b9e9c0",
+          "observedAt": 3889163.844117285
+        },
+        {
+          "event": "request",
+          "sequence": 21,
+          "wallMs": 1794749555010,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "status",
+          "requestId": "3:34284c70-d404-4342-9d3a-d888ad7c52e9",
+          "observedAt": 3889163.844126925
+        },
+        {
+          "event": "request",
+          "sequence": 22,
+          "wallMs": 1794749555010,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "system-presence",
+          "requestId": "4:89c3fbc2-8640-4581-a77a-f5772d011c42",
+          "observedAt": 3889163.844133758
+        },
+        {
+          "event": "request",
+          "sequence": 23,
+          "wallMs": 1794749555010,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "config.get",
+          "requestId": "5:6a68ae8f-ce04-4d5d-ab77-c9afa8697acb",
+          "observedAt": 3889163.844138224
+        },
+        {
+          "event": "real-response",
+          "sequence": 24,
+          "wallMs": 1794749555066,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "method": "status",
+          "requestId": "3:34284c70-d404-4342-9d3a-d888ad7c52e9",
+          "ok": false,
+          "message": "missing scope: operator.read",
+          "observedAt": 3889163.898492132
+        },
+        {
+          "event": "front-closed",
+          "sequence": 25,
+          "wallMs": 1794749555075,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "observedAt": 3889163.9073927
+        },
+        {
+          "event": "back-closed",
+          "sequence": 26,
+          "wallMs": 1794749555076,
+          "connectionId": 3,
+          "label": "deep-json-control",
+          "observedAt": 3889163.907536023
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "deep-human-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/security-probe/openclaw.mjs",
+        "security",
+        "audit",
+        "--deep"
+      ],
+      "lane": "security",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:51049",
+        "auth": "isolated synthetic token"
+      },
+      "mode": "normal",
+      "follow": true,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 5.77,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "689361555923fde463bb903e2b43431ef022f1889aaa350e5d0b2e6e1915ecad",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\r\nOpenClaw 2026.11.3 (0ab1567) \u2014 No $999 stand required.\r\n\r\nOpenClaw security audit\r\nSummary: 0 critical \u00b7 2 warn \u00b7 1 info\r\nRun deeper: openclaw security audit --deep\r\n\r\nWARN\r\nfs.state_dir.perms_readable State dir is readable by others\r\n  <TASK>/security-probe-head-proof/state mode=755; consider restricting to 700.\r\n  Fix: chmod 700 <TASK>/security-probe-head-proof/state\r\ngateway.probe_failed Gateway check failed (deep)\r\n  missing scope: operator.read\r\n  Fix: Run \"openclaw status --all\" to debug connectivity/auth, then re-run \"openclaw security audit --deep\".\r\n\r\nINFO\r\nsummary.attack_surface Exposure summary\r\n  groups: open=0, allowlist=0\r\ndirect messages: open=0\r\ntools.elevated: enabled\r\nhooks.webhooks: disabled\r\nhooks.internal: enabled\r\nbrowser control: enabled\r\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 27,
+          "wallMs": 1794749555249,
+          "mode": "normal",
+          "label": "deep-human-control",
+          "observedAt": 3889164.081375703
+        },
+        {
+          "event": "front-connected",
+          "sequence": 28,
+          "wallMs": 1794749560627,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "mode": "normal",
+          "observedAt": 3889169.459323432
+        },
+        {
+          "event": "request",
+          "sequence": 29,
+          "wallMs": 1794749560633,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "connect",
+          "requestId": "1:2f38b45f-0bed-4eb8-b229-e3ce1893d759",
+          "observedAt": 3889169.465056452
+        },
+        {
+          "event": "real-response",
+          "sequence": 30,
+          "wallMs": 1794749560639,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "connect",
+          "requestId": "1:2f38b45f-0bed-4eb8-b229-e3ce1893d759",
+          "ok": true,
+          "observedAt": 3889169.471185071
+        },
+        {
+          "event": "request",
+          "sequence": 31,
+          "wallMs": 1794749560643,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "health",
+          "requestId": "2:b350291b-601a-4855-b25c-4c28a256c5ad",
+          "observedAt": 3889169.474791003
+        },
+        {
+          "event": "request",
+          "sequence": 32,
+          "wallMs": 1794749560643,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "status",
+          "requestId": "3:37fe1e77-8da0-4b04-9b51-3fd173af6473",
+          "observedAt": 3889169.474810963
+        },
+        {
+          "event": "request",
+          "sequence": 33,
+          "wallMs": 1794749560643,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "system-presence",
+          "requestId": "4:cc600024-ff1e-41b3-8de4-85b6dd271a33",
+          "observedAt": 3889169.475086926
+        },
+        {
+          "event": "request",
+          "sequence": 34,
+          "wallMs": 1794749560643,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "config.get",
+          "requestId": "5:786631e0-5d1c-41a7-94a1-83b2d9066b4a",
+          "observedAt": 3889169.475167052
+        },
+        {
+          "event": "real-response",
+          "sequence": 35,
+          "wallMs": 1794749560648,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "status",
+          "requestId": "3:37fe1e77-8da0-4b04-9b51-3fd173af6473",
+          "ok": false,
+          "message": "missing scope: operator.read",
+          "observedAt": 3889169.479906874
+        },
+        {
+          "event": "real-response",
+          "sequence": 36,
+          "wallMs": 1794749560650,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "system-presence",
+          "requestId": "4:cc600024-ff1e-41b3-8de4-85b6dd271a33",
+          "ok": false,
+          "message": "missing scope: operator.sessions.read",
+          "observedAt": 3889169.481526585
+        },
+        {
+          "event": "real-response",
+          "sequence": 37,
+          "wallMs": 1794749560650,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "config.get",
+          "requestId": "5:786631e0-5d1c-41a7-94a1-83b2d9066b4a",
+          "ok": false,
+          "message": "missing scope: operator.read",
+          "observedAt": 3889169.482267766
+        },
+        {
+          "event": "real-response",
+          "sequence": 38,
+          "wallMs": 1794749560652,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "method": "health",
+          "requestId": "2:b350291b-601a-4855-b25c-4c28a256c5ad",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "ts": 1794749543950,
+            "durationMs": 4,
+            "configReload": {
+              "hotReloadStatus": "active"
+            },
+            "channels": {},
+            "channelOrder": [],
+            "channelLabels": {},
+            "heartbeatSeconds": 0,
+            "defaultAgentId": "main",
+            "agents": [
+              {
+                "agentId": "main",
+                "isDefault": true,
+                "heartbeat": {
+                  "enabled": false,
+                  "every": "disabled",
+                  "everyMs": null,
+                  "prompt": "",
+                  "target": "none",
+                  "ackMaxChars": 300
+                },
+                "sessions": {
+                  "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+                  "count": 0,
+                  "recent": []
+                }
+              }
+            ],
+            "sessions": {
+              "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+              "count": 0,
+              "recent": []
+            },
+            "coreReady": true,
+            "modelRuntime": {
+              "degraded": false,
+              "pendingAgents": []
+            },
+            "eventLoop": {
+              "degraded": false,
+              "degradedSinceMs": null,
+              "reasons": [],
+              "intervalMs": 10004.323744000001,
+              "delayP99Ms": 0,
+              "delayMaxMs": 4.665403999999398,
+              "utilization": 0.686,
+              "cpuCoreRatio": 0.048,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.013,
+                "hostUtilization": 0.206,
+                "hostCpuCount": 16,
+                "workerCoreRatio": 0.01,
+                "otherThreadsCoreRatio": 0.025
+              }
+            },
+            "childRuntime": {
+              "execPath": "[redacted]",
+              "available": true
+            },
+            "recentCrashes": []
+          },
+          "observedAt": 3889169.483639205
+        },
+        {
+          "event": "front-closed",
+          "sequence": 39,
+          "wallMs": 1794749560653,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "observedAt": 3889169.484727858
+        },
+        {
+          "event": "back-closed",
+          "sequence": 40,
+          "wallMs": 1794749560653,
+          "connectionId": 4,
+          "label": "deep-human-control",
+          "observedAt": 3889169.484854266
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    },
+    {
+      "label": "auth-error-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/security-probe/openclaw.mjs",
+        "security",
+        "audit",
+        "--deep",
+        "--json"
+      ],
+      "lane": "security",
+      "environment": {
+        "OPENCLAW_GATEWAY_URL": "ws://127.0.0.1:51049",
+        "auth": "wrong synthetic token"
+      },
+      "mode": "error",
+      "follow": false,
+      "signal": null,
+      "exitCode": 0,
+      "seconds": 5.579,
+      "interruptToExitMs": null,
+      "interruptSent": false,
+      "interruptToFrontCloseMs": null,
+      "targetConnectionIds": [],
+      "frontClosedBeforeHarnessCleanup": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "configUnchanged": true,
+      "survivorsBeforeHarnessCleanup": [],
+      "stdoutSHA256": "e3ce3aadec92914fcb88db6227538714035e6efd869a965f5a41549fbf15b5bf",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\r\n  \"ts\": 1794749566462,\r\n  \"summary\": {\r\n    \"critical\": 0,\r\n    \"warn\": 3,\r\n    \"info\": 1\r\n  },\r\n  \"findings\": [\r\n    {\r\n      \"checkId\": \"summary.attack_surface\",\r\n      \"severity\": \"info\",\r\n      \"title\": \"Exposure summary\",\r\n      \"detail\": \"groups: open=0, allowlist=0\\ndirect messages: open=0\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For mutually untrusted users or organizations, run separate Gateways with separate credentials, ideally under separate OS users or hosts: https://docs.openclaw.ai/gateway/security/trust-model\"\r\n    },\r\n    {\r\n      \"checkId\": \"gateway.env_token_overrides_config\",\r\n      \"severity\": \"warn\",\r\n      \"title\": \"OPENCLAW_GATEWAY_TOKEN conflicts with gateway.auth.token\",\r\n      \"detail\": \"OPENCLAW_GATEWAY_TOKEN is set while gateway.auth.token uses a different configured source. Configured local Gateway clients and the managed gateway service prefer gateway.auth.token. Environment credentials remain active for explicit environment URL and node-host targets, so a stale value can still authenticate against the wrong target.\",\r\n      \"remediation\": \"Remove OPENCLAW_GATEWAY_TOKEN from the shell, ~/.openclaw/.env, or launchctl env if gateway.auth.token is intended, or point gateway.auth.token at ${OPENCLAW_GATEWAY_TOKEN} if the environment variable should supply the token.\"\r\n    },\r\n    {\r\n      \"checkId\": \"fs.state_dir.perms_readable\",\r\n      \"severity\": \"warn\",\r\n      \"title\": \"State dir is readable by others\",\r\n      \"detail\": \"<TASK>/security-probe-head-proof/state mode=755; consider restricting to 700.\",\r\n      \"remediation\": \"chmod 700 <TASK>/security-probe-head-proof/state\"\r\n    },\r\n    {\r\n      \"checkId\": \"gateway.probe_failed\",\r\n      \"severity\": \"warn\",\r\n      \"title\": \"Gateway check failed (deep)\",\r\n      \"detail\": \"missing scope: operator.read\",\r\n      \"remediation\": \"Run \\\"openclaw status --all\\\" to debug connectivity/auth, then re-run \\\"openclaw security audit --deep\\\".\"\r\n    }\r\n  ],\r\n  \"deep\": {\r\n    \"gateway\": {\r\n      \"attempted\": true,\r\n      \"url\": \"ws://127.0.0.1:51049\",\r\n      \"ok\": false,\r\n      \"error\": \"missing scope: operator.read\",\r\n      \"close\": null\r\n    }\r\n  },\r\n  \"secretDiagnostics\": []\r\n}\r\n",
+      "stderr": "",
+      "events": [
+        {
+          "event": "configured",
+          "sequence": 41,
+          "wallMs": 1794749561038,
+          "mode": "error",
+          "label": "auth-error-control",
+          "observedAt": 3889169.872027449
+        },
+        {
+          "event": "front-connected",
+          "sequence": 42,
+          "wallMs": 1794749566368,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "mode": "error",
+          "observedAt": 3889175.201652714
+        },
+        {
+          "event": "request",
+          "sequence": 43,
+          "wallMs": 1794749566391,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "connect",
+          "requestId": "1:9cb7eb32-14bc-43da-8ace-2fcbdbd0d7e0",
+          "observedAt": 3889175.22378201
+        },
+        {
+          "event": "real-response",
+          "sequence": 44,
+          "wallMs": 1794749566397,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "connect",
+          "requestId": "1:9cb7eb32-14bc-43da-8ace-2fcbdbd0d7e0",
+          "ok": true,
+          "observedAt": 3889175.229298823
+        },
+        {
+          "event": "request",
+          "sequence": 45,
+          "wallMs": 1794749566404,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "health",
+          "requestId": "2:747d88ae-cef1-4135-913b-fcd9b552b589",
+          "observedAt": 3889175.236781323
+        },
+        {
+          "event": "request",
+          "sequence": 46,
+          "wallMs": 1794749566404,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "status",
+          "requestId": "3:b606caa0-fb14-4146-9a82-fc42c29caae4",
+          "observedAt": 3889175.236795296
+        },
+        {
+          "event": "request",
+          "sequence": 47,
+          "wallMs": 1794749566405,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "system-presence",
+          "requestId": "4:bf3f724d-00be-4cf1-a550-e46877a8195b",
+          "observedAt": 3889175.236802772
+        },
+        {
+          "event": "request",
+          "sequence": 48,
+          "wallMs": 1794749566405,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "config.get",
+          "requestId": "5:2afd6992-9983-4e8a-8f13-093722312924",
+          "observedAt": 3889175.236809772
+        },
+        {
+          "event": "real-response",
+          "sequence": 49,
+          "wallMs": 1794749566447,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "status",
+          "requestId": "3:b606caa0-fb14-4146-9a82-fc42c29caae4",
+          "ok": false,
+          "message": "missing scope: operator.read",
+          "observedAt": 3889175.27907281
+        },
+        {
+          "event": "real-response",
+          "sequence": 50,
+          "wallMs": 1794749566453,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "system-presence",
+          "requestId": "4:bf3f724d-00be-4cf1-a550-e46877a8195b",
+          "ok": false,
+          "message": "missing scope: operator.sessions.read",
+          "observedAt": 3889175.285327787
+        },
+        {
+          "event": "real-response",
+          "sequence": 51,
+          "wallMs": 1794749566455,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "config.get",
+          "requestId": "5:2afd6992-9983-4e8a-8f13-093722312924",
+          "ok": false,
+          "message": "missing scope: operator.read",
+          "observedAt": 3889175.287344736
+        },
+        {
+          "event": "real-response",
+          "sequence": 52,
+          "wallMs": 1794749566456,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "method": "health",
+          "requestId": "2:747d88ae-cef1-4135-913b-fcd9b552b589",
+          "ok": true,
+          "payload": {
+            "ok": true,
+            "ts": 1794749543950,
+            "durationMs": 4,
+            "configReload": {
+              "hotReloadStatus": "active"
+            },
+            "channels": {},
+            "channelOrder": [],
+            "channelLabels": {},
+            "heartbeatSeconds": 0,
+            "defaultAgentId": "main",
+            "agents": [
+              {
+                "agentId": "main",
+                "isDefault": true,
+                "heartbeat": {
+                  "enabled": false,
+                  "every": "disabled",
+                  "everyMs": null,
+                  "prompt": "",
+                  "target": "none",
+                  "ackMaxChars": 300
+                },
+                "sessions": {
+                  "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+                  "count": 0,
+                  "recent": []
+                }
+              }
+            ],
+            "sessions": {
+              "path": "<TASK>/security-probe-head-proof/state/agents/main/sessions/sessions.json",
+              "count": 0,
+              "recent": []
+            },
+            "coreReady": true,
+            "modelRuntime": {
+              "degraded": false,
+              "pendingAgents": []
+            },
+            "eventLoop": {
+              "degraded": false,
+              "degradedSinceMs": null,
+              "reasons": [],
+              "intervalMs": 10004.323744000001,
+              "delayP99Ms": 0,
+              "delayMaxMs": 4.665403999999398,
+              "utilization": 0.686,
+              "cpuCoreRatio": 0.048,
+              "cpuBreakdown": {
+                "mainThreadCoreRatio": 0.013,
+                "hostUtilization": 0.206,
+                "hostCpuCount": 16,
+                "workerCoreRatio": 0.01,
+                "otherThreadsCoreRatio": 0.025
+              }
+            },
+            "childRuntime": {
+              "execPath": "[redacted]",
+              "available": true
+            },
+            "recentCrashes": []
+          },
+          "observedAt": 3889175.288275635
+        },
+        {
+          "event": "front-closed",
+          "sequence": 53,
+          "wallMs": 1794749566458,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "observedAt": 3889175.290070641
+        },
+        {
+          "event": "back-closed",
+          "sequence": 54,
+          "wallMs": 1794749566458,
+          "connectionId": 5,
+          "label": "auth-error-control",
+          "observedAt": 3889175.290086893
+        }
+      ],
+      "result": "GREEN_EXISTING_CONTROL"
+    }
+  ],
+  "result": "GREEN",
+  "gatewayPid": 29,
+  "gatewayHealthy": true,
+  "configuredProxyPort": 51049,
+  "proxyPid": 87,
+  "cleanup": {
+    "gatewayExit": 0,
+    "proxyExit": 0,
+    "gatewayOwnedSurvivors": [],
+    "proxyOwnedSurvivors": [],
+    "configUnchanged": true,
+    "isolatedStateRetained": true
+  }
+}
