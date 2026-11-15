@@ -1,0 +1,43 @@
+
+=== malformed-debug-false/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "Malformed JSON in <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/malformed/package.json"
+  ]
+}
+
+=== malformed-debug-false/stderr ===
+Malformed JSON in <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/malformed/package.json
+
+=== malformed-debug-true/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "Malformed JSON in <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/malformed/package.json | Unexpected token '}', ...\"version\":\n}\n\" is not valid JSON"
+  ]
+}
+
+=== malformed-debug-true/stderr ===
+Malformed JSON in <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/malformed/package.json | Unexpected token '}', ..."version":\n}\n" is not valid JSON
+
+=== missing-manifest/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "plugin manifest not found: <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/missing-manifest/openclaw.plugin.json"
+  ]
+}
+
+=== missing-manifest/stderr ===
+plugin manifest not found: <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/missing-manifest/openclaw.plugin.json
+
+=== unreachable-init/stdout ===
+
+=== unreachable-init/stderr ===
+Plugin destination traverses a missing directory: <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/missing/../existing. Create the missing parent directory first, or choose a path through existing directories, then retry.
+
+=== no-force-control/stdout ===
+
+=== no-force-control/stderr ===
+Refusing to overwrite existing path: <TASK>/plugin-diagnostics-repair3-head-proof/fixtures/existing

@@ -1,0 +1,73 @@
+{
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "a5ea84b0e91db727c56c7cbcb2678d24b18e3c11",
+  "fullIndexDiffSHA256": "558378150fb3582255dbf0996a2dc4edc96a3015b5d3578c3117652a08f8418a",
+  "repairDiffSHA256": "5c65f9a94378bdc4fd7765fc479cd108ffcba15b42af7c621033617fbac7d3c4",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "5a235d9d56f8e8b020725df2414e0936ec8f28be59b446a46c74997f57852871"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "921177cb003195f23bbb7f9b182e86d5618858a7bef109e664edf0b75f279dbf"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "a40802c175667948e7d6d7c33b94a2189db163adc02a8858bd53730ce9a4ca67"
+    },
+    {
+      "path": "src/cli/plugins-authoring-root.ts",
+      "sha256": "016903d65b22f20a6642827aea9886a7d10e344f6b96001ae2b18dd30d8bfd92"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "d0d2d9443ab6f17319fca75c8efad38e7ccd8164f2c04851de17f245d737f725"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "fa9f28282a13070115b3342c4feba8283f08170721980a5909c3960171f471ec"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "sha256": "eb870b257bd5baf2c786dc66a8f218360ef977d4d990f6e9a118ed73d3d67a9a"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "e79702e3123ed6271fdbf272c3206003591408db7e39377b1a1158db0891e991"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.test.ts",
+      "sha256": "769efda53b00692e68caf3c08d7c768e426322f47451220f3a7c93a1b0264ad4"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.ts",
+      "sha256": "681e69a87565c487e66810ea1562ec81338b5b31f48750954d394abf8be3db74"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "a40802c175667948e7d6d7c33b94a2189db163adc02a8858bd53730ce9a4ca67"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "d0d2d9443ab6f17319fca75c8efad38e7ccd8164f2c04851de17f245d737f725"
+    }
+  ],
+  "verdict": "PASS",
+  "stage": "source-only",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "reviewed": [
+    "All10 source/test hashes independently verified; exactly2 changed since prior final PASS. Canonical staged fullBASE/oldHEAD repair diff SHA match manifest.",
+    "resolveEntryPath catches only ENOENT/ENOTDIR and retains raw candidate; native existing entry resolution remains physical, all other errors propagate. Existing normalizeRelativePath containment and loadToolPlugin not-found guard still run; malformed package/manifest precedence preserved. No lexical wrong-source fallback.",
+    "New missing.js and regular-file-middle package.json/index.js table cases assert typed build/human validation failure, exact JSON/stdout/error/exit contract via existing helper, and source bytes/no writes. Prior parser/debug/manifest/root controls retained.",
+    "Frozen actual normally built a5BASE collector and all6 raw case pairs checked;3 generic bad-entry diagnostics with3legal controls and unchanged source readback qualify regression.",
+    "Equivalent local code extraction independently inspected: safely read code once from an object carrying code; only ENOENT/ENOTDIR retain raw candidate, every other value/error rethrows. All10 and both manifest hash lists match; only production condition expression changed, test bytes identical."
+  ],
+  "limitations": [
+    "Source-only; final formatting/genuine typed lint/types/line gates and equivalent-expression targeted replay still pending, not claimed complete. Parent reports preceding equivalent42 selected tests PASS with one separately retained baseline timeout case filtered by invocation; no suite-all-green claim.",
+    "No new exact committed-head build/native GREEN/body attestation. No reviewer test/build/source/index/public mutations."
+  ]
+}

@@ -1,0 +1,41 @@
+
+=== valid-build-control/stdout ===
+Wrote ../plugin-entry-enotdir-repair3-head-proof/fixtures/project/openclaw.plugin.json
+Updated ../plugin-entry-enotdir-repair3-head-proof/fixtures/project/package.json
+
+=== valid-build-control/stderr ===
+
+=== build-file-component/stdout ===
+
+=== build-file-component/stderr ===
+plugin entry not found: ./package.json/index.js
+
+=== validate-file-component/stdout ===
+
+=== validate-file-component/stderr ===
+plugin entry not found: ./package.json/index.js
+
+=== validate-json-file-component/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "plugin entry not found: ./package.json/index.js"
+  ]
+}
+
+=== validate-json-file-component/stderr ===
+plugin entry not found: ./package.json/index.js
+
+=== missing-entry-control/stdout ===
+
+=== missing-entry-control/stderr ===
+plugin entry not found: ./missing.js
+
+=== valid-validate-control/stdout ===
+{
+  "valid": true,
+  "pluginId": "entry-proof",
+  "errors": []
+}
+
+=== valid-validate-control/stderr ===

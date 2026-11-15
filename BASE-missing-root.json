@@ -1,0 +1,103 @@
+{
+  "head": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+  "buildStamp": {
+    "builtAt": 1794754275375,
+    "head": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+    "inputsClean": true,
+    "inputSignature": "f1da0f55a0f5d3fe76359a9239758ae8c03ab5403c3c0cc056882121f6bb4fa0"
+  },
+  "collectorSHA256": "2762205d5d63b14a6392bb8e544472b4682d0cae91684c30ecfa97217472ba9c",
+  "mode": "red",
+  "cases": [
+    {
+      "label": "build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b"
+    },
+    {
+      "label": "validate",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b"
+    },
+    {
+      "label": "validate-json",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'\"\n  ]\n}\n",
+      "stdoutSHA256": "e0881b3b6ef21e46900ef8d318c525c62d9c1e8f7ec86cf5eef624bfa8489daf",
+      "stderr": "ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'\n",
+      "stderrSHA256": "4a1a9f5af174643067046668fd1123e59c2ec2fc33769ae5709b0385236d5e55"
+    },
+    {
+      "label": "pack",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "pack",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"cli_error\",\n    \"message\": \"ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'\"\n  }\n}\n",
+      "stdoutSHA256": "12e7c2a50183000e4fc30677ea78d31e1748b1531041938b47d62f35f334f5d5",
+      "stderr": "[openclaw] The CLI command failed.\n[openclaw] For help, run `openclaw doctor`.\n",
+      "stderrSHA256": "45cd36e653d4162552454310b792556d84a8ebd128d81b3147b13a55c4c3a09b"
+    },
+    {
+      "label": "runtime-lint-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "lint",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"complete\": false,\n  \"scannedPackages\": 0,\n  \"scannedFiles\": 0,\n  \"warnings\": [\n    {\n      \"ruleId\": \"scan-incomplete\",\n      \"packageName\": \"absent\",\n      \"file\": \"package.json\",\n      \"line\": 1,\n      \"column\": 1,\n      \"message\": \"Runtime dependency inspection could not finish: ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair-base-proof-v2/fixtures/absent'. Inspect installed dependencies and retry.\"\n    }\n  ]\n}\n",
+      "stdoutSHA256": "0118af7d38dd7e42e1f567500c57aee79d55e568d614273baaf3d3f83e22f7c8",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "BASE4_ROOT_DIAGNOSTIC_REGRESSIONS_AND_WARNING_CONTROL",
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "missingRootCreated": false,
+    "isolatedFixturesRetained": true
+  }
+}

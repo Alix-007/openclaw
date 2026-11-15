@@ -1,0 +1,103 @@
+{
+  "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+  "buildStamp": {
+    "builtAt": 1794760211131,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "inputsClean": true,
+    "inputSignature": "802bc3acd5d1e1edf5beba562b4a4349ece4f022141d8c04026ca15e978dd5e4"
+  },
+  "collectorSHA256": "2762205d5d63b14a6392bb8e544472b4682d0cae91684c30ecfa97217472ba9c",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "build",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\n",
+      "stderrSHA256": "457ca26a4cfd05bc6b57eccfbfec2d7521691acf3f1b8e14c99f4625e8061ae4"
+    },
+    {
+      "label": "validate",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\n",
+      "stderrSHA256": "457ca26a4cfd05bc6b57eccfbfec2d7521691acf3f1b8e14c99f4625e8061ae4"
+    },
+    {
+      "label": "validate-json",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\"\n  ]\n}\n",
+      "stdoutSHA256": "61c0837c282121efa6708ec86a1f6b4601411ebdde927223838ef9b2cb11ad22",
+      "stderr": "Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\n",
+      "stderrSHA256": "457ca26a4cfd05bc6b57eccfbfec2d7521691acf3f1b8e14c99f4625e8061ae4"
+    },
+    {
+      "label": "pack",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "pack",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"error\": {\n    \"type\": \"cli_error\",\n    \"message\": \"Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\"\n  }\n}\n",
+      "stdoutSHA256": "683a3bb13bece6e9845eb2c9e3854dc6790e2527d89365370e1cf65add66e62b",
+      "stderr": "Plugin root not found: <TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.\n",
+      "stderrSHA256": "457ca26a4cfd05bc6b57eccfbfec2d7521691acf3f1b8e14c99f4625e8061ae4"
+    },
+    {
+      "label": "runtime-lint-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "lint",
+        "--json",
+        "--root",
+        "<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"complete\": false,\n  \"scannedPackages\": 0,\n  \"scannedFiles\": 0,\n  \"warnings\": [\n    {\n      \"ruleId\": \"scan-incomplete\",\n      \"packageName\": \"absent\",\n      \"file\": \"package.json\",\n      \"line\": 1,\n      \"column\": 1,\n      \"message\": \"Runtime dependency inspection could not finish: ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair3-head-proof/fixtures/absent'. Inspect installed dependencies and retry.\"\n    }\n  ]\n}\n",
+      "stdoutSHA256": "1754d5c665727b47acdef05381e11954e4f4d98b9a548f9502f0350db5604fed",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "GREEN4_ACTIONABLE_ROOT_ERRORS_AND_WARNING_CONTROL",
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "missingRootCreated": false,
+    "isolatedFixturesRetained": true
+  }
+}

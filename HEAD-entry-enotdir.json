@@ -1,0 +1,139 @@
+{
+  "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+  "buildStamp": {
+    "builtAt": 1794760211131,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "inputsClean": true,
+    "inputSignature": "802bc3acd5d1e1edf5beba562b4a4349ece4f022141d8c04026ca15e978dd5e4"
+  },
+  "collectorSHA256": "875e3cee4dd2e77dea5b65121bc2954a627e0053b9c9c2bf1b071fa512decf49",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "valid-build-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 0,
+      "stdout": "Wrote ../plugin-entry-enotdir-repair3-head-proof/fixtures/project/openclaw.plugin.json\nUpdated ../plugin-entry-enotdir-repair3-head-proof/fixtures/project/package.json\n",
+      "stdoutSHA256": "4449823ff42c8a86db82818e09a7dbcebdf3e5a847c790cb31ce16cf07e5695c",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "plugin entry not found: ./package.json/index.js\n",
+      "stderrSHA256": "8a3d7d2bc409f37e42ac6ded94141d22eb2590b739ab19f9ee6d94d542cd811c"
+    },
+    {
+      "label": "validate-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "plugin entry not found: ./package.json/index.js\n",
+      "stderrSHA256": "8a3d7d2bc409f37e42ac6ded94141d22eb2590b739ab19f9ee6d94d542cd811c"
+    },
+    {
+      "label": "validate-json-file-component",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--entry",
+        "package.json/index.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"plugin entry not found: ./package.json/index.js\"\n  ]\n}\n",
+      "stdoutSHA256": "1b3a2622487fcc202719c8fde624b668e5c107149e69a98b34685997278301ad",
+      "stderr": "plugin entry not found: ./package.json/index.js\n",
+      "stderrSHA256": "8a3d7d2bc409f37e42ac6ded94141d22eb2590b739ab19f9ee6d94d542cd811c"
+    },
+    {
+      "label": "missing-entry-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--entry",
+        "missing.js",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "plugin entry not found: ./missing.js\n",
+      "stderrSHA256": "ef0c6fe83f50d4cb42f050d972048a91be6b542ff34331a70dae8a1e63844643"
+    },
+    {
+      "label": "valid-validate-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-entry-enotdir-repair3-head-proof/fixtures/project"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"entry-proof\",\n  \"errors\": []\n}\n",
+      "stdoutSHA256": "e8731c23a2d9d6c1ec8282f34feca0be50615a7956c5b52aeeaa92a6e2bbc957",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "GREEN3_ENTRY_DIAGNOSTICS_AND3_CONTROLS",
+  "readback": {
+    "before": {
+      "package.json": "9f78c64efe855c969a0c595748dc4fa6e6651856ef0ffe9fa9fc4acf67691444",
+      "index.ts": "cabbc691e79afea87a1fab309d6a29c8a7af32b684967a7052cab19217841fbc",
+      "openclaw.plugin.json": "0a35cf31ab8f80f020d233c7751623e26a970117d1a33a5808d6fff869be76ef"
+    },
+    "after": {
+      "package.json": "9f78c64efe855c969a0c595748dc4fa6e6651856ef0ffe9fa9fc4acf67691444",
+      "index.ts": "cabbc691e79afea87a1fab309d6a29c8a7af32b684967a7052cab19217841fbc",
+      "openclaw.plugin.json": "0a35cf31ab8f80f020d233c7751623e26a970117d1a33a5808d6fff869be76ef"
+    },
+    "pluginId": "entry-proof",
+    "fileComponentStillAFile": true
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

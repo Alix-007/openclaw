@@ -1,0 +1,56 @@
+$ node scripts/test-projects.mts src/cli/plugins-authoring-command.test.ts src/cli/plugins-authoring-validation.test.ts --maxWorkers=1 -t '^(?!.*builds and installs selected entries without changing sibling runtime pairs)'
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/plugin-root
+
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves manifest-owned metadata while updating generated fields 92ms
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and installs selected entries without changing sibling runtime pairs
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.ts 8ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 9ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/b/index.js 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.mts 5ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/a/index.js 5ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > emits a stable JSON validation result without human output 245ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports and retires a preceding host browser declaration through explicit authoring 377ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves shared output when authoring a backend without browser source 266ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps validation errors on stderr and sanitizes JSON paths 16ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON metadata and preserves authored fields 210ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON metadata and preserves authored fields 214ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON5 metadata and preserves authored fields 202ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON5 metadata and preserves authored fields 199ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build accepts reordered JSON5 metadata and preserves authored fields 215ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > projects undefined TypeBox options into the persisted manifest shape 7ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects a missing generated manifest without changing package metadata 167ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports stale manifest contracts 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports missing entries with an author-facing path 7ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: {invalid json 17ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: { // package.json must remain strict JSON
+} 9ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes a build from an absolute root after the launch directory is removed 186ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=false 190ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=true 244ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps the project intact when package publication fails during write 164ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports a manifest rename failure after publishing package metadata 182ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects an invalid feature id without blocking a corrected retry 11ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes init with an absolute directory after the launch directory is removed 8ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > scaffolds a provider plugin project with ClawHub validation and release metadata 13ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > keeps missing-root diagnostics actionable for build and validation 13ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves expected missing-entry diagnostics for missing.js 13ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves expected missing-entry diagnostics for package.json/index.js 12ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (implicit entry) 8ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (implicit entry) 33ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (explicit entry) 9ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (explicit entry) 13ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=false 171ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=true 146ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=false 145ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=true 142ms
+
+ Test Files  2 passed (2)
+      Tests  42 passed | 1 skipped (43)
+   Start at  00:22:42
+   Duration  9.04s (tests 56%, worker 16%, transform 13%, import 9%, setup 5%)
+
+[test] passed 1 Vitest shard in 13.38s

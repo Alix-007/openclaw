@@ -1,0 +1,63 @@
+{
+  "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+  "collectorSHA256": "841481964b2824176e7915c4657882f0d16d14e0acbd9ac0a7a272d2cb1d2425",
+  "buildStamp": {
+    "builtAt": 1794760211131,
+    "head": "050f9f63f297c83d287024ea5e67b712bf75b548",
+    "inputsClean": true,
+    "inputSignature": "802bc3acd5d1e1edf5beba562b4a4349ece4f022141d8c04026ca15e978dd5e4"
+  },
+  "mode": "green",
+  "cases": [
+    {
+      "label": "build-seed",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-output-repair3-head-proof/project"
+      ],
+      "exitCode": 0,
+      "seconds": 2.938,
+      "stdout": "Wrote ../plugin-output-repair3-head-proof/project/openclaw.plugin.json\nUpdated ../plugin-output-repair3-head-proof/project/package.json\n",
+      "stderr": "",
+      "stdoutSHA256": "ea905a53f1200d55ef49f7103489a7970c997644edf07f27e3d0b76196da8d01",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "pack-selected-output",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "pack",
+        "--root",
+        "<TASK>/plugin-output-repair3-head-proof/project",
+        "--out",
+        "<TASK>/plugin-output-repair3-head-proof/selected/../result.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 4.481,
+      "stdout": "{\n  \"path\": \"<TASK>/plugin-output-repair3-head-proof/physical/result.tgz\",\n  \"sha256\": \"c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa\",\n  \"pluginId\": \"output-proof\",\n  \"bytes\": 604,\n  \"activation\": {\n    \"action\": \"plugin_activate_artifact\",\n    \"path\": \"<TASK>/plugin-output-repair3-head-proof/physical/result.tgz\",\n    \"sha256\": \"c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa\"\n  }\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "d56454383d6db1b4347ceda002615a504c1968ce02b63416e23f56d5c59c63c6",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "rawOutput": "<TASK>/plugin-output-repair3-head-proof/selected/../result.tgz",
+        "actualArchive": "<TASK>/plugin-output-repair3-head-proof/physical/result.tgz",
+        "sha256": "c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa",
+        "pluginId": "output-proof",
+        "wrongArchiveAbsent": "<TASK>/plugin-output-repair3-head-proof/result.tgz"
+      }
+    }
+  ],
+  "result": "GREEN_PHYSICAL_ARCHIVE",
+  "cleanup": {
+    "isolatedFixturesRetained": true,
+    "externalRequests": false,
+    "productionStateTouched": false
+  }
+}

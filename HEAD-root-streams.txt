@@ -1,0 +1,82 @@
+
+=== physical-seed/stdout ===
+Wrote ../plugin-root-repair3-head-proof/fixtures/physical/source/openclaw.plugin.json
+Updated ../plugin-root-repair3-head-proof/fixtures/physical/source/package.json
+
+=== physical-seed/stderr ===
+
+=== physical-ordinary-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "physical-proof",
+  "errors": []
+}
+
+=== physical-ordinary-validation/stderr ===
+
+=== decoy-seed/stdout ===
+Wrote ../plugin-root-repair3-head-proof/fixtures/source/openclaw.plugin.json
+Updated ../plugin-root-repair3-head-proof/fixtures/source/package.json
+
+=== decoy-seed/stderr ===
+
+=== decoy-ordinary-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "decoy-proof",
+  "errors": []
+}
+
+=== decoy-ordinary-validation/stderr ===
+
+=== check-physical-stale/stdout ===
+
+=== check-physical-stale/stderr ===
+Generated plugin metadata is out of date. Run openclaw plugins build.
+
+=== validate-physical-stale/stdout ===
+{
+  "valid": false,
+  "pluginId": "physical-proof",
+  "errors": [
+    "openclaw.plugin.json generated metadata is stale. Run openclaw plugins build."
+  ]
+}
+
+=== validate-physical-stale/stderr ===
+openclaw.plugin.json generated metadata is stale. Run openclaw plugins build.
+
+=== build-selected-root/stdout ===
+Wrote ../plugin-root-repair3-head-proof/fixtures/physical/source/openclaw.plugin.json
+Updated ../plugin-root-repair3-head-proof/fixtures/physical/source/package.json
+
+=== build-selected-root/stderr ===
+
+=== pack-selected-root/stdout ===
+{
+  "path": "<TASK>/plugin-root-repair3-head-proof/selected-plugin.tgz",
+  "sha256": "821801de4872e636d64cae42789cb0b7e2f0878046ddc1083b9c6d1d3a7025a7",
+  "pluginId": "physical-proof",
+  "bytes": 612,
+  "activation": {
+    "action": "plugin_activate_artifact",
+    "path": "<TASK>/plugin-root-repair3-head-proof/selected-plugin.tgz",
+    "sha256": "821801de4872e636d64cae42789cb0b7e2f0878046ddc1083b9c6d1d3a7025a7"
+  }
+}
+
+=== pack-selected-root/stderr ===
+
+=== init-selected-destination/stdout ===
+Created ../plugin-root-repair3-head-proof/fixtures/physical/new-plugin
+
+=== init-selected-destination/stderr ===
+
+=== decoy-unmodified-control/stdout ===
+{
+  "valid": true,
+  "pluginId": "decoy-proof",
+  "errors": []
+}
+
+=== decoy-unmodified-control/stderr ===
