@@ -1,0 +1,206 @@
+{
+  "head": "2208306319fe19a6764a28a10a5601abe061f694",
+  "buildStamp": {
+    "builtAt": 1794763212003,
+    "head": "2208306319fe19a6764a28a10a5601abe061f694",
+    "inputsClean": true,
+    "inputSignature": "666f3ceada427ba65402303438618200f7d5b41e2e9251af857211d74efcf733"
+  },
+  "trackedCleanBefore": true,
+  "trackedCleanAfter": true,
+  "collectorSHA256": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+  "rows": [
+    {
+      "case": "success",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/secrets-audit/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 5.11,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        58
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3902838.410345431,
+          "pid": 58,
+          "ppid": 36,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        },
+        {
+          "kind": "response",
+          "time": 3902838.410677248,
+          "pid": 58,
+          "ppid": 36
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "6da0ef80d56a96cfe9f49c91dabcbc0868a95d5ad368c312bee4beff4eb9c8c0",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "2da00e081704d0cb518e38cea9b2445baeb5ddb680863ff988a33d4cc7f2b8a3",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"clean\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 1,\r\n    \"skippedExecRefs\": 0,\r\n    \"resolvabilityComplete\": true\r\n  },\r\n  \"filesScanned\": [\r\n    \"<TASK>/pr-197327-head-proof/success/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 0,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": []\r\n}\r\n",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "error",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/secrets-audit/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 2,
+      "elapsedSeconds": 5.099,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [
+        92
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3902843.686795014,
+          "pid": 92,
+          "ppid": 70,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "f06a289c9b1ed28de6a06519746e06a01992913d4f8fea5e4c60fca0ab82b0c3",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "215714c0b638a04b6ccc126f4c009ed056768041a4ad24bdc3d6db2d7134c0e3",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"unresolved\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 1,\r\n    \"skippedExecRefs\": 0,\r\n    \"resolvabilityComplete\": true\r\n  },\r\n  \"filesScanned\": [\r\n    \"<TASK>/pr-197327-head-proof/error/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 1,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": [\r\n    {\r\n      \"code\": \"REF_UNRESOLVED\",\r\n      \"severity\": \"error\",\r\n      \"file\": \"<TASK>/pr-197327-head-proof/error/state/openclaw.json\",\r\n      \"jsonPath\": \"models.providers.openai.apiKey\",\r\n      \"message\": \"Failed to resolve exec:fixture:synthetic (Exec provider \\\"fixture\\\" exited with code 7.).\",\r\n      \"provider\": \"openai\"\r\n    }\r\n  ]\r\n}\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "no-allow-exec",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/secrets-audit/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 5.024,
+      "interruptToExitSeconds": null,
+      "harnessWatchdog": false,
+      "providerPids": [],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [],
+      "configUnchanged": true,
+      "configSHA256": "23d6d378c1573de937c51a015914e57862a984e9964542e976d4c6005e94b6f1",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "06c11c3bafc1bb760a714da09f2f0ce0c15ee271be0787c88122cc8fd85b7a51",
+      "output": "{\r\n  \"version\": 1,\r\n  \"status\": \"clean\",\r\n  \"resolution\": {\r\n    \"refsChecked\": 0,\r\n    \"skippedExecRefs\": 1,\r\n    \"resolvabilityComplete\": false\r\n  },\r\n  \"filesScanned\": [\r\n    \"<TASK>/pr-197327-head-proof/no-allow-exec/state/openclaw.json\"\r\n  ],\r\n  \"summary\": {\r\n    \"plaintextCount\": 0,\r\n    \"unresolvedRefCount\": 0,\r\n    \"shadowedRefCount\": 0,\r\n    \"storeResidueCount\": 0,\r\n    \"legacyResidueCount\": 0\r\n  },\r\n  \"findings\": []\r\n}\r\n",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "pending-int",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/secrets-audit/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 130,
+      "elapsedSeconds": 5.162,
+      "interruptToExitSeconds": 0.573,
+      "harnessWatchdog": false,
+      "providerPids": [
+        159
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3902854.130114684,
+          "pid": 159,
+          "ppid": 137,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        },
+        {
+          "kind": "signal",
+          "time": 3902854.156056835,
+          "pid": 159,
+          "ppid": 137,
+          "signal": 15
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "9e0472d67be3e59e116d1955b39ab1f469266f33f8e8b6b3540e5657ac081ceb",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "98d8094be77049114884241aa1a60eda0679f75f87fa8598c8bcf509e6818d84",
+      "output": "^CCommand interrupted by SIGINT. Waiting for cleanup before exiting.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "harnessPostObservationCleanup": false
+    },
+    {
+      "case": "pending-term",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/secrets-audit/openclaw.mjs",
+        "secrets",
+        "audit",
+        "--json",
+        "--allow-exec"
+      ],
+      "exitCode": 143,
+      "elapsedSeconds": 5.216,
+      "interruptToExitSeconds": 0.592,
+      "harnessWatchdog": false,
+      "providerPids": [
+        193
+      ],
+      "providerAliveAtCliExit": [],
+      "eventsObserved": [
+        {
+          "kind": "request",
+          "time": 3902859.481964817,
+          "pid": 193,
+          "ppid": 171,
+          "ids": [
+            "synthetic"
+          ],
+          "protocolVersion": 1
+        },
+        {
+          "kind": "signal",
+          "time": 3902859.506733253,
+          "pid": 193,
+          "ppid": 171,
+          "signal": 15
+        }
+      ],
+      "configUnchanged": true,
+      "configSHA256": "68e954c4b32e99dc83179f795df7536e3c77247ff352bdbeec5878786c3fa3fc",
+      "providerSHA256": "f1269efe04323f74717fa2140bb64be4b57cf313d0502bed1a459a8690523ee4",
+      "terminalSHA256": "46f82b88f4352c55d60dab2cc982f570baf078356828318cec10ee47df714424",
+      "output": "Command interrupted by SIGTERM. Waiting for cleanup before exiting.\r\n\u001b[0m\u001b[?25h\u001b[?1000l\u001b[?1002l\u001b[?1003l\u001b[?1006l\u001b[?2004l\u001b[<u\u001b[>4;0m",
+      "harnessPostObservationCleanup": false
+    }
+  ],
+  "limits": "Normal public CLI with synthetic local exec provider only; no real credentials/provider/network requests. Provider cleanup after recorded exit is collector-owned."
+}

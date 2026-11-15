@@ -1,0 +1,19 @@
+{
+  "BASE.json": "56750e4c9e0de24e1467c64b3f7207e8bb576567fe9b3e3e33f7b01c04797399",
+  "BASE-terminal.txt": "286e05e4c74c806a58c1d34469fd47eea64540e47cf0036de509863dc3883bcc",
+  "BASE-provider-events.txt": "e0055b34d1430cc3efc5f4f211bcbdc80e88109a68e9ec59a7f299da0597d6ac",
+  "HEAD.json": "c33e06762783647684ccac25266379ea7d8b847097c77efc371252b19259804f",
+  "HEAD-terminal.txt": "73d84b404b3481ad1b888b3b72c5ee66f76f6b78af14392dd540431b08bc91b2",
+  "HEAD-provider-events.txt": "f45eb965803cd37bb3d9f58001f1a86b0a6fd53bdefb05f846b1ca352acf8565",
+  "scout-secrets-audit-native.py": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+  "check-secrets-audit-native.py": "02360d4737b67e8dd2f836a27232a899d0bdb555964421359ef927f72bafd329",
+  "source-review.json": "1d4c0982a50fdcea4f7a926505424869efeef5cca8ef067d0135b1606bb5788a",
+  "source-review.md": "250b00509347460846fb60db33e7cd1932a9d356dd39b712df3a3a0f65ef9c79",
+  "final-adversarial-review.json": "7e4f38263401e479b90f755831014d896f32df839e06f5d3323dde0af3e80b8d",
+  "final-adversarial-review.md": "11f913f8cd2b327048f078a029f4587d9a929d62ed44f0e4c0d595a3c6ab4fee",
+  "head-proof-oracle.json": "f693c43d234f8e6261bff44ff5f4811b3ae093f0993603a02cc09da7bcf9e9c7",
+  "focused.log": "e59cf03d07dda6a1cdd896b8a83d753bb9929ef24b076843f02a4fdc5a3611c0",
+  "checks.json": "addb2bc49489bea8f31b8f516ba20d6f4f1069d4642f966df4aecad7c981d918",
+  "EVIDENCE.md": "6696b8ad28faf7c77a04104d347e1cd3d4a53bc59d070182120861191865a4d3",
+  "raw-hash-readback.json": "2de42e95ed023efb70c1f745a0fb3097677825d83ff708afecc17b0b92327ec7"
+}

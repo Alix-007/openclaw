@@ -1,0 +1,1 @@
+{"expected": "green", "head": "2208306319fe19a6764a28a10a5601abe061f694", "cells": [{"case": "success", "result": "PASS"}, {"case": "error", "result": "PASS"}, {"case": "no-allow-exec", "result": "PASS"}, {"case": "pending-int", "result": "PASS"}, {"case": "pending-term", "result": "PASS"}], "result": "PASS"}

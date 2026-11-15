@@ -1,0 +1,41 @@
+{
+  "base": "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+  "oldHead": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+  "files": [
+    {
+      "path": "config/test-lines-allocations/secrets-audit-cancellation.txt",
+      "sha256": "90e191cdeebd321668bbbfee1fae0cb61429f898dd11060901fa8b787ac41418"
+    },
+    {
+      "path": "src/cli/secrets-cli-output.ts",
+      "sha256": "ecc00f4c004dd01426798169a59174999005d1af265d29c9deaeb5d016d6993f"
+    },
+    {
+      "path": "src/cli/secrets-cli.test.ts",
+      "sha256": "ab7f7d6c70c9dd6a174eb4b2c1271222de41fe1b52389529d4915dc3865a9c84"
+    },
+    {
+      "path": "src/cli/secrets-cli.ts",
+      "sha256": "2f478994945e5c8089467ca01685daaf275efc8d31dde63557f4e70e3bf7d462"
+    }
+  ],
+  "fullIndexDiffSHA256": "f618f212de1dffd8be7fd7b5392313c2fe099925f64aeed3030a6392ac010932",
+  "main": "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+  "mainRelativePatchSHA256": "f618f212de1dffd8be7fd7b5392313c2fe099925f64aeed3030a6392ac010932",
+  "verdict": "PASS",
+  "stage": "source-only",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "reviewed": [
+    "All4 file hashes and canonical staged main-relative patch independently verified; no unstaged tracked changes or unmerged entries. Production/allocation bytes equal old145 exactly.",
+    "Complete audit CLI action/output owner and callers: signal opt-in confined to read-only audit; pre/post-run and failure output guards quiet interrupted audits; non-aborted ordinary failure envelope/exit preserved. Configure/apply callers omit signal, preserving admitted-write reporting.",
+    "Audit withCommandProcessScope forwards async work cancellation into real exec process owner; inherited process scope performs stop/join and retains cleanup ownership; actual secrets exec resolver uses runCommandWithTimeout. allowExec admission remains unchanged and false by default.",
+    "Conflict resolution retains upstream afterEach/useAutoCleanupTempDirTracker plus PR runCommandWithTimeout/AsyncWorkScope imports. Upstream withPlanFile try/finally and FIFO lifecycle cleanup preserved; added provider process pending operation joined before plan cleanup.",
+    "Existing new regressions cover pre-abort/late success/late failure human+JSON quietness, actual child signal settlement, ordinary audit JSON failure and admitted apply result.83 allocation unchanged."
+  ],
+  "limitations": [
+    "Source-only. Final genuine typed lint/types/focused check outcomes still running; no final check/build/native GREEN claim.",
+    "Frozen original collector/checker exact committed-head replay and final body review remain required later.",
+    "No reviewer tests/builds/dependency installs/source/index edits/network writes. Prior physical dependency materialization is environmental setup, not product change."
+  ]
+}

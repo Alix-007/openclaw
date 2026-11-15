@@ -1,0 +1,70 @@
+{
+  "base": "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+  "oldHead": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+  "files": [
+    {
+      "path": "config/test-lines-allocations/secrets-audit-cancellation.txt",
+      "sha256": "90e191cdeebd321668bbbfee1fae0cb61429f898dd11060901fa8b787ac41418"
+    },
+    {
+      "path": "src/cli/secrets-cli-output.ts",
+      "sha256": "ecc00f4c004dd01426798169a59174999005d1af265d29c9deaeb5d016d6993f"
+    },
+    {
+      "path": "src/cli/secrets-cli.test.ts",
+      "sha256": "ab7f7d6c70c9dd6a174eb4b2c1271222de41fe1b52389529d4915dc3865a9c84"
+    },
+    {
+      "path": "src/cli/secrets-cli.ts",
+      "sha256": "2f478994945e5c8089467ca01685daaf275efc8d31dde63557f4e70e3bf7d462"
+    }
+  ],
+  "fullIndexDiffSHA256": "f618f212de1dffd8be7fd7b5392313c2fe099925f64aeed3030a6392ac010932",
+  "main": "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+  "mainRelativePatchSHA256": "f618f212de1dffd8be7fd7b5392313c2fe099925f64aeed3030a6392ac010932",
+  "verdict": "PASS",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "stage": "final-exact-merge-head-and-body",
+  "head": "2208306319fe19a6764a28a10a5601abe061f694",
+  "parents": [
+    "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "f24c2097d581cc93bd15a0340c6f5fbd69db16b6"
+  ],
+  "bodySHA256": "9d4232c939799d5aee88a25e2826254a9143d023ff5ad234afef2906319b2e1d",
+  "exactHeadVerification": {
+    "source": "Actual two-parent company merge HEAD/clean tracked source, all4 hashes and full mainrelativef618 patch verified. Production/allocation old145 bytes retained, upstream temp cleanup integration preserved.",
+    "build": "Normal cliStartup exit0 in264.566s; logSHA verified; actual clean dist stamp equals exactHEAD proof receipt.",
+    "checks": "Current format/genuine typed lint/types-corrected/test-lines/line-cap/focused receipt/log hashes verified exit0. Focused shards26+49=75 PASS. Earlier dependency setup failures remain retained, not product fixes.",
+    "proof": "Current/historical scout and checker bytes identical939ba49b/02360d47. All10 case terminal bytes/event prefixes/provider scripts/config hashes independently read. Historical c324 forced-kill/provider-alive observations retained; current INT130/TERM143 at0.573/0.592s, provider absent before collector cleanup, no watchdog/no post-observation cleanup. Success0/error2/no-exec0 controls match expected reports and exec admission.",
+    "body": "Body accurately limits observed direct synthetic provider/PID/combined PTY proof and distinguishes historicalBASE from current merge. No arbitrary-byte silence, descendant tree or fullsuite claim."
+  },
+  "coveredReceipts": [
+    {
+      "path": "<CAMPAIGN>/alix-accepted-fill20-20261112.plqvckl8/scout-secrets-audit-native-base-v1/receipt.json",
+      "sha256": "81e8cb67488c5033f87e316ccc6a999aae93516df5d184aeb2a8a450c0597491"
+    },
+    {
+      "path": "<TASK>/pr-197327-head-proof/receipt.json",
+      "sha256": "a5b9c8bb046bab4aa096742519b27fffdc77c828dec7566b00357aae185479ff"
+    },
+    {
+      "path": "<TASK>/pr-197327-head-proof-oracle.json",
+      "sha256": "f693c43d234f8e6261bff44ff5f4811b3ae093f0993603a02cc09da7bcf9e9c7"
+    },
+    {
+      "path": "<TASK>/pr-197327-build.json",
+      "sha256": "b4cd6f1d9108265efa67a09af92f60e8303c960692dad12c31d377820cd56fd4"
+    },
+    {
+      "path": "<TASK>/pr-197327-commit.json",
+      "sha256": "92df033fa3f462d6134a6382fcfd0222880eaec9144cf66465f841aab5c863a8"
+    }
+  ],
+  "limitations": [
+    "Synthetic direct local exec provider in isolated offline Ubuntu24/Node26; no real credentials/providers/channels/network, arbitrary descendants, other scan awaits, native Windows/macOS or full repository suite claim.",
+    "PTY combines stdout/stderr; terminal reset sequences are present. Quietness means no late audit report/failure payload, not arbitrary-byte silence. PID-at-exit observations are frozen collector evidence, not a fresh process probe.",
+    "HistoricalBASE actual c324 revision/date retained; not a fresh currentmain RED.",
+    "Only verified immutable PUBLIC_ARTIFACT_URL substitution approved; other semantic changes need review."
+  ]
+}

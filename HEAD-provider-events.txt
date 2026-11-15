@@ -1,0 +1,18 @@
+
+=== success ===
+{"kind": "request", "time": 3902838.410345431, "pid": 58, "ppid": 36, "ids": ["synthetic"], "protocolVersion": 1}
+{"kind": "response", "time": 3902838.410677248, "pid": 58, "ppid": 36}
+
+=== error ===
+{"kind": "request", "time": 3902843.686795014, "pid": 92, "ppid": 70, "ids": ["synthetic"], "protocolVersion": 1}
+
+=== no-allow-exec ===
+<no provider launched>
+
+=== pending-int ===
+{"kind": "request", "time": 3902854.130114684, "pid": 159, "ppid": 137, "ids": ["synthetic"], "protocolVersion": 1}
+{"kind": "signal", "time": 3902854.156056835, "pid": 159, "ppid": 137, "signal": 15}
+
+=== pending-term ===
+{"kind": "request", "time": 3902859.481964817, "pid": 193, "ppid": 171, "ids": ["synthetic"], "protocolVersion": 1}
+{"kind": "signal", "time": 3902859.506733253, "pid": 193, "ppid": 171, "signal": 15}

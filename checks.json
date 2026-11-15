@@ -1,0 +1,174 @@
+{
+  "focused": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/secrets-cli.test.ts",
+      "src/cli/secrets-store-cli.test.ts",
+      "src/secrets/audit.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 277.022,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "4becba29e84261fd77379059aa21586427c59da24e3c7a5298acd1592b8329b1"
+  },
+  "format": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/cli/secrets-cli.ts",
+      "src/cli/secrets-cli-output.ts",
+      "src/cli/secrets-cli.test.ts"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 0.391,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "ffdcaa8b4aa9b64c8f75a09bbbab7025dafcc3c3d5a17abc0b31e152a4d35a00"
+  },
+  "lint": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../pr-197327-types.tsconfig.json",
+      "src/cli/secrets-cli-output.ts",
+      "src/cli/secrets-cli.test.ts",
+      "src/cli/secrets-cli.ts"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 296.92,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "5d335ca1936c85916361efd505e0e0702f319223a050210caa5a72fcca31007e"
+  },
+  "types": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../pr-197327-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 144.895,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+      "--staged"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 2.237,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "d776fcb24ef3ec40c9c9479f7b4907180539c3989d93ad358cb5f976d51a0a80"
+  },
+  "line-cap": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+      "--staged"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 1.694,
+    "head": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "diffSHA256": "7df45fcca1cc5775fc3f1b25f09b61410560db89b0180ff9fea5a73a121b77c3",
+    "logSHA256": "796a20208352e70127fa5544a2f07aaeab373fe05b37cdd43eb638eab8743c1f"
+  },
+  "build": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/secrets-audit",
+    "exit_code": 0,
+    "elapsed_seconds": 264.566,
+    "head": "2208306319fe19a6764a28a10a5601abe061f694",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "86959d4dc16420eac7b6b6a18fb176f9818799762fd445561c3d0e2be01082e7"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64:<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/secrets-audit",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/scout-secrets-audit-native.py",
+      "--worktree",
+      "<TASK>/secrets-audit",
+      "--node",
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "--out",
+      "<TASK>/pr-197327-head-proof"
+    ],
+    "head": "2208306319fe19a6764a28a10a5601abe061f694",
+    "exit_code": 0,
+    "elapsed_seconds": 27.19,
+    "collectorSHA256": "939ba49b8ed68addbeda7ce3996f75dd25bcb593ddf491f47c912f141c3575b8",
+    "runnerLogSHA256": "274f8a7d54fd8bf676cb64c0ac4443bae6fb0de9909920a8de6cab5ccb463591",
+    "receipt": "<TASK>/pr-197327-head-proof/receipt.json"
+  },
+  "commit": {
+    "number": 197327,
+    "worktree": "<TASK>/secrets-audit",
+    "oldHead": "145768c9eb2eafe882f5377d8c0ef8bd1f4e3828",
+    "head": "2208306319fe19a6764a28a10a5601abe061f694",
+    "main": "f24c2097d581cc93bd15a0340c6f5fbd69db16b6",
+    "branch": "alix/fix-secrets-audit-cancel-20261112",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "mergeParentsPreserved": true,
+    "fullIndexDiffSHA256": "f618f212de1dffd8be7fd7b5392313c2fe099925f64aeed3030a6392ac010932",
+    "elapsedSeconds": 1.946,
+    "knownValidationLimitations": []
+  }
+}
