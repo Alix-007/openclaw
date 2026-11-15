@@ -1,0 +1,36 @@
+$ node scripts/test-projects.mts src/cli/skills-library-input.test.ts src/cli/skills-library-cli.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/skill-library
+
+ ✓ |cli| src/cli/skills-library-input.test.ts > keeps the 256-file boundary including empty supporting files 262ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > preserves hardlinks, ancestor symlinks, and executable metadata 15ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > reads the selected single file and retains final-symlink refusal 14ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects traversal through a regular file ending in "." 80ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects traversal through a regular file ending in ".." 20ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects skill input after metadata capture (1048577 bytes; undefined replaces inode) 191ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects zip input after metadata capture (8388609 bytes; undefined replaces inode) 50ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects zip input after metadata capture (0 bytes; undefined replaces inode) 312ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects bundle input after metadata capture (1048576 bytes; undefined replaces inode) 58ms
+ ✓ |cli| src/cli/skills-library-input.test.ts > rejects skill input after metadata capture (undefined bytes; undefined replaces inode) 11ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > inherits connection and JSON options before or after list 19ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > inherits connection and JSON options before or after create 9ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > inherits connection and JSON options before or after import 8ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > inherits connection and JSON options before or after rollback 8ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > inherits connection and JSON options before or after refresh 12ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > replaces complete directory bundles and explicitly deletes requested support files 14ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > prints complete supporting files and retained revisions in human read output 9ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > prints the canonical removal receipt without inferring readiness 7ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > lists a session projection and reads only its exact pin 15ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > sanitizes remote-controlled fields in human list output but keeps raw values in JSON 13ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > sanitizes receipt and activation metadata 14ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > imports a directory named x.zip as a complete bundle 10ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > uses private upload begin/chunk/commit for ZIP imports 8ms
+ ✓ |cli| src/cli/skills-library-cli.test.ts > skills library CLI > targets an exact session and skill without workspace overrides 8ms
+
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Start at  21:56:37
+   Duration  7.51s (transform 29%, worker 25%, import 20%, tests 18%, setup 8%)
+
+[test] passed 1 Vitest shard in 12.15s

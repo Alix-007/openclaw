@@ -1,0 +1,319 @@
+{
+  "head": "6482e869dc2ce6372cc048c387ba89634ce72b78",
+  "buildStamp": {
+    "builtAt": 1794751912837,
+    "head": "6482e869dc2ce6372cc048c387ba89634ce72b78",
+    "inputsClean": true,
+    "inputSignature": "2da0df6abc21e62cb478425cbaa2e3fc3c02ec0f672a8beec680da5cc7dd2ec4"
+  },
+  "collectorSHA256": "235a9f39e01a11753750b4894e420b1cd15148e4ae1395246bd1deb8d0dfba09",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "ordinary",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "create",
+        "<TASK>/skill-library-head-proof/fixtures/physical/bundle",
+        "--slug",
+        "ordinary",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 5.169,
+      "stdout": "{\n  \"state\": \"published\",\n  \"target\": \"personal\",\n  \"entry\": {\n    \"skillId\": \"6cd37249-6e55-42e7-be43-e66e7f1d4b27\",\n    \"slug\": \"ordinary\",\n    \"name\": \"s_ordinary_6cd372496e5542e7be43\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751986792,\n    \"updatedAt\": 1794751986792,\n    \"canEdit\": true\n  },\n  \"sessionActivation\": \"new-sessions\",\n  \"nextAction\": \"Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it.\"\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "d3ef8e8f512d8a2d5a9e8332f2c29d0eff7019bbba79d68e0394ceb85ef8c031",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "libraryReadback": {
+        "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+        "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+        "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+        "contentSHA256": "9a15e3e5d67359204c37d778b07c906de4046f9e9a280c3fe9c83166ebbfeba6",
+        "files": [
+          {
+            "path": "asset.bin",
+            "content": "cGh5c2ljYWwA/w0K",
+            "encoding": "base64",
+            "executable": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "ordinary-read",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "read",
+        "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.659,
+      "stdout": "{\n  \"entry\": {\n    \"skillId\": \"6cd37249-6e55-42e7-be43-e66e7f1d4b27\",\n    \"slug\": \"ordinary\",\n    \"name\": \"s_ordinary_6cd372496e5542e7be43\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751986792,\n    \"updatedAt\": 1794751986792,\n    \"canEdit\": false\n  },\n  \"revisions\": [\n    {\n      \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n      \"createdAt\": 1794751986792\n    }\n  ],\n  \"content\": \"---\\nname: path-proof\\ndescription: Synthetic local input fixture.\\n---\\n\\nSelected physical bundle.\\n\",\n  \"files\": [\n    {\n      \"path\": \"asset.bin\",\n      \"content\": \"cGh5c2ljYWwA/w0K\",\n      \"encoding\": \"base64\",\n      \"executable\": false\n    }\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "fbbe622617cb50485daf9191defb0d3ae85099cab000faa1677693c163fb6453",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "selected-directory",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "create",
+        "<TASK>/skill-library-head-proof/fixtures/selected/../bundle",
+        "--slug",
+        "selected-directory",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.34,
+      "stdout": "{\n  \"state\": \"published\",\n  \"target\": \"personal\",\n  \"entry\": {\n    \"skillId\": \"b65bebca-7ae1-41a1-820d-1343c91d2439\",\n    \"slug\": \"selected-directory\",\n    \"name\": \"s_selected_b65bebca7ae141a1820d\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751993849,\n    \"updatedAt\": 1794751993849,\n    \"canEdit\": true\n  },\n  \"sessionActivation\": \"new-sessions\",\n  \"nextAction\": \"Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it.\"\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "d739771ba1db5b6f4bac44c3723933271b87dba574f4aa7aafe6986620c54a29",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "libraryReadback": {
+        "skillId": "b65bebca-7ae1-41a1-820d-1343c91d2439",
+        "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+        "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+        "contentSHA256": "9a15e3e5d67359204c37d778b07c906de4046f9e9a280c3fe9c83166ebbfeba6",
+        "files": [
+          {
+            "path": "asset.bin",
+            "content": "cGh5c2ljYWwA/w0K",
+            "encoding": "base64",
+            "executable": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "selected-directory-read",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "read",
+        "b65bebca-7ae1-41a1-820d-1343c91d2439",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.811,
+      "stdout": "{\n  \"entry\": {\n    \"skillId\": \"b65bebca-7ae1-41a1-820d-1343c91d2439\",\n    \"slug\": \"selected-directory\",\n    \"name\": \"s_selected_b65bebca7ae141a1820d\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751993849,\n    \"updatedAt\": 1794751993849,\n    \"canEdit\": false\n  },\n  \"revisions\": [\n    {\n      \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n      \"createdAt\": 1794751993849\n    }\n  ],\n  \"content\": \"---\\nname: path-proof\\ndescription: Synthetic local input fixture.\\n---\\n\\nSelected physical bundle.\\n\",\n  \"files\": [\n    {\n      \"path\": \"asset.bin\",\n      \"content\": \"cGh5c2ljYWwA/w0K\",\n      \"encoding\": \"base64\",\n      \"executable\": false\n    }\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "1aa9a3318336208b29f90a3f5252b4af75e0472885346872d95d9eefd161adcc",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "selected-file",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "create",
+        "<TASK>/skill-library-head-proof/fixtures/selected/../bundle/SKILL.md",
+        "--slug",
+        "selected-file",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.853,
+      "stdout": "{\n  \"state\": \"published\",\n  \"target\": \"personal\",\n  \"entry\": {\n    \"skillId\": \"dc4f6b32-c794-4be1-b6fb-50c201b14ed8\",\n    \"slug\": \"selected-file\",\n    \"name\": \"s_selected_dc4f6b32c7944be1b6fb\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91\",\n    \"createdAt\": 1794752001526,\n    \"updatedAt\": 1794752001526,\n    \"canEdit\": true\n  },\n  \"sessionActivation\": \"new-sessions\",\n  \"nextAction\": \"Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it.\"\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "f1a8b594e056203f313558044264eeeea5a77eef9aa534e7d856c53c22e1387f",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "libraryReadback": {
+        "skillId": "dc4f6b32-c794-4be1-b6fb-50c201b14ed8",
+        "revision": "103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91",
+        "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+        "contentSHA256": "9a15e3e5d67359204c37d778b07c906de4046f9e9a280c3fe9c83166ebbfeba6",
+        "files": []
+      }
+    },
+    {
+      "label": "selected-file-read",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "read",
+        "dc4f6b32-c794-4be1-b6fb-50c201b14ed8",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.638,
+      "stdout": "{\n  \"entry\": {\n    \"skillId\": \"dc4f6b32-c794-4be1-b6fb-50c201b14ed8\",\n    \"slug\": \"selected-file\",\n    \"name\": \"s_selected_dc4f6b32c7944be1b6fb\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91\",\n    \"createdAt\": 1794752001526,\n    \"updatedAt\": 1794752001526,\n    \"canEdit\": false\n  },\n  \"revisions\": [\n    {\n      \"revision\": \"103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91\",\n      \"createdAt\": 1794752001526\n    }\n  ],\n  \"content\": \"---\\nname: path-proof\\ndescription: Synthetic local input fixture.\\n---\\n\\nSelected physical bundle.\\n\",\n  \"files\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "47a042596e85cffbb444aa909652a59c631666e016a3e49b51ed251e33a9d44b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "selected-import",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "import",
+        "<TASK>/skill-library-head-proof/fixtures/selected/../bundle",
+        "--slug",
+        "selected-import",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.559,
+      "stdout": "{\n  \"state\": \"published\",\n  \"target\": \"personal\",\n  \"entry\": {\n    \"skillId\": \"42196c63-62e1-4a68-8c9d-46e040fcab63\",\n    \"slug\": \"selected-import\",\n    \"name\": \"s_selected_42196c6362e14a688c9d\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794752008710,\n    \"updatedAt\": 1794752008710,\n    \"canEdit\": true\n  },\n  \"sessionActivation\": \"new-sessions\",\n  \"nextAction\": \"Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it.\"\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "56dc20f2f981f7e96f6495a319ebe8bc6a995a0ab93ae8416abebad2531bec46",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "libraryReadback": {
+        "skillId": "42196c63-62e1-4a68-8c9d-46e040fcab63",
+        "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+        "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+        "contentSHA256": "9a15e3e5d67359204c37d778b07c906de4046f9e9a280c3fe9c83166ebbfeba6",
+        "files": [
+          {
+            "path": "asset.bin",
+            "content": "cGh5c2ljYWwA/w0K",
+            "encoding": "base64",
+            "executable": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "selected-import-read",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "read",
+        "42196c63-62e1-4a68-8c9d-46e040fcab63",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 4.187,
+      "stdout": "{\n  \"entry\": {\n    \"skillId\": \"42196c63-62e1-4a68-8c9d-46e040fcab63\",\n    \"slug\": \"selected-import\",\n    \"name\": \"s_selected_42196c6362e14a688c9d\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794752008710,\n    \"updatedAt\": 1794752008710,\n    \"canEdit\": false\n  },\n  \"revisions\": [\n    {\n      \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n      \"createdAt\": 1794752008710\n    }\n  ],\n  \"content\": \"---\\nname: path-proof\\ndescription: Synthetic local input fixture.\\n---\\n\\nSelected physical bundle.\\n\",\n  \"files\": [\n    {\n      \"path\": \"asset.bin\",\n      \"content\": \"cGh5c2ljYWwA/w0K\",\n      \"encoding\": \"base64\",\n      \"executable\": false\n    }\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "70798e229dce9257bc52b7c5d20e0327eb34847dad9b0ff24d52a1c77c9ebfa9",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "selected-update",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "update",
+        "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+        "<TASK>/skill-library-head-proof/fixtures/selected/../bundle",
+        "--expected-revision",
+        "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.762,
+      "stdout": "{\n  \"state\": \"unchanged\",\n  \"target\": \"personal\",\n  \"entry\": {\n    \"skillId\": \"6cd37249-6e55-42e7-be43-e66e7f1d4b27\",\n    \"slug\": \"ordinary\",\n    \"name\": \"s_ordinary_6cd372496e5542e7be43\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751986792,\n    \"updatedAt\": 1794751986792,\n    \"canEdit\": true\n  },\n  \"sessionActivation\": \"new-sessions\",\n  \"nextAction\": \"Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it.\"\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "5e82b4df765d56d9c2233e576ce48ec8b61cc916414ec77f5cd6b635def25100",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "libraryReadback": {
+        "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+        "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+        "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+        "contentSHA256": "9a15e3e5d67359204c37d778b07c906de4046f9e9a280c3fe9c83166ebbfeba6",
+        "files": [
+          {
+            "path": "asset.bin",
+            "content": "cGh5c2ljYWwA/w0K",
+            "encoding": "base64",
+            "executable": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "selected-update-read",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-library/openclaw.mjs",
+        "skills",
+        "library",
+        "read",
+        "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+        "--url",
+        "ws://127.0.0.1:45571",
+        "--token",
+        "synthetic-skill-library-proof",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 3.328,
+      "stdout": "{\n  \"entry\": {\n    \"skillId\": \"6cd37249-6e55-42e7-be43-e66e7f1d4b27\",\n    \"slug\": \"ordinary\",\n    \"name\": \"s_ordinary_6cd372496e5542e7be43\",\n    \"ownerLabel\": \"gateway-owner\",\n    \"description\": \"Synthetic local input fixture.\",\n    \"ownerProfileId\": \"gateway-owner\",\n    \"authorProfileId\": \"gateway-owner\",\n    \"shared\": false,\n    \"enabled\": true,\n    \"removed\": false,\n    \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n    \"createdAt\": 1794751986792,\n    \"updatedAt\": 1794751986792,\n    \"canEdit\": false\n  },\n  \"revisions\": [\n    {\n      \"revision\": \"d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27\",\n      \"createdAt\": 1794751986792\n    }\n  ],\n  \"content\": \"---\\nname: path-proof\\ndescription: Synthetic local input fixture.\\n---\\n\\nSelected physical bundle.\\n\",\n  \"files\": [\n    {\n      \"path\": \"asset.bin\",\n      \"content\": \"cGh5c2ljYWwA/w0K\",\n      \"encoding\": \"base64\",\n      \"executable\": false\n    }\n  ]\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "fbbe622617cb50485daf9191defb0d3ae85099cab000faa1677693c163fb6453",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "GREEN5_REAL_LIBRARY_READBACKS",
+  "fixture": {
+    "rawInput": "<TASK>/skill-library-head-proof/fixtures/selected/../bundle",
+    "physicalInput": "<TASK>/skill-library-head-proof/fixtures/physical/bundle",
+    "decoyInput": "<TASK>/skill-library-head-proof/fixtures/bundle"
+  },
+  "cleanup": {
+    "gatewayExit": 0,
+    "isolatedStateRetained": true,
+    "productionStateTouched": false,
+    "externalRequests": false
+  }
+}

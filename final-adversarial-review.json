@@ -1,0 +1,57 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "6482e869dc2ce6372cc048c387ba89634ce72b78",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "src/cli/skills-library-cli.ts",
+      "sha256": "0b77c963b900cc8d5a42e3498fbce654fba4b1833de85acf3df95d09dea2261e"
+    },
+    {
+      "path": "src/cli/skills-library-input.test.ts",
+      "sha256": "f92cd22fd8b4ef2c73ad750817add7331e3cec9964eb2c20805702b7d80adc12"
+    }
+  ],
+  "fullIndexDiffSHA256": "42f683d866e0b190ffd7fbd4c55268d96c0eb751245cae235ae5ae386598bf7b",
+  "bodySHA256": "cadfa6d3e665d872480aae3d81427c44af5d5d6b02d146d1e05644958f61dfb9",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "commit": "Clean single-parent normal commit, expected base and company author/committer verified.",
+    "source": "Both hashes and complete committed full-index patch match source-approved manifest.",
+    "build": "Normal cliStartup exit0 285.116s; actual dist/.buildstamp equals HEAD receipt and inputsClean true.",
+    "pairedProof": "Frozen collector235a9f39e01a11753750b4894e420b1cd15148e4ae1395246bd1deb8d0dfba09 matches BASE/HEAD/current; BASE4_WRONG_BUNDLES_ORDINARY_CONTROL_PASS -> GREEN5_REAL_LIBRARY_READBACKS. All20 BASE/HEAD raw stdout/stderr pairs hash-matched, all commands exit0. Each saved skillId/revision equals independent CLI read and recorded identity, intended instruction bytes and decoded binary companion match physical source; single-file read has no supporting files.",
+    "checks": "24 focused tests pass; only later unused test binding removed. Final typedlint/types/format/staged ratchets pass; retained log hashes verified.",
+    "cleanup": "Gateway exit0, network-none qualified container and isolated retained fixtures.",
+    "body": "Full four sections match proof and source boundaries. Final symlink/ENOTDIR/hardlink/mode/limits rely on focused/source evidence, not overstated as native Gateway cases."
+  },
+  "proofFiles": [
+    {
+      "path": "skill-library-proof-v1.py",
+      "sha256": "235a9f39e01a11753750b4894e420b1cd15148e4ae1395246bd1deb8d0dfba09"
+    },
+    {
+      "path": "skill-library-base-proof/receipt.json",
+      "sha256": "1fc75fdd3c9f502d19081dd8231f8bd4ea9059fe132b20f4a0731bab1c5f895a"
+    },
+    {
+      "path": "skill-library-head-proof/receipt.json",
+      "sha256": "1fe6c081162b7f61d9394f3648dd8598b99b2969be9721a1fa1a4a2f58ac52ba"
+    },
+    {
+      "path": "skill-library-cli-build.json",
+      "sha256": "e6bdaf53153439db28a6b958ef52b37355b3e338fdb389c69d1f714bacbf7657"
+    },
+    {
+      "path": "skill-library-head-proof-runner.json",
+      "sha256": "d78e95752fcda0b68d7cacb22a9b2e3ede1f34b699496500df598b576b8788f7"
+    }
+  ],
+  "publicationBoundary": "Approve exact reviewed source/evidence/body; PUBLIC_ARTIFACT_URL may be replaced with a verified immutable evidence link with no other semantic text change. Reviewer publishes nothing.",
+  "limitations": [
+    "Synthetic local Linux/Node loopback real Gateway/store proof only; native macOS/Windows, external services, activation, remote paired-node workspace, full repository suite and hostedCI excluded.",
+    "Focused24 receipt reused after unused-binding-only cleanup; no assertion/fixture/runtime changes.",
+    "No test/build/native collector reruns or source mutations by reviewer."
+  ]
+}

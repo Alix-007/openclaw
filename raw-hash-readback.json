@@ -1,0 +1,50 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "1fc75fdd3c9f502d19081dd8231f8bd4ea9059fe132b20f4a0731bab1c5f895a"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "dff98ff2d5d42ba5aa4985c98f02f8302419b2c078ea91c416b34a2474dd5bb0"
+  },
+  {
+    "file": "BASE-gateway.txt",
+    "rawSHA256": "e6765a138a0fbd40bc850b4264dd41c7442e6234f9fad681b56563e0dba665a0"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "1fe6c081162b7f61d9394f3648dd8598b99b2969be9721a1fa1a4a2f58ac52ba"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "cb1c33127ec59f0132470936e87eaba77e28087c6a0e51d488440696f85b5d94"
+  },
+  {
+    "file": "HEAD-gateway.txt",
+    "rawSHA256": "c544cc4c52e0e654cfd3c625d193a4732ed825cb935e3d840f132e7cb42d224e"
+  },
+  {
+    "file": "skill-library-proof-v1.py",
+    "rawSHA256": "235a9f39e01a11753750b4894e420b1cd15148e4ae1395246bd1deb8d0dfba09"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "7c84a6a802ea6ef41e5ca47c81737cef63bb190c0b62ccae011273856849fd48"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "4ef2238bc3d6edec7b7730325b769a235136aef36b34b81b422f38e6a53934e4"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "634deb56ca40ea51e8bbc82c7c85ff36f14f4f220842eedc00aaff42470c6a59"
+  },
+  {
+    "file": "focused-final.log",
+    "rawSHA256": "5732b7aebd7cc0762d34668eeef407a7f4354fc7328f49576678fcfa44c519d5"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "26990c1f205d44f4d4089b6e92456422555258dd49512717dbf0321c0d8bc851"
+  }
+]

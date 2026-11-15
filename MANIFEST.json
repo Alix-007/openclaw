@@ -1,0 +1,15 @@
+{
+  "BASE.json": "0efb0835c1da290e874861d8935a8be9930624f28b4e0ded0750941238f5d3fb",
+  "BASE-streams.txt": "dff98ff2d5d42ba5aa4985c98f02f8302419b2c078ea91c416b34a2474dd5bb0",
+  "BASE-gateway.txt": "7a030ed2c9a67cdae25fa6442e47c37b3ed2dd88ebe67c00e0980afe7efd6fa1",
+  "HEAD.json": "f4a5accccb8e7f23462fde5b1b3b8e7dcaf72258b358fc3ea474cd3d333b9e3b",
+  "HEAD-streams.txt": "cb1c33127ec59f0132470936e87eaba77e28087c6a0e51d488440696f85b5d94",
+  "HEAD-gateway.txt": "78ea9d73773d5881760ede76f6ac45c2595a2b57489d3cef7f328c087e1b736b",
+  "skill-library-proof-v1.py": "235a9f39e01a11753750b4894e420b1cd15148e4ae1395246bd1deb8d0dfba09",
+  "final-adversarial-review.md": "7c84a6a802ea6ef41e5ca47c81737cef63bb190c0b62ccae011273856849fd48",
+  "final-adversarial-review.json": "4ef2238bc3d6edec7b7730325b769a235136aef36b34b81b422f38e6a53934e4",
+  "checks.json": "330469bc3dd8f3c0e7fde2793bc97335721ca7f82ceb466eed9ff0ef1beaf9e2",
+  "focused-final.log": "7c4a912c53a0d7e079c9e0e68ab530bb89e0e6d1a60bc7059f5dc982e3f6fbee",
+  "EVIDENCE.md": "26990c1f205d44f4d4089b6e92456422555258dd49512717dbf0321c0d8bc851",
+  "raw-hash-readback.json": "b6ecc3bfb789ae910d0be7bd6602585c73bf25c829b12a3fec2da32fe1ae58d3"
+}

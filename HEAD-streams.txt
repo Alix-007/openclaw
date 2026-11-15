@@ -1,0 +1,308 @@
+
+=== ordinary/stdout ===
+{
+  "state": "published",
+  "target": "personal",
+  "entry": {
+    "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+    "slug": "ordinary",
+    "name": "s_ordinary_6cd372496e5542e7be43",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751986792,
+    "updatedAt": 1794751986792,
+    "canEdit": true
+  },
+  "sessionActivation": "new-sessions",
+  "nextAction": "Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it."
+}
+
+=== ordinary/stderr ===
+
+=== ordinary-read/stdout ===
+{
+  "entry": {
+    "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+    "slug": "ordinary",
+    "name": "s_ordinary_6cd372496e5542e7be43",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751986792,
+    "updatedAt": 1794751986792,
+    "canEdit": false
+  },
+  "revisions": [
+    {
+      "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+      "createdAt": 1794751986792
+    }
+  ],
+  "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+  "files": [
+    {
+      "path": "asset.bin",
+      "content": "cGh5c2ljYWwA/w0K",
+      "encoding": "base64",
+      "executable": false
+    }
+  ]
+}
+
+=== ordinary-read/stderr ===
+
+=== selected-directory/stdout ===
+{
+  "state": "published",
+  "target": "personal",
+  "entry": {
+    "skillId": "b65bebca-7ae1-41a1-820d-1343c91d2439",
+    "slug": "selected-directory",
+    "name": "s_selected_b65bebca7ae141a1820d",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751993849,
+    "updatedAt": 1794751993849,
+    "canEdit": true
+  },
+  "sessionActivation": "new-sessions",
+  "nextAction": "Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it."
+}
+
+=== selected-directory/stderr ===
+
+=== selected-directory-read/stdout ===
+{
+  "entry": {
+    "skillId": "b65bebca-7ae1-41a1-820d-1343c91d2439",
+    "slug": "selected-directory",
+    "name": "s_selected_b65bebca7ae141a1820d",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751993849,
+    "updatedAt": 1794751993849,
+    "canEdit": false
+  },
+  "revisions": [
+    {
+      "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+      "createdAt": 1794751993849
+    }
+  ],
+  "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+  "files": [
+    {
+      "path": "asset.bin",
+      "content": "cGh5c2ljYWwA/w0K",
+      "encoding": "base64",
+      "executable": false
+    }
+  ]
+}
+
+=== selected-directory-read/stderr ===
+
+=== selected-file/stdout ===
+{
+  "state": "published",
+  "target": "personal",
+  "entry": {
+    "skillId": "dc4f6b32-c794-4be1-b6fb-50c201b14ed8",
+    "slug": "selected-file",
+    "name": "s_selected_dc4f6b32c7944be1b6fb",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91",
+    "createdAt": 1794752001526,
+    "updatedAt": 1794752001526,
+    "canEdit": true
+  },
+  "sessionActivation": "new-sessions",
+  "nextAction": "Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it."
+}
+
+=== selected-file/stderr ===
+
+=== selected-file-read/stdout ===
+{
+  "entry": {
+    "skillId": "dc4f6b32-c794-4be1-b6fb-50c201b14ed8",
+    "slug": "selected-file",
+    "name": "s_selected_dc4f6b32c7944be1b6fb",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91",
+    "createdAt": 1794752001526,
+    "updatedAt": 1794752001526,
+    "canEdit": false
+  },
+  "revisions": [
+    {
+      "revision": "103d7800b17cc22da9bd60ce93b58e4d6a8f82993f827e128c01cea7879dda91",
+      "createdAt": 1794752001526
+    }
+  ],
+  "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+  "files": []
+}
+
+=== selected-file-read/stderr ===
+
+=== selected-import/stdout ===
+{
+  "state": "published",
+  "target": "personal",
+  "entry": {
+    "skillId": "42196c63-62e1-4a68-8c9d-46e040fcab63",
+    "slug": "selected-import",
+    "name": "s_selected_42196c6362e14a688c9d",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794752008710,
+    "updatedAt": 1794752008710,
+    "canEdit": true
+  },
+  "sessionActivation": "new-sessions",
+  "nextAction": "Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it."
+}
+
+=== selected-import/stderr ===
+
+=== selected-import-read/stdout ===
+{
+  "entry": {
+    "skillId": "42196c63-62e1-4a68-8c9d-46e040fcab63",
+    "slug": "selected-import",
+    "name": "s_selected_42196c6362e14a688c9d",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794752008710,
+    "updatedAt": 1794752008710,
+    "canEdit": false
+  },
+  "revisions": [
+    {
+      "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+      "createdAt": 1794752008710
+    }
+  ],
+  "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+  "files": [
+    {
+      "path": "asset.bin",
+      "content": "cGh5c2ljYWwA/w0K",
+      "encoding": "base64",
+      "executable": false
+    }
+  ]
+}
+
+=== selected-import-read/stderr ===
+
+=== selected-update/stdout ===
+{
+  "state": "unchanged",
+  "target": "personal",
+  "entry": {
+    "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+    "slug": "ordinary",
+    "name": "s_ordinary_6cd372496e5542e7be43",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751986792,
+    "updatedAt": 1794751986792,
+    "canEdit": true
+  },
+  "sessionActivation": "new-sessions",
+  "nextAction": "Enabled for your new sessions, subject to agent policy and prerequisites. Existing session pins remain. Use skills.library.activate to attach or refresh it."
+}
+
+=== selected-update/stderr ===
+
+=== selected-update-read/stdout ===
+{
+  "entry": {
+    "skillId": "6cd37249-6e55-42e7-be43-e66e7f1d4b27",
+    "slug": "ordinary",
+    "name": "s_ordinary_6cd372496e5542e7be43",
+    "ownerLabel": "gateway-owner",
+    "description": "Synthetic local input fixture.",
+    "ownerProfileId": "gateway-owner",
+    "authorProfileId": "gateway-owner",
+    "shared": false,
+    "enabled": true,
+    "removed": false,
+    "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+    "createdAt": 1794751986792,
+    "updatedAt": 1794751986792,
+    "canEdit": false
+  },
+  "revisions": [
+    {
+      "revision": "d35aa05ded7a408c97ea86f159e8e8c95adc64db15e5ad1fb7702634b1b49f27",
+      "createdAt": 1794751986792
+    }
+  ],
+  "content": "---\nname: path-proof\ndescription: Synthetic local input fixture.\n---\n\nSelected physical bundle.\n",
+  "files": [
+    {
+      "path": "asset.bin",
+      "content": "cGh5c2ljYWwA/w0K",
+      "encoding": "base64",
+      "executable": false
+    }
+  ]
+}
+
+=== selected-update-read/stderr ===
