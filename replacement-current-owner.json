@@ -1,0 +1,61 @@
+{
+  "at": "2026-11-15T17:41:07.461Z",
+  "main": "8b94cfb556c3ffa2d52eb9678b51828a31bb2966",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "rows": [
+    {
+      "path": "AGENTS.md",
+      "current": "cd5ecef4ba045300693cbbb9290fa6767a7e7e9f",
+      "base": "cd5ecef4ba045300693cbbb9290fa6767a7e7e9f",
+      "same": true
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "current": "69013e76bea936e1b221247b7065b32ad493ff4f",
+      "base": "69013e76bea936e1b221247b7065b32ad493ff4f",
+      "same": true
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "current": "5b1eedd63c4b5eb2fc50a7ebdc4b977e5d97561c",
+      "base": "5b1eedd63c4b5eb2fc50a7ebdc4b977e5d97561c",
+      "same": true
+    },
+    {
+      "path": "docs/reference/pull-request-review-flow.md",
+      "current": "eab24178ee7efeb369a81f3ee42b8e5f8f3684c0",
+      "base": "eab24178ee7efeb369a81f3ee42b8e5f8f3684c0",
+      "same": true
+    },
+    {
+      "path": "docs/help/testing/writing-tests.md",
+      "current": "01b29f61226a8d6134e1afad0dd70164a6896f74",
+      "base": "01b29f61226a8d6134e1afad0dd70164a6896f74",
+      "same": true
+    },
+    {
+      "path": "src/commands/agents.commands.identity.ts",
+      "current": "09c92be567db42f256e9810c35fd16c4a1cd0ac3",
+      "base": "09c92be567db42f256e9810c35fd16c4a1cd0ac3",
+      "same": true
+    },
+    {
+      "path": "src/commands/agents.identity.test.ts",
+      "current": "4250a8cc86c3508c71182b80c68f03022d473581",
+      "base": "4250a8cc86c3508c71182b80c68f03022d473581",
+      "same": true
+    },
+    {
+      "path": "src/agents/identity-file.ts",
+      "current": "42f36306f4fd1d8f4bc08ee801d0ce2e708bb595",
+      "base": "42f36306f4fd1d8f4bc08ee801d0ce2e708bb595",
+      "same": true
+    },
+    {
+      "path": "src/agents/identity-file-runtime.ts",
+      "current": "bb07df2061622a78c5a0d1a89c95a7d8be167237",
+      "base": "bb07df2061622a78c5a0d1a89c95a7d8be167237",
+      "same": true
+    }
+  ]
+}

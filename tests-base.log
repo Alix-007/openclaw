@@ -1,0 +1,183 @@
+$ node scripts/test-projects.mts src/commands/agents.identity.test.ts --maxWorkers=1 -t 'imports the physical|neighboring.*missing parent'
+[test] starting test/vitest/vitest.commands.config.ts
+
+ RUN  v5.0.5 <TASK>/identity-source
+
+[vitest-workers] local cache miss after 5593ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 90000ms.
+[vitest] still running with no output for 120000ms.
+[vitest-workers] prepared 83960199a432 in 124753ms (20154 inputs, 25028 outputs)
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > updates identity while preserving independent roster label New Bot ({"name":"Pip"})
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > updates identity while preserving independent roster label Research assistant ({"name":"Pip"})
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > updates identity while preserving independent roster label New Bot ({"emoji":"🐦"})
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > resolves --from-identity against the selected agent workspace
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects ambiguous=false workspace without modifying identity
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects ambiguous=true workspace without modifying identity
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > sanitizes identity echoes while preserving stored and JSON values
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > reads and reports an explicit IDENTITY.md path
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects an explicitly blank path {"identityFile":" "}
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects an explicitly blank path {"workspace":"\t"}
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > preserves the literal identityFile path beside a trimmed neighbor
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > preserves the literal workspace path beside a trimmed neighbor
+stderr | unknown test
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.stateDomainPublication.workspace-state
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/commands/agents.identity.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ × |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical identityFile source before collapsing parents 454ms
+   → expected { agentId: 'main', …(4) } to match object { agentId: 'main', …(1) }
+(3 matching properties omitted from actual)
+ × |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical workspace source before collapsing parents 15ms
+   → expected { agentId: 'main', …(4) } to match object { agentId: 'main', …(1) }
+(3 matching properties omitted from actual)
+ × |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical implicit-workspace source before collapsing parents 12ms
+   → Multiple agents match <CACHE>/user-tmp/oc-vt-72EWkj/openclaw-identity-fBBlhT/source: other, stale. Pass --agent to choose one.
+ × |commands| src/commands/agents.identity.test.ts > agents set-identity command > does not import a neighboring identityFile through a missing parent 16ms
+   → promise resolved "undefined" instead of rejecting
+ × |commands| src/commands/agents.identity.test.ts > agents set-identity command > does not import a neighboring workspace through a missing parent 11ms
+   → promise resolved "undefined" instead of rejecting
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects unknown agent агент✨ before reading or writing identity
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > rejects unknown agent main before reading or writing identity
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > errors when an explicit identity file exceeds the size cap
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > errors when identity data is missing
+ ↓ |commands| src/commands/agents.identity.test.ts > agents set-identity command > does not persist --workspace and reports the stored workspace separately
+ ↓ |commands| src/commands/agents.identity.test.ts > agents helpers > applyAgentConfig clears a model override
+ ↓ |commands| src/commands/agents.identity.test.ts > agents helpers > adds distinct role and delimiter-bearing routes while upgrading account scope
+ ↓ |commands| src/commands/agents.identity.test.ts > agents helpers > removeAgentBindings does not remove role-based bindings when removing channel-level routes
+ ↓ |commands| src/commands/agents.identity.test.ts > agents helpers > pruneAgentConfig removes agent, bindings, and allowlist entries
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical identityFile source before collapsing parents
+ FAIL  |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical workspace source before collapsing parents
+AssertionError: expected { agentId: 'main', …(4) } to match object { agentId: 'main', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "agentId": "main",
+    "identity": {
+-     "name": "Selected identity",
++     "name": "Wrong neighbor",
+    },
+  }
+
+ ❯ src/commands/agents.identity.test.ts:289:9
+    287|           fromIdentity: true,
+    288|         }),
+    289|       ).toMatchObject({ agentId: "main", identity: { name: "Selected i…
+       |         ^
+    290|       expect(writtenAgent()).toMatchObject({
+    291|         workspace: mainWorkspace,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |commands| src/commands/agents.identity.test.ts > agents set-identity command > imports the physical implicit-workspace source before collapsing parents
+ExpectedCliError: Multiple agents match <CACHE>/user-tmp/oc-vt-72EWkj/openclaw-identity-fBBlhT/source: other, stale. Pass --agent to choose one.
+ ❯ throwExpectedCliError src/cli/expected-cli-error.ts:28:9
+     26|
+     27| export function throwExpectedCliError(message: string): never {
+     28|   throw new ExpectedCliError({ message, humanOutput: message, machineO…
+       |         ^
+     29| }
+     30|
+ ❯ Module.agentsSetIdentityCommand src/commands/agents.commands.identity.ts:112:7
+ ❯ jsonIdentity src/commands/agents.identity.test.ts:58:3
+ ❯ src/commands/agents.identity.test.ts:284:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { humanOutput: 'Multiple agents match <CACHE>/user-tmp/oc-vt-72EWkj/openclaw-identity-fBBlhT/source: other, stale. Pass --agent to choose one.', humanOutputWritten: false, machineOutput: 'Multiple agents match <CACHE>/user-tmp/oc-vt-72EWkj/openclaw-identity-fBBlhT/source: other, stale. Pass --agent to choose one.', matches: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |commands| src/commands/agents.identity.test.ts > agents set-identity command > does not import a neighboring identityFile through a missing parent
+ FAIL  |commands| src/commands/agents.identity.test.ts > agents set-identity command > does not import a neighboring workspace through a missing parent
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectIdentityCommandFailure src/commands/agents.identity.test.ts:86:50
+     84| async function expectIdentityCommandFailure(options: IdentityOptions, …
+     85|   const message = typeof expected === "string" ? expected : expect.str…
+     86|   await expect(agentsSetIdentityCommand(options)).rejects.toMatchObjec…
+       |                                                  ^
+     87|     name: "ExpectedCliError",
+     88|     message,
+ ❯ src/commands/agents.identity.test.ts:307:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 21 skipped (26)
+   Start at  01:49:33
+   Duration  152.71s (transform 95%, import 2%, worker 2%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 161.12s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

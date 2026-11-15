@@ -1,0 +1,82 @@
+{
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "worktree": "<TASK>/identity-source",
+  "fullIndexDiffSHA256": "7b1d3915116ef8011df1d6819221daa75c5e711a6a13ac2c65054b45b1e4493a",
+  "files": [
+    {
+      "path": "src/commands/agents.commands.identity.ts",
+      "sha256": "415600ad78d7df14958e98764125b5eec46764f85266e96a03d4007d0b0f663e"
+    },
+    {
+      "path": "src/commands/agents.identity.test.ts",
+      "sha256": "7da4c0c0d054cf667aa9527874704c524671f1425bf0968d6c252ff9201a303b"
+    }
+  ],
+  "verdict": "PASS",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "stage": "final-exact-head-and-body",
+  "head": "225a74cfcd502243c9d2b77ec27bf1756ca89b69",
+  "bodySHA256": "15defcfbd0f4fffcdbe9c4ef52edbfc2796ff665f1d985813f302c278d8f0798",
+  "exactHeadVerification": {
+    "source": "Actual clean company commit/sole c016 parent, both current source hashes and canonical7b1d3915 BASE-to-HEAD patch independently match source PASS. No config/schema/global workspace policy changes.",
+    "build": "Normal cliStartup exit0 in231.973s; build log hash/current actual dist stamp and saved BASE/current clean-head stamps checked. Frozen collector itself records commit identity; stamp qualification independently supplied by verified build artifacts.",
+    "checks": "Current corrected semantic types20.81s/genuine core typed lint27.155s/format/test-lines/line-cap receipt/log hashes exit0 checked. Retained29PASS171.137s focused logs verified; final return-before-never delta independently reconstructed old source and unchanged tests, valid test reuse.",
+    "proof": "Same frozen36a667ed collector on clean c016BASE and225HEAD; all40 command raw stdout/stderr pairs/config-before/config-after hashes and actual openclaw.json/selected-decoy identity bytes independently checked. BASE11wrong imports including implicit wrong-agent and4invalid traversals; HEAD20expected outcomes,4invalid+4refusal controls byte-identical/no writes,7valid regressions+4ordinary/alias+1explicit-name actual positive writes. All stored workspace values and unrelated HEAD agent remain unchanged.",
+    "body": "Full four-section body/receipt accurate, physical successful source reporting explicitly disclosed, immutable URL still placeholder. Accepted186475 literal-source precedent confirmed from retained merged_at metadata; it fixes a distinct trimming defect.",
+    "admission": "Final supplied owner/contract snapshot reports9unchanged blobs at293518; four final competition queries including page2 of158hits and19open footprint artifacts reviewed, only own194089 distinct binding test overlap. No fresh network scan asserted."
+  },
+  "coveredReceipts": [
+    {
+      "path": "identity-source-base-proof-v3/receipt.json",
+      "sha256": "6a05db507f704d31e1945d6b60da3af454acc70d4542cded2238c33313475711"
+    },
+    {
+      "path": "identity-source-head-proof/receipt.json",
+      "sha256": "562d9fb0d67bc2f4c5c48116170f1ad28ecdba4e8715e9b5d84fcf07a6748a51"
+    },
+    {
+      "path": "identity-source-commit.json",
+      "sha256": "fbd8fe99f5024d82c37236afda489eb72d18d10eb2df53fa82674627c0bad0ce"
+    },
+    {
+      "path": "identity-source-cli-build.json",
+      "sha256": "316961cfc0a1ccf7062730b89e738753dd285b37313bfa98ee491dbe1cc53988"
+    },
+    {
+      "path": "identity-source-base-buildstamp.json",
+      "sha256": "5c637e8944eb343afd36d514b48eae6a087c72babcf2bcf202a6d57423073994"
+    },
+    {
+      "path": "identity-source-identity-source-buildstamp.json",
+      "sha256": "56404af954e0f19d7ff63b32079ebef59a1699973d3786c209aba2cbf9966726"
+    },
+    {
+      "path": "identity-source-focused-equivalence.json",
+      "sha256": "46bf997d5fce2a20b809389f163dd7649178b733df7412f1bafae1d4ec839712"
+    },
+    {
+      "path": "replacement-current-owner-final.json",
+      "sha256": "a064342245db7464b7c5643c0815766eb615b46af8c022b0adc29d46f2b136e1"
+    },
+    {
+      "path": "identity-source-final-competition-summary.json",
+      "sha256": "99ccdda66deff15c5150280e25606d4afd92f67648441b8988366d150caf4a82"
+    },
+    {
+      "path": "identity-source-competition-page2-summary.json",
+      "sha256": "87965bc03c11d8a179351e42c97acd640bf6eeb4b84962866cb3bcbf63ff0c25"
+    },
+    {
+      "path": "identity-source-final-footprints-summary.json",
+      "sha256": "b75f2f95b388cee67618ba0472dfc5c9a87e0afc47265c77ea022d88c2bde4a5"
+    }
+  ],
+  "limitations": [
+    "Synthetic local Ubuntu24/Node26 with task-owned config/HOME/state/network disabled; no production provider/model/Gateway/channel, native macOS/Windows, release upgrade, hosted CI or full repository suite proof.",
+    "Successful source/report paths may now be physical canonical paths; configured workspace declaration resolver/bootstrap/RPC symlink policy remain unchanged.",
+    "Focused tests reused only across independently verified return-before-never syntactic equivalence; no assertion that all tests were rerun after that token change.",
+    "Final freshness/competition are saved read-only snapshots, not a new reviewer online scan.",
+    "Only exact PUBLIC_ARTIFACT_URL substitution with a verified immutable evidence package is approved; no other semantic body edits or already-published claim."
+  ]
+}

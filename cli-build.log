@@ -1,0 +1,126 @@
+[build-all] runtime:scripts:check
+[build-all] runtime:scripts:check done in 6.59s
+[build-all] tsdown
+[tsdown-build] invocation 1/2 finished in 2.7s
+[tsdown-build] still running pid=617939; no output for 30s
+node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2400:30) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2400:31 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m2400 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mA[0m[38;5;249mS[0m[38;5;249mM[0m[38;5;249m_[0m[38;5;249mC[0m[38;5;249mO[0m[38;5;249mN[0m[38;5;249mS[0m[38;5;249mT[0m[38;5;249mS[0m[38;5;249m[[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m][0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mc[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m     │[0m                               ──┬─  
+ [38;5;240m     │[0m                                 ╰─── Use of direct `eval` here.
+ [38;5;240m     │[0m 
+ [38;5;240m     │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m──────╯[0m
+
+node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2423:32) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2423:33 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m2423 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249md[0m[38;5;249mu[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249mE[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249ms[0m[38;5;249m[[0m[38;5;249mn[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m][0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mc[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m     │[0m                                 ──┬─  
+ [38;5;240m     │[0m                                   ╰─── Use of direct `eval` here.
+ [38;5;240m     │[0m 
+ [38;5;240m     │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m──────╯[0m
+
+extensions/browser/src/browser/page-function-runtime.ts (13:31) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m extensions/browser/src/browser/page-function-runtime.ts:13:32 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m13 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mc[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mc[0m[38;5;249ma[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249md[0m[38;5;249ma[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249m:[0m[38;5;249m [0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mk[0m[38;5;249mn[0m[38;5;249mo[0m[38;5;249mw[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249m`[0m[38;5;249m"[0m[38;5;249mu[0m[38;5;249ms[0m[38;5;249me[0m[38;5;249m [0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249mr[0m[38;5;249mi[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249m"[0m[38;5;249m;[0m[38;5;249m\[0m[38;5;249mn[0m[38;5;249m([0m[38;5;249m$[0m[38;5;249m{[0m[38;5;249mo[0m[38;5;249mp[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249m.[0m[38;5;249mf[0m[38;5;249mn[0m[38;5;249mS[0m[38;5;249mo[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mc[0m[38;5;249me[0m[38;5;249m}[0m[38;5;249m)[0m[38;5;249m`[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m   │[0m                                ──┬─  
+ [38;5;240m   │[0m                                  ╰─── Use of direct `eval` here.
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js (68254:28) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+       [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js:68254:29 [38;5;246m][0m
+       [38;5;246m│[0m
+ [38;5;246m68254 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mc[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mv[0m[38;5;249ma[0m[38;5;249ml[0m[38;5;249mu[0m[38;5;249me[0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249m`[0m[38;5;249m([0m[38;5;249m$[0m[38;5;249m{[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mr[0m[38;5;249m}[0m[38;5;249m)[0m[38;5;249m`[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m      │[0m                             ──┬─  
+ [38;5;240m      │[0m                               ╰─── Use of direct `eval` here.
+ [38;5;240m      │[0m 
+ [38;5;240m      │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m───────╯[0m
+
+node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js (68261:28) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+       [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/playwright-core@1.64.1_patch_hash=eedf680682a6840d82c6ad530a60875857aa8c0372785acf8e8e5df9c2e3ac16/node_modules/playwright-core/lib/coreBundle.js:68261:29 [38;5;246m][0m
+       [38;5;246m│[0m
+ [38;5;246m68261 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mc[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mv[0m[38;5;249ma[0m[38;5;249ml[0m[38;5;249mu[0m[38;5;249me[0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249m`[0m[38;5;249m([0m[38;5;249m$[0m[38;5;249m{[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mr[0m[38;5;249m}[0m[38;5;249m)[0m[38;5;249m`[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m      │[0m                             ──┬─  
+ [38;5;240m      │[0m                               ╰─── Use of direct `eval` here.
+ [38;5;240m      │[0m 
+ [38;5;240m      │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m───────╯[0m
+
+node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2400:30) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2400:31 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m2400 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mA[0m[38;5;249mS[0m[38;5;249mM[0m[38;5;249m_[0m[38;5;249mC[0m[38;5;249mO[0m[38;5;249mN[0m[38;5;249mS[0m[38;5;249mT[0m[38;5;249mS[0m[38;5;249m[[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m][0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mc[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m     │[0m                               ──┬─  
+ [38;5;240m     │[0m                                 ╰─── Use of direct `eval` here.
+ [38;5;240m     │[0m 
+ [38;5;240m     │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m──────╯[0m
+
+node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js (2423:32) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/web-tree-sitter@0.27.1/node_modules/web-tree-sitter/web-tree-sitter.js:2423:33 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m2423 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249md[0m[38;5;249mu[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249mE[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249ms[0m[38;5;249m[[0m[38;5;249mn[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m][0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mc[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m     │[0m                                 ──┬─  
+ [38;5;240m     │[0m                                   ╰─── Use of direct `eval` here.
+ [38;5;240m     │[0m 
+ [38;5;240m     │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m──────╯[0m
+
+node_modules/.pnpm/@acemir+cssom@0.9.32/node_modules/@acemir/cssom/lib/errorUtils.js (31:8) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@acemir+cssom@0.9.32/node_modules/@acemir/cssom/lib/errorUtils.js:31:9 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m31 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0meval[38;5;249m([0m[38;5;249me[0m[38;5;249mr[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mT[0m[38;5;249my[0m[38;5;249mp[0m[38;5;249me[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m   │[0m            ──┬─  
+ [38;5;240m   │[0m              ╰─── Use of direct `eval` here.
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m────╯[0m
+
+[tsdown-build] still running pid=617939; no output for 37s
+extensions/browser/src/browser/page-function-runtime.ts (13:31) [33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m extensions/browser/src/browser/page-function-runtime.ts:13:32 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m13 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mc[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mc[0m[38;5;249ma[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249md[0m[38;5;249ma[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249m:[0m[38;5;249m [0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mk[0m[38;5;249mn[0m[38;5;249mo[0m[38;5;249mw[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0meval[38;5;249m([0m[38;5;249m`[0m[38;5;249m"[0m[38;5;249mu[0m[38;5;249ms[0m[38;5;249me[0m[38;5;249m [0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249mr[0m[38;5;249mi[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249m"[0m[38;5;249m;[0m[38;5;249m\[0m[38;5;249mn[0m[38;5;249m([0m[38;5;249m$[0m[38;5;249m{[0m[38;5;249mo[0m[38;5;249mp[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249m.[0m[38;5;249mf[0m[38;5;249mn[0m[38;5;249mS[0m[38;5;249mo[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mc[0m[38;5;249me[0m[38;5;249m}[0m[38;5;249m)[0m[38;5;249m`[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m   │[0m                                ──┬─  
+ [38;5;240m   │[0m                                  ╰─── Use of direct `eval` here.
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m────╯[0m
+
+[tsdown-build] invocation 2/2 finished in 108.8s
+[build-all] tsdown done in 2m 4.5s
+[build-all] external-plugins:local-dist
+[plugin-npm-runtime-build] build assets diffs: node --import tsx ../../scripts/build-diffs-viewer-runtime.mts curated
+[plugin-npm-runtime-build] build assets diffs-language-pack: node --import tsx ../../scripts/build-diffs-viewer-runtime.mts full
+[plugin-npm-runtime-build] build assets discord: node --import ../../scripts/tsx.mjs ../../scripts/build-discord-activity-sdk.mts
+[plugin-npm-runtime-build] build assets nostr: cd ../.. && node --import ./scripts/tsx.mjs scripts/build-plugin-control-ui.mts extensions/nostr
+(node:623639) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[plugin-npm-runtime-build] build assets whatsapp: cd ../.. && node --import ./scripts/tsx.mjs scripts/build-plugin-control-ui.mts extensions/whatsapp
+(node:624049) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[external-plugin-local-dist] built 105 plugins in 32209ms
+[build-all] external-plugins:local-dist done in 33.1s
+[build-all] check-cli-bootstrap-imports
+agents/identity-file.worker.js: 203 evaluated modules (budget 220)
+extensions/codex/catalog-page.worker.js: 67 evaluated modules (budget 100)
+CLI bootstrap import guard passed.
+[build-all] check-cli-bootstrap-imports done in 19.5s
+[build-all] runtime-postbuild
+[plugin-control-plane-loads] verified 56 built modules with native require and checked doctor closures
+runtime-postbuild: 14 phases completed in 11089ms (slowest: built plugin control-plane loads 4974ms)
+[build-all] runtime-postbuild done in 12.9s
+[build-all] build-stamp
+[build-all] build-stamp done in 272ms
+[build-all] runtime-postbuild-stamp
+[build-all] runtime-postbuild-stamp done in 237ms
+[build-all] write-cli-startup-metadata
+[build-all] write-cli-startup-metadata done in 11.5s
+[build-all] phase timings: total 3m 28.6s; slowest tsdown 2m 4.5s; external-plugins:local-dist 33.1s; check-cli-bootstrap-imports 19.5s; runtime-postbuild 12.9s; write-cli-startup-metadata 11.5s; runtime:scripts:check 6.59s; build-stamp 272ms; runtime-postbuild-stamp 237ms

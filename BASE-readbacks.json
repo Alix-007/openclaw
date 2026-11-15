@@ -1,0 +1,370 @@
+{
+  "00-identityFile-absolute": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/00-identityFile-absolute/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "01-identityFile-relative": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/01-identityFile-relative/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "02-identityFile-home": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/02-identityFile-home/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "home/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "03-workspace-absolute": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/03-workspace-absolute/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "04-workspace-relative": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/04-workspace-relative/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "05-workspace-home": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/05-workspace-home/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "home/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "06-identityFile-ordinary": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/stored\",\n        \"identity\": {\n          \"name\": \"Selected physical identity\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/06-identityFile-ordinary/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "07-workspace-ordinary": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/stored\",\n        \"identity\": {\n          \"name\": \"Selected physical identity\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/07-workspace-ordinary/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "08-identityFile-alias": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/stored\",\n        \"identity\": {\n          \"name\": \"Selected physical identity\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/08-identityFile-alias/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "09-workspace-alias": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/stored\",\n        \"identity\": {\n          \"name\": \"Selected physical identity\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/09-workspace-alias/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "10-workspace-selector": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/physical/source\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/physical/source\",\n        \"identity\": {\n          \"name\": \"Initial main\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/10-workspace-selector/logical/source\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "11-identityFile-missing-parent": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/11-identityFile-missing-parent/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "12-workspace-missing-parent": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/12-workspace-missing-parent/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "13-identityFile-file-parent": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/13-identityFile-file-parent/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "14-workspace-file-parent": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/stored\",\n        \"identity\": {\n          \"name\": \"Wrong lexical neighbor\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/14-workspace-file-parent/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "15-identityFile-missing-leaf": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/15-identityFile-missing-leaf/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "16-workspace-missing-leaf": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/16-workspace-missing-leaf/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "17-identityFile-blank": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/17-identityFile-blank/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "18-workspace-blank": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/18-workspace-blank/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  },
+  "19-workspace-no-import": {
+    "beforeText": "{\"gateway\": {\"mode\": \"local\"}, \"agents\": {\"ownership\": \"explicit\", \"defaults\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/stored\", \"systemAgent\": {\"agentId\": \"main\"}}, \"entries\": {\"main\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/stored\", \"identity\": {\"name\": \"Initial main\"}}, \"other\": {\"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/logical/source\", \"identity\": {\"name\": \"Initial other\"}}}}, \"plugins\": {\"allow\": [], \"slots\": {\"memory\": \"none\"}}}\n",
+    "afterText": "{\n  \"gateway\": {\n    \"mode\": \"local\"\n  },\n  \"agents\": {\n    \"defaults\": {\n      \"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/stored\",\n      \"systemAgent\": {\n        \"agentId\": \"main\"\n      }\n    },\n    \"ownership\": \"explicit\",\n    \"entries\": {\n      \"main\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/stored\",\n        \"identity\": {\n          \"name\": \"Explicit unchanged\"\n        }\n      },\n      \"other\": {\n        \"workspace\": \"<TASK>/identity-source-base-proof-v3/19-workspace-no-import/logical/source\",\n        \"identity\": {\n          \"name\": \"Initial other\"\n        }\n      }\n    }\n  },\n  \"plugins\": {\n    \"allow\": [],\n    \"slots\": {\n      \"memory\": \"none\"\n    }\n  },\n  \"meta\": {\n    \"migrations\": {\n      \"modelPolicyAllowlist\": true,\n      \"utilityModelSeparation\": true,\n      \"skillWorkshopPlugin\": true,\n      \"skillLibraryToolSplit\": true\n    },\n    \"lastTouchedVersion\": \"2026.11.3\"\n  }\n}\n",
+    "sources": {
+      "physical/source/IDENTITY.md": {
+        "text": "- Name: Selected physical identity\n",
+        "sha256": "b410ed5bbec4213790f9af12b5cedf5d572c4aeac5a13a47e788b6c116e21b7e"
+      },
+      "logical/source/IDENTITY.md": {
+        "text": "- Name: Wrong lexical neighbor\n",
+        "sha256": "d24529000f18793efa2aeda76890a0c98e661563716ca9351a2eb14c177049a0"
+      },
+      "logical/block": {
+        "text": "ordinary file\n",
+        "sha256": "62724185983816567ec623a20c9c2241a5b75e18769ef465679f5cb79a8a0315"
+      }
+    }
+  }
+}

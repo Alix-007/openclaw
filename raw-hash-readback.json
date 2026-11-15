@@ -1,0 +1,106 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "e09839cfe96ff77f38f183f8c887c4be05c9233acbe17e5db0473a8f4d91b88c"
+  },
+  {
+    "file": "BASE-readbacks.json",
+    "rawSHA256": "c97323c3f25b433330eb6c758c24468b0d81647967e980962da637b1c6ec2d99"
+  },
+  {
+    "file": "BASE-runner.json",
+    "rawSHA256": "62997ac96a360ae8aff6750de7d178184d3e1fff79b36e0fe89b28eca5b3e9ae"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "28b600b66a0e5831bb467b15c7fe6ca9eda00ca2dc64c757b6d1b8982a3acf83"
+  },
+  {
+    "file": "HEAD-readbacks.json",
+    "rawSHA256": "b57099cba8697600f3266778b4a8ac0e88463eac5e6d1f067d91a2749b4e8f4d"
+  },
+  {
+    "file": "HEAD-runner.json",
+    "rawSHA256": "fc4bb2a0b8e74bef918737b5988a9490871b3110efb8fdf7ccbecbac14a17686"
+  },
+  {
+    "file": "identity-source-proof-v1.py",
+    "rawSHA256": "36a667ed31b2a387eb51fb51b9f16d3945a6c5332df847c229fb4e5a709acdfc"
+  },
+  {
+    "file": "check-identity-source-evidence.py",
+    "rawSHA256": "6e71f5fcda70ed514a92d04bfc83d0fd7ee40acc532092f89bda7fd21feb43b7"
+  },
+  {
+    "file": "identity-source-source-review.json",
+    "rawSHA256": "93a2ce06ca76a2bdac5ff021f5c5ae9fe96ec74e65ef1f70bf62efff3aee9bc5"
+  },
+  {
+    "file": "identity-source-source-review.md",
+    "rawSHA256": "ae1286ed5f8531589e74dae83809439270934b7fa16fceef97a16f6c4aaec7a1"
+  },
+  {
+    "file": "identity-source-final-review.json",
+    "rawSHA256": "eab53b34835a2300fa52f49be7211b62b396a8b274388c04880b6d1eb5250170"
+  },
+  {
+    "file": "identity-source-final-review.md",
+    "rawSHA256": "504d92f1144efac5ca70d503dbffa560d20ecb314492d69256830c81469dc0aa"
+  },
+  {
+    "file": "identity-source-focused-equivalence.json",
+    "rawSHA256": "46bf997d5fce2a20b809389f163dd7649178b733df7412f1bafae1d4ec839712"
+  },
+  {
+    "file": "identity-source-implementation.json",
+    "rawSHA256": "ea46d2eab7b6fce1873b1d5a173eb2415dd25ddc6fce9eb6d292ee4d0cf22216"
+  },
+  {
+    "file": "identity-source-base-buildstamp.json",
+    "rawSHA256": "5c637e8944eb343afd36d514b48eae6a087c72babcf2bcf202a6d57423073994"
+  },
+  {
+    "file": "identity-source-identity-source-buildstamp.json",
+    "rawSHA256": "56404af954e0f19d7ff63b32079ebef59a1699973d3786c209aba2cbf9966726"
+  },
+  {
+    "file": "replacement-current-owner.json",
+    "rawSHA256": "07c4cafcd39c413ec50ed41b8697028e54429e13f4576cc03624272855711d22"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "329be7b93efaa2be0bdb82e340da4d49a977c20d21ad6f73d069734b7ed9b8af"
+  },
+  {
+    "file": "tests-base.log",
+    "rawSHA256": "dc7c8e785ba36f1815422ad0f9263cac49c175880faa597c3fe470a3a564fb18"
+  },
+  {
+    "file": "focused-final.log",
+    "rawSHA256": "3f6e765ad7d45e7154c2be9949bd312c7a2abf127184af219fb858b746ab48f8"
+  },
+  {
+    "file": "lint-corrected-final.log",
+    "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "types-corrected-final.log",
+    "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "cli-build.log",
+    "rawSHA256": "783a6bbadf77d710f431c4cbb6eda1fd585b7045f6f2353723c9274f7f2eacaa"
+  },
+  {
+    "file": "commit.json",
+    "rawSHA256": "fbd8fe99f5024d82c37236afda489eb72d18d10eb2df53fa82674627c0bad0ce"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "f6ec2d8bfe38ec6dea79b869d9e7a7b3142aeb32f20242f2103b9740153b2ffb"
+  },
+  {
+    "file": "README.md",
+    "rawSHA256": "aa1f2fc2a19d33301538af6a6bbe86e6e981afbf41e0159a8da1496f3bbf622a"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "reason": "Only insert return before an existing helper typed never that unconditionally throws. Runtime behavior, owner and test inputs unchanged; tests retained from29PASS before syntactic lint fix.",
+  "throwHelperFile": "src/cli/expected-cli-error.ts",
+  "oldProductionSHA256": "c2a66406c5dd93e313eab719b1b0083ec676c15403a64f2c2d89900a341bd62d",
+  "newProductionSHA256": "415600ad78d7df14958e98764125b5eec46764f85266e96a03d4007d0b0f663e",
+  "oldFullPatchSHA256": "dbd1a6e0f666a834a69db0087f81274436d7da3617f6b2f18108295fe9facfc6",
+  "newFullPatchSHA256": "7b1d3915116ef8011df1d6819221daa75c5e711a6a13ac2c65054b45b1e4493a",
+  "focusedReceipt": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/commands/agents.identity.test.ts",
+      "src/commands/agents.identity.persistence.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/identity-source",
+    "exit_code": 0,
+    "elapsed_seconds": 171.137,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "3e879d41fafb3ac4f6a332107c85d4ebff633be60576dce792f157452645656b",
+    "logSHA256": "3f6e765ad7d45e7154c2be9949bd312c7a2abf127184af219fb858b746ab48f8"
+  },
+  "testFileUnchanged": true
+}

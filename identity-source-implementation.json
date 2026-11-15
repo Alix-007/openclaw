@@ -1,0 +1,15 @@
+{
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "worktree": "<TASK>/identity-source",
+  "fullIndexDiffSHA256": "7b1d3915116ef8011df1d6819221daa75c5e711a6a13ac2c65054b45b1e4493a",
+  "files": [
+    {
+      "path": "src/commands/agents.commands.identity.ts",
+      "sha256": "415600ad78d7df14958e98764125b5eec46764f85266e96a03d4007d0b0f663e"
+    },
+    {
+      "path": "src/commands/agents.identity.test.ts",
+      "sha256": "7da4c0c0d054cf667aa9527874704c524671f1425bf0968d6c252ff9201a303b"
+    }
+  ]
+}
