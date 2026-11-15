@@ -1,0 +1,81 @@
+{
+  "verdict": "PASS",
+  "head": "5af4a575e60ffdb691d22e0829642af68d7030f3",
+  "main": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "src/templates/path-containment.ts",
+      "sha256": "908b79805d0c914c2197d57f259ff9242c81f8f427908659ddeaf5ec1e1636a6"
+    },
+    {
+      "path": "src/templates/project-build.ts",
+      "sha256": "3d424ec0c0172b64bf7c563552f75576d5d72e1f6d98012edfbc41dd057dca88"
+    },
+    {
+      "path": "src/templates/project.test.ts",
+      "sha256": "4d4fc78aa603a51a870e7dea78534a80da32a897c0ef8f3e9b4faa13c13e7532"
+    },
+    {
+      "path": "src/templates/project.ts",
+      "sha256": "cdf17aaedf4c9d70f15d4c2de3d2f8068353c7a1b40a96588cb130916a8545bd"
+    },
+    {
+      "path": "src/templates/reader.test.ts",
+      "sha256": "3c5b8fa52f862a6afab4ed2cecce874f7c5945e5d41f2f94658b4af53b2ce32e"
+    },
+    {
+      "path": "src/templates/reader.ts",
+      "sha256": "2a2ddaa6cea1bacdde730c4e5e78517c6e4679141168b1a102a0b5bb5dcfc83d"
+    }
+  ],
+  "fullIndexDiffSHA256": "921a1bf85a2e20a68e06e0fd5d210591a6a442b55a5be722abdd00b456031e58",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "cleanMergeCommit": true,
+    "parents": [
+      "2aa417588232321d79b4c10e481907b445e1a55d",
+      "c0166c395cf81095f431808c9496cb6022ad4387"
+    ],
+    "authorAndCommitter": "Alix-007 <li.long15@xydigit.com>",
+    "allSixFileHashesAndMainRelativeFullIndexDiffMatchHandoff": true,
+    "integration": "Complete main-relative patch inspected. Main exclusive FileHandle wx acquisition, created-path registration before writing, asynchronous disposal and ENOSPC rollback preserved. Restrictive-umask golden fixture expanded without weakening fixed digest or child-process environment. Main manifest/bootstrap large-file limits and staging/close/atomic-publication behavior preserved. Original physical-parent resolution, raw final symlink checks, lexical defaults, logical CLAW.md alias and missing-suffix behavior retained.",
+    "tests": "Three-file focused suite 51 pass, two platform skips; format/lint/types/staged test-line/staged line-cap checks pass; retained logs independently matched receipt hashes.",
+    "build": "Clean normal CLI build exit 0 in 322.874s. Actual dist/.buildstamp exactly equals HEAD proof stamp, exact reviewed HEAD and inputsClean true.",
+    "collectorSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479",
+    "proof": "Frozen collector copy independently hashed unchanged. Historical BASE5RED_CONTROLS7PASS versus merge HEAD GREEN12PASS; runner exit 0 in 51.101s. All 24 case stdout/stderr pairs hashed and public JSON checked.",
+    "diskReadback": "Both physical and decoy original source snapshots unchanged and current file hashes match. Actual archive bytes/sizes and independently opened package metadata match: parent-traversal BASE selects decoy-template, merge HEAD physical-template. Created files and absent wrong destination independently read; final create/output symlinks retained with empty/absent targets."
+  },
+  "proofFiles": [
+    {
+      "path": "<PROOF_OUTPUT>/receipt.json",
+      "sha256": "5266ada36b72fb0227079092aad313c0c29b6184111d3bed5a42035d683ada3a"
+    },
+    {
+      "path": "<CHECKOUT>-base-proof/receipt.json",
+      "sha256": "572ba40ca005af46f73d6af3137ba847435bdf801fb105c1ca62a36402665ee3"
+    },
+    {
+      "path": "<TASK>/template-path-proof-v1.py",
+      "sha256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479"
+    },
+    {
+      "path": "<TASK>/pr-198814-build.json",
+      "sha256": "6bb413c7348cdc84e7e5516dadcb3925f3e02cde2f0735b81fa64cd0d0ed7a56"
+    },
+    {
+      "path": "<TASK>/pr-198814-focused.json",
+      "sha256": "a7e4a6bbf136e64903c232827625fe400495f5a63f57ac635e9e737bf1c1d7ba"
+    },
+    {
+      "path": "<PROOF_OUTPUT>-runner.json",
+      "sha256": "168141c91edb2c53680097bba26f38e9eae9397dbd9871b2149a43cf2a3ceb97"
+    }
+  ],
+  "limitations": [
+    "Historical BASE native receipt establishes original bug on 08ae8c62; not a newly executed c0166c current-main BASE proof. Main-relative source inspection verifies integration.",
+    "Synthetic isolated Linux/Node local Template CLI/source/create/archive evidence only; no real agent activation, external installation, native macOS/Windows or full repository-suite claim.",
+    "Independent review used retained exact-HEAD evidence; no test/build reruns, source/Git mutations or public writes."
+  ]
+}

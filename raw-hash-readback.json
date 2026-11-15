@@ -1,0 +1,34 @@
+[
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "5266ada36b72fb0227079092aad313c0c29b6184111d3bed5a42035d683ada3a"
+  },
+  {
+    "file": "head-streams.txt",
+    "rawSHA256": "fdcb98bdfb1ffe7535eb563347946f367aa3c4ce86c217aec5d51f19a34236a6"
+  },
+  {
+    "file": "template-path-proof-v1.py",
+    "rawSHA256": "42c5cebf7757f395944161011354a5981efdd5c4d17f33fa6d0339e86a961479"
+  },
+  {
+    "file": "pr-198814-final-adversarial-review.md",
+    "rawSHA256": "d92550cbc8aaca26793ff415579a5a5f54872a20e0af6e90da0f37df1b90ca3b"
+  },
+  {
+    "file": "pr-198814-final-adversarial-review.json",
+    "rawSHA256": "988b086e93154b680c33cfcc1c712124d64a131bf20fe6f3d4f42908eff88fed"
+  },
+  {
+    "file": "selected-archive.tgz.base64.txt",
+    "rawSHA256": "09a1a5a71d6339d12ad10686b0415a69f1f785899eba0c3faeca3026437e373e"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "d88e84d9f795741fd6df53da6d3dc2829910178b3dcb0af6f42008a0f5a1fa71"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "97cbd591562196df4b6b554b4eadd26292a4c0450f5b9fc9cdde8f85af27ba29"
+  }
+]
