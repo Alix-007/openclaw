@@ -1,0 +1,27 @@
+
+=== ordinary/stdout ===
+Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-ordinary…
+Skill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket
+Fix: configure gateway.auth token/password, pair this device, or pass --token/--password.
+Config: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.
+Installed proof-ordinary from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-ordinary
+
+=== ordinary/stderr ===
+
+=== trailing-space/stdout ===
+Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-trailing-space…
+Skill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket
+Fix: configure gateway.auth token/password, pair this device, or pass --token/--password.
+Config: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.
+Installed proof-trailing-space from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-trailing-space
+
+=== trailing-space/stderr ===
+
+=== physical-parent/stdout ===
+Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-physical-parent…
+Skill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket
+Fix: configure gateway.auth token/password, pair this device, or pass --token/--password.
+Config: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.
+Installed proof-physical-parent from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-physical-parent
+
+=== physical-parent/stderr ===

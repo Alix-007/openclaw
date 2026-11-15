@@ -1,0 +1,20 @@
+{
+  "BASE.json": "7cb1cb8df3c20f31cf0d920c5cab11fa43877a0d959a7b5eb9ae94104ae8bb09",
+  "BASE-streams.txt": "eed726efb6443f2583c41de866a3d1d829de2a1bb4b9b67b7ef253fbb57116d7",
+  "HEAD.json": "0887c121f57d367152bdac20df71ce177f602d79f93982021ecf9f05edd77519",
+  "HEAD-streams.txt": "ae52d187337a76a3b10cef787044cd1fd0a4ffa27d7a0f0dea9fe3f70c5ecc37",
+  "BASE-alias.json": "e1a4741f1c2efb806228a59d99d461c0872d3aac80d5f89e9caaea8f015d5c3a",
+  "BASE-alias-streams.txt": "a5a6a78501b55082e38832ca2fede36e285c9b3098297351424dc20198fabcf0",
+  "HEAD-alias.json": "37ac0a0386b6bd1215cf4128ffd6ad44ed2e80696abf8c0fcaa8202931674259",
+  "HEAD-alias-streams.txt": "785797c242903f723438d3780926ba3be3231b89afeb1f38a28615febb45e0ac",
+  "skill-source-proof-v1.py": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b",
+  "skill-source-alias-proof-v1.py": "e200b345672fc7a8bf5f1a018a281c08e7abed31e05233795e89b0782fd43f3f",
+  "source-review.json": "d111195cae11680bda1027690db17a018a56dda14dcbdc6c5991591071041dc3",
+  "source-review.md": "94e478d4a229fe0a778a263f318c8a7c41974343143c1c09bd88cd1ff58a9198",
+  "final-review.json": "59c7bed0d41643dd7bde4118e118313480e3ae9010019f60f6bbccb8a954cb00",
+  "final-review.md": "1ab35578759491d1fecd11016329812646b8e51d38b6f3e78385e8a9b45bcce7",
+  "checks.json": "10bb046f747764de4362ee61c0d98805cdb170efd674b1424bcd61b78ae152ad",
+  "focused.log": "3b3c4d150e81b9e6cf63aaa335f07e94ace76e9e5f77f6e66eaf67d1b0cb3393",
+  "EVIDENCE.md": "e283b266678e670d3d63e37437a228a5c58134ea801f4c0c7c203b2d312b41fe",
+  "raw-hash-readback.json": "26e8fbc24f6076c4ed3e0fb8cf2bb71499f3b90c127561a63b67104d83e046af"
+}

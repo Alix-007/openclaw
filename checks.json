@@ -1,0 +1,130 @@
+{
+  "focused-corrected": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/skills/lifecycle/source-install.test.ts",
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 250.104,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "0d50dfcab3b8c98992963e004ccd62b0e45c57fbd3839f07cf75ac1b6ec1324f"
+  },
+  "format": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/skills/lifecycle/source-install.ts",
+      "src/skills/lifecycle/source-install-paths.test.ts"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 0.686,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "b827cbb01a9155bf94af9fd9c67d77f55134cf394a8cdc0350dbcc277ada8f2b"
+  },
+  "lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../skill-source-types.tsconfig.json",
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "src/skills/lifecycle/source-install.ts"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 98.559,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "types": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../skill-source-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 27.819,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 2.711,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "9f47d66bb340fd76ce76989079f77709fff8cb04181a9dbd6bc8cae3f5cae90c"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 2.039,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "diffSHA256": "ceec1da51f44cddfd55783c3fd75d22a518bd83ac111864f820fad32dac367a0",
+    "logSHA256": "4ffb0319cec8e4ddeff751071959bd20e7cd46d6ab22eca278904dbfdd5937fa"
+  },
+  "commit": {
+    "head": "13609e43e2bb2f89a249a3767f6f30eaff050e7d",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "oldHead": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "fullIndexDiffSHA256": "8bb85148eb67d2313499b660fd3f68d1d7cd1945dbc33655d7f45f30f8e42722",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "src/skills/lifecycle/source-install.ts"
+    ],
+    "repairFiles": [
+      "src/skills/lifecycle/source-install-paths.test.ts",
+      "src/skills/lifecycle/source-install.ts"
+    ],
+    "elapsedSeconds": 5.459,
+    "knownValidationLimitations": []
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/skill-source",
+    "exit_code": 0,
+    "elapsed_seconds": 315.641,
+    "head": "13609e43e2bb2f89a249a3767f6f30eaff050e7d",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "8832e70b230c90cefd49b2fc833f0e73cc912331690b985f3754c372f736c298"
+  }
+}

@@ -1,0 +1,70 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "ae1d80aaf02cf9bd205720b0eb7fa1087ed095bc526925d24a01698291621b5f"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "f25066e92c7de950bfb7443d7f6904e8f5403338989a7199ffdd2f09854e8db5"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "efe4cd8400c0e7d8a423b768d9719a4a0e0706646d43147a72ed090b794536cc"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "09f9b73c4711d64d1c6622a6ff9957696428f0e352c1c3ed6121559382663bcd"
+  },
+  {
+    "file": "BASE-alias.json",
+    "rawSHA256": "29c40a45f22b3796a380cac56dc15a6f3c1d7827d2582093b8fb1d3a82d0588f"
+  },
+  {
+    "file": "BASE-alias-streams.txt",
+    "rawSHA256": "b71b13ac81b990247ddcc0e2434207df32f2947f20c83fe4feaf2674ec6d1111"
+  },
+  {
+    "file": "HEAD-alias.json",
+    "rawSHA256": "387be81f610c2e2563289a3b3a033fac748b621ffa5f54d079527bc9ccac6f5f"
+  },
+  {
+    "file": "HEAD-alias-streams.txt",
+    "rawSHA256": "145264b789ca247f45257c42c18ac8dd04a0ff3a65599f168a6d97053eb81c99"
+  },
+  {
+    "file": "skill-source-proof-v1.py",
+    "rawSHA256": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b"
+  },
+  {
+    "file": "skill-source-alias-proof-v1.py",
+    "rawSHA256": "e200b345672fc7a8bf5f1a018a281c08e7abed31e05233795e89b0782fd43f3f"
+  },
+  {
+    "file": "source-review.json",
+    "rawSHA256": "d111195cae11680bda1027690db17a018a56dda14dcbdc6c5991591071041dc3"
+  },
+  {
+    "file": "source-review.md",
+    "rawSHA256": "94e478d4a229fe0a778a263f318c8a7c41974343143c1c09bd88cd1ff58a9198"
+  },
+  {
+    "file": "final-review.json",
+    "rawSHA256": "59c7bed0d41643dd7bde4118e118313480e3ae9010019f60f6bbccb8a954cb00"
+  },
+  {
+    "file": "final-review.md",
+    "rawSHA256": "1ab35578759491d1fecd11016329812646b8e51d38b6f3e78385e8a9b45bcce7"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "c25f76975208761fef128f9d60c434cede6339ced3881dc95691acc38a8894dd"
+  },
+  {
+    "file": "focused.log",
+    "rawSHA256": "0d50dfcab3b8c98992963e004ccd62b0e45c57fbd3839f07cf75ac1b6ec1324f"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "e283b266678e670d3d63e37437a228a5c58134ea801f4c0c7c203b2d312b41fe"
+  }
+]

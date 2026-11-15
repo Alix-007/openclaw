@@ -1,0 +1,115 @@
+{
+  "head": "13609e43e2bb2f89a249a3767f6f30eaff050e7d",
+  "buildStamp": {
+    "builtAt": 1794756565727,
+    "head": "13609e43e2bb2f89a249a3767f6f30eaff050e7d",
+    "inputsClean": true,
+    "inputSignature": "af59ecd9f4a475d42d9b0b55ee9df1db4fe83df70ef80cd3b684399c1768da14"
+  },
+  "collectorSHA256": "e200b345672fc7a8bf5f1a018a281c08e7abed31e05233795e89b0782fd43f3f",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "invalid-physical-label",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/fixtures/my-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 8.288,
+      "expectedSlug": "my-guide",
+      "stdout": "Installing to <TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/workspace/skills/my-guide\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/openclaw.json. Restart the Gateway to refresh skills.\nInstalled my-guide from path -> <TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/workspace/skills/my-guide\n",
+      "stdoutSHA256": "a7e00e4d2b142b8412869f1ea64fe9f39605ea2af83d6736d90bc86958207211",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "actualSlug": "my-guide",
+        "path": "<TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/workspace/skills/my-guide",
+        "instructionsSHA256": "af9ed0cb95a9b9f78eb6f50019ebd864d51925424ee185536027cdd61ae6bfc3",
+        "assetSHA256": "fdd9c8c007625ec6986769b76d91421b1d18dccbbf2c2b6685b643062d369b8b",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-alias-repair-head-proof/invalid-physical-label/fixtures/my-guide",
+          "slug": "my-guide",
+          "installedAt": 1794756611404
+        }
+      }
+    },
+    {
+      "label": "valid-physical-label",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-head-proof/valid-physical-label/fixtures/my-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 8.321,
+      "expectedSlug": "my-guide",
+      "stdout": "Installing to <TASK>/skill-source-alias-repair-head-proof/valid-physical-label/workspace/skills/my-guide\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-alias-repair-head-proof/valid-physical-label/openclaw.json. Restart the Gateway to refresh skills.\nInstalled my-guide from path -> <TASK>/skill-source-alias-repair-head-proof/valid-physical-label/workspace/skills/my-guide\n",
+      "stdoutSHA256": "c792ad0bffed19433fb44178127d06e22aaa91a37fd06eda9e3f2bdeaf21cdcb",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "actualSlug": "my-guide",
+        "path": "<TASK>/skill-source-alias-repair-head-proof/valid-physical-label/workspace/skills/my-guide",
+        "instructionsSHA256": "af9ed0cb95a9b9f78eb6f50019ebd864d51925424ee185536027cdd61ae6bfc3",
+        "assetSHA256": "972b319e792ac0dcedf9da2775fac8061c290fc1c15b297472a51694eda75c1b",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-alias-repair-head-proof/valid-physical-label/fixtures/my-guide",
+          "slug": "my-guide",
+          "installedAt": 1794756619571
+        }
+      }
+    },
+    {
+      "label": "ordinary-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-head-proof/ordinary-control/fixtures/ordinary-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 9.048,
+      "expectedSlug": "ordinary-guide",
+      "stdout": "Installing to <TASK>/skill-source-alias-repair-head-proof/ordinary-control/workspace/skills/ordinary-guide\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-alias-repair-head-proof/ordinary-control/openclaw.json. Restart the Gateway to refresh skills.\nInstalled ordinary-guide from path -> <TASK>/skill-source-alias-repair-head-proof/ordinary-control/workspace/skills/ordinary-guide\n",
+      "stdoutSHA256": "e7ff6e3d2438c122048347010d4c14f42a34077bea1ba707ef38591538f7aded",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "actualSlug": "ordinary-guide",
+        "path": "<TASK>/skill-source-alias-repair-head-proof/ordinary-control/workspace/skills/ordinary-guide",
+        "instructionsSHA256": "af9ed0cb95a9b9f78eb6f50019ebd864d51925424ee185536027cdd61ae6bfc3",
+        "assetSHA256": "8db394283a627aba81eafa465a5cfe3d26ffb98b9610d39a4ae8d5c9d71b3c0f",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-alias-repair-head-proof/ordinary-control/fixtures/ordinary-guide",
+          "slug": "ordinary-guide",
+          "installedAt": 1794756628642
+        }
+      }
+    }
+  ],
+  "result": "GREEN3_DEFAULT_ALIASES_AND_CONTROL",
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

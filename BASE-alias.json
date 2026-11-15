@@ -1,0 +1,105 @@
+{
+  "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "buildStamp": {
+    "builtAt": 1794753025373,
+    "head": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+    "inputsClean": true,
+    "inputSignature": "8236464677c43ad3d84b3d1b233bbebdc998c72f0a53aae2dac73188fb864bd0"
+  },
+  "collectorSHA256": "e200b345672fc7a8bf5f1a018a281c08e7abed31e05233795e89b0782fd43f3f",
+  "mode": "red",
+  "cases": [
+    {
+      "label": "invalid-physical-label",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-base-proof/invalid-physical-label/fixtures/my-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 1,
+      "seconds": 9.951,
+      "expectedSlug": "my-guide",
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Invalid skill slug: release.1\n",
+      "stderrSHA256": "f881b3b6e69150ea94d0317de58fe78ff576b31cc84d9aeadc09e05bac52befd",
+      "readback": {
+        "selectedAliasAbsent": true
+      }
+    },
+    {
+      "label": "valid-physical-label",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-base-proof/valid-physical-label/fixtures/my-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 8.263,
+      "expectedSlug": "my-guide",
+      "stdout": "Installing to <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/workspace/skills/different-name\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/openclaw.json. Restart the Gateway to refresh skills.\nInstalled different-name from path -> <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/workspace/skills/different-name\n",
+      "stdoutSHA256": "13eb5e1378d8880064886a97a5b90073cd2bd223c47bacaa69d55a0abe0150bf",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "actualSlug": "different-name",
+        "path": "<TASK>/skill-source-alias-repair-base-proof/valid-physical-label/workspace/skills/different-name",
+        "instructionsSHA256": "af9ed0cb95a9b9f78eb6f50019ebd864d51925424ee185536027cdd61ae6bfc3",
+        "assetSHA256": "972b319e792ac0dcedf9da2775fac8061c290fc1c15b297472a51694eda75c1b",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-alias-repair-base-proof/valid-physical-label/fixtures/my-guide",
+          "slug": "different-name",
+          "installedAt": 1794755555391
+        }
+      }
+    },
+    {
+      "label": "ordinary-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/skill-source/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-alias-repair-base-proof/ordinary-control/fixtures/ordinary-guide",
+        "--agent",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 7.774,
+      "expectedSlug": "ordinary-guide",
+      "stdout": "Installing to <TASK>/skill-source-alias-repair-base-proof/ordinary-control/workspace/skills/ordinary-guide\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-alias-repair-base-proof/ordinary-control/openclaw.json. Restart the Gateway to refresh skills.\nInstalled ordinary-guide from path -> <TASK>/skill-source-alias-repair-base-proof/ordinary-control/workspace/skills/ordinary-guide\n",
+      "stdoutSHA256": "2a256e2ad22d3ebed3ed35e78a8267e55f7f2bfa80007d626c70cdc6cf8110cc",
+      "stderr": "",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "actualSlug": "ordinary-guide",
+        "path": "<TASK>/skill-source-alias-repair-base-proof/ordinary-control/workspace/skills/ordinary-guide",
+        "instructionsSHA256": "af9ed0cb95a9b9f78eb6f50019ebd864d51925424ee185536027cdd61ae6bfc3",
+        "assetSHA256": "8db394283a627aba81eafa465a5cfe3d26ffb98b9610d39a4ae8d5c9d71b3c0f",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-alias-repair-base-proof/ordinary-control/fixtures/ordinary-guide",
+          "slug": "ordinary-guide",
+          "installedAt": 1794755563197
+        }
+      }
+    }
+  ],
+  "result": "BASE_ALIAS_REJECTED_OR_RENAMED_ORDINARY_CONTROL_PASS",
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

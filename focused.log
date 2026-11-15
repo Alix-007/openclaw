@@ -1,0 +1,124 @@
+$ node scripts/test-projects.mts src/skills/lifecycle/source-install.test.ts src/skills/lifecycle/source-install-paths.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.unit.config.ts
+
+ RUN  v5.0.5 <TASK>/skill-source
+
+[vitest-workers] local cache miss after 13550ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+[vitest] still running with no output for 120000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 150000ms.
+[vitest-workers] prepared e67e3766440c in 168908ms (20154 inputs, 25028 outputs)
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > uses the source label for display name "" 6169ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > uses the source label for display name "Display name with spaces" 1500ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects an invalid explicit slug before inspecting malformed source content 12ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > installs local sources with a active document-only adapter 2376ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > installs local sources with a stopped document-only adapter 2533ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects unfenced SKILL.md before copying it 17ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects oversized SKILL.md before copying it 15ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects comment-only SKILL.md before copying it 21ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects indented-comment-only SKILL.md before copying it 17ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > installs a valid SKILL.md that is hardlinked to another file 1829ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > resolves source-installed skill keys with hardlink metadata 2535ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > resolves source-installed skill keys with frontmatter metadata 2136ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > ignores source-origin metadata that becomes oversized before-read 1823ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > ignores source-origin metadata that becomes oversized during-admission 1804ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > preserves source-origin link policy for contained-parent 2530ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > preserves source-origin link policy for escaping-parent 1959ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > preserves source-origin link policy for final-symlink 1868ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > preserves source-origin link policy for swapped-final-symlink 1774ms
+(node:112229) Warning: File descriptor 38 closed but not opened in unmanaged mode
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > isolates git commands from inherited GIT_DIR 1512ms
+(node:112229) Warning: File descriptor 38 closed but not opened in unmanaged mode
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > isolates git commands from inherited GIT_CONFIG_SYSTEM 1497ms
+(node:112229) Warning: File descriptor 38 closed but not opened in unmanaged mode
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > reports default branch git skill sources with expected mutability to policy 1690ms
+(node:112229) Warning: File descriptor 38 closed but not opened in unmanaged mode
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > reports full commit git skill sources with expected mutability to policy 1752ms
+(node:112229) Warning: File descriptor 38 closed but not opened in unmanaged mode
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > reports slash-containing branch git skill sources with expected mutability to policy 2193ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > removes stale ClawHub lock tracking after source installs 1761ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects a source spec containing missing path 9ms
+ ✓ |unit| src/skills/lifecycle/source-install.test.ts > installSkillFromSource > rejects a source spec containing git option injection 7ms
+ ✓ |unit| src/skills/lifecycle/source-install-paths.test.ts > installs the selected trailing-space source instead of a valid decoy 3362ms
+ ✓ |unit| src/skills/lifecycle/source-install-paths.test.ts > installs the selected physical-parent source instead of a valid decoy 1626ms
+ ✓ |unit| src/skills/lifecycle/source-install-paths.test.ts > keeps the selected alias as the fallback slug for release.1 without an explicit slug 975ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/skills/lifecycle/source-install-paths.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+
+ ✓ |unit| src/skills/lifecycle/source-install-paths.test.ts > keeps the selected alias as the fallback slug for different-name without an explicit slug 1029ms
+ ✓ |unit| src/skills/lifecycle/source-install-paths.test.ts > does not install a neighbouring skill through a missing source component 12ms
+
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+   Start at  23:14:39
+   Duration  237.10s (transform 77%, tests 20%, import 1%, worker 1%, setup 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 248.08s

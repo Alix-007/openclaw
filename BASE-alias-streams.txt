@@ -1,0 +1,23 @@
+
+=== invalid-physical-label/stdout ===
+
+=== invalid-physical-label/stderr ===
+Invalid skill slug: release.1
+
+=== valid-physical-label/stdout ===
+Installing to <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/workspace/skills/different-name…
+Skill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket
+Fix: configure gateway.auth token/password, pair this device, or pass --token/--password.
+Config: <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/openclaw.json. Restart the Gateway to refresh skills.
+Installed different-name from path -> <TASK>/skill-source-alias-repair-base-proof/valid-physical-label/workspace/skills/different-name
+
+=== valid-physical-label/stderr ===
+
+=== ordinary-control/stdout ===
+Installing to <TASK>/skill-source-alias-repair-base-proof/ordinary-control/workspace/skills/ordinary-guide…
+Skill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket
+Fix: configure gateway.auth token/password, pair this device, or pass --token/--password.
+Config: <TASK>/skill-source-alias-repair-base-proof/ordinary-control/openclaw.json. Restart the Gateway to refresh skills.
+Installed ordinary-guide from path -> <TASK>/skill-source-alias-repair-base-proof/ordinary-control/workspace/skills/ordinary-guide
+
+=== ordinary-control/stderr ===

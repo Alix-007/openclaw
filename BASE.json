@@ -1,0 +1,122 @@
+{
+  "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "mode": "red",
+  "collectorSHA256": "dd30dee3aa61f2f66bb4d87db7fa6c53c78f56fa225d0a6c197a1c9630475c7b",
+  "buildStamp": {
+    "builtAt": 1794744797462,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "inputsClean": true,
+    "inputSignature": "d62b2f3c4f7a8c2089646b8d28f32d6e14a91ca619e1161c7ecf95d46d0148a3"
+  },
+  "cases": [
+    {
+      "label": "ordinary",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/base/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-base-proof/fixtures/ordinary",
+        "--agent",
+        "main",
+        "--as",
+        "proof-ordinary"
+      ],
+      "exitCode": 0,
+      "seconds": 14.376,
+      "stdout": "Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-ordinary\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.\nInstalled proof-ordinary from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-ordinary\n",
+      "stderr": "",
+      "stdoutSHA256": "1744a5a082aa1b92a382c1a30708028ac80cd7e9ec295869f94e7927e3147508",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "installedSkill": "---\nname: proof-local-guide\ndescription: Synthetic local installation proof\n---\n\nORDINARY\n",
+        "installedSkillSHA256": "967049e6c845ad5a90f1411e2d935678b9e3ea624b6b4b3bf03f5a8156f35a37",
+        "asset": "ORDINARY\n",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-base-proof/fixtures/ordinary",
+          "slug": "proof-ordinary",
+          "installedAt": 1794751510894
+        },
+        "selectedSourceMatches": true
+      }
+    },
+    {
+      "label": "trailing-space",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/base/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-base-proof/fixtures/source ",
+        "--agent",
+        "main",
+        "--as",
+        "proof-trailing-space"
+      ],
+      "exitCode": 0,
+      "seconds": 7.331,
+      "stdout": "Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-trailing-space\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.\nInstalled proof-trailing-space from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-trailing-space\n",
+      "stderr": "",
+      "stdoutSHA256": "fe6f3c914042780f24f60baf5f1d7f9987179a65d79957437a3f3bb001605734",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "installedSkill": "---\nname: proof-local-guide\ndescription: Synthetic local installation proof\n---\n\nDECOY_TRIMMED\n",
+        "installedSkillSHA256": "d9151a64b30e1e148bee1e55f1577733b7866d43980268cf615dbc48407d7c29",
+        "asset": "DECOY_TRIMMED\n",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-base-proof/fixtures/source",
+          "slug": "proof-trailing-space",
+          "installedAt": 1794751518518
+        },
+        "selectedSourceMatches": false
+      }
+    },
+    {
+      "label": "physical-parent",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/base/openclaw.mjs",
+        "skills",
+        "install",
+        "<TASK>/skill-source-base-proof/fixtures/selected/../bundle",
+        "--agent",
+        "main",
+        "--as",
+        "proof-physical-parent"
+      ],
+      "exitCode": 0,
+      "seconds": 7.245,
+      "stdout": "Installing to <TASK>/skill-source-base-proof/workspace/skills/proof-physical-parent\u2026\nSkill files changed, but local Gateway refresh failed: gateway skills.status requires credentials before opening a websocket\nFix: configure gateway.auth token/password, pair this device, or pass --token/--password.\nConfig: <TASK>/skill-source-base-proof/openclaw.json. Restart the Gateway to refresh skills.\nInstalled proof-physical-parent from path -> <TASK>/skill-source-base-proof/workspace/skills/proof-physical-parent\n",
+      "stderr": "",
+      "stdoutSHA256": "e0e653b0a0b421029ae43b959bfab53f207a3377bf1295056edaa89a4ee6fba0",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "installedSkill": "---\nname: proof-local-guide\ndescription: Synthetic local installation proof\n---\n\nDECOY_LEXICAL\n",
+        "installedSkillSHA256": "21e89bd3f5db67f11ed6bfa3826d24a41d596fa463c4f96285322f8dedeb7042",
+        "asset": "DECOY_LEXICAL\n",
+        "origin": {
+          "version": 1,
+          "source": "path",
+          "spec": "<TASK>/skill-source-base-proof/fixtures/selected/../bundle",
+          "slug": "proof-physical-parent",
+          "installedAt": 1794751525625
+        },
+        "selectedSourceMatches": false
+      }
+    }
+  ],
+  "result": "BASE2_WRONG_SKILLS_ORDINARY_CONTROL_PASS",
+  "sourceIntegrity": {
+    "count": 10,
+    "allUnchanged": true
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalNetwork": false,
+    "isolatedFixturesRetained": true
+  }
+}

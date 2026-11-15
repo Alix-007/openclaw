@@ -1,0 +1,47 @@
+{
+  "verdict": "PASS",
+  "stage": "source-only",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "headOld": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "fullIndexDiffSHA256": "8bb85148eb67d2313499b660fd3f68d1d7cd1945dbc33655d7f45f30f8e42722",
+  "repairDiffSHA256": "2a019dea8b2723b27d80b45e1fcd784396c4b038246275306e716d10eb339e21",
+  "files": [
+    {
+      "path": "src/skills/lifecycle/source-install-paths.test.ts",
+      "sha256": "25ba111030162be048035d8d23410a72b0e9c25d1637bdae8c6c77012b1c66e6"
+    },
+    {
+      "path": "src/skills/lifecycle/source-install.ts",
+      "sha256": "67155147517af81a825314e4632653bb884d3af684dacf27a15f9e4403bb318c"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/skills/lifecycle/source-install-paths.test.ts",
+      "sha256": "25ba111030162be048035d8d23410a72b0e9c25d1637bdae8c6c77012b1c66e6"
+    },
+    {
+      "path": "src/skills/lifecycle/source-install.ts",
+      "sha256": "67155147517af81a825314e4632653bb884d3af684dacf27a15f9e4403bb318c"
+    }
+  ],
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "reviewedScope": [
+    "Restore fallbackLabel from original expanded local source spelling (lexical basename/trim), separate from canonical sourceDir. Explicit valid requested slug still wins; valid frontmatter slug still wins; invalid/missing display name uses validated selected alias label. Invalid selected label still rejects.",
+    "Canonical sourceDir remains native realpath before loader/security policy/staged copy; no return to lexical wrong-content selection. Missing/non-directory input handling and raw origin spec remain unchanged. Ordinary local label and tilde/relative selection retain existing path spelling semantics.",
+    "Git branch and fallback path.basename(parsed.label) unchanged; no-force/staging/destination slug validation unchanged.",
+    "Two real FS table regressions cover invalid physical release.1 and different valid physical names, asserting selected alias slug/target and actual installed instruction/asset with source unchanged. Existing explicit-slug/content-selection/missing cases remain.",
+    "Prior final review missed this fallback naming compatibility effect; this repair restores intentional output identity independently of physical input identity."
+  ],
+  "evidence": {
+    "binding": "Both complete fullBASE and repair oldHEAD diff hashes and current two file hashes independently match manifest.",
+    "repairBase": "Frozen alias collector e200b345672fc7a8bf5f1a018a281c08e7abed31e05233795e89b0782fd43f3f matches retained firstpublished053 HEAD receipt. Three raw stream pairs and actual available installed instruction/asset/origin bytes verified; invalid physical alias rejected and valid physical alias renamed, ordinary control succeeds.",
+    "checks": "Format0 reported; full31focused/static still running, not claimed complete."
+  },
+  "limitations": [
+    "Source-only approval; focused/static finish, normal followup commit/build/frozen nativeGREEN and body await final attestation.",
+    "No tests/builds rerun or source/public mutations by reviewer."
+  ]
+}

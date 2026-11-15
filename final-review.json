@@ -1,0 +1,72 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head-and-body",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "headOld": "053bbca1b99ed32cda882362ce00fa82c3465e44",
+  "fullIndexDiffSHA256": "8bb85148eb67d2313499b660fd3f68d1d7cd1945dbc33655d7f45f30f8e42722",
+  "repairDiffSHA256": "2a019dea8b2723b27d80b45e1fcd784396c4b038246275306e716d10eb339e21",
+  "files": [
+    {
+      "path": "src/skills/lifecycle/source-install-paths.test.ts",
+      "sha256": "25ba111030162be048035d8d23410a72b0e9c25d1637bdae8c6c77012b1c66e6"
+    },
+    {
+      "path": "src/skills/lifecycle/source-install.ts",
+      "sha256": "67155147517af81a825314e4632653bb884d3af684dacf27a15f9e4403bb318c"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/skills/lifecycle/source-install-paths.test.ts",
+      "sha256": "25ba111030162be048035d8d23410a72b0e9c25d1637bdae8c6c77012b1c66e6"
+    },
+    {
+      "path": "src/skills/lifecycle/source-install.ts",
+      "sha256": "67155147517af81a825314e4632653bb884d3af684dacf27a15f9e4403bb318c"
+    }
+  ],
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "head": "13609e43e2bb2f89a249a3767f6f30eaff050e7d",
+  "bodySHA256": "d85ee714fdd9570052ea9a447219b5bb2daa2f99ca8ff4df3d2a92d556e76da7",
+  "exactHeadVerification": {
+    "commit": "Actual git HEAD and sole parent053bbca verified; company author/committer matches commit receipt; tracked tree clean.",
+    "source": "Both file hashes and full c016-to-HEAD patch match approved source manifest.",
+    "build": "Normal cliStartup exit0,315.641s; actual dist/.buildstamp matches clean exact HEAD and both HEAD receipts.",
+    "checks": "31 focused PASS, receipt log hash verified; semantic types/typed lint/format/staged test-lines/line-cap exit0. No reruns.",
+    "proof": "All four BASE/HEAD receipts, collector hashes, 12 raw stdout/stderr case pairs and available installed instruction/asset/origin readbacks independently verified. Original BASE c016 and alias repair BASE053 are distinct and correctly labeled. HEAD original three installs and alias/default-name three installs pass.",
+    "body": "Full four-section draft accurately bounds source selection/default-label compatibility and proof; explicit Not tested line present."
+  },
+  "coveredReceipts": [
+    {
+      "path": "skill-source-base-proof/receipt.json",
+      "sha256": "ae1d80aaf02cf9bd205720b0eb7fa1087ed095bc526925d24a01698291621b5f"
+    },
+    {
+      "path": "skill-source-repair-head-proof/receipt.json",
+      "sha256": "efe4cd8400c0e7d8a423b768d9719a4a0e0706646d43147a72ed090b794536cc"
+    },
+    {
+      "path": "skill-source-alias-repair-base-proof/receipt.json",
+      "sha256": "29c40a45f22b3796a380cac56dc15a6f3c1d7827d2582093b8fb1d3a82d0588f"
+    },
+    {
+      "path": "skill-source-alias-repair-head-proof/receipt.json",
+      "sha256": "387be81f610c2e2563289a3b3a033fac748b621ffa5f54d079527bc9ccac6f5f"
+    },
+    {
+      "path": "skill-source-repair-cli-build.json",
+      "sha256": "327f41643ff16d00b4997eaf86e225e8060eaf4a6cec6062295f584887dde989"
+    },
+    {
+      "path": "skill-source-repair-commit.json",
+      "sha256": "01888578f2f9c26a0edf302b17213db676dbf0a8f2dfe4c6a7738483aea2ba27"
+    }
+  ],
+  "limitations": [
+    "Synthetic local Linux/Ubuntu24 Node26 CLI installs with private state and network disabled; no remote availability, production activation, macOS/Windows, hosted CI or full suite claim.",
+    "CLI raw output retains local Gateway refresh credential warning; successful installation/content proof does not establish Gateway refresh success.",
+    "Only PUBLIC_ARTIFACT_URL replacement with a verified immutable package containing this exact evidence/body is approved; other semantic edits require review."
+  ]
+}
