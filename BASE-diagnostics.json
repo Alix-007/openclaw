@@ -1,0 +1,123 @@
+{
+  "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+  "buildStamp": {
+    "builtAt": 1794749474275,
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "inputsClean": true,
+    "inputSignature": "e7c46453d2a95b0309775c33ff9f234ab86ced6a983c18f8c461166f3d2a3326"
+  },
+  "collectorSHA256": "bf91372e3d9ebae93a4f3dc7a7740b4cd2b3e4941de804c834febd0b9ccc576b",
+  "mode": "red",
+  "cases": [
+    {
+      "label": "malformed-debug-false",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-base-proof/fixtures/malformed",
+        "--entry",
+        "./absent.js",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 6.075,
+      "debug": false,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"plugin entry not found: ./absent.js\"\n  ]\n}\n",
+      "stdoutSHA256": "425db0ee2e6a0afcae0d60c01dc1db68619b49c3c3fc51fe5ec5dc7b5198debf",
+      "stderr": "plugin entry not found: ./absent.js\n",
+      "stderrSHA256": "b5172d3b71d0ccbc3a7acf0479495f1e706a3a5ee3cfaeac7f5c76e8fd95f443"
+    },
+    {
+      "label": "malformed-debug-true",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-base-proof/fixtures/malformed",
+        "--entry",
+        "./absent.js",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.71,
+      "debug": true,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"plugin entry not found: ./absent.js\"\n  ]\n}\n",
+      "stdoutSHA256": "425db0ee2e6a0afcae0d60c01dc1db68619b49c3c3fc51fe5ec5dc7b5198debf",
+      "stderr": "plugin entry not found: ./absent.js\n",
+      "stderrSHA256": "b5172d3b71d0ccbc3a7acf0479495f1e706a3a5ee3cfaeac7f5c76e8fd95f443"
+    },
+    {
+      "label": "missing-manifest",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-base-proof/fixtures/missing-manifest",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.569,
+      "debug": false,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"plugin entry not found: ./src/index.ts\"\n  ]\n}\n",
+      "stdoutSHA256": "b50a0b49b8373fd860546a108fb306aedfe95096f562af43123333f557e8bd7e",
+      "stderr": "plugin entry not found: ./src/index.ts\n",
+      "stderrSHA256": "a8513fb954d9a7ddfa6a9f097f7f731415f7cdf3b7bea72ce6bb718c913389b0"
+    },
+    {
+      "label": "unreachable-init",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "init",
+        "diagnostic-fixture",
+        "--directory",
+        "<TASK>/plugin-diagnostics-repair-base-proof/fixtures/missing/../existing"
+      ],
+      "exitCode": 1,
+      "seconds": 2.596,
+      "debug": false,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Plugin destination traverses a missing directory: <TASK>/plugin-diagnostics-repair-base-proof/fixtures/missing/../existing\n",
+      "stderrSHA256": "24428cb53771c1c0a8d2925773412bdbdb65fcbb6b4db4b6c31c47e2459edfa5"
+    },
+    {
+      "label": "no-force-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "init",
+        "diagnostic-fixture",
+        "--directory",
+        "<TASK>/plugin-diagnostics-repair-base-proof/fixtures/existing"
+      ],
+      "exitCode": 1,
+      "seconds": 2.439,
+      "debug": false,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Refusing to overwrite existing path: <TASK>/plugin-diagnostics-repair-base-proof/fixtures/existing\n",
+      "stderrSHA256": "069f0372afc570fadafe9efd6f6f1320800e1334cd0177613491ae9e95fdd408"
+    }
+  ],
+  "result": "BASE_3_MASKED_METADATA_ERRORS_AND_NO_RECOVERY_CONTROL_PASS",
+  "readback": {
+    "malformedPackageUnchanged": "c97ff3e9e6800e31ba054a4c3dda2d4cf38b096735cac412420781b13a00077b",
+    "existingSentinel": "1cd263f1102656dd6b6cf1d626d1a96f9eba0406af3cb2a52560d473d4801052",
+    "unreachableParentAbsent": true
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "isolatedFixturesRetained": true
+  }
+}

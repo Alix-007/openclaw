@@ -1,0 +1,79 @@
+
+=== physical-seed/stdout ===
+Wrote ../plugin-root-base-proof/fixtures/physical/source/openclaw.plugin.json
+Updated ../plugin-root-base-proof/fixtures/physical/source/package.json
+
+=== physical-seed/stderr ===
+
+=== physical-ordinary-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "physical-proof",
+  "errors": []
+}
+
+=== physical-ordinary-validation/stderr ===
+
+=== decoy-seed/stdout ===
+Wrote ../plugin-root-base-proof/fixtures/source/openclaw.plugin.json
+Updated ../plugin-root-base-proof/fixtures/source/package.json
+
+=== decoy-seed/stderr ===
+
+=== decoy-ordinary-validation/stdout ===
+{
+  "valid": true,
+  "pluginId": "decoy-proof",
+  "errors": []
+}
+
+=== decoy-ordinary-validation/stderr ===
+
+=== check-physical-stale/stdout ===
+Plugin metadata is up to date.
+
+=== check-physical-stale/stderr ===
+
+=== validate-physical-stale/stdout ===
+{
+  "valid": true,
+  "pluginId": "decoy-proof",
+  "errors": []
+}
+
+=== validate-physical-stale/stderr ===
+
+=== build-selected-root/stdout ===
+Wrote ../plugin-root-base-proof/fixtures/source/openclaw.plugin.json
+Updated ../plugin-root-base-proof/fixtures/source/package.json
+
+=== build-selected-root/stderr ===
+
+=== pack-selected-root/stdout ===
+{
+  "path": "<TASK>/plugin-root-base-proof/selected-plugin.tgz",
+  "sha256": "a4f560d037326d9a53db5d7b5b4026428cafb76fd3ae4736fca0a7e8eec89aee",
+  "pluginId": "decoy-proof",
+  "bytes": 598,
+  "activation": {
+    "action": "plugin_activate_artifact",
+    "path": "<TASK>/plugin-root-base-proof/selected-plugin.tgz",
+    "sha256": "a4f560d037326d9a53db5d7b5b4026428cafb76fd3ae4736fca0a7e8eec89aee"
+  }
+}
+
+=== pack-selected-root/stderr ===
+
+=== init-selected-destination/stdout ===
+Created ../plugin-root-base-proof/fixtures/new-plugin
+
+=== init-selected-destination/stderr ===
+
+=== decoy-unmodified-control/stdout ===
+{
+  "valid": true,
+  "pluginId": "decoy-proof",
+  "errors": []
+}
+
+=== decoy-unmodified-control/stderr ===

@@ -1,0 +1,123 @@
+{
+  "head": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+  "buildStamp": {
+    "builtAt": 1794754275375,
+    "head": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+    "inputsClean": true,
+    "inputSignature": "f1da0f55a0f5d3fe76359a9239758ae8c03ab5403c3c0cc056882121f6bb4fa0"
+  },
+  "collectorSHA256": "bf91372e3d9ebae93a4f3dc7a7740b4cd2b3e4941de804c834febd0b9ccc576b",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "malformed-debug-false",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed",
+        "--entry",
+        "./absent.js",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.345,
+      "debug": false,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"Malformed JSON in <TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed/package.json\"\n  ]\n}\n",
+      "stdoutSHA256": "5e871a601638d270f058f8dfb7a5cf1932bde9f9d50a61b030f1ead9c66e8a6f",
+      "stderr": "Malformed JSON in <TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed/package.json\n",
+      "stderrSHA256": "3f95909b0cdbc659d05fc6f666190a096df7f5f9b77acc96c0f44e589d6ee497"
+    },
+    {
+      "label": "malformed-debug-true",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed",
+        "--entry",
+        "./absent.js",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.549,
+      "debug": true,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"Malformed JSON in <TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed/package.json | Unexpected token '}', ...\\\"version\\\":\\n}\\n\\\" is not valid JSON\"\n  ]\n}\n",
+      "stdoutSHA256": "11d07347d752715c37646810e5d66c3e2088408c74f73232cdd6f1e786402dc4",
+      "stderr": "Malformed JSON in <TASK>/plugin-diagnostics-repair-head-proof/fixtures/malformed/package.json | Unexpected token '}', ...\"version\":\\n}\\n\" is not valid JSON\n",
+      "stderrSHA256": "e7350f8d4dc19acfc1c89f96addab2b438c687630b474115003d47be5ef5bcba"
+    },
+    {
+      "label": "missing-manifest",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--root",
+        "<TASK>/plugin-diagnostics-repair-head-proof/fixtures/missing-manifest",
+        "--json"
+      ],
+      "exitCode": 1,
+      "seconds": 2.374,
+      "debug": false,
+      "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"plugin manifest not found: <TASK>/plugin-diagnostics-repair-head-proof/fixtures/missing-manifest/openclaw.plugin.json\"\n  ]\n}\n",
+      "stdoutSHA256": "ce872e9bea959a6d9e1078ed46880ccc3b903218195a1fd5734fbb002c99ef25",
+      "stderr": "plugin manifest not found: <TASK>/plugin-diagnostics-repair-head-proof/fixtures/missing-manifest/openclaw.plugin.json\n",
+      "stderrSHA256": "7d1614be24d68539d5addd689b0e2a5cc7fbbae286fefa5fd2dd29ad6b828ca3"
+    },
+    {
+      "label": "unreachable-init",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "init",
+        "diagnostic-fixture",
+        "--directory",
+        "<TASK>/plugin-diagnostics-repair-head-proof/fixtures/missing/../existing"
+      ],
+      "exitCode": 1,
+      "seconds": 2.31,
+      "debug": false,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Plugin destination traverses a missing directory: <TASK>/plugin-diagnostics-repair-head-proof/fixtures/missing/../existing. Create the missing parent directory first, or choose a path through existing directories, then retry.\n",
+      "stderrSHA256": "a901036a35597ee02350b696af5988a32dc5313023125f0f1db19128171d51de"
+    },
+    {
+      "label": "no-force-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "init",
+        "diagnostic-fixture",
+        "--directory",
+        "<TASK>/plugin-diagnostics-repair-head-proof/fixtures/existing"
+      ],
+      "exitCode": 1,
+      "seconds": 2.378,
+      "debug": false,
+      "stdout": "",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "Refusing to overwrite existing path: <TASK>/plugin-diagnostics-repair-head-proof/fixtures/existing\n",
+      "stderrSHA256": "2a2c308dbe7759ba03bc228b7d2f363730cad934dfcfb44fa116a018adf3174d"
+    }
+  ],
+  "result": "GREEN_METADATA_PRECEDENCE_AND_ACTIONABLE_REFUSAL_5PASS",
+  "readback": {
+    "malformedPackageUnchanged": "c97ff3e9e6800e31ba054a4c3dda2d4cf38b096735cac412420781b13a00077b",
+    "existingSentinel": "1cd263f1102656dd6b6cf1d626d1a96f9eba0406af3cb2a52560d473d4801052",
+    "unreachableParentAbsent": true
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "isolatedFixturesRetained": true
+  }
+}
