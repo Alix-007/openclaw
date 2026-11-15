@@ -1,0 +1,131 @@
+{
+  "base": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+  "oldHead": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+  "fullIndexDiffSHA256": "0520a32d1a42fdf689a6c6fd5d2aa1ca0c6224b484943e85d6bce1c763d05f7c",
+  "repairDiffSHA256": null,
+  "files": [
+    {
+      "path": "src/agents/worktrees/base-ref.ts",
+      "sha256": "d6ab71b88fe74e6e7bb68333f94c74af247bb77914c42dbc12a1c2429d3ff321"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.ts",
+      "sha256": "34bf7d5f299b31676a6b53486bd4d05f96ce7815fe0084133c9d55d9a1c64dc4"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.windows.test.ts",
+      "sha256": "f8f6f57c375323d9728e36e3e92942ee25f3a7f8e609148f863f1255357c7d42"
+    },
+    {
+      "path": "src/agents/worktrees/checkout.ts",
+      "sha256": "d0b592df32abef78b6d5f436884957e2c16581e0a2b59217a0be8d868a780bcc"
+    },
+    {
+      "path": "src/agents/worktrees/eviction.test-support.ts",
+      "sha256": "cc67c332564d7c410aa91ae08f325ddf3b86b27c27a3d018edd9a257725777b7"
+    },
+    {
+      "path": "src/agents/worktrees/git-maintenance.ts",
+      "sha256": "24dfb3604037ce41e75c759f0fa994f01c2d0b17ab970f9eb83279101073e5a1"
+    },
+    {
+      "path": "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "sha256": "b9a07eb4128bbcb1399cac145ad80f4612cc520a1439c598db08c198d5217399"
+    },
+    {
+      "path": "src/agents/worktrees/git.test.ts",
+      "sha256": "02901158f979e4cf2f38cd61b70c215a1948e4d290addc2abd8134a81262c77d"
+    },
+    {
+      "path": "src/agents/worktrees/git.ts",
+      "sha256": "c42bfca2c8571509fe3d65c2c8d9368ef04ff133bccd6ea3f0c9b8ce8dc03cc5"
+    },
+    {
+      "path": "src/agents/worktrees/object-hydration.ts",
+      "sha256": "aeae83a6756ad96e6c8a48ca269185132cbe21a4ded7449e7b320751023e586c"
+    },
+    {
+      "path": "src/agents/worktrees/orphan-branches.ts",
+      "sha256": "77a653e4c41279d0a6ddf2746507e340ff6118b9a2c4412b178de75fe7d7d525"
+    },
+    {
+      "path": "src/agents/worktrees/removal-git.ts",
+      "sha256": "8c1d45396859db7039fa6018610b896f619fc2d24afd5cb143d5a0c090e65cb4"
+    },
+    {
+      "path": "src/agents/worktrees/removal-recovery.ts",
+      "sha256": "f7971ca9633fab1843e72ecb26e4198f5492ec63da026e107a2ab9791dbd1f17"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-exact-state.ts",
+      "sha256": "c53466ee757c0bbed1639b4f7a9e49f3fe827e62e1ca71fc23da62bd25f622d9"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-inventory.ts",
+      "sha256": "77236eaeb3e3a51245215a18695ec3be9d18453d3b5b4ab22da7e46741ba042e"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/agents/worktrees/base-ref.ts",
+      "sha256": "d6ab71b88fe74e6e7bb68333f94c74af247bb77914c42dbc12a1c2429d3ff321"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.ts",
+      "sha256": "34bf7d5f299b31676a6b53486bd4d05f96ce7815fe0084133c9d55d9a1c64dc4"
+    },
+    {
+      "path": "src/agents/worktrees/checkout.ts",
+      "sha256": "d0b592df32abef78b6d5f436884957e2c16581e0a2b59217a0be8d868a780bcc"
+    },
+    {
+      "path": "src/agents/worktrees/git-maintenance.ts",
+      "sha256": "24dfb3604037ce41e75c759f0fa994f01c2d0b17ab970f9eb83279101073e5a1"
+    },
+    {
+      "path": "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "sha256": "b9a07eb4128bbcb1399cac145ad80f4612cc520a1439c598db08c198d5217399"
+    },
+    {
+      "path": "src/agents/worktrees/git.test.ts",
+      "sha256": "02901158f979e4cf2f38cd61b70c215a1948e4d290addc2abd8134a81262c77d"
+    },
+    {
+      "path": "src/agents/worktrees/git.ts",
+      "sha256": "c42bfca2c8571509fe3d65c2c8d9368ef04ff133bccd6ea3f0c9b8ce8dc03cc5"
+    },
+    {
+      "path": "src/agents/worktrees/object-hydration.ts",
+      "sha256": "aeae83a6756ad96e6c8a48ca269185132cbe21a4ded7449e7b320751023e586c"
+    },
+    {
+      "path": "src/agents/worktrees/orphan-branches.ts",
+      "sha256": "77a653e4c41279d0a6ddf2746507e340ff6118b9a2c4412b178de75fe7d7d525"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-inventory.ts",
+      "sha256": "77236eaeb3e3a51245215a18695ec3be9d18453d3b5b4ab22da7e46741ba042e"
+    }
+  ],
+  "main": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+  "mainRelativePatchSHA256": "0520a32d1a42fdf689a6c6fd5d2aa1ca0c6224b484943e85d6bce1c763d05f7c",
+  "verdict": "PASS",
+  "stage": "source-only",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "resolvedFindings": [
+    "Upstream-added object hydration/orphan deletion common-directory readers use requireGitPath.",
+    "Namespace import includes corrected NonNullable<Parameters<typeof git.requireGit>[2]>; no remaining unbound named reference or namespace collision.",
+    "All15 files and repairFiles duplicate bindings synchronized; canonical staged full-index diff verified."
+  ],
+  "reviewed": [
+    "Reused full owner/sibling/authority source review; current delta only namespace qualification including type reference.",
+    "All15 current file hashes and both manifest lists independently checked; no unstaged tracked changes.",
+    "Runtime calls remain same exports and arguments; main composeSessionSourceAssertion authority and existing guards intact."
+  ],
+  "limitations": [
+    "Source approval only; no final committed-head/build/native approval.",
+    "Four added native-Git sibling regressions reported PASS; capacity17 and old orphan1 host fixture failures are undergoing clean BASE attribution. Final namespace lint/types/line gates pending, not claimed PASS.",
+    "No reviewer test/build reruns or implementation/index/public mutations. Both earlier source FAIL records retained."
+  ]
+}

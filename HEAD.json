@@ -1,0 +1,70 @@
+{
+  "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+  "buildStamp": {
+    "builtAt": 1794758536493,
+    "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+    "inputsClean": true,
+    "inputSignature": "8f955b64a0169b4f7da3143edaf58a89a7642045630c2fcab00c8fca80ef1cb3"
+  },
+  "at": "2026-11-15T16:02:30Z",
+  "collectorSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+  "mode": "head",
+  "cases": [
+    {
+      "label": "ordinary-metadata-control",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/worktree-metadata/openclaw.mjs",
+        "worktrees",
+        "create",
+        "<TASK>/pr-195360-head-proof/ordinary-metadata-control/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/metadata\n",
+      "metadataStillExists": true,
+      "exitCode": 0,
+      "seconds": 7.863,
+      "stdout": "{\n  \"id\": \"f76eeb8f-260e-45fa-ae96-b9e7e08f5f40\",\n  \"name\": \"proof\",\n  \"repoFingerprint\": \"cad0674e206900a4\",\n  \"repoRoot\": \"<TASK>/pr-195360-head-proof/ordinary-metadata-control/metadata\",\n  \"path\": \"<TASK>/pr-195360-head-proof/ordinary-metadata-control/managed/cad0674e206900a4/proof\",\n  \"branch\": \"openclaw/proof\",\n  \"baseRef\": \"refs/heads/main\",\n  \"ownerKind\": \"manual\",\n  \"createdAt\": 1794758556573,\n  \"lastActiveAt\": 1794758556573\n}\n",
+      "stderr": "[agents/worktrees] worktree base refs/heads/main at 62f29659a279cba7e3177a039f992b420c5fcea8 (commit age 0.0 days; fetch not requested)\n[agents/worktrees] managed worktree preparation kind=managed template=cold templateDetails={\"reason\":\"ready\",\"backend\":\"xfs\",\"missReason\":\"no-generation\",\"requestedSourceCommit\":\"62f29659a279\",\"cloneBytes\":16785698} copyDetails={} outcome=returned errorDetails={} durationMs=5170 unattributedMs=21 reuseDominantPhase=none phaseDurationsMs={\"repository\":37,\"mutationWait\":1875,\"allocate\":1857,\"sources\":1527,\"allocationWait\":26,\"reservation\":93,\"leaseRelease\":48,\"diskAdmission\":75,\"base\":10,\"provisionEstimate\":3,\"registration\":35,\"registrationMetadata\":10,\"registrationInspect\":34,\"commitPrepare\":136,\"templatePrepare\":866,\"cloneEstimate\":2,\"indexLocate\":9,\"checkoutMarker\":2,\"checkoutDestination\":1,\"templateApply\":314,\"indexCopy\":79,\"indexRefresh\":10,\"templateRelease\":6,\"checkout\":1523,\"provisionInspect\":2,\"provision\":8,\"publication\":18,\"sourceRelease\":0}\n",
+      "markerReadback": "independent native checkout marker\n",
+      "listReadback": true,
+      "result": "GREEN_CONTROL"
+    },
+    {
+      "label": "literal-metadata-space",
+      "command": [
+        "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+        "<TASK>/worktree-metadata/openclaw.mjs",
+        "worktrees",
+        "create",
+        "<TASK>/pr-195360-head-proof/literal-metadata-space/checkout",
+        "--name",
+        "proof",
+        "--base-ref",
+        "refs/heads/main",
+        "--json"
+      ],
+      "nativeCommonDirectoryOutput": "<TASK>/pr-195360-head-proof/literal-metadata-space/metadata \n",
+      "metadataStillExists": true,
+      "exitCode": 0,
+      "seconds": 8.149,
+      "stdout": "{\n  \"id\": \"be8ad695-487d-4065-bfde-244d045f74ba\",\n  \"name\": \"proof\",\n  \"repoFingerprint\": \"ba21a1ec21a966fa\",\n  \"repoRoot\": \"<TASK>/pr-195360-head-proof/literal-metadata-space/metadata \",\n  \"path\": \"<TASK>/pr-195360-head-proof/literal-metadata-space/managed/ba21a1ec21a966fa/proof\",\n  \"branch\": \"openclaw/proof\",\n  \"baseRef\": \"refs/heads/main\",\n  \"ownerKind\": \"manual\",\n  \"createdAt\": 1794758568258,\n  \"lastActiveAt\": 1794758568258\n}\n",
+      "stderr": "[agents/worktrees] worktree base refs/heads/main at d70538111cc054d6ef767940c556b1dea3bed8cb (commit age 0.0 days; fetch not requested)\n[agents/worktrees] managed worktree preparation kind=managed template=cold templateDetails={\"reason\":\"ready\",\"backend\":\"xfs\",\"missReason\":\"no-generation\",\"requestedSourceCommit\":\"d70538111cc0\",\"cloneBytes\":16785698} copyDetails={} outcome=returned errorDetails={} durationMs=5453 unattributedMs=35 reuseDominantPhase=none phaseDurationsMs={\"repository\":44,\"mutationWait\":1933,\"allocate\":1912,\"sources\":1629,\"allocationWait\":24,\"reservation\":109,\"leaseRelease\":58,\"diskAdmission\":79,\"base\":11,\"provisionEstimate\":4,\"registration\":36,\"registrationMetadata\":11,\"registrationInspect\":41,\"commitPrepare\":107,\"templatePrepare\":937,\"cloneEstimate\":2,\"indexLocate\":12,\"checkoutMarker\":3,\"checkoutDestination\":1,\"templateApply\":323,\"indexCopy\":87,\"indexRefresh\":10,\"templateRelease\":7,\"checkout\":1598,\"provisionInspect\":2,\"provision\":9,\"publication\":20,\"sourceRelease\":0}\n",
+      "markerReadback": "independent native checkout marker\n",
+      "listReadback": true,
+      "result": "GREEN"
+    }
+  ],
+  "result": "GREEN",
+  "boundary": "Normal shipped CLI worktrees create and list, real native Git separate administrative directory and checkout/file readback; disposable offline state only",
+  "cleanup": {
+    "productionTouched": false,
+    "remoteProviderOrChannelUsed": false,
+    "childProcessesWaited": true,
+    "disposableGitAndStateRetainedForInspection": true
+  }
+}

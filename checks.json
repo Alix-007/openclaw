@@ -1,0 +1,262 @@
+{
+  "focused": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/agents/worktrees/git.test.ts",
+      "src/agents/worktrees/checkout-git-config.windows.test.ts",
+      "src/agents/worktrees/git-maintenance.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 290.367,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "5e9f35572833b519733c25f35d0bfd90734491aa7f49ad1999248eef976626e8",
+    "logSHA256": "f17f9fd12bc2a38632ded580dd08282e91a62c3fde4c66652d3095b87ce1ece0"
+  },
+  "final-focused": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "src/agents/worktrees/git-maintenance.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 203.433,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "03e2759b5e611057ca20862abc2bf653baee36b49ad8cd923205ba99ea8ec2f8"
+  },
+  "verified-format": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "src/agents/worktrees/base-ref.ts",
+      "src/agents/worktrees/checkout-git-config.ts",
+      "src/agents/worktrees/checkout-git-config.windows.test.ts",
+      "src/agents/worktrees/checkout.ts",
+      "src/agents/worktrees/eviction.test-support.ts",
+      "src/agents/worktrees/git-maintenance.ts",
+      "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "src/agents/worktrees/git.test.ts",
+      "src/agents/worktrees/git.ts",
+      "src/agents/worktrees/object-hydration.ts",
+      "src/agents/worktrees/orphan-branches.ts",
+      "src/agents/worktrees/removal-git.ts",
+      "src/agents/worktrees/removal-recovery.ts",
+      "src/agents/worktrees/snapshot-exact-state.ts",
+      "src/agents/worktrees/snapshot-inventory.ts"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 1.848,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "ae9c43c90f394e7871449c8fae095fabdf1939170180e6c9614672fe5fc51066"
+  },
+  "verified-lint": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../pr-195360-types.tsconfig.json",
+      "src/agents/worktrees/base-ref.ts",
+      "src/agents/worktrees/checkout-git-config.ts",
+      "src/agents/worktrees/checkout-git-config.windows.test.ts",
+      "src/agents/worktrees/checkout.ts",
+      "src/agents/worktrees/eviction.test-support.ts",
+      "src/agents/worktrees/git-maintenance.ts",
+      "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "src/agents/worktrees/git.test.ts",
+      "src/agents/worktrees/git.ts",
+      "src/agents/worktrees/object-hydration.ts",
+      "src/agents/worktrees/orphan-branches.ts",
+      "src/agents/worktrees/removal-git.ts",
+      "src/agents/worktrees/removal-recovery.ts",
+      "src/agents/worktrees/snapshot-exact-state.ts",
+      "src/agents/worktrees/snapshot-inventory.ts"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 298.584,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "ffeff462732509c14cc0deb123421e32f711409b0c7bab310c6c019c8f7ddf96"
+  },
+  "verified-types": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../pr-195360-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 98.644,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "verified-test-lines": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+      "--staged"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 2.278,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "82cefd1ab3898f8ea6b7b42bebd1e9c3dc5409e21fe770c908fe57f419e3f925"
+  },
+  "verified-line-cap": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+      "--staged"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 1.751,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "86a3f53de9a745ca6f562677121cbec6946ee8cfce91ca61b1d845efe276b665",
+    "logSHA256": "7aac734f6b051f624a816565ca28dce276f50a6eaed80115b71d68bb1124953d"
+  },
+  "build": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 0,
+    "elapsed_seconds": 270.552,
+    "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "173c2b25c0ad1557585484a583518cb10d8f4be3335ef4d3f43086b7ec518f75"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64:<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/worktree-metadata",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/worktree-metadata-proof-v1.py",
+      "<TASK>/worktree-metadata",
+      "<TASK>/pr-195360-head-proof",
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "head"
+    ],
+    "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+    "exit_code": 0,
+    "elapsed_seconds": 24.677,
+    "collectorSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+    "runnerLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "receipt": "<TASK>/pr-195360-head-proof/receipt.json"
+  },
+  "commit": {
+    "number": 195360,
+    "worktree": "<TASK>/worktree-metadata",
+    "oldHead": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+    "main": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+    "branch": "alix/fix-worktree-metadata-paths-20261109",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "mergeParentsPreserved": true,
+    "fullIndexDiffSHA256": "0520a32d1a42fdf689a6c6fd5d2aa1ca0c6224b484943e85d6bce1c763d05f7c",
+    "elapsedSeconds": 3.762,
+    "knownValidationLimitations": [
+      "Expanded sibling suite18 baseline-reproduced failures retained; no assertion, skip or timeout weakened."
+    ]
+  },
+  "siblings-red": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/base",
+    "exit_code": 1,
+    "elapsed_seconds": 207.483,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "658b8ae87d8550904ceec2ec1bd9b7f580c82989c1bf4f46571fc816a4e651b3"
+  },
+  "siblings-green": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "src/agents/worktrees/capacity.test.ts",
+      "src/agents/worktrees/service.orphan-branches.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/worktree-metadata",
+    "exit_code": 1,
+    "elapsed_seconds": 257.757,
+    "head": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "diffSHA256": "4c9882ce314ac755d703fc14b8d6d4746b5bd9da56879015230341705ad8ac12",
+    "logSHA256": "f651ef4a1a8c532e7ba9824c16de7d18ae0aeba65ad85b47e91578ced406d961"
+  },
+  "sibling-baseline-attribution": {
+    "command": [
+      "<CAMPAIGN>/alix-ui-features-20261022.5cc3Cf/node-v26.12.1-linux-x64/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/agents/worktrees/capacity.test.ts",
+      "src/agents/worktrees/service.orphan-branches.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/base",
+    "exit_code": 1,
+    "elapsed_seconds": 255.139,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "a220e9ae94c3edd97112b53b1ed9b689cedbb38fb33b272831ae281196ac866c"
+  }
+}

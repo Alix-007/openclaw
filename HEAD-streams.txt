@@ -1,0 +1,76 @@
+
+=== ordinary-metadata-control/create.stdout ===
+{
+  "id": "f76eeb8f-260e-45fa-ae96-b9e7e08f5f40",
+  "name": "proof",
+  "repoFingerprint": "cad0674e206900a4",
+  "repoRoot": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/metadata",
+  "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/managed/cad0674e206900a4/proof",
+  "branch": "openclaw/proof",
+  "baseRef": "refs/heads/main",
+  "ownerKind": "manual",
+  "createdAt": 1794758556573,
+  "lastActiveAt": 1794758556573
+}
+
+=== ordinary-metadata-control/create.stderr ===
+[agents/worktrees] worktree base refs/heads/main at 62f29659a279cba7e3177a039f992b420c5fcea8 (commit age 0.0 days; fetch not requested)
+[agents/worktrees] managed worktree preparation kind=managed template=cold templateDetails={"reason":"ready","backend":"xfs","missReason":"no-generation","requestedSourceCommit":"62f29659a279","cloneBytes":16785698} copyDetails={} outcome=returned errorDetails={} durationMs=5170 unattributedMs=21 reuseDominantPhase=none phaseDurationsMs={"repository":37,"mutationWait":1875,"allocate":1857,"sources":1527,"allocationWait":26,"reservation":93,"leaseRelease":48,"diskAdmission":75,"base":10,"provisionEstimate":3,"registration":35,"registrationMetadata":10,"registrationInspect":34,"commitPrepare":136,"templatePrepare":866,"cloneEstimate":2,"indexLocate":9,"checkoutMarker":2,"checkoutDestination":1,"templateApply":314,"indexCopy":79,"indexRefresh":10,"templateRelease":6,"checkout":1523,"provisionInspect":2,"provision":8,"publication":18,"sourceRelease":0}
+
+=== ordinary-metadata-control/list.stdout ===
+{
+  "worktrees": [
+    {
+      "id": "f76eeb8f-260e-45fa-ae96-b9e7e08f5f40",
+      "name": "proof",
+      "repoFingerprint": "cad0674e206900a4",
+      "repoRoot": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/metadata",
+      "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/managed/cad0674e206900a4/proof",
+      "branch": "openclaw/proof",
+      "baseRef": "refs/heads/main",
+      "ownerKind": "manual",
+      "createdAt": 1794758556573,
+      "lastActiveAt": 1794758556573
+    }
+  ]
+}
+
+=== ordinary-metadata-control/list.stderr ===
+
+=== literal-metadata-space/create.stdout ===
+{
+  "id": "be8ad695-487d-4065-bfde-244d045f74ba",
+  "name": "proof",
+  "repoFingerprint": "ba21a1ec21a966fa",
+  "repoRoot": "<TASK>/pr-195360-head-proof/literal-metadata-space/metadata ",
+  "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/managed/ba21a1ec21a966fa/proof",
+  "branch": "openclaw/proof",
+  "baseRef": "refs/heads/main",
+  "ownerKind": "manual",
+  "createdAt": 1794758568258,
+  "lastActiveAt": 1794758568258
+}
+
+=== literal-metadata-space/create.stderr ===
+[agents/worktrees] worktree base refs/heads/main at d70538111cc054d6ef767940c556b1dea3bed8cb (commit age 0.0 days; fetch not requested)
+[agents/worktrees] managed worktree preparation kind=managed template=cold templateDetails={"reason":"ready","backend":"xfs","missReason":"no-generation","requestedSourceCommit":"d70538111cc0","cloneBytes":16785698} copyDetails={} outcome=returned errorDetails={} durationMs=5453 unattributedMs=35 reuseDominantPhase=none phaseDurationsMs={"repository":44,"mutationWait":1933,"allocate":1912,"sources":1629,"allocationWait":24,"reservation":109,"leaseRelease":58,"diskAdmission":79,"base":11,"provisionEstimate":4,"registration":36,"registrationMetadata":11,"registrationInspect":41,"commitPrepare":107,"templatePrepare":937,"cloneEstimate":2,"indexLocate":12,"checkoutMarker":3,"checkoutDestination":1,"templateApply":323,"indexCopy":87,"indexRefresh":10,"templateRelease":7,"checkout":1598,"provisionInspect":2,"provision":9,"publication":20,"sourceRelease":0}
+
+=== literal-metadata-space/list.stdout ===
+{
+  "worktrees": [
+    {
+      "id": "be8ad695-487d-4065-bfde-244d045f74ba",
+      "name": "proof",
+      "repoFingerprint": "ba21a1ec21a966fa",
+      "repoRoot": "<TASK>/pr-195360-head-proof/literal-metadata-space/metadata ",
+      "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/managed/ba21a1ec21a966fa/proof",
+      "branch": "openclaw/proof",
+      "baseRef": "refs/heads/main",
+      "ownerKind": "manual",
+      "createdAt": 1794758568258,
+      "lastActiveAt": 1794758568258
+    }
+  ]
+}
+
+=== literal-metadata-space/list.stderr ===

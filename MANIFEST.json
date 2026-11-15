@@ -1,0 +1,22 @@
+{
+  "BASE.json": "f6783ebdac908c2f7208de8fc3946e6a28df33e766e62524fa181784908dd66c",
+  "BASE-streams.txt": "8c3503ae9f795853f859d42817a89095e52e6b4126f484aa9770e98a2b849d2d",
+  "HEAD.json": "cae67147b4a52e5ba577ab805aee385b87db4388c2c792849ca64dc5a69fa196",
+  "HEAD-streams.txt": "89583f1e5c449bbcc96518922addc5a295234560fea1fa93fee9ee1ee9ba8075",
+  "worktree-metadata-proof-v1.py": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+  "source-review.json": "9bb8bbc81804ed5854fa5c066e0de170e7788dcda5ae91ef736e1dfa02b8bb07",
+  "source-review.md": "6881f368115bf263b598afbdad4550ddcafc3c3e629bf2458a3ef530904bc115",
+  "final-adversarial-review.json": "40826fdc2a58b4202d1739df4f69fbb387f3ae98381b565ed194e1fa554817d0",
+  "final-adversarial-review.md": "824dfc18104a0475cc05fed5eaeb505271d6f2d568245b3dd88ff0558d4bdec3",
+  "sibling-attribution.json": "1904d2047e25831ba2408eb827cac6ab31af07877d102a8db35824e467d87c46",
+  "sibling-attribution.md": "dbe48b96f80678603a1f1408dbe7ad731011713d9c42f63fa1a8a8ffbcf472d9",
+  "baseline-owner-blob-comparison.json": "218fed9b2bad43d9e1894b5cbf38754f6dc058ad16d5e0ae6b0e37ab0c1c194d",
+  "siblings-red.log": "8903ec8bd889143ca3392d5d03589f3e951ca83911479315e81c4e8dea371f9b",
+  "siblings-green.log": "6a602cb079a8d21039c66256e4f6a9adae244dece9875a710823cd1d555d63b8",
+  "sibling-baseline-attribution.log": "4ac54e715718e45dbc22f42f3fde8d5a5e9d1ccb1e14a97ed852dd33302a1c60",
+  "final-focused.log": "d8841c3f9e923a46c4b5bbb7b563ca7fbe26f7f80bad9813b90d89c2a15e6eb5",
+  "focused.log": "72d8e30f7aaa922da5060c3517fdab1f7f895baf8b18b85c7099bb4bad1ab0ee",
+  "checks.json": "e561f21d57dd300ceb836a7bcf48389a042a3e5711f38a40b5144ac47d40f9f2",
+  "EVIDENCE.md": "6115106d3dc811c9b6ad5fb290233be70c4ce4c5f24c7db3e0b809949553b5ad",
+  "raw-hash-readback.json": "fe5135b85413234016b5daec1d0cc35512b038323730cd01e349010553d4630b"
+}

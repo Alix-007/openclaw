@@ -1,0 +1,217 @@
+{
+  "base": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+  "oldHead": "007ba2893badc4f534b679a1a391f6ceb40ed156",
+  "fullIndexDiffSHA256": "0520a32d1a42fdf689a6c6fd5d2aa1ca0c6224b484943e85d6bce1c763d05f7c",
+  "repairDiffSHA256": null,
+  "files": [
+    {
+      "path": "src/agents/worktrees/base-ref.ts",
+      "sha256": "d6ab71b88fe74e6e7bb68333f94c74af247bb77914c42dbc12a1c2429d3ff321"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.ts",
+      "sha256": "34bf7d5f299b31676a6b53486bd4d05f96ce7815fe0084133c9d55d9a1c64dc4"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.windows.test.ts",
+      "sha256": "f8f6f57c375323d9728e36e3e92942ee25f3a7f8e609148f863f1255357c7d42"
+    },
+    {
+      "path": "src/agents/worktrees/checkout.ts",
+      "sha256": "d0b592df32abef78b6d5f436884957e2c16581e0a2b59217a0be8d868a780bcc"
+    },
+    {
+      "path": "src/agents/worktrees/eviction.test-support.ts",
+      "sha256": "cc67c332564d7c410aa91ae08f325ddf3b86b27c27a3d018edd9a257725777b7"
+    },
+    {
+      "path": "src/agents/worktrees/git-maintenance.ts",
+      "sha256": "24dfb3604037ce41e75c759f0fa994f01c2d0b17ab970f9eb83279101073e5a1"
+    },
+    {
+      "path": "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "sha256": "b9a07eb4128bbcb1399cac145ad80f4612cc520a1439c598db08c198d5217399"
+    },
+    {
+      "path": "src/agents/worktrees/git.test.ts",
+      "sha256": "02901158f979e4cf2f38cd61b70c215a1948e4d290addc2abd8134a81262c77d"
+    },
+    {
+      "path": "src/agents/worktrees/git.ts",
+      "sha256": "c42bfca2c8571509fe3d65c2c8d9368ef04ff133bccd6ea3f0c9b8ce8dc03cc5"
+    },
+    {
+      "path": "src/agents/worktrees/object-hydration.ts",
+      "sha256": "aeae83a6756ad96e6c8a48ca269185132cbe21a4ded7449e7b320751023e586c"
+    },
+    {
+      "path": "src/agents/worktrees/orphan-branches.ts",
+      "sha256": "77a653e4c41279d0a6ddf2746507e340ff6118b9a2c4412b178de75fe7d7d525"
+    },
+    {
+      "path": "src/agents/worktrees/removal-git.ts",
+      "sha256": "8c1d45396859db7039fa6018610b896f619fc2d24afd5cb143d5a0c090e65cb4"
+    },
+    {
+      "path": "src/agents/worktrees/removal-recovery.ts",
+      "sha256": "f7971ca9633fab1843e72ecb26e4198f5492ec63da026e107a2ab9791dbd1f17"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-exact-state.ts",
+      "sha256": "c53466ee757c0bbed1639b4f7a9e49f3fe827e62e1ca71fc23da62bd25f622d9"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-inventory.ts",
+      "sha256": "77236eaeb3e3a51245215a18695ec3be9d18453d3b5b4ab22da7e46741ba042e"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/agents/worktrees/base-ref.ts",
+      "sha256": "d6ab71b88fe74e6e7bb68333f94c74af247bb77914c42dbc12a1c2429d3ff321"
+    },
+    {
+      "path": "src/agents/worktrees/checkout-git-config.ts",
+      "sha256": "34bf7d5f299b31676a6b53486bd4d05f96ce7815fe0084133c9d55d9a1c64dc4"
+    },
+    {
+      "path": "src/agents/worktrees/checkout.ts",
+      "sha256": "d0b592df32abef78b6d5f436884957e2c16581e0a2b59217a0be8d868a780bcc"
+    },
+    {
+      "path": "src/agents/worktrees/git-maintenance.ts",
+      "sha256": "24dfb3604037ce41e75c759f0fa994f01c2d0b17ab970f9eb83279101073e5a1"
+    },
+    {
+      "path": "src/agents/worktrees/git-metadata-siblings.test.ts",
+      "sha256": "b9a07eb4128bbcb1399cac145ad80f4612cc520a1439c598db08c198d5217399"
+    },
+    {
+      "path": "src/agents/worktrees/git.test.ts",
+      "sha256": "02901158f979e4cf2f38cd61b70c215a1948e4d290addc2abd8134a81262c77d"
+    },
+    {
+      "path": "src/agents/worktrees/git.ts",
+      "sha256": "c42bfca2c8571509fe3d65c2c8d9368ef04ff133bccd6ea3f0c9b8ce8dc03cc5"
+    },
+    {
+      "path": "src/agents/worktrees/object-hydration.ts",
+      "sha256": "aeae83a6756ad96e6c8a48ca269185132cbe21a4ded7449e7b320751023e586c"
+    },
+    {
+      "path": "src/agents/worktrees/orphan-branches.ts",
+      "sha256": "77a653e4c41279d0a6ddf2746507e340ff6118b9a2c4412b178de75fe7d7d525"
+    },
+    {
+      "path": "src/agents/worktrees/snapshot-inventory.ts",
+      "sha256": "77236eaeb3e3a51245215a18695ec3be9d18453d3b5b4ab22da7e46741ba042e"
+    }
+  ],
+  "main": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+  "mainRelativePatchSHA256": "0520a32d1a42fdf689a6c6fd5d2aa1ca0c6224b484943e85d6bce1c763d05f7c",
+  "verdict": "PASS",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "stage": "final-exact-merge-head-and-body",
+  "head": "0daf08e1a895730f4f264f571bbed8ea2903c2da",
+  "parents": [
+    "007ba2893badc4f534b679a1a391f6ceb40ed156",
+    "2c4413a6abbfeb4ac23cd07b775a105586548af1"
+  ],
+  "bodySHA256": "ab323c008a232dcab9214db51d9974b125dc58ef9bff76eed0dde3caf5b64d7d",
+  "exactHeadVerification": {
+    "source": "Actual two-parent company merge commit, clean tracked source, all15 hashes and main-relative canonical0520 patch independently verified. Previous source authority/import and native-path source review reused.",
+    "build": "Normal cliStartup exit0 in270.552s; build log SHA verified; actual clean dist/.buildstamp matches exact HEAD proof.",
+    "checks": "Format/genuine typed lint/types/staged test-lines/line-cap receipt/log hashes verified exit0; original3-file focused selection and final maintenance/sibling8 PASS logs verified.",
+    "proof": "Original successful historical collector bytes match copied current collector7a9448d2; historicalBASE5fe1403 retained date2026-11-08T17:51:09Z and RED_WITH_LEGAL_CONTROL, never labelled currentmainRED. Current exactHEAD real create/list both succeed. Raw create streams equal receipts; actual checkout marker and actual list IDs/paths independently read; significant trailing metadata space retained.",
+    "baselineAttribution": "Independent logs have identical18 named failure summaries. Clean c016BASE18FAIL/8PASS; expandedHEAD18FAIL/12PASS; added siblings BASE2RED/2ordinary controls and HEAD4PASS. Four old fixture/owner blob IDs independently match integrated main. No all-expanded-tests-PASS claim.",
+    "body": "Four sections and explicit Not tested limitations accurate; historical/current revisions, hostGit2.39.3 fixture failures and qualifiedGit2.43 CLI proof kept distinct."
+  },
+  "collectorSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e",
+  "coveredReceipts": [
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/receipt.json",
+      "sha256": "64219c9798df3bf76f24bd8e3db8d9284122ba3623cffbe7ffe0c0639d8c8a2b"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/receipt.json",
+      "sha256": "ed02a758d06102495da11caa6ee21f71e26d6dc733b0f2909210cbadfb87c952"
+    },
+    {
+      "path": "<TASK>/pr-195360-build.json",
+      "sha256": "bc1bca065bb3de2357ca91c3fc612eeac4c854a93b77db93a42c60329a6726e9"
+    },
+    {
+      "path": "<TASK>/pr-195360-commit.json",
+      "sha256": "4f8688c03b6cbb7342296a5f2872d7df67abb60e8d8920eb0ea546411faccc36"
+    },
+    {
+      "path": "<TASK>/pr-195360-sibling-attribution.json",
+      "sha256": "1904d2047e25831ba2408eb827cac6ab31af07877d102a8db35824e467d87c46"
+    }
+  ],
+  "rawStreams": [
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/create.stdout",
+      "sha256": "e4ff4ac5b4ea6e89c80b87acaea94e62a6af8a3eb0a4d8946ef36993006bbe4c"
+    },
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/create.stderr",
+      "sha256": "b2cd13b506e430c9fec50d3be0820842c12564ab84562c3f956e4d36c3daf439"
+    },
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/list.stdout",
+      "sha256": "2e610b6535caf5b203d6976b3851110f4c804ca8f4a6c65ea158fd385c5c78b1"
+    },
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/literal-metadata-space/create.stdout",
+      "sha256": "2405730e05efc6feead16e4225df5760259e25fe7d6b93ef86116abdce1354fd"
+    },
+    {
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/literal-metadata-space/create.stderr",
+      "sha256": "c9cb8d0513f528dee174639afdba39bb819f09d17b879628c78dd8923d24f343"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/create.stdout",
+      "sha256": "ffafc11f859d0b16ce6ecdb5985910c09984e1dec444baf7cb3c7eb44bdb47a4"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/create.stderr",
+      "sha256": "58d256003319c9dbfb14abc8a66ac44ca0a8a5bb7811118022966f30a2a25b77"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/list.stdout",
+      "sha256": "3e581f6955d3ef47cb992258cfbd5e10a03e7d7d3bf0d5d9fc8908ea312f75e4"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/ordinary-metadata-control/list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/create.stdout",
+      "sha256": "2f6bccdf69851be9127111f82e304b2c107ef50dec79b8a68f9bb50860ebe9f9"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/create.stderr",
+      "sha256": "0e014c759edc5d3ccfeac699c3081822a69309abd96b9f064aae59758c3fdea4"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/list.stdout",
+      "sha256": "dbb5be6888065d6e3e1968919e4d2889f729445c3114fb0b5b0c0ab685c0e61d"
+    },
+    {
+      "path": "<TASK>/pr-195360-head-proof/literal-metadata-space/list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "limitations": [
+    "Local disposable offline Ubuntu24/Git2.43/Node26 create/list proof only; no remote Git service, credentials, production state, native macOS/Windows, reftable CLI proof, full repository suite or hosted CI claim.",
+    "Expanded hostGit2.39.3 test selection remains18 failures, reproduced by name on clean BASE; source approval and passing targeted tests do not turn that selection green.",
+    "Historical BASE proof dates/code retained; no new native currentmain RED was run or claimed.",
+    "Only PUBLIC_ARTIFACT_URL substitution with a verified immutable evidence package is approved; other semantic body changes require review."
+  ]
+}

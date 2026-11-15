@@ -1,0 +1,52 @@
+
+=== ordinary-metadata-control/create.stdout ===
+{
+  "id": "f5d06f7a-32e0-4225-bf79-522d8395a03d",
+  "name": "proof",
+  "repoFingerprint": "a6c32c004338b973",
+  "repoRoot": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/metadata",
+  "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/managed/a6c32c004338b973/proof",
+  "branch": "openclaw/proof",
+  "baseRef": "refs/heads/main",
+  "ownerKind": "manual",
+  "createdAt": 1794160275384,
+  "lastActiveAt": 1794160275384
+}
+
+=== ordinary-metadata-control/create.stderr ===
+[agents/worktrees] worktree base refs/heads/main at 10359af183447934bda38bb10ecb8bd64f1ed667 (commit age 0.0 days; fetch not requested)
+[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={"reason":"attributes-probe-failed","backend":"xfs"} outcome=returned errorDetails={} durationMs=3575 unattributedMs=25 phaseDurationsMs={"repository":34,"mutationWait":1753,"allocate":1754,"sources":1065,"allocationWait":28,"reservation":122,"leaseRelease":77,"diskAdmission":92,"base":10,"registration":58,"registrationMetadata":8,"registrationInspect":34,"commitPrepare":66,"templatePrepare":169,"templateRelease":0,"checkout":380,"provisionInspect":2,"provision":16,"publication":52,"sourceRelease":0}
+
+=== ordinary-metadata-control/list.stdout ===
+{
+  "worktrees": [
+    {
+      "id": "f5d06f7a-32e0-4225-bf79-522d8395a03d",
+      "name": "proof",
+      "repoFingerprint": "a6c32c004338b973",
+      "repoRoot": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/metadata",
+      "path": "<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/ordinary-metadata-control/managed/a6c32c004338b973/proof",
+      "branch": "openclaw/proof",
+      "baseRef": "refs/heads/main",
+      "ownerKind": "manual",
+      "createdAt": 1794160275384,
+      "lastActiveAt": 1794160275384
+    }
+  ]
+}
+
+=== ordinary-metadata-control/list.stderr ===
+
+=== literal-metadata-space/create.stdout ===
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "ENOENT: no such file or directory, realpath '<CAMPAIGN>/alix-fill20-20261109.a9arpj1k/git-metadata-base-v2/literal-metadata-space/metadata'"
+  }
+}
+
+=== literal-metadata-space/create.stderr ===
+[agents/worktrees] managed worktree preparation kind=managed template=unavailable templateDetails={"reason":"not-requested"} outcome=threw errorDetails={"errorClass":"Error","errorPhase":"repository"} durationMs=29 unattributedMs=3 phaseDurationsMs={"repository":26}
+[openclaw] The CLI command failed.
+[openclaw] For help, run `openclaw doctor`.

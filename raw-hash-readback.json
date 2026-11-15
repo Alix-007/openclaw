@@ -1,0 +1,78 @@
+[
+  {
+    "file": "BASE.json",
+    "rawSHA256": "64219c9798df3bf76f24bd8e3db8d9284122ba3623cffbe7ffe0c0639d8c8a2b"
+  },
+  {
+    "file": "BASE-streams.txt",
+    "rawSHA256": "7d3f8bda95205db20b8ebbb9a57584b0c30781e61b0de9348ee3e275b6eb7c96"
+  },
+  {
+    "file": "HEAD.json",
+    "rawSHA256": "ed02a758d06102495da11caa6ee21f71e26d6dc733b0f2909210cbadfb87c952"
+  },
+  {
+    "file": "HEAD-streams.txt",
+    "rawSHA256": "7c555e60e12663e6d3cd48142245d9b80d03f0a6bd9aedaa19b36e176824eea0"
+  },
+  {
+    "file": "worktree-metadata-proof-v1.py",
+    "rawSHA256": "7a9448d2e684c3559cff1f1e028ae9b22e83cea1c83a0c4a90662579be6c844e"
+  },
+  {
+    "file": "source-review.json",
+    "rawSHA256": "9bb8bbc81804ed5854fa5c066e0de170e7788dcda5ae91ef736e1dfa02b8bb07"
+  },
+  {
+    "file": "source-review.md",
+    "rawSHA256": "6881f368115bf263b598afbdad4550ddcafc3c3e629bf2458a3ef530904bc115"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "7331bfdc14083c731980327b5dd28d15dc1775656504f04ab15b4f4f9a3446c5"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "824dfc18104a0475cc05fed5eaeb505271d6f2d568245b3dd88ff0558d4bdec3"
+  },
+  {
+    "file": "sibling-attribution.json",
+    "rawSHA256": "1904d2047e25831ba2408eb827cac6ab31af07877d102a8db35824e467d87c46"
+  },
+  {
+    "file": "sibling-attribution.md",
+    "rawSHA256": "dbe48b96f80678603a1f1408dbe7ad731011713d9c42f63fa1a8a8ffbcf472d9"
+  },
+  {
+    "file": "baseline-owner-blob-comparison.json",
+    "rawSHA256": "218fed9b2bad43d9e1894b5cbf38754f6dc058ad16d5e0ae6b0e37ab0c1c194d"
+  },
+  {
+    "file": "siblings-red.log",
+    "rawSHA256": "658b8ae87d8550904ceec2ec1bd9b7f580c82989c1bf4f46571fc816a4e651b3"
+  },
+  {
+    "file": "siblings-green.log",
+    "rawSHA256": "f651ef4a1a8c532e7ba9824c16de7d18ae0aeba65ad85b47e91578ced406d961"
+  },
+  {
+    "file": "sibling-baseline-attribution.log",
+    "rawSHA256": "a220e9ae94c3edd97112b53b1ed9b689cedbb38fb33b272831ae281196ac866c"
+  },
+  {
+    "file": "final-focused.log",
+    "rawSHA256": "03e2759b5e611057ca20862abc2bf653baee36b49ad8cd923205ba99ea8ec2f8"
+  },
+  {
+    "file": "focused.log",
+    "rawSHA256": "f17f9fd12bc2a38632ded580dd08282e91a62c3fde4c66652d3095b87ce1ece0"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "109152083e410ca538e5dfcaecc1cd0b7526f97916b9877bbe567afd9b0247cc"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "6115106d3dc811c9b6ad5fb290233be70c4ce4c5f24c7db3e0b809949553b5ad"
+  }
+]

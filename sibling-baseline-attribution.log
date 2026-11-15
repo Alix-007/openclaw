@@ -1,0 +1,632 @@
+$ node scripts/test-projects.mts src/agents/worktrees/capacity.test.ts src/agents/worktrees/service.orphan-branches.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 <TASK>/base
+
+[vitest-workers] local cache miss after 15350ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest] still running with no output for 150000ms.
+[vitest-workers] prepared 39c066eafe2b in 151425ms (20154 inputs, 25028 outputs)
+ ✓ |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > reuses unchanged blob sizes when a complete commit advances 656ms
+ ✓ |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > sizes the target when a cached blob is gone 481ms
+ ✓ |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > sizes the target when a cached commit is gone 305ms
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates a partial-clone default before advancing the local branch 470ms
+   → expected { pid: 227184, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates missing contents with 20,000 unrelated repository config entries 430ms
+   → expected { pid: 227246, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ ✓ |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > preserves admitted caller ownership config through text and buffered sizing without changing defaults 162ms
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the remote promisor and skips fetching local objects 487ms
+   → expected { pid: 227347, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the partialclone extension and skips fetching local objects 449ms
+   → expected { pid: 227403, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates without reading unrelated ref tips or starting auto-maintenance 487ms
+   → expected { pid: 227484, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors cancel before fetching 434ms
+   → expected { pid: 227546, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors revoke before fetching 446ms
+   → expected { pid: 227627, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates both the source and destination when the overlay deletes missing source blobs 454ms
+   → expected { pid: 227683, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > recovers a transient missing-object fetch before estimating the checkout 437ms
+   → expected { pid: 227776, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets each changed destination path with raw names and without credit for source deletions 465ms
+   → expected { pid: 227837, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing .gitattributes requires rematerializing unchanged files 632ms
+   → expected { pid: 227921, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing nested/.gitattributes requires rematerializing unchanged files 541ms
+   → expected { pid: 227997, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/replace/ 448ms
+   → expected { pid: 228078, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/size-replacements/ 420ms
+   → expected { pid: 228140, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation undefined 421ms
+   → expected { pid: 228216, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation creation-cohort 409ms
+   → expected { pid: 228277, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/capacity.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/capacity.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/capacity.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/capacity.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+
+ × |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > explains missing objects when no promisor remote can repair the clone 400ms
+   → expected { pid: 228333, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+[vitest] still running with no output for 30000ms.
+ × |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > deletes only unowned managed branches, previews safely and reports retryable failures 21697ms
+   → expected [ { …(3) }, { …(3) }, { …(3) }, …(3) ] to deeply equal ArrayContaining{…}
+ ✓ |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > revalidates the actual allocation lease after awaited Git admission 3623ms
+ ✓ |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > loads and restores a v2026.11.2 recovery row without branch-cleanup metadata 10585ms
+ ✓ |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > keeps refs bounded through removal and recovery expiry churn 7724ms
+ ✓ |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > retains recovery ownership while an orphan's checkout files survive 6670ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.sharedStateWorkerOwner
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.agentDatabaseBorrowers
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.agentDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDomainPublication.github-publication
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDomainPublication.repository-workspace
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.stateDomainPublication.plugin-state
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.pluginStatePublication
+[sqlite-test-lifecycle] src/agents/worktrees/service.orphan-branches.test.ts: retiring openclaw.sessionDiskBudgetWorkers
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates a partial-clone default before advancing the local branch
+AssertionError: expected { pid: 227184, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:99:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates missing contents with 20,000 unrelated repository config entries
+AssertionError: expected { pid: 227246, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:115:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the remote promisor and skips fetching local objects
+AssertionError: expected { pid: 227347, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:157:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the partialclone extension and skips fetching local objects
+AssertionError: expected { pid: 227403, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:157:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates without reading unrelated ref tips or starting auto-maintenance
+AssertionError: expected { pid: 227484, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:234:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors cancel before fetching
+AssertionError: expected { pid: 227546, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:284:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors revoke before fetching
+AssertionError: expected { pid: 227627, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:284:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates both the source and destination when the overlay deletes missing source blobs
+AssertionError: expected { pid: 227683, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:326:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > recovers a transient missing-object fetch before estimating the checkout
+AssertionError: expected { pid: 227776, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:359:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets each changed destination path with raw names and without credit for source deletions
+AssertionError: expected { pid: 227837, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:385:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing .gitattributes requires rematerializing unchanged files
+AssertionError: expected { pid: 227921, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:410:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing nested/.gitattributes requires rematerializing unchanged files
+AssertionError: expected { pid: 227997, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:410:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/replace/
+AssertionError: expected { pid: 228078, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:438:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/size-replacements/
+AssertionError: expected { pid: 228140, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:438:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation undefined
+AssertionError: expected { pid: 228216, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:457:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation creation-cohort
+AssertionError: expected { pid: 228277, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:457:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/capacity.test.ts > worktree Git size estimates > explains missing objects when no promisor remote can repair the clone
+AssertionError: expected { pid: 228333, …(15) } to match object { code: 1 }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "code": 1,
++   "code": 0,
+  }
+
+ ❯ expectMissing src/agents/worktrees/capacity.test.ts:26:62
+     24|   async function expectMissing(clone: string, objects: string[]) {
+     25|     for (const object of objects) {
+     26|       await expect(runGit(clone, ["cat-file", "-e", object])).resolves…
+       |                                                              ^
+     27|     }
+     28|   }
+ ❯ partialClone src/agents/worktrees/capacity.test.ts:53:11
+ ❯ src/agents/worktrees/capacity.test.ts:475:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/18]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > deletes only unowned managed branches, previews safely and reports retryable failures
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) }, …(3) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
++ [
++   {
++     "branch": "openclaw/attached",
++     "outcome": "preserved",
++     "reason": "attached worktree",
++   },
++   {
++     "branch": "openclaw/detached",
++     "outcome": "preserved",
++     "reason": "registry or pending recovery owner",
++   },
+    {
+-     "branch": "openclaw/orphan",
+-     "outcome": "failed",
+-     "reason": StringContaining "lock",
++     "branch": "openclaw/pending",
++     "outcome": "preserved",
++     "reason": "registry or pending recovery owner",
++   },
++   {
++     "branch": "openclaw/recovery",
++     "outcome": "preserved",
++     "reason": "registry or pending recovery owner",
+    },
+    {
+      "branch": "openclaw/locked",
+      "outcome": "failed",
+-     "reason": StringContaining "lock",
++     "reason": "git branch -D failed (exit code 1):
++ stderr: error: cannot lock ref 'refs/heads/openclaw/locked': Unable to create '<CACHE>/user-tmp/oc-vt-F0VSeX/openclaw-orphan-branches-lqOCYu/repo/.git/refs/heads/openclaw/locked.lock': File exists.
++
++ Another git process seems to be running in this repository, e.g.
++ an editor opened by 'git commit'. Please make sure all processes
++ are terminated then try again. If it still fails, a git process
++ may have crashed in this repository earlier:
++ remove the file manually to continue.
++ error: could not remove reference refs/heads/openclaw/locked
++ stdout: Deleted branch openclaw/orphan (was 6a6fcf8).",
++   },
++   {
++     "branch": "openclaw/orphan",
++     "outcome": "deleted",
+    },
+  ]
+
+ ❯ src/agents/worktrees/service.orphan-branches.test.ts:97:40
+     95|     await fs.writeFile(lock, "", { flag: "wx" });
+     96|     try {
+     97|       expect((await prune()).branches).toEqual(
+       |                                        ^
+     98|         expect.arrayContaining([
+     99|           { branch: "openclaw/orphan", outcome: "failed", reason: expe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/18]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  18 failed | 8 passed (26)
+   Start at  23:44:54
+   Duration  241.37s (transform 72%, tests 25%, import 1%, worker 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 253.69s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/agents/worktrees/capacity.test.ts",
+    "baseBlob": "04bfc4585ee50bf6ea3f82e7d5da9030e065519e",
+    "integratedMainBlob": "04bfc4585ee50bf6ea3f82e7d5da9030e065519e",
+    "same": true
+  },
+  {
+    "path": "src/agents/worktrees/service.orphan-branches.test.ts",
+    "baseBlob": "9092b31c5773fb208560cda6c7a0f767f197dac0",
+    "integratedMainBlob": "9092b31c5773fb208560cda6c7a0f767f197dac0",
+    "same": true
+  },
+  {
+    "path": "src/agents/worktrees/object-hydration.ts",
+    "baseBlob": "e67f791b7288cc959e36acbcf049206d4e48c6ed",
+    "integratedMainBlob": "e67f791b7288cc959e36acbcf049206d4e48c6ed",
+    "same": true
+  },
+  {
+    "path": "src/agents/worktrees/orphan-branches.ts",
+    "baseBlob": "9112ec5a626d68e405174c5705dffc4dbcba4fd8",
+    "integratedMainBlob": "9112ec5a626d68e405174c5705dffc4dbcba4fd8",
+    "same": true
+  }
+]

@@ -1,0 +1,134 @@
+$ node scripts/test-projects.mts src/agents/worktrees/git-metadata-siblings.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 <TASK>/base
+
+[vitest-workers] local cache miss after 24148ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+[vitest] still running with no output for 150000ms.
+[vitest-workers] prepared 27f338d86b34 in 151719ms (20154 inputs, 25028 outputs)
+ ✓ |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > hydrates missing objects with common-directory suffix "" 1238ms
+ × |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > hydrates missing objects with common-directory suffix " " 388ms
+   → ENOENT: no such file or directory, realpath '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-hydration-metadata-u5FHYc/metadata'
+ ✓ |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > deletes an orphan branch with common-directory suffix "" 4529ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/git-metadata-siblings.test.ts: retiring openclaw.sharedStateWorkerOwner
+
+ × |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > deletes an orphan branch with common-directory suffix " " 3783ms
+   → ENOENT: no such file or directory, realpath '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-orphan-metadata-y2RhY6/metadata'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > hydrates missing objects with common-directory suffix " "
+Error: ENOENT: no such file or directory, realpath '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-hydration-metadata-u5FHYc/metadata'
+ ❯ enqueueGitRefMutation src/infra/git-exec.ts:73:23
+     71|     signal?.throwIfAborted();
+     72|     const commonPath = normalizeGitPathForFilesystem(commonDirectory);
+     73|     const commonDir = await fs.realpath(path.resolve(cwd, commonPath));
+       |                       ^
+     74|     signal?.throwIfAborted();
+     75|     const key = process.platform === "win32" ? commonDir.toLowerCase()…
+ ❯ withGitRefAdmission src/agents/worktrees/git.ts:263:12
+ ❯ runOwnedGitCommand src/agents/worktrees/git.ts:145:10
+ ❯ runGit src/agents/worktrees/git.ts:118:10
+ ❯ requireGit src/agents/worktrees/git.ts:328:18
+ ❯ src/agents/worktrees/base-fetch.ts:241:14
+ ❯ withGitObjectStoreTransport src/infra/git-object-store-transport.ts:34:12
+ ❯ withIsolatedWorktreeGitTransport src/agents/worktrees/base-fetch.ts:204:10
+ ❯ hydrateCommitObjects src/agents/worktrees/object-hydration.ts:69:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'realpath', path: '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-hydration-metadata-u5FHYc/metadata' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |agents-support| src/agents/worktrees/git-metadata-siblings.test.ts > deletes an orphan branch with common-directory suffix " "
+Error: ENOENT: no such file or directory, realpath '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-orphan-metadata-y2RhY6/metadata'
+ ❯ enqueueGitRefMutation src/infra/git-exec.ts:73:23
+     71|     signal?.throwIfAborted();
+     72|     const commonPath = normalizeGitPathForFilesystem(commonDirectory);
+     73|     const commonDir = await fs.realpath(path.resolve(cwd, commonPath));
+       |                       ^
+     74|     signal?.throwIfAborted();
+     75|     const key = process.platform === "win32" ? commonDir.toLowerCase()…
+ ❯ withGitRefAdmission src/agents/worktrees/git.ts:263:12
+ ❯ runOwnedGitCommand src/agents/worktrees/git.ts:145:10
+ ❯ runGit src/agents/worktrees/git.ts:118:10
+ ❯ collectOrphanWorktreeBranches src/agents/worktrees/orphan-branches.ts:151:21
+ ❯ timeWorktreePreparationPhase src/agents/worktrees/preparation-timing.ts:158:12
+ ❯ src/agents/worktrees/allocation.ts:245:30
+ ❯ src/state/openclaw-state-lease-worker-owner.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'realpath', path: '<CACHE>/user-tmp/oc-vt-u9TApY/worktree-orphan-metadata-y2RhY6/metadata' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  23:32:22
+   Duration  192.01s (transform 90%, tests 5%, worker 3%, import 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 205.08s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

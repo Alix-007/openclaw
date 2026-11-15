@@ -1,0 +1,46 @@
+{
+  "baseline": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "integratedMain": "2c4413a6abbfeb4ac23cd07b775a105586548af1",
+  "hostGit": "2.39.3",
+  "baselineExit": 1,
+  "headExit": 1,
+  "sameFailedCaseNames": true,
+  "failedCases": [
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates a partial-clone default before advancing the local branch",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates missing contents with 20,000 unrelated repository config entries",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the remote promisor and skips fetching local objects",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > prefetches missing blobs once from the partialclone extension and skips fetching local objects",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates without reading unrelated ref tips or starting auto-maintenance",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors cancel before fetching",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > keeps hydration behind queued ref writes and honors revoke before fetching",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > hydrates both the source and destination when the overlay deletes missing source blobs",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > recovers a transient missing-object fetch before estimating the checkout",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets each changed destination path with raw names and without credit for source deletions",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing .gitattributes requires rematerializing unchanged files",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > budgets the full target when changing nested/.gitattributes requires rematerializing unchanged files",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/replace/",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > does not reuse byte totals across effective replacements in refs/size-replacements/",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation undefined",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > rechecks missing objects after preparation creation-cohort",
+    "src/agents/worktrees/capacity.test.ts > worktree Git size estimates > explains missing objects when no promisor remote can repair the clone",
+    "src/agents/worktrees/service.orphan-branches.test.ts > managed orphan branch cleanup > deletes only unowned managed branches, previews safely and reports retryable failures"
+  ],
+  "classification": {
+    "capacity": 17,
+    "existingOrphanLockExpectation": 1
+  },
+  "newRealGitCases": {
+    "passed": 4,
+    "failed": 0
+  },
+  "observations": [
+    "Capacity fixtures expect removed objects absent but Git cat-file reports code0 on both revisions, before new hydration regression can be reached.",
+    "Orphan fixture expects all branch deletions to fail under one ref lock, but native Git deletes unlocked orphan and refuses locked ref on both revisions.",
+    "No test/timeout/assertion/skip was relaxed; source/test owner blobs compare equal between BASE and integrated main."
+  ],
+  "logs": [
+    "pr-195360-sibling-baseline-attribution.log",
+    "pr-195360-siblings-green.log"
+  ],
+  "baselineWorkerElapsedSeconds": 255.139
+}

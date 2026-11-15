@@ -1,0 +1,130 @@
+$ node scripts/test-projects.mts src/agents/worktrees/git.test.ts src/agents/worktrees/checkout-git-config.windows.test.ts src/agents/worktrees/git-maintenance.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.agents-support.config.ts
+
+ RUN  v5.0.5 <TASK>/worktree-metadata
+
+[vitest-workers] local cache miss after 6430ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+[vitest] still running with no output for 120000ms.
+[vitest] still running with no output for 150000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 180000ms.
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 4.4s of this 4.5s build (98%).
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin tsdown:deps resolveId (868 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+[vitest-workers] prepared d66ad29058c6 in 204028ms (20165 inputs, 25188 outputs)
+[vitest] still running with no output for 210000ms.
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > preserves Git configuration policy (sourceOnly=false) 442ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > preserves Git configuration policy (sourceOnly=true) 276ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > rejects cancelled discovery with exit code zero without deleting the requested ref 96ms
+ ↓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > normalizes MSYS common-directory output while preserving a literal revision mutation
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > serializes snapshot and branch deletes across checkout aliases without blocking other repositories or reads 332ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > rejects an interrupted explicit-base lookup even with exit code zero 87ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > registers a tracking worktree after the shared ref writer releases config 198ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > does not accept an interrupted cached remote HEAD 137ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > bounds registration waiting without creating a checkout after the caller has failed 106ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > serializes bounded default-branch fetching without pruning unrelated refs 1394ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > text releases a rejected mutation and leaves a cancelled waiting branch deletion unexecuted 190ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > bytes releases a rejected mutation and leaves a cancelled waiting branch deletion unexecuted 165ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > buffered releases a rejected mutation and leaves a cancelled waiting branch deletion unexecuted 191ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > text preserves authority errors when the admitted callback also aborts 111ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > bytes preserves authority errors when the admitted callback also aborts 103ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > buffered preserves authority errors when the admitted callback also aborts 109ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git ref mutation ownership > keeps discovery and queued mutation in the captured Git environment 219ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > preserves revisions on win32 for ["rev-parse","--verify","HEAD^{commit}"] 6ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > preserves revisions on win32 for ["status"] 4ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > preserves revisions on linux for ["rev-parse","HEAD^{commit}"] 4ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > keeps noglob final for noglob glob:ignorecase 5ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > keeps noglob final for winsymlinks:native noglob 5ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git execution environment > merges inherited Windows runtime options before preserving revisions 23ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > reports a real Git failure with execution metadata through the worktree wrapper 18ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > returns the nearest checkout root for nested paths 11ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > distinguishes contained metadata from linked checkout pointers 8ms
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > parses native files worktree paths, locks, symbolic heads, and detached tips (separate=false) 304ms
+ ↓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > parses native reftable worktree paths, locks, symbolic heads, and detached tips (separate=false) 15ms [Installed Git does not support reftable repositories]
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/git.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/git.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/git.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/git.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+
+ ✓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > parses native files worktree paths, locks, symbolic heads, and detached tips (separate=true) 379ms
+ ↓ |agents-support| src/agents/worktrees/git.test.ts > Git checkout discovery > parses native reftable worktree paths, locks, symbolic heads, and detached tips (separate=true) 16ms [Installed Git does not support reftable repositories]
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compresses separately acquired revisions (promisor=false) 12134ms
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compresses separately acquired revisions (promisor=true) 9419ms
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > compacts committed loose packs while retaining unpublished temporary packs 712ms
+ ✓ |agents-support| src/agents/worktrees/git-maintenance.test.ts > drains a 600-pack burst during hourly throttling only when eligible packs are backlogged 15233ms
+stderr | unknown test
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDatabaseLifecycle
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.agentDatabaseReaders
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateSnapshotOwners
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sqliteWalCheckpointListeners
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateReadWorkers
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sqliteWorkerBroker
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDomainPublication.personal-model-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.stateDomainPublication.auth-profile-credentials
+[sqlite-test-lifecycle] src/agents/worktrees/git-maintenance.test.ts: retiring openclaw.sharedStateWorkerOwner
+
+ ✓ |agents-support| src/agents/worktrees/checkout-git-config.windows.test.ts > isolates copied metadata per Windows process and keeps views until in-flight work settles 42ms
+
+ Test Files  3 passed (3)
+      Tests  32 passed | 3 skipped (35)
+   Start at  23:24:29
+   Duration  279.19s (transform 81%, tests 15%, worker 2%, import 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] passed 1 Vitest shard in 288.30s
