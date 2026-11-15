@@ -1,0 +1,21 @@
+
+=== build-seed/stdout ===
+Wrote ../plugin-output-repair2-head-proof/project/openclaw.plugin.json
+Updated ../plugin-output-repair2-head-proof/project/package.json
+
+=== build-seed/stderr ===
+
+=== pack-selected-output/stdout ===
+{
+  "path": "<TASK>/plugin-output-repair2-head-proof/physical/result.tgz",
+  "sha256": "c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa",
+  "pluginId": "output-proof",
+  "bytes": 604,
+  "activation": {
+    "action": "plugin_activate_artifact",
+    "path": "<TASK>/plugin-output-repair2-head-proof/physical/result.tgz",
+    "sha256": "c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa"
+  }
+}
+
+=== pack-selected-output/stderr ===

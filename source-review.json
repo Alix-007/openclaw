@@ -1,0 +1,79 @@
+{
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "oldHead": "f9aa12f0ac37b9f51740ed4abbbc4df09cc1ec76",
+  "fullIndexDiffSHA256": "f5c1bf4fc9a97b2afaf2a84d1b043b26940fccb7f601e70ba68fd67e969b0e4d",
+  "repairDiffSHA256": "2d1de740154c1f253909c9760003af4b8a8eb14f3194c33e58f5b4d5f66c7ac5",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "5a235d9d56f8e8b020725df2414e0936ec8f28be59b446a46c74997f57852871"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "921177cb003195f23bbb7f9b182e86d5618858a7bef109e664edf0b75f279dbf"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "f108c0b9879b5c7326b54269016bc95004ca0fcc5914b0e2c9a37f46ad242ed7"
+    },
+    {
+      "path": "src/cli/plugins-authoring-root.ts",
+      "sha256": "016903d65b22f20a6642827aea9886a7d10e344f6b96001ae2b18dd30d8bfd92"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "5730d1b343e292078c11f4dfed1e21658b00a6b510d13ae18326b3bb60fadf21"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "fa9f28282a13070115b3342c4feba8283f08170721980a5909c3960171f471ec"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "sha256": "eb870b257bd5baf2c786dc66a8f218360ef977d4d990f6e9a118ed73d3d67a9a"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "e79702e3123ed6271fdbf272c3206003591408db7e39377b1a1158db0891e991"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.test.ts",
+      "sha256": "769efda53b00692e68caf3c08d7c768e426322f47451220f3a7c93a1b0264ad4"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.ts",
+      "sha256": "681e69a87565c487e66810ea1562ec81338b5b31f48750954d394abf8be3db74"
+    }
+  ],
+  "repairFiles": [
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "f108c0b9879b5c7326b54269016bc95004ca0fcc5914b0e2c9a37f46ad242ed7"
+    },
+    {
+      "path": "src/cli/plugins-authoring-root.ts",
+      "sha256": "016903d65b22f20a6642827aea9886a7d10e344f6b96001ae2b18dd30d8bfd92"
+    },
+    {
+      "path": "src/cli/plugins-authoring-validation.test.ts",
+      "sha256": "5730d1b343e292078c11f4dfed1e21658b00a6b510d13ae18326b3bb60fadf21"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "e79702e3123ed6271fdbf272c3206003591408db7e39377b1a1158db0891e991"
+    }
+  ],
+  "verdict": "PASS",
+  "stage": "source-only",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "reviewed": [
+    "All10 current source/test hashes and canonical prospective private-index fullbase/oldHEAD repair patches independently match manifest, including new helper.",
+    "Exact prior ENOENT/ENOTDIR-only helper extracted to plugins-authoring-root.ts; node:fs and relative expected-cli-error imports correct. Authoring owner imports helper; build/validation behavior unchanged. Pack still validates raw root before second native realpath.",
+    "Existing missing-root public human/JSON/no-created-root regression and lint incomplete-report control unchanged."
+  ],
+  "limitations": [
+    "Source-only; no committed-head build/native GREEN attested for this repair.",
+    "Parent reports fresh validation9 PASS and current lint/types/ratchets PASS after extraction; previous40 PASS plus baseline-reproduced120s install timeout retained honestly. No reviewer reruns."
+  ]
+}

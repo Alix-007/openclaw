@@ -1,0 +1,133 @@
+$ node scripts/test-projects.mts src/cli/plugins-authoring-command.test.ts src/cli/plugins-authoring-validation.test.ts --maxWorkers=1
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/plugin-root
+
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves manifest-owned metadata while updating generated fields 86ms
+[vitest-workers] local cache miss after 9043ms
+[vitest] still running with no output for 30000ms.
+[vitest] still running with no output for 60000ms.
+[vitest] still running with no output for 90000ms.
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js (48:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/resolve-evaluate-options.js:48:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m48 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js (11:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-is-declaration.js:11:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m11 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js (6:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/@mdx-js+mdx@3.1.1_supports-color@10.2.2/node_modules/@mdx-js/mdx/lib/util/estree-util-create.js:6:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m6 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js (9:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js" may not be preserved when bundling.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/text.js:9:1 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m ''
+ [38;5;240m  │[0m ─┬  
+ [38;5;240m  │[0m  ╰── module level directive may not be preserved
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m───╯[0m
+
+node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js (12:0) [33m[MODULE_LEVEL_DIRECTIVE] [0mThe semantics of the module level directive "" in "node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js" may not be preserved when bundling.
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/.pnpm/hast-util-to-estree@3.1.3_supports-color@10.2.2/node_modules/hast-util-to-estree/lib/handlers/comment.js:12:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m12 │[0m ''
+ [38;5;240m   │[0m ─┬  
+ [38;5;240m   │[0m  ╰── module level directive may not be preserved
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: For more information, see https://rolldown.rs/in-depth/directives#other-directives
+[38;5;246m────╯[0m
+
+[vitest] still running with no output for 120000ms.
+ × |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and installs selected entries without changing sibling runtime pairs 120927ms
+   → Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.ts 95ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 61ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/b/index.js 26ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 17ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.mts 20ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts 22ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/a/index.js 11ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > emits a stable JSON validation result without human output 2975ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports and retires a preceding host browser declaration through explicit authoring 1423ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves shared output when authoring a backend without browser source 368ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps validation errors on stderr and sanitizes JSON paths 75ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON metadata and preserves authored fields 334ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON metadata and preserves authored fields 387ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON5 metadata and preserves authored fields 486ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON5 metadata and preserves authored fields 494ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build accepts reordered JSON5 metadata and preserves authored fields 264ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > projects undefined TypeBox options into the persisted manifest shape 6ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects a missing generated manifest without changing package metadata 177ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports stale manifest contracts 13ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports missing entries with an author-facing path 7ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: {invalid json 20ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: { // package.json must remain strict JSON
+} 22ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes a build from an absolute root after the launch directory is removed 205ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=false 204ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=true 207ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps the project intact when package publication fails during write 469ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports a manifest rename failure after publishing package metadata 252ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects an invalid feature id without blocking a corrected retry 33ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes init with an absolute directory after the launch directory is removed 9ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > scaffolds a provider plugin project with ClawHub validation and release metadata 37ms
+[vitest] still running with no output for 30000ms.
+[vitest-workers] prepared be3aa1ff4546 in 174288ms (20154 inputs, 25028 outputs)
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > keeps missing-root diagnostics actionable for build and validation 17ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (implicit entry) 40ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (implicit entry) 37ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=false (explicit entry) 17ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves native JSON parse detail only for debug=true (explicit entry) 12ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=false 341ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown custom toString with debug=true 194ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=false 266ms
+ ✓ |cli| src/cli/plugins-authoring-validation.test.ts > preserves String for a thrown status/code record with debug=true 235ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and installs selected entries without changing sibling runtime pairs
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/cli/plugins-authoring-command.test.ts:160:3
+    158|   });
+    159|
+    160|   it("builds and installs selected entries without changing sibling ru…
+       |   ^
+    161|     const { root: tmpDir, entry: sourceEntry } = sourceProject("entry-…
+    162|     const packagePath = path.join(tmpDir, "package.json");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 40 passed (41)
+   Start at  23:24:04
+   Duration  193.25s (tests 95%, worker 1%, import 1%, transform 1%, setup 1%)
+
+[vitest-workers] verifying completed generation before cleanup
+[vitest-workers] retained completed compiler outputs for reuse
+[test] failed 1 Vitest shard in 208.34s
+[test] FAILED (exit 1)
+[ELIFECYCLE] Test failed. See above for more details.

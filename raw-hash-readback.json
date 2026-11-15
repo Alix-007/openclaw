@@ -1,0 +1,138 @@
+[
+  {
+    "file": "BASE-root.json",
+    "rawSHA256": "04889cd3b3be98122cda4c0917613195787319341836fa6182bae0b519e2e3e4"
+  },
+  {
+    "file": "BASE-root-streams.txt",
+    "rawSHA256": "3b71dd1ab6be68cdbfe1329d34676c606b4cb424a3e32b6db89f56024608bdaf"
+  },
+  {
+    "file": "BASE-root-archive.tgz.base64.txt",
+    "rawSHA256": "9bcd123144dd2209b1ad0ee5e86f44e5a9d4e01075550ed39ba15f6e28140884"
+  },
+  {
+    "file": "HEAD-root.json",
+    "rawSHA256": "67fbb30905ba9954dcd2ad232e01211a81519c3dcaa2f29a8ebfaa0f23e8e9bc"
+  },
+  {
+    "file": "HEAD-root-streams.txt",
+    "rawSHA256": "6eb4e53d7b8c2160ad68c603ad3705adb89566c1c82a4e4341cfbd57c55fbf7d"
+  },
+  {
+    "file": "HEAD-root-archive.tgz.base64.txt",
+    "rawSHA256": "fd92db7155188509699683e020ca3d6039107531bc08cd5274f17e5e87645e7c"
+  },
+  {
+    "file": "BASE-output.json",
+    "rawSHA256": "60fbb180b161bb58b1bdccc4edf4116d943f684e8ed27cd83406a246b4249f22"
+  },
+  {
+    "file": "BASE-output-streams.txt",
+    "rawSHA256": "750e9494963766d85ede9b8ead9562da7692d5d8b902fd9c1450ede43c3a3cb8"
+  },
+  {
+    "file": "BASE-output-archive.tgz.base64.txt",
+    "rawSHA256": "164555b67de69d02b5f269ef5e30f57e5895b6ae6fcbeffc7873466d6c33f928"
+  },
+  {
+    "file": "HEAD-output.json",
+    "rawSHA256": "9676cef3ea5a2c820ec5fb24ab3962551f355003943594e7d493caf6279409a9"
+  },
+  {
+    "file": "HEAD-output-streams.txt",
+    "rawSHA256": "c58286a5d93bfbd1a1caf42f3c9e8ebf80452385e6285e67a76889a213b4d529"
+  },
+  {
+    "file": "HEAD-output-archive.tgz.base64.txt",
+    "rawSHA256": "164555b67de69d02b5f269ef5e30f57e5895b6ae6fcbeffc7873466d6c33f928"
+  },
+  {
+    "file": "BASE-diagnostics.json",
+    "rawSHA256": "a4ab26dfbb1e97b823d484a4fd5098f38ef5f07ab0a37c4461deb9a8da4e339a"
+  },
+  {
+    "file": "BASE-diagnostics-streams.txt",
+    "rawSHA256": "69d0295388273ace01bde6df6f1d7dbe365858295e82740620a385ffb7bc30b5"
+  },
+  {
+    "file": "HEAD-diagnostics.json",
+    "rawSHA256": "04f8ef912b92df320f3db46b6f58dac91f226bc68676911e8b5f521965c98b27"
+  },
+  {
+    "file": "HEAD-diagnostics-streams.txt",
+    "rawSHA256": "7264743f0af3a358c2ea3dd21cb402f8693978092e9b313927afb35b4ee8af26"
+  },
+  {
+    "file": "BASE-missing-root.json",
+    "rawSHA256": "459f816971cec0c671466e6b9d1bff31a720b0f650446742c30da06eb251e445"
+  },
+  {
+    "file": "BASE-missing-root-streams.txt",
+    "rawSHA256": "758732f4356f28d897540098c14fff08be06ea1d310f48fc524f30cf31ca77f5"
+  },
+  {
+    "file": "HEAD-missing-root.json",
+    "rawSHA256": "ae7869ce319839458bb52532f5dd716076b99cd4df41dcf961f06764801891fa"
+  },
+  {
+    "file": "HEAD-missing-root-streams.txt",
+    "rawSHA256": "e0bb96de9b58424edcbcc677206df7daa8c656c634164be7478bbbd66c7a7d02"
+  },
+  {
+    "file": "plugin-root-proof-v1.py",
+    "rawSHA256": "89f9edde5680eca800a6d2da3c5d9f41ad77e30a49a5919b3cb7429f98bffc60"
+  },
+  {
+    "file": "plugin-output-proof-v1.py",
+    "rawSHA256": "841481964b2824176e7915c4657882f0d16d14e0acbd9ac0a7a272d2cb1d2425"
+  },
+  {
+    "file": "plugin-diagnostics-proof-v1.py",
+    "rawSHA256": "bf91372e3d9ebae93a4f3dc7a7740b4cd2b3e4941de804c834febd0b9ccc576b"
+  },
+  {
+    "file": "plugin-missing-root-proof-v2.py",
+    "rawSHA256": "2762205d5d63b14a6392bb8e544472b4682d0cae91684c30ecfa97217472ba9c"
+  },
+  {
+    "file": "source-review.json",
+    "rawSHA256": "3924936b1058083f16f915c20abdabde833dcdd2a893c7efd14bbd2863062e94"
+  },
+  {
+    "file": "source-review.md",
+    "rawSHA256": "f569d5698ea1353a37a0350a5e253216bf95de0119f0c34e5f16b465c6f6f261"
+  },
+  {
+    "file": "final-review.json",
+    "rawSHA256": "f7b3f03e72d6755f90eaec79d310b7e197622d1fcb5e052581a3a682f3bb6d19"
+  },
+  {
+    "file": "final-review.md",
+    "rawSHA256": "f301c7cf7cd4db56f0845223610f9171cc38eec83f05e9f47d3779d239325093"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "251b2d2c97754292a39478a700ceead2917a08ac6d96c970f159cc458e037343"
+  },
+  {
+    "file": "focused.log",
+    "rawSHA256": "de1f3d938f5cf46cff5f1f2ba0f8a1f35ca74bf8d1048ece9e99706bc4959d1a"
+  },
+  {
+    "file": "previous-focused-corrected.log",
+    "rawSHA256": "09614235c66ab2cd3b4763826026f9af7b6c08786c2dd24207e6e7abd0d6ee3c"
+  },
+  {
+    "file": "previous-existing-install-base.log",
+    "rawSHA256": "516556cbc3c462bfaa8b0ffb3165abd073a8ea816b62f25791c38cd11106e557"
+  },
+  {
+    "file": "previous-native-artifact-final.log",
+    "rawSHA256": "7b63df61db5abbcc0fa6cf6d11e4cc812d9a482e4f6753d79887c31f0ee5c934"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "336065a79f71b3dc9390a83e638e78421ad958aefd4d7108781d7b03ca682a3d"
+  }
+]

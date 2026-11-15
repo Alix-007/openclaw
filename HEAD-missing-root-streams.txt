@@ -1,0 +1,52 @@
+
+=== build/stdout ===
+
+=== build/stderr ===
+Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.
+
+=== validate/stdout ===
+
+=== validate/stderr ===
+Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.
+
+=== validate-json/stdout ===
+{
+  "valid": false,
+  "errors": [
+    "Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry."
+  ]
+}
+
+=== validate-json/stderr ===
+Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.
+
+=== pack/stdout ===
+{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry."
+  }
+}
+
+=== pack/stderr ===
+Plugin root not found: <TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent. Set --root to an existing plugin project directory containing package.json, then retry.
+
+=== runtime-lint-control/stdout ===
+{
+  "complete": false,
+  "scannedPackages": 0,
+  "scannedFiles": 0,
+  "warnings": [
+    {
+      "ruleId": "scan-incomplete",
+      "packageName": "absent",
+      "file": "package.json",
+      "line": 1,
+      "column": 1,
+      "message": "Runtime dependency inspection could not finish: ENOENT: no such file or directory, realpath '<TASK>/plugin-missing-root-repair2-head-proof/fixtures/absent'. Inspect installed dependencies and retry."
+    }
+  ]
+}
+
+=== runtime-lint-control/stderr ===
