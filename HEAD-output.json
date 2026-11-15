@@ -1,0 +1,63 @@
+{
+  "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+  "collectorSHA256": "841481964b2824176e7915c4657882f0d16d14e0acbd9ac0a7a272d2cb1d2425",
+  "buildStamp": {
+    "builtAt": 1794749474275,
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "inputsClean": true,
+    "inputSignature": "e7c46453d2a95b0309775c33ff9f234ab86ced6a983c18f8c461166f3d2a3326"
+  },
+  "mode": "green",
+  "cases": [
+    {
+      "label": "build-seed",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-output-head-proof/project"
+      ],
+      "exitCode": 0,
+      "seconds": 2.907,
+      "stdout": "Wrote ../plugin-output-head-proof/project/openclaw.plugin.json\nUpdated ../plugin-output-head-proof/project/package.json\n",
+      "stderr": "",
+      "stdoutSHA256": "d6970ebdda38d553d043daae17532abb6582de58d8bc41c14f0ee074824e60ec",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "pack-selected-output",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "pack",
+        "--root",
+        "<TASK>/plugin-output-head-proof/project",
+        "--out",
+        "<TASK>/plugin-output-head-proof/selected/../result.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 4.592,
+      "stdout": "{\n  \"path\": \"<TASK>/plugin-output-head-proof/physical/result.tgz\",\n  \"sha256\": \"c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa\",\n  \"pluginId\": \"output-proof\",\n  \"bytes\": 604,\n  \"activation\": {\n    \"action\": \"plugin_activate_artifact\",\n    \"path\": \"<TASK>/plugin-output-head-proof/physical/result.tgz\",\n    \"sha256\": \"c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa\"\n  }\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "c008df68639dbc32fee6aa3461d26bce803d11f5dfb53a7648250d42e61d5952",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readback": {
+        "rawOutput": "<TASK>/plugin-output-head-proof/selected/../result.tgz",
+        "actualArchive": "<TASK>/plugin-output-head-proof/physical/result.tgz",
+        "sha256": "c53036f4e0195185aea6956bf22068df3ab97065448460ec6503a6a5bad6ebaa",
+        "pluginId": "output-proof",
+        "wrongArchiveAbsent": "<TASK>/plugin-output-head-proof/result.tgz"
+      }
+    }
+  ],
+  "result": "GREEN_PHYSICAL_ARCHIVE",
+  "cleanup": {
+    "isolatedFixturesRetained": true,
+    "externalRequests": false,
+    "productionStateTouched": false
+  }
+}

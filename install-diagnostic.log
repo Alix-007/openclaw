@@ -1,0 +1,8 @@
+BUILD_START
+Wrote ../../../../cache/user-tmp/alix-install-diagnostic-QgpS6G/project/openclaw.plugin.json
+Updated ../../../../cache/user-tmp/alix-install-diagnostic-QgpS6G/project/package.json
+BUILD_DONE
+INSTALL_IMPORT_DONE
+INFO Plugin manifest id "diagnostic" differs from npm package name "openclaw-plugin-diagnostic"; using manifest id as the config key.
+INFO Installing to <CACHE>/user-tmp/alix-install-diagnostic-QgpS6G/extensions/diagnostic…
+INSTALL_RESULT {"ok":true,"pluginId":"diagnostic","targetDir":"<CACHE>/user-tmp/alix-install-diagnostic-QgpS6G/extensions/diagnostic","manifestName":"openclaw-plugin-diagnostic","extensions":["./dist/index.js"],"artifactInspection":{"format":"openclaw","mapped":["plugin"],"unavailable":[]}}

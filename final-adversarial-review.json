@@ -1,0 +1,94 @@
+{
+  "verdict": "PASS",
+  "stage": "final-exact-head",
+  "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+  "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+  "files": [
+    {
+      "path": "scripts/build-plugin-control-ui.mts",
+      "sha256": "5a235d9d56f8e8b020725df2414e0936ec8f28be59b446a46c74997f57852871"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.test.ts",
+      "sha256": "026fb44fcd9de7de88793ca8350f43a02f2300eca21d2a19d377714aea56c927"
+    },
+    {
+      "path": "src/cli/plugins-authoring-command.ts",
+      "sha256": "44277d72f90d31d8ca1ce0a44339d361a6990bb4540a6e7ca4f49387d443556f"
+    },
+    {
+      "path": "src/cli/plugins-control-ui-build.test.ts",
+      "sha256": "fa9f28282a13070115b3342c4feba8283f08170721980a5909c3960171f471ec"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "sha256": "eb870b257bd5baf2c786dc66a8f218360ef977d4d990f6e9a118ed73d3d67a9a"
+    },
+    {
+      "path": "src/cli/plugins-feature-artifact.ts",
+      "sha256": "bc2a2692d050c3f4ca13c1cd6a68fced87c0b7ebf186ac5f687235c68a2b218b"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.test.ts",
+      "sha256": "769efda53b00692e68caf3c08d7c768e426322f47451220f3a7c93a1b0264ad4"
+    },
+    {
+      "path": "src/cli/plugins-runtime-lint-command.ts",
+      "sha256": "681e69a87565c487e66810ea1562ec81338b5b31f48750954d394abf8be3db74"
+    }
+  ],
+  "fullIndexDiffSHA256": "8cf1ff27055788e21a021fffd18d6c3c1fffa72317be0ec4c431e3c4244486c7",
+  "findings": [],
+  "reviewRoute": "Authorized independent GPT6.1Sol fallback, not official autoreview tool",
+  "exactHeadVerification": {
+    "cleanSingleParentCompanyCommit": true,
+    "allEightSourceHashesAndCommittedPatchMatchManifest": true,
+    "build": "Normal cliStartup build exit0 262.449s; actual clean matching-head dist/.buildstamp equals both native receipts.",
+    "native": "Same frozen collector bytes BASE/HEAD/current: plugin-root GREEN10PASS and supplemental output GREEN_PHYSICAL_ARCHIVE. All BASE/HEAD stdout/stderr hashes independently checked, actual manifests/scaffold package readbacks and tar byte hashes/independently opened plugin metadata verified. Decoy original snapshots unchanged, intended source bytes preserved, wrong scaffold/archive destinations absent.",
+    "checks": "Final types/lint/format/script erasability/staged ratchets PASS; targeted correction cases PASS; final native artifact tests17 PASS. Retained receipt log hashes verified.",
+    "baselineFailure": "Broader Vitest remains exit1:77PASS/one unchanged120s install-test timeout, same named test times out on clean BASE. It is an unresolved validation limitation; supporting actual source install diagnostic/native17 do not replace this result.",
+    "body": "Four sections complete and accurate after correction: settings-only browser fixture distinguished from --prepare-settings repository discovery (source review only); Vitest failure explicit. PUBLIC_ARTIFACT_URL may be substituted with immutable evidence URL without semantic change.",
+    "priorFinding": "Initial no-force overwrite blocker fixed and regression tested before commit; initial FAIL artifacts preserved."
+  },
+  "proofFiles": [
+    {
+      "path": "plugin-root-proof-v1.py",
+      "sha256": "89f9edde5680eca800a6d2da3c5d9f41ad77e30a49a5919b3cb7429f98bffc60"
+    },
+    {
+      "path": "plugin-output-proof-v1.py",
+      "sha256": "841481964b2824176e7915c4657882f0d16d14e0acbd9ac0a7a272d2cb1d2425"
+    },
+    {
+      "path": "plugin-root-base-proof/receipt.json",
+      "sha256": "04889cd3b3be98122cda4c0917613195787319341836fa6182bae0b519e2e3e4"
+    },
+    {
+      "path": "plugin-root-head-proof/receipt.json",
+      "sha256": "539f97c6fe0630385d09cf436ce002c91273770befb04c16b4227cf2e0b80867"
+    },
+    {
+      "path": "plugin-output-base-proof/receipt.json",
+      "sha256": "60fbb180b161bb58b1bdccc4edf4116d943f684e8ed27cd83406a246b4249f22"
+    },
+    {
+      "path": "plugin-output-head-proof/receipt.json",
+      "sha256": "a8cdd47401b00376544045b024393f4ab8aeef296be06802577f9107327dd91b"
+    },
+    {
+      "path": "plugin-root-cli-build.json",
+      "sha256": "88ad8d65794279f4667c5c126273bf7f7f4e90c45931cdeaf2d6df0bdc6a609c"
+    },
+    {
+      "path": "plugin-root-body-draft.md",
+      "sha256": "4c45a2da96bb4ea9f3e6ec704f98ba63b1e8e5657679cf603e6b3ffa3dded04d"
+    }
+  ],
+  "publicationBoundary": "Exact source/evidence/corrected body approved; immutable artifact URL substitution only. No claim that all tests passed. Reviewer performs no publication.",
+  "limitations": [
+    "Qualified isolated Linux/Node synthetic local authoring and archive proof; no real external install/activation/publish, native macOS/Windows or hosted CI/full-suite claim.",
+    "Existing120s Vitest install timeout remains unresolved on both BASE/candidate.",
+    "--prepare-settings repository-discovery branch source-reviewed only; direct settings-only browser fixture is tested.",
+    "No test/build/native collector reruns or product/public mutations by reviewer."
+  ]
+}

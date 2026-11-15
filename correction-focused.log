@@ -1,0 +1,45 @@
+$ node scripts/test-projects.mts src/cli/plugins-authoring-command.test.ts --maxWorkers=1 -t 'symlink root|scaffolds a provider|invalid feature id|absolute directory'
+[test] starting test/vitest/vitest.cli.config.ts
+
+ RUN  v5.0.5 <TASK>/plugin-root
+
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves manifest-owned metadata while updating generated fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and installs selected entries without changing sibling runtime pairs
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.ts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/b/index.js
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/index.mts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./src/a/index.ts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > replaces only the full-path source/runtime counterpart for ./dist/a/index.js
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > emits a stable JSON validation result without human output
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports and retires a preceding host browser declaration through explicit authoring
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > preserves shared output when authoring a backend without browser source
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps validation errors on stderr and sanitizes JSON paths
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON metadata and preserves authored fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON metadata and preserves authored fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > validate accepts reordered JSON5 metadata and preserves authored fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build --check accepts reordered JSON5 metadata and preserves authored fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > build accepts reordered JSON5 metadata and preserves authored fields
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > projects undefined TypeBox options into the persisted manifest shape
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects a missing generated manifest without changing package metadata
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports stale manifest contracts
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports missing entries with an author-facing path
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: {invalid json
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects non-JSON package metadata without rewriting it: { // package.json must remain strict JSON
+}
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes a build from an absolute root after the launch directory is removed
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=false 273ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > builds and checks metadata through a symlink root with parent=true 237ms
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > keeps the project intact when package publication fails during write
+ ↓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > reports a manifest rename failure after publishing package metadata
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > rejects an invalid feature id without blocking a corrected retry 12ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > finishes init with an absolute directory after the launch directory is removed 8ms
+ ✓ |cli| src/cli/plugins-authoring-command.test.ts > plugin authoring commands > scaffolds a provider plugin project with ClawHub validation and release metadata 13ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 27 skipped (32)
+   Start at  21:08:48
+   Duration  11.50s (worker 46%, transform 28%, tests 12%, import 10%, setup 4%)
+
+[test] passed 1 Vitest shard in 16.14s

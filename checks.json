@@ -1,0 +1,264 @@
+{
+  "format-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-node-package-bin.mts",
+      "oxfmt",
+      "--check",
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "src/cli/plugins-feature-artifact.ts",
+      "src/cli/plugins-runtime-lint-command.test.ts",
+      "src/cli/plugins-runtime-lint-command.ts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 1.16,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "ba85f3787e6af2a4dbd6e4c154f80fffe74b9ca1ef71b2331de1603663c540ae"
+  },
+  "types-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-tsgo.mjs",
+      "-p",
+      "../plugin-root-types.tsconfig.json",
+      "--incremental"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 49.127,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "1f51313e8cd2a1fe6971968c02b75592d608ffaa503010a8e461693cde3f54de"
+  },
+  "test-lines": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/check-test-lines-ratchet.mts",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 2.625,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "cd39c90191090b2dc2667cc5c3a53606b38d77ae5b0a5a07d86b6e3408a951e2"
+  },
+  "line-cap": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-line-cap-ratchet.mjs",
+      "--base",
+      "c0166c395cf81095f431808c9496cb6022ad4387",
+      "--staged"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 2.358,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "698ed67b9fe596ece0351f13b176aa7644f61fb682c1da630f397e613eb06338"
+  },
+  "cli-build": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "scripts/build-all.mts",
+      "cliStartup"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 262.449,
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "dd09bc274a0f52112a03340ba9e70190cf54af5161c77162d6d2f03a9be79f68"
+  },
+  "commit": {
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "base": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "fullIndexDiffSHA256": "8cf1ff27055788e21a021fffd18d6c3c1fffa72317be0ec4c431e3c4244486c7",
+    "normalHooksUsed": true,
+    "companyAuthorAndCommitterMatchVerifiedAlix": true,
+    "files": [
+      "scripts/build-plugin-control-ui.mts",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-feature-artifact.native.test-support.ts",
+      "src/cli/plugins-feature-artifact.ts",
+      "src/cli/plugins-runtime-lint-command.test.ts",
+      "src/cli/plugins-runtime-lint-command.ts"
+    ],
+    "elapsedSeconds": 8.518,
+    "knownValidationLimitations": [
+      "Unchanged 120s install test timeout reproduced on clean BASE; focused suite is exit1, not PASS. Native17 and targeted correction checks pass."
+    ]
+  },
+  "focused-corrected": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-authoring-command.test.ts",
+      "src/cli/plugins-authoring-validation.test.ts",
+      "src/cli/plugins-runtime-lint-command.test.ts",
+      "src/cli/plugins-control-ui-build.test.ts",
+      "src/cli/plugins-feature-artifact.test.ts",
+      "--maxWorkers=1"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 1,
+    "elapsed_seconds": 204.847,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "9e3989420fc58f727dfc13f1d021b9b183822d1abbd846b3c476e6e472eb44f0",
+    "logSHA256": "09614235c66ab2cd3b4763826026f9af7b6c08786c2dd24207e6e7abd0d6ee3c"
+  },
+  "existing-install-base": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-authoring-command.test.ts",
+      "--maxWorkers=1",
+      "-t",
+      "builds and installs selected entries without changing sibling runtime pairs"
+    ],
+    "cwd": "<TASK>/base",
+    "exit_code": 1,
+    "elapsed_seconds": 190.496,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logSHA256": "516556cbc3c462bfaa8b0ffb3165abd073a8ea816b62f25791c38cd11106e557"
+  },
+  "native-artifact-final": {
+    "command": [
+      "<NODE26>/bin/node",
+      "--import",
+      "./scripts/tsx.mjs",
+      "--test",
+      "--experimental-test-isolation=none",
+      "--test-reporter=tap",
+      "src/cli/plugins-feature-artifact.native.test-support.ts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 12.886,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "7b63df61db5abbcc0fa6cf6d11e4cc812d9a482e4f6753d79887c31f0ee5c934"
+  },
+  "correction-focused": {
+    "command": [
+      "<NODE26>/bin/node",
+      "<CAMPAIGN>/alix-three-20261029.28y737ub/tooling/pnpm-12.15.0/package/bin/pnpm.mjs",
+      "test",
+      "src/cli/plugins-authoring-command.test.ts",
+      "--maxWorkers=1",
+      "-t",
+      "symlink root|scaffolds a provider|invalid feature id|absolute directory"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 17.46,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "c90ec1009cf5aa8f0ee87c3f8e2cbb0909a4bdd729867b41cf86e8317ec0a5cb",
+    "logSHA256": "d6fc28b61e84d6febb7742fda1ceea1e0bbc291d0a241808a0740638fa48e2f3"
+  },
+  "final-lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../plugin-root-types.tsconfig.json",
+      "src/cli/plugins-authoring-command.ts",
+      "src/cli/plugins-authoring-command.test.ts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 47.12,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "6c33b4ca12c643c3feae8bf2ebc56f029ed2ff4034fae05cb9bb406c7d59e3db",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "output-lint": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/run-oxlint.mjs",
+      "--tsconfig",
+      "../plugin-root-types.tsconfig.json",
+      "src/cli/plugins-feature-artifact.ts",
+      "src/cli/plugins-feature-artifact.native.test-support.ts"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 45.628,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "65ea5d43566d667e9333e9906db5d6bb3e6fa316268017a0de45a97429a20187"
+  },
+  "script-erasability": {
+    "command": [
+      "<NODE26>/bin/node",
+      "scripts/check-script-erasability.mjs"
+    ],
+    "cwd": "<TASK>/plugin-root",
+    "exit_code": 0,
+    "elapsed_seconds": 3.921,
+    "head": "c0166c395cf81095f431808c9496cb6022ad4387",
+    "diffSHA256": "7a1dfc9271b7d4ee5e9473666e9f4d4ce7ce2a37f275383af9e1a73f4f73caf8",
+    "logSHA256": "1b4953a5c2acde6a2821c7f3ae542a6bc0a40673820164abd4fe66966d7e1a53"
+  },
+  "head-proof-runner": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--user",
+      "1000:1000",
+      "--pids-limit",
+      "384",
+      "--tmpfs",
+      "/tmp:rw,nosuid,exec,size=512m",
+      "-v",
+      "<TASK>:<TASK>:rw",
+      "-v",
+      "<CAMPAIGN>/openclaw/.git:<CAMPAIGN>/openclaw/.git:ro",
+      "-v",
+      "<NODE26>:<NODE26>:ro",
+      "-e",
+      "GIT_CONFIG_COUNT=1",
+      "-e",
+      "GIT_CONFIG_KEY_0=safe.directory",
+      "-e",
+      "GIT_CONFIG_VALUE_0=<TASK>/plugin-root",
+      "alix-openclaw-native-tools-20261114",
+      "python3",
+      "<TASK>/plugin-root-proof-v1.py",
+      "<TASK>/plugin-root",
+      "<TASK>/plugin-root-head-proof",
+      "<NODE26>/bin/node",
+      "green"
+    ],
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "exit_code": 0,
+    "elapsed_seconds": 28.129,
+    "collectorSHA256": "89f9edde5680eca800a6d2da3c5d9f41ad77e30a49a5919b3cb7429f98bffc60",
+    "runnerLogSHA256": "9b08f0dbfc87b37cb6e46128c1e4cc6ab3673d0b72d5d37b63264c5715966746",
+    "receipt": "<TASK>/plugin-root-head-proof/receipt.json"
+  }
+}

@@ -1,0 +1,285 @@
+{
+  "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+  "buildStamp": {
+    "builtAt": 1794749474275,
+    "head": "a83b8ad928070201c48afc12c67f51bf0ddc28fb",
+    "inputsClean": true,
+    "inputSignature": "e7c46453d2a95b0309775c33ff9f234ab86ced6a983c18f8c461166f3d2a3326"
+  },
+  "collectorSHA256": "89f9edde5680eca800a6d2da3c5d9f41ad77e30a49a5919b3cb7429f98bffc60",
+  "mode": "green",
+  "cases": [
+    {
+      "label": "physical-seed",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/physical/source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.784,
+      "stdout": "Wrote ../plugin-root-head-proof/fixtures/physical/source/openclaw.plugin.json\nUpdated ../plugin-root-head-proof/fixtures/physical/source/package.json\n",
+      "stderr": "",
+      "stdoutSHA256": "20467a438da411c855039d50dbf1f3ba42066967e045d109631b39861e0b8c1e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "physical-ordinary-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/physical/source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.245,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"physical-proof\",\n  \"errors\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "12aa0a20a6b131d93702b6dad94b057f8033953ee4c11d2cae16a1842bcaf8bc",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "decoy-seed",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.636,
+      "stdout": "Wrote ../plugin-root-head-proof/fixtures/source/openclaw.plugin.json\nUpdated ../plugin-root-head-proof/fixtures/source/package.json\n",
+      "stderr": "",
+      "stdoutSHA256": "c754392a6d34a416219e41a38985b1f85ac69063a257cb88cdbf913421803e06",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "decoy-ordinary-validation",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.126,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"decoy-proof\",\n  \"errors\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "d63afbcd5f746c74f87fdc5602ba78e8bdf188083ebaef80586e59ce55ce58f5",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "check-physical-stale",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--check",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/selected/../source"
+      ],
+      "exitCode": 1,
+      "seconds": 2.91,
+      "stdout": "",
+      "stderr": "Generated plugin metadata is out of date. Run openclaw plugins build.\n",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "7fb3a7fea9b7d61bafcb0db91783ddf6dbf201eeb00486ab1d57fc9dcfa0a2eb"
+    },
+    {
+      "label": "validate-physical-stale",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/selected/../source"
+      ],
+      "exitCode": 1,
+      "seconds": 2.489,
+      "stdout": "{\n  \"valid\": false,\n  \"pluginId\": \"physical-proof\",\n  \"errors\": [\n    \"openclaw.plugin.json generated metadata is stale. Run openclaw plugins build.\"\n  ]\n}\n",
+      "stderr": "openclaw.plugin.json generated metadata is stale. Run openclaw plugins build.\n",
+      "stdoutSHA256": "28333747ef3d363b6f161fa2a525ad849f028d13be9c11517817b80b56be52c0",
+      "stderrSHA256": "ebecfbb7e5256456e8e08f2cde7ce0993f97789ac5f83e8e6cdbc9220536ecea"
+    },
+    {
+      "label": "build-selected-root",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "build",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/selected/../source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.794,
+      "stdout": "Wrote ../plugin-root-head-proof/fixtures/physical/source/openclaw.plugin.json\nUpdated ../plugin-root-head-proof/fixtures/physical/source/package.json\n",
+      "stderr": "",
+      "stdoutSHA256": "20467a438da411c855039d50dbf1f3ba42066967e045d109631b39861e0b8c1e",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "manifestReadback": {
+        "path": "<TASK>/plugin-root-head-proof/fixtures/physical/source/openclaw.plugin.json",
+        "name": "Updated Physical",
+        "sha256": "a253eb5e7411bae18dbc0b7db79189c7862cb5f48d10f2b0e39053aa8273f195"
+      }
+    },
+    {
+      "label": "pack-selected-root",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "pack",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/selected/../source",
+        "--out",
+        "<TASK>/plugin-root-head-proof/selected-plugin.tgz",
+        "--json"
+      ],
+      "exitCode": 0,
+      "seconds": 4.541,
+      "stdout": "{\n  \"path\": \"<TASK>/plugin-root-head-proof/selected-plugin.tgz\",\n  \"sha256\": \"821801de4872e636d64cae42789cb0b7e2f0878046ddc1083b9c6d1d3a7025a7\",\n  \"pluginId\": \"physical-proof\",\n  \"bytes\": 612,\n  \"activation\": {\n    \"action\": \"plugin_activate_artifact\",\n    \"path\": \"<TASK>/plugin-root-head-proof/selected-plugin.tgz\",\n    \"sha256\": \"821801de4872e636d64cae42789cb0b7e2f0878046ddc1083b9c6d1d3a7025a7\"\n  }\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "43d2b1710851fa48a616511f28e7d2657ac51954ed7bc44a9ce93162a72b74ef",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveReadback": {
+        "path": "<TASK>/plugin-root-head-proof/selected-plugin.tgz",
+        "sha256": "821801de4872e636d64cae42789cb0b7e2f0878046ddc1083b9c6d1d3a7025a7",
+        "pluginId": "physical-proof",
+        "name": "Updated Physical"
+      }
+    },
+    {
+      "label": "init-selected-destination",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "init",
+        "new-proof",
+        "--directory",
+        "<TASK>/plugin-root-head-proof/fixtures/selected/../new-plugin"
+      ],
+      "exitCode": 0,
+      "seconds": 2.274,
+      "stdout": "Created ../plugin-root-head-proof/fixtures/physical/new-plugin\n",
+      "stderr": "",
+      "stdoutSHA256": "b78ed64de6b14b815414a8f69914e0a727de98e653944b65330baeb7d961b969",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "createdFilesReadback": {
+        "actualRoot": "<TASK>/plugin-root-head-proof/fixtures/physical/new-plugin",
+        "package": {
+          "name": "openclaw-plugin-new-proof",
+          "version": "0.1.0",
+          "type": "module",
+          "private": true,
+          "scripts": {
+            "build": "tsc -p tsconfig.json",
+            "plugin:build": "npm run build && openclaw plugins build --entry ./dist/index.js",
+            "plugin:validate": "npm run build && openclaw plugins validate --entry ./dist/index.js",
+            "test": "vitest run --config ./vitest.config.ts"
+          },
+          "files": [
+            "dist",
+            "openclaw.plugin.json",
+            "README.md"
+          ],
+          "peerDependencies": {
+            "openclaw": ">=2026.5.17"
+          },
+          "dependencies": {
+            "typebox": "^1.1.38"
+          },
+          "devDependencies": {
+            "openclaw": "latest",
+            "typescript": "7.0.2",
+            "vitest": "^3.2.0"
+          },
+          "openclaw": {
+            "extensions": [
+              "./dist/index.js"
+            ],
+            "compat": {
+              "pluginApi": ">=2026.5.17"
+            },
+            "build": {
+              "openclawVersion": "2026.11.3"
+            }
+          }
+        },
+        "wrongRootAbsent": "<TASK>/plugin-root-head-proof/fixtures/new-plugin"
+      }
+    },
+    {
+      "label": "decoy-unmodified-control",
+      "command": [
+        "<NODE26>/bin/node",
+        "<TASK>/plugin-root/openclaw.mjs",
+        "plugins",
+        "validate",
+        "--json",
+        "--root",
+        "<TASK>/plugin-root-head-proof/fixtures/source"
+      ],
+      "exitCode": 0,
+      "seconds": 2.224,
+      "stdout": "{\n  \"valid\": true,\n  \"pluginId\": \"decoy-proof\",\n  \"errors\": []\n}\n",
+      "stderr": "",
+      "stdoutSHA256": "d63afbcd5f746c74f87fdc5602ba78e8bdf188083ebaef80586e59ce55ce58f5",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "result": "GREEN10PASS",
+  "boundary": "normal built plugins build/check/validate/pack/init -> actual authored metadata and archive/destination readback",
+  "fixture": {
+    "rawRoot": "<TASK>/plugin-root-head-proof/fixtures/selected/../source",
+    "physicalRoot": "<TASK>/plugin-root-head-proof/fixtures/physical/source",
+    "decoyRoot": "<TASK>/plugin-root-head-proof/fixtures/source",
+    "linkTarget": "<TASK>/plugin-root-head-proof/fixtures/physical/nested"
+  },
+  "snapshots": {
+    "before": {
+      "<TASK>/plugin-root-head-proof/fixtures/physical/source": {
+        "package.json": "4dd79c85d430ef7bdb43efcb0423adf73e416c412c300d781ee3a274ed0c1440",
+        "openclaw.plugin.json": "679dd2b79963ec727b3ebe5a9de14f237c267fbd9364c06340adce12f1a18cf2",
+        "index.ts": "806d7fcbe529615eef2ff8602d58bbe0405da35ef9ac588f390077240cfb0861"
+      },
+      "<TASK>/plugin-root-head-proof/fixtures/source": {
+        "package.json": "08cce9fc256ac451a4f6d53fe0d55dc4921b900ebf68eeb8b2d187ac7a345e81",
+        "openclaw.plugin.json": "651b036442cccaeebecb15fde801e6c4dc08eadd6162938575edfa92bc1e61c9",
+        "index.ts": "2eccf0ae4b5eb1f46910a2fa2405b0aca5f465aa39ac4dece4a5341c444f6f1b"
+      }
+    },
+    "after": {
+      "<TASK>/plugin-root-head-proof/fixtures/physical/source": {
+        "package.json": "4dd79c85d430ef7bdb43efcb0423adf73e416c412c300d781ee3a274ed0c1440",
+        "openclaw.plugin.json": "a253eb5e7411bae18dbc0b7db79189c7862cb5f48d10f2b0e39053aa8273f195",
+        "index.ts": "806d7fcbe529615eef2ff8602d58bbe0405da35ef9ac588f390077240cfb0861"
+      },
+      "<TASK>/plugin-root-head-proof/fixtures/source": {
+        "package.json": "08cce9fc256ac451a4f6d53fe0d55dc4921b900ebf68eeb8b2d187ac7a345e81",
+        "openclaw.plugin.json": "651b036442cccaeebecb15fde801e6c4dc08eadd6162938575edfa92bc1e61c9",
+        "index.ts": "2eccf0ae4b5eb1f46910a2fa2405b0aca5f465aa39ac4dece4a5341c444f6f1b"
+      }
+    }
+  },
+  "cleanup": {
+    "productionStateTouched": false,
+    "externalRequests": false,
+    "isolatedFixturesRetained": true
+  }
+}

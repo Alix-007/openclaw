@@ -1,0 +1,94 @@
+[
+  {
+    "file": "BASE-root.json",
+    "rawSHA256": "04889cd3b3be98122cda4c0917613195787319341836fa6182bae0b519e2e3e4"
+  },
+  {
+    "file": "BASE-root-streams.txt",
+    "rawSHA256": "3b71dd1ab6be68cdbfe1329d34676c606b4cb424a3e32b6db89f56024608bdaf"
+  },
+  {
+    "file": "BASE-root-archive.tgz.base64.txt",
+    "rawSHA256": "9bcd123144dd2209b1ad0ee5e86f44e5a9d4e01075550ed39ba15f6e28140884"
+  },
+  {
+    "file": "HEAD-root.json",
+    "rawSHA256": "539f97c6fe0630385d09cf436ce002c91273770befb04c16b4227cf2e0b80867"
+  },
+  {
+    "file": "HEAD-root-streams.txt",
+    "rawSHA256": "5f311230df0e2f22e62f319090f3ad3b0deca666f91dd650374a3c4743dc05c3"
+  },
+  {
+    "file": "HEAD-root-archive.tgz.base64.txt",
+    "rawSHA256": "fd92db7155188509699683e020ca3d6039107531bc08cd5274f17e5e87645e7c"
+  },
+  {
+    "file": "BASE-output.json",
+    "rawSHA256": "60fbb180b161bb58b1bdccc4edf4116d943f684e8ed27cd83406a246b4249f22"
+  },
+  {
+    "file": "BASE-output-streams.txt",
+    "rawSHA256": "750e9494963766d85ede9b8ead9562da7692d5d8b902fd9c1450ede43c3a3cb8"
+  },
+  {
+    "file": "BASE-output-archive.tgz.base64.txt",
+    "rawSHA256": "164555b67de69d02b5f269ef5e30f57e5895b6ae6fcbeffc7873466d6c33f928"
+  },
+  {
+    "file": "HEAD-output.json",
+    "rawSHA256": "a8cdd47401b00376544045b024393f4ab8aeef296be06802577f9107327dd91b"
+  },
+  {
+    "file": "HEAD-output-streams.txt",
+    "rawSHA256": "3fd35b9afae22b5131a73174afa50c7602226aecf3541da3f7b08b7c70121ede"
+  },
+  {
+    "file": "HEAD-output-archive.tgz.base64.txt",
+    "rawSHA256": "164555b67de69d02b5f269ef5e30f57e5895b6ae6fcbeffc7873466d6c33f928"
+  },
+  {
+    "file": "plugin-root-proof-v1.py",
+    "rawSHA256": "89f9edde5680eca800a6d2da3c5d9f41ad77e30a49a5919b3cb7429f98bffc60"
+  },
+  {
+    "file": "plugin-output-proof-v1.py",
+    "rawSHA256": "841481964b2824176e7915c4657882f0d16d14e0acbd9ac0a7a272d2cb1d2425"
+  },
+  {
+    "file": "final-adversarial-review.md",
+    "rawSHA256": "fe8b091459ee8f47db4fadfd72372f7ec5e74105c2edb6c8d41fa8f798732945"
+  },
+  {
+    "file": "final-adversarial-review.json",
+    "rawSHA256": "1a74a619d0cd80f90e96dcc545719851e7026792168212504a0b2921cd55c723"
+  },
+  {
+    "file": "checks.json",
+    "rawSHA256": "1dc31163dbda20ab6e67c110bee900a52ff749bd978a0dd3528d09f366bac1ea"
+  },
+  {
+    "file": "focused-corrected.log",
+    "rawSHA256": "09614235c66ab2cd3b4763826026f9af7b6c08786c2dd24207e6e7abd0d6ee3c"
+  },
+  {
+    "file": "existing-install-base.log",
+    "rawSHA256": "516556cbc3c462bfaa8b0ffb3165abd073a8ea816b62f25791c38cd11106e557"
+  },
+  {
+    "file": "native-artifact-final.log",
+    "rawSHA256": "7b63df61db5abbcc0fa6cf6d11e4cc812d9a482e4f6753d79887c31f0ee5c934"
+  },
+  {
+    "file": "correction-focused.log",
+    "rawSHA256": "d6fc28b61e84d6febb7742fda1ceea1e0bbc291d0a241808a0740638fa48e2f3"
+  },
+  {
+    "file": "install-diagnostic.log",
+    "rawSHA256": "6a617001c96638b9a08f8d1118c67de63526d175014cfe5b303b82f400ca2377"
+  },
+  {
+    "file": "EVIDENCE.md",
+    "rawSHA256": "53960fd0fd9aff83af0eb30b6340ec3d18783c23f201e6183e7e2c8d60aa954a"
+  }
+]
