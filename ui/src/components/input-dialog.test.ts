@@ -58,6 +58,44 @@ describe("showInputDialog", () => {
     restoreDialogPolyfill();
   });
 
+  it.each([
+    { isComposing: true, keyCode: 13 },
+    { isComposing: false, keyCode: 229 },
+  ])("keeps IME confirmation out of native form submission: %j", async (composition) => {
+    const submit = vi.fn().mockResolvedValue(null);
+    const controller = new AbortController();
+    const { closed } = await open({ ...REQUIRED, submit, signal: controller.signal });
+    try {
+      await type("Draft name");
+      const input = dialogInput();
+      const confirm = new KeyboardEvent("keydown", {
+        key: "Enter",
+        ...composition,
+        bubbles: true,
+        cancelable: true,
+      });
+      input.dispatchEvent(confirm);
+      expect(confirm.defaultPrevented).toBe(true);
+      expect(submit).not.toHaveBeenCalled();
+      expect(input.value).toBe("Draft name");
+      expect(dialog()).not.toBeNull();
+
+      const ordinaryEnter = new KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+        cancelable: true,
+      });
+      input.dispatchEvent(ordinaryEnter);
+      expect(ordinaryEnter.defaultPrevented).toBe(false);
+      submitForm();
+      await expect(closed).resolves.toBe("Draft name");
+      expect(submit).toHaveBeenCalledExactlyOnceWith("Draft name");
+    } finally {
+      controller.abort();
+      await closed;
+    }
+  });
+
   it.each(["dismissal", "owner abort"])("cancels and removes the dialog on %s", async (reason) => {
     const controller = new AbortController();
     const { closed, modal } = await open({ title: "Rename session", signal: controller.signal });
